@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DSY 3D Rotating Logo (Interlocking)</title>
+<!-- Meta Tags for SEO and Social Sharing -->
+<meta content="DSY 3D Rotating Logo (Interlocking)" property="og:title"/>
+<meta content="An interactive 3D animation of fatter letters D, S, and Y in primary colors, arranged in an interlocking triangular formation and rotating on a single axis against a dark green background." property="og:description"/>
+<meta content="assets/img_1200x630_4b2b1160.png" property="og:image"/>
+<meta content="website" property="og:type"/>
+<!-- Favicon generated using asset generator -->
+<link href="assets/sprite_32x32_5da8a9be.png" rel="icon" type="image/png"/>
+<!-- Tailwind CSS -->
+<script src="assets/script_0ef41c53.js"></script>
+<!-- Three.js Core Library -->
+<script src="assets/script_6f1de30a.js"></script>
+<!-- OrbitControls for camera interaction (Load AFTER Three.js) -->
+<script src="assets/script_ecbf6841.js"></script>
+<!-- Font Awesome for potential icons (though not used in this specific example) -->
+<link href="assets/style_e8fcdd48.css" rel="stylesheet"/>
+<script crossorigin="" src="assets/script_93e7414a.js"></script>
+<!-- Papa Parse (Included as per best practices, though not used here) -->
+<script src="assets/script_f9b968bb.js"></script>
+<style>
+            /* Ensure body takes full viewport and remove default margin */
+            body {
+                margin: 0;
+                overflow: hidden; /* Prevent scrollbars */
+                background-color: #003300; /* Dark Green fallback */
+            }
+            /* Style for the 3D container */
+            #logoContainer {
+                width: 100vw;
+                height: 100vh;
+                display: block; /* Ensure it takes block-level space */
+            }
+            /* Font Awesome CSS (Required for Font Awesome icons) */
+            @font-face {
+                font-family: 'Font Awesome 6 Free';
+                font-path: '/chat/webfonts/fa-regular-400';
+                src: url('/chat/webfonts/fa-regular-400.woff2') format('woff2'),
+                     url('/chat/webfonts/fa-regular-400.ttf') format('truetype');
+            }
+            @font-face {
+                font-family: 'Font Awesome 6 Free';
+                font-path: '/chat/webfonts/fa-solid-900';
+                src: url('/chat/webfonts/fa-solid-900.woff2') format('woff2'),
+                     url('/chat/webfonts/fa-solid-900.ttf') format('truetype');
+            }
+            @font-face {
+                font-family: 'Font Awesome 6 Brands';
+                font-path: '/chat/webfonts/fa-brands-400';
+                src: url('/chat/webfonts/fa-brands-400.woff2') format('woff2'),
+                     url('/chat/webfonts/fa-brands-400.ttf') format('truetype');
+            }
+        </style>
+<script>
+            window.load_data_from_csv = (filename) => {
+                // Implementation needed when code is downloaded
+            };
+
+            window.save_data_to_csv = (filename, data) => {
+                // Implementation needed when code is downloaded
+            };
+
+            window.call_llm = (system_prompt, user_messages, json_fields) => {
+                // Implementation needed when code is downloaded
+            };
+        </script></head>
+<body class="bg-[#003300]">
+<!-- Container for the 3D scene -->
+<div id="logoContainer">
+<!-- Overlay removed -->
+</div>
+<script>
+            // --- Library Checks ---
+            let librariesLoaded = true;
+            if (typeof THREE === 'undefined') {
+                console.error("FATAL: Three.js library failed to load.");
+                alert("FATAL ERROR: 3D library (Three.js) missing. Cannot start."); // Use basic alert as fallback
+                librariesLoaded = false;
+            } else if (typeof THREE.FontLoader === 'undefined') {
+                 console.error("FATAL: THREE.FontLoader is missing. Part of Three.js might be corrupted or incomplete.");
+                 alert("FATAL ERROR: FontLoader component missing. Cannot create text."); // Use basic alert
+                 librariesLoaded = false;
+            } else if (typeof THREE.OrbitControls === 'undefined') {
+                console.warn("WARNING: OrbitControls failed to load. Camera interaction will be disabled.");
+                 // Optionally alert the user, but allow execution
+                 // alert("Warning: Camera controls failed to load. Scene will not be interactive.");
+            } else {
+                console.log("Three.js and OrbitControls libraries seem loaded.");
+            }
+
+            // Global variables for Three.js components
+            let scene, camera, renderer, controls, logoGroup;
+            let fontLoader;
+            let animationFrameId = null; // To manage animation loop
+
+            /**
+             * Initializes the Three.js scene, camera, renderer, lighting, and controls.
+             * Loads the font required for the text geometry.
+             */
+            function init() {
+                // Only proceed if essential libraries are loaded
+                if (!librariesLoaded) {
+                    console.error("Initialization aborted due to missing libraries.");
+                    return; // Stop execution if core libs failed
+                }
+
+                console.log("Initializing 3D scene...");
+                const container = document.getElementById('logoContainer');
+                if (!container) {
+                    console.error("FATAL: Container element #logoContainer not found.");
+                    alert("FATAL ERROR: Required HTML container missing."); // Use basic alert
+                    return;
+                }
+
+                try {
+                    // Scene
+                    scene = new THREE.Scene();
+                    console.log("Scene created.");
+
+                    // Camera
+                    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                    camera.position.z = 7; // Start a bit further back
+                    console.log("Camera created.");
+
+                    // Renderer
+                    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false }); // alpha: false might improve performance slightly on solid bg
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    renderer.setPixelRatio(window.devicePixelRatio);
+                    renderer.setClearColor(0x003300); // Dark green background
+                    container.appendChild(renderer.domElement);
+                    console.log("Renderer created and added to DOM.");
+
+                    // Lighting
+                    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Slightly brighter ambient
+                    scene.add(ambientLight);
+                    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2); // Slightly stronger directional
+                    directionalLight.position.set(5, 10, 7.5).normalize();
+                    scene.add(directionalLight);
+                    console.log("Lighting added.");
+
+                    // Controls (Check if OrbitControls constructor exists *again* just in case)
+                    if (typeof THREE.OrbitControls !== 'undefined') {
+                        controls = new THREE.OrbitControls(camera, renderer.domElement);
+                        controls.enableDamping = true;
+                        controls.dampingFactor = 0.05;
+                        controls.screenSpacePanning = false; // Keep panning disabled
+                        controls.enableZoom = true; // Allow zooming
+                        controls.minDistance = 3;   // Prevent zooming too close
+                        controls.maxDistance = 20;  // Prevent zooming too far
+                        controls.enablePan = false; // Disable panning
+                        controls.autoRotate = false; // We handle rotation manually
+                        console.log("OrbitControls initialized.");
+                    } else {
+                        console.warn("OrbitControls not available during init. Skipping controls setup.");
+                    }
+
+                    // Logo Group - this will hold the letters
+                    logoGroup = new THREE.Group();
+                    scene.add(logoGroup);
+                    console.log("Logo group created.");
+
+                    // Font Loader
+                    fontLoader = new THREE.FontLoader();
+                    // Using a standard, reliable font path from threejs.org examples
+                    const fontPath = 'https://threejs.org/examples/fonts/helvetiker_bold.typeface.json';
+                    console.log(`Attempting to load font from: ${fontPath}`);
+                    // Removed displayMessage call
+
+                    fontLoader.load(fontPath,
+                        // onSuccess callback
+                        function (font) {
+                            console.log("Font loaded successfully.");
+                            try {
+                                createText(font); // Create the 3D text meshes
+                                console.log("createText function completed successfully.");
+                                // Removed overlay hiding code
+
+                                if (animationFrameId === null) { // Prevent multiple animation loops
+                                    animate(); // Start the animation loop ONLY after text is created
+                                    console.log("Animation loop started.");
+                                } else {
+                                    console.warn("Animation loop was potentially already running.");
+                                }
+                            } catch (textError) {
+                                console.error("Error during createText execution:", textError);
+                                alert("ERROR: Failed to create 3D text objects. Check console."); // Use basic alert
+                                // Do not start animation if text creation failed
+                            }
+                        },
+                        // onProgress callback
+                        function (xhr) {
+                            // Calculate percentage, ensure total is not zero
+                            const percentComplete = xhr.total > 0 ? (xhr.loaded / xhr.total * 100).toFixed(0) : 0;
+                            console.log(`Loading Font: ${percentComplete}%`); // Log progress to console
+                            // Removed displayMessage call
+                        },
+                        // onError callback
+                        function (err) {
+                            console.error('FATAL: Font loading failed:', err);
+                            alert(`ERROR: Failed to load required font from external source (${fontPath}). Cannot display logo. Please check your internet connection or try refreshing.`); // Use basic alert
+                            // Do not proceed to create text or animate
+                        }
+                    );
+
+                    // Event Listener for window resize
+                    window.addEventListener('resize', onWindowResize, false);
+                    console.log("Resize listener added.");
+
+                } catch (error) {
+                    console.error("FATAL: Initialization failed:", error);
+                    alert(`FATAL ERROR during 3D scene setup: ${error.message}. Check console.`); // Use basic alert
+                }
+            }
+
+            /**
+             * Creates the 3D text meshes for 'D', 'S', 'Y' with fatter, interlocking appearance.
+             * @param {THREE.Font} font - The loaded font object.
+             */
+            function createText(font) {
+                console.log("Executing createText for fatter, interlocking letters...");
+                const textOptions = {
+                    font: font,
+                    size: 1.5,      // Increased size for 'fatter' look
+                    height: 0.8,    // Increased extrusion depth for 'fatter' look
+                    curveSegments: 12,
+                    bevelEnabled: true,
+                    bevelThickness: 0.05, // Subtle bevel
+                    bevelSize: 0.04,
+                    bevelOffset: 0,
+                    bevelSegments: 5
+                };
+
+                // Materials (Primary colors - slightly less saturated for better look with lighting)
+                const materialD = new THREE.MeshStandardMaterial({ color: 0xCC0000, roughness: 0.4, metalness: 0.5 }); // Red
+                const materialS = new THREE.MeshStandardMaterial({ color: 0xCCCC00, roughness: 0.4, metalness: 0.5 }); // Yellow
+                const materialY = new THREE.MeshStandardMaterial({ color: 0x0000CC, roughness: 0.4, metalness: 0.5 }); // Blue
+
+                // Geometries
+                const geometryD = new THREE.TextGeometry('D', textOptions);
+                const geometryS = new THREE.TextGeometry('S', textOptions);
+                const geometryY = new THREE.TextGeometry('Y', textOptions);
+                console.log("Text geometries created.");
+
+                // --- Centering and Adjusting for Interlocking ---
+                geometryD.computeBoundingBox();
+                geometryD.center(); // Center geometry origin
+                // D needs to be flipped horizontally to face outwards correctly in the setup
+                geometryD.scale(-1, 1, 1);
+
+                geometryS.computeBoundingBox();
+                geometryS.center();
+
+                geometryY.computeBoundingBox();
+                geometryY.center();
+                console.log("Geometries centered. D reversed.");
+
+                // Meshes
+                const meshD = new THREE.Mesh(geometryD, materialD);
+                const meshS = new THREE.Mesh(geometryS, materialS);
+                const meshY = new THREE.Mesh(geometryY, materialY);
+
+                // --- Positioning for Interlocking Triangular Shape ---
+                // Reduce the radius significantly so the bounding boxes overlap/interlock
+                const radius = 1.1; // Adjust this value to fine-tune the interlocking distance
+                const angleIncrement = (2 * Math.PI) / 3; // 120 degrees separation
+                const zOffset = 0.01; // Tiny offset to help prevent Z-fighting
+
+                // Position D (Top point, rotated to face outwards) - Slightly forward
+                meshD.position.set(0, 0, radius + zOffset); // Position along Z-axis initially
+                meshD.rotation.y = Math.PI; // Rotate 180 degrees around Y to face outwards
+
+                // Position S (Bottom-left point, rotated to face outwards) - Base Z
+                meshS.position.set(radius * Math.sin(angleIncrement), 0, radius * Math.cos(angleIncrement));
+                meshS.rotation.y = Math.PI - angleIncrement; // Rotate to face outwards from its position
+
+                // Position Y (Bottom-right point, rotated to face outwards) - Slightly backward
+                meshY.position.set(radius * Math.sin(2 * angleIncrement), 0, radius * Math.cos(2 * angleIncrement) - zOffset);
+                meshY.rotation.y = Math.PI - (2 * angleIncrement); // Rotate to face outwards from its position
+
+
+                // Add meshes to the group
+                logoGroup.add(meshD);
+                logoGroup.add(meshS);
+                logoGroup.add(meshY);
+                console.log("Logo meshes created, positioned for interlocking with Z-offset, and added to group.");
+            }
+
+
+            /**
+             * Handles window resize events.
+             */
+            function onWindowResize() {
+                if (camera && renderer) {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    // console.log("Resized renderer and camera."); // Optional log
+                }
+            }
+
+            /**
+             * The animation loop.
+             */
+            function animate() {
+                // Schedule the next frame
+                animationFrameId = requestAnimationFrame(animate);
+
+                // Rotate the entire logo group around the Y-axis ONLY
+                if (logoGroup) {
+                    logoGroup.rotation.y -= 0.008; // Reverse direction: Changed += to -=
+                }
+
+                // Update controls if they exist and are enabled
+                if (controls) {
+                    controls.update(); // Necessary for damping
+                }
+
+                // Render the scene - crucial check
+                if (renderer && scene && camera) {
+                    renderer.render(scene, camera);
+                } else {
+                     console.warn("Skipping render: Renderer, scene, or camera not ready.");
+                     // If this happens continuously, there's a critical initialization problem
+                     // Consider stopping the loop if essential components are missing after a few frames
+                     // cancelAnimationFrame(animationFrameId);
+                     // alert("ERROR: Rendering components missing. Animation stopped."); // Use basic alert
+                }
+            }
+
+            // --- Initialization Trigger ---
+            // Use DOMContentLoaded to ensure the HTML structure is ready before accessing elements
+            if (document.readyState === 'loading') {
+                // Loading hasn't finished yet
+                document.addEventListener('DOMContentLoaded', () => {
+                    console.log("DOMContentLoaded event fired.");
+                    init(); // Call init after DOM is ready
+                });
+            } else {
+                // `DOMContentLoaded` has already fired
+                console.log("DOM already loaded, initializing directly.");
+                init(); // Call init directly
+            }
+
+        </script>
+</body>
+</html>
