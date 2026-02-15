@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Headache Assessment & Management — Paramedic Training Module</title>
+
+<style>
+:root{
+  --base:#003300;
+  --dark:#001a00;
+  --mid:#004d00;
+  --light:#006600;
+  --accent:#00cc66;
+  --accent-dim:#00994d;
+  --card-bg:#0a2e0a;
+  --card-border:#1a4d1a;
+  --text:#e8f5e8;
+  --text-dim:#a0c4a0;
+  --yellow:#fbbf24;
+  --red:#ef4444;
+  --blue:#60a5fa;
+  --white:#ffffff;
+  --bp-tag:#7c3aed;
+  --radius:10px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:18px;scroll-behavior:smooth}
+body{
+  font-family:Inter,"Segoe UI",system-ui,sans-serif;
+  background:var(--dark);
+  color:var(--text);
+  line-height:1.65
+}
+
+/* Sticky Header */
+.sticky-header{
+  position:sticky;top:0;z-index:1000;
+  background:linear-gradient(135deg,var(--base),var(--dark));
+  border-bottom:2px solid var(--accent-dim);
+  padding:0.5rem 1.2rem;
+  display:flex;align-items:center;gap:1rem;
+  box-shadow:0 4px 20px rgba(0,0,0,0.5);
+}
+.sticky-header iframe{flex-shrink:0}
+.header-title{
+  flex:1;text-align:center;
+  font-size:1.05rem;font-weight:700;
+  color:var(--accent);letter-spacing:0.03em;
+}
+.header-title span{
+  display:block;
+  font-size:0.8rem; /* >= 14px */
+  color:var(--text-dim);
+  font-weight:400;
+  margin-top:2px
+}
+.progress-bar{
+  position:absolute;bottom:0;left:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--yellow));
+  width:0%;transition:width 0.3s ease
+}
+
+/* Main container */
+.container{max-width:860px;margin:0 auto;padding:1rem 1rem 4rem}
+
+/* Hero */
+.hero{
+  background:linear-gradient(135deg,var(--mid),var(--base));
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:2rem 1.5rem;margin:1.5rem 0;text-align:center
+}
+.hero h1{font-size:1.6rem;color:var(--white);margin-bottom:0.4rem}
+.hero .subtitle{font-size:0.95rem;color:var(--accent);margin-bottom:1rem}
+.hero-meta{display:flex;flex-wrap:wrap;gap:0.6rem;justify-content:center}
+.hero-tag{
+  background:rgba(0,204,102,0.12);
+  border:1px solid var(--accent-dim);
+  border-radius:20px;
+  padding:0.3rem 0.9rem;
+  font-size:0.8rem; /* >= 14px */
+  color:var(--accent)
+}
+
+/* Cards */
+.card{
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:1.5rem;
+  margin:1.2rem 0
+}
+.card h2{
+  font-size:1.15rem;color:var(--accent);margin-bottom:1rem;
+  padding-bottom:0.5rem;border-bottom:1px solid var(--card-border)
+}
+.card h3{font-size:1rem;color:var(--yellow);margin:1rem 0 0.5rem}
+
+/* Toggles */
+.toggle-btn{
+  width:100%;text-align:left;background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:1rem 1.3rem;color:var(--accent);
+  font-size:1rem;font-weight:600;
+  cursor:pointer;margin:0.5rem 0;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:all 0.2s ease;
+  font-family:inherit;
+  min-height:44px
+}
+.toggle-btn:hover,.toggle-btn:focus{background:var(--mid);outline:none}
+.toggle-btn .arrow{transition:transform 0.3s ease;font-size:0.9rem}
+.toggle-btn.active .arrow{transform:rotate(180deg)}
+.toggle-content{
+  max-height:0;overflow:hidden;transition:max-height 0.5s ease;
+  background:var(--card-bg);border-radius:0 0 var(--radius) var(--radius)
+}
+.toggle-content.open{max-height:8000px}
+.toggle-inner{padding:1.2rem 1.3rem}
+
+/* Checklists */
+.checklist{list-style:none;padding:0}
+.checklist li{
+  display:flex;align-items:flex-start;gap:0.6rem;
+  padding:0.45rem 0;font-size:1rem;line-height:1.5
+}
+.checklist li::before{
+  content:'';flex-shrink:0;width:20px;height:20px;
+  border:2px solid var(--accent);border-radius:4px;margin-top:3px;
+  cursor:pointer
+}
+.checklist li.checked::before{
+  background:var(--accent);
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='%23003300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13.485 3.515a.75.75 0 010 1.06l-7.07 7.07a.75.75 0 01-1.06 0L2.515 8.805a.75.75 0 011.06-1.06l2.31 2.31 6.54-6.54a.75.75 0 011.06 0z'/%3E%3C/svg%3E");
+  background-size:14px;background-position:center;background-repeat:no-repeat
+}
+
+/* Break Points */
+.breakpoint{
+  background:linear-gradient(135deg,#1a0033,#0d001a);
+  border:2px solid var(--bp-tag);
+  border-radius:var(--radius);
+  padding:1.5rem;margin:1.5rem 0;
+  border-left:5px solid var(--bp-tag)
+}
+.bp-header{display:flex;flex-wrap:wrap;align-items:center;gap:0.6rem;margin-bottom:0.8rem}
+.bp-label{
+  background:var(--bp-tag);color:white;
+  font-size:0.78rem; /* >= 14px */
+  padding:0.2rem 0.7rem;border-radius:12px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.05em
+}
+.bp-type{
+  background:rgba(124,58,237,0.2);color:#c4b5fd;
+  font-size:0.78rem; /* >= 14px */
+  padding:0.2rem 0.6rem;border-radius:12px;border:1px solid rgba(124,58,237,0.4)
+}
+.bp-title{font-size:1.05rem;color:#c4b5fd;font-weight:700;width:100%;margin-top:0.3rem}
+.bp-section{margin-top:0.8rem}
+.bp-section h4{
+  font-size:0.82rem;text-transform:uppercase;letter-spacing:0.06em;
+  color:var(--yellow);margin-bottom:0.4rem
+}
+.bp-section p,.bp-section li{font-size:0.95rem;color:#d4c8ef;line-height:1.55}
+.bp-section ul{padding-left:1.2rem}
+.bp-section li{margin-bottom:0.3rem}
+
+/* Alert boxes */
+.alert{border-radius:var(--radius);padding:1rem 1.2rem;margin:1rem 0;font-size:0.95rem}
+.alert-red{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5}
+.alert-yellow{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);color:#fde68a}
+.alert-blue{background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.3);color:#bfdbfe}
+.alert-green{background:rgba(0,204,102,0.1);border:1px solid rgba(0,204,102,0.3);color:#a7f3d0}
+.alert strong{display:block;margin-bottom:0.3rem}
+
+/* MDT Box */
+.mdt-box{
+  background:#0a0a1a;border:2px solid #334155;
+  border-radius:var(--radius);padding:1.2rem;
+  font-family:"Courier New",monospace;margin:1rem 0
+}
+.mdt-header{
+  color:var(--blue);font-weight:700;font-size:0.82rem;
+  text-transform:uppercase;letter-spacing:0.08em;
+  border-bottom:1px solid #334155;padding-bottom:0.4rem;margin-bottom:0.6rem
+}
+.mdt-line{color:#94a3b8;font-size:0.9rem;line-height:1.7}
+.mdt-line strong{color:#e2e8f0}
+
+/* Observations table */
+.obs-table{
+  width:100%;border-collapse:collapse;margin:0.8rem 0;font-size:0.95rem
+}
+.obs-table th{
+  background:var(--mid);color:var(--accent);padding:0.6rem 0.8rem;
+  text-align:left;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.04em
+}
+.obs-table td{
+  padding:0.5rem 0.8rem;border-bottom:1px solid var(--card-border);color:var(--text)
+}
+.obs-table tr:nth-child(even) td{background:rgba(0,77,0,0.15)}
+
+/* Skill Steps */
+.skill-steps{counter-reset:step;list-style:none;padding:0}
+.skill-steps li{
+  counter-increment:step;position:relative;
+  padding:0.7rem 0 0.7rem 3rem;
+  border-left:2px solid var(--accent-dim);
+  margin-left:1rem;font-size:0.95rem
+}
+.skill-steps li::before{
+  content:counter(step);position:absolute;left:-14px;top:0.6rem;
+  width:26px;height:26px;background:var(--accent);color:var(--base);
+  border-radius:50%;font-size:0.8rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center
+}
+.skill-steps li:last-child{border-left:2px solid transparent}
+
+/* Variations */
+.variation-card{
+  background:rgba(251,191,36,0.06);
+  border:1px solid rgba(251,191,36,0.2);
+  border-radius:var(--radius);padding:1.2rem;margin:0.8rem 0
+}
+.variation-card h4{color:var(--yellow);font-size:0.98rem;margin-bottom:0.5rem}
+
+/* Podcast */
+.podcast-card{
+  background:rgba(96,165,250,0.08);
+  border:1px solid rgba(96,165,250,0.25);
+  border-radius:var(--radius);
+  padding:1rem 1.2rem;
+  margin-top:0.6rem
+}
+.podcast-meta-row{
+  display:flex;flex-wrap:wrap;gap:0.6rem;align-items:center;justify-content:flex-start
+}
+.podcast-badge{
+  background:rgba(96,165,250,0.18);
+  border:1px solid rgba(96,165,250,0.35);
+  color:#bfdbfe;
+  padding:0.2rem 0.6rem;
+  border-radius:999px;
+  font-size:0.78rem; /* >= 14px */
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.06em
+}
+.podcast-info{color:var(--text);font-size:0.95rem}
+audio{width:100%;min-height:44px;margin-top:0.8rem}
+.podcast-caption{font-size:0.78rem;color:var(--text-dim);margin-top:0.5rem}
+
+/* Fade in animation */
+.fade-section{opacity:0;transform:translateY(24px);transition:all 0.6s ease}
+.fade-section.visible{opacity:1;transform:translateY(0)}
+
+/* Responsive */
+@media (max-width:600px){
+  .sticky-header{padding:0.4rem 0.7rem;gap:0.5rem}
+  .sticky-header iframe{width:70px !important;height:70px !important}
+  .header-title{font-size:0.95rem}
+  .hero{padding:1.5rem 1rem}
+  .hero h1{font-size:1.25rem}
+  .card{padding:1.1rem}
+  .breakpoint{padding:1.1rem}
+  .toggle-inner{padding:1rem}
+}
+</style>
+</head>
+
+<body>
+
+<header class="sticky-header">
+  <iframe
+    src="https://simulationtheory.ai/64821e78-1f9b-4db1-8f38-6ad6ed4e6d1e"
+    width="120" height="120"
+    style="border:none; background:transparent;"
+    allow="autoplay"
+    title="DSY Logo">
+  </iframe>
+
+  <div class="header-title">
+    Headache Assessment &amp; Management
+    <span>Paramedic Walk-Through Scenario — CPG-172-P</span>
+  </div>
+
+  <div class="progress-bar" id="progressBar"></div>
+</header>
+
+<div class="container">
+
+  <div class="hero fade-section">
+    <h1>The Darkened Room</h1>
+    <div class="subtitle">Headache Assessment and Management for Paramedics</div>
+    <p style="font-size:0.92rem;color:var(--text-dim);margin-bottom:1rem;">
+      A walk-through scenario for skills practice, clinical reasoning, and crew discussion.<br />
+      Based on SA Ambulance Service Headache CPG-172-P.
+    </p>
+    <div class="hero-meta">
+      <span class="hero-tag">2-Person Paramedic Crew</span>
+      <span class="hero-tag">90 Minutes</span>
+      <span class="hero-tag">Regional / Rural Setting</span>
+      <span class="hero-tag">Paramedic Scope</span>
+    </div>
+  </div>
+
+  <div class="card fade-section">
+    <h2>Learning Objectives</h2>
+    <p style="font-size:0.92rem;color:var(--text-dim);margin-bottom:0.8rem;">On completion, participants will be able to:</p>
+    <ul class="checklist">
+      <li>Conduct a thorough headache-focused history and neurological assessment in the prehospital setting</li>
+      <li>Differentiate primary from secondary headache using systematic red flag screening</li>
+      <li>Apply ROSIER/ACT and gait assessment as part of the neurological examination</li>
+      <li>Manage a medically diagnosed migraine presentation per CPG-172-P (symptom control + transport decision-making)</li>
+      <li>Safely prepare and administer IV metoclopramide 10 mg via slow push over ≥ 3 minutes</li>
+      <li>Use IV NaCl 0.9% rehydration in 250 mL aliquots up to 20 mL/kg when oral fluids aren’t tolerated</li>
+      <li>Identify when escalation, early transport, and pre-notification are required</li>
+      <li>Deliver a structured ISBAR handover for a headache presentation</li>
+    </ul>
+  </div>
+
+  <div class="card fade-section">
+    <h2>Required Equipment</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div>
+        <h3>Monitoring &amp; Assessment</h3>
+        <ul class="checklist">
+          <li>Corpuls3 monitor (HR, SpO2, NIBP, Temp, ECG)</li>
+          <li>Manual BP cuff &amp; stethoscope</li>
+          <li>BGL monitor</li>
+          <li>Pen torch (pupil assessment)</li>
+        </ul>
+      </div>
+      <div>
+        <h3>IV Access &amp; Fluids</h3>
+        <ul class="checklist">
+          <li>IV cannulation kit (18G, 20G, 22G)</li>
+          <li>NaCl 0.9% (bag) + giving set</li>
+          <li>Flushes / access devices as per service standard</li>
+          <li>Tourniquet, dressings, tape</li>
+          <li>Sharps container</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Medications (as per local protocols)</h3>
+        <ul class="checklist">
+          <li>Metoclopramide (for migraine pathway as indicated)</li>
+          <li>Analgesia options per Pain Management</li>
+          <li>Antiemetic options per Nausea &amp; Vomiting</li>
+        </ul>
+      </div>
+      <div>
+        <h3>General</h3>
+        <ul class="checklist">
+          <li>Ambulance Response Bag</li>
+          <li>Stretcher + carry chair</li>
+          <li>PPE</li>
+          <li>ePCR / documentation</li>
+          <li>Vomit bags</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card fade-section">
+    <h2>Session Structure Overview</h2>
+    <table class="obs-table">
+      <thead>
+        <tr><th>Phase</th><th>Duration</th><th>Focus</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Pre-Brief</td><td>10 min</td><td>Context, objectives, protocol focus</td></tr>
+        <tr><td>Dispatch &amp; En Route</td><td>5 min</td><td>MDT review, en-route planning</td></tr>
+        <tr><td>On Arrival &amp; Scene</td><td>5 min</td><td>Scene size-up, first impression</td></tr>
+        <tr><td>Assessment &amp; Working Diagnosis</td><td>15 min</td><td>History, neuro exam, red flag screen</td></tr>
+        <tr><td>Treatment Phase</td><td>20 min</td><td>IV access, metoclopramide, fluids, symptom care</td></tr>
+        <tr><td>Reassessment &amp; Escalation</td><td>10 min</td><td>Trend monitoring, decision points</td></tr>
+        <tr><td>Extrication &amp; Transport</td><td>10 min</td><td>Low-stimulus movement, in-transit priorities</td></tr>
+        <tr><td>Handover</td><td>5 min</td><td>ISBAR</td></tr>
+        <tr><td>Debrief</td><td>15 min</td><td>Reflection + key takeaways</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSection(this)">
+    Pre-Brief (≈10 minutes) <span class="arrow">&#9660;</span>
+  </button>
+  <div class="toggle-content">
+    <div class="toggle-inner">
+      <ul class="checklist">
+        <li>Primary headaches are common and usually benign (migraine, tension-type, cluster)</li>
+        <li>Secondary headaches are less common but can be life-threatening (e.g., SAH, meningitis, raised ICP)</li>
+        <li>Paramedics are not aiming to diagnose headache type prehospital — the operational priority is red flag identification, symptom management, and transport for further assessment</li>
+        <li>Symptomatic relief from analgesia is <strong>not</strong> evidence of a benign cause</li>
+        <li>Complete a pain assessment and a neurological assessment, including ROSIER/ACT and gait where feasible</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card fade-section">
+    <h2>Dispatch &amp; En Route Phase</h2>
+    <div class="mdt-box">
+      <div class="mdt-header">MDT — Incoming Case</div>
+      <div class="mdt-line"><strong>Priority:</strong> 2</div>
+      <div class="mdt-line"><strong>Case:</strong> 42F — Severe headache, vomiting x3, known migraines</div>
+      <div class="mdt-line"><strong>Address:</strong> 14 Settlers Road, Wirrabara SA</div>
+      <div class="mdt-line"><strong>Contact:</strong> Partner on scene, conscious patient</div>
+      <div class="mdt-line"><strong>Access:</strong> Rural property via sealed road, 200 m gravel driveway</div>
+      <div class="mdt-line"><strong>Additional:</strong> In dark room 4 hours, vomiting, unable to tolerate fluids</div>
+      <div class="mdt-line"><strong>Logistics:</strong> Nearest backup 55 min. Hospital approx 45 min transport.</div>
+    </div>
+  </div>
+
+  <div class="breakpoint fade-section">
+    <div class="bp-header">
+      <span class="bp-label">Break Point 1</span>
+      <span class="bp-type">Discussion</span>
+    </div>
+    <div class="bp-title">En-route planning</div>
+    <div class="bp-section">
+      <h4>Facilitator prompts</h4>
+      <ul>
+        <li>What’s your differential before arrival?</li>
+        <li>What red flags will you actively screen for?</li>
+        <li>What kit goes in first?</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Expected reasoning</h4>
+      <ul>
+        <li>“Known migraine” informs context but does not exclude secondary headache</li>
+        <li>Plan roles: one leads history/neuro; one gets baseline obs, BGL, prepares IV/meds</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Key teaching points</h4>
+      <ul>
+        <li>Don’t anchor on “migraine” from the MDT</li>
+        <li>Long transport = early symptom care + deliberate reassessment plan</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Real-job translation</h4>
+      <p>On the way in, agree on your working plan and what would trigger escalation/time-critical transport.</p>
+    </div>
+  </div>
+
+  <div class="card fade-section">
+    <h2>On Arrival – Scene Management</h2>
+    <p style="margin-bottom:0.8rem;">Porch light on. Partner meets you. Bedroom darkened, patient lying still with emesis bowl beside bed.</p>
+    <ul class="checklist">
+      <li>Scene safe; quiet environment maintained</li>
+      <li>Minimise light/noise to support assessment and reduce distress</li>
+      <li>Plan a low-stimulus patient movement strategy early (carry chair/stretcher)</li>
+    </ul>
+  </div>
+
+  <div class="breakpoint fade-section">
+    <div class="bp-header">
+      <span class="bp-label">Break Point 2</span>
+      <span class="bp-type">Discussion</span>
+    </div>
+    <div class="bp-title">Doorway / first impression</div>
+    <div class="bp-section">
+      <h4>Facilitator prompts</h4>
+      <ul>
+        <li>What does the environment and patient posture suggest?</li>
+        <li>What’s reassuring, and what is not reassuring?</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Expected reasoning</h4>
+      <ul>
+        <li>Photophobia and lying still fits migraine behaviour but is not diagnostic</li>
+        <li>Still must complete red flag screen and neuro exam</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Key teaching points</h4>
+      <ul>
+        <li>Environmental management is clinical care</li>
+        <li>History and neuro exam determine risk, not “migraine look”</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Real-job translation</h4>
+      <p>First impressions can help you pace the job and manage patient comfort, but they must not replace structured assessment.</p>
+    </div>
+  </div>
+
+  <div class="card fade-section">
+    <h2>Patient Contact &amp; Primary Survey</h2>
+
+    <p style="margin-bottom:0.5rem;"><strong>Crew roles:</strong></p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:1rem;">
+      <div class="alert alert-green" style="margin:0;">
+        <strong>Paramedic 1 — Clinician</strong>
+        History, neuro exam (ROSIER/ACT + gait), red flags, decision-making, meds
+      </div>
+      <div class="alert alert-blue" style="margin:0;">
+        <strong>Paramedic 2 — Attendant</strong>
+        Corpuls3 setup, baseline obs + BGL, IV preparation/assist, documentation
+      </div>
+    </div>
+
+    <h3>Baseline observations (Corpuls3)</h3>
+    <table class="obs-table">
+      <thead><tr><th>Parameter</th><th>Value</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>HR</td><td>92 regular</td><td>Pain/stress likely</td></tr>
+        <tr><td>BP</td><td>148/88</td><td>Trend post-treatment</td></tr>
+        <tr><td>SpO2</td><td>98% RA</td><td>Normal</td></tr>
+        <tr><td>RR</td><td>18</td><td>Normal</td></tr>
+        <tr><td>Temp</td><td>36.8°C</td><td>Reassuring re infection</td></tr>
+        <tr><td>GCS</td><td>15</td><td>No ALOC</td></tr>
+        <tr><td>BGL</td><td>5.8 mmol/L</td><td>Normal</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="breakpoint fade-section">
+    <div class="bp-header">
+      <span class="bp-label">Break Point 3</span>
+      <span class="bp-type">Practical / discussion</span>
+    </div>
+    <div class="bp-title">Initial observations &amp; Corpuls3 setup</div>
+    <div class="bp-section">
+      <h4>Facilitator prompts</h4>
+      <ul>
+        <li>What is your “baseline set” and what will you trend?</li>
+        <li>What is pain-mediated hypertension and how do you prove it?</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Expected reasoning</h4>
+      <ul>
+        <li>Baseline obs before meds so treatment response is measurable</li>
+        <li>BP should be reassessed after symptom control</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Key teaching points</h4>
+      <ul>
+        <li>Vitals don’t rule in/out secondary headache; they add context</li>
+        <li>Trend matters more than a single number</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Real-job translation</h4>
+      <p>Split tasks: one clinician talks; one gets objective data. It makes the job faster and safer.</p>
+    </div>
+  </div>
+
+  <div class="card fade-section">
+    <h2>Clinical Decision Point</h2>
+    <h3>Focused neuro exam</h3>
+    <ul class="checklist">
+      <li>ROSIER/ACT: negative</li>
+      <li>Speech: clear</li>
+      <li>Face/arm: no drift or weakness</li>
+      <li>Pupils: equal/reactive</li>
+      <li>Gait: steady (slow due to nausea)</li>
+      <li>No neck stiffness; afebrile; no rash</li>
+    </ul>
+
+    <div class="alert alert-red">
+      <strong>Red flags that mandate transport (screen + document)</strong>
+      Thunderclap/uncharacteristic onset; triggered by cough/exertion/sexual activity; systemic illness signs (ALOC, neck stiffness, fever, rash, vomiting + confusion); neuro signs/ALOC; first severe headache &gt;50; cancer/HIV; worsening over hours–days; pregnancy; head trauma; features of raised ICP.
+    </div>
+  </div>
+
+  <div class="breakpoint fade-section">
+    <div class="bp-header">
+      <span class="bp-label">Break Point 4</span>
+      <span class="bp-type">Decision-making</span>
+    </div>
+    <div class="bp-title">Screening tools, protocols &amp; working diagnosis</div>
+    <div class="bp-section">
+      <h4>Facilitator prompts</h4>
+      <ul>
+        <li>Which red flags did you actively rule out, and how?</li>
+        <li>When does this become a Stroke pathway job?</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Expected reasoning</h4>
+      <ul>
+        <li>Negative ROSIER/ACT + normal neuro supports migraine pathway, but does not “clear” serious causes without full red-flag screen</li>
+        <li>Any neuro deficit = manage per Stroke protocol; transport to CSU/STS</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Key teaching points</h4>
+      <ul>
+        <li>Symptom relief is not proof of benign cause</li>
+        <li>Document negatives: “no neck stiffness”, “afebrile”, “no focal neuro”</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Real-job translation</h4>
+      <p>If you get challenged at handover, clear documentation of what you looked for and didn’t find matters.</p>
+    </div>
+  </div>
+
+  <div class="card fade-section">
+    <h2>Treatment Phase (CPG-172-P)</h2>
+
+    <div class="alert alert-yellow">
+      <strong>Operational aim</strong>
+      Symptom management + safe transport decision-making after a structured red flag screen and neuro exam.
+    </div>
+
+    <ol class="skill-steps">
+      <li><strong>Low-stimulus care:</strong> dark, quiet, minimal movement.</li>
+      <li><strong>IV access:</strong> establish and secure IV line for antiemetic/fluids if indicated.</li>
+      <li><strong>Antiemetic:</strong> consider metoclopramide 10 mg IM/IV (IV slow push ≥ 3 minutes).</li>
+      <li><strong>Rehydration:</strong> encourage oral fluids if tolerated. If not, NaCl 0.9% 250 mL aliquots up to 20 mL/kg with reassessment after each aliquot.</li>
+      <li><strong>Analgesia:</strong> per Pain Management protocol; reassess and trend.</li>
+      <li><strong>Reassess:</strong> pain, nausea/vomiting, neuro status, vitals.</li>
+    </ol>
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSection(this)">
+    Practical Skill — IV Metoclopramide (slow push) <span class="arrow">&#9660;</span>
+  </button>
+  <div class="toggle-content">
+    <div class="toggle-inner">
+      <div class="alert alert-blue">
+        <strong>Skill focus</strong>
+        This is a medication safety drill: indication, cross-check, timing, monitoring, documentation.
+      </div>
+
+      <ol class="skill-steps">
+        <li><strong>Confirm indication:</strong> adult with medically diagnosed migraine, current episode consistent with prior pattern.</li>
+        <li><strong>Check contraindications / risks:</strong> confirm as per local medication reference; document patient’s own meds already taken.</li>
+        <li><strong>Prepare dose:</strong> correct drug, concentration, expiry. Label syringe.</li>
+        <li><strong>Independent cross-check:</strong> drug, dose, route, patient, indication, expiry.</li>
+        <li><strong>Administer:</strong> IV slow push over ≥ 3 minutes (use a timer).</li>
+        <li><strong>Monitor:</strong> watch for dystonic/extrapyramidal effects; manage supportively and escalate if they occur.</li>
+        <li><strong>Document:</strong> time, dose, route, rate, response, adverse effects.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="breakpoint fade-section">
+    <div class="bp-header">
+      <span class="bp-label">Break Point 5</span>
+      <span class="bp-type">Practical / discussion</span>
+    </div>
+    <div class="bp-title">Treatment initiation &amp; medication safety</div>
+    <div class="bp-section">
+      <h4>Facilitator prompts</h4>
+      <ul>
+        <li>Show the cross-check. What exactly are you verifying?</li>
+        <li>Time the slow push. No guessing.</li>
+        <li>What adverse effects are you watching for?</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Expected reasoning</h4>
+      <ul>
+        <li>Medication safety = preparation + cross-check + administration rate + monitoring + documentation</li>
+        <li>Slow push reduces adverse-effect risk and is a protocol requirement</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Key teaching points</h4>
+      <ul>
+        <li>Use a timer for ≥ 3 minutes</li>
+        <li>Be explicit about what the patient already took (e.g., triptan)</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Real-job translation</h4>
+      <p>Busy scenes and low light are where errors happen. Slow down for high-risk steps.</p>
+    </div>
+  </div>
+
+  <div class="card fade-section">
+    <h2>Reassessment &amp; Escalation</h2>
+
+    <h3>15-minute reassessment</h3>
+    <table class="obs-table">
+      <thead><tr><th>Parameter</th><th>Pre</th><th>Post (15 min)</th><th>Trend</th></tr></thead>
+      <tbody>
+        <tr><td>HR</td><td>92</td><td>78</td><td>Improving</td></tr>
+        <tr><td>BP</td><td>148/88</td><td>132/78</td><td>Normalising</td></tr>
+        <tr><td>Pain</td><td>9/10</td><td>4/10</td><td>Improving</td></tr>
+        <tr><td>Nausea</td><td>Severe</td><td>Mild</td><td>Improving</td></tr>
+        <tr><td>Neuro</td><td>Nil deficits</td><td>Nil deficits</td><td>Stable</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-red">
+      <strong>Escalate / change pathway if</strong>
+      new neuro signs, ALOC, sudden change in headache character, fever + neck stiffness/rash, seizure, treatment failure, or concerning deterioration at any point.
+    </div>
+  </div>
+
+  <div class="breakpoint fade-section">
+    <div class="bp-header">
+      <span class="bp-label">Break Point 6</span>
+      <span class="bp-type">Decision-making</span>
+    </div>
+    <div class="bp-title">Reassessment &amp; escalation decision</div>
+    <div class="bp-section">
+      <h4>Facilitator prompts</h4>
+      <ul>
+        <li>She’s improved — does she still need transport?</li>
+        <li>What would make you upgrade to time-critical?</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Expected reasoning</h4>
+      <ul>
+        <li>Improvement helps, but does not prove benign cause</li>
+        <li>Failed home management + severity + dehydration = transport is clinically appropriate</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Key teaching points</h4>
+      <ul>
+        <li>Document capacity and safety netting if refusing transport</li>
+        <li>Trends + neuro stability guide risk assessment</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Real-job translation</h4>
+      <p>If there’s doubt, transport. You can’t undo a missed SAH.</p>
+    </div>
+  </div>
+
+  <div class="card fade-section">
+    <h2>Extrication &amp; Transport</h2>
+    <ul class="checklist">
+      <li>Carry chair to stretcher to minimise exertion and light exposure</li>
+      <li>Dim cabin lights; reduce noise; smooth driving</li>
+      <li>Emesis bag accessible; position of comfort (head elevated/lateral)</li>
+      <li>Obs and neuro reassessment every 15 minutes during 45-minute transport</li>
+      <li>Prepare ISBAR en route</li>
+    </ul>
+  </div>
+
+  <div class="breakpoint fade-section">
+    <div class="bp-header">
+      <span class="bp-label">Break Point 7</span>
+      <span class="bp-type">Discussion / practical</span>
+    </div>
+    <div class="bp-title">Extrication &amp; transport planning</div>
+    <div class="bp-section">
+      <h4>Facilitator prompts</h4>
+      <ul>
+        <li>How do you keep this job low-stimulus from bedroom to ED?</li>
+        <li>What are your in-transit priorities on a long run?</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Expected reasoning</h4>
+      <ul>
+        <li>Transport is active care: reassess, trend, anticipate deterioration</li>
+        <li>Low-stimulus environment reduces nausea and improves patient tolerance</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Key teaching points</h4>
+      <ul>
+        <li>Have clear triggers for escalation during transport</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Real-job translation</h4>
+      <p>Long transports are where subtle changes can be missed. Commit to scheduled reassessments.</p>
+    </div>
+  </div>
+
+  <div class="card fade-section">
+    <h2>Handover</h2>
+    <div class="mdt-box" style="border-color:var(--accent);">
+      <div class="mdt-header" style="color:var(--accent);">ISBAR — Headache / Migraine</div>
+      <div class="mdt-line"><strong>I:</strong> “I’m [name], paramedic. This is Sarah, 42.”</div>
+      <div class="mdt-line"><strong>S:</strong> “Severe headache with vomiting x3, known medically diagnosed migraines. Current episode consistent with prior pattern but more severe; home triptan ineffective.”</div>
+      <div class="mdt-line"><strong>B:</strong> “10-year migraine history. NKDA. No head trauma. Not pregnant. No cancer/HIV history disclosed.”</div>
+      <div class="mdt-line"><strong>A:</strong> “GCS 15, ROSIER/ACT negative, no focal neuro, afebrile, no neck stiffness/rash. Baseline BP 148/88, HR 92.”</div>
+      <div class="mdt-line"><strong>R:</strong> “Given metoclopramide 10 mg IV slow push ≥3 min, and IV NaCl 0.9% (first 250 mL aliquot). Now pain 4/10, nausea settling, vitals normalising. IV in situ, patent.”</div>
+    </div>
+  </div>
+
+  <div class="breakpoint fade-section">
+    <div class="bp-header">
+      <span class="bp-label">Break Point 8</span>
+      <span class="bp-type">Practical skill</span>
+    </div>
+    <div class="bp-title">ISBAR handover</div>
+    <div class="bp-section">
+      <h4>Facilitator prompts</h4>
+      <ul>
+        <li>Deliver ISBAR in 45–60 seconds.</li>
+        <li>Include your negative red-flag findings.</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Expected reasoning</h4>
+      <ul>
+        <li>ED needs the story + what you ruled out + what you treated + response</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Key teaching points</h4>
+      <ul>
+        <li>Clear negatives show structured assessment</li>
+        <li>Include patient’s own meds taken (e.g., sumatriptan)</li>
+      </ul>
+    </div>
+    <div class="bp-section">
+      <h4>Real-job translation</h4>
+      <p>A structured handover improves continuity of care and reduces rework in ED.</p>
+    </div>
+  </div>
+
+  <div class="card fade-section">
+    <h2>Debrief (10–15 minutes)</h2>
+
+    <h3>Reflective questions</h3>
+    <ol style="padding-left:1.4rem;">
+      <li style="margin-bottom:0.6rem;">What were your top 3 red flags to rule out and why?</li>
+      <li style="margin-bottom:0.6rem;">How did ROSIER/ACT and gait change your confidence in the working impression?</li>
+      <li style="margin-bottom:0.6rem;">What medication safety steps did you use for IV metoclopramide?</li>
+      <li style="margin-bottom:0.6rem;">How did you decide transport urgency?</li>
+      <li style="margin-bottom:0.6rem;">What would make you change pathway mid-transport?</li>
+    </ol>
+
+    <h3>Key takeaways</h3>
+    <div style="display:grid;grid-template-columns:1fr;gap:0.6rem;">
+      <div class="alert alert-yellow" style="margin:0;">
+        <strong>1) History is your most powerful tool.</strong>
+        Headache risk is determined by onset, associated features, and patient context — not by how “migraine-like” it looks.
+      </div>
+      <div class="alert alert-yellow" style="margin:0;">
+        <strong>2) Symptom relief does not equal benign cause.</strong>
+        Pain improvement after treatment is useful data, but it does not exclude serious pathology.
+      </div>
+      <div class="alert alert-yellow" style="margin:0;">
+        <strong>3) Red flags must be screened and documented every time.</strong>
+        Document positives and negatives (e.g., no neck stiffness, afebrile, no focal neuro).
+      </div>
+      <div class="alert alert-yellow" style="margin:0;">
+        <strong>4) Metoclopramide IV must be slow (≥ 3 minutes).</strong>
+        Use a timer. Monitor for dystonic/extrapyramidal reactions.
+      </div>
+      <div class="alert alert-yellow" style="margin:0;">
+        <strong>5) When in doubt — transport.</strong>
+        Particularly with thunderclap onset, neuro signs, systemic illness features, pregnancy, or atypical pattern.
+      </div>
+    </div>
+
+    <!-- INSERTED PODCAST UNDER KEY TAKEAWAYS -->
+    <h3 style="margin-top:1.2rem;">Protocol podcast review (audio)</h3>
+    <p style="font-size:0.92rem;color:var(--text-dim);margin-bottom:0.6rem;">
+      Short refresher covering primary vs secondary headache, mandatory red flags, neuro screening (ROSIER/ACT + gait), and the migraine pathway (metoclopramide slow push + fluids).
+    </p>
+
+    <div class="podcast-card">
+      <div class="podcast-meta-row">
+        <span class="podcast-badge">Audio</span>
+        <span class="podcast-info"><strong>Headache CPG-172-P</strong> — Quick Review (≈6 min)</span>
+      </div>
+
+      <audio controls preload="none" aria-label="Headache CPG-172-P quick review podcast">
+        <source src="https://cdn.simtheory.ai/video/upload/v1771076790/podcast_2567_1771076790_ande0y.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
+
+      <div class="podcast-caption">
+        Song ID: 76e6b956-954a-4f25-a729-61dabe777a4b
+      </div>
+    </div>
+  </div>
+
+  <div class="card fade-section">
+    <h2>Optional Scenario Variations</h2>
+
+    <div class="variation-card">
+      <h4>Variation 1 — Thunderclap headache (suspected SAH)</h4>
+      <p style="font-size:0.95rem;">Sudden-onset “worst headache” during exertion, peaks in seconds, neck stiffness and/or ALOC. Treat as time-critical and transport for urgent workup.</p>
+    </div>
+
+    <div class="variation-card">
+      <h4>Variation 2 — Headache with focal neurology (Stroke pathway)</h4>
+      <p style="font-size:0.95rem;">Any focal deficit or positive ROSIER/ACT: manage per Stroke protocol and transport to CSU/STS as indicated.</p>
+    </div>
+
+    <div class="variation-card">
+      <h4>Variation 3 — Pregnancy + severe headache (possible pre-eclampsia)</h4>
+      <p style="font-size:0.95rem;">Severe headache in pregnancy with/without hypertension: treat as high risk, escalate early, pre-notify, time-critical transport.</p>
+    </div>
+
+    <div class="variation-card">
+      <h4>Variation 4 — Fever, neck stiffness, rash (meningitis/meningococcal)</h4>
+      <p style="font-size:0.95rem;">Systemic illness features: manage per Sepsis pathway and treat as time-critical with early pre-notification.</p>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:2rem 0;color:var(--text-dim);font-size:0.8rem;border-top:1px solid var(--card-border);margin-top:2rem;">
+    <p>Paramedic Training Module — Headache Assessment &amp; Management (CPG-172-P)</p>
+    <p>For training use. Refer to current service protocols for clinical practice.</p>
+  </div>
+
+</div>
+
+<script>
+function toggleSection(btn){
+  const content = btn.nextElementSibling;
+  btn.classList.toggle('active');
+  content.classList.toggle('open');
+}
+
+document.querySelectorAll('.checklist li').forEach(item=>{
+  item.addEventListener('click',()=>item.classList.toggle('checked'));
+  item.style.cursor='pointer';
+});
+
+window.addEventListener('scroll',()=>{
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progressBar').style.width = progress + '%';
+});
+
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){ entry.target.classList.add('visible'); }
+  });
+},{ threshold: 0.08 });
+
+document.querySelectorAll('.fade-section').forEach(el=>observer.observe(el));
+</script>
+
+</body>
+</html>
