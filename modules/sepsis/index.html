@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="Sepsis — Volunteer AO Scenario | DSY Training">
+<meta property="og:description" content="Walk-through scenario for volunteer Ambulance Officers managing suspected sepsis. Covers NEWS2 Sepsis Screening, IM Ceftriaxone preparation for suspected meningococcal, EOC escalation, and ISBAR handover.">
+<meta property="og:type" content="website">
+<title>Sepsis &mdash; Volunteer AO Scenario | DSY Training</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:18px;scroll-behavior:smooth;}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#001a00;color:#c8e6c9;min-height:100vh;line-height:1.6;}
+
+.sticky-header{position:sticky;top:0;z-index:1000;background:linear-gradient(135deg,#001a00 0%,#002d00 50%,#001a00 100%);border-bottom:1px solid rgba(76,175,80,0.2);padding:0.6rem 1.2rem;display:flex;align-items:center;gap:1rem;}
+.sticky-header .back-btn{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#69f0ae;font-size:1.1rem;font-weight:700;text-decoration:none;transition:background 0.2s,border-color 0.2s,transform 0.2s;}
+.sticky-header .back-btn:hover{background:rgba(76,175,80,0.2);border-color:rgba(76,175,80,0.45);transform:scale(1.05);}
+.sticky-header .logo-frame{flex-shrink:0;width:60px;height:60px;overflow:hidden;border-radius:10px;}
+.sticky-header .logo-frame iframe{display:block;}
+.sticky-header .header-title{flex:1;font-size:1rem;font-weight:700;color:#e8f5e9;line-height:1.3;}
+.sticky-header .header-title span{color:#69f0ae;font-weight:400;font-size:0.8rem;display:block;}
+.progress-bar-track{position:absolute;bottom:0;left:0;width:100%;height:3px;background:rgba(76,175,80,0.1);}
+.progress-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#4caf50,#69f0ae);transition:width 0.15s ease-out;border-radius:0 2px 2px 0;}
+
+.hero{background:linear-gradient(135deg,#002200 0%,#003300 50%,#001a00 100%);padding:3rem 1.5rem 2.5rem;text-align:center;border-bottom:1px solid rgba(76,175,80,0.15);}
+.hero h1{font-size:1.8rem;font-weight:800;color:#e8f5e9;margin-bottom:0.5rem;}
+.hero h1 em{font-style:normal;color:#69f0ae;}
+.hero .subtitle{font-size:1rem;color:#a5d6a7;margin-bottom:1.5rem;}
+.hero-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:0.5rem;}
+.hero-badge{display:inline-block;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.badge-protocol{background:rgba(76,175,80,0.15);color:#69f0ae;border:1px solid rgba(76,175,80,0.3);}
+.badge-setting{background:rgba(156,39,176,0.15);color:#ce93d8;border:1px solid rgba(156,39,176,0.3);}
+.badge-crew{background:rgba(33,150,243,0.15);color:#90caf9;border:1px solid rgba(33,150,243,0.3);}
+.badge-time{background:rgba(255,193,7,0.15);color:#ffd54f;border:1px solid rgba(255,193,7,0.3);}
+
+main{max-width:900px;margin:0 auto;padding:2rem 1.2rem 4rem;}
+
+.section-block{background:#0d2b0d;border:1px solid #1a4d1a;border-radius:12px;padding:1.75rem;margin-bottom:1.5rem;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.section-block.visible{opacity:1;transform:translateY(0);}
+.section-block h2{font-size:1.25rem;font-weight:700;color:#e8f5e9;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #1a4d1a;}
+.section-block h3{font-size:1.05rem;font-weight:700;color:#a5d6a7;margin:1rem 0 0.5rem;}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{position:relative;padding:0.5rem 0 0.5rem 1.8rem;font-size:1rem;border-bottom:1px solid rgba(26,77,26,0.4);}
+.checklist li:last-child{border-bottom:none;}
+.checklist li::before{content:"\2610";position:absolute;left:0;top:0.5rem;font-size:1.1rem;color:#4caf50;}
+.checklist li.checked::before{content:"\2611";color:#69f0ae;}
+
+.key-point{background:rgba(255,193,7,0.08);border:1px solid rgba(255,193,7,0.25);border-left:4px solid #ffc107;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:1rem;}
+.key-point strong{color:#ffd54f;}
+
+.danger-box{background:rgba(239,83,80,0.08);border:1px solid rgba(239,83,80,0.25);border-left:4px solid #ef5350;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:1rem;}
+.danger-box strong{color:#ef5350;}
+
+.info-box{background:rgba(41,182,246,0.08);border:1px solid rgba(41,182,246,0.25);border-left:4px solid #29b6f6;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:1rem;}
+.info-box strong{color:#29b6f6;}
+
+.scope-box{background:rgba(239,83,80,0.12);border:2px solid rgba(239,83,80,0.4);border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:1rem;text-align:center;}
+.scope-box strong{color:#ef5350;font-size:1.05rem;}
+
+.toggle-section{margin:0.75rem 0;}
+.toggle-btn{width:100%;background:#0a1f0a;border:1px solid #1a4d1a;border-radius:8px;padding:1rem 1.25rem;color:#e8f5e9;font-size:1rem;font-weight:600;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background 0.2s,border-color 0.2s;}
+.toggle-btn:hover{background:#143314;border-color:#2e7d32;}
+.toggle-btn .arrow{transition:transform 0.3s ease;font-size:0.8rem;color:#4caf50;}
+.toggle-btn.open .arrow{transform:rotate(180deg);}
+.toggle-content{max-height:0;overflow:hidden;transition:max-height 0.4s ease;padding:0 1.25rem;}
+.toggle-content.open{max-height:5000px;padding:1rem 1.25rem;}
+
+.break-point{background:linear-gradient(135deg,rgba(255,193,7,0.1),rgba(255,152,0,0.05));border:2px solid rgba(255,193,7,0.3);border-radius:12px;padding:1.5rem;margin:1.5rem 0;}
+.break-point-label{display:inline-block;background:rgba(255,193,7,0.15);color:#ffd54f;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:0.3rem 0.75rem;border-radius:20px;margin-bottom:0.75rem;border:1px solid rgba(255,193,7,0.3);}
+.break-point h4{color:#ffd54f;font-size:1.05rem;margin-bottom:0.5rem;}
+.bp-grid{display:grid;grid-template-columns:1fr;gap:0.75rem;margin-top:0.75rem;}
+.bp-item{background:rgba(0,26,0,0.5);border:1px solid #1a4d1a;border-radius:8px;padding:1rem;}
+.bp-item-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;}
+.bp-item-label.type-discussion{color:#29b6f6;}
+.bp-item-label.type-skill{color:#69f0ae;}
+.bp-item-label.type-decision{color:#ffd54f;}
+.bp-item p,.bp-item ul{font-size:0.95rem;color:#a5d6a7;}
+.bp-item ul{padding-left:1.2rem;margin-top:0.3rem;}
+.bp-item ul li{margin-bottom:0.25rem;}
+
+.obs-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:0.95rem;}
+.obs-table th,.obs-table td{padding:0.6rem 0.8rem;text-align:left;border:1px solid #1a4d1a;}
+.obs-table th{background:#0a1f0a;color:#69f0ae;font-weight:700;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.5px;}
+.obs-table td{color:#c8e6c9;}
+.obs-table tr:nth-child(even){background:rgba(10,31,10,0.3);}
+
+.mdt-screen{background:#050d05;border:2px solid #1b5e20;border-radius:10px;padding:1.25rem;font-family:'Courier New',monospace;font-size:0.9rem;color:#69f0ae;margin:1rem 0;}
+.mdt-screen .mdt-header{color:#ffd54f;font-weight:700;margin-bottom:0.5rem;font-size:0.95rem;}
+.mdt-screen .mdt-line{margin-bottom:0.2rem;}
+.mdt-screen .mdt-label{color:#4caf50;}
+
+.skill-steps{counter-reset:step;list-style:none;padding:0;}
+.skill-steps li{position:relative;padding:0.75rem 0 0.75rem 3rem;font-size:1rem;border-bottom:1px solid rgba(26,77,26,0.3);counter-increment:step;}
+.skill-steps li:last-child{border-bottom:none;}
+.skill-steps li::before{content:counter(step);position:absolute;left:0;top:0.65rem;width:2rem;height:2rem;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;color:#69f0ae;}
+
+.debrief-q{background:#0a1f0a;border:1px solid #1a4d1a;border-radius:8px;padding:1rem;margin:0.5rem 0;font-size:1rem;}
+.debrief-q::before{content:"Q";display:inline-block;width:1.5rem;height:1.5rem;background:rgba(76,175,80,0.2);border-radius:50%;text-align:center;line-height:1.5rem;font-size:0.75rem;font-weight:800;color:#69f0ae;margin-right:0.75rem;}
+.take-home{background:rgba(105,240,174,0.06);border:1px solid rgba(105,240,174,0.2);border-left:4px solid #69f0ae;border-radius:8px;padding:0.75rem 1rem;margin:0.5rem 0;font-size:1rem;color:#c8e6c9;}
+
+.variation-card{background:#0a1f0a;border:1px solid #1a4d1a;border-radius:8px;padding:1.25rem;margin:0.75rem 0;}
+.variation-card h4{color:#69f0ae;font-size:1rem;margin-bottom:0.5rem;}
+.variation-card p{font-size:0.95rem;color:#a5d6a7;}
+
+footer{text-align:center;padding:2rem 1.2rem;border-top:1px solid #1a4d1a;font-size:0.8rem;color:#4a7c4a;}
+footer a{color:#69f0ae;text-decoration:none;}
+footer a:hover{text-decoration:underline;}
+
+@media(max-width:700px){
+.hero h1{font-size:1.4rem;}
+.sticky-header{padding:0.5rem 0.8rem;}
+.sticky-header .back-btn{width:30px;height:30px;font-size:0.9rem;}
+.sticky-header .logo-frame{width:44px;height:44px;}
+main{padding:1.5rem 0.8rem 3rem;}
+.section-block{padding:1.25rem;}
+.bp-grid{grid-template-columns:1fr;}
+}
+@media(min-width:600px){
+.bp-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+ <a href="https://cjmorgan69.github.io/DSY/" class="back-btn" title="Back to DSY Training">&larr;</a>
+ <div class="logo-frame">
+  <iframe src="https://simulationtheory.ai/64821e78-1f9b-4db1-8f38-6ad6ed4e6d1e" width="60" height="60" style="border:none;background:transparent;" allow="autoplay"></iframe>
+ </div>
+ <div class="header-title">Sepsis &mdash; Volunteer AO Scenario<span>SAAS Sepsis Protocol (CPP-062-AO) &mdash; AO Scope</span></div>
+ <div class="progress-bar-track"><div class="progress-bar-fill" id="progressBar"></div></div>
+</div>
+
+<div class="hero">
+ <h1>Sepsis &mdash; <em>Volunteer AO Scenario</em></h1>
+ <p class="subtitle">Walk-through scenario exercise with integrated break points for skills practice, clinical discussion, and operational decision-making.</p>
+ <div class="hero-meta">
+  <span class="hero-badge badge-protocol">SAAS Sepsis &mdash; AO (CPP-062-AO)</span>
+  <span class="hero-badge badge-setting">Pre-Hospital / Rural</span>
+  <span class="hero-badge badge-crew">2 x Vol AO</span>
+  <span class="hero-badge badge-time">~90 minutes</span>
+ </div>
+</div>
+
+<main>
+
+<!-- SECTION 1: Title & Context -->
+<div class="section-block" id="s1">
+ <h2>Title &amp; Context</h2>
+ <p>A 71-year-old male at a rural farmhouse has been unwell for two days with increasing confusion, fever, and reduced urine output. His wife calls when he becomes difficult to rouse and feels &ldquo;burning hot.&rdquo; A 2-person Volunteer AO crew responds from the local station.</p>
+ <div class="key-point"><strong>Source Protocol:</strong> SAAS Sepsis &mdash; AO Protocol (CPP-062-AO). NEWS2 Sepsis Scoring, EOC Clinician escalation, oxygen therapy, IM Ceftriaxone for suspected meningococcal, priority transport, and pre-notification.</div>
+ <div class="info-box"><strong>Setting:</strong> Thursday evening, 2115 hours, late autumn. Rural farmhouse 12 km north-east of Tumby Bay, SA. Nearest hospital: Tumby Bay Hospital (~15 min drive). Limited backup. EOC Clinician available by phone. Nearest MedSTAR retrieval: Port Lincoln (~45 min road).</div>
+</div>
+
+<!-- SECTION 2: Learning Objectives -->
+<div class="section-block" id="s2">
+ <h2>Learning Objectives</h2>
+ <p>On completion of this scenario walk-through, participants will be able to:</p>
+ <ul class="checklist">
+  <li>Recognise the signs and symptoms of sepsis in an adult patient</li>
+  <li>Apply the NEWS2 Sepsis Scoring Calculator in conjunction with the NEWS2 Adult Sepsis Screening Tool (CTL 062)</li>
+  <li>Differentiate between suspected sepsis (SBP &gt;100 mmHg) and suspected septic shock (SBP &le;100 mmHg)</li>
+  <li>Administer high-flow oxygen appropriately and identify when EOC consultation is required for chronic lung disease patients</li>
+  <li>Describe the indications, preparation, and administration of IM Ceftriaxone for suspected meningococcal septicaemia</li>
+  <li>Escalate to the EOC Clinician using structured communication</li>
+  <li>Prioritise extrication and transport &mdash; treatment should not delay transport</li>
+  <li>Deliver an ISBAR handover stating &ldquo;suspected sepsis&rdquo; or &ldquo;suspected septic shock&rdquo;</li>
+ </ul>
+</div>
+
+<!-- SECTION 3: Required Equipment -->
+<div class="section-block" id="s3">
+ <h2>Required Equipment</h2>
+ <h3>Clinical Equipment</h3>
+ <ul class="checklist">
+  <li>Ambulance Response Bag (Red and Blue Kit)</li>
+  <li>Corpuls3 monitor &mdash; SpO2, NIBP, HR, 4-lead ECG</li>
+  <li>Thermometer (tympanic)</li>
+  <li>BGL monitor and lancets</li>
+  <li>Stethoscope and manual BP cuff (backup for NIBP)</li>
+  <li>Pulse oximeter (finger probe)</li>
+  <li>NEWS2 Adult Sepsis Screening Tool (CTL 062) &mdash; printed or on ePCR</li>
+ </ul>
+ <h3>Airway &amp; Oxygen</h3>
+ <ul class="checklist">
+  <li>O2 cylinder and regulator</li>
+  <li>Non-rebreather mask (high-flow oxygen delivery)</li>
+  <li>Nasal cannula</li>
+  <li>BVM (adult) &mdash; available if required</li>
+  <li>OPA sizing set (00, 0, 1, 2)</li>
+  <li>Portable suction unit</li>
+ </ul>
+ <h3>Medications (for demonstration and discussion)</h3>
+ <ul class="checklist">
+  <li>Ceftriaxone 1 g vials (training stock or empty vials for demo)</li>
+  <li>Sodium chloride 0.9% ampoules (3.5 mL for dilution)</li>
+  <li>Water for injection ampoules</li>
+  <li>Appropriate needles: drawing-up needle and IM injection needle (21G, 38 mm)</li>
+  <li>5 mL syringes</li>
+  <li>Alcohol swabs</li>
+  <li>Sharps container</li>
+  <li>Paracetamol 500 mg tablets (for discussion of fever management)</li>
+ </ul>
+ <h3>Transport &amp; PPE</h3>
+ <ul class="checklist">
+  <li>Green carry chair</li>
+  <li>Stretcher with clean linen</li>
+  <li>Blankets (patient may be hypothermic or rigoring)</li>
+  <li>Gloves, eye protection, surgical mask (infection control)</li>
+  <li>ePCR tablet or paperwork</li>
+ </ul>
+</div>
+
+<!-- SECTION 4: Session Structure Overview -->
+<div class="section-block" id="s4">
+ <h2>Session Structure Overview</h2>
+ <table class="obs-table">
+  <thead><tr><th>Phase</th><th>Content</th><th>Time</th></tr></thead>
+  <tbody>
+   <tr><td>Pre-Brief</td><td>Protocol review, equipment check, role allocation</td><td>~10 min</td></tr>
+   <tr><td>Dispatch &amp; En Route</td><td>MDT review, planning, role confirmation</td><td>~5 min</td></tr>
+   <tr><td>On Arrival</td><td>Scene management, first impression</td><td>~5 min</td></tr>
+   <tr><td>Patient Contact</td><td>Primary survey, observations, history</td><td>~10 min</td></tr>
+   <tr><td>Clinical Decision</td><td>NEWS2 Sepsis Screening, working diagnosis, protocol selection</td><td>~10 min</td></tr>
+   <tr><td>Treatment</td><td>Oxygen therapy, EOC escalation, IM Ceftriaxone skill practice</td><td>~15 min</td></tr>
+   <tr><td>Reassessment</td><td>Post-treatment obs, escalation decision</td><td>~10 min</td></tr>
+   <tr><td>Extrication &amp; Transport</td><td>Carry chair, stretcher, monitoring en route</td><td>~10 min</td></tr>
+   <tr><td>Handover</td><td>ISBAR to receiving facility</td><td>~5 min</td></tr>
+   <tr><td>Debrief</td><td>Reflective questions, take-home messages</td><td>~10 min</td></tr>
+  </tbody>
+ </table>
+</div>
+
+<!-- SECTION 5: Pre-Brief -->
+<div class="section-block" id="s5">
+ <h2>Pre-Brief (~10 minutes)</h2>
+ <p>Review the following protocol content before commencing the scenario. Use the toggle sections below to expand each topic. Allocate crew roles: <strong>Clinician</strong> (patient contact, history, medications, EOC calls) and <strong>Driver</strong> (observations, Corpuls3, documentation, equipment preparation).</p>
+
+ <div class="scope-box"><strong>IV antibiotics, IV fluids, and vasopressors are NOT within Volunteer AO scope of practice.</strong><br>These interventions require paramedic or medical practitioner level care. The AO role is early recognition, basic care, oxygen, EOC escalation, IM Ceftriaxone (if directed for meningococcal), and rapid transport.</div>
+
+ <div class="toggle-section">
+  <button class="toggle-btn" onclick="toggleSection(this)">Sepsis &mdash; Principles and Recognition<span class="arrow">&#9660;</span></button>
+  <div class="toggle-content">
+   <p>Sepsis is a life-threatening condition that arises when the body&rsquo;s response to an infection damages its own tissues and organs. Early recognition and urgent treatment can save lives and prevent disability. Sepsis can be difficult to predict and diagnose.</p>
+   <div class="key-point"><strong>Signs of sepsis</strong> can include one or more of the following:
+    <ul style="margin-top:0.5rem;padding-left:1.2rem;">
+     <li>Fast breathing or breathlessness</li>
+     <li>Fever and chills</li>
+     <li>Low body temperature</li>
+     <li>Low or no urine output</li>
+     <li>Fast or slow heartbeat</li>
+     <li>Nausea and vomiting</li>
+     <li>Diarrhoea</li>
+     <li>Fatigue, confusion, or sleepiness</li>
+     <li>A lot of pain or &ldquo;feeling worse than ever&rdquo;</li>
+     <li>Headache</li>
+     <li>A new rash, discoloured or clammy sweaty skin</li>
+    </ul>
+   </div>
+   <p>Almost any type of infection can lead to sepsis, including infections of the lungs, abdomen, urinary tract, skin, or other parts of the body.</p>
+  </div>
+ </div>
+
+ <div class="toggle-section">
+  <button class="toggle-btn" onclick="toggleSection(this)">NEWS2 Sepsis Screening &amp; Scoring<span class="arrow">&#9660;</span></button>
+  <div class="toggle-content">
+   <p>The NEWS2 Sepsis Scoring Calculator in conjunction with the NEWS2 Adult Sepsis Screening Tool (CTL 062) is designed to assist clinicians in determining illness severity and support consistent clinical decision-making.</p>
+   <div class="key-point"><strong>Key principle:</strong> Treatment should take priority over sepsis screening in those patients with clearly apparent infection and hypotension (SBP &le;100 mmHg). Do not delay treatment to complete a screening tool.</div>
+   <p>Use the NEWS2 tool for all patients with a suspected infection. The score guides escalation and transport priority.</p>
+  </div>
+ </div>
+
+ <div class="toggle-section">
+  <button class="toggle-btn" onclick="toggleSection(this)">Sepsis Protocol Pathways &mdash; AO Scope<span class="arrow">&#9660;</span></button>
+  <div class="toggle-content">
+   <h3>Pathway 1: Suspected Sepsis &mdash; SBP &gt;100 mmHg</h3>
+   <ul class="checklist">
+    <li>Administer high-flow oxygen if SpO2 &lt;94%</li>
+    <li>If chronic lung disease &mdash; consult EOC Clinician immediately regarding oxygen</li>
+    <li>Priority transport to appropriate facility</li>
+    <li>Consult for ongoing management</li>
+    <li>Notify stating &ldquo;suspected sepsis&rdquo;</li>
+   </ul>
+   <h3>Pathway 2: Suspected Sepsis &mdash; SBP &le;100 mmHg (Septic Shock)</h3>
+   <ul class="checklist">
+    <li>Request early clinical support, stating &ldquo;suspected septic shock&rdquo;</li>
+    <li>Treatment should NOT delay extrication or transport</li>
+    <li>RV with clinical support en route if required</li>
+    <li>Administer high-flow oxygen</li>
+    <li>Priority transport to appropriate receiving facility</li>
+    <li>Notify stating &ldquo;suspected septic shock&rdquo;</li>
+   </ul>
+   <div class="danger-box"><strong>Septic Shock (SBP &le;100 mmHg):</strong> This is time-critical. Request early clinical support immediately. Do not delay extrication or transport for on-scene treatment. Rendezvous with clinical support en route if required.</div>
+  </div>
+ </div>
+
+ <div class="toggle-section">
+  <button class="toggle-btn" onclick="toggleSection(this)">Suspected Meningococcal &mdash; IM Ceftriaxone<span class="arrow">&#9660;</span></button>
+  <div class="toggle-content">
+   <p>Meningococcal disease is an acute bacterial infection that can cause death within hours. Early administration of antibiotic therapy has been associated with reduced mortality.</p>
+   <div class="danger-box"><strong>Meningococcal rash progression:</strong> Starts as a simple spot &rarr; red pin-prick spots (petechiae) &rarr; widespread purple bruise-like appearance (purpura). The rash is a <strong>late sign</strong>. Absence of a rash does NOT exclude meningococcal septicaemia.</div>
+   <div class="key-point"><strong>When to consider Ceftriaxone:</strong> If a patient presents febrile with an altered conscious state, with or without a petechial or purpuric rash &mdash; consult the EOC Clinician regarding the possibility of administering Ceftriaxone.</div>
+   <h3>IM Ceftriaxone &mdash; Preparation and Administration</h3>
+   <table class="obs-table">
+    <thead><tr><th>Parameter</th><th>Detail</th></tr></thead>
+    <tbody>
+     <tr><td>Indication</td><td>Suspected meningococcal septicaemia &mdash; EOC Clinician directed</td></tr>
+     <tr><td>Dose</td><td>50 mg/kg up to a single maximum dose of 2 g</td></tr>
+     <tr><td>Dilution</td><td>Each 1 g vial: dilute with 3.5 mL sodium chloride 0.9% to make 4 mL (250 mg/mL)</td></tr>
+     <tr><td>Max per site</td><td>Maximum 1 g (4 mL) per IM injection site</td></tr>
+     <tr><td>Route</td><td>Intramuscular &mdash; vastus lateralis (lateral thigh) or ventrogluteal</td></tr>
+     <tr><td>Contraindication</td><td>Known cephalosporin hypersensitivity or immediate/severe cephalosporin allergy &mdash; consult EOC for SAAS Medical Practitioner advice</td></tr>
+    </tbody>
+   </table>
+   <div class="info-box"><strong>Paediatric dose:</strong> 50 mg/kg IM (same formula). For a child, calculate weight-based dose. Example: 20 kg child = 1000 mg (1 g) = 4 mL from one reconstituted vial, single injection site.</div>
+  </div>
+ </div>
+
+ <div class="toggle-section">
+  <button class="toggle-btn" onclick="toggleSection(this)">Recognising Sepsis in Children<span class="arrow">&#9660;</span></button>
+  <div class="toggle-content">
+   <p>Clinical judgement is the best tool for early recognition of sepsis in children. The child with sepsis may be recognised by history or signs of infection, along with any of:</p>
+   <ul class="checklist">
+    <li>Fever &ge;38&deg;C or hypothermia &lt;36&deg;C</li>
+    <li>Altered conscious state</li>
+    <li>Marked or persistent tachycardia</li>
+    <li>Signs of toxicity: decreased alertness/arousal/activity, pale or mottled with cool peripheries, weak cry or grunting, rigors, bounding or weak pulses</li>
+    <li>Non-blanching rash</li>
+    <li>Hypotension</li>
+    <li>Unexplained generalised pain</li>
+   </ul>
+   <p>AND any of: ANY purple zone observation on RDR chart, two or more red zone observations, additional response criteria on RDR chart, or serious clinical concern.</p>
+   <h3>Paediatric Risk Factors</h3>
+   <ul class="checklist">
+    <li>Age &lt;3 months</li>
+    <li>Indwelling medical device</li>
+    <li>Unimmunised</li>
+    <li>Aboriginal or Torres Strait Islander</li>
+    <li>Immunocompromised</li>
+    <li>Chronic disease or congenital disorder</li>
+    <li>Recent trauma, surgery, invasive procedure, or wound</li>
+    <li>Known malignancy</li>
+   </ul>
+   <h3>Paediatric Assessment Triangle (PAT)</h3>
+   <p>A rapid primary survey tool using auditory and visual cues. Three components:</p>
+   <table class="obs-table">
+    <thead><tr><th>Component</th><th>What You Assess</th></tr></thead>
+    <tbody>
+     <tr><td>Appearance</td><td>Tone, interactiveness, consolability, look/gaze, speech/cry</td></tr>
+     <tr><td>Work of Breathing</td><td>Abnormal sounds (stridor, grunting, wheezing), abnormal positioning, retractions, nasal flaring</td></tr>
+     <tr><td>Circulation to Skin</td><td>Pallor, mottling, cyanosis</td></tr>
+    </tbody>
+   </table>
+  </div>
+ </div>
+
+ <div class="toggle-section">
+  <button class="toggle-btn" onclick="toggleSection(this)">Invasive Meningococcal Infection &mdash; Key Points<span class="arrow">&#9660;</span></button>
+  <div class="toggle-content">
+   <ul class="checklist">
+    <li>Meningococcal disease can cause death within hours if not recognised and treated</li>
+    <li>Rash starts as simple spots, progresses to petechiae, then purpura &mdash; rash is a LATE sign</li>
+    <li>Absence of rash does NOT exclude meningococcal septicaemia</li>
+    <li>Febrile + altered conscious state +/- petechial/purpuric rash = consult EOC re Ceftriaxone</li>
+    <li>If known cephalosporin allergy &mdash; consult EOC for SAAS Medical Practitioner advice (alternative antibiotic)</li>
+    <li>Early antibiotic therapy is associated with reduced mortality</li>
+   </ul>
+  </div>
+ </div>
+</div>
+
+<!-- SECTION 6: Dispatch & En Route -->
+<div class="section-block" id="s6">
+ <h2>Dispatch &amp; En Route Phase</h2>
+
+ <div class="mdt-screen">
+  <div class="mdt-header">&mdash;&mdash; MDT DISPATCH &mdash;&mdash;</div>
+  <div class="mdt-line"><span class="mdt-label">PRIORITY:</span> P1</div>
+  <div class="mdt-line"><span class="mdt-label">CASE:</span> 71M &mdash; Fever, confusion, difficulty rousing</div>
+  <div class="mdt-line"><span class="mdt-label">DETAILS:</span> Unwell 2 days. Fever, rigors, reduced urine output. Now difficult to rouse. Wife states &ldquo;burning hot and not making sense.&rdquo; No recent travel. Known UTIs.</div>
+  <div class="mdt-line"><span class="mdt-label">PMHx:</span> Type 2 Diabetes, Chronic Kidney Disease Stage 3, Benign Prostatic Hyperplasia, previous UTIs x 3 in past 12 months</div>
+  <div class="mdt-line"><span class="mdt-label">MEDS:</span> Metformin 1000mg BD, Gliclazide 60mg mane, Tamsulosin 0.4mg nocte, Aspirin 100mg mane</div>
+  <div class="mdt-line"><span class="mdt-label">ALLERGIES:</span> Nil known</div>
+  <div class="mdt-line"><span class="mdt-label">LOCATION:</span> 14 Boundary Rd, 12 km NE of Tumby Bay SA</div>
+  <div class="mdt-line"><span class="mdt-label">ACCESS:</span> Sealed road 8 km then 4 km unsealed. Property gate open. House visible from road.</div>
+  <div class="mdt-line"><span class="mdt-label">CALLER:</span> Jean Patterson (wife). Ph: 0438 XXX XXX</div>
+  <div class="mdt-line"><span class="mdt-label">TIME:</span> 2115 hrs &mdash; Thursday evening</div>
+ </div>
+
+ <div class="break-point">
+  <div class="break-point-label">Break Point 1</div>
+  <h4>En-Route Planning</h4>
+  <p><strong>Type:</strong> Discussion</p>
+  <div class="bp-grid">
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Facilitator Prompts</div>
+    <ul>
+     <li>What does this MDT tell you about the severity of this patient?</li>
+     <li>71-year-old male, fever, confusion, difficult to rouse &mdash; what conditions are you thinking about?</li>
+     <li>He has a history of recurrent UTIs and CKD &mdash; why is that significant?</li>
+     <li>What equipment do you want ready on arrival?</li>
+     <li>What are your crew roles for this job?</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-decision">Expected AO Reasoning</div>
+    <ul>
+     <li>P1 dispatch with altered consciousness = potentially time-critical</li>
+     <li>Fever + confusion + reduced urine output = sepsis until proven otherwise</li>
+     <li>Recurrent UTIs = likely infection source (urosepsis)</li>
+     <li>CKD Stage 3 = reduced renal reserve, higher sepsis risk, may deteriorate rapidly</li>
+     <li>Diabetes = immunocompromised, infection risk, BGL monitoring essential</li>
+     <li>Need Corpuls3, thermometer, BGL kit, oxygen, NEWS2 screening tool ready</li>
+     <li>Clinician takes patient contact and history; Driver sets up Corpuls3 and documents</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Key Teaching Points</div>
+    <ul>
+     <li>Sepsis can be subtle early &mdash; fever and confusion in an elderly patient with a known infection source should raise immediate suspicion</li>
+     <li>The MDT gives you critical information: PMHx, medications, and allergies &mdash; read it thoroughly en route</li>
+     <li>Recurrent UTIs in an elderly male with BPH is a classic sepsis source</li>
+     <li>Rural setting, 12 km out, unsealed road &mdash; factor in transport time and backup availability</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Real-Job Translation</div>
+    <p>On a real job, you read the MDT while the Driver starts the vehicle. The word &ldquo;difficult to rouse&rdquo; immediately elevates your concern. You discuss roles out loud. The Clinician mentally prepares for a potentially septic patient. The Driver confirms the route &mdash; 4 km of unsealed road means slower approach. Both crew members are thinking: this could be time-critical.</p>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- SECTION 7: On Arrival -->
+<div class="section-block" id="s7">
+ <h2>On Arrival &mdash; Scene Management</h2>
+ <p><strong>Scene:</strong> Single-storey stone farmhouse. Porch light on. Jean (wife, 68) meets you at the front door, distressed. &ldquo;He&rsquo;s in the bedroom. He was shivering so badly earlier and now he&rsquo;s just lying there. He doesn&rsquo;t know where he is. I can&rsquo;t get him to drink anything.&rdquo;</p>
+ <p>The house is warm. A fan heater is running in the bedroom. Robert (the patient) is lying on the bed in pyjamas, eyes closed, skin flushed and diaphoretic. He groans when you call his name but does not open his eyes spontaneously.</p>
+
+ <div class="break-point">
+  <div class="break-point-label">Break Point 2</div>
+  <h4>Doorway / First Impression</h4>
+  <p><strong>Type:</strong> Discussion</p>
+  <div class="bp-grid">
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Facilitator Prompts</div>
+    <ul>
+     <li>What is your first impression of this patient from the doorway?</li>
+     <li>He groans to voice but does not open his eyes spontaneously &mdash; what GCS component does that give you?</li>
+     <li>Is this patient time-critical based on what you can see right now?</li>
+     <li>What PPE considerations do you have for a febrile, potentially infectious patient?</li>
+     <li>The fan heater is running &mdash; does that matter?</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-decision">Expected AO Reasoning</div>
+    <ul>
+     <li>Patient is flushed, diaphoretic, reduced consciousness &mdash; this looks sick</li>
+     <li>Eye opening to voice = E3. Groaning = V2 (incomprehensible sounds). Need to assess motor response.</li>
+     <li>This patient is potentially time-critical &mdash; altered consciousness with suspected infection = sepsis</li>
+     <li>PPE: gloves, eye protection, surgical mask &mdash; unknown infection source, protect yourself</li>
+     <li>Fan heater may mask hypothermia or worsen hyperthermia &mdash; turn it off, get an accurate temperature</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Key Teaching Points</div>
+    <ul>
+     <li>First impression from the doorway: colour, consciousness, posture, breathing effort</li>
+     <li>A patient who groans to voice but does not open eyes spontaneously has significantly altered consciousness</li>
+     <li>PPE is essential &mdash; you do not yet know the infection source</li>
+     <li>Environmental factors (heater, blankets) can mask or worsen the clinical picture &mdash; control the environment</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Real-Job Translation</div>
+    <p>On a real job, your first 10 seconds at the bedroom door set your mental model. This patient looks sick. Flushed, sweating, reduced consciousness. Your internal alarm should be firing: &ldquo;This is sepsis until I prove otherwise.&rdquo; You don gloves and mask, introduce yourself to Jean, and move to the bedside. The Driver starts unpacking the Corpuls3 immediately.</p>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- SECTION 8: Patient Contact & Primary Survey -->
+<div class="section-block" id="s8">
+ <h2>Patient Contact &amp; Primary Survey</h2>
+ <p>Robert is lying supine on the bed. He opens his eyes to voice, makes incomprehensible sounds, and localises to pain (withdraws hand when you apply a trapezius squeeze). His skin is hot, flushed, and diaphoretic. Breathing is rapid and shallow.</p>
+
+ <h3>Clinician &mdash; History (from Jean, the wife)</h3>
+ <ul class="checklist">
+  <li><strong>Signs &amp; Symptoms:</strong> Unwell 2 days. Started with urinary frequency, burning, and lower abdominal discomfort (consistent with UTI). Developed fever and rigors yesterday. Today: increasing confusion, not eating or drinking, minimal urine output. Now difficult to rouse. Wife reports he &ldquo;feels like he is on fire.&rdquo; No cough, no chest pain, no diarrhoea, no rash noted.</li>
+  <li><strong>Allergies:</strong> Nil known</li>
+  <li><strong>Medications:</strong> Metformin 1000 mg BD, Gliclazide 60 mg mane, Tamsulosin 0.4 mg nocte, Aspirin 100 mg mane</li>
+  <li><strong>Past History:</strong> Type 2 Diabetes Mellitus, Chronic Kidney Disease Stage 3, Benign Prostatic Hyperplasia, recurrent UTIs (3 in past 12 months), no surgical history of note</li>
+  <li><strong>Last Oral Intake:</strong> Small amount of water yesterday evening. Has not eaten since yesterday lunch.</li>
+  <li><strong>Events:</strong> Urinary symptoms started 2 days ago. Did not see GP. Progressively worsened. Wife found him confused and difficult to rouse this evening.</li>
+ </ul>
+
+ <h3>Driver &mdash; Observations (Corpuls3 Setup)</h3>
+ <table class="obs-table">
+  <thead><tr><th>Parameter</th><th>Value</th><th>Notes</th></tr></thead>
+  <tbody>
+   <tr><td>Heart Rate</td><td>118 bpm</td><td>Sinus tachycardia on 4-lead ECG</td></tr>
+   <tr><td>Blood Pressure</td><td>92/58 mmHg</td><td>NIBP &mdash; confirm with manual BP. SBP &le;100 mmHg</td></tr>
+   <tr><td>SpO2</td><td>91% (room air)</td><td>Below 94% &mdash; oxygen required</td></tr>
+   <tr><td>Respiratory Rate</td><td>26/min</td><td>Manual count &mdash; tachypnoeic</td></tr>
+   <tr><td>Temperature</td><td>39.4&deg;C</td><td>Tympanic &mdash; febrile</td></tr>
+   <tr><td>BGL</td><td>14.2 mmol/L</td><td>Elevated &mdash; stress response / infection / diabetes</td></tr>
+   <tr><td>GCS</td><td>9 (E3 V2 M4)</td><td>Eyes to voice, incomprehensible sounds, withdraws to pain</td></tr>
+   <tr><td>4-Lead ECG</td><td>Sinus tachycardia 118 bpm</td><td>No acute ST changes</td></tr>
+   <tr><td>Skin</td><td>Hot, flushed, diaphoretic</td><td>Capillary refill 4 seconds</td></tr>
+   <tr><td>Pupils</td><td>Equal and reactive</td><td>PEARL &mdash; 3 mm bilaterally</td></tr>
+  </tbody>
+ </table>
+
+ <div class="danger-box"><strong>Critical findings:</strong> SBP 92 mmHg (&le;100), SpO2 91% (&lt;94%), GCS 9, Temp 39.4&deg;C, HR 118, RR 26. This patient meets criteria for <strong>suspected septic shock</strong>.</div>
+
+ <div class="break-point">
+  <div class="break-point-label">Break Point 3</div>
+  <h4>Initial Observations &amp; Corpuls3 Setup</h4>
+  <p><strong>Type:</strong> Discussion / Practical Skill</p>
+  <div class="bp-grid">
+   <div class="bp-item">
+    <div class="bp-item-label type-skill">Facilitator Prompts</div>
+    <ul>
+     <li>Walk through your Corpuls3 setup &mdash; what are you monitoring and why?</li>
+     <li>The BP reads 92/58 &mdash; what is the significance of SBP &le;100 mmHg in a patient with suspected infection?</li>
+     <li>SpO2 is 91% &mdash; what do you do immediately?</li>
+     <li>GCS is 9 &mdash; break that down for me. What does each component tell you?</li>
+     <li>BGL is 14.2 &mdash; is this expected? Does it change your management?</li>
+     <li>Why are you doing a manual BP as well as NIBP?</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-decision">Expected AO Reasoning</div>
+    <ul>
+     <li>Corpuls3: SpO2 probe, NIBP cuff, 4-lead ECG &mdash; standard monitoring plus manual RR count and manual BP confirmation</li>
+     <li>SBP &le;100 mmHg + suspected infection = <strong>suspected septic shock</strong> &mdash; this changes the protocol pathway</li>
+     <li>SpO2 91% = apply high-flow oxygen immediately via non-rebreather mask at 15 L/min</li>
+     <li>GCS 9: E3 (eyes to voice) + V2 (incomprehensible sounds) + M4 (withdrawal to pain) = significantly altered consciousness</li>
+     <li>BGL 14.2 is elevated but expected in a septic diabetic patient &mdash; stress response and infection drive hyperglycaemia. Not an immediate treatment priority but document and monitor</li>
+     <li>Manual BP confirms NIBP reading &mdash; essential when the reading drives a critical protocol decision</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Key Teaching Points</div>
+    <ul>
+     <li>SBP &le;100 mmHg is the critical threshold that separates &ldquo;suspected sepsis&rdquo; from &ldquo;suspected septic shock&rdquo;</li>
+     <li>Always confirm a critical BP reading with a manual check &mdash; NIBP can be unreliable</li>
+     <li>SpO2 &lt;94% triggers immediate high-flow oxygen &mdash; do not wait</li>
+     <li>GCS assessment must be systematic: Eyes, Verbal, Motor &mdash; document each component</li>
+     <li>Hyperglycaemia in sepsis is common and expected &mdash; it does not mean you treat the BGL, it confirms the stress response</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Real-Job Translation</div>
+    <p>On a real job, the Driver is setting up the Corpuls3 while the Clinician talks to Jean. The Driver calls out: &ldquo;BP 92 on 58, sats 91, rate 118.&rdquo; The Clinician hears those numbers and immediately thinks: hypotension plus infection equals septic shock. Oxygen goes on now. The EOC call happens within minutes. This is simultaneous, not sequential.</p>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- SECTION 9: Clinical Decision Point -->
+<div class="section-block" id="s9">
+ <h2>Clinical Decision Point</h2>
+ <p>You now have a clear clinical picture. Robert is a 71-year-old with a 2-day history of urinary symptoms progressing to fever, confusion, and haemodynamic compromise. He has multiple risk factors for sepsis (diabetes, CKD, recurrent UTIs, age).</p>
+
+ <h3>Working Diagnosis</h3>
+ <p><strong>Suspected urosepsis progressing to septic shock</strong> &mdash; supported by: urinary symptoms as infection source, fever 39.4&deg;C, altered consciousness (GCS 9), tachycardia (118), tachypnoea (26), hypotension (SBP 92), and hypoxia (SpO2 91%).</p>
+
+ <h3>NEWS2 Sepsis Screening</h3>
+ <div class="key-point"><strong>Protocol guidance:</strong> Treatment should take priority over sepsis screening in patients with clearly apparent infection and hypotension. Robert has clear infection signs AND SBP &le;100 mmHg. Begin treatment (oxygen, EOC call) immediately. Complete the NEWS2 screening tool to support your documentation and handover, but do not delay care to fill in a form.</div>
+
+ <h3>Protocol Pathway Selected</h3>
+ <div class="danger-box"><strong>Pathway 2: Suspected Sepsis with SBP &le;100 mmHg (Septic Shock)</strong>
+  <ul style="margin-top:0.5rem;padding-left:1.2rem;">
+   <li>Request early clinical support, stating &ldquo;suspected septic shock&rdquo;</li>
+   <li>Treatment should NOT delay extrication or transport</li>
+   <li>RV with clinical support en route if required</li>
+   <li>Administer high-flow oxygen</li>
+   <li>Priority transport to appropriate receiving facility</li>
+   <li>Notify stating &ldquo;suspected septic shock&rdquo;</li>
+  </ul>
+ </div>
+
+ <div class="break-point">
+  <div class="break-point-label">Break Point 4</div>
+  <h4>Screening Tools, Protocol &amp; Working Diagnosis</h4>
+  <p><strong>Type:</strong> Decision-Making</p>
+  <div class="bp-grid">
+   <div class="bp-item">
+    <div class="bp-item-label type-decision">Facilitator Prompts</div>
+    <ul>
+     <li>What is your working diagnosis and what evidence supports it?</li>
+     <li>Which protocol pathway are you following and why?</li>
+     <li>The protocol says treatment takes priority over screening when there is clear infection and hypotension &mdash; what does that mean practically?</li>
+     <li>What is the difference between &ldquo;suspected sepsis&rdquo; and &ldquo;suspected septic shock&rdquo;?</li>
+     <li>Is this patient time-critical? What does that change about your approach?</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-decision">Expected AO Reasoning</div>
+    <ul>
+     <li>Working diagnosis: urosepsis progressing to septic shock (UTI source, systemic inflammatory response, haemodynamic compromise)</li>
+     <li>Pathway 2: SBP &le;100 mmHg = suspected septic shock pathway</li>
+     <li>Practically: oxygen goes on first, EOC call happens now, NEWS2 form gets completed en route or after initial treatment &mdash; do not sit on scene filling in paperwork while the patient deteriorates</li>
+     <li>Suspected sepsis = SBP &gt;100 (infection + systemic signs). Suspected septic shock = SBP &le;100 (infection + organ hypoperfusion)</li>
+     <li>Time-critical = minimise scene time, prioritise extrication and transport, request clinical support early</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Key Teaching Points</div>
+    <ul>
+     <li>The SBP threshold of 100 mmHg is the key decision point that changes your entire management pathway</li>
+     <li>Hypotension + infection = time-critical until proven otherwise</li>
+     <li>NEWS2 screening supports documentation and handover but must not delay treatment in obvious septic shock</li>
+     <li>Early escalation to EOC Clinician is a protocol requirement, not optional</li>
+     <li>The words you use matter: &ldquo;suspected septic shock&rdquo; triggers a different response than &ldquo;suspected sepsis&rdquo;</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Real-Job Translation</div>
+    <p>On a real job, you do not need to complete every box on the NEWS2 form before you act. The clinical picture is clear: this man is septic and shocked. Oxygen on, EOC call made, start planning extrication. The paperwork supports your care &mdash; it does not drive it. Your clinical judgement drives it.</p>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- SECTION 10: Treatment Phase -->
+<div class="section-block" id="s10">
+ <h2>Treatment Phase &mdash; AO Protocol</h2>
+
+ <h3>Immediate Actions (Simultaneous)</h3>
+ <ul class="checklist">
+  <li><strong>High-flow oxygen:</strong> Non-rebreather mask at 15 L/min &mdash; SpO2 is 91%, target &ge;94%</li>
+  <li><strong>EOC Clinician call:</strong> Request early clinical support stating &ldquo;suspected septic shock&rdquo;</li>
+  <li><strong>Position:</strong> Maintain supine &mdash; do not sit patient up (hypotensive)</li>
+  <li><strong>Continue Corpuls3 monitoring:</strong> Continuous SpO2, repeat NIBP every 5 minutes</li>
+ </ul>
+
+ <h3>EOC Clinician Consultation</h3>
+ <div class="info-box"><strong>EOC Clinician call summary:</strong>
+ You report: 71M, 2-day history of UTI symptoms progressing to fever, confusion, and haemodynamic compromise. GCS 9, HR 118, BP 92/58, SpO2 91% (now on high-flow O2), RR 26, Temp 39.4, BGL 14.2. Known T2DM, CKD3, BPH, recurrent UTIs. No allergies. Suspected urosepsis with septic shock. Currently on scene, 15 min from Tumby Bay Hospital.<br><br>
+ <strong>EOC advises:</strong> Confirmed suspected septic shock pathway. Priority transport to Tumby Bay Hospital. Pre-notify hospital stating &ldquo;suspected septic shock.&rdquo; No meningococcal features identified &mdash; Ceftriaxone not indicated at this time. Maintain high-flow oxygen. Minimise scene time. MedSTAR retrieval team notified for potential secondary transfer from Tumby Bay to Port Lincoln or Adelaide. RV with backup not required &mdash; proceed direct.
+ </div>
+
+ <div class="scope-box"><strong>IV antibiotics, IV fluids, and vasopressors are NOT within Volunteer AO scope of practice.</strong><br>The hospital will initiate these interventions. Your role is recognition, oxygen, escalation, and rapid transport.</div>
+
+ <h3>Practical Skill &mdash; IM Ceftriaxone Preparation (Demonstration and Discussion)</h3>
+ <div class="key-point"><strong>Note:</strong> In this scenario, the EOC Clinician has NOT directed Ceftriaxone because there are no meningococcal features. However, this is the ideal time to practise the preparation and administration technique for when it IS indicated. Use training stock or empty vials for this demonstration.</div>
+
+ <p><strong>Indication for IM Ceftriaxone:</strong> Patient presents febrile with altered conscious state, WITH or WITHOUT petechial or purpuric rash, AND the EOC Clinician directs administration for suspected meningococcal septicaemia.</p>
+
+ <ol class="skill-steps">
+  <li><strong>Confirm EOC Clinician direction</strong> &mdash; Ceftriaxone is only administered on EOC Clinician instruction. Confirm: dose, any allergy concerns, and document the authorisation.</li>
+  <li><strong>Check for cephalosporin allergy</strong> &mdash; Ask the patient (or family): &ldquo;Are you allergic to any antibiotics, particularly cephalosporins or penicillin?&rdquo; If known cephalosporin hypersensitivity or immediate/severe allergy &mdash; do NOT administer. Consult EOC for SAAS Medical Practitioner advice for an alternative.</li>
+  <li><strong>Calculate the dose</strong> &mdash; 50 mg/kg up to a single maximum dose of 2 g. For Robert (estimated 85 kg): 50 x 85 = 4250 mg, capped at 2000 mg (2 g). Dose = 2 g.</li>
+  <li><strong>Prepare the medication</strong> &mdash; Take two 1 g vials of Ceftriaxone. For each vial: draw up 3.5 mL of sodium chloride 0.9% using a drawing-up needle and syringe. Inject the 3.5 mL into the Ceftriaxone vial. This makes 4 mL of solution at a concentration of 250 mg/mL.</li>
+  <li><strong>Reconstitute</strong> &mdash; Gently roll or swirl the vial until the powder is completely dissolved. Do NOT shake vigorously. The solution should be clear and pale yellow.</li>
+  <li><strong>Draw up the dose</strong> &mdash; Draw up 4 mL (1 g) from each reconstituted vial into separate syringes. You now have two syringes, each containing 1 g (4 mL).</li>
+  <li><strong>Select injection sites</strong> &mdash; Maximum 1 g (4 mL) per IM injection site. For a 2 g dose, you need TWO separate injection sites. Use the vastus lateralis (lateral thigh) or ventrogluteal site. One injection in each thigh, or one in each ventrogluteal site.</li>
+  <li><strong>Administer</strong> &mdash; Clean each site with an alcohol swab. Using a 21G 38 mm IM needle, insert at 90 degrees to the skin. Aspirate briefly. Inject slowly and steadily. Withdraw, apply pressure with gauze.</li>
+  <li><strong>Dispose and document</strong> &mdash; Dispose of sharps immediately into the sharps container. Document: drug name, dose (total and per site), time, route, sites used, EOC authorisation, and patient response.</li>
+ </ol>
+
+ <div class="danger-box"><strong>Critical safety points:</strong>
+  <ul style="margin-top:0.5rem;padding-left:1.2rem;">
+   <li>NEVER administer without EOC Clinician direction</li>
+   <li>ALWAYS check for cephalosporin allergy before preparation</li>
+   <li>Maximum 1 g (4 mL) per injection site &mdash; a 2 g dose requires TWO sites</li>
+   <li>Use sodium chloride 0.9% for dilution (NOT water for injection for IM route)</li>
+   <li>Reconstituted solution should be clear &mdash; do not use if cloudy or contains particles</li>
+  </ul>
+ </div>
+
+ <div class="break-point">
+  <div class="break-point-label">Break Point 5</div>
+  <h4>Treatment Initiation &amp; Medication Safety</h4>
+  <p><strong>Type:</strong> Practical Skill / Decision-Making</p>
+  <div class="bp-grid">
+   <div class="bp-item">
+    <div class="bp-item-label type-skill">Facilitator Prompts</div>
+    <ul>
+     <li>Walk me through applying high-flow oxygen &mdash; what device, what flow rate, what target?</li>
+     <li>What information are you giving the EOC Clinician on the phone? Structure it.</li>
+     <li>Now demonstrate the Ceftriaxone preparation &mdash; talk through each step as you do it</li>
+     <li>How do you calculate the dose for a 70 kg adult? For a 20 kg child?</li>
+     <li>You have two syringes of 4 mL each &mdash; where are you injecting and why two sites?</li>
+     <li>What if the patient tells you they are allergic to cephalosporins?</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-skill">Expected AO Reasoning</div>
+    <ul>
+     <li>Non-rebreather mask at 15 L/min &mdash; target SpO2 &ge;94%</li>
+     <li>EOC call: structured report including demographics, presentation, obs, suspected diagnosis, current treatment, and request for direction</li>
+     <li>Ceftriaxone: 50 mg/kg capped at 2 g. 70 kg = 3500 mg capped at 2 g. 20 kg child = 1000 mg (1 g)</li>
+     <li>Dilution: 3.5 mL NaCl 0.9% per 1 g vial = 4 mL at 250 mg/mL</li>
+     <li>Two sites because max 1 g (4 mL) per site &mdash; vastus lateralis or ventrogluteal</li>
+     <li>Cephalosporin allergy = do NOT give. Call EOC for SAAS Medical Practitioner advice for alternative</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Key Teaching Points</div>
+    <ul>
+     <li>Oxygen is your first and most important intervention in septic shock within AO scope</li>
+     <li>The EOC call must be early, structured, and use the words &ldquo;suspected septic shock&rdquo;</li>
+     <li>Ceftriaxone preparation is a multi-step skill &mdash; practise it so you are confident when directed</li>
+     <li>Dose calculation is weight-based with a cap &mdash; know the formula: 50 mg/kg up to 2 g</li>
+     <li>Two injection sites for a full adult dose is a common point of confusion &mdash; practise this</li>
+     <li>Allergy check is non-negotiable &mdash; cephalosporin allergy stops the process completely</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Real-Job Translation</div>
+    <p>On a real job where Ceftriaxone IS directed, the Driver prepares the medication while the Clinician manages the patient and maintains the EOC call. This is a team skill. The preparation takes 2&ndash;3 minutes if practised. On tonight&rsquo;s scenario, Ceftriaxone is not indicated (no meningococcal features), but the EOC call and oxygen are happening right now. The key message: do not delay transport for on-scene treatment that is beyond your scope.</p>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- SECTION 11: Reassessment & Escalation -->
+<div class="section-block" id="s11">
+ <h2>Reassessment &amp; Escalation</h2>
+
+ <h3>10-Minute Post-Treatment Observations</h3>
+ <table class="obs-table">
+  <thead><tr><th>Parameter</th><th>Initial (2130)</th><th>Post-O2 (2140)</th><th>Trend</th></tr></thead>
+  <tbody>
+   <tr><td>Heart Rate</td><td>118 bpm</td><td>122 bpm</td><td>Worsening &mdash; compensatory tachycardia</td></tr>
+   <tr><td>Blood Pressure</td><td>92/58</td><td>88/54</td><td>Worsening &mdash; progressive hypotension</td></tr>
+   <tr><td>SpO2</td><td>91% (RA)</td><td>96% (15L NRB)</td><td>Improved with oxygen</td></tr>
+   <tr><td>RR</td><td>26</td><td>28</td><td>Worsening &mdash; compensatory tachypnoea</td></tr>
+   <tr><td>Temp</td><td>39.4&deg;C</td><td>39.4&deg;C</td><td>Unchanged</td></tr>
+   <tr><td>BGL</td><td>14.2</td><td>14.0</td><td>Stable</td></tr>
+   <tr><td>GCS</td><td>9 (E3V2M4)</td><td>8 (E2V2M4)</td><td>Worsening &mdash; eyes now to pain only</td></tr>
+   <tr><td>Skin</td><td>Hot, flushed, diaphoretic</td><td>Hot, mottled peripheries appearing</td><td>Worsening &mdash; peripheral mottling = poor perfusion</td></tr>
+  </tbody>
+ </table>
+
+ <div class="danger-box"><strong>This patient is deteriorating.</strong> BP falling, GCS dropping, mottling appearing. SpO2 has improved with oxygen but the underlying septic shock is progressing. This reinforces the need for immediate extrication and transport. Treatment on scene will not reverse this &mdash; this patient needs IV antibiotics, fluids, and potentially vasopressors at hospital.</div>
+
+ <div class="break-point">
+  <div class="break-point-label">Break Point 6</div>
+  <h4>Reassessment &amp; Escalation Decision</h4>
+  <p><strong>Type:</strong> Decision-Making / Discussion</p>
+  <div class="bp-grid">
+   <div class="bp-item">
+    <div class="bp-item-label type-decision">Facilitator Prompts</div>
+    <ul>
+     <li>Compare the initial and reassessment observations &mdash; what trends do you see?</li>
+     <li>The BP has dropped from 92 to 88 &mdash; what does that tell you?</li>
+     <li>GCS has dropped from 9 to 8 &mdash; what is the clinical significance of GCS 8?</li>
+     <li>Mottling is appearing on the peripheries &mdash; what does this indicate?</li>
+     <li>What can you do on scene to change this patient&rsquo;s trajectory? What can&rsquo;t you do?</li>
+     <li>How does this change your transport urgency?</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-decision">Expected AO Reasoning</div>
+    <ul>
+     <li>Trends show deterioration: falling BP, rising HR, dropping GCS, mottling &mdash; septic shock is progressing</li>
+     <li>BP 88/54 confirms ongoing hypoperfusion &mdash; organs are not getting adequate blood flow</li>
+     <li>GCS 8 is the threshold for considering advanced airway management &mdash; at AO level, this means: position airway, suction if needed, OPA if tolerated, maintain oxygen, and prepare for potential further deterioration</li>
+     <li>Mottling = poor peripheral perfusion &mdash; a late sign of shock</li>
+     <li>On scene: oxygen (already on), positioning, monitoring. Cannot give: IV fluids, IV antibiotics, vasopressors &mdash; these require hospital</li>
+     <li>Transport urgency is maximum &mdash; load and go. Every minute on scene is a minute without definitive treatment</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Key Teaching Points</div>
+    <ul>
+     <li>Trends matter more than single numbers &mdash; a falling BP is more concerning than a single low reading</li>
+     <li>GCS 8 is a critical threshold &mdash; at AO level, focus on airway protection, positioning, and suction readiness</li>
+     <li>Mottling is a late sign of shock &mdash; if you see it, the patient is critically unwell</li>
+     <li>Recognise what you CAN do (oxygen, monitoring, transport) and what you CANNOT do (IV therapy) &mdash; this drives your decision to move</li>
+     <li>Early escalation saves lives &mdash; the EOC has already been notified, MedSTAR is aware</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Real-Job Translation</div>
+    <p>On a real job, this is the moment where you stop assessing and start moving. The patient is deteriorating and nothing you can do on scene will reverse it. Your value is in getting this patient to definitive care as quickly and safely as possible. Call the Driver: &ldquo;We need to move now.&rdquo; Update the EOC if the patient has deteriorated since your last call. Every minute counts.</p>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- SECTION 12: Extrication & Transport -->
+<div class="section-block" id="s12">
+ <h2>Extrication &amp; Transport</h2>
+ <p>Robert is deteriorating. The priority is rapid, safe extrication and transport to Tumby Bay Hospital (~15 min drive). The hospital has been pre-notified stating &ldquo;suspected septic shock.&rdquo;</p>
+
+ <h3>Extrication Plan</h3>
+ <ul class="checklist">
+  <li>Use the <strong>green carry chair</strong> to move Robert from the bedroom to the stretcher at the ambulance &mdash; he cannot walk (GCS 8, hypotensive)</li>
+  <li>Maintain oxygen via non-rebreather mask during transfer &mdash; do not disconnect</li>
+  <li>Two-person lift into carry chair &mdash; communicate clearly: &ldquo;On three, we lift&rdquo;</li>
+  <li>Jean (wife) to follow in her own vehicle or arrange transport &mdash; she cannot travel in the ambulance if the patient deteriorates and you need space to work</li>
+  <li>Secure on stretcher supine &mdash; do NOT elevate the head (hypotensive patient)</li>
+  <li>Continue Corpuls3 monitoring during transport &mdash; continuous SpO2, NIBP every 5 minutes</li>
+  <li>Have suction and OPA within arm&rsquo;s reach &mdash; GCS 8, airway compromise risk</li>
+  <li>Have BVM assembled and ready &mdash; if GCS drops further or RR becomes inadequate</li>
+  <li>Blanket over the patient &mdash; maintain warmth, prevent heat loss during transfer to vehicle</li>
+ </ul>
+
+ <h3>Transport Observations (En Route)</h3>
+ <table class="obs-table">
+  <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+  <tbody>
+   <tr><td>Heart Rate</td><td>124 bpm (sinus tachycardia)</td></tr>
+   <tr><td>Blood Pressure</td><td>86/52 mmHg</td></tr>
+   <tr><td>SpO2</td><td>95% (15L NRB)</td></tr>
+   <tr><td>RR</td><td>28/min</td></tr>
+   <tr><td>GCS</td><td>8 (E2V2M4)</td></tr>
+   <tr><td>BGL</td><td>13.8 mmol/L</td></tr>
+   <tr><td>Skin</td><td>Mottled, cool peripheries, hot centrally</td></tr>
+  </tbody>
+ </table>
+
+ <div class="key-point"><strong>En-route priorities:</strong> Maintain oxygen. Monitor airway (GCS 8 = at risk). Suction ready. Update EOC if further deterioration. Reassess every 5 minutes. Prepare ISBAR handover mentally. The Driver drives smoothly but with urgency &mdash; 4 km of unsealed road requires care.</div>
+
+ <div class="break-point">
+  <div class="break-point-label">Break Point 7</div>
+  <h4>Extrication &amp; Transport Planning</h4>
+  <p><strong>Type:</strong> Practical Skill / Discussion</p>
+  <div class="bp-grid">
+   <div class="bp-item">
+    <div class="bp-item-label type-skill">Facilitator Prompts</div>
+    <ul>
+     <li>How are you moving this patient from the bed to the ambulance?</li>
+     <li>Why supine and not sitting up?</li>
+     <li>GCS is 8 &mdash; what airway equipment must be within reach?</li>
+     <li>What are you monitoring en route and how often?</li>
+     <li>What would trigger you to call the EOC again during transport?</li>
+     <li>The road is unsealed for 4 km &mdash; how does that affect your driving and monitoring?</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-decision">Expected AO Reasoning</div>
+    <ul>
+     <li>Carry chair from bed to ambulance, then onto stretcher supine</li>
+     <li>Supine because hypotensive &mdash; sitting up would further reduce cerebral perfusion</li>
+     <li>GCS 8: suction unit on, OPA sized and ready, BVM assembled &mdash; airway compromise is the immediate risk</li>
+     <li>Obs every 5 minutes: SpO2 continuous, NIBP, GCS, RR</li>
+     <li>Call EOC again if: GCS drops below 8, BP drops further, SpO2 drops despite oxygen, airway compromise, cardiac arrest</li>
+     <li>Unsealed road: slower speed, more vibration (NIBP may be unreliable &mdash; use manual BP), secure all equipment</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Key Teaching Points</div>
+    <ul>
+     <li>Carry chair is the default patient movement tool &mdash; this patient cannot walk</li>
+     <li>Supine positioning in hypotension is critical &mdash; do not sit a shocked patient up</li>
+     <li>GCS 8 = airway at risk. Have suction, OPA, and BVM ready at all times</li>
+     <li>Unsealed roads affect monitoring accuracy and patient comfort &mdash; adapt your approach</li>
+     <li>Scene time should be minimal &mdash; the definitive treatment for septic shock is at hospital</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Real-Job Translation</div>
+    <p>On a real job, this extrication takes 3&ndash;5 minutes. You and your partner lift Robert into the carry chair, wheel him to the ambulance, transfer to the stretcher. Oxygen stays on. Corpuls3 stays connected. You are in the back monitoring while the Driver navigates 4 km of dirt road before hitting sealed road. You are watching the monitor, watching the patient&rsquo;s chest rise, and mentally preparing your handover. This is the sharp end of rural ambulance work.</p>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- SECTION 13: Handover -->
+<div class="section-block" id="s13">
+ <h2>Handover &mdash; ISBAR</h2>
+ <p>On arrival at Tumby Bay Hospital, deliver a structured ISBAR handover to the receiving nurse or medical officer. The hospital has been pre-notified stating &ldquo;suspected septic shock.&rdquo;</p>
+
+ <div class="mdt-screen" style="border-color:#29b6f6;">
+  <div class="mdt-header" style="color:#90caf9;">&mdash;&mdash; ISBAR HANDOVER &mdash;&mdash;</div>
+  <div class="mdt-line"><span class="mdt-label">I &mdash; Identify:</span> &ldquo;I&rsquo;m [name], Volunteer AO from Tumby Bay. This is Robert Patterson, 71 years old.&rdquo;</div>
+  <div class="mdt-line"><span class="mdt-label">S &mdash; Situation:</span> &ldquo;Robert has suspected septic shock secondary to urosepsis. He has been unwell for two days with urinary symptoms progressing to fever, confusion, and haemodynamic compromise. His wife called when he became unrousable this evening.&rdquo;</div>
+  <div class="mdt-line"><span class="mdt-label">B &mdash; Background:</span> &ldquo;He has Type 2 Diabetes on Metformin and Gliclazide, CKD Stage 3, BPH on Tamsulosin, and Aspirin 100 mg daily. He has had three UTIs in the past 12 months. No known allergies. Has not eaten since yesterday and minimal fluid intake.&rdquo;</div>
+  <div class="mdt-line"><span class="mdt-label">A &mdash; Assessment:</span> &ldquo;On our arrival at 2125, GCS was 9, HR 118, BP 92/58, SpO2 91% on room air, RR 26, Temp 39.4, BGL 14.2. We applied high-flow oxygen via non-rebreather at 15 litres &mdash; SpO2 improved to 96%. We contacted the EOC Clinician who confirmed suspected septic shock pathway. No meningococcal features identified. On reassessment, he deteriorated: GCS dropped to 8, BP fell to 86/52, mottling appeared on peripheries. Current obs en route: HR 124, BP 86/52, SpO2 95% on high-flow, GCS 8.&rdquo;</div>
+  <div class="mdt-line"><span class="mdt-label">R &mdash; Recommendation:</span> &ldquo;He needs urgent IV access, IV antibiotics, and fluid resuscitation. BGL is elevated at 13.8 but likely stress-related. MedSTAR has been notified by the EOC for potential retrieval. His airway is currently maintained but GCS is 8 &mdash; he may need advanced airway management if he deteriorates further.&rdquo;</div>
+ </div>
+
+ <div class="break-point">
+  <div class="break-point-label">Break Point 8</div>
+  <h4>ISBAR Handover</h4>
+  <p><strong>Type:</strong> Practical Skill</p>
+  <div class="bp-grid">
+   <div class="bp-item">
+    <div class="bp-item-label type-skill">Facilitator Prompts</div>
+    <ul>
+     <li>Deliver the ISBAR handover to the group as if to a receiving nurse or doctor</li>
+     <li>What specific words must you use when handing over this patient?</li>
+     <li>Why is mentioning the trend in observations important?</li>
+     <li>What recommendation are you making and why?</li>
+     <li>What happens if the receiving team asks you questions you cannot answer?</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-skill">Expected AO Reasoning</div>
+    <ul>
+     <li>Structured ISBAR covering all elements concisely &mdash; practise delivering it in under 90 seconds</li>
+     <li>Must use the words &ldquo;suspected septic shock&rdquo; &mdash; this triggers the hospital&rsquo;s sepsis pathway</li>
+     <li>Trends show deterioration (BP falling, GCS dropping) &mdash; this tells the receiving team the patient is getting worse, not stable</li>
+     <li>Recommendation: IV access, antibiotics, fluids, potential retrieval &mdash; shows you understand what the patient needs next</li>
+     <li>If asked something you cannot answer: &ldquo;I don&rsquo;t have that information, but the EOC Clinician was consulted at [time] and may have further details&rdquo;</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Key Teaching Points</div>
+    <ul>
+     <li>ISBAR is a framework &mdash; hit every letter but keep it concise</li>
+     <li>The words &ldquo;suspected septic shock&rdquo; are a trigger phrase &mdash; use them clearly</li>
+     <li>Include trends, not just current numbers &mdash; &ldquo;BP was 92, now 86&rdquo; tells a story</li>
+     <li>Your recommendation shows clinical reasoning &mdash; it is not overstepping your scope to say what the patient needs</li>
+     <li>Hand over the ePCR or paperwork. Confirm the handover is acknowledged before you leave</li>
+    </ul>
+   </div>
+   <div class="bp-item">
+    <div class="bp-item-label type-discussion">Real-Job Translation</div>
+    <p>On a real job, you deliver this handover at the hospital bed or resuscitation bay. The receiving team may already be preparing IV access and antibiotics based on your pre-notification. Your handover confirms what they are expecting and adds the detail they need. Be concise, be clear, and do not leave until the handover is acknowledged. Then complete your ePCR documentation.</p>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- SECTION 14: Debrief -->
+<div class="section-block" id="s14">
+ <h2>Debrief (10&ndash;15 minutes)</h2>
+ <p>Gather the crew and work through the following reflective questions. There are no wrong answers &mdash; the goal is to consolidate learning and identify areas for further practice.</p>
+
+ <h3>Reflective Questions</h3>
+ <div class="debrief-q">What were the key clinical findings that made you suspect sepsis? At what point did you identify this as septic shock rather than sepsis?</div>
+ <div class="debrief-q">How did you prioritise your actions on scene? What did you do first and why?</div>
+ <div class="debrief-q">The protocol says treatment should not delay extrication or transport in septic shock &mdash; how did that principle guide your decision-making?</div>
+ <div class="debrief-q">Walk through the NEWS2 Sepsis Screening process. When is it appropriate to complete the tool, and when should you act before completing it?</div>
+ <div class="debrief-q">How did you structure your EOC Clinician phone call? What information did you have ready? How could you improve it?</div>
+ <div class="debrief-q">Describe the Ceftriaxone preparation process. Even though it was not indicated in this scenario, how confident are you to prepare and administer it if directed?</div>
+ <div class="debrief-q">How did the Clinician and Driver roles work during this job? Was the division of tasks clear? What would you change?</div>
+
+ <h3>Take-Home Messages</h3>
+ <div class="take-home"><strong>1.</strong> Sepsis can be subtle early &mdash; fever and confusion in an elderly patient with a known infection source should trigger immediate suspicion.</div>
+ <div class="take-home"><strong>2.</strong> Hypotension + infection = time-critical. SBP &le;100 mmHg with suspected infection is septic shock until proven otherwise.</div>
+ <div class="take-home"><strong>3.</strong> Trends matter more than single numbers &mdash; a falling BP and dropping GCS tell you the patient is deteriorating, even if individual readings seem borderline.</div>
+ <div class="take-home"><strong>4.</strong> Early escalation saves lives &mdash; calling the EOC Clinician early and using the words &ldquo;suspected septic shock&rdquo; triggers the right response chain.</div>
+ <div class="take-home"><strong>5.</strong> Treatment should not delay transport in septic shock &mdash; oxygen on, EOC called, then move. The definitive treatment (IV antibiotics, fluids, vasopressors) is at hospital, not on scene.</div>
+ <div class="take-home"><strong>6.</strong> IM Ceftriaxone for suspected meningococcal is an EOC-directed skill &mdash; know the preparation, dose calculation, dilution, and injection technique so you are ready when directed.</div>
+ <div class="take-home"><strong>7.</strong> Team coordination and clear communication is essential &mdash; the Clinician and Driver must work simultaneously, not sequentially, to minimise scene time.</div>
+</div>
+
+<!-- SECTION 15: Optional Scenario Variations -->
+<div class="section-block" id="s15">
+ <h2>Optional Scenario Variations</h2>
+ <p>Use these variations to extend the session, increase complexity, or tailor to specific learning needs.</p>
+
+ <div class="variation-card">
+  <h4>Variation 1 &mdash; Suspected Meningococcal (Young Adult)</h4>
+  <p>Change the patient to a 19-year-old university student presenting with sudden onset fever, severe headache, neck stiffness, photophobia, and a rapidly spreading petechial rash on the trunk and limbs. GCS 12 and falling. The EOC Clinician directs IM Ceftriaxone administration. This variation activates the full Ceftriaxone preparation and administration skill. Calculate dose for a 75 kg patient (50 mg/kg = 3750 mg, capped at 2 g). Practise the two-site injection technique. Discuss the significance of the rash as a late sign and the urgency of antibiotic administration.</p>
+ </div>
+
+ <div class="variation-card">
+  <h4>Variation 2 &mdash; Paediatric Sepsis (3-Year-Old)</h4>
+  <p>Change the patient to a 3-year-old child with a 24-hour history of fever, irritability, and reduced oral intake. Now lethargic with mottled skin, weak cry, and tachycardia. Use the Paediatric Assessment Triangle: Appearance (lethargic, weak cry), Work of Breathing (grunting), Circulation to Skin (mottled, cool peripheries). Discuss paediatric sepsis recognition criteria, RDR chart observations, risk factors (age, immunisation status), and the differences in assessment approach. If meningococcal features present, calculate paediatric Ceftriaxone dose: 50 mg/kg for a 15 kg child = 750 mg IM (from one reconstituted vial, draw up 3 mL).</p>
+ </div>
+
+ <div class="variation-card">
+  <h4>Variation 3 &mdash; Sepsis with SBP &gt;100 mmHg (Non-Shock Pathway)</h4>
+  <p>Modify Robert&rsquo;s observations so that BP is 108/68 (SBP &gt;100 mmHg). This places the patient on the &ldquo;suspected sepsis&rdquo; pathway rather than &ldquo;suspected septic shock.&rdquo; The management changes: still priority transport and EOC consultation, but the urgency language changes to &ldquo;suspected sepsis&rdquo; rather than &ldquo;suspected septic shock.&rdquo; Discuss: what if the BP drops below 100 during transport? How does your pathway change mid-job? This variation reinforces the importance of the SBP threshold and ongoing reassessment.</p>
+ </div>
+
+ <div class="variation-card">
+  <h4>Variation 4 &mdash; Deterioration to Cardiac Arrest En Route</h4>
+  <p>During transport, Robert&rsquo;s GCS drops to 3, he becomes apnoeic, and the Corpuls3 shows PEA (pulseless electrical activity). The crew must now manage a cardiac arrest secondary to septic shock. Transition to the SAAS Cardiac Arrest (Adult) &mdash; AO protocol. Focus on: recognition of PEA arrest, high-quality CPR, AED analysis (non-shockable rhythm), airway management (OPA + BVM), and communication with EOC. Discuss reversible causes relevant to sepsis (hypovolaemia, hypoxia, hydrogen ions). This variation tests the crew&rsquo;s ability to transition from medical management to resuscitation under pressure.</p>
+ </div>
+</div>
+
+</main>
+
+<footer>
+ <p><strong>DSY Training</strong> &mdash; Pre-Hospital &amp; Rural Emergency Medicine Education</p>
+ <p>SAAS Sepsis &mdash; AO Protocol (CPP-062-AO) | Scenario Walk-Through</p>
+ <p style="margin-top:0.5rem;">&copy; 2026 DSY Production &middot; <a href="mailto:cjmorgan69@icloud.com">Contact</a></p>
+</footer>
+
+<script>
+function toggleSection(btn){
+ const content=btn.nextElementSibling;
+ btn.classList.toggle('open');
+ content.classList.toggle('open');
+}
+
+function updateProgress(){
+ const winScroll=document.documentElement.scrollTop||document.body.scrollTop;
+ const height=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+ const scrolled=height>0?(winScroll/height)*100:0;
+ document.getElementById('progressBar').style.width=scrolled+'%';
+}
+window.addEventListener('scroll',updateProgress);
+
+const observer=new IntersectionObserver((entries)=>{
+ entries.forEach(entry=>{
+  if(entry.isIntersecting){
+   entry.target.classList.add('visible');
+  }
+ });
+},{threshold:0.08});
+
+document.querySelectorAll('.section-block').forEach(el=>observer.observe(el));
+
+document.querySelectorAll('.checklist li').forEach(li=>{
+ li.style.cursor='pointer';
+ li.addEventListener('click',()=>li.classList.toggle('checked'));
+});
+</script>
+
+</body>
+</html>
