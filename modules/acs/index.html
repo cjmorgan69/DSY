@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACS in the Small Rural SA ED — Walk-Through Scenario</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:18px;scroll-behavior:smooth}
+body{font-family:'Segoe UI',Inter,system-ui,-apple-system,sans-serif;background:#080f1e;color:#d6e0f0;line-height:1.65;padding-bottom:4rem}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:#080f1e}
+::-webkit-scrollbar-thumb{background:#1a2d50;border-radius:4px}
+
+/* ===== STICKY HEADER ===== */
+.sticky-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:linear-gradient(135deg,#0b1a30 0%,#10243f 100%);border-bottom:1px solid #1a2d50;padding:0.35rem 1rem;display:flex;align-items:center;gap:0.8rem;box-shadow:0 4px 24px rgba(0,0,0,0.55)}
+.sticky-header iframe{flex-shrink:0;border-radius:8px}
+.hdr-text{flex:1;text-align:center}
+.hdr-text h1{font-size:1rem;color:#7db8f0;font-weight:700;letter-spacing:0.03em}
+.hdr-text p{font-size:0.7rem;color:#4a6a8a;margin-top:0.1rem}
+.prog-track{position:absolute;bottom:0;left:0;right:0;height:3px;background:#101c30}
+.prog-fill{height:100%;width:0%;background:linear-gradient(90deg,#2563eb,#60a5fa,#93c5fd);transition:width 0.3s;border-radius:0 2px 2px 0}
+
+/* ===== LAYOUT ===== */
+.wrap{max-width:870px;margin:0 auto;padding:7.2rem 1.2rem 2rem}
+.sec{opacity:0;transform:translateY(28px);transition:opacity 0.55s ease,transform 0.55s ease;margin-bottom:2rem}
+.sec.vis{opacity:1;transform:translateY(0)}
+
+/* ===== CARDS ===== */
+.c{background:linear-gradient(135deg,#0c1e38 0%,#10243f 100%);border:1px solid #1a2d50;border-radius:12px;padding:1.35rem;margin-bottom:1.15rem;box-shadow:0 4px 14px rgba(0,0,0,0.28)}
+.c-blue{border-left:4px solid #2563eb}
+.c-amber{border-left:4px solid #f59e0b;background:linear-gradient(135deg,#1a1a0f 0%,#10243f 100%)}
+.c-red{border-left:4px solid #ef4444;background:linear-gradient(135deg,#1a0f0f 0%,#10243f 100%)}
+.c-green{border-left:4px solid #10b981;background:linear-gradient(135deg,#0f1a15 0%,#10243f 100%)}
+.c-purple{border-left:4px solid #8b5cf6;background:linear-gradient(135deg,#130f1a 0%,#10243f 100%)}
+.c-sa{border-left:4px solid #60a5fa;background:linear-gradient(135deg,#0b1628 0%,#0f2040 100%)}
+
+/* ===== TYPOGRAPHY ===== */
+h2{font-size:1.3rem;color:#7db8f0;margin-bottom:1rem;font-weight:700;padding-bottom:0.45rem;border-bottom:2px solid #1a2d50}
+h3{font-size:1.08rem;color:#60a5fa;margin-bottom:0.65rem;font-weight:600}
+h4{font-size:0.98rem;color:#7db8f0;margin-bottom:0.45rem;font-weight:600}
+p{margin-bottom:0.75rem;font-size:1rem}
+.meta{font-size:0.76rem;color:#4a6a8a}
+.hl{color:#fbbf24;font-weight:600}
+.bl{color:#60a5fa;font-weight:600}
+.rd{color:#f87171;font-weight:600}
+.gn{color:#34d399;font-weight:600}
+ul,ol{margin:0.5rem 0 1rem 1.2rem;font-size:1rem}
+li{margin-bottom:0.35rem}
+li::marker{color:#2563eb}
+
+/* ===== CHECKLISTS ===== */
+.ck{list-style:none;margin-left:0;padding:0}
+.ck li{position:relative;padding:0.5rem 0 0.5rem 2rem;border-bottom:1px solid #141f35;cursor:pointer;transition:all 0.2s;min-height:44px;display:flex;align-items:center}
+.ck li:last-child{border-bottom:none}
+.ck li::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:20px;height:20px;border:2px solid #2563eb;border-radius:4px;transition:all 0.2s}
+.ck li.chk{color:#4a6a8a;text-decoration:line-through}
+.ck li.chk::before{background:#2563eb;border-color:#2563eb}
+.ck li.chk::after{content:'✓';position:absolute;left:3px;top:50%;transform:translateY(-50%);color:#080f1e;font-weight:700;font-size:0.8rem}
+
+/* ===== TOGGLES ===== */
+.tbtn{width:100%;text-align:left;background:linear-gradient(135deg,#10243f 0%,#162e52 100%);color:#7db8f0;border:1px solid #1a2d50;padding:0.85rem 1.1rem;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;min-height:52px;transition:all 0.25s;font-family:inherit;margin-bottom:0.3rem}
+.tbtn:hover,.tbtn:focus{background:linear-gradient(135deg,#162e52 0%,#1c3760 100%);border-color:#2563eb;outline:none}
+.tbtn .arr{transition:transform 0.3s;font-size:0.85rem;color:#60a5fa}
+.tbtn.on .arr{transform:rotate(180deg)}
+.tcnt{max-height:0;overflow:hidden;transition:max-height 0.4s ease;padding:0 0.4rem}
+.tcnt.open{max-height:12000px;padding:0.7rem 0.4rem 0.4rem}
+
+/* ===== BREAK POINTS ===== */
+.bp{background:linear-gradient(135deg,#132848 0%,#0b1e38 100%);border:2px solid #2563eb;border-radius:12px;padding:1.35rem;margin:1.7rem 0;position:relative;overflow:hidden}
+.bp::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#2563eb,#60a5fa,#2563eb)}
+.bp-lbl{display:inline-block;background:#2563eb;color:#080f1e;font-size:0.7rem;font-weight:700;padding:0.2rem 0.55rem;border-radius:4px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.6rem}
+.bp-type{display:inline-block;background:#141f35;color:#7db8f0;font-size:0.7rem;font-weight:600;padding:0.2rem 0.5rem;border-radius:4px;margin-left:0.4rem;margin-bottom:0.6rem}
+
+/* ===== SCENARIO BOX ===== */
+.sbox{background:linear-gradient(135deg,#0b1e38 0%,#0e2242 100%);border:1px solid #1a2d50;border-radius:12px;padding:1.3rem;margin:1rem 0;position:relative}
+.sbox::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,#2563eb,#1e90ff);border-radius:4px 0 0 4px}
+.sbox-lbl{display:inline-block;background:#1a2d50;color:#7db8f0;font-size:0.7rem;font-weight:700;padding:0.2rem 0.55rem;border-radius:4px;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.55rem}
+
+/* ===== VITALS ===== */
+.vg{display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:0.55rem;margin:0.7rem 0}
+.vi{background:#0b1628;border:1px solid #1a2d50;border-radius:8px;padding:0.55rem;text-align:center}
+.vi-l{font-size:0.7rem;color:#4a6a8a;text-transform:uppercase;letter-spacing:0.05em}
+.vi-v{font-size:1.12rem;color:#60a5fa;font-weight:700;margin-top:0.15rem}
+.vi.al{border-color:#f59e0b}.vi.al .vi-v{color:#fbbf24}
+.vi.cr{border-color:#ef4444}.vi.cr .vi-v{color:#f87171}
+
+/* ===== TABLE ===== */
+table{width:100%;border-collapse:collapse;margin:0.7rem 0;font-size:0.95rem}
+th,td{padding:0.55rem 0.7rem;text-align:left;border-bottom:1px solid #1a2d50}
+th{background:#0b1628;color:#7db8f0;font-weight:600;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em}
+tr:hover td{background:rgba(37,99,235,0.04)}
+
+/* ===== MEDICATION ===== */
+.med{background:#0b1628;border:1px solid #1a2d50;border-radius:10px;padding:1rem;margin:0.55rem 0}
+.med-n{font-size:1.02rem;color:#60a5fa;font-weight:700}
+.med-d{font-size:0.9rem;color:#8ba3c0;margin-top:0.3rem}
+.med-w{font-size:0.85rem;color:#fbbf24;margin-top:0.4rem;padding:0.4rem;background:rgba(251,191,36,0.07);border-radius:6px;border-left:3px solid #f59e0b}
+
+/* ===== KEY POINT ===== */
+.kp{background:rgba(37,99,235,0.07);border:1px solid #2563eb;border-radius:10px;padding:1rem;margin:0.7rem 0}
+.kp-l{font-size:0.7rem;color:#2563eb;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.35rem}
+
+/* ===== SA HEALTH BADGE ===== */
+.sa-badge{display:inline-flex;align-items:center;gap:0.35rem;background:linear-gradient(135deg,#1a2d50,#0f2040);border:1px solid #2563eb;border-radius:20px;padding:0.2rem 0.7rem;font-size:0.72rem;color:#60a5fa;font-weight:600;margin-bottom:0.5rem}
+.sa-badge::before{content:'SA';background:#2563eb;color:#080f1e;font-size:0.6rem;font-weight:800;padding:0.1rem 0.35rem;border-radius:3px}
+
+/* ===== QUIZ ===== */
+.qo{display:block;width:100%;text-align:left;background:#0b1628;border:1px solid #1a2d50;color:#d6e0f0;padding:0.75rem 1rem;border-radius:8px;margin:0.35rem 0;cursor:pointer;font-size:1rem;font-family:inherit;min-height:48px;transition:all 0.2s}
+.qo:hover{border-color:#2563eb;background:#10243f}
+.qo.ok{border-color:#10b981;background:rgba(16,185,129,0.1);color:#34d399}
+.qo.no{border-color:#ef4444;background:rgba(239,68,68,0.1);color:#f87171}
+.qfb{padding:0.7rem;border-radius:8px;margin-top:0.4rem;font-size:0.92rem;display:none}
+.qfb.sh{display:block}
+.qfb.okf{background:rgba(16,185,129,0.08);border:1px solid #10b981;color:#34d399}
+.qfb.nof{background:rgba(239,68,68,0.08);border:1px solid #ef4444;color:#f87171}
+
+/* ===== PILL TAGS ===== */
+.pills{display:flex;flex-wrap:wrap;gap:0.5rem;margin:0.7rem 0}
+.pill{background:#1a2d50;padding:0.22rem 0.65rem;border-radius:20px;font-size:0.76rem;color:#7db8f0}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:600px){
+html{font-size:16px}
+.wrap{padding:6.8rem 0.7rem 2rem}
+.sticky-header{padding:0.25rem 0.45rem;gap:0.35rem}
+.sticky-header iframe{width:55px!important;height:55px!important}
+.hdr-text h1{font-size:0.85rem}
+.vg{grid-template-columns:repeat(3,1fr)}
+.bp{padding:1rem}
+table{font-size:0.82rem}
+th,td{padding:0.35rem 0.45rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<header class="sticky-header">
+<iframe src="https://simulationtheory.ai/64821e78-1f9b-4db1-8f38-6ad6ed4e6d1e" width="75" height="75" style="border:none;background:transparent;" allow="autoplay" loading="lazy"></iframe>
+<div class="hdr-text">
+<h1>Acute Coronary Syndrome — Small Rural SA ED</h1>
+<p>Walk-Through Scenario &bull; SA Health Frameworks</p>
+</div>
+<div class="prog-track"><div class="prog-fill" id="progBar"></div></div>
+</header>
+
+<!-- ========== CONTENT ========== -->
+<div class="wrap">
+
+<!-- TITLE -->
+<div class="sec" id="s0">
+<div class="c c-blue">
+<h2>Acute Coronary Syndrome in the Small Rural South Australian Emergency Department</h2>
+<p><span class="hl">Walk-Through Scenario — Skills Practice and Discussion</span></p>
+<div class="pills">
+<span class="pill">Duration: 90 minutes</span>
+<span class="pill">Small Rural SA ED (MMM 5-6)</span>
+<span class="pill">1 MO + 1 TN + 1 BN</span>
+<span class="pill">SA Health Frameworks</span>
+</div>
+<div class="c c-amber" style="margin-top:1rem;margin-bottom:0">
+<h4>Protocols and Guidelines Referenced</h4>
+<ul style="margin-bottom:0">
+<li>NHFA / CSANZ Australian Clinical Guidelines for ACS (2025) — ACOMI paradigm</li>
+<li>SA Health Standing Medication Orders (SMOs) — Aspirin, GTN</li>
+<li>SA Health Nurse/Midwife Initiated Medicines (NMIM) Clinical Guideline</li>
+<li>SA Health iCCnet / iCARnet Chest Pain Clinical Pathway</li>
+<li>SA Health Rapid Detection and Response (RDR) Observation Charts</li>
+<li>HIRAID Emergency Nursing Assessment Framework</li>
+<li>Australasian Triage Scale (ATS) — ACEM / CENA</li>
+<li>MedSTAR Emergency Medical Retrieval Service</li>
+<li>ISBAR Clinical Handover (SA Health)</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- SA FRAMEWORKS QUICK REFERENCE -->
+<div class="sec" id="s-sa">
+<h2>SA Health Frameworks — Quick Reference</h2>
+<button class="tbtn" onclick="tog('sa-ref')">SA-Specific Terminology and Contacts for This Scenario <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="sa-ref">
+<div class="c c-sa">
+<h4>Key SA Health Terms (replacing NSW equivalents)</h4>
+<table>
+<thead><tr><th>NSW Term</th><th>SA Health Equivalent</th><th>Function</th></tr></thead>
+<tbody>
+<tr><td>ECAT Protocols</td><td><span class="bl">Standing Medication Orders (SMOs)</span> + NMIM</td><td>Authorise nurses to administer specified medications (aspirin, GTN) without a prescription in defined circumstances</td></tr>
+<tr><td>Between the Flags / CERS</td><td><span class="bl">Rapid Detection and Response (RDR)</span></td><td>Standardised observation charts with colour-coded escalation zones for clinical deterioration</td></tr>
+<tr><td>Clinical Emergency Response</td><td><span class="bl">Medical Emergency Response (MER) / Code Blue</span></td><td>Escalation pathway when deterioration is detected</td></tr>
+<tr><td>NSW ACI Pathway</td><td><span class="bl">iCCnet / iCARnet Chest Pain Pathway</span></td><td>SA integrated cardiovascular clinical pathway for chest pain and ACS in rural settings</td></tr>
+<tr><td>ECG Transmission</td><td><span class="bl">iPOCCS / MUSE via SA Health network</span></td><td>ECG upload and remote interpretation system</td></tr>
+<tr><td>Retrieval Service</td><td><span class="bl">MedSTAR — 13 78 27</span></td><td>24/7 emergency medical retrieval, clinical advice, and coordination</td></tr>
+<tr><td>Cardiac Network</td><td><span class="bl">iCARnet — 08 8378 1133</span></td><td>24/7 cardiologist paging service with agreed response times</td></tr>
+<tr><td>Point-of-care Troponin</td><td><span class="bl">RTropT (Rapid Troponin T)</span> via iCCnet PoCT</td><td>Point-of-care troponin testing supported by iCCnet in rural sites</td></tr>
+</tbody>
+</table>
+</div>
+<div class="c">
+<h4>Critical Contact Numbers</h4>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+<div class="med"><div class="med-n">MedSTAR Retrieval</div><div class="med-d">13 78 27 (24/7)</div></div>
+<div class="med"><div class="med-n">iCARnet Cardiology</div><div class="med-d">08 8378 1133 (24/7)</div></div>
+</div>
+<p class="meta" style="margin-top:0.5rem">For STEMI: Contact iCARnet / MedSTAR for a conference call. Both numbers should be on speed dial in every rural SA ED.</p>
+</div>
+</div>
+</div>
+
+<!-- LEARNING OBJECTIVES -->
+<div class="sec" id="s1">
+<h2>Learning Objectives</h2>
+<div class="c">
+<p>On completion, participants will be able to:</p>
+<ul class="ck" id="obj">
+<li>Allocate ATS Category 2 for suspected ACS and articulate the rationale</li>
+<li>Initiate care under SA Health Standing Medication Orders (aspirin, GTN) before MO review</li>
+<li>Perform a structured HIRAID assessment identifying cardiac red flags</li>
+<li>Obtain a 12-lead ECG within 10 minutes and upload to iPOCCS/MUSE</li>
+<li>Administer aspirin 300mg and GTN per SMO, applying medication safety checks</li>
+<li>Recognise STEMI (ACOMI) criteria and initiate time-critical escalation via iCARnet / MedSTAR</li>
+<li>Use SA Health RDR observation charts to detect and escalate deterioration</li>
+<li>Deliver a structured ISBAR handover to the retrieval team</li>
+</ul>
+</div>
+</div>
+
+<!-- EQUIPMENT -->
+<div class="sec" id="s2">
+<h2>Required Equipment</h2>
+<button class="tbtn" onclick="tog('eq')">Equipment Checklist <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="eq">
+<div class="c">
+<h4>Monitoring and Assessment</h4>
+<ul class="ck" id="eq1"><li>Defibrillator/monitor with 12-lead ECG and iPOCCS/MUSE upload</li><li>Continuous cardiac monitoring leads</li><li>Pulse oximeter</li><li>NIBP cuff (auto and manual)</li><li>Thermometer</li><li>BGL monitor</li><li>Stethoscope</li><li>SA Health RDR Observation Chart (adult)</li></ul>
+</div>
+<div class="c">
+<h4>Investigations</h4>
+<ul class="ck" id="eq2"><li>Point-of-care RTropT (iCCnet PoCT if available)</li><li>Pathology collection: FBE, EUC, LFT, GLU, INR, Troponin (send-away)</li><li>12-lead ECG paper + iPOCCS/MUSE transmission</li><li>Chest X-ray (if radiographer available / nurse-initiated X-ray credentialed)</li></ul>
+</div>
+<div class="c">
+<h4>Medications</h4>
+<ul class="ck" id="eq3"><li>Aspirin 300mg — non-enteric-coated, chewable (SMO)</li><li>GTN spray 400mcg/dose — Nitrolingual Pump Spray (SMO)</li><li>IV access equipment (cannulae, giving sets, 0.9% NaCl flush)</li><li>Normal saline 1000mL bags</li><li>Morphine 10mg/1mL ampoules (MO order)</li><li>Metoclopramide 10mg ampoules (MO order)</li><li>Enoxaparin pre-filled syringes (MO order)</li><li>Tenecteplase — if thrombolysis-capable site (MO + MedSTAR/iCARnet decision)</li><li>Oxygen — nasal cannula, Hudson mask, non-rebreather</li><li>Resuscitation trolley</li></ul>
+</div>
+<div class="c">
+<h4>Documentation and Communication</h4>
+<ul class="ck" id="eq4"><li>SA Health SMO documentation / SMO protocol folder</li><li>iCCnet Chest Pain Pathway flowchart (if available)</li><li>ISBAR handover proforma (SA Health)</li><li>iPOCCS/MUSE ECG upload access</li><li>MedSTAR contact: 13 78 27</li><li>iCARnet contact: 08 8378 1133</li></ul>
+</div>
+</div>
+</div>
+
+<!-- SESSION OVERVIEW -->
+<div class="sec" id="s3">
+<h2>Session Structure Overview</h2>
+<button class="tbtn" onclick="tog('ov')">Session Timeline <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="ov">
+<div class="c"><table>
+<thead><tr><th>Phase</th><th>Time</th><th>Focus</th></tr></thead>
+<tbody>
+<tr><td>Pre-Brief</td><td>10 min</td><td>Roles, SA frameworks, expectations</td></tr>
+<tr><td>Presentation and Triage</td><td>10 min</td><td>Patient arrival, ATS, SMO activation</td></tr>
+<tr><td>HIRAID Assessment</td><td>15 min</td><td>Nursing assessment, red flags, ECG, iPOCCS upload, ISBAR to MO</td></tr>
+<tr><td>MO Review and Diagnosis</td><td>10 min</td><td>Examination, ECG interpretation, iCARnet/MedSTAR call</td></tr>
+<tr><td>Treatment Phase</td><td>15 min</td><td>Medications, skills practice, RDR charting</td></tr>
+<tr><td>Escalation and Transfer</td><td>10 min</td><td>MedSTAR retrieval, packaging, pre-notification</td></tr>
+<tr><td>ISBAR Handover</td><td>5 min</td><td>Structured handover practice</td></tr>
+<tr><td>Debrief</td><td>15 min</td><td>Reflection, take-home messages</td></tr>
+</tbody></table></div>
+</div>
+</div>
+
+<!-- PRE-BRIEF -->
+<div class="sec" id="s4">
+<h2>Pre-Brief</h2>
+<div class="c">
+<h4>Facilitator — Set the Scene (10 minutes)</h4>
+<p>This is a walk-through scenario. We pause at break points for discussion, skill practice, and reflection. The goal is to rehearse real clinical workflow in a small South Australian rural ED.</p>
+<h4>Assign Roles</h4>
+<ul>
+<li><span class="bl">Triage Nurse (TN):</span> Receives patient. Allocates ATS. Initiates SMO medications (aspirin, GTN). First observations. Documents on RDR chart.</li>
+<li><span class="bl">Bedside Nurse (BN):</span> HIRAID assessment. 12-lead ECG acquisition and iPOCCS/MUSE upload. Medication administration. Ongoing monitoring. ISBAR to MO.</li>
+<li><span class="bl">Medical Officer (MO):</span> Medical review. ECG interpretation. Diagnosis. iCARnet/MedSTAR contact. Thrombolysis decision. Disposition.</li>
+</ul>
+<div class="kp">
+<div class="kp-l">SA Context</div>
+<p style="margin-bottom:0">In a small SA rural ED, the MO may be on-call from home (20 minutes away) or managing another patient. SA Health Standing Medication Orders authorise nursing staff to administer aspirin and GTN for suspected cardiac chest pain <strong>without waiting for a prescription</strong>. This is not optional — this is what keeps the patient alive while the MO is en route.</p>
+</div>
+<h4>SA Frameworks Orientation</h4>
+<ul>
+<li><span class="bl">SMOs:</span> Aspirin 300mg chewed + GTN 400mcg SL — nurse-initiated for suspected cardiac chest pain</li>
+<li><span class="bl">iCCnet Pathway:</span> 12-lead ECG within 10 minutes, interpreted by MO or transmitted for remote cardiology review via iPOCCS/MUSE</li>
+<li><span class="bl">RDR Chart:</span> All observations plotted on SA Health RDR observation chart — colour-coded escalation zones</li>
+<li><span class="bl">MedSTAR:</span> 13 78 27 — call early for any STEMI or haemodynamically unstable ACS</li>
+</ul>
+</div>
+</div>
+
+<!-- PRESENTATION PHASE -->
+<div class="sec" id="s5">
+<h2>Presentation Phase — How the Patient Arrives</h2>
+
+<div class="sbox">
+<div class="sbox-lbl">Scenario — Read to Participants</div>
+<p>It is 1845 on a Tuesday evening in late autumn. You are working the evening shift at a small rural SA hospital — approximately 55 minutes by road from the nearest regional hospital with a cardiac catheterisation laboratory.</p>
+<p>The MO has just stepped out to the doctors' quarters to make a phone call. The triage nurse is at the desk. The bedside nurse is restocking the resuscitation bay.</p>
+<p>A dusty ute pulls into the ambulance bay. A woman rushes in:</p>
+<p style="font-style:italic;color:#7db8f0;padding:0.5rem;border-left:3px solid #2563eb;margin:0.5rem 0">"My husband — he's got terrible chest pain. It started about 45 minutes ago loading hay bales. He's still in the car. He doesn't look right."</p>
+</div>
+
+<div class="sbox">
+<div class="sbox-lbl">Triage Vignette</div>
+<p>The triage nurse goes to the car. <span class="hl">Graham</span>, 58, farmer, is pale, diaphoretic, gripping his sternum. Speaking in short sentences.</p>
+<ul>
+<li>Alert, orientated, GCS 15</li>
+<li>"Crushing" central chest pain, 9/10, left arm and jaw radiation</li>
+<li>Onset ~45 minutes ago during exertion</li>
+<li>Associated nausea, diaphoresis</li>
+<li>No relief with rest</li>
+<li>"Takes blood pressure and cholesterol tablets"</li>
+</ul>
+</div>
+
+<!-- BP 1 -->
+<div class="bp">
+<span class="bp-lbl">Break Point 1</span><span class="bp-type">Decision-Making</span>
+<h3>Triage and ATS Allocation</h3>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>What ATS category? Rationale?</li>
+<li>Waiting room, acute bed, or resus bay?</li>
+<li>What SA Health Standing Medication Orders are you activating?</li>
+<li>What does the triage nurse initiate <em>before</em> the MO is even aware?</li>
+<li>The MO is in the doctors' quarters. Do you call them back now?</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<div class="c c-green" style="margin-top:0.5rem">
+<ul style="margin-bottom:0">
+<li><span class="gn">ATS Category 2</span> — all chest pain suggestive of ACS = mandatory ATS 2 (medical assessment within 10 minutes)</li>
+<li><span class="gn">Location:</span> Direct to resus bay — not the waiting room. Monitored bed. Defibrillator nearby.</li>
+<li><span class="gn">SMO Activation:</span> Aspirin 300mg chewed + GTN 400mcg SL (after checking SBP &gt;100, HR 60–120, no PDE-5 inhibitors)</li>
+<li><span class="gn">Call the MO:</span> Yes — brief direct message: "58M, crushing chest pain, diaphoretic, going to resus, SMO activated. Need you back now."</li>
+</ul>
+</div>
+<h4>Key Teaching Points</h4>
+<div class="kp"><ul style="margin-bottom:0">
+<li>SA Health SMOs are the mechanism that bridges the gap when the MO is unavailable — they exist for exactly this situation</li>
+<li>The 10-minute ECG target starts at first clinical contact (triage), not when the patient reaches a bed</li>
+<li>ATS 2 drives urgency — it means "this patient needs a doctor within 10 minutes"</li>
+<li>Get the patient horizontal, monitored, with a defibrillator in the room. This patient is at risk of VF arrest.</li>
+</ul></div>
+<h4>Real-Shift Translation</h4>
+<p>At 1845, the MO might be in the quarters, on the phone, or finishing a discharge letter. The triage nurse's confidence to activate SMOs and initiate care is what buys the 10 minutes until the MO arrives at bedside. That is the whole point of Standing Medication Orders.</p>
+</div>
+</div>
+
+<!-- INITIAL NURSING -->
+<div class="sec" id="s6">
+<h2>Triage and Initial Nursing Assessment</h2>
+<div class="c">
+<h4>Triage Nurse Actions (Minutes 0–5)</h4>
+<ul class="ck" id="tn1">
+<li>Allocate ATS Category 2 — document rationale</li>
+<li>Activate SMO: Aspirin 300mg and GTN 400mcg SL</li>
+<li>Minimise patient exertion — wheelchair or ED trolley to resus bay</li>
+<li>Commence RDR observation chart — first set of obs</li>
+<li>Brief verbal handover to bedside nurse</li>
+<li>Notify MO — direct, brief communication</li>
+<li>Return to triage or assist in resus</li>
+</ul>
+</div>
+
+<!-- BP 2 -->
+<div class="bp">
+<span class="bp-lbl">Break Point 2</span><span class="bp-type">Discussion</span>
+<h3>First Impression and Acuity Recognition</h3>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>What was your gut feeling when you first saw Graham in the car?</li>
+<li>What visual cues indicate high acuity before you even touch him?</li>
+<li>Does the HIRAID assessment proceed while the MO is being called back?</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<div class="c c-green" style="margin-top:0.5rem"><ul style="margin-bottom:0">
+<li><span class="gn">General appearance:</span> Pale, diaphoretic, clutching chest = acute cardiac event until proven otherwise</li>
+<li><span class="gn">Circulation to skin:</span> Pale and sweaty = sympathetic response — pain, fear, or haemodynamic compromise</li>
+<li><span class="gn">Decision:</span> HIRAID assessment proceeds immediately. Do not wait for the MO to start nursing assessment and SMO medications.</li>
+</ul></div>
+<h4>Key Teaching Points</h4>
+<div class="kp"><ul style="margin-bottom:0">
+<li>The 5-second doorway assessment sets your urgency. Diaphoresis + chest pain = ACS until proven otherwise.</li>
+<li>In a 3-person SA rural ED, parallel processing is essential — the nurse assesses and treats while the MO is notified and attends</li>
+<li>Trust your clinical instinct, then use HIRAID to give it structure</li>
+</ul></div>
+<h4>Real-Shift Translation</h4>
+<p>On a real shift, if the patient looks sick from the car park, they are sick. Act on that. HIRAID gives you the framework to be systematic under pressure.</p>
+</div>
+</div>
+
+<!-- HIRAID -->
+<div class="sec" id="s7">
+<h2>HIRAID Assessment — Bedside Nurse</h2>
+<div class="sa-badge">SA Health + HIRAID Framework</div>
+
+<button class="tbtn" onclick="tog('h-h')">H — History (including Infection Risk) <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="h-h"><div class="c">
+<h4>Presenting Complaint — PQRST</h4>
+<table>
+<tr><td style="width:28%"><span class="bl">Provoke/Palliate</span></td><td>Started loading hay. No relief with rest. Nothing helps.</td></tr>
+<tr><td><span class="bl">Quality</span></td><td>"Crushing", "heavy pressure", "like something sitting on my chest"</td></tr>
+<tr><td><span class="bl">Radiation</span></td><td>Central chest → left arm, jaw</td></tr>
+<tr><td><span class="bl">Severity</span></td><td>9/10</td></tr>
+<tr><td><span class="bl">Time</span></td><td>~45 minutes. Constant. No waxing/waning.</td></tr>
+</table>
+<h4>Associated Symptoms</h4>
+<ul><li>Nausea (no vomiting)</li><li>Diaphoresis</li><li>Mild dyspnoea</li><li>"Lightheaded"</li></ul>
+<h4>PMHx</h4>
+<ul><li>Hypertension — 8 years</li><li>Hyperlipidaemia</li><li>Ex-smoker (quit 5 years, 30 pack-year)</li><li>No previous cardiac events, no diabetes</li><li>Appendicectomy age 22</li></ul>
+<h4>Medications</h4>
+<ul><li>Ramipril 5mg daily</li><li>Atorvastatin 40mg nocte</li></ul>
+<h4>Allergies</h4>
+<p><span class="hl">NKDA — Nil Known Drug Allergies</span></p>
+<h4>Infection Risk Screening</h4>
+<p>No fever, no cough, no recent illness. Low risk. Screen and move on.</p>
+<h4>Social / GTN Safety Check</h4>
+<ul><li>Farmer — physically active</li><li>Wife present (drove him in)</li><li>Lives 20 min from hospital</li><li><span class="hl">No PDE-5 inhibitor use</span> — must ask directly (GTN contraindication)</li></ul>
+</div></div>
+
+<button class="tbtn" onclick="tog('h-r')">R — Red Flags <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="h-r"><div class="c c-red">
+<h4>Cardiac Red Flags — Present</h4>
+<ul>
+<li><span class="rd">Central crushing chest pain with left arm and jaw radiation</span></li>
+<li><span class="rd">Diaphoresis</span></li>
+<li><span class="rd">Nausea</span></li>
+<li><span class="rd">Onset during exertion</span></li>
+<li><span class="rd">Multiple CV risk factors</span> (age &gt;55 male, hypertension, hyperlipidaemia, ex-smoker)</li>
+</ul>
+<h4>Screen and Exclude</h4>
+<ul>
+<li><span class="hl">Aortic dissection:</span> Sudden tearing pain to back? BP differential between arms?</li>
+<li><span class="hl">Pulmonary embolism:</span> Pleuritic? Recent immobility/surgery?</li>
+<li><span class="hl">Tension pneumothorax:</span> Sudden onset? Unilateral? Trauma?</li>
+</ul>
+</div></div>
+
+<button class="tbtn" onclick="tog('h-a')">A — Assessment <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="h-a"><div class="c">
+<h4>Observations — Plot on SA Health RDR Chart</h4>
+<div class="vg">
+<div class="vi al"><div class="vi-l">BP</div><div class="vi-v">148/94</div></div>
+<div class="vi al"><div class="vi-l">HR</div><div class="vi-v">98</div></div>
+<div class="vi"><div class="vi-l">SpO2</div><div class="vi-v">96%</div></div>
+<div class="vi"><div class="vi-l">RR</div><div class="vi-v">20</div></div>
+<div class="vi"><div class="vi-l">Temp</div><div class="vi-v">36.8</div></div>
+<div class="vi"><div class="vi-l">GCS</div><div class="vi-v">15</div></div>
+<div class="vi"><div class="vi-l">BGL</div><div class="vi-v">7.2</div></div>
+<div class="vi al"><div class="vi-l">Pain</div><div class="vi-v">9/10</div></div>
+</div>
+<h4>Focused Physical Assessment</h4>
+<ul>
+<li><span class="bl">CVS:</span> Heart sounds dual, no murmur. Pulses present and equal bilaterally. No oedema. CRT 2 sec.</li>
+<li><span class="bl">Resp:</span> Air entry equal bilateral. No adventitious sounds. No chest wall tenderness.</li>
+<li><span class="bl">Skin:</span> Pale, cool, diaphoretic.</li>
+<li><span class="bl">Neuro:</span> Alert, orientated. No focal deficit.</li>
+</ul>
+<h4>12-Lead ECG (within 10 min of clinical contact)</h4>
+<div class="c c-red" style="margin-bottom:0">
+<p><span class="rd">ECG Findings:</span></p>
+<ul>
+<li>Sinus rhythm, rate 98</li>
+<li><span class="rd">ST elevation leads II, III, aVF (&gt;2mm)</span></li>
+<li>Reciprocal ST depression leads I, aVL</li>
+</ul>
+<p style="margin:0.5rem 0 0"><span class="hl">Interpretation: Acute Inferior STEMI (ACOMI)</span></p>
+<p style="margin-bottom:0" class="meta">Upload immediately to iPOCCS/MUSE. If system unavailable: photograph ECG + phone description to iCARnet (08 8378 1133).</p>
+</div>
+</div></div>
+
+<button class="tbtn" onclick="tog('h-i')">I — Interventions (Nurse-Initiated under SMO) <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="h-i"><div class="c">
+<div class="sa-badge">SA Health Standing Medication Orders</div>
+<h4>SMO Nurse-Initiated Interventions</h4>
+<ul class="ck" id="smo1">
+<li>Continuous cardiac monitoring — 3-lead attached, defibrillator pads on standby</li>
+<li>IV access — 18G or larger, antecubital fossa. Flush with 0.9% NaCl.</li>
+<li>Aspirin 300mg (SMO) — non-enteric-coated, chew and swallow</li>
+<li>GTN 400mcg SL (SMO) — Nitrolingual spray. Confirm: SBP &gt;100, HR 60–120, no PDE-5 inhibitor use</li>
+<li>Repeat GTN every 5 min if pain persists and obs remain within SMO parameters</li>
+<li>O2 only if SpO2 &lt;94% — target &gt;94% (or &gt;88% if COPD). Do not routinely apply.</li>
+<li>Position semi-recumbent (30–45 degrees), minimise exertion</li>
+<li>Plot all obs on RDR chart</li>
+</ul>
+<div class="med-w">
+<strong>GTN Contraindications (SA Health SMO):</strong> SBP &lt;100mmHg. HR &lt;60 or &gt;120. PDE-5 inhibitors within 24hr (sildenafil, vardenafil, avanafil) or 48hr (tadalafil). Suspected right ventricular infarction. No maximum dose limit while observations remain within parameters. Lay patient supine if hypotension occurs after GTN.
+</div>
+<div class="med-w" style="margin-top:0.5rem">
+<strong>Inferior STEMI caution:</strong> GTN use requires extra vigilance in inferior STEMI — right ventricular involvement makes these patients preload-dependent. Watch for BP drop. Consider V4R (right-sided ECG) to assess RV involvement before repeat GTN dosing.
+</div>
+</div></div>
+
+<button class="tbtn" onclick="tog('h-d')">D — Diagnostics <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="h-d"><div class="c">
+<h4>Investigations</h4>
+<ul>
+<li><span class="bl">12-lead ECG</span> — completed. Upload to iPOCCS/MUSE. Repeat at 15-minute intervals if pain persists.</li>
+<li><span class="bl">RTropT (Point-of-care)</span> — if iCCnet PoCT available. In confirmed STEMI, do not delay treatment for troponin.</li>
+<li><span class="bl">Pathology:</span> FBE, EUC, LFT, GLU, INR (if indicated), Troponin (send-away)</li>
+<li><span class="bl">BGL:</span> 7.2 (noted above)</li>
+<li><span class="bl">CXR:</span> Consider if differential includes dissection, pneumothorax, pulmonary oedema. Do not delay treatment for CXR in confirmed STEMI. Nurse-initiated X-ray if credentialed.</li>
+<li><span class="bl">V4R (right-sided ECG):</span> Perform in inferior STEMI to assess RV involvement — this changes GTN safety and fluid management.</li>
+</ul>
+<div class="kp">
+<div class="kp-l">iPOCCS / MUSE — SA Health ECG Transmission</div>
+<p style="margin-bottom:0">Upload 12-lead ECG to iPOCCS/MUSE via the SA Health network for remote cardiology review. If the system is down or unavailable: <strong>photograph the ECG, call iCARnet (08 8378 1133), and provide a verbal description</strong>. Have a backup plan — systems fail at 1900 on a Tuesday.</p>
+</div>
+</div></div>
+
+<button class="tbtn" onclick="tog('h-c')">Communication — ISBAR to MO <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="h-c"><div class="c c-blue">
+<div class="sa-badge">SA Health ISBAR</div>
+<h4>Bedside Nurse ISBAR to Medical Officer</h4>
+<table>
+<tr><td style="width:15%"><span class="bl">I</span></td><td>"This is [Name], bedside nurse in resus. Patient is Graham, 58-year-old male."</td></tr>
+<tr><td><span class="bl">S</span></td><td>"Central crushing chest pain 9/10, radiating left arm and jaw, onset 45 minutes ago during exertion. Pale and diaphoretic."</td></tr>
+<tr><td><span class="bl">B</span></td><td>"PMHx: hypertension, hyperlipidaemia. On ramipril, atorvastatin. Ex-smoker 30 pack-years. NKDA. No PDE-5 inhibitor use."</td></tr>
+<tr><td><span class="bl">A</span></td><td>"BP 148/94, HR 98, SpO2 96%. 12-lead ECG shows ST elevation II, III, aVF with reciprocal changes I, aVL. I believe this is an acute inferior STEMI. I have given aspirin 300mg under SMO, GTN x1, IV access established. ECG uploaded to iPOCCS."</td></tr>
+<tr><td><span class="bl">R</span></td><td>"I need you to review now. I think we need to call iCARnet and MedSTAR. Can you review the ECG and consider reperfusion?"</td></tr>
+</table>
+</div></div>
+
+<!-- BP 3 -->
+<div class="bp">
+<span class="bp-lbl">Break Point 3</span><span class="bp-type">Practical Skill / Discussion</span>
+<h3>HIRAID Assessment, Red Flags, and ECG Skills</h3>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>Walk through the HIRAID steps just completed. What was missed?</li>
+<li>Why must you ask about PDE-5 inhibitors before GTN — even under SMO?</li>
+<li>Why consider V4R in inferior STEMI?</li>
+<li>Was the iPOCCS/MUSE upload completed? What is your backup if the system is down?</li>
+<li>Was the ISBAR assertive? Did you make a clear recommendation?</li>
+</ul>
+<h4>Skills Practice — 12-Lead ECG Acquisition</h4>
+<div class="c c-purple">
+<h4>Practise: Correct Lead Placement</h4>
+<ul>
+<li><span class="bl">V1:</span> 4th ICS, right sternal border</li>
+<li><span class="bl">V2:</span> 4th ICS, left sternal border</li>
+<li><span class="bl">V3:</span> Midway between V2 and V4</li>
+<li><span class="bl">V4:</span> 5th ICS, mid-clavicular line</li>
+<li><span class="bl">V5:</span> Anterior axillary line, level with V4</li>
+<li><span class="bl">V6:</span> Mid-axillary line, level with V4/V5</li>
+<li><span class="bl">V4R:</span> Right 5th ICS, mid-clavicular line — for RV assessment in inferior STEMI</li>
+</ul>
+<div class="med-w">Correct placement matters. Misplaced V1/V2 can mimic or mask ST changes. In a diaphoretic patient, dry the skin first. Time target: ECG acquired, interpreted, and uploaded within 10 minutes of first clinical contact.</div>
+</div>
+<h4>Key Teaching Points</h4>
+<div class="kp"><ul style="margin-bottom:0">
+<li>HIRAID gives structure under pressure — it stops you forgetting the PDE-5 question or the V4R</li>
+<li>The SA Health SMO for GTN has specific parameter checks that must be confirmed and documented each time</li>
+<li>iPOCCS/MUSE is your ECG lifeline to remote cardiology — know how to use it and have a backup</li>
+<li>The nurse's ISBAR to MO included a clear recommendation — "I need you now" — that is not overstepping, that is the job</li>
+</ul></div>
+<h4>Real-Shift Translation</h4>
+<p>The 12-lead ECG is the single most important investigation. In a rural SA ED, that ECG drives everything — the MedSTAR call, the thrombolysis decision, the transfer urgency. Get it right, get it fast, get it uploaded.</p>
+</div>
+</div>
+
+<!-- MO REVIEW -->
+<div class="sec" id="s8">
+<h2>Medical Officer Review</h2>
+<div class="c">
+<h4>MO Actions on Arrival at Bedside</h4>
+<ul>
+<li>Receives ISBAR from bedside nurse</li>
+<li>Reviews 12-lead ECG — confirms acute inferior STEMI (ACOMI)</li>
+<li>Focused history and examination (confirm nursing findings, assess for differentials)</li>
+<li>Checks for contraindications to thrombolysis</li>
+<li>Calls <span class="bl">iCARnet (08 8378 1133)</span> and <span class="bl">MedSTAR (13 78 27)</span> for a conference call</li>
+</ul>
+<h4>Working Diagnosis</h4>
+<div class="c c-red" style="margin-bottom:0.5rem">
+<p style="margin-bottom:0"><span class="rd">Acute Inferior STEMI (ACOMI)</span><br>
+Time from symptom onset: ~60 minutes at this point.<br>
+Time-critical. Emergent reperfusion required.</p>
+</div>
+<h4>MO Orders (in consultation with iCARnet / MedSTAR)</h4>
+<ul>
+<li>Morphine 2.5–5mg IV titrated (with metoclopramide 10mg IV)</li>
+<li>Enoxaparin 1mg/kg SC</li>
+<li>Prepare tenecteplase if PCI cannot be achieved within 120 min of first medical contact</li>
+<li>Repeat ECG at 15-minute intervals while pain persists</li>
+<li>Defibrillator pads applied — ready for immediate use</li>
+<li>Repeat ECG at 60–90 min post-thrombolysis if administered</li>
+</ul>
+<div class="kp">
+<div class="kp-l">SA-Specific — Tenecteplase Supply</div>
+<p style="margin-bottom:0">Due to the global tenecteplase shortage, SA Health prioritises supply to non-metropolitan and remote sites for STEMI thrombolysis. Confirm your site has stock and staff are familiar with weight-based dosing. If your site does not hold tenecteplase, the MedSTAR retrieval team may carry it — discuss during the conference call.</p>
+</div>
+</div>
+
+<!-- BP 4 -->
+<div class="bp">
+<span class="bp-lbl">Break Point 4</span><span class="bp-type">Decision-Making</span>
+<h3>MO Review, Diagnosis, and Reperfusion Decision</h3>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>The MO confirms STEMI. What is the reperfusion decision tree?</li>
+<li>Our nearest PCI facility is 55 min by road. MedSTAR helicopter ETA ~40 min. Can PCI be achieved within 120 minutes?</li>
+<li>If not — what is the alternative? What is the time target?</li>
+<li>Who makes the thrombolysis decision? Does the MO decide alone?</li>
+<li>What are the absolute contraindications to thrombolysis?</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<div class="c c-green" style="margin-top:0.5rem"><ul style="margin-bottom:0">
+<li><span class="gn">Reperfusion:</span> Primary PCI if achievable within 120 min. If not, fibrinolysis within 30 min.</li>
+<li><span class="gn">Time calculation:</span> First medical contact ~10 min ago. Road transfer 55 min + cath lab activation = likely &gt;120 min. Helicopter 40 min + activation — borderline. <strong>Discuss with iCARnet/MedSTAR in conference call.</strong></li>
+<li><span class="gn">Conference call model:</span> The rural MO calls MedSTAR (13 78 27) and iCARnet (08 8378 1133) simultaneously. The decision is made collaboratively — cardiologist advises on reperfusion, MedSTAR coordinates retrieval.</li>
+<li><span class="gn">Absolute contraindications to thrombolysis:</span> Active internal bleeding, suspected aortic dissection, ischaemic stroke within 3 months, intracranial neoplasm, significant head trauma within 3 months.</li>
+</ul></div>
+<h4>Key Teaching Points</h4>
+<div class="kp"><ul style="margin-bottom:0">
+<li>In rural SA, thrombolysis followed by transfer for catheterisation is the most common STEMI pathway</li>
+<li>The iCARnet/MedSTAR conference call is the cornerstone of rural cardiac care in SA — the MO is not making this decision alone</li>
+<li>Time is myocardium — every 30-minute delay in reperfusion increases mortality</li>
+<li>NHFA/CSANZ 2025: PCI within 120 min or fibrinolysis within 30 min</li>
+</ul></div>
+<h4>Real-Shift Translation</h4>
+<p>On a real shift, you are dialling 13 78 27 and 08 8378 1133 while the nurse is managing the patient, the wife is in the corridor, and the ECG is uploading to iPOCCS. Rehearsing this call — knowing what to say, what to ask — is why we practise it now.</p>
+</div>
+</div>
+
+<!-- TREATMENT PHASE -->
+<div class="sec" id="s9">
+<h2>Treatment Phase</h2>
+<div class="c">
+<h4>Medications — Skills Practice</h4>
+
+<div class="med">
+<div class="sa-badge">SMO — Nurse Initiated</div>
+<div class="med-n">Aspirin 300mg Oral (already given)</div>
+<div class="med-d">Non-enteric-coated. Chewed and swallowed. Antiplatelet, not analgesic. Contraindicated in aspirin allergy, active GI bleeding.</div>
+</div>
+
+<div class="med">
+<div class="sa-badge">SMO — Nurse Initiated</div>
+<div class="med-n">GTN Nitrolingual Spray 400mcg Sublingual</div>
+<div class="med-d">Spray under tongue. Repeat every 5 min if pain persists and obs within parameters. Target: total pain relief (0/10).</div>
+<div class="med-w"><strong>SA Health SMO Parameters:</strong> SBP &gt;100, HR 60–120, no PDE-5 inhibitor. No maximum dose limit while obs remain within range. If hypotension occurs: lay supine, cease GTN, IV fluid bolus. In inferior STEMI: use with caution — consider V4R first.</div>
+</div>
+
+<div class="med">
+<div class="med-n">Morphine 2.5–5mg IV (MO Order)</div>
+<div class="med-d">Titrate to pain. Slow IV push over 1–2 min. May repeat every 5–10 min. Monitor RR, BP, sedation. Have naloxone drawn up.</div>
+<div class="med-w">Pair with Metoclopramide 10mg IV. Opioids cause hypotension and vagal response — monitor closely, especially inferior MI where vagal tone is already elevated.</div>
+</div>
+
+<div class="med">
+<div class="med-n">Enoxaparin 1mg/kg Subcutaneous (MO Order)</div>
+<div class="med-d">Anterolateral abdominal wall. Do not expel air bubble. Weight-based: Graham ~90kg = 90mg. Document weight, dose, time.</div>
+<div class="med-w">Contraindicated in active bleeding, recent LP/epidural, severe thrombocytopenia. Reduce if eGFR &lt;30.</div>
+</div>
+
+<div class="med">
+<div class="med-n">Tenecteplase (MO + iCARnet/MedSTAR Decision)</div>
+<div class="med-d">Weight-based IV bolus over 5 seconds. Single dose. Document exact time of administration.</div>
+<div class="med-w"><strong>MO-administered.</strong> Nursing role: prepare medication, confirm dose with MO, assist administration, document time, monitor for reperfusion (pain resolution, ST resolution) and complications (bleeding, arrhythmia). Confirm site has stock — SA priority supply for non-metro STEMI.</div>
+</div>
+</div>
+
+<!-- BP 5 -->
+<div class="bp">
+<span class="bp-lbl">Break Point 5</span><span class="bp-type">Practical Skill</span>
+<h3>Treatment Initiation and Medication Safety</h3>
+<h4>Skills Practice — Walk Through Each Skill</h4>
+<div class="c c-purple">
+<h4>Task 1: IV Cannulation</h4>
+<ul><li>18G, antecubital fossa (may need contrast later)</li><li>Flush 0.9% NaCl, secure, document</li></ul>
+<h4>Task 2: GTN Administration under SMO</h4>
+<ul><li>Confirm SMO parameters: SBP, HR, PDE-5 status</li><li>Shake Nitrolingual spray. Patient opens mouth. Spray under tongue. Close mouth.</li><li>Reassess BP and pain at 5 min</li><li>Document: time, dose, observations pre/post</li></ul>
+<h4>Task 3: IV Morphine (Two-Person Check)</h4>
+<ul><li>Check: right patient, right drug, right dose, right route, expiry</li><li>In a 3-person team, the MO may be the second checker</li><li>Administer 2.5mg slow IV push. Observe.</li><li>Document time, dose, route, effect</li></ul>
+<h4>Task 4: Subcutaneous Enoxaparin</h4>
+<ul><li>Confirm weight-based dose (1mg/kg)</li><li>Anterolateral abdominal wall, 90 degree angle</li><li>Do not expel air bubble. Inject slowly. Do not rub.</li></ul>
+<h4>Task 5: RDR Chart Documentation</h4>
+<ul><li>Plot all observations on SA Health RDR chart after each intervention</li><li>Identify: are any parameters in the yellow or red escalation zone?</li><li>Trend comparison: are values improving, stable, or deteriorating?</li></ul>
+</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>Who checks the morphine in a 3-person team when one nurse is at triage?</li>
+<li>BP drops to 85 systolic after GTN. What is your response?</li>
+<li>Graham's pain goes from 9/10 to 6/10 after first GTN. Do you give another dose?</li>
+<li>Are you plotting each set on the RDR chart? What colour zone are the obs in?</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<div class="c c-green" style="margin-top:0.5rem"><ul style="margin-bottom:0">
+<li>MO may need to be the second checker for high-risk medications in a 3-person team</li>
+<li>BP drops post-GTN: cease GTN, lay flat, IV bolus 250mL NaCl, reassess. Consider RV involvement — perform V4R. Notify MO.</li>
+<li>Pain improving, SBP still &gt;100: can repeat GTN under SMO. SA Health SMO has no maximum dose limit provided parameters are met — but clinical judgement applies.</li>
+<li>RDR chart: observations should be plotted after every intervention. The colour-coded zones provide an objective trigger for escalation.</li>
+</ul></div>
+<h4>Real-Shift Translation</h4>
+<p>You are drawing up morphine while the MO is on the phone to MedSTAR, the triage nurse is reassuring the wife, and the ECG machine is printing. Practise these skills under low pressure so the muscle memory is there when the pressure is high.</p>
+</div>
+</div>
+
+<!-- REASSESSMENT -->
+<div class="sec" id="s10">
+<h2>Reassessment and Escalation</h2>
+
+<div class="sbox">
+<div class="sbox-lbl">Scenario Update — Read to Participants</div>
+<p>It is now 1920 (~35 min post-presentation). Administered: aspirin 300mg (SMO), GTN x2 (SMO), morphine 5mg IV total, metoclopramide 10mg IV, enoxaparin 90mg SC. MO has completed iCARnet/MedSTAR conference call. ECG uploaded to iPOCCS/MUSE.</p>
+<div class="vg">
+<div class="vi"><div class="vi-l">BP</div><div class="vi-v">128/82</div></div>
+<div class="vi"><div class="vi-l">HR</div><div class="vi-v">88</div></div>
+<div class="vi"><div class="vi-l">SpO2</div><div class="vi-v">97%</div></div>
+<div class="vi"><div class="vi-l">RR</div><div class="vi-v">18</div></div>
+<div class="vi"><div class="vi-l">GCS</div><div class="vi-v">15</div></div>
+<div class="vi"><div class="vi-l">Pain</div><div class="vi-v">5/10</div></div>
+</div>
+<p><span class="hl">MedSTAR advises:</span> Helicopter retrieval with on-board capability. ETA 40 minutes. iCARnet cardiologist advises: "Administer tenecteplase now. Do not wait for retrieval. We will retrieve post-lysis for catheterisation."</p>
+</div>
+
+<!-- BP 6 -->
+<div class="bp">
+<span class="bp-lbl">Break Point 6</span><span class="bp-type">Decision-Making</span>
+<h3>Reassessment and Escalation Decision</h3>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>Review the RDR chart: what is the trend? What has improved?</li>
+<li>The cardiologist says to give tenecteplase now. Who does what?</li>
+<li>What are you monitoring for post-thrombolysis?</li>
+<li>If Graham's BP suddenly drops to 80/50 — what triggers on the RDR chart? What is your response?</li>
+<li>Who speaks to the wife?</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<div class="c c-green" style="margin-top:0.5rem"><ul style="margin-bottom:0">
+<li><span class="gn">Trend:</span> BP 148 to 128 (improving), HR 98 to 88 (improving), pain 9 to 5 (improving). Treatment is working. But STEMI persists until reperfusion is achieved.</li>
+<li><span class="gn">Post-thrombolysis:</span> Repeat 12-lead ECG at 60–90 min. Look for 50% or greater ST resolution and pain resolution. Watch for reperfusion arrhythmias. Have defibrillator ready.</li>
+<li><span class="gn">RDR escalation:</span> If BP 80/50 — this falls into the red zone on the RDR chart. Response: flat positioning, rapid IV bolus, reassess rhythm, call MedSTAR for update. Consider cardiogenic shock vs. bleeding complication.</li>
+<li><span class="gn">Family:</span> Brief, honest update. Usually the MO or triage nurse if available. Do not leave the wife without information.</li>
+</ul></div>
+<h4>Key Teaching Points</h4>
+<div class="kp"><ul style="margin-bottom:0">
+<li>Trends matter more than single numbers — compare each set to the last on the RDR chart</li>
+<li>RDR colour-coded zones provide an objective trigger — use them, even in resus</li>
+<li>Post-thrombolysis is a high-risk period — the patient can improve or deteriorate rapidly</li>
+<li>MedSTAR is your partner — the phone call is collaborative, not supervisory</li>
+</ul></div>
+<h4>Real-Shift Translation</h4>
+<p>The 40-minute wait for the MedSTAR helicopter is not idle time. You are monitoring, reassessing, managing complications, preparing documentation, and supporting the family. This is where rural SA clinical skill is tested.</p>
+</div>
+</div>
+
+<!-- TRANSFER -->
+<div class="sec" id="s11">
+<h2>Disposition and Transfer Planning</h2>
+<div class="c">
+<h4>Disposition</h4>
+<p><span class="hl">Transfer to PCI-capable facility via MedSTAR aeromedical retrieval.</span></p>
+<h4>Preparation for MedSTAR Handover</h4>
+<ul class="ck" id="tx1">
+<li>All documentation current — RDR chart, medication times, ECGs</li>
+<li>Repeat 12-lead ECG for retrieval team comparison</li>
+<li>IV access patent and secure</li>
+<li>Written medication summary: drug, dose, route, time for every medication</li>
+<li>All ECG copies — originals travel with patient</li>
+<li>Portable monitor for transfer to helipad</li>
+<li>Defibrillator accompanies patient at all times</li>
+<li>Family updated — destination hospital, how to follow, contact numbers</li>
+<li>Cardiac rehabilitation referral flagged (CATCH Central Referral Service)</li>
+</ul>
+</div>
+
+<!-- BP 7 -->
+<div class="bp">
+<span class="bp-lbl">Break Point 7</span><span class="bp-type">Discussion</span>
+<h3>Disposition and Transfer Planning</h3>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>What documentation does the MedSTAR team need from us?</li>
+<li>The helipad is 200 metres from the ED. How do you move Graham safely?</li>
+<li>If the helicopter is delayed and pain recurs with re-elevation — what do you do?</li>
+<li>What if MedSTAR sends a road ambulance instead? How does the plan change?</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<div class="c c-green" style="margin-top:0.5rem"><ul style="margin-bottom:0">
+<li>MedSTAR needs: all ECGs, medication summary with times, RDR chart, allergy status, weight, thrombolysis time (if given), bloods sent/results</li>
+<li>Transfer to helipad: stretcher, monitor, defib, O2, team escort. Plan for arrest during transfer.</li>
+<li>Pain recurs post-thrombolysis with re-elevation: possible failed reperfusion — notify MedSTAR immediately, this is now rescue PCI indication</li>
+<li>Road transfer: longer transit, ongoing monitoring and treatment during transport, SAAS crew handover becomes critical</li>
+</ul></div>
+<h4>Real-Shift Translation</h4>
+<p>Documents get lost, the monitor battery is flat, nobody told the wife where the helicopter is heading. Checklists and structured preparation prevent these real-world failures. Prepare for handover as if you have 5 minutes — because when MedSTAR walks in, you do.</p>
+</div>
+</div>
+
+<!-- HANDOVER -->
+<div class="sec" id="s12">
+<h2>ISBAR Handover to MedSTAR Retrieval Team</h2>
+
+<div class="c c-blue">
+<div class="sa-badge">SA Health ISBAR</div>
+<h4>MO Handover to MedSTAR Retrieval Physician</h4>
+<table>
+<tr><td style="width:12%"><span class="bl">I</span></td><td>"I am Dr [Name], MO at [Hospital]. Handing over Graham, 58-year-old male farmer."</td></tr>
+<tr><td><span class="bl">S</span></td><td>"Graham presented at 1845 with central crushing chest pain, onset ~1 hour prior during exertion. ECG confirmed acute inferior STEMI — ST elevation II, III, aVF, reciprocal I, aVL. Uploaded to iPOCCS."</td></tr>
+<tr><td><span class="bl">B</span></td><td>"PMHx: hypertension, hyperlipidaemia, ex-smoker 30 pack-years. Meds: ramipril 5mg, atorvastatin 40mg. NKDA. Weight ~90kg."</td></tr>
+<tr><td><span class="bl">A</span></td><td>"Current: BP 128/82, HR 88, SpO2 97%, RR 18, GCS 15, pain 5/10 improving. Given: aspirin 300mg, GTN x2, morphine 5mg IV, metoclopramide 10mg IV, enoxaparin 90mg SC. Tenecteplase [dose] administered at [time]. Post-lysis ECG shows [describe]. Bloods sent — results pending."</td></tr>
+<tr><td><span class="bl">R</span></td><td>"Requires transfer for catheterisation. IV access patent — 18G left ACF. All ECGs with patient. Wife aware, will travel by road. Any questions?"</td></tr>
+</table>
+</div>
+
+<!-- BP 8 -->
+<div class="bp">
+<span class="bp-lbl">Break Point 8</span><span class="bp-type">Practical Skill</span>
+<h3>ISBAR Handover</h3>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>Have each participant practise the ISBAR aloud — MO to MedSTAR, nurse to nurse</li>
+<li>What is the single most critical piece of information?</li>
+<li>Was there closed-loop confirmation?</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<div class="c c-green" style="margin-top:0.5rem"><ul style="margin-bottom:0">
+<li>Most critical: symptom onset time, ECG findings, reperfusion given and when, current haemodynamic status</li>
+<li>Closed-loop: "Do you have any questions? Is there anything else you need from us?"</li>
+<li>Nurse-to-nurse: observations, IV access, medications due, monitoring, patient/family concerns</li>
+</ul></div>
+<h4>Key Teaching Points</h4>
+<div class="kp"><ul style="margin-bottom:0">
+<li>ISBAR is a clinical skill — practise until automatic</li>
+<li>A poor handover can undo excellent clinical care</li>
+<li>Include thrombolysis time and response — this drives cath lab urgency</li>
+<li>ECGs are the most important physical document — they travel with the patient</li>
+</ul></div>
+<h4>Real-Shift Translation</h4>
+<p>When the MedSTAR team walks in, you have 5 minutes for handover before they want to move. Make it count.</p>
+</div>
+</div>
+
+<!-- DEBRIEF -->
+<div class="sec" id="s13">
+<h2>Debrief (15 minutes)</h2>
+<div class="c">
+<h4>Reflective Questions</h4>
+<ol>
+<li>What went well? Where did the team work smoothly?</li>
+<li>Were there points where you felt unsure? What would have helped?</li>
+<li>How did the SA Health SMOs empower nursing-initiated care when the MO was unavailable?</li>
+<li>How did the RDR chart support your recognition of trends and deterioration?</li>
+<li>Was communication between nursing and medical staff clear and timely?</li>
+<li>What would change if this was a night shift with the MO on-call from home (20 min away)?</li>
+<li>How did the iCARnet/MedSTAR conference call model support the reperfusion decision?</li>
+</ol>
+</div>
+<div class="c c-blue">
+<h4>Take-Home Messages</h4>
+<ul>
+<li><span class="hl">ECG within 10 minutes — acquire, interpret, upload to iPOCCS/MUSE. This is the non-negotiable standard.</span></li>
+<li><span class="hl">SA Health SMOs authorise nurses to give aspirin and GTN for suspected cardiac chest pain without a prescription. Use them.</span></li>
+<li><span class="hl">In rural SA STEMI: call iCARnet (08 8378 1133) and MedSTAR (13 78 27) early — they are your decision-making partners for reperfusion.</span></li>
+<li><span class="hl">GTN caution in inferior STEMI — right ventricular involvement makes these patients preload-dependent. Consider V4R.</span></li>
+<li><span class="hl">Plot every set of obs on the RDR chart. Trends matter more than single numbers.</span></li>
+<li><span class="hl">PCI within 120 minutes or thrombolysis within 30 minutes — time is myocardium.</span></li>
+<li><span class="hl">ISBAR handover is a clinical skill. Practise it until it is automatic.</span></li>
+</ul>
+</div>
+</div>
+
+<!-- QUIZ -->
+<div class="sec" id="s14">
+<h2>Knowledge Check</h2>
+
+<div class="c">
+<h4>Q1: Under the SA Health SMO for chest pain, what must the triage nurse confirm BEFORE administering GTN?</h4>
+<div id="q1">
+<button class="qo" onclick="qz('q1',this,false)">Only that the patient has chest pain</button>
+<button class="qo" onclick="qz('q1',this,true)">SBP greater than 100, HR 60-120, and no PDE-5 inhibitor use within 24-48 hours</button>
+<button class="qo" onclick="qz('q1',this,false)">That the MO has reviewed the patient first</button>
+<button class="qo" onclick="qz('q1',this,false)">That the 12-lead ECG has been performed</button>
+</div>
+<div class="qfb okf" id="q1-y">Correct. The SA Health SMO for GTN requires: SBP greater than 100mmHg, HR 60-120, and confirmation of no PDE-5 inhibitor use. These checks must be confirmed and documented before each dose.</div>
+<div class="qfb nof" id="q1-n">Not quite. The SMO requires specific parameter checks: SBP greater than 100, HR 60-120, and no PDE-5 inhibitor use within 24hrs (sildenafil/vardenafil/avanafil) or 48hrs (tadalafil). The nurse does not need MO review or ECG before initiating GTN under SMO.</div>
+</div>
+
+<div class="c">
+<h4>Q2: You identify an inferior STEMI on the 12-lead ECG. What SA Health systems should be activated?</h4>
+<div id="q2">
+<button class="qo" onclick="qz('q2',this,false)">Call 000 for an ambulance transfer</button>
+<button class="qo" onclick="qz('q2',this,false)">Upload ECG to iPOCCS/MUSE only — wait for advice</button>
+<button class="qo" onclick="qz('q2',this,true)">Upload to iPOCCS/MUSE, call iCARnet (08 8378 1133) AND MedSTAR (13 78 27) for conference call</button>
+<button class="qo" onclick="qz('q2',this,false)">Contact the nearest regional hospital switchboard</button>
+</div>
+<div class="qfb okf" id="q2-y">Correct. In SA, STEMI triggers a coordinated response: ECG uploaded to iPOCCS/MUSE for remote review, iCARnet contacted for cardiologist input, and MedSTAR for retrieval coordination. The conference call model ensures collaborative decision-making.</div>
+<div class="qfb nof" id="q2-n">Not quite. SA Health's cardiac pathway for rural STEMI involves three actions: (1) upload ECG to iPOCCS/MUSE, (2) call iCARnet for cardiology advice, and (3) call MedSTAR for retrieval. Both 08 8378 1133 and 13 78 27 should be on speed dial.</div>
+</div>
+
+<div class="c">
+<h4>Q3: SA Health uses which system to detect and escalate clinical deterioration?</h4>
+<div id="q3">
+<button class="qo" onclick="qz('q3',this,false)">Between the Flags (BTF)</button>
+<button class="qo" onclick="qz('q3',this,true)">Rapid Detection and Response (RDR) Observation Charts</button>
+<button class="qo" onclick="qz('q3',this,false)">ECAT Escalation Pathways</button>
+<button class="qo" onclick="qz('q3',this,false)">NEWS2 Scoring</button>
+</div>
+<div class="qfb okf" id="q3-y">Correct. SA Health uses RDR (Rapid Detection and Response) observation charts with colour-coded escalation zones. Between the Flags is the NSW equivalent. Both serve the same purpose — standardised deterioration recognition — but in SA, RDR is the system.</div>
+<div class="qfb nof" id="q3-n">Not quite. SA Health uses Rapid Detection and Response (RDR) observation charts. Between the Flags is NSW, ECAT is NSW, and NEWS2 is predominantly UK. Know your state's system.</div>
+</div>
+</div>
+
+<!-- VARIATIONS -->
+<div class="sec" id="s15">
+<h2>Optional Scenario Variations</h2>
+
+<button class="tbtn" onclick="tog('v1')">Variation 1 — NSTEMI with PoCT Troponin <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="v1"><div class="c">
+<p>Graham's ECG shows ST depression and T-wave inversion V4-V6. No ST elevation. iCCnet PoCT RTropT is mildly elevated.</p>
+<ul>
+<li>How does management change? (No thrombolysis. Anticoagulation. Risk stratification. Transfer for angiography 24-72hr.)</li>
+<li>Does iCARnet/MedSTAR urgency change?</li>
+<li>If RTropT is negative at presentation — when do you repeat? (Serial measurements over 6-8 hours for contemporary PoCT assays.)</li>
+</ul>
+</div></div>
+
+<button class="tbtn" onclick="tog('v2')">Variation 2 — Night Shift, MO On-Call from Home <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="v2"><div class="c">
+<p>It is 0230. One nurse on overnight. MO on-call, 20 min from hospital.</p>
+<ul>
+<li>What SMO interventions can the nurse initiate independently?</li>
+<li>Do you call the MO before or after the ECG?</li>
+<li>If ECG shows STEMI, do you call MedSTAR before the MO arrives?</li>
+<li>What is the single nurse doing in parallel — assessment, treatment, documentation, phone calls?</li>
+</ul>
+</div></div>
+
+<button class="tbtn" onclick="tog('v3')">Variation 3 — VF Arrest in Resus <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="v3"><div class="c">
+<p>Five minutes post-GTN, Graham becomes unresponsive. Monitor shows VF.</p>
+<ul>
+<li>Immediate response? (Defibrillation within 3 min, ALS algorithm)</li>
+<li>Roles in a 3-person cardiac arrest? (MO leads, one nurse compressions, one airway/defib — rotate every 2 min)</li>
+<li>Continue thrombolysis planning during CPR?</li>
+<li>RDR chart: does MER/Code Blue apply in resus?</li>
+</ul>
+</div></div>
+
+<button class="tbtn" onclick="tog('v4')">Variation 4 — Atypical Presentation (Female / Elderly / Diabetic) <span class="arr">&#9660;</span></button>
+<div class="tcnt" id="v4"><div class="c">
+<p>Instead of Graham: Margaret, 72, diabetic. "Fatigue and nausea" for 3 hours. No chest pain. Looks grey.</p>
+<ul>
+<li>Would you still triage ATS 2? What triggers ACS suspicion without chest pain?</li>
+<li>NHFA/CSANZ 2025 specifically addresses atypical presentations in women, elderly, and diabetic patients</li>
+<li>At what threshold do you perform an ECG for someone who has not reported chest pain?</li>
+</ul>
+</div></div>
+</div>
+
+<!-- REFERENCES -->
+<div class="sec" id="s16">
+<h2>References and SA Health Frameworks</h2>
+<div class="c"><table>
+<thead><tr><th>Document</th><th>Application</th></tr></thead>
+<tbody>
+<tr><td>NHFA/CSANZ ACS Guidelines (2025)</td><td>Diagnosis, ACOMI paradigm, reperfusion, management</td></tr>
+<tr><td>SA Health Standing Medication Orders (SMOs)</td><td>Nurse-initiated aspirin, GTN</td></tr>
+<tr><td>SA Health NMIM Clinical Guideline</td><td>Governance for nurse/midwife initiated medicines</td></tr>
+<tr><td>iCCnet / iCARnet Chest Pain Pathway</td><td>Rural cardiac clinical pathway, PoCT, cardiology access</td></tr>
+<tr><td>SA Health RDR Observation Charts</td><td>Clinical deterioration detection and escalation</td></tr>
+<tr><td>iPOCCS / MUSE</td><td>ECG upload and remote interpretation</td></tr>
+<tr><td>MedSTAR (13 78 27)</td><td>24/7 retrieval coordination, clinical advice</td></tr>
+<tr><td>HIRAID Framework</td><td>Structured post-triage nursing assessment</td></tr>
+<tr><td>Australasian Triage Scale (ATS)</td><td>Triage categorisation</td></tr>
+<tr><td>ISBAR (SA Health)</td><td>Structured clinical handover</td></tr>
+<tr><td>ACEM S12</td><td>Minimum standards for small rural EDs</td></tr>
+</tbody></table></div>
+</div>
+
+<!-- FOOTER -->
+<div class="sec" id="s17">
+<div class="c" style="text-align:center;border-color:#1a2d50">
+<p class="meta" style="margin-bottom:0.2rem">Clinical Skills — Small Rural SA ED Series</p>
+<p class="meta" style="margin-bottom:0.2rem">Acute Coronary Syndrome Walk-Through Scenario</p>
+<p class="meta" style="margin-bottom:0">Generated February 2026 — SA Health Frameworks. For training purposes only. Always refer to current local protocols, SMOs, and clinical directives.</p>
+</div>
+</div>
+
+</div>
+
+<!-- ========== JS ========== -->
+<script>
+window.addEventListener('scroll',function(){var h=document.documentElement;document.getElementById('progBar').style.width=((h.scrollTop/(h.scrollHeight-h.clientHeight))*100)+'%'});
+var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add('vis');obs.unobserve(x.target)}})},{threshold:0.07});
+document.querySelectorAll('.sec').forEach(function(s){obs.observe(s)});
+function tog(id){var el=document.getElementById(id);var b=el.previousElementSibling;el.classList.toggle('open');b.classList.toggle('on')}
+document.querySelectorAll('.ck li').forEach(function(li){li.addEventListener('click',function(){li.classList.toggle('chk')})});
+function qz(qid,btn,ok){var c=document.getElementById(qid);if(c.dataset.done)return;c.dataset.done='1';c.querySelectorAll('.qo').forEach(function(b){b.style.pointerEvents='none'});if(ok){btn.classList.add('ok');document.getElementById(qid+'-y').classList.add('sh')}else{btn.classList.add('no');document.getElementById(qid+'-n').classList.add('sh')}}
+</script>
+</body>
+</html>
