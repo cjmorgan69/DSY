@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="Nausea & Vomiting — Volunteer AO Scenario | DSY Training">
+<meta property="og:description" content="Walk-through scenario for volunteer Ambulance Officers managing persistent nausea and vomiting. Covers Ondansetron ODT administration, precaution screening, EOC Clinician escalation, and ISBAR handover.">
+<meta property="og:image" content="https://cdn.simulationtheory.ai/gasset/?asset=img&prompt=green ambulance medical cross paramedic training emblem on dark background&w=1200&h=630&style=professional">
+<meta property="og:type" content="website">
+<link rel="icon" href="https://cdn.simulationtheory.ai/gasset/?asset=sprite&prompt=green medical cross emblem DSY&w=32&h=32&transparent=true&style=pixel_art">
+<title>Nausea &amp; Vomiting — Volunteer AO Scenario | DSY Training</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:18px;scroll-behavior:smooth;}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#001a00;color:#c8e6c9;min-height:100vh;line-height:1.6;}
+
+.sticky-header{position:sticky;top:0;z-index:1000;background:linear-gradient(135deg,#001a00 0%,#002d00 50%,#001a00 100%);border-bottom:1px solid rgba(76,175,80,0.2);padding:0.6rem 1.2rem;display:flex;align-items:center;gap:1rem;}
+.sticky-header .back-btn{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);color:#69f0ae;font-size:1.1rem;font-weight:700;text-decoration:none;transition:background 0.2s,border-color 0.2s,transform 0.2s;}
+.sticky-header .back-btn:hover{background:rgba(76,175,80,0.2);border-color:rgba(76,175,80,0.45);transform:scale(1.05);}
+.sticky-header .logo-frame{flex-shrink:0;width:60px;height:60px;overflow:hidden;border-radius:10px;}
+.sticky-header .logo-frame iframe{display:block;}
+.sticky-header .header-title{flex:1;font-size:1rem;font-weight:700;color:#e8f5e9;line-height:1.3;}
+.sticky-header .header-title span{color:#69f0ae;font-weight:400;font-size:0.8rem;display:block;}
+.progress-bar-track{position:absolute;bottom:0;left:0;width:100%;height:3px;background:rgba(76,175,80,0.1);}
+.progress-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#4caf50,#69f0ae);transition:width 0.15s ease-out;border-radius:0 2px 2px 0;}
+
+.hero{background:linear-gradient(135deg,#002200 0%,#003300 50%,#001a00 100%);padding:3rem 1.5rem 2.5rem;text-align:center;border-bottom:1px solid rgba(76,175,80,0.15);}
+.hero h1{font-size:1.8rem;font-weight:800;color:#e8f5e9;margin-bottom:0.5rem;}
+.hero h1 em{font-style:normal;color:#69f0ae;}
+.hero .subtitle{font-size:1rem;color:#a5d6a7;margin-bottom:1.5rem;}
+.hero-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:0.5rem;}
+.hero-badge{display:inline-block;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.badge-protocol{background:rgba(76,175,80,0.15);color:#69f0ae;border:1px solid rgba(76,175,80,0.3);}
+.badge-setting{background:rgba(156,39,176,0.15);color:#ce93d8;border:1px solid rgba(156,39,176,0.3);}
+.badge-crew{background:rgba(33,150,243,0.15);color:#90caf9;border:1px solid rgba(33,150,243,0.3);}
+.badge-time{background:rgba(255,193,7,0.15);color:#ffd54f;border:1px solid rgba(255,193,7,0.3);}
+
+main{max-width:900px;margin:0 auto;padding:2rem 1.2rem 4rem;}
+
+.section-block{background:#0d2b0d;border:1px solid #1a4d1a;border-radius:12px;padding:1.75rem;margin-bottom:1.5rem;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.section-block.visible{opacity:1;transform:translateY(0);}
+.section-block h2{font-size:1.25rem;font-weight:700;color:#e8f5e9;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #1a4d1a;}
+.section-block h3{font-size:1.05rem;font-weight:700;color:#a5d6a7;margin:1rem 0 0.5rem;}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{position:relative;padding:0.5rem 0 0.5rem 1.8rem;font-size:1rem;border-bottom:1px solid rgba(26,77,26,0.4);}
+.checklist li:last-child{border-bottom:none;}
+.checklist li::before{content:"\2610";position:absolute;left:0;top:0.5rem;font-size:1.1rem;color:#4caf50;}
+.checklist li.checked::before{content:"\2611";color:#69f0ae;}
+
+.key-point{background:rgba(255,193,7,0.08);border:1px solid rgba(255,193,7,0.25);border-left:4px solid #ffc107;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:1rem;}
+.key-point strong{color:#ffd54f;}
+
+.danger-box{background:rgba(239,83,80,0.08);border:1px solid rgba(239,83,80,0.25);border-left:4px solid #ef5350;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:1rem;}
+.danger-box strong{color:#ef5350;}
+
+.info-box{background:rgba(41,182,246,0.08);border:1px solid rgba(41,182,246,0.25);border-left:4px solid #29b6f6;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:1rem;}
+.info-box strong{color:#29b6f6;}
+
+.toggle-section{margin:0.75rem 0;}
+.toggle-btn{width:100%;background:#0a1f0a;border:1px solid #1a4d1a;border-radius:8px;padding:1rem 1.25rem;color:#e8f5e9;font-size:1rem;font-weight:600;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background 0.2s,border-color 0.2s;}
+.toggle-btn:hover{background:#143314;border-color:#2e7d32;}
+.toggle-btn .arrow{transition:transform 0.3s ease;font-size:0.8rem;color:#4caf50;}
+.toggle-btn.open .arrow{transform:rotate(180deg);}
+.toggle-content{max-height:0;overflow:hidden;transition:max-height 0.4s ease;padding:0 1.25rem;}
+.toggle-content.open{max-height:3000px;padding:1rem 1.25rem;}
+
+.break-point{background:linear-gradient(135deg,rgba(255,193,7,0.1),rgba(255,152,0,0.05));border:2px solid rgba(255,193,7,0.3);border-radius:12px;padding:1.5rem;margin:1.5rem 0;}
+.break-point-label{display:inline-block;background:rgba(255,193,7,0.15);color:#ffd54f;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:0.3rem 0.75rem;border-radius:20px;margin-bottom:0.75rem;border:1px solid rgba(255,193,7,0.3);}
+.break-point h4{color:#ffd54f;font-size:1.05rem;margin-bottom:0.5rem;}
+.bp-grid{display:grid;grid-template-columns:1fr;gap:0.75rem;margin-top:0.75rem;}
+.bp-item{background:rgba(0,26,0,0.5);border:1px solid #1a4d1a;border-radius:8px;padding:1rem;}
+.bp-item-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.4rem;}
+.bp-item-label.type-discussion{color:#29b6f6;}
+.bp-item-label.type-skill{color:#69f0ae;}
+.bp-item-label.type-decision{color:#ffd54f;}
+.bp-item p,.bp-item ul{font-size:0.95rem;color:#a5d6a7;}
+.bp-item ul{padding-left:1.2rem;margin-top:0.3rem;}
+.bp-item ul li{margin-bottom:0.25rem;}
+
+.obs-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:0.95rem;}
+.obs-table th,.obs-table td{padding:0.6rem 0.8rem;text-align:left;border:1px solid #1a4d1a;}
+.obs-table th{background:#0a1f0a;color:#69f0ae;font-weight:700;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.5px;}
+.obs-table td{color:#c8e6c9;}
+.obs-table tr:nth-child(even){background:rgba(10,31,10,0.3);}
+
+.mdt-screen{background:#050d05;border:2px solid #1b5e20;border-radius:10px;padding:1.25rem;font-family:'Courier New',monospace;font-size:0.9rem;color:#69f0ae;margin:1rem 0;}
+.mdt-screen .mdt-header{color:#ffd54f;font-weight:700;margin-bottom:0.5rem;font-size:0.95rem;}
+.mdt-screen .mdt-line{margin-bottom:0.2rem;}
+.mdt-screen .mdt-label{color:#4caf50;}
+
+.skill-steps{counter-reset:step;list-style:none;padding:0;}
+.skill-steps li{position:relative;padding:0.75rem 0 0.75rem 3rem;font-size:1rem;border-bottom:1px solid rgba(26,77,26,0.3);counter-increment:step;}
+.skill-steps li:last-child{border-bottom:none;}
+.skill-steps li::before{content:counter(step);position:absolute;left:0;top:0.65rem;width:2rem;height:2rem;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;color:#69f0ae;}
+
+.debrief-q{background:#0a1f0a;border:1px solid #1a4d1a;border-radius:8px;padding:1rem;margin:0.5rem 0;font-size:1rem;}
+.debrief-q::before{content:"Q";display:inline-block;width:1.5rem;height:1.5rem;background:rgba(76,175,80,0.2);border-radius:50%;text-align:center;line-height:1.5rem;font-size:0.75rem;font-weight:800;color:#69f0ae;margin-right:0.75rem;}
+.take-home{background:rgba(105,240,174,0.06);border:1px solid rgba(105,240,174,0.2);border-left:4px solid #69f0ae;border-radius:8px;padding:0.75rem 1rem;margin:0.5rem 0;font-size:1rem;color:#c8e6c9;}
+
+.variation-card{background:#0a1f0a;border:1px solid #1a4d1a;border-radius:8px;padding:1.25rem;margin:0.75rem 0;}
+.variation-card h4{color:#69f0ae;font-size:1rem;margin-bottom:0.5rem;}
+.variation-card p{font-size:0.95rem;color:#a5d6a7;}
+
+footer{text-align:center;padding:2rem 1.2rem;border-top:1px solid #1a4d1a;font-size:0.8rem;color:#4a7c4a;}
+footer a{color:#69f0ae;text-decoration:none;}
+footer a:hover{text-decoration:underline;}
+
+@media(max-width:700px){
+.hero h1{font-size:1.4rem;}
+.sticky-header{padding:0.5rem 0.8rem;}
+.sticky-header .back-btn{width:30px;height:30px;font-size:0.9rem;}
+.sticky-header .logo-frame{width:44px;height:44px;}
+main{padding:1.5rem 0.8rem 3rem;}
+.section-block{padding:1.25rem;}
+.bp-grid{grid-template-columns:1fr;}
+}
+@media(min-width:600px){
+.bp-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <a href="https://dsytraining.com" class="back-btn" title="Back to DSY Training">&#8592;</a>
+  <div class="logo-frame">
+    <iframe src="https://simulationtheory.ai/64821e78-1f9b-4db1-8f38-6ad6ed4e6d1e" width="60" height="60" style="border:none;background:transparent;" allow="autoplay"></iframe>
+  </div>
+  <div class="header-title">Nausea &amp; Vomiting &#8212; Volunteer AO Scenario<span>SAAS Nausea &amp; Vomiting Protocol &#8212; AO Scope</span></div>
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressBar"></div></div>
+</div>
+
+<div class="hero">
+  <h1>Nausea &amp; Vomiting &#8212; <em>Volunteer AO Scenario</em></h1>
+  <p class="subtitle">Walk-through scenario exercise with integrated break points for skills practice, clinical discussion, and operational decision-making.</p>
+  <div class="hero-meta">
+    <span class="hero-badge badge-protocol">SAAS Nausea &amp; Vomiting &#8212; AO</span>
+    <span class="hero-badge badge-setting">Pre-Hospital / Rural</span>
+    <span class="hero-badge badge-crew">2 x Vol AO</span>
+    <span class="hero-badge badge-time">~90 minutes</span>
+  </div>
+</div>
+
+<main>
+
+<div class="section-block" id="s1">
+  <h2>Title &amp; Context</h2>
+  <p>A 62-year-old female on a rural property has been vomiting persistently for eight hours and is now unable to keep fluids down. Her husband calls when she nearly faints walking from the bathroom. A 2-person Volunteer AO crew responds from the local station.</p>
+  <div class="key-point"><strong>Source Protocol:</strong> SAAS Nausea and Vomiting &#8212; AO Protocol. Ondansetron 4 mg ODT administration with contraindication and precaution screening, EOC Clinician escalation pathway, and safe transport planning.</div>
+  <div class="info-box"><strong>Setting:</strong> Wednesday evening, 2035 hours, mid-winter. Rural farmhouse 5 km west of Cummins, SA. Nearest hospital: Cummins District Hospital (~7 min drive). Limited backup. EOC Clinician available by phone.</div>
+</div>
+
+<div class="section-block" id="s2">
+  <h2>Learning Objectives</h2>
+  <p>On completion of this scenario walk-through, participants will be able to:</p>
+  <ul class="checklist">
+    <li>Screen for Ondansetron contraindications and precautions before administration</li>
+    <li>Administer Ondansetron 4 mg ODT using correct technique (dry hands, tongue placement, dissolve, swallow)</li>
+    <li>Select appropriate age-based Ondansetron dose (2 mg / 4 mg)</li>
+    <li>Identify when EOC Clinician consultation is required (persistent symptoms or more than one precaution)</li>
+    <li>Perform structured reassessment using Corpuls3 and clinical observations</li>
+    <li>Deliver an ISBAR handover for a patient with persistent nausea and vomiting</li>
+  </ul>
+</div>
+
+<div class="section-block" id="s3">
+  <h2>Required Equipment</h2>
+  <h3>Clinical Equipment</h3>
+  <ul class="checklist">
+    <li>Ambulance Response Bag (Red and Blue Kit)</li>
+    <li>Corpuls3 monitor &#8212; SpO2, NIBP, HR, 4-lead ECG</li>
+    <li>Thermometer (tympanic)</li>
+    <li>BGL monitor and lancets</li>
+    <li>Stethoscope and manual BP cuff (backup for NIBP)</li>
+    <li>Pulse oximeter (finger probe)</li>
+  </ul>
+  <h3>Medications</h3>
+  <ul class="checklist">
+    <li>Ondansetron 4 mg ODT blister packs (training stock or empty blister for demo)</li>
+    <li>Ondansetron 2 mg ODT (paediatric stock &#8212; for discussion of dose variations)</li>
+  </ul>
+  <h3>Transport &amp; PPE</h3>
+  <ul class="checklist">
+    <li>Green carry chair</li>
+    <li>Stretcher with clean linen</li>
+    <li>Emesis bags (multiple)</li>
+    <li>Towels</li>
+    <li>Gloves, eye protection</li>
+    <li>ePCR tablet or paperwork</li>
+  </ul>
+</div>
+
+<div class="section-block" id="s4">
+  <h2>Session Structure Overview</h2>
+  <table class="obs-table">
+    <thead><tr><th>Phase</th><th>Content</th><th>Time</th></tr></thead>
+    <tbody>
+      <tr><td>Pre-Brief</td><td>Protocol review, equipment check, role allocation</td><td>~10 min</td></tr>
+      <tr><td>Dispatch &amp; En Route</td><td>MDT review, planning, role confirmation</td><td>~5 min</td></tr>
+      <tr><td>On Arrival</td><td>Scene management, first impression</td><td>~5 min</td></tr>
+      <tr><td>Patient Contact</td><td>Primary survey, observations, history</td><td>~10 min</td></tr>
+      <tr><td>Clinical Decision</td><td>Screening tools, working diagnosis, protocol selection</td><td>~10 min</td></tr>
+      <tr><td>Treatment</td><td>Ondansetron ODT administration skill practice</td><td>~15 min</td></tr>
+      <tr><td>Reassessment</td><td>Post-treatment obs, EOC escalation</td><td>~10 min</td></tr>
+      <tr><td>Extrication &amp; Transport</td><td>Carry chair, stretcher, monitoring en route</td><td>~10 min</td></tr>
+      <tr><td>Handover</td><td>ISBAR to receiving facility</td><td>~5 min</td></tr>
+      <tr><td>Debrief</td><td>Reflective questions, take-home messages</td><td>~10 min</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section-block" id="s5">
+  <h2>Pre-Brief (~10 minutes)</h2>
+  <p>Review the following protocol content before commencing the scenario. Use the toggle sections below to expand each topic. Allocate crew roles: <strong>Clinician</strong> (patient contact, history, medications) and <strong>Driver</strong> (observations, Corpuls3, documentation).</p>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)">Ondansetron &#8212; Protocol Overview<span class="arrow">&#9660;</span></button>
+    <div class="toggle-content">
+      <p>Ondansetron is an antiemetic used to control uncontrolled nausea and vomiting, or to facilitate safe transport where vomiting poses risk (head, spine, or eye trauma).</p>
+      <div class="key-point"><strong>Key principle:</strong> Ondansetron is NOT effective for motion sickness. Do not administer where gastric emptying benefits the patient (e.g. certain poisonings).</div>
+      <p>Available as an Oral Dissolving Tablet (ODT) &#8212; safe, convenient, and particularly useful for patients who are actively vomiting or where oral route is preferred. The ODT dissolves on the tongue and does not require water.</p>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)">Contraindications (Absolute &#8212; Do NOT Give)<span class="arrow">&#9660;</span></button>
+    <div class="toggle-content">
+      <div class="danger-box"><strong>Do NOT administer Ondansetron if:</strong>
+        <ul style="margin-top:0.5rem;padding-left:1.2rem;">
+          <li>Known allergy or hypersensitivity to Ondansetron or any component of the formulation</li>
+          <li>Patient is taking <strong>Apomorphine</strong> in the setting of Parkinson's disease</li>
+        </ul>
+      </div>
+      <p>Always ask the patient directly: "Are you allergic to any medications?" and "Do you take any medications for Parkinson's disease?"</p>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)">Precautions (Caution Flags &#8212; Screen Before Giving)<span class="arrow">&#9660;</span></button>
+    <div class="toggle-content">
+      <div class="key-point"><strong>Confirm with the patient before administration:</strong>
+        <ul style="margin-top:0.5rem;padding-left:1.2rem;">
+          <li>Known or congenital prolonged QT syndrome</li>
+          <li>History of irregular heart conditions (atrial fibrillation) or heart failure</li>
+          <li>Known metabolic derangements &#8212; particularly low magnesium or potassium</li>
+        </ul>
+      </div>
+      <p>A single precaution does not prevent first-dose administration, but must be documented. If <strong>more than one precaution</strong> exists, consult the EOC Clinician before administering.</p>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)">Dosing &#8212; Age-Based<span class="arrow">&#9660;</span></button>
+    <div class="toggle-content">
+      <table class="obs-table">
+        <thead><tr><th>Age</th><th>Dose</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>2 to &lt;6 years</td><td>2 mg ODT</td><td>Single dose only</td></tr>
+          <tr><td>6 to &lt;16 years</td><td>4 mg ODT</td><td>Single dose only</td></tr>
+          <tr><td>Adults (&#8805;16 years)</td><td>4 mg ODT</td><td>Single dose; second dose via EOC Clinician authorisation only</td></tr>
+        </tbody>
+      </table>
+      <div class="info-box"><strong>Repeat dose:</strong> The EOC Clinician may advise a further 4 mg ODT dose for <strong>adults only</strong>. Paediatric patients receive a single dose only &#8212; no repeat without specific medical direction.</div>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)">ODT Administration Technique<span class="arrow">&#9660;</span></button>
+    <div class="toggle-content">
+      <ol class="skill-steps">
+        <li>Ensure your hands are <strong>completely dry</strong> &#8212; the ODT dissolves on contact with moisture</li>
+        <li>Peel back the foil on the blister pack &#8212; do <strong>NOT</strong> push the tablet through the foil (it will crumble)</li>
+        <li>Place the ODT directly on top of the patient's tongue</li>
+        <li>Instruct the patient: "Let this dissolve on your tongue, then swallow &#8212; do not chew it"</li>
+        <li>No water is required &#8212; the ODT dissolves within seconds</li>
+        <li>Document: drug name, dose, time administered, route (ODT), patient response</li>
+      </ol>
+      <div class="key-point"><strong>Tip:</strong> If the patient is actively vomiting, wait for a brief pause between episodes to place the ODT. The rapid dissolve time means it is absorbed even in patients with ongoing nausea.</div>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)">EOC Clinician Escalation Triggers<span class="arrow">&#9660;</span></button>
+    <div class="toggle-content">
+      <p>Consult the EOC Clinician if:</p>
+      <ul class="checklist">
+        <li>Nausea and/or vomiting persist after the first dose of Ondansetron</li>
+        <li>More than one precaution exists (consult before any administration)</li>
+        <li>Patient is deteriorating or new symptoms develop</li>
+        <li>Uncertainty about whether Ondansetron is indicated</li>
+      </ul>
+      <p>The EOC Clinician may advise a further 4 mg ODT (adults only), discuss alternative management, and/or arrange transport options.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-block" id="s6">
+  <h2>Dispatch &amp; En Route Phase</h2>
+
+  <div class="mdt-screen">
+    <div class="mdt-header">&#9472;&#9472; MDT DISPATCH &#9472;&#9472;</div>
+    <div class="mdt-line"><span class="mdt-label">PRIORITY:</span> P2</div>
+    <div class="mdt-line"><span class="mdt-label">CASE:</span> 62F &#8212; Persistent nausea and vomiting</div>
+    <div class="mdt-line"><span class="mdt-label">DETAILS:</span> Vomiting x 8 hours. Unable to keep fluids down. Nearly fainted walking from bathroom. Husband on scene.</div>
+    <div class="mdt-line"><span class="mdt-label">LOCATION:</span> 4 Brinkworth Rd, 5 km west of Cummins SA</div>
+    <div class="mdt-line"><span class="mdt-label">ACCESS:</span> Sealed road then 200 m gravel driveway. Property gate open. House lights on.</div>
+    <div class="mdt-line"><span class="mdt-label">CALLER:</span> David Henley (husband). Ph: 0487 XXX XXX</div>
+    <div class="mdt-line"><span class="mdt-label">TIME:</span> 2035 hrs &#8212; Wednesday evening</div>
+  </div>
+
+  <div class="break-point">
+    <div class="break-point-label">Break Point 1</div>
+    <h4>En-Route Planning</h4>
+    <p><strong>Type:</strong> Discussion</p>
+    <div class="bp-grid">
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Facilitator Prompts</div>
+        <ul>
+          <li>What does this MDT tell you about the patient?</li>
+          <li>What are the possible causes of 8 hours of persistent vomiting?</li>
+          <li>What equipment do you want ready on arrival?</li>
+          <li>What are your crew roles &#8212; who does what?</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-decision">Expected AO Reasoning</div>
+        <ul>
+          <li>62-year-old with prolonged vomiting &#8212; risk of dehydration, electrolyte disturbance</li>
+          <li>Near-syncope suggests significant fluid loss or postural hypotension</li>
+          <li>Differential: gastroenteritis, food poisoning, bowel obstruction, medication side effects, cardiac, metabolic</li>
+          <li>Night job on a rural property &#8212; need torches, reflective gear for driveway</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Key Teaching Points</div>
+        <ul>
+          <li>Persistent vomiting for 8 hours is clinically significant &#8212; not a simple "stomach bug" call</li>
+          <li>Near-syncope elevates urgency &#8212; this patient needs assessment and likely transport</li>
+          <li>Think about what medications this patient might be on &#8212; this will affect your Ondansetron decision</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Real-Job Translation</div>
+        <p>On a real job, you read the MDT while the Driver starts the vehicle. Discuss roles out loud. Clinician plans assessment approach. Driver confirms route and estimates arrival time. Both mentally prepare for a possibly dehydrated, unsteady patient on a rural property at night.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-block" id="s7">
+  <h2>On Arrival &#8212; Scene Management</h2>
+  <p><strong>Scene:</strong> Gravel driveway leads to a weatherboard farmhouse. Porch light on. David (husband, 65) meets you at the front door, visibly worried. The house smells of cleaning products &#8212; he has been cleaning up after repeated vomiting episodes. Margaret is seated on the bathroom floor with a bucket, pale and exhausted.</p>
+  <p>David reports: "She started vomiting around lunchtime after eating leftover chicken. It just hasn't stopped. She tried to walk to bed about 20 minutes ago and went really wobbly &#8212; I thought she was going to hit the deck."</p>
+
+  <div class="break-point">
+    <div class="break-point-label">Break Point 2</div>
+    <h4>Doorway / First Impression</h4>
+    <p><strong>Type:</strong> Discussion</p>
+    <div class="bp-grid">
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Facilitator Prompts</div>
+        <ul>
+          <li>What is your first impression of this patient from the doorway?</li>
+          <li>Any immediate safety concerns in this environment?</li>
+          <li>Is this patient time-critical based on what you can see?</li>
+          <li>Where do you want to assess her &#8212; bathroom floor or relocate?</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-decision">Expected AO Reasoning</div>
+        <ul>
+          <li>Patient is pale, exhausted, on the bathroom floor &#8212; concerning for dehydration</li>
+          <li>Not immediately time-critical but needs prompt assessment</li>
+          <li>Bathroom is not ideal for assessment &#8212; move to a chair or bed if patient can tolerate</li>
+          <li>Scene is safe &#8212; domestic environment, no hazards, husband cooperative</li>
+          <li>Cleaning products smell &#8212; ensure ventilation but not a toxicological concern here</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Key Teaching Points</div>
+        <ul>
+          <li>General impression from the doorway: colour, posture, consciousness, distress level</li>
+          <li>Environmental clues matter &#8212; bucket, cleaning products tell you about frequency and severity</li>
+          <li>Relocating the patient to a better assessment area is appropriate if they can be moved safely</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Real-Job Translation</div>
+        <p>On a real job, your first 10 seconds at the door set your mental model. You are looking for "sick" versus "not sick." This patient looks sick &#8212; pale, fatigued, on the floor. That first impression guides your urgency. You introduce yourself, gain consent, and decide whether to assess here or move her first.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-block" id="s8">
+  <h2>Patient Contact &amp; Primary Survey</h2>
+  <p>Margaret is assisted to a chair in the lounge room by both AOs. She is alert, oriented, and cooperative but clearly fatigued and nauseous. She is holding an emesis bag.</p>
+
+  <h3>Clinician &#8212; History (SAMPLE / Presenting Complaint)</h3>
+  <ul class="checklist">
+    <li><strong>Signs &amp; Symptoms:</strong> Persistent nausea and vomiting since ~1230 hrs. 8+ vomiting episodes. Initially food content, now clear/bilious. Dizziness on standing. Generalised weakness. No diarrhoea. No abdominal pain beyond mild generalised tenderness. No chest pain, no headache, no fever symptoms.</li>
+    <li><strong>Allergies:</strong> Penicillin (rash)</li>
+    <li><strong>Medications:</strong> Metoprolol 50 mg BD, Apixaban 5 mg BD, Metformin 1000 mg BD</li>
+    <li><strong>Past History:</strong> Atrial fibrillation, Type 2 Diabetes Mellitus</li>
+    <li><strong>Last Oral Intake:</strong> Water ~4 hours ago (vomited shortly after). Lunch at ~1200 hrs (reheated chicken &#8212; husband ate same meal, no symptoms)</li>
+    <li><strong>Events:</strong> Ate reheated chicken for lunch. Vomiting commenced ~30 min later. Progressive worsening. Near-syncope 20 min ago when attempting to walk to bedroom.</li>
+  </ul>
+
+  <h3>Driver &#8212; Observations (Corpuls3 Setup)</h3>
+  <table class="obs-table">
+    <thead><tr><th>Parameter</th><th>Value</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Heart Rate</td><td>104 bpm</td><td>Irregularly irregular &#8212; consistent with AF</td></tr>
+      <tr><td>Blood Pressure</td><td>108/72 mmHg</td><td>NIBP &#8212; lower end of normal, likely postural component</td></tr>
+      <tr><td>SpO2</td><td>97%</td><td>Room air &#8212; adequate</td></tr>
+      <tr><td>Respiratory Rate</td><td>18/min</td><td>Manual count &#8212; within normal range</td></tr>
+      <tr><td>Temperature</td><td>37.4&#176;C</td><td>Tympanic &#8212; low-grade, may reflect dehydration</td></tr>
+      <tr><td>BGL</td><td>4.8 mmol/L</td><td>Low-normal &#8212; on Metformin, has not eaten</td></tr>
+      <tr><td>GCS</td><td>15 (E4V5M6)</td><td>Alert and oriented</td></tr>
+      <tr><td>4-Lead ECG</td><td>AF ~104 bpm</td><td>No acute ST changes, irregular baseline consistent with known AF</td></tr>
+      <tr><td>Skin</td><td>Pale, dry mucous membranes</td><td>Capillary refill 3 seconds</td></tr>
+    </tbody>
+  </table>
+
+  <div class="break-point">
+    <div class="break-point-label">Break Point 3</div>
+    <h4>Initial Observations &amp; Corpuls3 Setup</h4>
+    <p><strong>Type:</strong> Discussion / Practical Skill</p>
+    <div class="bp-grid">
+      <div class="bp-item">
+        <div class="bp-item-label type-skill">Facilitator Prompts</div>
+        <ul>
+          <li>Walk through your Corpuls3 setup &#8212; what are you monitoring and why?</li>
+          <li>The heart rate is 104 and irregularly irregular &#8212; what does that tell you?</li>
+          <li>BGL is 4.8 and she is on Metformin &#8212; is this a concern?</li>
+          <li>Her capillary refill is 3 seconds &#8212; what does this indicate?</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-decision">Expected AO Reasoning</div>
+        <ul>
+          <li>Corpuls3: SpO2 probe, NIBP cuff, 4-lead ECG &#8212; standard monitoring for a medical patient</li>
+          <li>Irregularly irregular = AF &#8212; consistent with her known history, but rate of 104 may be slightly elevated (dehydration, stress)</li>
+          <li>BGL 4.8 is low-normal in a diabetic patient on Metformin who hasn't eaten &#8212; needs monitoring, not treatment yet</li>
+          <li>Capillary refill 3 seconds indicates moderate dehydration &#8212; supports clinical picture</li>
+          <li>Manual RR count is important &#8212; Corpuls3 does not always capture respiratory rate accurately</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Key Teaching Points</div>
+        <ul>
+          <li>AF at 104 bpm in a known AF patient is not alarming but document it &#8212; tachycardia may be dehydration-driven</li>
+          <li>Always manually count RR &#8212; do not rely solely on the monitor</li>
+          <li>Manual BP check if NIBP is unreliable (movement artefact from vomiting)</li>
+          <li>BGL monitoring is especially important in diabetic patients who cannot eat</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Real-Job Translation</div>
+        <p>On a real job, the Driver sets up the Corpuls3 while the Clinician takes history. This happens simultaneously &#8212; not one after the other. The Driver calls out observations as they come through. The Clinician listens while talking to the patient. Both crew members build the clinical picture together.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-block" id="s9">
+  <h2>Clinical Decision Point</h2>
+  <p>You now have a clear clinical picture. Margaret has persistent nausea and vomiting for 8 hours, is moderately dehydrated, and has a known history of AF. She needs symptom control and transport for further care.</p>
+
+  <h3>Working Diagnosis</h3>
+  <p><strong>Likely food poisoning / acute gastroenteritis</strong> &#8212; supported by timeline (30 min post reheated chicken), isolated vomiting without systemic red flags, and husband ate same meal without symptoms (individual susceptibility or Margaret's portion may have been stored differently).</p>
+
+  <h3>Protocol Selection</h3>
+  <p>SAAS <strong>Nausea and Vomiting &#8212; AO Protocol</strong> is indicated. The patient has uncontrolled nausea and vomiting and requires safe transport.</p>
+
+  <div class="break-point">
+    <div class="break-point-label">Break Point 4</div>
+    <h4>Screening Tools, Protocol &amp; Working Diagnosis</h4>
+    <p><strong>Type:</strong> Decision-Making</p>
+    <div class="bp-grid">
+      <div class="bp-item">
+        <div class="bp-item-label type-decision">Facilitator Prompts</div>
+        <ul>
+          <li>What is your working diagnosis and why?</li>
+          <li>What other diagnoses should you consider?</li>
+          <li>Is Ondansetron indicated for this patient?</li>
+          <li>Walk me through the contraindication check &#8212; can she receive Ondansetron?</li>
+          <li>What precautions does this patient have?</li>
+          <li>Can you give the first dose, or do you need to call the EOC Clinician first?</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-decision">Expected AO Reasoning</div>
+        <ul>
+          <li>Working diagnosis: food poisoning / acute gastroenteritis (timeline, symptoms, mechanism)</li>
+          <li>Differentials to consider: bowel obstruction (no abdo distension or severe pain), medication side effect (Metformin can cause nausea), cardiac event (no chest pain, no acute ECG changes)</li>
+          <li>Ondansetron IS indicated &#8212; uncontrolled nausea and vomiting</li>
+          <li><strong>Contraindication check:</strong> No known allergy to Ondansetron. Not on Apomorphine. &#8594; CLEAR to proceed</li>
+          <li><strong>Precaution check:</strong> History of AF = <strong>1 precaution</strong></li>
+          <li>One precaution does NOT prevent first-dose administration &#8212; document the precaution, proceed with caution</li>
+          <li>If she had &gt;1 precaution (e.g. AF + known low potassium), would need to call EOC BEFORE giving</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Key Teaching Points</div>
+        <ul>
+          <li>Contraindications are ABSOLUTE &#8212; if present, do NOT give Ondansetron</li>
+          <li>Precautions require careful screening &#8212; one precaution allows first dose, more than one requires EOC consultation first</li>
+          <li>The question about Apomorphine must be asked directly &#8212; do not assume</li>
+          <li>Ondansetron is NOT indicated where gastric emptying benefits the patient (certain poisonings) &#8212; not relevant here</li>
+          <li>Document your screening clearly in the ePCR</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Real-Job Translation</div>
+        <p>On a real job, this decision point happens quickly &#8212; you've taken the history, heard the medications, and your mental checklist fires: "AF &#8212; that's a precaution for Ondansetron." You confirm with the patient, check for other precautions, and decide you can proceed with the first dose. This structured screening becomes second nature with practice.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-block" id="s10">
+  <h2>Treatment Phase &#8212; Ondansetron ODT Administration</h2>
+  <p>You have confirmed Ondansetron is indicated and safe to administer. Margaret is an adult (62 years) &#8212; the dose is <strong>4 mg ODT</strong>.</p>
+
+  <div class="key-point"><strong>Medication Safety &#8212; 5 Rights Check:</strong>
+    <ul style="margin-top:0.5rem;padding-left:1.2rem;">
+      <li><strong>Right patient:</strong> Margaret Henley, 62 years old, confirmed identity</li>
+      <li><strong>Right drug:</strong> Ondansetron 4 mg Oral Dissolving Tablet</li>
+      <li><strong>Right dose:</strong> 4 mg (adult dose)</li>
+      <li><strong>Right route:</strong> Oral Dissolving Tablet (ODT) &#8212; placed on tongue</li>
+      <li><strong>Right time:</strong> Now &#8212; clinical indication present, contraindications cleared</li>
+    </ul>
+  </div>
+
+  <h3>Practical Skill &#8212; ODT Administration (Practice This)</h3>
+  <ol class="skill-steps">
+    <li>Confirm patient consent: "Margaret, I'd like to give you a tablet that dissolves on your tongue to help with the nausea &#8212; is that okay?"</li>
+    <li>Ensure your hands are <strong>completely dry</strong> &#8212; the tablet dissolves on contact with any moisture</li>
+    <li>Remove the ODT from the blister pack by <strong>peeling back the foil</strong> &#8212; do NOT push the tablet through (it will crumble and break)</li>
+    <li>Ask Margaret to open her mouth and place the ODT <strong>directly on top of her tongue</strong></li>
+    <li>Instruct: "Let that dissolve on your tongue, then swallow &#8212; don't chew it, and you don't need any water"</li>
+    <li>The ODT dissolves within approximately 10&#8211;15 seconds</li>
+    <li>Confirm with patient: "Has that dissolved? Good &#8212; just swallow now"</li>
+    <li>Document in ePCR: Ondansetron 4 mg ODT administered at [time], one precaution noted (AF), monitoring for effect</li>
+    <li>Set a reassessment timer &#8212; 15 minutes post-administration</li>
+  </ol>
+
+  <div class="danger-box"><strong>Common Errors to Avoid:</strong>
+    <ul style="margin-top:0.5rem;padding-left:1.2rem;">
+      <li>Handling the ODT with wet or sweaty hands &#8212; it dissolves immediately</li>
+      <li>Pushing the tablet through the blister foil &#8212; this crushes the fragile ODT</li>
+      <li>Telling the patient to chew the tablet or wash it down with water &#8212; neither is required or appropriate</li>
+      <li>Forgetting to document the precaution (AF) alongside the administration</li>
+    </ul>
+  </div>
+
+  <div class="break-point">
+    <div class="break-point-label">Break Point 5</div>
+    <h4>Treatment Initiation &amp; Medication Safety</h4>
+    <p><strong>Type:</strong> Practical Skill</p>
+    <div class="bp-grid">
+      <div class="bp-item">
+        <div class="bp-item-label type-skill">Facilitator Prompts</div>
+        <ul>
+          <li>Talk me through the 5 Rights before you administer</li>
+          <li>Show me how you open the blister pack &#8212; why not push it through?</li>
+          <li>Demonstrate the administration &#8212; hands, placement, patient instruction</li>
+          <li>What are you documenting in the ePCR right now?</li>
+          <li>What would you do differently if this patient was 4 years old?</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-skill">Expected AO Reasoning</div>
+        <ul>
+          <li>5 Rights check completed and verbalised aloud to crew partner</li>
+          <li>Dry hands &#8212; critical for handling ODT</li>
+          <li>Peel foil, not push through &#8212; ODT is fragile</li>
+          <li>Place on tongue, allow to dissolve, swallow &#8212; no chewing, no water</li>
+          <li>If patient was 4 years old (&#8805;2 to &lt;6 years) &#8212; dose would be 2 mg, single dose only</li>
+          <li>If patient was 10 years old (&#8805;6 to &lt;16 years) &#8212; dose would be 4 mg, single dose only</li>
+          <li>Document: drug, dose, time, route, precaution noted, monitoring plan</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Key Teaching Points</div>
+        <ul>
+          <li>Verbalise the 5 Rights to your crew partner &#8212; this is a safety check, not a formality</li>
+          <li>ODT technique is simple but must be practiced &#8212; handling errors waste medication</li>
+          <li>Age-based dosing must be known &#8212; it is different across three age groups</li>
+          <li>Always document the precaution alongside the medication &#8212; it justifies your clinical reasoning</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Real-Job Translation</div>
+        <p>On a real job, this takes about 60 seconds. You open the blister, place the tablet, and the patient dissolves and swallows it. The simplicity of ODT administration is one of its advantages &#8212; but the decision-making beforehand (contraindications, precautions, dose selection) is where the clinical skill sits. Practice the technique so the administration is smooth and confident, leaving your cognitive capacity for the assessment.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-block" id="s11">
+  <h2>Reassessment &amp; Escalation</h2>
+
+  <h3>15-Minute Post-Treatment Observations</h3>
+  <table class="obs-table">
+    <thead><tr><th>Parameter</th><th>Initial (2045)</th><th>Post-Dose (2100)</th><th>Trend</th></tr></thead>
+    <tbody>
+      <tr><td>Heart Rate</td><td>104 bpm (irreg)</td><td>98 bpm (irreg)</td><td>Slight improvement</td></tr>
+      <tr><td>Blood Pressure</td><td>108/72</td><td>110/74</td><td>Stable</td></tr>
+      <tr><td>SpO2</td><td>97%</td><td>97%</td><td>Stable</td></tr>
+      <tr><td>RR</td><td>18</td><td>16</td><td>Improving</td></tr>
+      <tr><td>Temp</td><td>37.4&#176;C</td><td>37.3&#176;C</td><td>Stable</td></tr>
+      <tr><td>BGL</td><td>4.8</td><td>4.6</td><td>Low-normal &#8212; monitor</td></tr>
+      <tr><td>Nausea</td><td>Severe (8/10)</td><td>Moderate (5/10)</td><td>Partially improved</td></tr>
+      <tr><td>Vomiting</td><td>Active</td><td>Nil in 15 min</td><td>Ceased</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>Clinical picture:</strong> Nausea has improved from severe to moderate but has <strong>not fully resolved</strong>. Vomiting has ceased. Margaret reports still feeling "queasy." She is tolerating sitting upright.</p>
+
+  <div class="key-point"><strong>Protocol Decision:</strong> Nausea persists after first dose &#8594; <strong>Consult EOC Clinician</strong>. The protocol requires escalation when symptoms persist. Additionally, Margaret has a documented precaution (AF) which reinforces the need for clinical guidance before considering a second dose.</div>
+
+  <h3>EOC Clinician Consultation</h3>
+  <div class="info-box"><strong>EOC Clinician call summary:</strong><br>
+    You report: 62F, persistent N&amp;V x 8 hours, likely food poisoning, known AF on Metoprolol/Apixaban, T2DM on Metformin. Ondansetron 4 mg ODT given at 2045. Precaution noted (AF). Nausea partially improved (8/10 &#8594; 5/10), vomiting ceased. Obs stable. BGL trending low-normal (4.6).<br><br>
+    <strong>EOC advises:</strong> Administer a second Ondansetron 4 mg ODT. Monitor BGL &#8212; consider glucose supplementation if drops below 4. Transport to Cummins District Hospital for IV fluid replacement and ongoing monitoring. Pre-notify receiving facility.
+  </div>
+
+  <h3>Second Dose Administration</h3>
+  <p>Administer second Ondansetron 4 mg ODT using the same technique. Document EOC Clinician authorisation, time of second dose, and plan.</p>
+
+  <h3>30-Minute Observations (Post Second Dose)</h3>
+  <table class="obs-table">
+    <thead><tr><th>Parameter</th><th>Post-Dose 1 (2100)</th><th>Post-Dose 2 (2115)</th><th>Trend</th></tr></thead>
+    <tbody>
+      <tr><td>Heart Rate</td><td>98 bpm (irreg)</td><td>92 bpm (irreg)</td><td>Improving</td></tr>
+      <tr><td>Blood Pressure</td><td>110/74</td><td>114/76</td><td>Improving</td></tr>
+      <tr><td>SpO2</td><td>97%</td><td>98%</td><td>Stable</td></tr>
+      <tr><td>BGL</td><td>4.6</td><td>4.5</td><td>Low-normal &#8212; continue monitoring</td></tr>
+      <tr><td>Nausea</td><td>Moderate (5/10)</td><td>Mild (2/10)</td><td>Significantly improved</td></tr>
+      <tr><td>Vomiting</td><td>Nil</td><td>Nil</td><td>Resolved</td></tr>
+    </tbody>
+  </table>
+
+  <div class="break-point">
+    <div class="break-point-label">Break Point 6</div>
+    <h4>Reassessment &amp; Escalation Decision</h4>
+    <p><strong>Type:</strong> Decision-Making / Discussion</p>
+    <div class="bp-grid">
+      <div class="bp-item">
+        <div class="bp-item-label type-decision">Facilitator Prompts</div>
+        <ul>
+          <li>The first dose partially worked &#8212; what does the protocol say to do next?</li>
+          <li>What information are you giving the EOC Clinician on the phone?</li>
+          <li>Why is the BGL trending relevant for this patient?</li>
+          <li>The EOC has authorised a second dose &#8212; how do you document this?</li>
+          <li>What if the patient had TWO precautions &#8212; would your approach to the first dose have been different?</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-decision">Expected AO Reasoning</div>
+        <ul>
+          <li>Protocol requires EOC consultation when symptoms persist after first dose</li>
+          <li>Structured phone report: patient demographics, presentation, treatment given, response, precaution status, current obs</li>
+          <li>BGL trending down in a T2DM patient on Metformin who cannot eat = hypoglycaemia risk</li>
+          <li>Document: "EOC Clinician consulted at [time], authorised second Ondansetron 4 mg ODT"</li>
+          <li>If &gt;1 precaution existed: would have called EOC BEFORE giving even the first dose</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Key Teaching Points</div>
+        <ul>
+          <li>Trends in observations are more valuable than single readings &#8212; track the direction</li>
+          <li>EOC consultation is a protocol requirement, not a sign of weakness &#8212; it protects the patient and you</li>
+          <li>Second dose is for ADULTS ONLY &#8212; paediatric patients get a single dose</li>
+          <li>BGL monitoring in diabetic patients who cannot eat is essential throughout the job</li>
+          <li>Always document EOC authorisation clearly &#8212; it is a medicolegal record</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Real-Job Translation</div>
+        <p>On a real job, calling the EOC Clinician is a 2&#8211;3 minute phone call. Be concise, structured, and have your obs in front of you. The Clinician will ask specific questions. Your preparation for this call (having obs, history, and treatment response ready) makes it efficient and professional.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-block" id="s12">
+  <h2>Extrication &amp; Transport</h2>
+  <p>Margaret's nausea has significantly improved (2/10). Vomiting has ceased. She is stable but dehydrated and requires IV fluid replacement at hospital. The EOC Clinician has advised transport to Cummins District Hospital.</p>
+
+  <h3>Extrication Plan</h3>
+  <ul class="checklist">
+    <li>Use the <strong>green carry chair</strong> to wheel Margaret from the lounge to the stretcher &#8212; do NOT ask her to walk (minimises exertion and syncope risk in a dehydrated patient)</li>
+    <li>Ensure emesis bags are within reach during transfer</li>
+    <li>Secure on stretcher in a position of comfort &#8212; semi-reclined if tolerated, lateral if ongoing nausea risk</li>
+    <li>Continue Corpuls3 monitoring during transport</li>
+    <li>Keep emesis bags, towels, and suction accessible</li>
+    <li>Reassess BGL en route &#8212; if &lt;4 mmol/L, consider oral glucose if tolerated</li>
+  </ul>
+
+  <h3>Transport Observations (En Route)</h3>
+  <table class="obs-table">
+    <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Heart Rate</td><td>90 bpm (irregularly irregular)</td></tr>
+      <tr><td>Blood Pressure</td><td>116/78 mmHg</td></tr>
+      <tr><td>SpO2</td><td>98% RA</td></tr>
+      <tr><td>BGL</td><td>4.5 mmol/L</td></tr>
+      <tr><td>Nausea</td><td>Mild (1/10)</td></tr>
+      <tr><td>Vomiting</td><td>Nil</td></tr>
+      <tr><td>GCS</td><td>15</td></tr>
+    </tbody>
+  </table>
+
+  <div class="break-point">
+    <div class="break-point-label">Break Point 7</div>
+    <h4>Extrication &amp; Transport Planning</h4>
+    <p><strong>Type:</strong> Practical Skill / Discussion</p>
+    <div class="bp-grid">
+      <div class="bp-item">
+        <div class="bp-item-label type-skill">Facilitator Prompts</div>
+        <ul>
+          <li>Why carry chair rather than walking the patient?</li>
+          <li>What position are you transporting Margaret in?</li>
+          <li>What equipment must be within arm's reach during transport?</li>
+          <li>What are you monitoring en route and how often?</li>
+          <li>What would change your transport urgency?</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-decision">Expected AO Reasoning</div>
+        <ul>
+          <li>Carry chair minimises patient exertion &#8212; dehydrated patients are at syncope risk if they walk</li>
+          <li>Semi-reclined or lateral position depending on nausea status</li>
+          <li>Emesis bags, suction, towels within reach &#8212; vomiting can recur unpredictably</li>
+          <li>Obs every 5&#8211;10 minutes en route (short transport) &#8212; especially BGL</li>
+          <li>Deterioration triggers: active vomiting recurs, BGL drops below 4, altered consciousness, new symptoms (chest pain, abdominal rigidity)</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Key Teaching Points</div>
+        <ul>
+          <li>The carry chair is your default patient movement tool &#8212; patients with nausea, dizziness, or weakness should not walk unsupported</li>
+          <li>Position of comfort is patient-led but clinically guided</li>
+          <li>Short transport does not mean no monitoring &#8212; patients can deteriorate quickly</li>
+          <li>Pre-notify the receiving facility so they can prepare IV access and fluids</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Real-Job Translation</div>
+        <p>On a real job, this is a 7-minute drive. The Clinician is in the back monitoring Margaret. The Driver has pre-notified the hospital. Even on short transports, keep watching the patient and the monitor. Have suction ready &#8212; the motion of the vehicle can trigger vomiting in patients with ongoing nausea.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-block" id="s13">
+  <h2>Handover &#8212; ISBAR</h2>
+  <p>On arrival at Cummins District Hospital, deliver a structured ISBAR handover to the receiving nurse or medical officer.</p>
+
+  <div class="mdt-screen" style="border-color:#29b6f6;">
+    <div class="mdt-header" style="color:#90caf9;">&#9472;&#9472; ISBAR HANDOVER &#9472;&#9472;</div>
+    <div class="mdt-line"><span class="mdt-label">I &#8212; Identify:</span> "I'm [name], Volunteer AO from Cummins. This is Margaret Henley, 62 years old."</div>
+    <div class="mdt-line"><span class="mdt-label">S &#8212; Situation:</span> "Margaret has had persistent nausea and vomiting for approximately 8 hours, likely food poisoning from reheated chicken at lunch. Her husband called us after she nearly fainted walking from the bathroom."</div>
+    <div class="mdt-line"><span class="mdt-label">B &#8212; Background:</span> "She has a history of atrial fibrillation on Metoprolol and Apixaban, and Type 2 Diabetes on Metformin. Allergic to Penicillin &#8212; gets a rash. No surgical history of note."</div>
+    <div class="mdt-line"><span class="mdt-label">A &#8212; Assessment:</span> "On our assessment she was pale, dehydrated, cap refill 3 seconds. Heart rate 104 irregularly irregular, BP 108/72, SpO2 97%, BGL 4.8. 4-lead showed AF at rate, no acute changes. We identified AF as a precaution for Ondansetron and administered 4 mg ODT at 2045. Nausea partially improved &#8212; we consulted the EOC Clinician who authorised a second 4 mg ODT at 2105. Nausea now 1/10, no further vomiting. Current obs: HR 90, BP 116/78, SpO2 98%, BGL 4.5 &#8212; trending low-normal."</div>
+    <div class="mdt-line"><span class="mdt-label">R &#8212; Recommendation:</span> "She'll likely need IV fluids and ongoing BGL monitoring given she's on Metformin and hasn't eaten. The EOC Clinician was happy with transport here for further assessment."</div>
+  </div>
+
+  <div class="break-point">
+    <div class="break-point-label">Break Point 8</div>
+    <h4>ISBAR Handover</h4>
+    <p><strong>Type:</strong> Practical Skill</p>
+    <div class="bp-grid">
+      <div class="bp-item">
+        <div class="bp-item-label type-skill">Facilitator Prompts</div>
+        <ul>
+          <li>Deliver the ISBAR handover to the group as if to a receiving nurse</li>
+          <li>What specific information does the hospital need about the Ondansetron?</li>
+          <li>Why is mentioning the AF precaution important in the handover?</li>
+          <li>What recommendation are you making and why?</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-skill">Expected AO Reasoning</div>
+        <ul>
+          <li>Structured ISBAR handover covering all elements concisely</li>
+          <li>Hospital needs to know: drug, dose, time, route, number of doses, EOC authorisation for second dose, precaution documented</li>
+          <li>Mentioning AF as a precaution alerts receiving staff to potential QT concerns and guides their ongoing monitoring</li>
+          <li>Recommendation reflects what the patient needs next (fluids, BGL monitoring) &#8212; this shows clinical reasoning</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Key Teaching Points</div>
+        <ul>
+          <li>ISBAR is a framework, not a script &#8212; adapt it to the patient but hit every letter</li>
+          <li>Include trends in your handover, not just current numbers &#8212; "BP was 108 now 116"</li>
+          <li>Mention medications given including EOC authorisation &#8212; this is part of the medication chain</li>
+          <li>A good recommendation shows you understand what the patient needs, not just what you did</li>
+        </ul>
+      </div>
+      <div class="bp-item">
+        <div class="bp-item-label type-discussion">Real-Job Translation</div>
+        <p>On a real job, you deliver this handover at the hospital bed or triage desk. The receiving nurse is often multitasking &#8212; be concise, structured, and clear. Hand over the ePCR or paperwork. Confirm they have received the key points. Do not leave until the handover is acknowledged.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-block" id="s14">
+  <h2>Debrief (10&#8211;15 minutes)</h2>
+  <p>Gather the crew and work through the following reflective questions. There are no wrong answers &#8212; the goal is to consolidate learning and identify areas for further practice.</p>
+
+  <h3>Reflective Questions</h3>
+  <div class="debrief-q">How did you decide whether this patient was time-critical or not? What would have changed your assessment?</div>
+  <div class="debrief-q">Walk through the contraindication and precaution screening process. How confident are you performing this quickly on a real job?</div>
+  <div class="debrief-q">Margaret had one precaution (AF). If she also had known low potassium, how would your approach to the first dose have changed?</div>
+  <div class="debrief-q">How did you structure your EOC Clinician phone call? What information did you have ready before calling?</div>
+  <div class="debrief-q">Why is BGL monitoring particularly important in this patient? What would you do if BGL dropped to 3.5 mmol/L?</div>
+  <div class="debrief-q">How did the Clinician and Driver roles work during this job? Was anything unclear about who was responsible for what?</div>
+  <div class="debrief-q">Reflect on your ISBAR handover. Was it concise? Did you include trends? Did you make a recommendation?</div>
+
+  <h3>Take-Home Messages</h3>
+  <div class="take-home"><strong>1.</strong> Ondansetron ODT is simple to administer but requires structured screening &#8212; contraindications are absolute, precautions require clinical judgement.</div>
+  <div class="take-home"><strong>2.</strong> One precaution allows first-dose administration with documentation. More than one precaution requires EOC consultation before giving.</div>
+  <div class="take-home"><strong>3.</strong> Persistent nausea after the first dose triggers EOC Clinician consultation &#8212; this is protocol, not optional.</div>
+  <div class="take-home"><strong>4.</strong> The second dose is for adults only &#8212; paediatric patients receive a single dose.</div>
+  <div class="take-home"><strong>5.</strong> Trends in observations matter more than single numbers &#8212; track direction and communicate changes.</div>
+  <div class="take-home"><strong>6.</strong> Ondansetron is NOT effective for motion sickness &#8212; do not administer for this indication.</div>
+  <div class="take-home"><strong>7.</strong> Early escalation to the EOC Clinician is a sign of good clinical practice, not uncertainty. Have your information ready before you call.</div>
+</div>
+
+<div class="section-block" id="s15">
+  <h2>Optional Scenario Variations</h2>
+  <p>Use these variations to extend the session, increase complexity, or tailor to specific learning needs.</p>
+
+  <div class="variation-card">
+    <h4>Variation 1 &#8212; Paediatric Patient (4-Year-Old)</h4>
+    <p>Change the patient to a 4-year-old child with vomiting secondary to gastroenteritis. Dose becomes <strong>2 mg ODT (single dose only)</strong>. No repeat dose available for paediatric patients. Focus on age-appropriate communication, parental consent, and the technique of placing an ODT on a young child's tongue. Discuss BGL monitoring in a fasting child and transport urgency for paediatric dehydration.</p>
+  </div>
+
+  <div class="variation-card">
+    <h4>Variation 2 &#8212; Multiple Precautions (AF + Known Low Potassium)</h4>
+    <p>Margaret now has <strong>two precautions</strong>: AF and known hypokalaemia. This changes the approach &#8212; the protocol requires EOC Clinician consultation <strong>before administering any Ondansetron</strong>. The crew must call the EOC before treatment. Discuss how this changes your workflow and what information the EOC Clinician needs to make a decision.</p>
+  </div>
+
+  <div class="variation-card">
+    <h4>Variation 3 &#8212; Head Trauma with Nausea</h4>
+    <p>Change the scenario to a 45-year-old male who fell from a ladder, hit his head, and is now persistently vomiting. Ondansetron is indicated to <strong>facilitate safe transport in patients with head trauma where vomiting complications risk is high</strong>. Focus shifts to: is this vomiting from the head injury (raised ICP)? GCS monitoring, c-spine considerations, and the critical importance of antiemetic administration before transport to prevent aspiration and ICP spikes.</p>
+  </div>
+
+  <div class="variation-card">
+    <h4>Variation 4 &#8212; Deterioration En Route</h4>
+    <p>During transport, Margaret's BGL drops to <strong>3.2 mmol/L</strong> and she becomes diaphoretic and confused. Nausea returns. The crew must now manage acute hypoglycaemia in a patient who cannot reliably swallow. Discuss: oral glucose if conscious and able to swallow vs. EOC Clinician escalation for further direction. This variation tests multi-problem management and prioritisation.</p>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <p><strong>DSY Training</strong> &#8212; Pre-Hospital &amp; Rural Emergency Medicine Education</p>
+  <p>SAAS Nausea &amp; Vomiting &#8212; AO Protocol | Scenario Walk-Through</p>
+  <p style="margin-top:0.5rem;">&#169; 2026 DSY Production &#183; <a href="mailto:cjmorgan69@icloud.com">Contact</a></p>
+</footer>
+
+<script>
+function toggleSection(btn){
+  const content=btn.nextElementSibling;
+  btn.classList.toggle('open');
+  content.classList.toggle('open');
+}
+
+function updateProgress(){
+  const winScroll=document.documentElement.scrollTop||document.body.scrollTop;
+  const height=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+  const scrolled=height>0?(winScroll/height)*100:0;
+  document.getElementById('progressBar').style.width=scrolled+'%';
+}
+window.addEventListener('scroll',updateProgress);
+
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+    }
+  });
+},{threshold:0.08});
+
+document.querySelectorAll('.section-block').forEach(el=>observer.observe(el));
+
+document.querySelectorAll('.checklist li').forEach(li=>{
+  li.style.cursor='pointer';
+  li.addEventListener('click',()=>li.classList.toggle('checked'));
+});
+</script>
+
+</body>
+</html>
