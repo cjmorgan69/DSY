@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DSY Training — Rural & Remote ED Microlearning</title>
+    <title>DSY Training — Pre-Hospital &amp; Rural ED Microlearning</title>
     <style>
         * {
             margin: 0;
@@ -60,7 +60,7 @@
         header p.tagline {
             font-size: 1.05rem;
             color: #8b949e;
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto 1.25rem;
             line-height: 1.5;
         }
@@ -85,6 +85,7 @@
         .badge-sa { background: rgba(56, 139, 253, 0.15); color: #58a6ff; border: 1px solid rgba(56, 139, 253, 0.25); }
         .badge-rural { background: rgba(63, 185, 80, 0.15); color: #3fb950; border: 1px solid rgba(63, 185, 80, 0.25); }
         .badge-ed { background: rgba(210, 153, 34, 0.15); color: #d2992a; border: 1px solid rgba(210, 153, 34, 0.25); }
+        .badge-prehosp { background: rgba(191, 75, 200, 0.15); color: #bc8cff; border: 1px solid rgba(191, 75, 200, 0.25); }
 
         /* ── Main ── */
         main {
@@ -106,12 +107,51 @@
             margin-bottom: 1.75rem;
         }
 
+        /* ── Category Divider ── */
+        .category-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2.5rem 0 1.5rem;
+        }
+
+        .category-divider .divider-line {
+            flex: 1;
+            height: 1px;
+            background: #30363d;
+        }
+
+        .category-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .cat-prehosp {
+            background: rgba(191, 75, 200, 0.12);
+            color: #bc8cff;
+            border: 1px solid rgba(191, 75, 200, 0.25);
+        }
+
+        .cat-ed {
+            background: rgba(210, 153, 34, 0.12);
+            color: #d2992a;
+            border: 1px solid rgba(210, 153, 34, 0.25);
+        }
+
         /* ── Module Grid ── */
         .module-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 3rem;
+            margin-bottom: 1rem;
         }
 
         .module-card {
@@ -165,11 +205,18 @@
         }
 
         .icon-acs { background: rgba(248, 81, 73, 0.15); border: 1px solid rgba(248, 81, 73, 0.3); }
+        .icon-headache { background: rgba(191, 75, 200, 0.15); border: 1px solid rgba(191, 75, 200, 0.3); }
         .icon-sepsis { background: rgba(210, 153, 34, 0.15); border: 1px solid rgba(210, 153, 34, 0.3); }
-        .icon-trauma { background: rgba(191, 75, 200, 0.15); border: 1px solid rgba(191, 75, 200, 0.3); }
+        .icon-trauma { background: rgba(248, 81, 73, 0.15); border: 1px solid rgba(248, 81, 73, 0.3); }
         .icon-stroke { background: rgba(56, 139, 253, 0.15); border: 1px solid rgba(56, 139, 253, 0.3); }
         .icon-mh { background: rgba(63, 185, 80, 0.15); border: 1px solid rgba(63, 185, 80, 0.3); }
         .icon-paeds { background: rgba(255, 166, 87, 0.15); border: 1px solid rgba(255, 166, 87, 0.3); }
+
+        .card-status-row {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+        }
 
         .card-status {
             padding: 0.2rem 0.6rem;
@@ -184,6 +231,19 @@
         .status-live { background: rgba(63, 185, 80, 0.15); color: #3fb950; border: 1px solid rgba(63, 185, 80, 0.3); }
         .status-dev { background: rgba(210, 153, 34, 0.15); color: #d2992a; border: 1px solid rgba(210, 153, 34, 0.3); }
         .status-planned { background: rgba(139, 148, 158, 0.15); color: #8b949e; border: 1px solid rgba(139, 148, 158, 0.3); }
+
+        .setting-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .setting-prehosp { background: rgba(191, 75, 200, 0.1); color: #bc8cff; border: 1px solid rgba(191, 75, 200, 0.2); }
+        .setting-ed { background: rgba(210, 153, 34, 0.1); color: #d2992a; border: 1px solid rgba(210, 153, 34, 0.2); }
 
         .card-title {
             font-size: 1.15rem;
@@ -334,11 +394,12 @@
             <div class="logo-badge">DSY</div>
         </div>
         <h1>DSY <span>Training</span></h1>
-        <p class="tagline">Microlearning modules for rural &amp; remote South Australian Emergency Departments. Scenario-based, protocol-aligned, ready when you are.</p>
+        <p class="tagline">Microlearning modules for South Australian paramedics and rural emergency departments. Pre-hospital and ED-based, scenario-driven, protocol-aligned, ready when you are.</p>
         <div class="header-badges">
             <span class="header-badge badge-sa">SA Health Frameworks</span>
-            <span class="header-badge badge-rural">Rural &amp; Remote (MMM 5–7)</span>
-            <span class="header-badge badge-ed">Emergency Medicine</span>
+            <span class="header-badge badge-prehosp">Pre-Hospital / SAAS</span>
+            <span class="header-badge badge-ed">Rural &amp; Remote ED</span>
+            <span class="header-badge badge-rural">MMM 5–7</span>
         </div>
     </header>
 
@@ -347,7 +408,7 @@
         <!-- Stats -->
         <div class="stats-bar">
             <div class="stat-item">
-                <div class="stat-number">1</div>
+                <div class="stat-number">2</div>
                 <div class="stat-label">Modules Live</div>
             </div>
             <div class="stat-item">
@@ -355,8 +416,8 @@
                 <div class="stat-label">In Development</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">90</div>
-                <div class="stat-label">Minutes Per Module</div>
+                <div class="stat-number">2</div>
+                <div class="stat-label">Settings</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number">100%</div>
@@ -364,9 +425,56 @@
             </div>
         </div>
 
-        <!-- Live Modules -->
+        <!-- ════════════════════════════════════════ -->
+        <!-- LIVE MODULES                             -->
+        <!-- ════════════════════════════════════════ -->
         <h2 class="section-title">📡 Live Modules</h2>
         <p class="section-subtitle">Available now — click to launch</p>
+
+        <!-- ── Pre-Hospital Category ── -->
+        <div class="category-divider">
+            <span class="divider-line"></span>
+            <span class="category-label cat-prehosp">🚑 Pre-Hospital</span>
+            <span class="divider-line"></span>
+        </div>
+
+        <div class="module-grid">
+
+            <!-- Headache Module — LIVE -->
+            <a href="/modules/headache/" class="module-card available" style="text-decoration:none; color:inherit;">
+                <div class="card-header">
+                    <div class="card-icon icon-headache">🤕</div>
+                    <div class="card-status-row">
+                        <span class="setting-badge setting-prehosp">Pre-Hospital</span>
+                        <span class="card-status status-live">● Live</span>
+                    </div>
+                </div>
+                <div class="card-title">Paramedic Headache Assessment</div>
+                <div class="card-description">
+                    Structured approach to headache assessment in the pre-hospital setting. Covers red flag identification, differential diagnosis, SAAS clinical practice guidelines, pain management, and escalation pathways for life-threatening causes.
+                </div>
+                <div class="card-meta">
+                    <span class="meta-item"><span class="meta-icon">⏱</span> 60 min</span>
+                    <span class="meta-item"><span class="meta-icon">🚑</span> Pre-Hospital / SAAS</span>
+                    <span class="meta-item"><span class="meta-icon">👤</span> Paramedic</span>
+                </div>
+                <div class="card-tags">
+                    <span class="tag">Red Flags</span>
+                    <span class="tag">SAH</span>
+                    <span class="tag">Differential Dx</span>
+                    <span class="tag">SAAS CPGs</span>
+                </div>
+                <div class="card-button btn-launch">Launch Module →</div>
+            </a>
+
+        </div>
+
+        <!-- ── Emergency Department Category ── -->
+        <div class="category-divider">
+            <span class="divider-line"></span>
+            <span class="category-label cat-ed">🏥 Emergency Department</span>
+            <span class="divider-line"></span>
+        </div>
 
         <div class="module-grid">
 
@@ -374,7 +482,10 @@
             <a href="/modules/acs/" class="module-card available" style="text-decoration:none; color:inherit;">
                 <div class="card-header">
                     <div class="card-icon icon-acs">🫀</div>
-                    <span class="card-status status-live">● Live</span>
+                    <div class="card-status-row">
+                        <span class="setting-badge setting-ed">Rural ED</span>
+                        <span class="card-status status-live">● Live</span>
+                    </div>
                 </div>
                 <div class="card-title">Acute Coronary Syndrome</div>
                 <div class="card-description">
@@ -382,7 +493,7 @@
                 </div>
                 <div class="card-meta">
                     <span class="meta-item"><span class="meta-icon">⏱</span> 90 min</span>
-                    <span class="meta-item"><span class="meta-icon">🏥</span> Small Rural ED</span>
+                    <span class="meta-item"><span class="meta-icon">🏥</span> Small Rural ED (MMM 5–6)</span>
                     <span class="meta-item"><span class="meta-icon">👥</span> 1 MO + 1 TN + 1 BN</span>
                 </div>
                 <div class="card-tags">
@@ -396,9 +507,54 @@
 
         </div>
 
-        <!-- Coming Soon -->
-        <h2 class="section-title">🔧 In Development</h2>
+        <!-- ════════════════════════════════════════ -->
+        <!-- IN DEVELOPMENT                           -->
+        <!-- ════════════════════════════════════════ -->
+        <h2 class="section-title" style="margin-top: 2.5rem;">🔧 In Development</h2>
         <p class="section-subtitle">Modules currently being built — check back soon</p>
+
+        <!-- ── Pre-Hospital In Dev ── -->
+        <div class="category-divider">
+            <span class="divider-line"></span>
+            <span class="category-label cat-prehosp">🚑 Pre-Hospital</span>
+            <span class="divider-line"></span>
+        </div>
+
+        <div class="module-grid">
+
+            <!-- Pre-hosp Chest Pain -->
+            <div class="module-card coming-soon">
+                <div class="card-header">
+                    <div class="card-icon icon-acs">💔</div>
+                    <div class="card-status-row">
+                        <span class="setting-badge setting-prehosp">Pre-Hospital</span>
+                        <span class="card-status status-dev">In Dev</span>
+                    </div>
+                </div>
+                <div class="card-title">Paramedic Chest Pain Assessment</div>
+                <div class="card-description">
+                    Structured chest pain assessment in the field. Covers 12-lead ECG acquisition, STEMI recognition, cardiac vs non-cardiac differentiation, pain management, and hospital pre-alert pathways.
+                </div>
+                <div class="card-meta">
+                    <span class="meta-item"><span class="meta-icon">⏱</span> 60 min</span>
+                    <span class="meta-item"><span class="meta-icon">🚑</span> Pre-Hospital / SAAS</span>
+                </div>
+                <div class="card-tags">
+                    <span class="tag">12-Lead ECG</span>
+                    <span class="tag">STEMI</span>
+                    <span class="tag">Pre-Alert</span>
+                </div>
+                <div class="card-button btn-disabled">Coming Soon</div>
+            </div>
+
+        </div>
+
+        <!-- ── ED In Dev ── -->
+        <div class="category-divider">
+            <span class="divider-line"></span>
+            <span class="category-label cat-ed">🏥 Emergency Department</span>
+            <span class="divider-line"></span>
+        </div>
 
         <div class="module-grid">
 
@@ -406,7 +562,10 @@
             <div class="module-card coming-soon">
                 <div class="card-header">
                     <div class="card-icon icon-sepsis">🦠</div>
-                    <span class="card-status status-dev">In Dev</span>
+                    <div class="card-status-row">
+                        <span class="setting-badge setting-ed">Rural ED</span>
+                        <span class="card-status status-dev">In Dev</span>
+                    </div>
                 </div>
                 <div class="card-title">Sepsis Management</div>
                 <div class="card-description">
@@ -428,7 +587,10 @@
             <div class="module-card coming-soon">
                 <div class="card-header">
                     <div class="card-icon icon-trauma">🩸</div>
-                    <span class="card-status status-dev">In Dev</span>
+                    <div class="card-status-row">
+                        <span class="setting-badge setting-ed">Rural ED</span>
+                        <span class="card-status status-dev">In Dev</span>
+                    </div>
                 </div>
                 <div class="card-title">Major Trauma</div>
                 <div class="card-description">
@@ -450,7 +612,10 @@
             <div class="module-card coming-soon">
                 <div class="card-header">
                     <div class="card-icon icon-stroke">🧠</div>
-                    <span class="card-status status-dev">In Dev</span>
+                    <div class="card-status-row">
+                        <span class="setting-badge setting-ed">Rural ED</span>
+                        <span class="card-status status-dev">In Dev</span>
+                    </div>
                 </div>
                 <div class="card-title">Acute Stroke</div>
                 <div class="card-description">
@@ -472,7 +637,10 @@
             <div class="module-card coming-soon">
                 <div class="card-header">
                     <div class="card-icon icon-mh">🧩</div>
-                    <span class="card-status status-planned">Planned</span>
+                    <div class="card-status-row">
+                        <span class="setting-badge setting-ed">Rural ED</span>
+                        <span class="card-status status-planned">Planned</span>
+                    </div>
                 </div>
                 <div class="card-title">Mental Health Emergency</div>
                 <div class="card-description">
@@ -494,7 +662,10 @@
             <div class="module-card coming-soon">
                 <div class="card-header">
                     <div class="card-icon icon-paeds">👶</div>
-                    <span class="card-status status-planned">Planned</span>
+                    <div class="card-status-row">
+                        <span class="setting-badge setting-ed">Rural ED</span>
+                        <span class="card-status status-planned">Planned</span>
+                    </div>
                 </div>
                 <div class="card-title">Paediatric Emergency</div>
                 <div class="card-description">
@@ -517,7 +688,7 @@
     </main>
 
     <footer>
-        <div class="footer-line"><strong>DSY Training</strong> — Rural &amp; Remote Emergency Medicine Education</div>
+        <div class="footer-line"><strong>DSY Training</strong> — Pre-Hospital &amp; Rural Emergency Medicine Education</div>
         <div class="footer-line">Aligned with SA Health, SAAS, and MedSTAR frameworks</div>
         <div class="footer-line" style="margin-top: 0.5rem;">© 2026 DSY Production · <a href="mailto:cjmorgan69@icloud.com">Contact</a></div>
     </footer>
