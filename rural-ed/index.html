@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rural ED Modules — DSY Training</title>
+<meta name="description" content="Emergency department education for rural and remote clinicians. Aligned with SA Health frameworks, HIRAID, and Between the Flags.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--dsy-darkest:#001a00;--dsy-dark:#003300;--dsy-mid:#004d00;--dsy-accent:#c62828;--dsy-bright:#ef5350;--dsy-light:#fce4ec;--dsy-bg:#fdf5f5;--green-dark:#003300}
+html{font-size:18px}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--dsy-bg);color:#1a2e1a;line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+header{background:var(--green-dark);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.2)}
+.header-inner{max-width:1100px;margin:0 auto;padding:0.8rem 1.5rem;display:flex;align-items:center;gap:1rem}
+.header-logo iframe{display:block}
+.header-back{display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:rgba(255,255,255,0.7);transition:color 0.2s}
+.header-back:hover{color:#fff}
+.header-back svg{width:16px;height:16px;fill:currentColor}
+.header-title{flex:1;text-align:center}
+.header-title h1{font-size:1.15rem;font-weight:700;letter-spacing:-0.3px}
+.header-title span{font-size:0.7rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px}
+
+.page-intro{max-width:1100px;margin:0 auto;padding:2rem 1.5rem 1rem}
+.page-intro h2{font-size:1.6rem;font-weight:800;color:var(--green-dark);margin-bottom:0.4rem}
+.page-intro p{font-size:0.95rem;color:#555;max-width:720px}
+
+.scope-bar{max-width:1100px;margin:0.5rem auto 1.5rem;padding:0 1.5rem}
+.scope-bar-inner{background:var(--dsy-light);border-left:4px solid var(--dsy-accent);border-radius:0 10px 10px 0;padding:0.8rem 1.2rem;font-size:0.82rem;color:#b71c1c}
+.scope-bar-inner strong{font-weight:700}
+
+.modules-grid{max-width:1100px;margin:0 auto 2rem;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+
+.module-card{background:#fff;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,0.06);padding:1.8rem;transition:transform 0.25s ease,box-shadow 0.25s ease;border-left:5px solid var(--dsy-accent);display:flex;flex-direction:column}
+.module-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,0.1)}
+.module-card.dev{opacity:0.65;border-left-color:#bdbdbd}
+.module-card.dev:hover{transform:none;box-shadow:0 2px 16px rgba(0,0,0,0.06)}
+.module-card .badge{display:inline-block;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;padding:3px 10px;border-radius:20px;background:var(--dsy-bright);color:#fff;margin-bottom:0.8rem;width:fit-content}
+.module-card .badge.soon{background:#bdbdbd}
+.module-card h3{font-size:1.15rem;font-weight:700;color:var(--green-dark);margin-bottom:0.3rem}
+.module-card .protocol-ref{font-size:0.72rem;color:#888;margin-bottom:0.6rem;font-weight:500}
+.module-card p{font-size:0.88rem;color:#555;flex:1;margin-bottom:1rem}
+.module-card .card-meta{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem}
+.module-card .meta-tag{font-size:0.68rem;background:#f0f0f0;color:#555;padding:3px 8px;border-radius:6px}
+.module-link{display:inline-block;background:var(--dsy-accent);color:#fff;padding:0.6rem 1.4rem;border-radius:9px;font-size:0.85rem;font-weight:600;transition:background 0.2s}
+.module-link:hover{background:#b71c1c}
+
+.section-label{max-width:1100px;margin:2rem auto 0.8rem;padding:0 1.5rem;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--dsy-accent)}
+.section-label.dev-label{color:#999}
+
+footer{background:var(--dsy-darkest);color:rgba(255,255,255,0.5);text-align:center;padding:2rem 1.5rem;font-size:0.75rem;margin-top:2rem}
+footer a{color:var(--dsy-bright)}
+footer p+p{margin-top:0.3rem}
+
+@media(max-width:680px){.modules-grid{grid-template-columns:1fr}.header-logo{display:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-logo"><iframe src="https://simulationtheory.ai/64821e78-1f9b-4db1-8f38-6ad6ed4e6d1e" width="52" height="52" style="border:none;background:transparent" allow="autoplay" title="DSY Logo"></iframe></div>
+    <a href="../" class="header-back"><svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>All Modules</a>
+    <div class="header-title">
+      <span>Rural Emergency Department</span>
+      <h1>Rural ED Modules</h1>
+    </div>
+    <div style="width:52px"></div>
+  </div>
+</header>
+
+<div class="page-intro">
+  <h2>Rural Emergency Department Education</h2>
+  <p>Clinical education for rural and remote emergency department staff. Aligned with SA Health frameworks, HIRAID triage, Between the Flags early warning systems, and MedSTAR retrieval pathways.</p>
+</div>
+
+<div class="scope-bar">
+  <div class="scope-bar-inner">
+    <strong>Target Audience:</strong> Rural ED clinicians, registered nurses, nurse practitioners, and medical officers working in MMM 5-7 classified facilities. Content aligned with SA Health directives, iCARnet/iCCnet programs, and rural ED models of care.
+  </div>
+</div>
+
+<div class="section-label">Live Modules &mdash; 1 Available</div>
+
+<div class="modules-grid">
+
+  <div class="module-card">
+    <span class="badge">Live</span>
+    <h3>Acute Coronary Syndrome</h3>
+    <div class="protocol-ref">SA Health ACS Pathway &bull; Rural ED Module</div>
+    <p>Comprehensive ACS management for the rural ED setting. Covers initial assessment, ECG interpretation, risk stratification, time-critical interventions, Tenecteplase pathway for STEMI, and MedSTAR retrieval activation.</p>
+    <div class="card-meta">
+      <span class="meta-tag">STEMI Pathway</span>
+      <span class="meta-tag">Risk Stratification</span>
+      <span class="meta-tag">MedSTAR Retrieval</span>
+      <span class="meta-tag">Tenecteplase</span>
+    </div>
+    <a href="../modules/acs/" class="module-link">Open Module &rarr;</a>
+  </div>
+
+</div>
+
+<div class="section-label dev-label">In Development &mdash; 4 Planned</div>
+
+<div class="modules-grid">
+
+  <div class="module-card dev">
+    <span class="badge soon">In Development</span>
+    <h3>Major Trauma</h3>
+    <div class="protocol-ref">Rural ED Module</div>
+    <p>Primary and secondary survey, damage control resuscitation, massive transfusion protocol activation, and MedSTAR retrieval for the rural ED.</p>
+  </div>
+
+  <div class="module-card dev">
+    <span class="badge soon">In Development</span>
+    <h3>Acute Stroke</h3>
+    <div class="protocol-ref">Rural ED Module</div>
+    <p>Rapid stroke recognition, NIHSS scoring, time-critical imaging decisions, thrombolysis eligibility, and telestroke/retrieval pathways.</p>
+  </div>
+
+  <div class="module-card dev">
+    <span class="badge soon">In Development</span>
+    <h3>Mental Health Emergency</h3>
+    <div class="protocol-ref">Rural ED Module</div>
+    <p>Acute behavioural disturbance, risk assessment frameworks, de-escalation, safety planning, and legislative requirements in the rural ED context.</p>
+  </div>
+
+  <div class="module-card dev">
+    <span class="badge soon">In Development</span>
+    <h3>Paediatric Emergency</h3>
+    <div class="protocol-ref">Rural ED Module</div>
+    <p>Paediatric assessment, weight-based interventions, common paediatric emergencies, and retrieval activation for the rural ED with limited paediatric resources.</p>
+  </div>
+
+</div>
+
+<footer>
+  <p>&copy; 2025 DSY Training &mdash; <a href="../">Back to Hub</a></p>
+  <p>For educational purposes. Always follow current clinical guidelines and local protocols.</p>
+</footer>
+
+</body>
+</html>

@@ -3,226 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta property="og:title" content="DSY Training — Pre-Hospital & Rural Emergency Medicine">
-<meta property="og:description" content="Microlearning modules for South Australian paramedics, ambulance volunteers, and rural emergency departments. Pre-hospital and ED-based, scenario-driven, protocol-aligned.">
-<meta property="og:type" content="website">
-<title>DSY Training — Pre-Hospital & Rural Emergency Medicine</title>
+<title>DSY Training — Pre-Hospital & Rural Emergency Medicine Education</title>
+<meta name="description" content="Scenario-driven, protocol-aligned microlearning modules for ambulance volunteers, paramedics, and rural emergency department clinicians.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-html{font-size:18px;scroll-behavior:smooth;}
-body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#001a00;color:#c8e6c9;min-height:100vh;line-height:1.6;}
+:root{--dsy-darkest:#001a00;--dsy-dark:#003300;--dsy-mid:#004d00;--dsy-accent:#00802b;--dsy-bright:#00cc44;--dsy-light:#e8f5e9;--dsy-bg:#f5faf5;--dsy-text:#e0e0e0;--dsy-text-dark:#1a2e1a}
+html{font-size:18px}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--dsy-bg);color:var(--dsy-text-dark);line-height:1.6}
+a{text-decoration:none;color:inherit}
 
-.sticky-header{position:sticky;top:0;z-index:1000;background:linear-gradient(135deg,#001a00 0%,#002d00 50%,#001a00 100%);border-bottom:1px solid rgba(76,175,80,0.2);padding:0.6rem 1.2rem;display:flex;align-items:center;gap:1rem;}
-.sticky-header .logo-frame{flex-shrink:0;width:60px;height:60px;overflow:hidden;border-radius:10px;}
-.sticky-header .logo-frame iframe{display:block;}
-.sticky-header .header-title{flex:1;font-size:1rem;font-weight:700;color:#e8f5e9;line-height:1.3;}
-.sticky-header .header-title span{color:#69f0ae;font-weight:400;font-size:0.8rem;display:block;}
+.hero{background:linear-gradient(160deg,var(--dsy-darkest) 0%,var(--dsy-dark) 40%,var(--dsy-mid) 100%);color:#fff;padding:3rem 1.5rem 4rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 50%,rgba(0,204,68,0.06) 0%,transparent 60%);pointer-events:none}
+.hero-logo{margin:0 auto 1.5rem}
+.hero h1{font-size:2.4rem;font-weight:800;margin-bottom:0.5rem;letter-spacing:-0.5px}
+.hero .subtitle{font-size:1.1rem;font-weight:300;color:rgba(255,255,255,0.75);max-width:640px;margin:0 auto 0.5rem}
+.hero .tagline{font-size:0.85rem;color:rgba(255,255,255,0.5);margin-top:1rem}
 
-.hero{background:linear-gradient(135deg,#002200 0%,#003300 50%,#001a00 100%);padding:3rem 1.5rem 2.5rem;text-align:center;border-bottom:1px solid rgba(76,175,80,0.15);}
-.hero h1{font-size:1.8rem;font-weight:800;color:#e8f5e9;margin-bottom:0.5rem;}
-.hero h1 em{font-style:normal;color:#69f0ae;}
-.hero .subtitle{font-size:1rem;color:#a5d6a7;margin-bottom:1.5rem;max-width:700px;margin-left:auto;margin-right:auto;}
-.hero-stats{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;margin-top:1.5rem;}
-.stat-badge{background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);border-radius:12px;padding:0.75rem 1.25rem;text-align:center;min-width:120px;}
-.stat-badge .stat-num{font-size:1.5rem;font-weight:800;color:#69f0ae;display:block;}
-.stat-badge .stat-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:#a5d6a7;}
+.pathways{max-width:1100px;margin:-2.5rem auto 3rem;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;position:relative;z-index:2}
+.pathway-card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.08);padding:2rem 1.8rem;transition:transform 0.25s ease,box-shadow 0.25s ease;border-top:5px solid var(--dsy-accent);display:flex;flex-direction:column}
+.pathway-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,0.12)}
+.pathway-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:1.2rem}
+.pathway-card h2{font-size:1.3rem;font-weight:700;margin-bottom:0.4rem;color:var(--dsy-dark)}
+.pathway-card .level-badge{display:inline-block;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:3px 10px;border-radius:20px;margin-bottom:0.8rem}
+.pathway-card p{font-size:0.95rem;color:#555;flex:1;margin-bottom:1.2rem}
+.pathway-card .module-count{font-size:0.82rem;color:var(--dsy-accent);font-weight:600;margin-bottom:1rem}
+.pathway-btn{display:inline-block;background:var(--dsy-dark);color:#fff;padding:0.7rem 1.6rem;border-radius:10px;font-size:0.9rem;font-weight:600;transition:background 0.2s ease;text-align:center}
+.pathway-btn:hover{background:var(--dsy-mid)}
 
-main{max-width:1000px;margin:0 auto;padding:2rem 1.2rem 4rem;}
+.card-ao .pathway-icon{background:#e8f5e9;color:var(--dsy-accent)}
+.card-ao .level-badge{background:#e8f5e9;color:var(--dsy-accent)}
+.card-para .pathway-icon{background:#e3f2fd;color:#1565c0}
+.card-para .level-badge{background:#e3f2fd;color:#1565c0}
+.card-para{border-top-color:#1565c0}
+.card-para .pathway-btn{background:#1565c0}
+.card-para .pathway-btn:hover{background:#0d47a1}
+.card-para .module-count{color:#1565c0}
+.card-ed .pathway-icon{background:#fce4ec;color:#c62828}
+.card-ed .level-badge{background:#fce4ec;color:#c62828}
+.card-ed{border-top-color:#c62828}
+.card-ed .pathway-btn{background:#c62828}
+.card-ed .pathway-btn:hover{background:#b71c1c}
+.card-ed .module-count{color:#c62828}
 
-.section-title{font-size:1.25rem;font-weight:700;color:#e8f5e9;margin:2rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid #1a4d1a;}
-.section-subtitle{font-size:0.85rem;color:#81c784;margin:-0.5rem 0 1.5rem;font-weight:400;}
+.info-bar{max-width:1100px;margin:0 auto 3rem;padding:0 1.5rem}
+.info-bar-inner{background:var(--dsy-dark);color:#fff;border-radius:14px;padding:1.5rem 2rem;display:flex;flex-wrap:wrap;justify-content:center;gap:2rem;text-align:center}
+.info-stat{display:flex;flex-direction:column;align-items:center}
+.info-stat .num{font-size:2rem;font-weight:800;color:var(--dsy-bright)}
+.info-stat .label{font-size:0.75rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.5px}
 
-.framework-badges{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem;justify-content:center;}
-.fw-badge{display:inline-block;padding:0.3rem 0.75rem;border-radius:20px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
-.fw-badge.sahealth{background:rgba(33,150,243,0.12);color:#90caf9;border:1px solid rgba(33,150,243,0.3);}
-.fw-badge.prehospital{background:rgba(76,175,80,0.12);color:#69f0ae;border:1px solid rgba(76,175,80,0.3);}
-.fw-badge.rural{background:rgba(255,193,7,0.12);color:#ffd54f;border:1px solid rgba(255,193,7,0.3);}
-.fw-badge.mmm{background:rgba(156,39,176,0.12);color:#ce93d8;border:1px solid rgba(156,39,176,0.3);}
+footer{background:var(--dsy-darkest);color:rgba(255,255,255,0.5);text-align:center;padding:2rem 1.5rem;font-size:0.75rem}
+footer a{color:var(--dsy-bright);font-weight:500}
+footer p+p{margin-top:0.3rem}
 
-.module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;margin-bottom:2rem;}
-
-.module-card{background:#0d2b0d;border:1px solid #1a4d1a;border-radius:12px;padding:1.5rem;transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;display:flex;flex-direction:column;text-decoration:none;color:inherit;cursor:pointer;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease,border-color 0.2s,box-shadow 0.2s;}
-.module-card.visible{opacity:1;transform:translateY(0);}
-.module-card:hover{border-color:#4caf50;box-shadow:0 4px 20px rgba(76,175,80,0.15);transform:translateY(-2px);}
-.module-card.visible:hover{transform:translateY(-2px);}
-.module-card .card-badges{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem;}
-.card-badge{display:inline-block;padding:0.2rem 0.5rem;border-radius:12px;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
-.badge-live{background:rgba(76,175,80,0.15);color:#69f0ae;border:1px solid rgba(76,175,80,0.3);}
-.badge-dev{background:rgba(255,193,7,0.15);color:#ffd54f;border:1px solid rgba(255,193,7,0.3);}
-.badge-prehospital{background:rgba(33,150,243,0.1);color:#90caf9;border:1px solid rgba(33,150,243,0.25);}
-.badge-ruraled{background:rgba(156,39,176,0.1);color:#ce93d8;border:1px solid rgba(156,39,176,0.25);}
-.module-card h3{font-size:1.05rem;font-weight:700;color:#e8f5e9;margin-bottom:0.5rem;}
-.module-card p{font-size:0.85rem;color:#a5d6a7;flex:1;}
-.module-card .card-link{display:inline-block;margin-top:1rem;font-size:0.8rem;font-weight:700;color:#69f0ae;text-decoration:none;letter-spacing:0.5px;}
-.module-card .card-link:hover{text-decoration:underline;}
-
-.dev-card{opacity:0.6;border-style:dashed;}
-.dev-card:hover{opacity:0.8;}
-
-footer{text-align:center;padding:2rem 1.2rem;border-top:1px solid #1a4d1a;font-size:0.8rem;color:#4a7c4a;}
-footer a{color:#69f0ae;text-decoration:none;}
-footer a:hover{text-decoration:underline;}
-
-@media(max-width:700px){
-.hero h1{font-size:1.4rem;}
-.sticky-header{padding:0.5rem 0.8rem;}
-.sticky-header .logo-frame{width:44px;height:44px;}
-main{padding:1.5rem 0.8rem 3rem;}
-.module-grid{grid-template-columns:1fr;}
-}
+@media(max-width:680px){.hero h1{font-size:1.8rem}.pathways{grid-template-columns:1fr}.info-bar-inner{flex-direction:column;gap:1rem}}
 </style>
 </head>
 <body>
 
-<div class="sticky-header">
- <div class="logo-frame">
-  <iframe src="https://simulationtheory.ai/64821e78-1f9b-4db1-8f38-6ad6ed4e6d1e" width="60" height="60" style="border:none;background:transparent;" allow="autoplay"></iframe>
- </div>
- <div class="header-title">DSY Training<span>Pre-Hospital &amp; Rural Emergency Medicine Education</span></div>
-</div>
-
-<div class="hero">
- <h1>DSY <em>Training</em></h1>
- <p class="subtitle">Microlearning modules for South Australian paramedics, ambulance volunteers, and rural emergency departments. Pre-hospital and ED-based, scenario-driven, protocol-aligned.</p>
- <div class="framework-badges">
-  <span class="fw-badge sahealth">SA Health Frameworks</span>
-  <span class="fw-badge prehospital">Pre-Hospital / SAAS</span>
-  <span class="fw-badge rural">Rural &amp; Remote ED</span>
-  <span class="fw-badge mmm">MMM 5-7</span>
- </div>
- <div class="hero-stats">
-  <div class="stat-badge"><span class="stat-num">5</span><span class="stat-label">Modules Live</span></div>
-  <div class="stat-badge"><span class="stat-num">4</span><span class="stat-label">In Development</span></div>
-  <div class="stat-badge"><span class="stat-num">2</span><span class="stat-label">Frameworks</span></div>
- </div>
-</div>
-
-<main>
-
-<h2 class="section-title">Pre-Hospital Modules</h2>
-<p class="section-subtitle">SAAS protocol-aligned scenario walk-throughs for Volunteer Ambulance Officers</p>
-
-<div class="module-grid">
-
- <a href="modules/chest-pain/index.html" class="module-card">
-  <div class="card-badges">
-   <span class="card-badge badge-live">Live</span>
-   <span class="card-badge badge-prehospital">Pre-Hospital</span>
+<section class="hero">
+  <div class="hero-logo">
+    <iframe src="https://simulationtheory.ai/64821e78-1f9b-4db1-8f38-6ad6ed4e6d1e" width="120" height="120" style="border:none;background:transparent" allow="autoplay" title="DSY Logo"></iframe>
   </div>
-  <h3>Chest Pain &mdash; Volunteer AO Scenario</h3>
-  <p>Walk-through scenario covering ACS recognition, Aspirin and GTN administration, 4-lead ECG, EOC escalation, and ISBAR handover. Based on SAAS Chest Pain &mdash; AO Protocol (CPP-007-AO).</p>
-  <span class="card-link">Open Module &rarr;</span>
- </a>
+  <h1>DSY Training</h1>
+  <p class="subtitle">Pre-Hospital &amp; Rural Emergency Medicine Education</p>
+  <p class="tagline">Scenario-driven &bull; Protocol-aligned &bull; Microlearning</p>
+</section>
 
- <a href="modules/nausea-vomiting/index.html" class="module-card">
-  <div class="card-badges">
-   <span class="card-badge badge-live">Live</span>
-   <span class="card-badge badge-prehospital">Pre-Hospital</span>
-  </div>
-  <h3>Nausea &amp; Vomiting &mdash; Volunteer AO Scenario</h3>
-  <p>Walk-through scenario covering Ondansetron ODT administration, contraindication screening, age-based dosing, EOC escalation triggers, and reassessment. Based on SAAS Nausea and Vomiting &mdash; AO Protocol.</p>
-  <span class="card-link">Open Module &rarr;</span>
- </a>
+<div class="pathways">
 
- <a href="modules/headache/index.html" class="module-card">
-  <div class="card-badges">
-   <span class="card-badge badge-live">Live</span>
-   <span class="card-badge badge-prehospital">Pre-Hospital</span>
-  </div>
-  <h3>Paramedic Headache Assessment</h3>
-  <p>Comprehensive headache assessment module covering red flag identification, differential diagnosis, and structured clinical decision-making for pre-hospital clinicians.</p>
-  <span class="card-link">Open Module &rarr;</span>
- </a>
+  <a href="ao/" class="pathway-card card-ao">
+    <div class="pathway-icon">&#x1F691;</div>
+    <span class="level-badge">Volunteer AO</span>
+    <h2>Ambulance Officer Modules</h2>
+    <p>Walk-through scenarios designed for 2-person Volunteer AO crews in regional and rural settings. Protocol-aligned, operationally focused.</p>
+    <div class="module-count">3 Modules Live</div>
+    <span class="pathway-btn">View AO Modules &rarr;</span>
+  </a>
 
- <a href="modules/sepsis/index.html" class="module-card">
-  <div class="card-badges">
-   <span class="card-badge badge-live">Live</span>
-   <span class="card-badge badge-prehospital">Pre-Hospital</span>
-  </div>
-  <h3>Sepsis &mdash; Volunteer AO Scenario</h3>
-  <p>Walk-through scenario covering sepsis recognition, NEWS2 Sepsis Screening, suspected septic shock management, IM Ceftriaxone preparation for meningococcal, EOC escalation, and ISBAR handover. Based on SAAS Sepsis &mdash; AO Protocol (CPP-062-AO).</p>
-  <span class="card-link">Open Module &rarr;</span>
- </a>
+  <a href="paramedic/" class="pathway-card card-para">
+    <div class="pathway-icon">&#x2695;</div>
+    <span class="level-badge">Paramedic</span>
+    <h2>Paramedic Modules</h2>
+    <p>Clinical education modules for Paramedic-level clinicians. Detailed assessment frameworks, differential diagnosis, and escalation pathways.</p>
+    <div class="module-count">1 Module Live</div>
+    <span class="pathway-btn">View Paramedic Modules &rarr;</span>
+  </a>
+
+  <a href="rural-ed/" class="pathway-card card-ed">
+    <div class="pathway-icon">&#x1F3E5;</div>
+    <span class="level-badge">Rural ED</span>
+    <h2>Rural ED Modules</h2>
+    <p>Emergency department education for rural and remote clinicians. Aligned with SA Health frameworks, HIRAID, and Between the Flags.</p>
+    <div class="module-count">1 Module Live &bull; 4 In Development</div>
+    <span class="pathway-btn">View Rural ED Modules &rarr;</span>
+  </a>
 
 </div>
 
-<h2 class="section-title">Rural Emergency Department Modules</h2>
-<p class="section-subtitle">SA Health framework-aligned education for rural and remote ED clinicians</p>
-
-<div class="module-grid">
-
- <a href="modules/acs/index.html" class="module-card">
-  <div class="card-badges">
-   <span class="card-badge badge-live">Live</span>
-   <span class="card-badge badge-ruraled">Rural ED</span>
+<div class="info-bar">
+  <div class="info-bar-inner">
+    <div class="info-stat"><span class="num">5</span><span class="label">Modules Live</span></div>
+    <div class="info-stat"><span class="num">4</span><span class="label">In Development</span></div>
+    <div class="info-stat"><span class="num">3</span><span class="label">Clinical Levels</span></div>
+    <div class="info-stat"><span class="num">SA</span><span class="label">SAAS Protocol Aligned</span></div>
   </div>
-  <h3>Acute Coronary Syndrome</h3>
-  <p>Comprehensive ACS module for rural emergency departments covering STEMI recognition, risk stratification, Tenecteplase decision-making, and MedSTAR retrieval pathways. Aligned with SA Health frameworks.</p>
-  <span class="card-link">Open Module &rarr;</span>
- </a>
-
 </div>
-
-<h2 class="section-title">In Development</h2>
-<p class="section-subtitle">Modules currently being built &mdash; check back soon</p>
-
-<div class="module-grid">
-
- <div class="module-card dev-card visible">
-  <div class="card-badges">
-   <span class="card-badge badge-dev">In Development</span>
-   <span class="card-badge badge-ruraled">Rural ED</span>
-  </div>
-  <h3>Major Trauma</h3>
-  <p>Rural ED major trauma assessment and management, including primary and secondary survey, damage control resuscitation, and retrieval pathways.</p>
- </div>
-
- <div class="module-card dev-card visible">
-  <div class="card-badges">
-   <span class="card-badge badge-dev">In Development</span>
-   <span class="card-badge badge-ruraled">Rural ED</span>
-  </div>
-  <h3>Acute Stroke</h3>
-  <p>Time-critical stroke assessment, FAST screening, thrombolysis decision-making, and telestroke pathways for rural emergency departments.</p>
- </div>
-
- <div class="module-card dev-card visible">
-  <div class="card-badges">
-   <span class="card-badge badge-dev">In Development</span>
-   <span class="card-badge badge-ruraled">Rural ED</span>
-  </div>
-  <h3>Mental Health Emergency</h3>
-  <p>Mental health crisis assessment and management in the rural ED setting, including risk assessment, de-escalation, and legislative frameworks.</p>
- </div>
-
- <div class="module-card dev-card visible">
-  <div class="card-badges">
-   <span class="card-badge badge-dev">In Development</span>
-   <span class="card-badge badge-ruraled">Rural ED</span>
-  </div>
-  <h3>Paediatric Emergency</h3>
-  <p>Paediatric emergency assessment and management for rural EDs, covering the sick child, paediatric resuscitation, and retrieval pathways.</p>
- </div>
-
-</div>
-
-</main>
 
 <footer>
- <p><strong>DSY Training</strong> &mdash; Pre-Hospital &amp; Rural Emergency Medicine Education</p>
- <p style="margin-top:0.5rem;">&copy; 2026 DSY Production &middot; <a href="mailto:cjmorgan69@icloud.com">Contact</a></p>
+  <p>&copy; 2025 DSY Training &mdash; Pre-Hospital &amp; Rural Emergency Medicine Education</p>
+  <p>For educational purposes. Always follow current clinical guidelines and local protocols.</p>
 </footer>
-
-<script>
-const observer=new IntersectionObserver((entries)=>{
- entries.forEach(entry=>{
-  if(entry.isIntersecting){
-   entry.target.classList.add('visible');
-  }
- });
-},{threshold:0.08});
-document.querySelectorAll('.module-card:not(.dev-card)').forEach(el=>observer.observe(el));
-</script>
 
 </body>
 </html>
