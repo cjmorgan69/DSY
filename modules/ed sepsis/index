@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rural ED Sepsis Simulation — SA Health Adult Sepsis Pathway</title>
+<style>
+:root{
+--base:#0A1628;--card:#1B2A4A;--secondary:#2C3E6B;--accent:#4A90D9;
+--light:#E8EEF7;--white:#FFFFFF;--warn:#E8A838;--crit:#D94A4A;
+--success:#3DAA6D;--bp-border:#D94A4A;--radius:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:18px;scroll-behavior:smooth;scroll-padding-top:90px;}
+body{
+font-family:'Segoe UI',Inter,system-ui,-apple-system,sans-serif;
+background:var(--base);color:var(--white);line-height:1.65;
+-webkit-font-smoothing:antialiased;
+}
+
+/* ── sticky header ── */
+.site-header{
+position:sticky;top:0;z-index:100;
+background:linear-gradient(135deg,var(--card),var(--secondary));
+border-bottom:1px solid rgba(74,144,217,.25);
+padding:1rem 1.5rem .6rem;text-align:center;
+}
+.site-header h1{font-size:1.35rem;font-weight:700;letter-spacing:.02em;}
+.site-header p{font-size:.82rem;opacity:.75;margin-top:.15rem;}
+.progress-track{
+height:4px;background:rgba(255,255,255,.1);margin-top:.55rem;border-radius:2px;
+}
+.progress-bar{height:100%;width:0%;background:var(--accent);border-radius:2px;transition:width .15s;}
+
+/* ── layout ── */
+main{max-width:960px;margin:0 auto;padding:1.5rem 1rem 4rem;}
+
+/* ── section cards ── */
+.section-card{
+background:var(--card);border-radius:var(--radius);
+padding:1.6rem 1.5rem;margin-bottom:1.5rem;
+border:1px solid rgba(74,144,217,.12);
+}
+.section-card.fade-section{opacity:0;transform:translateY(28px);transition:opacity .55s ease,transform .55s ease;}
+.section-card.fade-section.visible{opacity:1;transform:translateY(0);}
+
+.section-label{
+font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;
+color:var(--accent);font-weight:700;margin-bottom:.35rem;
+}
+.section-card h2{font-size:1.25rem;font-weight:700;margin-bottom:.85rem;color:var(--white);}
+.section-card h3{font-size:1.05rem;font-weight:600;margin:1.1rem 0 .5rem;color:var(--accent);}
+.section-card h4{font-size:.95rem;font-weight:600;margin:1rem 0 .4rem;color:var(--light);}
+
+p,li,.checklist-item,.quiz-option{font-size:1rem;line-height:1.65;}
+.meta{font-size:.82rem;color:rgba(255,255,255,.6);}
+
+ul,ol{padding-left:1.3rem;margin:.4rem 0 .8rem;}
+li{margin-bottom:.35rem;}
+
+/* ── context banner ── */
+.context-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-top:.6rem;}
+.context-item{
+background:var(--secondary);border-radius:8px;padding:.65rem .85rem;
+font-size:.88rem;
+}
+.context-item strong{display:block;color:var(--accent);font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.15rem;}
+@media(max-width:560px){.context-grid{grid-template-columns:1fr;}}
+
+/* ── checklists ── */
+.checklist{list-style:none;padding-left:0;}
+.checklist li{
+padding:.45rem 0 .45rem 2rem;position:relative;
+border-bottom:1px solid rgba(255,255,255,.06);
+}
+.checklist li::before{
+content:'☐';position:absolute;left:.1rem;top:.45rem;
+color:var(--accent);font-size:1.05rem;
+}
+
+/* ── accordion ── */
+.accordion{margin-bottom:1.5rem;}
+.accordion-toggle{
+width:100%;background:var(--card);color:var(--white);
+border:1px solid rgba(74,144,217,.2);border-radius:var(--radius);
+padding:1rem 1.3rem;text-align:left;cursor:pointer;
+font-size:1rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;
+min-height:52px;
+}
+.accordion-toggle:hover,.accordion-toggle:focus{border-color:var(--accent);outline:none;}
+.accordion-toggle .arrow{transition:transform .3s;font-size:1.1rem;color:var(--accent);}
+.accordion-toggle.open .arrow{transform:rotate(180deg);}
+.accordion-body{
+max-height:0;overflow:hidden;transition:max-height .4s ease;
+background:var(--card);border:1px solid rgba(74,144,217,.12);
+border-top:none;border-radius:0 0 var(--radius) var(--radius);
+}
+.accordion-body.open{max-height:10000px;}
+.accordion-inner{padding:1.3rem 1.5rem;}
+.accordion-inner h3:first-child{margin-top:0;}
+
+/* ── break points ── */
+.break-point{
+background:rgba(217,74,74,.06);
+border-left:4px solid var(--crit);
+border-radius:0 var(--radius) var(--radius) 0;
+padding:1.4rem 1.5rem;margin:1.3rem 0;
+}
+.bp-header{
+display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem;flex-wrap:wrap;
+}
+.bp-badge{
+background:var(--crit);color:var(--white);font-size:.72rem;
+font-weight:700;padding:.2rem .6rem;border-radius:4px;
+text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;
+}
+.bp-type{font-size:.78rem;color:var(--warn);font-weight:600;}
+.bp-header h4{font-size:1.05rem;font-weight:700;width:100%;margin:0;color:var(--white);}
+
+/* ── obs table ── */
+.obs-table{
+width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.92rem;
+}
+.obs-table th,.obs-table td{
+padding:.5rem .7rem;border:1px solid rgba(74,144,217,.18);text-align:left;
+}
+.obs-table th{background:var(--secondary);font-weight:600;color:var(--accent);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;}
+.obs-table td{background:rgba(11,22,40,.4);}
+.obs-table .flag-purple{color:#ff6b6b;font-weight:700;}
+.obs-table .flag-red{color:var(--warn);font-weight:700;}
+
+/* ── pathway box ── */
+.pathway-box{
+background:linear-gradient(135deg,rgba(74,144,217,.1),rgba(74,144,217,.04));
+border:1px solid rgba(74,144,217,.3);border-radius:var(--radius);
+padding:1.2rem 1.4rem;margin:.8rem 0;
+}
+.pathway-box h4{color:var(--accent);margin-top:0;}
+
+/* ── time badge ── */
+.time-badge{
+display:inline-block;background:var(--crit);color:var(--white);
+font-size:.74rem;font-weight:700;padding:.2rem .65rem;border-radius:4px;
+margin-right:.4rem;
+}
+.time-badge.caution{background:var(--warn);color:var(--base);}
+
+/* ── ISBAR block ── */
+.isbar-block{
+background:var(--secondary);border-radius:var(--radius);
+padding:1.2rem 1.4rem;margin:.8rem 0;
+border-left:3px solid var(--accent);
+}
+.isbar-block dt{
+color:var(--accent);font-weight:700;font-size:.82rem;
+text-transform:uppercase;letter-spacing:.06em;margin-top:.7rem;
+}
+.isbar-block dt:first-of-type{margin-top:0;}
+.isbar-block dd{margin:0 0 0 .1rem;}
+
+/* ── role tag ── */
+.role{
+display:inline-block;font-size:.72rem;font-weight:700;
+padding:.15rem .5rem;border-radius:3px;letter-spacing:.04em;
+vertical-align:middle;margin-right:.3rem;
+}
+.role-rn1{background:#1a6b4a;color:#b6f5d8;}
+.role-rn2{background:#5a3d8a;color:#dbc6fa;}
+.role-doc{background:#8a5a1a;color:#fae0b6;}
+
+/* ── variation cards ── */
+.var-card{
+background:var(--secondary);border-radius:8px;
+padding:1rem 1.2rem;margin-bottom:.7rem;
+border-left:3px solid var(--warn);
+}
+.var-card strong{color:var(--warn);}
+
+/* ── quiz ── */
+.quiz-wrap{margin:.8rem 0;}
+.quiz-q{font-weight:600;margin-bottom:.5rem;}
+.quiz-option{
+display:block;width:100%;text-align:left;
+background:var(--secondary);color:var(--white);
+border:1px solid rgba(74,144,217,.2);border-radius:8px;
+padding:.65rem 1rem;margin-bottom:.45rem;
+cursor:pointer;font-size:1rem;min-height:48px;
+transition:border-color .2s,background .2s;
+}
+.quiz-option:hover{border-color:var(--accent);}
+.quiz-option.correct{background:rgba(61,170,109,.2);border-color:var(--success);}
+.quiz-option.wrong{background:rgba(217,74,74,.15);border-color:var(--crit);}
+.quiz-feedback{font-size:.88rem;margin-top:.4rem;padding:.5rem .8rem;border-radius:6px;display:none;}
+.quiz-feedback.show{display:block;}
+.quiz-feedback.correct-fb{background:rgba(61,170,109,.12);color:var(--success);}
+.quiz-feedback.wrong-fb{background:rgba(217,74,74,.1);color:#ff8a8a;}
+
+/* ── footer ── */
+.module-footer{
+text-align:center;padding:2rem 1rem;font-size:.78rem;
+color:rgba(255,255,255,.4);border-top:1px solid rgba(255,255,255,.06);
+margin-top:2rem;
+}
+.source-ref{
+background:var(--card);border-radius:var(--radius);
+padding:1rem 1.3rem;margin-top:1.5rem;font-size:.82rem;
+border:1px solid rgba(74,144,217,.12);
+}
+.source-ref strong{color:var(--accent);}
+
+/* ── responsive ── */
+@media(max-width:600px){
+html{font-size:16px;}
+.section-card{padding:1.2rem 1rem;}
+.accordion-inner{padding:1rem;}
+.break-point{padding:1rem;}
+.obs-table{font-size:.82rem;}
+.obs-table th,.obs-table td{padding:.35rem .45rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ STICKY HEADER ═══════════════ -->
+<header class="site-header">
+<h1>Sepsis in the Rural ED</h1>
+<p>SA Health Adult Sepsis Pathway (December 2024) — Simulation Scenario</p>
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+</header>
+
+<main>
+
+<!-- ═══════════════ 1. TITLE & CONTEXT ═══════════════ -->
+<section class="section-card fade-section" id="s1">
+<div class="section-label">Section 1</div>
+<h2>"He's Not Right" — Urosepsis in a 72-Year-Old Farmer</h2>
+<div class="context-grid">
+<div class="context-item"><strong>Setting</strong>Small rural SA hospital, Level 4 ED. 65 minutes by road from nearest regional centre.</div>
+<div class="context-item"><strong>Time</strong>Sunday, 0245 hrs</div>
+<div class="context-item"><strong>Staffing</strong>2 RNs + 1 Doctor (GP VMO) on call — doctor called in from home</div>
+<div class="context-item"><strong>ED Status</strong>1 other patient: 78F, stable Colles fracture, awaiting morning ortho review. Resting comfortably.</div>
+<div class="context-item"><strong>Retrieval</strong>MedSTAR — estimated response time 2–3 hours pending availability and weather</div>
+<div class="context-item"><strong>Diagnostics</strong>ECG, i-STAT (BGL, lactate, blood gas), urinalysis. No after-hours pathology. No CT. No ultrasound.</div>
+</div>
+<p style="margin-top:.9rem;">
+Patient arrives by private vehicle. His wife has driven him 25 km from their farm. She comes through the ED entrance supporting him by the arm. He is flushed, confused, and unsteady. She says: <em>"He's not right — he's been crook for two days and now he's talking nonsense."</em>
+</p>
+</section>
+
+<!-- ═══════════════ 2. LEARNING OBJECTIVES ═══════════════ -->
+<section class="section-card fade-section" id="s2">
+<div class="section-label">Section 2</div>
+<h2>Learning Objectives</h2>
+<ol>
+<li>Apply the <strong>SA Health Adult Sepsis Pathway</strong> to recognise infection with organ dysfunction in a rural ED presentation.</li>
+<li>Assign an accurate <strong>ATS triage category</strong> and initiate time-critical interventions using <strong>HIRAID</strong>.</li>
+<li>Demonstrate the sepsis resuscitation bundle — <strong>Oxygen, IV Access &amp; Blood Cultures, IV Antibiotics, IV Fluids — within 60 minutes</strong>.</li>
+<li>Identify <strong>Purple and Red Zone RDR observations</strong> and escalate appropriately in a resource-limited setting.</li>
+<li>Practise structured <strong>ISBAR communication</strong> for MedSTAR retrieval referral.</li>
+<li>Coordinate <strong>stabilisation, monitoring, and transfer preparation</strong> as a small rural team of 2 RNs and 1 Doctor.</li>
+<li>Recognise the emotional and operational complexity of <strong>caring for a known community member</strong> in a rural ED.</li>
+</ol>
+</section>
+
+<!-- ═══════════════ 3. REQUIRED EQUIPMENT ═══════════════ -->
+<section class="section-card fade-section" id="s3">
+<div class="section-label">Section 3</div>
+<h2>Required Equipment</h2>
+<h3>Available</h3>
+<ul class="checklist">
+<li>Cardiac monitor / defibrillator with SpO2, NIBP, ECG</li>
+<li>Oxygen delivery: nasal prongs, Hudson mask, non-rebreather mask</li>
+<li>Resuscitation trolley (airway adjuncts, BVM, suction)</li>
+<li>IV access equipment: cannulae (18G, 20G), tourniquet, dressings, flushes</li>
+<li>Blood culture bottles (aerobic &amp; anaerobic) x 2 sets, blood collection tubes</li>
+<li>i-STAT or point-of-care analyser (BGL, lactate, VBG)</li>
+<li>IV fluids: Sodium chloride 0.9%, Hartmann's solution</li>
+<li>Pressure bag for rapid fluid infusion</li>
+<li>IV antibiotics as per imprest (verify local stock)</li>
+<li>Urinalysis dipsticks, specimen jar</li>
+<li>IDC insertion kit</li>
+<li>Thermometer (tympanic or temporal)</li>
+<li>Fluid balance chart, medication chart, clinical handover proforma</li>
+<li>SA Health Adult Sepsis Pathway (printed or electronic)</li>
+<li>Therapeutic Guidelines: Antibiotic (electronic access)</li>
+<li>Phone access to MedSTAR (13 78 27)</li>
+</ul>
+<h3>NOT Available (Reinforce Rural Context)</h3>
+<ul>
+<li>CT scanner, MRI, ultrasound (unless doctor credentialled)</li>
+<li>After-hours laboratory pathology (FBC, EUC, LFT, CRP, coags — will need to send with retrieval or wait until morning)</li>
+<li>Blood bank / packed red cells on site</li>
+<li>Vasopressor infusion pumps (may have limited syringe driver capability)</li>
+<li>ICU-level monitoring or ventilatory support</li>
+<li>Specialist on-site (no intensivist, no ID physician, no surgeon)</li>
+</ul>
+</section>
+
+<!-- ═══════════════ 4. SESSION OVERVIEW ═══════════════ -->
+<section class="section-card fade-section" id="s4">
+<div class="section-label">Section 4</div>
+<h2>Session Structure Overview</h2>
+<table class="obs-table">
+<thead><tr><th>Phase</th><th>Time</th><th>Focus</th></tr></thead>
+<tbody>
+<tr><td>Pre-Brief</td><td>~10 min</td><td>Orientation, roles, safety, ground rules</td></tr>
+<tr><td>Presentation &amp; Triage</td><td>~5 min</td><td>Patient arrives, ATS triage, bed allocation</td></tr>
+<tr><td>Primary Survey &amp; Assessment</td><td>~15 min</td><td>HIRAID: history, red flags, observations, diagnostics</td></tr>
+<tr><td>Clinical Decision &amp; Treatment</td><td>~20 min</td><td>Sepsis recognition, resuscitation bundle, skills practice</td></tr>
+<tr><td>Reassessment &amp; Escalation</td><td>~10 min</td><td>Response to treatment, MedSTAR referral</td></tr>
+<tr><td>Transfer &amp; Handover</td><td>~10 min</td><td>Packaging, ISBAR handover</td></tr>
+<tr><td>Debrief</td><td>~15 min</td><td>Structured debrief, emotional check-in, key takeaways</td></tr>
+</tbody>
+</table>
+<p class="meta">Total estimated session time: 75–90 minutes</p>
+</section>
+
+<!-- ═══════════════ 5. PRE-BRIEF (ACCORDION) ═══════════════ -->
+<div class="accordion" id="s5">
+<button class="accordion-toggle" aria-expanded="false" onclick="toggleAccordion(this)">
+<span><span class="section-label" style="display:block;">Section 5</span>Pre-Brief (~10 minutes)</span>
+<span class="arrow">▼</span>
+</button>
+<div class="accordion-body">
+<div class="accordion-inner">
+
+<h3>Environment Orientation</h3>
+<ul>
+<li>Walk through the sim space — identify the resuscitation bay, monitoring equipment, drug cupboard / imprest, phone.</li>
+<li>Point out the SA Health Adult Sepsis Pathway (printed and displayed).</li>
+<li>Confirm location of blood culture bottles, i-STAT cartridges, IV fluids, and antibiotic stock.</li>
+</ul>
+
+<h3>Role Allocation</h3>
+<p><span class="role role-rn1">RN1</span> <strong>Triage / Primary Nurse</strong> — First contact with the patient. Conducts ATS triage. Leads initial HIRAID assessment. Obtains history from wife. Initiates observations and monitoring. Communicates findings to doctor.</p>
+<p><span class="role role-rn2">RN2</span> <strong>Secondary Nurse</strong> — Assists with monitoring setup, IV access, blood culture collection, medication preparation and administration, documentation, fluid balance, IDC insertion if required.</p>
+<p><span class="role role-doc">DOCTOR</span> <strong>Clinical Lead</strong> — Called in from home (arrives ~10 min after initial triage). Focused assessment, clinical decision-making, prescribing, escalation and retrieval decisions, MedSTAR communication.</p>
+
+<h3>Psychological Safety Statement</h3>
+<p><em>"This is a learning environment. We are here to practise together, not to test each other. There is no trick or trap. We work the way we would at 3 am — doing our best with what we have. Mistakes made here stay here and are learning opportunities. We look after each other. If you need to step out at any point, that's okay."</em></p>
+
+<h3>Ground Rules</h3>
+<ul>
+<li>Work in real time where possible. Facilitate will compress time for waiting periods.</li>
+<li>Use closed-loop communication.</li>
+<li>If you are unsure — say so. Ask for help, just as you would in real life.</li>
+<li>The facilitator will provide observations and clinical cues when requested or when the scenario requires it.</li>
+<li>We will pause at defined break points for discussion. When the facilitator says "pause", stop and discuss.</li>
+</ul>
+
+</div>
+</div>
+</div>
+
+<!-- ═══════════════ 6. PRESENTATION & TRIAGE (ACCORDION) ═══════════════ -->
+<div class="accordion" id="s6">
+<button class="accordion-toggle" aria-expanded="false" onclick="toggleAccordion(this)">
+<span><span class="section-label" style="display:block;">Section 6</span>Presentation &amp; Triage Phase</span>
+<span class="arrow">▼</span>
+</button>
+<div class="accordion-body">
+<div class="accordion-inner">
+
+<h3>Patient Arrival</h3>
+<p>0245 Sunday. The ED is quiet. <span class="role role-rn1">RN1</span> is at the nursing station. The front door opens. A woman in her late 60s is supporting a tall, thin man who is shuffling and leaning heavily on her arm. He is flushed, diaphoretic, and appears confused. She looks frightened.</p>
+<p><em>"Please help — it's my husband Colin. He's been sick for a couple of days and tonight he started talking rubbish. I couldn't wake him properly. I didn't know what else to do so I drove him in."</em></p>
+<p class="meta">Note for facilitator: The Marshes are known in town. Colin farms out near Pallamana. June volunteers at the hospital auxiliary. Staff may know them by name. Acknowledge this dynamic.</p>
+
+<h3>Triage Assessment — RN1</h3>
+<p><span class="role role-rn1">RN1</span> conducts rapid triage assessment:</p>
+<ul>
+<li><strong>Presenting complaint:</strong> 2-day history of increasing malaise, fever and rigors since yesterday, progressive confusion over past 6 hours, decreased urine output</li>
+<li><strong>Relevant history (from June):</strong> Colin had a TURP at the regional hospital 10 days ago. IDC removed 5 days ago at GP follow-up. Type 2 diabetes. Has been "off his food" since the procedure.</li>
+<li><strong>Appearance:</strong> Looks very unwell. Flushed. Diaphoretic. Confused — knows his name but not where he is. GCS approximately 14.</li>
+<li><strong>Quick observations (if obtainable at triage):</strong> HR rapid (palpable radial pulse weak and fast), skin hot and dry centrally, warm peripheries.</li>
+</ul>
+
+<h3>ATS Triage Category</h3>
+<p><strong>ATS Category 2 — Emergency (within 10 minutes)</strong></p>
+<ul>
+<li>Very unwell appearance with altered conscious state</li>
+<li>Haemodynamic compromise (tachycardia, weak pulse, flushed)</li>
+<li>Clinical suspicion of sepsis — infection (recent urological procedure, fever, dysuria) with signs of organ dysfunction (confusion, haemodynamic instability)</li>
+<li>Immediate allocation to resuscitation / acute bed</li>
+</ul>
+
+<h3>Immediate Actions</h3>
+<ul class="checklist">
+<li>Direct patient to resuscitation bay — do not leave in waiting room</li>
+<li>Call Doctor (GP VMO) — wake them up, they need to come in now</li>
+<li>Activate RN2 if not already present</li>
+<li>Begin primary survey and monitoring setup</li>
+<li>Stay with the patient — June can provide history alongside care</li>
+</ul>
+
+<!-- BREAK POINT 1 -->
+<div class="break-point">
+<div class="bp-header">
+<span class="bp-badge">⏸ Break Point 1</span>
+<span class="bp-type">Discussion &amp; Decision-Making</span>
+<h4>Triage Decision</h4>
+</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"What ATS category have you assigned? Talk me through your reasoning."</li>
+<li>"Where does this patient go — waiting room, acute bay, or resus?"</li>
+<li>"What are the immediate actions you need to take right now?"</li>
+<li>"Who do you need to call and when?"</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<ul>
+<li><span class="role role-rn1">RN1</span> — ATS 2 based on: very unwell appearance, altered conscious state, suspected infection with organ dysfunction. Not ATS 1 (not in cardiac/respiratory arrest or imminent threat to life at this moment) but close. If observations confirm Purple Zone, may escalate to MER equivalent.</li>
+<li>Patient goes straight to resus / acute bed. Do not leave confused, haemodynamically unstable patient in waiting room.</li>
+<li>Doctor called immediately — this is a time-critical presentation.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>At triage, you do not need a diagnosis. You need to recognise <strong>"this patient looks very unwell"</strong> and act.</li>
+<li>The SA Health Sepsis Pathway starts with: <strong>"Does the patient have signs or symptoms of infection?"</strong> — at triage, the answer is already yes (fever, confusion, recent procedure).</li>
+<li>ATS 2 means treatment within 10 minutes. The clock starts now.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>At 0245, you are likely the only RN awake. You need to simultaneously care for this patient, call the doctor, and get RN2 in. Prioritise: get the patient into the resus bay, call the doctor, then get help. If you cannot do all three at once, patient safety comes first — stay with the patient and call from the bedside phone.</p>
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- ═══════════════ 7. PRIMARY SURVEY & INITIAL ASSESSMENT ═══════════════ -->
+<section class="section-card fade-section" id="s7">
+<div class="section-label">Section 7</div>
+<h2>Primary Survey &amp; Initial Assessment (HIRAID)</h2>
+
+<h3>Doorway Assessment</h3>
+<p>Colin is now on the resus bed, supported by June. First impression: <strong>he looks sick</strong>. Flushed face, diaphoretic, eyes half-closed, mumbling. Breathing is visibly rapid. He is not protecting his airway but is maintaining it. He is warm to touch.</p>
+
+<h3>ABCDE Primary Survey</h3>
+<table class="obs-table">
+<tbody>
+<tr><td><strong>A — Airway</strong></td><td>Patent. Speaking in short confused phrases. No stridor or obstruction.</td></tr>
+<tr><td><strong>B — Breathing</strong></td><td>Tachypnoeic. RR 26. Shallow. SpO2 93% on room air. Bilateral air entry, scattered basal creps. No wheeze.</td></tr>
+<tr><td><strong>C — Circulation</strong></td><td>HR 118, irregular. BP 88/52. CRT 3 seconds. Warm peripheries (warm shock). Mottling noted on knees. Radial pulse weak and thready.</td></tr>
+<tr><td><strong>D — Disability</strong></td><td>GCS 14 (E4 V4 M6). Confused — knows name, does not know where he is or what day it is. BGL 14.2 mmol/L. Pupils equal and reactive.</td></tr>
+<tr><td><strong>E — Exposure</strong></td><td>Temp 38.9°C. Suprapubic tenderness on palpation. Dry mucous membranes. No rash. Surgical wound (TURP — no external wound). Abdomen soft, non-rigid.</td></tr>
+</tbody>
+</table>
+
+<!-- BREAK POINT 2 -->
+<div class="break-point">
+<div class="bp-header">
+<span class="bp-badge">⏸ Break Point 2</span>
+<span class="bp-type">Discussion &amp; Practical Skill</span>
+<h4>First Impression &amp; Primary Survey</h4>
+</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"What's your doorway assessment? What are you seeing?"</li>
+<li>"Talk me through ABCDE — what have you found and what are you worried about?"</li>
+<li>"Looking at these observations, where do they sit on the RDR chart? Any Purple Zone or Red Zone triggers?"</li>
+<li>"Based on the SA Health Sepsis Pathway — does this patient have signs of infection? Does he have signs of organ dysfunction?"</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<ul>
+<li><span class="role role-rn1">RN1</span> / <span class="role role-rn2">RN2</span> — Identify: SBP 88 = <strong>Purple Zone</strong> observation. Also multiple Red Zone triggers (HR 118, RR 26, SpO2 93%, GCS 14, Temp 38.9). This triggers a <strong>Medical Emergency Response</strong> equivalent.</li>
+<li>Map to Sepsis Pathway RECOGNISE checklist: ✅ Looks very unwell ✅ Fever/rigors ✅ New confusion ✅ Tachypnoea ✅ Dysuria/oliguria ✅ Recent procedure ✅ IDC recently removed ✅ Diabetes ✅ Older age</li>
+<li>Organ dysfunction present: hypotension, tachypnoea, altered mental state → <strong>Probable Sepsis with high risk of Septic Shock</strong></li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>A single Purple Zone observation or lactate ≥ 4 mmol/L = MER activation and probable sepsis pathway.</li>
+<li>Two or more Red Zone observations or lactate ≥ 2 mmol/L = Senior Medical Officer review and possible sepsis pathway.</li>
+<li>This patient hits both criteria. <strong>Sepsis is time-critical.</strong> Do not wait for a formal diagnosis — commence treatment until proven otherwise.</li>
+<li>The warm, vasodilated peripheries with low blood pressure = <strong>distributive (warm) shock</strong> — classic early septic shock.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>In a small rural ED at 0300, there is no MER team. <strong>You are the MER team.</strong> The Purple Zone trigger means you escalate to the most senior clinician available — your GP VMO, who you've already called. If they're not yet on site, you're initiating the sepsis bundle now. Do not wait for the doctor to start oxygen, IV access, and monitoring.</p>
+</div>
+
+<h3>History — HIRAID (from June, as Colin is too confused)</h3>
+<h4>History of Presenting Complaint</h4>
+<ul>
+<li><strong>2 days ago:</strong> Started feeling "off". Tired, no appetite, mild nausea. June thought it was just recovery from the TURP.</li>
+<li><strong>Yesterday afternoon:</strong> Developed shaking rigors and fever (June measured 38.5°C at home). Started complaining of lower abdominal pain and burning when passing urine. Urine dark and foul-smelling. Very small amounts.</li>
+<li><strong>Last 6 hours:</strong> Increasingly confused. Calling June by wrong name. Tried to go outside in his pyjamas. Couldn't be roused easily from sleep. June gave paracetamol 1g at approximately 2200 — no improvement.</li>
+<li><strong>Tonight:</strong> June found him sitting on floor of bathroom, disoriented, hot to touch, barely responsive to her questions. She drove him straight in.</li>
+</ul>
+
+<h4>Past Medical History</h4>
+<ul>
+<li>Type 2 Diabetes Mellitus (10 years, oral agents)</li>
+<li>Benign Prostatic Hyperplasia — TURP at regional hospital 10 days ago, IDC removed at GP 5 days ago</li>
+<li>Hypertension</li>
+<li>Mild Chronic Kidney Disease (baseline creatinine ~120, eGFR ~45)</li>
+<li>Osteoarthritis — knees, hands</li>
+</ul>
+
+<h4>Medications</h4>
+<ul>
+<li>Metformin 1 g BD</li>
+<li>Gliclazide MR 60 mg mane</li>
+<li>Perindopril 5 mg mane</li>
+<li>Amlodipine 5 mg mane</li>
+<li>Paracetamol 1 g PRN (took last dose ~2200)</li>
+</ul>
+
+<h4>Allergies</h4>
+<p><strong>Sulfonamides — rash.</strong> No other known allergies. Confirm and document.</p>
+
+<h4>Social History</h4>
+<ul>
+<li>Lives on farm 25 km from hospital with wife June</li>
+<li>Two adult children in Adelaide (June has not called them yet)</li>
+<li>Usually independent with all ADLs, drives, active on farm</li>
+<li>No Advance Care Directive in place</li>
+<li>Known to hospital staff — June volunteers at the hospital auxiliary</li>
+</ul>
+
+<h3>Red Flag Screening — SA Health Sepsis Pathway</h3>
+<div class="pathway-box">
+<h4>RECOGNISE — Signs &amp; Symptoms of Infection</h4>
+<ul class="checklist">
+<li><strong>☑ Looks very unwell</strong></li>
+<li><strong>☑ History of fever, rigors</strong></li>
+<li><strong>☑ Tachypnoea</strong> (RR 26), new oxygen requirement</li>
+<li><strong>☑ New confusion, altered level of consciousness</strong></li>
+<li>☐ Non-blanching rash — not present</li>
+<li><strong>☑ Dysuria, oliguria, odour</strong></li>
+</ul>
+<h4>AND/OR Higher Risk?</h4>
+<ul class="checklist">
+<li><strong>☑ Older age</strong></li>
+<li><strong>☑ Indwelling medical device recently removed</strong> (IDC 5 days ago)</li>
+<li><strong>☑ Impaired immunity — diabetes</strong></li>
+<li><strong>☑ Recent surgery / procedure</strong> (TURP 10 days ago)</li>
+<li><strong>☑ Patient, carer, or family concern</strong> (June is very worried)</li>
+</ul>
+<h4>Signs of Organ Dysfunction?</h4>
+<p><strong>Yes.</strong> Hypotension (SBP 88), tachypnoea (RR 26), altered mental state (GCS 14).</p>
+<p>→ <strong>ANY Purple Zone observation</strong> (SBP &lt; 90) → MER → Does the MER team consider <strong>PROBABLE SEPSIS</strong>? → High risk of SEPTIC SHOCK.</p>
+</div>
+
+<!-- BREAK POINT 3 -->
+<div class="break-point">
+<div class="bp-header">
+<span class="bp-badge">⏸ Break Point 3</span>
+<span class="bp-type">Discussion</span>
+<h4>History &amp; Red Flag Screening (HIRAID)</h4>
+</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"Walk me through the red flags you've identified from the SA Health Sepsis Pathway."</li>
+<li>"What questions must not be missed in this history? What else do you need to ask June?"</li>
+<li>"Colin has diabetes and recently had a TURP with IDC. Why do these matter for sepsis risk?"</li>
+<li>"What are the other possible causes of deterioration the pathway reminds us to consider?"</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<ul>
+<li><span class="role role-rn1">RN1</span> — Systematically maps this presentation against the Sepsis Pathway RECOGNISE checklist. Multiple infection signs AND multiple high-risk features are present.</li>
+<li>Must not miss: when was the IDC removed, any post-procedure complications, baseline cognition (June confirms he was "sharp as a tack" two days ago), diabetes control, last oral intake, fluid intake, urine output.</li>
+<li><span class="role role-doc">DOCTOR</span> — The pathway also prompts: <em>"Consider other causes of deterioration — MI, PE, DKA, GI bleed, acute pancreatitis, toxin ingestion or withdrawal."</em> BGL 14.2 needs consideration (stress hyperglycaemia vs DKA) but absence of Kussmaul breathing, ketones, and the clinical picture point strongly to urosepsis as the primary diagnosis.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>The HIRAID red flag screening is not a passive checkbox. It is an active decision tool. Each red flag should change your level of concern and urgency.</li>
+<li>Post-urological procedure + IDC removal + diabetes = very high risk for urosepsis. This combination should trigger immediate sepsis pathway consideration.</li>
+<li>In a confused patient, the collateral history from family is essential. June is your primary historian. Involve her. Keep her informed.</li>
+<li>Always consider the differential — but do not delay sepsis treatment while you rule out other causes.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>At 3 am with a confused patient, you may have no one to give you a history except the family member who drove them in. Treat June as part of the team — she knows Colin's baseline. Ask her directly: "Is this confusion normal for Colin?" Her answer — "No, he was completely normal two days ago" — is a critical clinical finding.</p>
+</div>
+
+<h3>Full Observations</h3>
+<table class="obs-table">
+<thead><tr><th>Parameter</th><th>Value</th><th>RDR Zone</th></tr></thead>
+<tbody>
+<tr><td>Heart Rate</td><td class="flag-red">118 bpm, irregular</td><td class="flag-red">Red Zone</td></tr>
+<tr><td>Blood Pressure</td><td class="flag-purple">88/52 mmHg</td><td class="flag-purple">Purple Zone</td></tr>
+<tr><td>Respiratory Rate</td><td class="flag-red">26 /min</td><td class="flag-red">Red Zone</td></tr>
+<tr><td>SpO2</td><td class="flag-red">93% (room air)</td><td class="flag-red">Red Zone</td></tr>
+<tr><td>Temperature</td><td class="flag-red">38.9°C</td><td class="flag-red">Red Zone</td></tr>
+<tr><td>GCS</td><td class="flag-red">14 (E4 V4 M6)</td><td class="flag-red">Red Zone</td></tr>
+<tr><td>BGL</td><td>14.2 mmol/L</td><td>Elevated — monitor</td></tr>
+<tr><td>Pain Score</td><td>Unable to reliably assess (confused)</td><td>—</td></tr>
+<tr><td>ECG</td><td>Sinus tachycardia, no acute ST changes</td><td>—</td></tr>
+</tbody>
+</table>
+
+<h3>Diagnostics — What Can and Cannot Be Done</h3>
+<table class="obs-table">
+<thead><tr><th>Available Now</th><th>Not Available / Delayed</th></tr></thead>
+<tbody>
+<tr><td>Point-of-care BGL ✅</td><td>Full laboratory FBC, EUC, LFTs, CRP, Coags ❌ (no after-hours pathology — bloods drawn now, held for collection or sent with retrieval team)</td></tr>
+<tr><td>Point-of-care Lactate (i-STAT) ✅</td><td>CT scan ❌</td></tr>
+<tr><td>VBG (i-STAT) ✅</td><td>MRI ❌</td></tr>
+<tr><td>Blood cultures x 2 (collected, held for transport) ✅</td><td>Ultrasound ❌ (unless doctor credentialled)</td></tr>
+<tr><td>Urinalysis dipstick ✅</td><td>Formal urine microscopy / culture ❌ (specimen collected, sent with patient)</td></tr>
+<tr><td>12-lead ECG ✅</td><td>Point-of-care troponin ❌</td></tr>
+</tbody>
+</table>
+
+<h3>Point-of-Care Results</h3>
+<table class="obs-table">
+<tbody>
+<tr><td><strong>Lactate</strong></td><td class="flag-red"><strong>3.8 mmol/L</strong> (≥ 2 = sepsis pathway trigger; approaching ≥ 4 = Purple Zone trigger)</td></tr>
+<tr><td><strong>VBG pH</strong></td><td>7.29 (mild acidosis)</td></tr>
+<tr><td><strong>VBG pCO2</strong></td><td>32 mmHg (compensatory respiratory alkalosis)</td></tr>
+<tr><td><strong>VBG HCO3</strong></td><td>18 mmol/L (low — metabolic acidosis)</td></tr>
+<tr><td><strong>Potassium (i-STAT)</strong></td><td>5.1 mmol/L (elevated — caution)</td></tr>
+<tr><td><strong>Creatinine (i-STAT)</strong></td><td>210 µmol/L (baseline ~120 — acute kidney injury)</td></tr>
+<tr><td><strong>Urinalysis</strong></td><td>Nitrites +++, Leucocytes +++, Blood ++, Protein +</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ═══════════════ 8. CLINICAL DECISION POINT ═══════════════ -->
+<section class="section-card fade-section" id="s8">
+<div class="section-label">Section 8</div>
+<h2>Clinical Decision Point</h2>
+
+<h3>Working Diagnosis</h3>
+<p><strong>Urosepsis with organ dysfunction — Probable Sepsis, high risk of Septic Shock</strong></p>
+<p>Source: Urinary tract, post-TURP with recent IDC removal. Organ dysfunction evidenced by: hypotension, altered mental state, acute kidney injury, raised lactate, metabolic acidosis.</p>
+
+<h3>Differential Diagnosis</h3>
+<ul>
+<li><strong>Urosepsis</strong> — most likely given the clinical picture</li>
+<li>DKA — BGL elevated but no ketonaemia, pH only mildly acidotic, lactate more consistent with sepsis</li>
+<li>Acute urinary retention with obstructive uropathy — possible contributing factor, assess with IDC insertion</li>
+<li>Post-operative complication (wound infection, abscess) — no external wound from TURP but consider</li>
+<li>Other infection source — chest (basal creps — aspiration? HAP?), skin, intra-abdominal</li>
+</ul>
+
+<h3>Escalation Decision</h3>
+<p><strong>This patient cannot be managed locally.</strong></p>
+<ul>
+<li>Probable sepsis with septic shock physiology (hypotension, organ dysfunction, lactate 3.8)</li>
+<li>AKI (creatinine doubled from baseline) — needs close monitoring and possible renal support</li>
+<li>Hyperkalaemia (K+ 5.1) — needs cardiac monitoring and may need treatment</li>
+<li>May require vasopressors if fluid resuscitation does not restore haemodynamic stability</li>
+<li>Needs ICU-capable facility for definitive management</li>
+</ul>
+<p><strong>Actions:</strong></p>
+<ol>
+<li>Commence SA Health Sepsis Pathway resuscitation bundle — Oxygen, IV Access &amp; Blood Cultures, Antibiotics, Fluids — <span class="time-badge">WITHIN 60 MINUTES</span></li>
+<li>Contact MedSTAR (13 78 27) for early consultation and retrieval coordination — <strong>call early, do not wait until you have "done everything"</strong></li>
+<li>Stabilise and prepare for transfer to regional centre ICU</li>
+</ol>
+
+<!-- BREAK POINT 4 -->
+<div class="break-point">
+<div class="bp-header">
+<span class="bp-badge">⏸ Break Point 4</span>
+<span class="bp-type">Decision-Making</span>
+<h4>Clinical Decision — Working Diagnosis &amp; Escalation</h4>
+</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"Doctor — what is your working diagnosis? What are your differentials?"</li>
+<li>"Can this patient be managed here? If not, why not?"</li>
+<li>"When do you call MedSTAR — now, or after you've started treatment?"</li>
+<li>"RN1 — what information do you need to have ready before the doctor calls MedSTAR?"</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<ul>
+<li><span class="role role-doc">DOCTOR</span> — The combination of infection source (post-TURP urosepsis), organ dysfunction (hypotension, AKI, confusion, raised lactate), and the Purple Zone observation confirms <strong>Probable Sepsis with high risk of Septic Shock</strong>. This patient needs ICU-level care that is not available here.</li>
+<li>Call MedSTAR <strong>early</strong> — ideally within the first 30 minutes. You can initiate the sepsis bundle and call MedSTAR in parallel. You do not need to have "finished everything" before calling. MedSTAR can also provide real-time clinical advice while retrieval is being arranged.</li>
+<li><span class="role role-rn1">RN1</span> — Prepare: patient demographics, presenting complaint, observations (all of them), working diagnosis, treatment initiated so far, allergies, access, fluid balance. Have this ready for the doctor's ISBAR call.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>The SA Health Sepsis Pathway states: <em>"Regional LHNs: commence treatment, follow local escalation pathways, and consider early consult with MedSTAR — Ph 13 78 27."</em></li>
+<li><strong>Do not delay treatment to call MedSTAR. Do not delay calling MedSTAR until treatment is complete.</strong> These happen in parallel.</li>
+<li>Sepsis with organ dysfunction is a medical emergency. The pathway is explicit: <em>"Commence sepsis treatment until proven otherwise."</em></li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>In your rural ED, you are the MER team, the resus team, and the retrieval coordinator. The doctor is making clinical decisions, prescribing, and preparing to call MedSTAR. The RNs are running the sepsis bundle. This requires clear task allocation and closed-loop communication. Nobody has the luxury of standing still. Call MedSTAR early — they can help you manage this patient remotely while retrieval is mobilised.</p>
+</div>
+</section>
+
+<!-- ═══════════════ 9. TREATMENT & STABILISATION ═══════════════ -->
+<section class="section-card fade-section" id="s9">
+<div class="section-label">Section 9</div>
+<h2>Treatment &amp; Stabilisation Phase</h2>
+<p><span class="time-badge">WITHIN 60 MINUTES</span> Complete actions 1–4 of the SA Health Adult Sepsis Pathway with ongoing systematic assessment.</p>
+
+<div class="pathway-box">
+<h4>1. OXYGEN</h4>
+<p><span class="role role-rn1">RN1</span> Commence oxygen immediately.</p>
+<ul>
+<li>Target SpO2 ≥ 95% (this patient is not COPD)</li>
+<li>Start with nasal prongs 4 L/min, titrate up. If SpO2 remains &lt; 95%, escalate to Hudson mask 6–8 L/min.</li>
+<li>Document oxygen delivery device, flow rate, and SpO2 response.</li>
+</ul>
+</div>
+
+<div class="pathway-box">
+<h4>2. IV ACCESS &amp; BLOOD CULTURES</h4>
+<p><span class="role role-rn2">RN2</span> Vascular access and bloods.</p>
+<ul>
+<li><strong>Insert 2 x large-bore IV cannulae</strong> (16G or 18G) — two sites required for blood cultures AND fluid resuscitation.</li>
+<li><strong>Blood cultures x 2 sets</strong> from 2 separate peripheral sites. Collect BEFORE antibiotics if possible — but do not delay antibiotics beyond 60 minutes to obtain cultures.</li>
+<li><strong>Collect bloods:</strong> BGL, Lactate (if not already done on i-STAT), FBC, EUC, LFTs, CRP, Coagulation studies — label, hold for transport with patient (no after-hours lab).</li>
+<li>Aseptic technique for all blood collection. Each culture set = 1 aerobic + 1 anaerobic bottle.</li>
+</ul>
+</div>
+
+<div class="pathway-box">
+<h4>3. IV ANTIBIOTICS</h4>
+<p><span class="role role-doc">DOCTOR</span> prescribes. <span class="role role-rn2">RN2</span> prepares and administers.</p>
+<ul>
+<li><strong>Commence within 60 minutes</strong> of identifying sepsis.</li>
+<li>Refer to <strong>Therapeutic Guidelines: Antibiotic</strong> or local guidelines for empiric urosepsis regimen.</li>
+<li>Source of infection documented: <strong>urinary tract — post-TURP, recent IDC removal</strong>.</li>
+<li>Check allergies: <strong>Sulfonamides (rash)</strong> — document. This does not preclude most first-line urosepsis antibiotics but must be checked against specific agents prescribed.</li>
+<li>Note: AKI present (creatinine 210, baseline 120) — dose adjustment may be required for renally cleared agents. Discuss with MedSTAR or ID physician if uncertain.</li>
+<li>Standard medication safety checks: <strong>Right patient, right drug, right dose, right route, right time.</strong> Independent double-check for IV antibiotics (NSQHS Standard 4).</li>
+</ul>
+</div>
+
+<div class="pathway-box">
+<h4>4. IV FLUIDS</h4>
+<p><span class="role role-rn2">RN2</span> / <span class="role role-rn1">RN1</span></p>
+<ul>
+<li><strong>Crystalloid 500 mL bolus STAT</strong> — sodium chloride 0.9% or Hartmann's solution.</li>
+<li>Use pressure bag for rapid infusion if required.</li>
+<li>Document fluid input/output — commence fluid balance chart.</li>
+<li>Consider <strong>IDC insertion</strong> for hourly urine output monitoring (also therapeutic — assess for urinary retention).</li>
+<li><strong>Repeat bolus</strong> if ongoing hypotension (SBP &lt; 90 or MAP &lt; 65).</li>
+<li>Caution: Colin has mild CKD and is 72 years old. Monitor closely for signs of fluid overload (rising RR, creps, JVP, SpO2 drop). The pathway states: <em>"Closely monitor patients with cardiac or renal dysfunction when repeating fluid boluses."</em></li>
+</ul>
+</div>
+
+<h3>Additional Interventions</h3>
+<ul>
+<li><strong>IDC insertion</strong> — <span class="role role-rn2">RN2</span> — for hourly urine output monitoring. Note: post-TURP — use caution, consider smaller catheter. On insertion, record volume drained (if large volume = possible retention contributing to sepsis source).</li>
+<li><strong>Withhold Metformin</strong> — risk of lactic acidosis in AKI and sepsis. <span class="role role-doc">DOCTOR</span> to document.</li>
+<li><strong>Withhold Perindopril &amp; Amlodipine</strong> — patient is hypotensive.</li>
+<li><strong>BGL monitoring</strong> — Gliclazide on board and patient not eating. Risk of hypoglycaemia. Recheck BGL hourly.</li>
+<li><strong>ECG monitoring</strong> — continuous, given hyperkalaemia (K+ 5.1), tachycardia, and fluid resuscitation.</li>
+<li><strong>Temperature management</strong> — paracetamol for comfort if temp remains &gt; 38.5°C.</li>
+</ul>
+
+<!-- BREAK POINT 5 -->
+<div class="break-point">
+<div class="bp-header">
+<span class="bp-badge">⏸ Break Point 5</span>
+<span class="bp-type">Practical Skill &amp; Medication Safety</span>
+<h4>Treatment Initiation &amp; Medication Safety</h4>
+</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"RN2 — talk me through preparing and checking the IV antibiotic. What safety steps are you performing?"</li>
+<li>"How are you going to get two sets of blood cultures from two separate sites? What's your aseptic technique?"</li>
+<li>"The first 500 mL bolus has gone in. BP is still 90/54. What do you do?"</li>
+<li>"Colin's creatinine is double his baseline. What does this mean for antibiotic dosing and fluid management?"</li>
+<li>"Who is doing what? RN1, RN2, Doctor — what are your tasks right now?"</li>
+</ul>
+<h4>Skills Practice — Demonstrate These</h4>
+<ul>
+<li><strong>IV cannulation x 2</strong> — large bore, two sites. In a dehydrated, septic patient — consider antecubital fossa, external jugular if peripheral access is difficult.</li>
+<li><strong>Blood culture collection</strong> — aseptic technique, correct volume in each bottle (8–10 mL per bottle in adults), 2 sets from 2 separate sites.</li>
+<li><strong>IV antibiotic preparation</strong> — reconstitution, dilution, rate of administration, independent double-check, documentation on medication chart.</li>
+<li><strong>Rapid IV fluid administration</strong> — 500 mL bolus using pressure bag. Reassess after each bolus.</li>
+<li><strong>IDC insertion</strong> — aseptic technique, measure residual volume, connect to hourly drainage bag.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li><strong>Blood cultures before antibiotics — but antibiotics within 60 minutes.</strong> If you cannot get cultures, give the antibiotics anyway. Treatment trumps diagnostics.</li>
+<li>In a rural ED with no after-hours lab, collected bloods travel with the patient. Label correctly, store appropriately (blood cultures at room temperature, not refrigerated).</li>
+<li>Medication safety in a crisis: it is tempting to rush. Slow down enough to check: right patient, right drug, right dose, right route, right time. One error can compound an already critical situation.</li>
+<li>Task allocation: RN1 manages monitoring, observations, history documentation, and family liaison. RN2 manages IV access, bloods, medications, fluids, IDC. Doctor assesses, prescribes, and prepares for MedSTAR call. Clear roles prevent duplication and missed tasks.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>Two RNs and one doctor managing septic shock. There is no spare staff. If you need to send someone to get the antibiotic from imprest, someone else needs to stay with the patient. Closed-loop communication: "I'm going to get the gentamicin from the drug cupboard — RN1, can you watch the monitor while I'm gone?" "Yes, I've got it." This is real teamwork in a resource-limited setting.</p>
+</div>
+</section>
+
+<!-- ═══════════════ 10. REASSESSMENT & ESCALATION ═══════════════ -->
+<section class="section-card fade-section" id="s10">
+<div class="section-label">Section 10</div>
+<h2>Reassessment &amp; Escalation</h2>
+
+<h3>Reassessment Findings — 30 Minutes Post-Treatment Initiation</h3>
+<p>Colin has received: O2 6 L via Hudson mask, 2 x 500 mL NaCl 0.9% boluses, IV antibiotics (commenced within 45 minutes), IDC inserted (drained 150 mL concentrated, foul-smelling urine).</p>
+<table class="obs-table">
+<thead><tr><th>Parameter</th><th>Initial</th><th>30 min post-treatment</th><th>Trend</th></tr></thead>
+<tbody>
+<tr><td>HR</td><td class="flag-red">118</td><td class="flag-red">105</td><td>Improving ↓ (still Red Zone)</td></tr>
+<tr><td>BP</td><td class="flag-purple">88/52</td><td>96/60</td><td>Improving ↑ (still borderline)</td></tr>
+<tr><td>RR</td><td class="flag-red">26</td><td>22</td><td>Improving ↓</td></tr>
+<tr><td>SpO2</td><td class="flag-red">93% RA</td><td>97% on 6 L</td><td>Improved ✓</td></tr>
+<tr><td>GCS</td><td class="flag-red">14</td><td>14</td><td>Unchanged — still confused</td></tr>
+<tr><td>Temp</td><td class="flag-red">38.9</td><td>38.6</td><td>Marginal improvement</td></tr>
+<tr><td>Urine output</td><td>—</td><td>20 mL/hr since IDC (below target)</td><td>Oliguria persists</td></tr>
+</tbody>
+</table>
+
+<h3>Repeat Lactate</h3>
+<p><strong>Lactate: 3.2 mmol/L</strong> (was 3.8). Improving but still significantly elevated. Target &lt; 2 mmol/L.</p>
+
+<h3>Response Assessment</h3>
+<p><strong>Partial response to treatment.</strong> Some haemodynamic improvement with fluids but:</p>
+<ul>
+<li>BP still borderline (MAP ~72, but fragile)</li>
+<li>Ongoing confusion (GCS 14 unchanged)</li>
+<li>Lactate still elevated at 3.2</li>
+<li>Oliguria (20 mL/hr — target &gt; 0.5 mL/kg/hr = ~37 mL/hr for estimated 75 kg)</li>
+<li>AKI, hyperkalaemia, metabolic acidosis — none of these can be definitively managed here</li>
+</ul>
+
+<h3>Escalation Triggers</h3>
+<ul>
+<li>Haemodynamic status not improving adequately after fluid resuscitation → Consider vasopressors (requires ICU-level care)</li>
+<li>Ongoing organ dysfunction (AKI, confusion, oliguria)</li>
+<li>Lactate not clearing to &lt; 2 mmol/L</li>
+<li>The SA Health pathway states: <em>"Consider commencement of vasopressors &amp; ICU or hospital transfer if haemodynamic status not improving after fluid resuscitation."</em></li>
+</ul>
+
+<h3>MedSTAR Retrieval Referral — ISBAR</h3>
+<p><span class="role role-doc">DOCTOR</span> calls MedSTAR on <strong>13 78 27</strong></p>
+<div class="isbar-block">
+<dl>
+<dt>I — Identify</dt>
+<dd>"This is Dr [Name], GP VMO at [Hospital Name] Rural Hospital. I'm calling about a patient who needs retrieval to an ICU-capable facility."</dd>
+<dt>S — Situation</dt>
+<dd>"I have a 72-year-old male, Colin Marsh, with probable urosepsis and septic shock. He's 10 days post-TURP, IDC removed 5 days ago. He presented at 0245 with fever, rigors, confusion, and hypotension. He has had a partial response to treatment but remains haemodynamically unstable with ongoing organ dysfunction."</dd>
+<dt>B — Background</dt>
+<dd>"PMHx: Type 2 diabetes, BPH post-TURP, hypertension, mild CKD with baseline creatinine 120. Allergies: Sulfonamides — rash. Medications: Metformin, Gliclazide, Perindopril, Amlodipine — all withheld tonight."</dd>
+<dt>A — Assessment</dt>
+<dd>"Current obs: HR 105, BP 96/60, RR 22, SpO2 97% on 6L Hudson, Temp 38.6, GCS 14 — persisting confusion. Lactate was 3.8, now 3.2 after 1 litre crystalloid. Creatinine 210 from baseline 120 — acute kidney injury. Potassium 5.1. VBG shows pH 7.29, metabolic acidosis. Urine output 20 mL/hr. Urinalysis shows nitrites, leucocytes, blood. Blood cultures collected, bloods drawn and held for transport. He has received 2 x 500 mL NaCl 0.9% boluses and IV antibiotics."</dd>
+<dt>R — Recommendation</dt>
+<dd>"I believe this patient needs ICU-level care. He has septic shock with partial fluid response, AKI, and may need vasopressor support. I'm requesting retrieval to [Regional Centre]. I'd also value your advice on further fluid management given his CKD and the hyperkalaemia. We can continue monitoring and treatment here while awaiting retrieval."</dd>
+</dl>
+</div>
+
+<!-- BREAK POINT 6 -->
+<div class="break-point">
+<div class="bp-header">
+<span class="bp-badge">⏸ Break Point 6</span>
+<span class="bp-type">Discussion &amp; Communication Skill</span>
+<h4>Reassessment &amp; Escalation Decision</h4>
+</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"Is this patient improving, static, or deteriorating? How do you decide?"</li>
+<li>"The lactate has come down from 3.8 to 3.2. Is that good enough?"</li>
+<li>"What are your escalation triggers? When do you absolutely need to call MedSTAR?"</li>
+<li>"Doctor — practise the ISBAR retrieval referral call. RN1, what information have you prepared?"</li>
+<li>"What if MedSTAR says the retrieval team is 3 hours away? What do you do in the meantime?"</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<ul>
+<li><span class="role role-doc">DOCTOR</span> — Partial response. BP has improved from 88/52 to 96/60 but remains fragile. Lactate trending down but still well above 2 mmol/L. Ongoing confusion and oliguria indicate persistent organ dysfunction. This patient is not out of danger and needs escalation.</li>
+<li><span class="role role-rn1">RN1</span> — Reassessment at structured intervals (every 15 min for septic shock). Document trend. Prepare ISBAR data for the doctor. Monitor urine output hourly. Repeat lactate within 2 hours of initial.</li>
+<li>The pathway REASSESS step reminds us: <em>"For persistent signs of sepsis, escalate to senior consultant, consider source control."</em></li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Reassessment is not optional — it is a defined step in HIRAID and in the Sepsis Pathway (Steps 5 and 7).</li>
+<li>Lactate clearance is a key marker. The pathway says: <em>"Repeat lactate within 2 hours if initially elevated — aim &lt; 2 mmol/L."</em> If lactate is not clearing, the patient is not responding adequately.</li>
+<li>Urine output &lt; 0.5 mL/kg/hr is a medical officer review trigger. With an IDC in place, you can monitor this precisely.</li>
+<li>The ISBAR retrieval referral is a structured, practised communication. It should be concise, complete, and convey urgency without panic.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>MedSTAR may take 2–3 hours. You are managing this patient for the duration. The reassessment loop is your lifeline — it tells you whether you need to do more (another bolus, escalate to vasopressors if you have capability, re-call MedSTAR for urgent advice). If the patient deteriorates, use PACE (Probe, Alert, Challenge, Emergency) to assertively escalate with the retrieval service. You are this patient's advocate.</p>
+</div>
+</section>
+
+<!-- ═══════════════ 11. TRANSFER PREPARATION ═══════════════ -->
+<section class="section-card fade-section" id="s11">
+<div class="section-label">Section 11</div>
+<h2>Preparation for Transfer / Retrieval</h2>
+
+<h3>Packaging the Patient</h3>
+<ul class="checklist">
+<li>Continuous cardiac monitoring — ensure portable monitor available for transfer</li>
+<li>IV access — confirm both cannulae patent and flushed, secure with additional taping for transport</li>
+<li>IV fluids — ensure adequate supply prepared for transfer period</li>
+<li>Oxygen — ensure adequate cylinder supply for transfer duration (calculate requirement: flow rate × estimated time × 1.5 safety factor)</li>
+<li>IDC — secure, drainage bag below bladder level, document output</li>
+<li>Warming — patient may become hypothermic during transfer. Blankets, warm IV fluids if available</li>
+<li>Medications — ensure any time-critical medications due during transfer are prepared and documented</li>
+</ul>
+
+<h3>Transfer Documentation</h3>
+<ul class="checklist">
+<li>Complete clinical handover document — diagnosis, treatment given, response, outstanding results</li>
+<li>Observation chart with all timed observations</li>
+<li>Medication chart with all medications administered (times, doses, routes)</li>
+<li>Fluid balance chart</li>
+<li>Blood specimens — labelled and stored correctly, travelling with patient (blood cultures at room temperature)</li>
+<li>Urine specimen collected</li>
+<li>Copies of ECG</li>
+<li>Patient identification — MRN, Medicare, NOK details</li>
+<li>Advance Care Directive — nil in this case, document discussion with June</li>
+</ul>
+
+<h3>Ongoing Monitoring While Awaiting Retrieval</h3>
+<ul>
+<li>Observations every 15 minutes (HR, BP, RR, SpO2, GCS)</li>
+<li>Urine output hourly</li>
+<li>Repeat lactate at 2-hour mark</li>
+<li>BGL hourly (Gliclazide on board, nil oral intake)</li>
+<li>Reassess response to each fluid bolus</li>
+<li>Monitor for fluid overload (lung auscultation, SpO2, RR, JVP)</li>
+<li>Monitor ECG for arrhythmia (hyperkalaemia)</li>
+</ul>
+
+<h3>Contingency Planning</h3>
+<ul>
+<li><strong>If retrieval delayed &gt; 2 hours:</strong> Continue reassessment loop. Consider third fluid bolus if still hypotensive (with caution re CKD). Re-contact MedSTAR for ongoing management advice.</li>
+<li><strong>If patient deteriorates:</strong> ABCDE reassessment. Consider need for vasopressor support (if syringe driver and noradrenaline available — MedSTAR can guide dosing via phone). Prepare for possible intubation if GCS drops. Re-call MedSTAR with updated ISBAR — escalate urgency.</li>
+<li><strong>If cardiac arrest:</strong> ALS protocol. Continue resuscitation. Notify MedSTAR immediately.</li>
+</ul>
+
+<h3>Family Communication</h3>
+<p><span class="role role-rn1">RN1</span> or <span class="role role-doc">DOCTOR</span> — June is in the department. She is frightened. She knows the staff.</p>
+<ul>
+<li>Explain what is happening in plain language: "Colin has a serious infection that has spread to his bloodstream. His body is struggling to cope. We are giving him antibiotics, fluids, and oxygen. We need to transfer him to [Regional Centre] where they have an intensive care unit."</li>
+<li>Provide realistic information about retrieval timeline: "The retrieval team is on their way but it may be 2–3 hours. We will look after Colin here until they arrive."</li>
+<li>Ask about Advance Care Directive or goals of care wishes — sensitively and without causing alarm.</li>
+<li>Offer practical support: Does June need to call family? Does she need tea? Is she safe to drive later?</li>
+<li>Acknowledge the relationship: "We know Colin and we are going to do everything we can for him."</li>
+</ul>
+
+<!-- BREAK POINT 7 -->
+<div class="break-point">
+<div class="bp-header">
+<span class="bp-badge">⏸ Break Point 7</span>
+<span class="bp-type">Discussion &amp; Practical</span>
+<h4>Transfer Preparation &amp; Packaging</h4>
+</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"MedSTAR is 2.5 hours away. What monitoring and reassessment are you doing in the meantime?"</li>
+<li>"What documentation needs to go with this patient?"</li>
+<li>"The blood cultures — where are they stored? Can they go in the fridge?"</li>
+<li>"June is crying and asking if Colin is going to die. Who talks to her, and what do you say?"</li>
+<li>"What if Colin's BP drops to 82/48 while you're waiting for retrieval? What's your plan?"</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<ul>
+<li><span class="role role-rn1">RN1</span> / <span class="role role-rn2">RN2</span> — Structured ongoing monitoring every 15 minutes. Fluid balance documented. Urine output tracked hourly. Repeat lactate at 2-hour mark. All documentation prepared and organised for handover.</li>
+<li><span class="role role-doc">DOCTOR</span> — Contingency planning for deterioration. Know what vasopressor support is available (if any). Know when to re-call MedSTAR. Have a plan for airway management if needed.</li>
+<li>Blood cultures are stored at <strong>room temperature</strong> — not refrigerated. This is a common error.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>The wait for retrieval is often the most dangerous period. The patient is unstable, the definitive care is hours away, and your resources are limited. This is where structured reassessment and contingency planning save lives.</li>
+<li>Family communication is part of clinical care, not an afterthought. In a small town, June knows the staff. This can be both a comfort and an additional emotional burden for the team.</li>
+<li>Practical transfer preparation: ensure adequate oxygen supply, secured IV access, medications prepared, documentation complete. Poor preparation leads to poor transfers.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>At 0400 in a rural ED, waiting for retrieval with a septic patient, a distressed wife, and one other patient in the department — this is the reality of rural emergency nursing. You cannot hand off. You cannot call for backup. You manage the clinical care, the emotional care, and the logistics. Debrief after. Look after each other.</p>
+</div>
+</section>
+
+<!-- ═══════════════ 12. HANDOVER ═══════════════ -->
+<section class="section-card fade-section" id="s12">
+<div class="section-label">Section 12</div>
+<h2>Handover to Retrieval Team</h2>
+
+<p>MedSTAR retrieval team arrives at approximately 0530. <span class="role role-doc">DOCTOR</span> delivers ISBAR handover at the bedside. <span class="role role-rn1">RN1</span> provides nursing handover to retrieval nurse/paramedic.</p>
+
+<div class="isbar-block">
+<dl>
+<dt>I — Identify</dt>
+<dd>"Colin Marsh, 72-year-old male, MRN [number]. I'm Dr [Name], GP VMO. This is RN [Name], primary nurse. Next of kin is his wife June, who is here with us."</dd>
+
+<dt>S — Situation</dt>
+<dd>"Colin presented at 0245 this morning with probable urosepsis and septic shock. He is 10 days post-TURP, IDC removed 5 days ago. He was brought in by his wife with 2-day history of increasing malaise, fever, rigors, and progressive confusion. He was hypotensive on arrival — BP 88/52 — with multiple Red and Purple Zone observations."</dd>
+
+<dt>B — Background</dt>
+<dd>"PMHx: Type 2 diabetes on Metformin and Gliclazide, BPH post-TURP, hypertension on Perindopril and Amlodipine, mild CKD baseline creatinine 120. Allergy to Sulfonamides — rash. All regular medications withheld tonight. He was functionally independent at baseline — his wife confirms he was cognitively normal 48 hours ago. No Advance Care Directive."</dd>
+
+<dt>A — Assessment</dt>
+<dd>"Current observations at 0515: HR 102, BP 98/62, RR 20, SpO2 97% on 6L Hudson mask, Temp 38.4, GCS 14 — still confused, oriented to name only. BGL 11.8 — trending down. Urine output 25 mL/hr — still below target. <br><br>
+Initial lactate 3.8, repeat at 0430 was 3.2 — trending down but still above 2. Creatinine 210, baseline 120 — AKI. Potassium 5.1. VBG pH 7.29 with metabolic acidosis. ECG shows sinus tachycardia, no acute ST changes. Urinalysis: nitrites, leucocytes, blood all positive.<br><br>
+Treatment given: Oxygen commenced at 0300. Two large-bore IV cannulae placed. Blood cultures x 2 sets collected at 0305 from two peripheral sites — stored at room temperature, travelling with patient. IV antibiotics commenced at 0320 — [name agent and dose as prescribed]. Total IV fluid: 1500 mL NaCl 0.9% (3 x 500 mL boluses). IDC inserted at 0325 — drained 150 mL initially, subsequent output 20–25 mL/hr. Paracetamol 1 g IV given at 0400."</dd>
+
+<dt>R — Recommendation</dt>
+<dd>"Colin needs ongoing ICU-level monitoring, repeat bloods with formal laboratory pathology, consideration for vasopressor support if BP does not continue to improve, and nephrology input for his AKI. Outstanding: formal blood results not yet available — specimens are labelled and ready. Blood cultures are with the patient. Source control may need imaging at the receiving facility — we have no CT here. June will need to follow by road — she is aware and has family she can contact. Any questions?"</dd>
+</dl>
+</div>
+
+<!-- BREAK POINT 8 -->
+<div class="break-point">
+<div class="bp-header">
+<span class="bp-badge">⏸ Break Point 8</span>
+<span class="bp-type">Communication Skill</span>
+<h4>ISBAR Handover Practice</h4>
+</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"Doctor — deliver the full ISBAR handover to the retrieval team. I'll play the retrieval consultant."</li>
+<li>"RN1 — what nursing handover do you provide to the retrieval nurse? What specific information do they need from you?"</li>
+<li>"Was any information missed? What would you add?"</li>
+<li>"How do you ensure continuity of care during the transfer?"</li>
+</ul>
+<h4>Expected Clinical Reasoning</h4>
+<ul>
+<li><span class="role role-doc">DOCTOR</span> — Structured, concise, complete ISBAR. Covers identity, clinical situation, relevant background, current assessment with all observations and trends, treatment given with times, and clear recommendations with outstanding issues.</li>
+<li><span class="role role-rn1">RN1</span> — Nursing handover includes: IV access (sites, gauge, patency), fluid balance (total in, total out), medication chart (all medications given with times), observation trend chart, IDC (size, time inserted, output), BGL trend, oxygen requirement, patient's baseline function and social situation, family status and emotional state.</li>
+<li>Handover should happen at the bedside so retrieval team can simultaneously assess the patient.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>A good ISBAR handover is practised, not improvised. In a crisis, you fall to the level of your preparation.</li>
+<li>Include <strong>what you have done AND what still needs to happen</strong>. Outstanding results, pending decisions, and ongoing monitoring needs are all part of the handover.</li>
+<li>The retrieval team was not there at the beginning. They need the whole story, concisely told. Do not assume they know anything.</li>
+<li>Documentation supports handover. If the notes are incomplete, the handover will be incomplete.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>When the retrieval team walks in, you've been managing this patient for 2–3 hours. You're tired, you've been running. The handover is the last critical task before you hand over care. Take 30 seconds to organise your thoughts, use the ISBAR structure, and deliver it clearly. A poor handover can undo good clinical work.</p>
+</div>
+</section>
+
+<!-- ═══════════════ 13. DEBRIEF ═══════════════ -->
+<section class="section-card fade-section" id="s13">
+<div class="section-label">Section 13</div>
+<h2>Debrief (10–15 minutes)</h2>
+
+<h3>Structured Debrief — Plus / Delta Model</h3>
+<h4>Opening</h4>
+<p><em>"Thank you, everyone. That was a challenging scenario. Let's take a few minutes to debrief. This is a safe space — no judgement. We're here to learn together."</em></p>
+
+<h4>Emotional Check-In</h4>
+<p><em>"Before we talk about clinical care — how are you feeling? That was a high-acuity patient, someone known to the community. It's okay if that felt heavy."</em></p>
+<ul>
+<li>Acknowledge the emotional weight of caring for known community members</li>
+<li>Normalise stress responses</li>
+<li>Remind staff of Employee Assistance Program and peer support options</li>
+</ul>
+
+<h4>Review of Learning Objectives</h4>
+<ol>
+<li>Did we recognise sepsis using the SA Health pathway? When did we identify it?</li>
+<li>Did we assign an appropriate triage category and initiate HIRAID?</li>
+<li>Did we complete the sepsis bundle within 60 minutes? (Oxygen, IV/Blood Cultures, Antibiotics, Fluids)</li>
+<li>Did we identify Purple and Red Zone observations and escalate correctly?</li>
+<li>Did we deliver an effective ISBAR to MedSTAR?</li>
+<li>Did we coordinate effectively as a team of 2 RNs and 1 Doctor?</li>
+</ol>
+
+<h4>Plus (What Went Well)</h4>
+<ul>
+<li>Prompt triage and bed allocation?</li>
+<li>Early recognition of sepsis using the pathway?</li>
+<li>Team communication and task allocation?</li>
+<li>Timely antibiotic and fluid administration?</li>
+<li>Structured MedSTAR referral?</li>
+<li>Family communication?</li>
+</ul>
+
+<h4>Delta (What Would We Do Differently)</h4>
+<ul>
+<li>Could we have started oxygen sooner?</li>
+<li>Did we call MedSTAR early enough?</li>
+<li>Were there any medication safety concerns?</li>
+<li>Was documentation maintained in real time?</li>
+<li>Did we reassess frequently enough?</li>
+<li>Were there communication gaps between team members?</li>
+</ul>
+
+<h4>System Issues</h4>
+<ul>
+<li>Was the sepsis pathway easily accessible?</li>
+<li>Were blood culture bottles and antibiotic stock readily available?</li>
+<li>Could the i-STAT provide what we needed?</li>
+<li>Is our local MedSTAR escalation process clear to all staff?</li>
+<li>Do we have a transfer documentation template that supports comprehensive handover?</li>
+</ul>
+
+<h4>Key Take-Home Points</h4>
+<ol>
+<li><strong>Sepsis is time-critical.</strong> The SA Health pathway gives you a structured approach: RECOGNISE → RESPOND &amp; ESCALATE → RESUSCITATE → REFER &amp; REASSESS.</li>
+<li><strong>Complete actions 1–4 within 60 minutes:</strong> Oxygen, IV Access &amp; Blood Cultures, IV Antibiotics, IV Fluids.</li>
+<li><strong>Call MedSTAR early</strong> — they are a resource, not a last resort. Regional LHNs: commence treatment and follow local escalation pathways.</li>
+<li><strong>Reassess, reassess, reassess.</strong> Repeat lactate within 2 hours. Monitor urine output. Trends matter more than single readings.</li>
+<li><strong>You are it.</strong> In a small rural ED, you are the resuscitation team, the ICU nurse, the pharmacist, and the social worker. Work to your scope. Support each other. Debrief afterwards.</li>
+</ol>
+</section>
+
+<!-- ═══════════════ 14. SCENARIO VARIATIONS ═══════════════ -->
+<section class="section-card fade-section" id="s14">
+<div class="section-label">Section 14</div>
+<h2>Scenario Variations</h2>
+
+<div class="var-card">
+<strong>Variation 1 — Deterioration Before Retrieval</strong>
+<p>At 0430, Colin's BP drops to 78/44. GCS drops to 12 (E3 V4 M5). Lactate repeat is 4.6 mmol/L — rising. He is becoming peripherally cool and mottled (transition from warm to cold shock). The retrieval team is still 90 minutes away.</p>
+<p><em>Discussion focus:</em> Vasopressor initiation via syringe driver under MedSTAR phone guidance. Airway planning if GCS continues to drop. Re-calling MedSTAR with updated ISBAR to escalate urgency. Managing two RNs' workload when one patient requires near-continuous intervention.</p>
+</div>
+
+<div class="var-card">
+<strong>Variation 2 — No Point-of-Care Lactate Available</strong>
+<p>The i-STAT is out of cartridges for lactate. You cannot measure lactate. How do you assess and monitor for sepsis severity and treatment response without it?</p>
+<p><em>Discussion focus:</em> Clinical assessment of perfusion — CRT, mental state, urine output, BP trend, mottling score. The lactate is a useful tool but not the only one. The SA Health pathway includes clinical signs of organ dysfunction (hypotension, tachypnoea, altered mental state) as triggers independent of lactate.</p>
+</div>
+
+<div class="var-card">
+<strong>Variation 3 — Second Patient Arrives</strong>
+<p>At 0345, a 55-year-old male walks in clutching his chest. He has central chest pain, diaphoresis, and looks pale. Now you have a potential ACS and a septic shock patient simultaneously, with 2 RNs and 1 Doctor.</p>
+<p><em>Discussion focus:</em> Triage prioritisation with two acute patients. Task allocation. Which patient gets the doctor first? Can RN1 manage the sepsis patient independently while RN2 triages the chest pain? When do you call for additional staff? Is there a nurse manager or on-call coordinator?</p>
+</div>
+
+</section>
+
+<!-- ═══════════════ SOURCE REFERENCE ═══════════════ -->
+<div class="source-ref fade-section">
+<strong>Source Protocol:</strong> SA Health Adult Sepsis Pathway — V1 December 2024 (FIS: 24096.1)<br>
+Adapted with permission © State of New South Wales Clinical Excellence Commission (2024)<br>
+© Department for Health and Wellbeing, Government of South Australia. All rights reserved.<br><br>
+<strong>Supporting Frameworks:</strong> Australasian Triage Scale (ATS) · HIRAID · ISBAR · SA Health Rapid Detection &amp; Response (RDR) · Therapeutic Guidelines: Antibiotic · NSQHS Standards<br><br>
+<strong>Retrieval Service:</strong> MedSTAR Emergency Medical Retrieval — Ph 13 78 27
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<div class="module-footer">
+Rural ED Simulation Scenario — For training and education purposes only.<br>
+Clinical decisions should always be guided by current local policies, Therapeutic Guidelines, and senior clinical advice.
+</div>
+
+</main>
+
+<!-- ═══════════════ JAVASCRIPT ═══════════════ -->
+<script>
+// ── Progress bar ──
+const bar=document.getElementById('progressBar');
+window.addEventListener('scroll',()=>{
+const h=document.documentElement.scrollHeight-window.innerHeight;
+bar.style.width=h>0?((window.scrollY/h)*100)+'%':'0%';
+});
+
+// ── Accordion toggle ──
+function toggleAccordion(btn){
+const body=btn.nextElementSibling;
+const open=body.classList.toggle('open');
+btn.classList.toggle('open',open);
+btn.setAttribute('aria-expanded',open);
+}
+
+// ── Fade-in on scroll ──
+const obs=new IntersectionObserver((entries)=>{
+entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+},{threshold:0.08});
+document.querySelectorAll('.fade-section').forEach(el=>obs.observe(el));
+</script>
+
+</body>
+</html>
