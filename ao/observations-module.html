@@ -82,6 +82,32 @@
             padding: 70px 1.1rem 3rem;
         }
 
+        .back-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .back-nav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .back-nav a:hover {
+            background: rgba(0,204,68,0.1);
+            text-decoration: none;
+        }
+
         .hero {
             text-align: center;
             padding: 3rem 1rem 2.5rem;
@@ -211,39 +237,31 @@
             margin-right: 0.3rem;
         }
 
-        .media-placeholder {
-            background: linear-gradient(135deg, var(--card) 0%, rgba(0,77,0,0.5) 100%);
-            border: 2px dashed rgba(0,204,68,0.25);
+        .video-embed {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
             border-radius: var(--radius);
-            padding: 3rem 1.5rem;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.6rem;
+            background: #000;
         }
 
-        .media-placeholder .icon {
-            font-size: 2.5rem;
-            opacity: 0.7;
-        }
-
-        .media-placeholder .label {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--accent);
-        }
-
-        .media-placeholder .note {
-            font-size: 0.78rem;
-            color: var(--text-dim);
+        .video-embed iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: var(--radius);
         }
 
         .media-desc {
             font-size: 0.88rem;
             color: var(--text-dim);
-            margin-top: 0.7rem;
             text-align: center;
+            margin-top: 0.7rem;
         }
 
         .accordion-item {
@@ -312,7 +330,7 @@
         }
 
         .accordion-inner ul li::before {
-            content: '▸';
+            content: '\25B8';
             position: absolute;
             left: 0;
             color: var(--accent);
@@ -362,7 +380,7 @@
         }
 
         .checklist-item input[type="checkbox"]:checked::after {
-            content: '✓';
+            content: '\2713';
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
@@ -446,11 +464,6 @@
             font-size: 2.5rem;
             font-weight: 800;
             line-height: 1.1;
-        }
-
-        .calc-result .score-label {
-            font-size: 0.9rem;
-            margin-top: 0.3rem;
         }
 
         .calc-result .score-action {
@@ -626,6 +639,47 @@
             font-size: 1rem;
         }
 
+        .module-return-card {
+            background: var(--card);
+            border: 1px solid rgba(0,204,68,0.2);
+            border-radius: var(--radius);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .module-return-card .return-label {
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        .module-return-card a.return-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.8rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            transition: opacity 0.2s;
+            min-height: 48px;
+        }
+
+        .module-return-card a.return-btn:hover {
+            opacity: 0.9;
+            text-decoration: none;
+        }
+
+        .module-return-card .return-sub {
+            margin-top: 0.8rem;
+            font-size: 0.78rem;
+            color: var(--text-dim);
+        }
+
         footer {
             margin-top: 2rem;
             padding: 2rem 1rem;
@@ -655,7 +709,7 @@
             .hero h1 { font-size: 1.6rem; }
             .module-container { padding: 65px 0.8rem 2rem; }
             .card, .calc-card, .quiz-question { padding: 1.1rem; }
-            .sticky-header .header-title { font-size: 0.82rem; }
+            .sticky-header .header-title { font-size: 0.85rem; }
         }
 
         .rdr-band {
@@ -667,7 +721,7 @@
             margin-bottom: 0.4rem;
             font-size: 0.92rem;
         }
-        .rdr-white { background: rgba(255,255,255,0.08); border-left: 4px solid #ffffff; }
+        .rdr-white { background: rgba(230,230,230,0.15); border-left: 4px solid #ffffff; }
         .rdr-yellow { background: rgba(255,224,102,0.15); border-left: 4px solid #ffe066; }
         .rdr-orange { background: rgba(255,170,51,0.15); border-left: 4px solid #ffaa33; }
         .rdr-red { background: rgba(255,77,77,0.15); border-left: 4px solid #ff4d4d; }
@@ -698,12 +752,51 @@
             padding: 1rem;
             margin: 0.8rem 0;
         }
+
+        .audio-player-card {
+            background: rgba(0,0,0,0.25);
+            border: 1px solid rgba(0,204,68,0.15);
+            border-radius: 10px;
+            padding: 1.2rem;
+        }
+
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .podcast-icon {
+            width: 64px;
+            height: 64px;
+            min-width: 64px;
+            background: linear-gradient(135deg, rgba(0,204,68,0.2), rgba(0,204,68,0.05));
+            border: 2px solid rgba(0,204,68,0.25);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .podcast-meta .podcast-title {
+            font-weight: 700;
+            color: var(--white);
+            font-size: 1.1rem;
+        }
+
+        .podcast-meta .podcast-sub {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 <body>
 
 <header class="sticky-header">
-    <div class="header-title">Accurate & Timely Observations</div>
+    <div class="header-title">Accurate &amp; Timely Observations</div>
     <div class="progress-bar-track">
         <div class="progress-bar-fill" id="progressBar"></div>
     </div>
@@ -711,15 +804,30 @@
 
 <div class="module-container">
 
+    <div class="back-nav">
+        <a href="index.html">&larr; Back to AO Modules</a>
+    </div>
+
     <section class="hero">
-        <h1>Accurate & Timely Observations</h1>
-        <p class="subtitle">Why every number you record could save a life — and how to get it right every time</p>
-        <div class="time-badge">⏱ Estimated: 7–9 minutes</div>
+        <h1>Accurate &amp; Timely Observations</h1>
+        <p class="subtitle">Why every number you record could save a life &mdash; and how to get it right every time</p>
+        <div class="time-badge">&#9201; Estimated: 7&ndash;9 minutes</div>
         <div class="outcome-pills">
-            <span class="pill">🎯 Understand why observations matter</span>
-            <span class="pill">📊 Navigate the SA Health RDR Chart</span>
-            <span class="pill">🖥️ Use the Corpuls 3 effectively</span>
-            <span class="pill">📡 Support remote EOC clinical decisions</span>
+            <span class="pill">&#127919; Understand why observations matter</span>
+            <span class="pill">&#128202; Navigate the SA Health RDR Chart</span>
+            <span class="pill">&#128421;&#65039; Use the Corpuls 3 effectively</span>
+            <span class="pill">&#128225; Support remote EOC clinical decisions</span>
+        </div>
+    </section>
+
+    <section class="fade-section">
+        <p class="section-label">Watch</p>
+        <h2 class="section-title">Introduction Video</h2>
+        <div class="card">
+            <div class="video-embed">
+                <iframe src="https://www.youtube.com/embed/nyYdf16RfGo" title="Introduction - Accurate and Timely Observations" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <p class="media-desc">Watch this short overview before working through the module content below.</p>
         </div>
     </section>
 
@@ -727,22 +835,17 @@
         <p class="section-label">Core Concept</p>
         <h2 class="section-title">Why This Is Critically Important</h2>
         <div class="card card-alt">
-            <p><strong>As a Volunteer Ambulance Officer, you are often the first clinically trained person at a patient's side.</strong> The observations you record in those first minutes are not just numbers on a screen — they are the foundation upon which every clinical decision is built.</p>
-            
-            <p>When you call the <strong>EOC (Emergency Operations Centre) Clinician</strong> for remote clinical guidance, they cannot see, hear, or feel your patient. They are making potentially life-altering treatment decisions based <em>entirely</em> on what you tell them. If the numbers are wrong, delayed, or missing — the clinical advice you receive may not match what your patient actually needs.</p>
-            
+            <p><strong>As a Volunteer Ambulance Officer, you are often the first clinically trained person at a patient's side.</strong> The observations you record in those first minutes are not just numbers on a screen &mdash; they are the foundation upon which every clinical decision is built.</p>
+            <p>When you call the <strong>EOC (Emergency Operations Centre) Clinician</strong> for remote clinical guidance, they cannot see, hear, or feel your patient. They are making potentially life-altering treatment decisions based <em>entirely</em> on what you tell them. If the numbers are wrong, delayed, or missing &mdash; the clinical advice you receive may not match what your patient actually needs.</p>
             <p>Similarly, when <strong>paramedics arrive on scene</strong>, the first set of observations you've already captured gives them a baseline to measure change against. A blood pressure you took 8 minutes ago might be the single most important piece of data they use to decide between two very different treatment pathways.</p>
-
-            <p>The SA Health <strong>Rapid Detection and Response (RDR) system</strong> exists specifically because research has proven that <strong>clinical deterioration is almost always preceded by measurable changes in vital signs</strong> — often 6 to 24 hours before a critical event. In the pre-hospital setting, you may only have minutes. Your observations are the early warning system.</p>
+            <p>The SA Health <strong>Rapid Detection and Response (RDR) system</strong> exists specifically because research has proven that <strong>clinical deterioration is almost always preceded by measurable changes in vital signs</strong> &mdash; often 6 to 24 hours before a critical event. In the pre-hospital setting, you may only have minutes. Your observations are the early warning system.</p>
         </div>
-
         <div class="callout" style="margin-top:1rem;">
-            <div class="callout-title"><span class="icon">🚨</span> Critical Safety Point</div>
-            <p style="font-size:0.95rem;">Inaccurate or delayed observations have been directly linked to <strong>failure-to-rescue events</strong> across healthcare systems. In the pre-hospital setting, a missed deterioration trend means a missed opportunity to escalate — and that gap can be fatal. <strong>Every number matters. Every minute matters.</strong></p>
+            <div class="callout-title"><span class="icon">&#128680;</span> Critical Safety Point</div>
+            <p style="font-size:0.95rem;">Inaccurate or delayed observations have been directly linked to <strong>failure-to-rescue events</strong> across healthcare systems. In the pre-hospital setting, a missed deterioration trend means a missed opportunity to escalate &mdash; and that gap can be fatal. <strong>Every number matters. Every minute matters.</strong></p>
         </div>
-
         <div class="callout info" style="margin-top:0.8rem;">
-            <div class="callout-title"><span class="icon">💡</span> Think About It This Way</div>
+            <div class="callout-title"><span class="icon">&#128161;</span> Think About It This Way</div>
             <p style="font-size:0.95rem;">The EOC Clinician is effectively treating your patient <strong>blind</strong>. Your observations are their eyes, ears, and hands. The more accurate and timely the data you provide, the better they can guide your care. You are their clinical sensor on the ground.</p>
         </div>
     </section>
@@ -753,27 +856,25 @@
 
         <div class="accordion-item">
             <button class="accordion-btn" aria-expanded="false">
-                <span>📋 What Constitutes a Full Set of Observations?</span>
-                <span class="chevron">▼</span>
+                <span>&#128203; What Constitutes a Full Set of Observations?</span>
+                <span class="chevron">&#9660;</span>
             </button>
             <div class="accordion-content">
                 <div class="accordion-inner">
                     <p style="margin-bottom:0.8rem;">A <strong>complete set of observations</strong> aligned with the RDR chart includes:</p>
                     <ul>
-                        <li><strong>Respiratory Rate (RR)</strong> — counted manually over 30–60 seconds, not estimated</li>
-                        <li><strong>Oxygen Saturation (SpO₂)</strong> — via pulse oximetry on the Corpuls 3</li>
-                        <li><strong>Supplemental O₂ Flow Rate</strong> — if oxygen is being administered, record L/min and delivery method</li>
-                        <li><strong>Blood Pressure (BP)</strong> — systolic and diastolic, using NIBP on the Corpuls 3</li>
-                        <li><strong>Heart Rate / Pulse Rate</strong> — from Corpuls 3 monitoring or manual palpation</li>
-                        <li><strong>Temperature</strong> — tympanic or other appropriate method</li>
-                        <li><strong>Level of Consciousness</strong> — using AVPU or GCS as appropriate</li>
-                        <li><strong>Pain Score</strong> — 0–10 numeric rating scale</li>
-                        <li><strong>Blood Glucose Level (BGL)</strong> — when clinically indicated</li>
-                        <li><strong>ECG rhythm</strong> — 4-lead ECG via the Corpuls 3</li>
+                        <li><strong>Respiratory Rate (RR)</strong> &mdash; counted manually over 30&ndash;60 seconds, not estimated</li>
+                        <li><strong>Oxygen Saturation (SpO&#8322;)</strong> &mdash; via pulse oximetry on the Corpuls 3</li>
+                        <li><strong>Supplemental O&#8322; Flow Rate</strong> &mdash; if oxygen is being administered, record L/min and delivery method</li>
+                        <li><strong>Blood Pressure (BP)</strong> &mdash; systolic and diastolic, using NIBP on the Corpuls 3</li>
+                        <li><strong>Heart Rate / Pulse Rate</strong> &mdash; from Corpuls 3 monitoring or manual palpation</li>
+                        <li><strong>Level of Consciousness</strong> &mdash; using AVPU or GCS as appropriate</li>
+                        <li><strong>Pain Score</strong> &mdash; 0&ndash;10 numeric rating scale</li>
+                        <li><strong>Blood Glucose Level (BGL)</strong> &mdash; when clinically indicated</li>
                     </ul>
                     <div class="callout warning" style="margin-top:0.8rem;">
-                        <div class="callout-title"><span class="icon">⚠️</span> Common Pitfall</div>
-                        <p style="font-size:0.9rem;">Respiratory rate is the <strong>most commonly missed or estimated</strong> vital sign — yet it is one of the <strong>earliest and most sensitive indicators</strong> of deterioration. Always count it properly.</p>
+                        <div class="callout-title"><span class="icon">&#9888;&#65039;</span> Common Pitfall</div>
+                        <p style="font-size:0.9rem;">Respiratory rate is the <strong>most commonly missed or estimated</strong> vital sign &mdash; yet it is one of the <strong>earliest and most sensitive indicators</strong> of deterioration. Always count it properly.</p>
                     </div>
                 </div>
             </div>
@@ -781,95 +882,66 @@
 
         <div class="accordion-item">
             <button class="accordion-btn" aria-expanded="false">
-                <span>📊 The SA Health RDR Chart — How It Works</span>
-                <span class="chevron">▼</span>
+                <span>&#128202; The SA Health RDR Chart &mdash; How It Works</span>
+                <span class="chevron">&#9660;</span>
             </button>
             <div class="accordion-content">
                 <div class="accordion-inner">
                     <p style="margin-bottom:0.8rem;">The <strong>Rapid Detection and Response (RDR)</strong> observation chart was introduced by SA Health in 2012/2013 and revised in 2020. It uses a <strong>colour-coded, track-and-trigger system</strong> to identify physiological deterioration early.</p>
-                    
                     <p style="margin-bottom:0.6rem;"><strong>How the colour zones work:</strong></p>
-                    
                     <div class="rdr-band rdr-white">
-                        <strong style="color:#fff;">White</strong> <span>Normal range — continue routine monitoring</span>
+                        <strong style="color:#fff;">White</strong> <span>Normal range &mdash; continue routine monitoring</span>
                     </div>
                     <div class="rdr-band rdr-yellow">
-                        <strong>Yellow</strong> Mild abnormality — increase monitoring frequency, RN/RM review
+                        <strong>Yellow</strong> <span>Mild abnormality &mdash; increase monitoring frequency, RN/RM review</span>
                     </div>
                     <div class="rdr-band rdr-orange">
-                        <strong>Orange</strong> Moderate abnormality — MDT review required, escalate
+                        <strong>Orange</strong> <span>Moderate abnormality &mdash; MDT review required, escalate</span>
                     </div>
                     <div class="rdr-band rdr-red">
-                        <strong>Red</strong> Severe abnormality — triggers Medical Emergency Response (MER)
+                        <strong>Red</strong> <span>Severe abnormality &mdash; triggers Medical Emergency Response (MER)</span>
                     </div>
-
                     <div class="highlight-box">
                         <p style="font-size:0.92rem;"><strong>Key RDR Trigger Examples (2020 Revision):</strong></p>
                         <table class="rdr-table">
-                            <thead>
-                                <tr>
-                                    <th>Parameter</th>
-                                    <th>Yellow Zone</th>
-                                    <th>Orange/Red Zone</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>Parameter</th><th>Yellow Zone</th><th>Orange/Red Zone</th></tr></thead>
                             <tbody>
-                                <tr>
-                                    <td>Resp Rate</td>
-                                    <td>8–10 bpm</td>
-                                    <td>&lt;8 or &gt;30 bpm</td>
-                                </tr>
-                                <tr>
-                                    <td>SpO₂</td>
-                                    <td>92–94%</td>
-                                    <td>89–91% (MDT) / ≤88% (MER)</td>
-                                </tr>
-                                <tr>
-                                    <td>O₂ Flow</td>
-                                    <td>Increasing requirement</td>
-                                    <td>&gt;8 L/min → MER</td>
-                                </tr>
-                                <tr>
-                                    <td>Sedation Score</td>
-                                    <td>Score 1</td>
-                                    <td>Score 2 → MDT review</td>
-                                </tr>
+                                <tr><td>Resp Rate</td><td>8&ndash;10 bpm</td><td>&lt;8 or &gt;30 bpm</td></tr>
+                                <tr><td>SpO&#8322;</td><td>92&ndash;94%</td><td>89&ndash;91% (MDT) / &le;88% (MER)</td></tr>
+                                <tr><td>O&#8322; Flow</td><td>Increasing requirement</td><td>&gt;8 L/min &rarr; MER</td></tr>
+                                <tr><td>Sedation Score</td><td>Score 1</td><td>Score 2 &rarr; MDT review</td></tr>
                             </tbody>
                         </table>
                     </div>
-
-                    <p style="margin-top:0.8rem; font-size:0.95rem;"><strong>Why this matters for you:</strong> Even though you're in the pre-hospital environment, understanding the RDR framework means you can communicate observations in a language that hospital clinicians, EOC clinicians, and receiving paramedics instantly understand. You know which numbers are <em>concerning</em> vs <em>critical</em>.</p>
+                    <p style="margin-top:0.8rem; font-size:0.95rem;"><strong>Why this matters for you:</strong> Even though you're in the pre-hospital environment, understanding the RDR framework means you can communicate observations in a language that hospital clinicians, EOC clinicians, and receiving paramedics instantly understand.</p>
                 </div>
             </div>
         </div>
 
         <div class="accordion-item">
             <button class="accordion-btn" aria-expanded="false">
-                <span>🖥️ The Corpuls 3 — Your Primary Monitoring Device</span>
-                <span class="chevron">▼</span>
+                <span>&#128421;&#65039; The Corpuls 3 &mdash; Your Primary Monitoring Device</span>
+                <span class="chevron">&#9660;</span>
             </button>
             <div class="accordion-content">
                 <div class="accordion-inner">
-                    <p style="margin-bottom:0.8rem;">The <strong>Corpuls 3</strong> is a modular patient monitoring and defibrillation system and is your primary monitoring device on the ambulance. The <strong>volunteer model</strong> is configured with the following core monitoring functions:</p>
-                    
+                    <p style="margin-bottom:0.8rem;">The <strong>Corpuls 3</strong> is a modular patient monitoring and defibrillation system and is your primary monitoring device on the ambulance.</p>
                     <p style="font-weight:600; margin-bottom:0.5rem;">Three-Part Modular Design:</p>
                     <ul>
-                        <li><strong>Monitor Unit</strong> — 8.4" colour display showing waveforms and vital parameters simultaneously. Readable in all lighting conditions.</li>
-                        <li><strong>Patient Box</strong> — The "heart" of the system. All sensors connect here. Has its own small display showing key vitals (HR, BP). Stays with the patient during transfer.</li>
-                        <li><strong>Defibrillator Unit</strong> — Defibrillation, pacing, and CPR feedback capabilities.</li>
+                        <li><strong>Monitor Unit</strong> &mdash; 8.4" colour display showing waveforms and vital parameters simultaneously.</li>
+                        <li><strong>Patient Box</strong> &mdash; The "heart" of the system. All sensors connect here. Stays with the patient during transfer.</li>
+                        <li><strong>Defibrillator Unit</strong> &mdash; Defibrillation and CPR feedback capabilities.</li>
                     </ul>
-
-                    <p style="font-weight:600; margin:0.8rem 0 0.5rem;">Your Configured Monitoring Functions:</p>
+                    <p style="font-weight:600; margin:0.8rem 0 0.5rem;">Your Configured Monitoring Functions (Volunteer Model):</p>
                     <ul>
-                        <li><strong>SpO₂ (Pulse Oximetry)</strong> — Continuous oxygen saturation monitoring via finger probe. Also provides pulse rate reading.</li>
-                        <li><strong>Pulse Rate</strong> — Derived from the SpO₂ probe, providing continuous pulse rate display.</li>
-                        <li><strong>Heart Rate / 4-Lead ECG</strong> — Continuous cardiac rhythm monitoring using 4-lead electrode configuration. Displays heart rate and rhythm waveform on screen.</li>
-                        <li><strong>NIBP (Non-Invasive Blood Pressure)</strong> — Automated blood pressure measurement via arm cuff. Can be set to cycle at timed intervals or taken as single manual readings.</li>
+                        <li><strong>SpO&#8322; (Pulse Oximetry)</strong> &mdash; Continuous oxygen saturation monitoring via finger probe</li>
+                        <li><strong>Pulse Rate</strong> &mdash; Derived from the SpO&#8322; probe, providing continuous pulse rate display</li>
+                        <li><strong>Heart Rate / 4-Lead ECG</strong> &mdash; Continuous cardiac rhythm monitoring using 4-lead electrode configuration</li>
+                        <li><strong>NIBP (Non-Invasive Blood Pressure)</strong> &mdash; Automated blood pressure measurement via arm cuff</li>
                     </ul>
-
                     <div class="callout info" style="margin-top:0.8rem;">
-                        <div class="callout-title"><span class="icon">💡</span> Practical Tip</div>
-                        <p style="font-size:0.9rem;">Connect your patient to the Corpuls 3 <strong>as early as possible</strong>. The sooner you have monitoring running, the sooner you have a baseline — and the sooner the EOC Clinician can access live data to guide your care remotely. Set the NIBP to auto-cycle every 5 minutes for unstable patients.</p>
+                        <div class="callout-title"><span class="icon">&#128161;</span> Practical Tip</div>
+                        <p style="font-size:0.9rem;">Connect your patient to the Corpuls 3 <strong>as early as possible</strong>. The sooner you have monitoring running, the sooner you have a baseline &mdash; and the sooner the EOC Clinician can access live data to guide your care remotely.</p>
                     </div>
                 </div>
             </div>
@@ -877,39 +949,36 @@
 
         <div class="accordion-item">
             <button class="accordion-btn" aria-expanded="false">
-                <span>📡 Communicating Observations to the EOC Clinician</span>
-                <span class="chevron">▼</span>
+                <span>&#128225; Communicating Observations to the EOC Clinician</span>
+                <span class="chevron">&#9660;</span>
             </button>
             <div class="accordion-content">
                 <div class="accordion-inner">
-                    <p style="margin-bottom:0.8rem;">When you contact the EOC Clinician for clinical guidance, your observations need to be delivered in a <strong>structured, concise format</strong>. The standard frameworks used are:</p>
-                    
+                    <p style="margin-bottom:0.8rem;">When you contact the EOC Clinician for clinical guidance, your observations need to be delivered in a <strong>structured, concise format</strong>:</p>
                     <div class="highlight-box">
                         <p style="font-weight:700; color:var(--accent); margin-bottom:0.4rem;">ISBAR Framework</p>
                         <ul>
-                            <li><strong>I</strong> — Identification (your name, unit, callback)</li>
-                            <li><strong>S</strong> — Situation (what's happening right now)</li>
-                            <li><strong>B</strong> — Background (relevant history, events leading up)</li>
-                            <li><strong>A</strong> — Assessment (your observations and clinical impression)</li>
-                            <li><strong>R</strong> — Recommendation (what you think is needed / what you're asking for)</li>
+                            <li><strong>I</strong> &mdash; Identification (your name, unit, callback)</li>
+                            <li><strong>S</strong> &mdash; Situation (what's happening right now)</li>
+                            <li><strong>B</strong> &mdash; Background (relevant history, events leading up)</li>
+                            <li><strong>A</strong> &mdash; Assessment (your observations and clinical impression)</li>
+                            <li><strong>R</strong> &mdash; Recommendation (what you think is needed / what you're asking for)</li>
                         </ul>
                     </div>
-
                     <div class="highlight-box" style="margin-top:0.6rem;">
                         <p style="font-weight:700; color:var(--accent); margin-bottom:0.4rem;">ATMIST AMBO (Clinical Handover)</p>
                         <ul>
-                            <li><strong>A</strong> — Age</li>
-                            <li><strong>T</strong> — Time of incident</li>
-                            <li><strong>M</strong> — Mechanism / Medical complaint</li>
-                            <li><strong>I</strong> — Injuries / assessment findings</li>
-                            <li><strong>S</strong> — Signs (vitals) and symptoms</li>
-                            <li><strong>T</strong> — Treatment given</li>
+                            <li><strong>A</strong> &mdash; Age</li>
+                            <li><strong>T</strong> &mdash; Time of incident</li>
+                            <li><strong>M</strong> &mdash; Mechanism / Medical complaint</li>
+                            <li><strong>I</strong> &mdash; Injuries / assessment findings</li>
+                            <li><strong>S</strong> &mdash; Signs (vitals) and symptoms</li>
+                            <li><strong>T</strong> &mdash; Treatment given</li>
                         </ul>
                     </div>
-
                     <div class="callout warning" style="margin-top:0.8rem;">
-                        <div class="callout-title"><span class="icon">⚠️</span> Critical Communication Points</div>
-                        <p style="font-size:0.9rem;">When relaying vitals to the EOC Clinician: state the <strong>exact number</strong>, the <strong>time it was taken</strong>, and any <strong>trend</strong> (e.g., "BP was 145/90 at 1420, now 110/70 at 1428 — that's a dropping trend"). Trends are often more clinically significant than single readings.</p>
+                        <div class="callout-title"><span class="icon">&#9888;&#65039;</span> Critical Communication Points</div>
+                        <p style="font-size:0.9rem;">When relaying vitals to the EOC Clinician: state the <strong>exact number</strong>, the <strong>time it was taken</strong>, and any <strong>trend</strong> (e.g., "BP was 145/90 at 1420, now 110/70 at 1428 &mdash; that's a dropping trend"). Trends are often more clinically significant than single readings.</p>
                     </div>
                 </div>
             </div>
@@ -917,22 +986,20 @@
 
         <div class="accordion-item">
             <button class="accordion-btn" aria-expanded="false">
-                <span>⏱️ Why Timing and Trends Matter More Than Single Readings</span>
-                <span class="chevron">▼</span>
+                <span>&#9201;&#65039; Why Timing and Trends Matter More Than Single Readings</span>
+                <span class="chevron">&#9660;</span>
             </button>
             <div class="accordion-content">
                 <div class="accordion-inner">
-                    <p style="margin-bottom:0.8rem;">A single blood pressure reading tells you where a patient is <em>right now</em>. Two readings with timestamps tell you <strong>where they're heading</strong> — and that's what saves lives.</p>
-                    
+                    <p style="margin-bottom:0.8rem;">A single blood pressure reading tells you where a patient is <em>right now</em>. Two readings with timestamps tell you <strong>where they're heading</strong> &mdash; and that's what saves lives.</p>
                     <ul>
-                        <li><strong>Baseline observations</strong> should be taken as soon as it is safe and practical to do so — ideally within the first 2–3 minutes of patient contact</li>
-                        <li><strong>Repeat observations</strong> should be taken at regular intervals (every 5 minutes for unstable patients, every 10–15 for stable)</li>
-                        <li><strong>Document the time</strong> of every reading — "a few minutes ago" is not clinically useful</li>
-                        <li><strong>Trend recognition</strong> is what separates a data collector from a clinician — a heart rate climbing from 88 → 102 → 118 over 15 minutes tells a story that "HR 118" alone does not</li>
+                        <li><strong>Baseline observations</strong> should be taken as soon as it is safe and practical &mdash; ideally within the first 2&ndash;3 minutes of patient contact</li>
+                        <li><strong>Repeat observations</strong> should be taken at regular intervals (every 5 minutes for unstable patients, every 10&ndash;15 for stable)</li>
+                        <li><strong>Document the time</strong> of every reading &mdash; "a few minutes ago" is not clinically useful</li>
+                        <li><strong>Trend recognition</strong> is what separates a data collector from a clinician &mdash; a heart rate climbing from 88 &rarr; 102 &rarr; 118 over 15 minutes tells a story that "HR 118" alone does not</li>
                     </ul>
-
                     <div class="highlight-box" style="margin-top:0.8rem;">
-                        <p style="font-size:0.95rem;"><strong>Real-World Example:</strong> A patient with chest pain has a BP of 135/85 on your first reading. You might think "that's fine." But if the paramedic arrives 12 minutes later and measures 95/60 — they now know there has been a <strong>40-point systolic drop</strong>. Without your first reading and its timestamp, they'd only see a "low-ish" BP and might not recognise the urgency of the change.</p>
+                        <p style="font-size:0.95rem;"><strong>Real-World Example:</strong> A patient with chest pain has a BP of 135/85 on your first reading. You might think "that's fine." But if the paramedic arrives 12 minutes later and measures 95/60 &mdash; they now know there has been a <strong>40-point systolic drop</strong>. Without your first reading and its timestamp, they'd only see a "low-ish" BP and might not recognise the urgency of the change.</p>
                     </div>
                 </div>
             </div>
@@ -945,24 +1012,24 @@
 
         <div class="accordion-item">
             <button class="accordion-btn" aria-expanded="false">
-                <span>1️⃣ Initial Assessment & Setup</span>
-                <span class="chevron">▼</span>
+                <span>1&#65039;&#8419; Initial Assessment &amp; Setup</span>
+                <span class="chevron">&#9660;</span>
             </button>
             <div class="accordion-content">
                 <div class="accordion-inner">
                     <div class="checklist-group">
-                        <div class="checklist-group-title">Scene Safety & Primary Survey</div>
-                        <div class="checklist-item"><input type="checkbox" id="c1"><label for="c1">Scene is safe — hazards identified and managed</label></div>
+                        <div class="checklist-group-title">Scene Safety &amp; Primary Survey</div>
+                        <div class="checklist-item"><input type="checkbox" id="c1"><label for="c1">Scene is safe &mdash; hazards identified and managed</label></div>
                         <div class="checklist-item"><input type="checkbox" id="c2"><label for="c2">Primary survey completed (DRsABCD)</label></div>
                         <div class="checklist-item"><input type="checkbox" id="c3"><label for="c3">Immediate life threats identified and managed</label></div>
                     </div>
                     <div class="checklist-group">
                         <div class="checklist-group-title">Early Monitoring Setup</div>
                         <div class="checklist-item"><input type="checkbox" id="c4"><label for="c4">Corpuls 3 powered on and patient box connected to patient</label></div>
-                        <div class="checklist-item"><input type="checkbox" id="c5"><label for="c5">SpO₂ finger probe applied and reading confirmed</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c5"><label for="c5">SpO&#8322; finger probe applied and reading confirmed</label></div>
                         <div class="checklist-item"><input type="checkbox" id="c6"><label for="c6">4-lead ECG electrodes applied and rhythm displaying</label></div>
-                        <div class="checklist-item"><input type="checkbox" id="c7"><label for="c7">NIBP cuff applied — first BP cycle initiated</label></div>
-                        <div class="checklist-item"><input type="checkbox" id="c8"><label for="c8">Respiratory rate manually counted (30–60 sec) and noted with time</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c7"><label for="c7">NIBP cuff applied &mdash; first BP cycle initiated</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c8"><label for="c8">Respiratory rate manually counted (30&ndash;60 sec) and noted with time</label></div>
                         <div class="checklist-item"><input type="checkbox" id="c9"><label for="c9">Time of first observation set recorded</label></div>
                     </div>
                 </div>
@@ -971,24 +1038,24 @@
 
         <div class="accordion-item">
             <button class="accordion-btn" aria-expanded="false">
-                <span>2️⃣ Focused History & Assessment</span>
-                <span class="chevron">▼</span>
+                <span>2&#65039;&#8419; Focused History &amp; Assessment</span>
+                <span class="chevron">&#9660;</span>
             </button>
             <div class="accordion-content">
                 <div class="accordion-inner">
                     <div class="checklist-group">
                         <div class="checklist-group-title">SAMPLE History</div>
-                        <div class="checklist-item"><input type="checkbox" id="c10"><label for="c10"><strong>S</strong>igns & Symptoms — onset, character, severity</label></div>
-                        <div class="checklist-item"><input type="checkbox" id="c11"><label for="c11"><strong>A</strong>llergies — medications, foods, environmental</label></div>
-                        <div class="checklist-item"><input type="checkbox" id="c12"><label for="c12"><strong>M</strong>edications — current medications and recent changes</label></div>
-                        <div class="checklist-item"><input type="checkbox" id="c13"><label for="c13"><strong>P</strong>ast medical history — relevant conditions</label></div>
-                        <div class="checklist-item"><input type="checkbox" id="c14"><label for="c14"><strong>L</strong>ast oral intake — time and what was consumed</label></div>
-                        <div class="checklist-item"><input type="checkbox" id="c15"><label for="c15"><strong>E</strong>vents leading up — what happened before the call</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c10"><label for="c10"><strong>S</strong>igns &amp; Symptoms &mdash; onset, character, severity</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c11"><label for="c11"><strong>A</strong>llergies &mdash; medications, foods, environmental</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c12"><label for="c12"><strong>M</strong>edications &mdash; current medications and recent changes</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c13"><label for="c13"><strong>P</strong>ast medical history &mdash; relevant conditions</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c14"><label for="c14"><strong>L</strong>ast oral intake &mdash; time and what was consumed</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c15"><label for="c15"><strong>E</strong>vents leading up &mdash; what happened before the call</label></div>
                     </div>
                     <div class="checklist-group">
                         <div class="checklist-group-title">Observation-Specific Assessment</div>
                         <div class="checklist-item"><input type="checkbox" id="c16"><label for="c16">Level of consciousness assessed (AVPU / GCS)</label></div>
-                        <div class="checklist-item"><input type="checkbox" id="c17"><label for="c17">Pain score recorded (0–10)</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c17"><label for="c17">Pain score recorded (0&ndash;10)</label></div>
                         <div class="checklist-item"><input type="checkbox" id="c18"><label for="c18">Temperature measured</label></div>
                         <div class="checklist-item"><input type="checkbox" id="c19"><label for="c19">BGL measured (if clinically indicated)</label></div>
                         <div class="checklist-item"><input type="checkbox" id="c20"><label for="c20">All Corpuls 3 readings confirmed and documented with time</label></div>
@@ -999,14 +1066,14 @@
 
         <div class="accordion-item">
             <button class="accordion-btn" aria-expanded="false">
-                <span>3️⃣ Ongoing Monitoring & EOC Communication</span>
-                <span class="chevron">▼</span>
+                <span>3&#65039;&#8419; Ongoing Monitoring &amp; EOC Communication</span>
+                <span class="chevron">&#9660;</span>
             </button>
             <div class="accordion-content">
                 <div class="accordion-inner">
                     <div class="checklist-group">
                         <div class="checklist-group-title">Repeat Observations</div>
-                        <div class="checklist-item"><input type="checkbox" id="c21"><label for="c21">Observation frequency set: every 5 min (unstable) / 10–15 min (stable)</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c21"><label for="c21">Observation frequency set: every 5 min (unstable) / 10&ndash;15 min (stable)</label></div>
                         <div class="checklist-item"><input type="checkbox" id="c22"><label for="c22">Each observation set recorded with time</label></div>
                         <div class="checklist-item"><input type="checkbox" id="c23"><label for="c23">Trends identified and noted (improving / stable / deteriorating)</label></div>
                         <div class="checklist-item"><input type="checkbox" id="c24"><label for="c24">Any interventions documented with pre/post observations</label></div>
@@ -1015,7 +1082,7 @@
                         <div class="checklist-group-title">EOC Clinician Communication</div>
                         <div class="checklist-item"><input type="checkbox" id="c25"><label for="c25">Contact EOC using ISBAR structure</label></div>
                         <div class="checklist-item"><input type="checkbox" id="c26"><label for="c26">Relay exact values with times (not approximations)</label></div>
-                        <div class="checklist-item"><input type="checkbox" id="c27"><label for="c27">Communicate trends clearly ("dropping", "rising", "stable at…")</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="c27"><label for="c27">Communicate trends clearly ("dropping", "rising", "stable at...")</label></div>
                         <div class="checklist-item"><input type="checkbox" id="c28"><label for="c28">Confirm and read back any clinical instructions received</label></div>
                     </div>
                 </div>
@@ -1024,8 +1091,8 @@
 
         <div class="accordion-item">
             <button class="accordion-btn" aria-expanded="false">
-                <span>4️⃣ Reassessment & Handover</span>
-                <span class="chevron">▼</span>
+                <span>4&#65039;&#8419; Reassessment &amp; Handover</span>
+                <span class="chevron">&#9660;</span>
             </button>
             <div class="accordion-content">
                 <div class="accordion-inner">
@@ -1050,28 +1117,34 @@
     </section>
 
     <section class="fade-section">
-        <p class="section-label">Listen & Learn</p>
-        <h2 class="section-title">Podcast</h2>
-        <div class="media-placeholder">
-            <div class="icon">🎧</div>
-            <div class="label">Podcast — "The Numbers That Tell the Story"</div>
-            <div class="note">Podcast URL to be added</div>
+        <p class="section-label">Listen</p>
+        <h2 class="section-title">Podcast &mdash; Observations That Matter</h2>
+        <div class="card">
+            <div class="podcast-header">
+                <div class="podcast-icon">&#127908;&#65039;</div>
+                <div class="podcast-meta">
+                    <div class="podcast-title">Observations That Matter</div>
+                    <div class="podcast-sub">Why every number counts in the pre-hospital setting</div>
+                </div>
+            </div>
+            <div class="audio-player-card">
+                <iframe src="https://drive.google.com/file/d/1NQpKdVw5kjoB2iWCc9U83aHKSEmlxg0b/preview" width="100%" height="80" style="border:none; border-radius:8px;" allow="autoplay"></iframe>
+                <p style="font-size:0.82rem; color:var(--text-dim); margin-top:0.8rem; text-align:center;">Listen while you review the key concepts from this module</p>
+            </div>
         </div>
-        <p class="media-desc">A discussion with experienced paramedics on real cases where accurate volunteer observations made the critical difference — and cases where missing data led to near-misses.</p>
     </section>
 
     <section class="fade-section">
         <p class="section-label">Interactive Tool</p>
         <h2 class="section-title">RDR Zone Assessment Calculator</h2>
         <p style="font-size:0.92rem; color:var(--text-dim); margin-bottom:1rem;">Enter your patient's vital signs below to see which RDR colour zone each parameter falls into and the recommended clinical response.</p>
-
         <div class="calc-card">
             <div class="calc-row">
                 <label for="calcRR">Respiratory Rate (breaths/min)</label>
                 <input type="number" id="calcRR" placeholder="e.g. 18" min="0" max="80">
             </div>
             <div class="calc-row">
-                <label for="calcSpO2">SpO₂ (%)</label>
+                <label for="calcSpO2">SpO&#8322; (%)</label>
                 <input type="number" id="calcSpO2" placeholder="e.g. 96" min="0" max="100">
             </div>
             <div class="calc-row">
@@ -1083,36 +1156,32 @@
                 <input type="number" id="calcHR" placeholder="e.g. 78" min="0" max="300">
             </div>
             <div class="calc-row">
-                <label for="calcTemp">Temperature (°C)</label>
+                <label for="calcTemp">Temperature (&deg;C)</label>
                 <input type="number" id="calcTemp" placeholder="e.g. 37.2" min="25" max="45" step="0.1">
             </div>
             <div class="calc-row">
                 <label for="calcAVPU">Level of Consciousness</label>
                 <select id="calcAVPU">
-                    <option value="">— Select —</option>
+                    <option value="">&mdash; Select &mdash;</option>
                     <option value="A">Alert</option>
                     <option value="V">Responds to Voice</option>
                     <option value="P">Responds to Pain</option>
                     <option value="U">Unresponsive</option>
                 </select>
             </div>
-
             <button class="calc-btn" onclick="calculateRDR()">Assess RDR Zones</button>
-
             <div class="calc-result" id="calcResult"></div>
         </div>
     </section>
 
     <section class="fade-section">
         <p class="section-label">Test Your Knowledge</p>
-        <h2 class="section-title">Quiz — 5 Questions</h2>
-
+        <h2 class="section-title">Quiz &mdash; 5 Questions</h2>
         <div id="quizContainer"></div>
-
         <div class="quiz-score-card" id="quizScore">
             <div class="score-percent" id="scorePercent"></div>
             <div class="score-msg" id="scoreMsg"></div>
-            <button class="retry-btn" onclick="resetQuiz()">🔄 Retry Quiz</button>
+            <button class="retry-btn" onclick="resetQuiz()">&#128260; Retry Quiz</button>
         </div>
     </section>
 
@@ -1121,55 +1190,59 @@
         <h2 class="section-title">Key Takeaways</h2>
         <div class="takeaway-grid">
             <div class="takeaway-card">
-                <div class="tk-icon">🎯</div>
-                <div class="tk-text"><strong>You are the EOC Clinician's eyes and hands.</strong> Every observation you record — accurately, with a timestamp — directly determines the quality of remote clinical guidance your patient receives. Inaccurate data leads to inappropriate advice.</div>
+                <div class="tk-icon">&#127919;</div>
+                <div class="tk-text"><strong>You are the EOC Clinician's eyes and hands.</strong> Every observation you record &mdash; accurately, with a timestamp &mdash; directly determines the quality of remote clinical guidance your patient receives. Inaccurate data leads to inappropriate advice.</div>
             </div>
             <div class="takeaway-card">
-                <div class="tk-icon">📈</div>
+                <div class="tk-icon">&#128200;</div>
                 <div class="tk-text"><strong>Trends save lives, not single numbers.</strong> Two or more sets of timed observations reveal whether a patient is stable, improving, or deteriorating. Your first baseline reading may be the most important data the arriving paramedic receives.</div>
             </div>
             <div class="takeaway-card">
-                <div class="tk-icon">🖥️</div>
-                <div class="tk-text"><strong>Connect the Corpuls 3 early and use every function available.</strong> SpO₂, pulse, 4-lead ECG, and NIBP should be running as soon as practical. Combined with a manually counted respiratory rate and structured ISBAR communication, you provide a complete clinical picture.</div>
+                <div class="tk-icon">&#128421;&#65039;</div>
+                <div class="tk-text"><strong>Connect the Corpuls 3 early and use every function available.</strong> SpO&#8322;, pulse, 4-lead ECG, and NIBP should be running as soon as practical. Combined with a manually counted respiratory rate and structured ISBAR communication, you provide a complete clinical picture.</div>
             </div>
         </div>
     </section>
 
+    <div class="module-return-card fade-section">
+        <p class="return-label">Module complete &mdash; return to the full AO training library</p>
+        <a href="index.html" class="return-btn">&larr; Back to AO Modules</a>
+        <p class="return-sub">Continue with the next module in your learning pathway</p>
+    </div>
+
 </div>
 
 <footer>
-    <p><strong>Sources:</strong> SA Health RDR Observation Charts (2020 Revision) · Corpuls 3 Product Specifications · SAAS Clinical Practice Guidelines · ISBAR & ATMIST AMBO Handover Frameworks</p>
-    <p style="margin-top:0.5rem;">⚕️ <em>This module is for educational purposes only. Always follow your local clinical guidelines and scope of practice.</em></p>
-    <p style="margin-top:0.5rem;">Built for Volunteer Ambulance Officers</p>
+    <p><strong>Sources:</strong> SA Health RDR Observation Charts (2020 Revision) &middot; Corpuls 3 Product Specifications &middot; SAAS Clinical Practice Guidelines &middot; ISBAR &amp; ATMIST AMBO Handover Frameworks</p>
+    <p style="margin-top:0.5rem;">&#9877;&#65039; <em>This module is for educational purposes only. Always follow your local clinical guidelines and scope of practice.</em></p>
+    <p style="margin-top:0.5rem;">Built for Volunteer Ambulance Officers &middot; <a href="index.html">AO Modules Hub</a></p>
 </footer>
 
 <script>
-    const progressBar = document.getElementById('progressBar');
-    window.addEventListener('scroll', () => {
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    var progressBar = document.getElementById('progressBar');
+    window.addEventListener('scroll', function() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
         progressBar.style.width = Math.min(progress, 100) + '%';
     });
 
-    const fadeSections = document.querySelectorAll('.fade-section');
-    const fadeObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+    var fadeSections = document.querySelectorAll('.fade-section');
+    var fadeObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
             }
         });
     }, { threshold: 0.08 });
-    fadeSections.forEach(s => fadeObserver.observe(s));
+    fadeSections.forEach(function(s) { fadeObserver.observe(s); });
 
-    document.querySelectorAll('.accordion-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const content = btn.nextElementSibling;
-            const isOpen = btn.classList.contains('active');
-            
+    document.querySelectorAll('.accordion-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var content = btn.nextElementSibling;
+            var isOpen = btn.classList.contains('active');
             btn.classList.toggle('active');
             btn.setAttribute('aria-expanded', !isOpen);
-            
             if (isOpen) {
                 content.style.maxHeight = null;
             } else {
@@ -1179,32 +1252,27 @@
     });
 
     function calculateRDR() {
-        const rr = parseFloat(document.getElementById('calcRR').value);
-        const spo2 = parseFloat(document.getElementById('calcSpO2').value);
-        const sbp = parseFloat(document.getElementById('calcSBP').value);
-        const hr = parseFloat(document.getElementById('calcHR').value);
-        const temp = parseFloat(document.getElementById('calcTemp').value);
-        const avpu = document.getElementById('calcAVPU').value;
+        var rr = parseFloat(document.getElementById('calcRR').value);
+        var spo2 = parseFloat(document.getElementById('calcSpO2').value);
+        var sbp = parseFloat(document.getElementById('calcSBP').value);
+        var hr = parseFloat(document.getElementById('calcHR').value);
+        var temp = parseFloat(document.getElementById('calcTemp').value);
+        var avpu = document.getElementById('calcAVPU').value;
 
         if (!rr && !spo2 && !sbp && !hr && !temp && !avpu) {
             alert('Please enter at least one vital sign.');
             return;
         }
 
-        let results = [];
-        let worstZone = 'white';
-        const zoneRank = { white: 0, yellow: 1, orange: 2, red: 3 };
-        const zoneColors = {
-            white: '#ffffff',
-            yellow: '#ffe066',
-            orange: '#ffaa33',
-            red: '#ff4d4d'
-        };
-        const zoneLabels = {
+        var results = [];
+        var worstZone = 'white';
+        var zoneRank = { white: 0, yellow: 1, orange: 2, red: 3 };
+        var zoneColors = { white: '#ffffff', yellow: '#ffe066', orange: '#ffaa33', red: '#ff4d4d' };
+        var zoneLabels = {
             white: 'NORMAL',
-            yellow: 'YELLOW — Increase Monitoring',
-            orange: 'ORANGE — Escalate / MDT Review',
-            red: 'RED — Medical Emergency Response'
+            yellow: 'YELLOW - Increase Monitoring',
+            orange: 'ORANGE - Escalate / MDT Review',
+            red: 'RED - Medical Emergency Response'
         };
 
         function updateWorst(zone) {
@@ -1212,62 +1280,62 @@
         }
 
         if (!isNaN(rr)) {
-            let zone = 'white';
+            var zone = 'white';
             if (rr < 5 || rr > 35) zone = 'red';
             else if (rr < 8 || rr > 30) zone = 'orange';
             else if (rr <= 10 || rr >= 25) zone = 'yellow';
-            results.push({ param: 'Respiratory Rate', value: rr + ' /min', zone });
+            results.push({ param: 'Respiratory Rate', value: rr + ' /min', zone: zone });
             updateWorst(zone);
         }
 
         if (!isNaN(spo2)) {
-            let zone = 'white';
+            var zone = 'white';
             if (spo2 <= 88) zone = 'red';
             else if (spo2 <= 91) zone = 'orange';
             else if (spo2 <= 94) zone = 'yellow';
-            results.push({ param: 'SpO₂', value: spo2 + '%', zone });
+            results.push({ param: 'SpO2', value: spo2 + '%', zone: zone });
             updateWorst(zone);
         }
 
         if (!isNaN(sbp)) {
-            let zone = 'white';
+            var zone = 'white';
             if (sbp < 80 || sbp > 220) zone = 'red';
             else if (sbp < 90 || sbp > 200) zone = 'orange';
             else if (sbp < 100 || sbp > 180) zone = 'yellow';
-            results.push({ param: 'Systolic BP', value: sbp + ' mmHg', zone });
+            results.push({ param: 'Systolic BP', value: sbp + ' mmHg', zone: zone });
             updateWorst(zone);
         }
 
         if (!isNaN(hr)) {
-            let zone = 'white';
+            var zone = 'white';
             if (hr < 35 || hr > 140) zone = 'red';
             else if (hr < 45 || hr > 130) zone = 'orange';
             else if (hr < 50 || hr > 110) zone = 'yellow';
-            results.push({ param: 'Heart Rate', value: hr + ' bpm', zone });
+            results.push({ param: 'Heart Rate', value: hr + ' bpm', zone: zone });
             updateWorst(zone);
         }
 
         if (!isNaN(temp)) {
-            let zone = 'white';
+            var zone = 'white';
             if (temp < 34 || temp > 40) zone = 'red';
             else if (temp < 35 || temp > 39.5) zone = 'orange';
             else if (temp < 36 || temp > 38.5) zone = 'yellow';
-            results.push({ param: 'Temperature', value: temp + ' °C', zone });
+            results.push({ param: 'Temperature', value: temp + ' C', zone: zone });
             updateWorst(zone);
         }
 
         if (avpu) {
-            let zone = 'white';
+            var zone = 'white';
             if (avpu === 'U') zone = 'red';
             else if (avpu === 'P') zone = 'orange';
             else if (avpu === 'V') zone = 'yellow';
-            const avpuLabels = { A: 'Alert', V: 'Voice', P: 'Pain', U: 'Unresponsive' };
-            results.push({ param: 'Consciousness', value: avpuLabels[avpu], zone });
+            var avpuLabels = { A: 'Alert', V: 'Voice', P: 'Pain', U: 'Unresponsive' };
+            results.push({ param: 'Consciousness', value: avpuLabels[avpu], zone: zone });
             updateWorst(zone);
         }
 
-        let html = '<div style="margin-bottom:1rem;">';
-        results.forEach(r => {
+        var html = '<div style="margin-bottom:1rem;">';
+        results.forEach(function(r) {
             html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0.7rem; margin-bottom:0.3rem; border-radius:6px; border-left:4px solid ' + zoneColors[r.zone] + '; background:rgba(0,0,0,0.2);">' +
                 '<span><strong>' + r.param + ':</strong> ' + r.value + '</span>' +
                 '<span style="color:' + zoneColors[r.zone] + '; font-weight:700; font-size:0.8rem;">' + (r.zone === 'white' ? 'NORMAL' : r.zone.toUpperCase()) + '</span>' +
@@ -1275,11 +1343,11 @@
         });
         html += '</div>';
 
-        const actions = {
+        var actions = {
             white: 'Continue routine monitoring. All parameters within normal range.',
             yellow: 'Increase observation frequency. Consider contacting EOC Clinician for advice. Document trend.',
             orange: 'Escalate immediately. Contact EOC Clinician. Prepare for potential clinical interventions. Reassess every 5 minutes.',
-            red: 'CRITICAL — Contact EOC Clinician immediately. Initiate emergency protocols. Continuous monitoring. Prepare for urgent transport and advanced care.'
+            red: 'CRITICAL - Contact EOC Clinician immediately. Initiate emergency protocols. Continuous monitoring. Prepare for urgent transport and advanced care.'
         };
 
         html += '<div style="text-align:center; margin-top:0.5rem;">' +
@@ -1290,18 +1358,18 @@
             '<strong>Recommended Action:</strong><br>' + actions[worstZone] +
         '</div>';
 
-        const resultDiv = document.getElementById('calcResult');
+        var resultDiv = document.getElementById('calcResult');
         resultDiv.innerHTML = html;
         resultDiv.classList.add('show');
         resultDiv.style.background = 'rgba(0,0,0,0.25)';
         resultDiv.style.border = '1px solid ' + zoneColors[worstZone];
     }
 
-    const quizData = [
+    var quizData = [
         {
             q: "An EOC Clinician asks you for the patient's current vitals to guide a treatment decision. You took observations 12 minutes ago but haven't repeated them. What should you do?",
             options: [
-                "Relay the observations from 12 minutes ago — they're recent enough",
+                "Relay the observations from 12 minutes ago - they're recent enough",
                 "Estimate what the current vitals probably are based on how the patient looks",
                 "Take a fresh set of observations now, relay them with the current time, and note the earlier set as baseline",
                 "Tell the EOC Clinician you'll call back once the paramedics arrive and can take over"
@@ -1315,10 +1383,10 @@
                 "Blood pressure",
                 "Heart rate",
                 "Respiratory rate",
-                "Temperature"
+                "Oxygen saturation"
             ],
             correct: 2,
-            explanation: "Respiratory rate is consistently identified as the most frequently omitted or estimated vital sign. It should always be manually counted over 30-60 seconds — never guessed."
+            explanation: "Respiratory rate is consistently identified as the most frequently omitted or estimated vital sign. It should always be manually counted over 30-60 seconds - never guessed."
         },
         {
             q: "You're handing over to an arriving paramedic crew. Which of the following provides the most clinically useful information?",
@@ -1334,10 +1402,10 @@
         {
             q: "On the SA Health RDR chart, a patient with an SpO2 of 90% falls into which zone?",
             options: [
-                "White — normal range",
-                "Yellow — increase monitoring",
-                "Orange — MDT review required",
-                "Red — Medical Emergency Response"
+                "White - normal range",
+                "Yellow - RN/RM review",
+                "Orange - MDT review required",
+                "Red - Medical Emergency Response"
             ],
             correct: 2,
             explanation: "Under the 2020 RDR revision, SpO2 of 89-91% falls in the orange zone, triggering an MDT review. SpO2 of 88% or below triggers a MER (red zone). An SpO2 of 92-94% is yellow zone."
@@ -1351,25 +1419,25 @@
                 "You need it running for at least 15 minutes before the data is reliable"
             ],
             correct: 1,
-            explanation: "Early monitoring establishes a baseline for trend recognition and enables the EOC Clinician to access live patient data via the corpuls.mission platform, supporting better remote clinical guidance."
+            explanation: "Early monitoring establishes a baseline for trend recognition and enables the EOC Clinician to access live patient data via remote monitoring, supporting better remote clinical guidance."
         }
     ];
 
-    let quizAnswered = 0;
-    let quizCorrect = 0;
+    var quizAnswered = 0;
+    var quizCorrect = 0;
 
     function buildQuiz() {
-        const container = document.getElementById('quizContainer');
+        var container = document.getElementById('quizContainer');
         container.innerHTML = '';
         quizAnswered = 0;
         quizCorrect = 0;
         document.getElementById('quizScore').classList.remove('show');
 
-        quizData.forEach((item, qIdx) => {
-            let optionsHtml = '';
-            const letters = ['A', 'B', 'C', 'D'];
-            item.options.forEach((opt, oIdx) => {
-                optionsHtml += '<div class="quiz-option" data-q="' + qIdx + '" data-o="' + oIdx + '" onclick="selectAnswer(this, ' + qIdx + ', ' + oIdx + ')">' +
+        quizData.forEach(function(item, qIdx) {
+            var optionsHtml = '';
+            var letters = ['A', 'B', 'C', 'D'];
+            item.options.forEach(function(opt, oIdx) {
+                optionsHtml += '<div class="quiz-option" onclick="selectAnswer(this, ' + qIdx + ', ' + oIdx + ')">' +
                     '<span class="opt-letter">' + letters[oIdx] + '</span>' +
                     '<span>' + opt + '</span>' +
                 '</div>';
@@ -1385,23 +1453,23 @@
     }
 
     function selectAnswer(el, qIdx, oIdx) {
-        const question = document.getElementById('qq' + qIdx);
-        const allOpts = question.querySelectorAll('.quiz-option');
-        const feedback = document.getElementById('fb' + qIdx);
-        const isCorrect = oIdx === quizData[qIdx].correct;
+        var question = document.getElementById('qq' + qIdx);
+        var allOpts = question.querySelectorAll('.quiz-option');
+        var feedback = document.getElementById('fb' + qIdx);
+        var isCorrect = oIdx === quizData[qIdx].correct;
 
-        allOpts.forEach(o => o.classList.add('disabled'));
+        allOpts.forEach(function(o) { o.classList.add('disabled'); });
 
         if (isCorrect) {
             el.classList.add('correct');
             feedback.className = 'quiz-feedback show correct-fb';
-            feedback.innerHTML = '✅ Correct! ' + quizData[qIdx].explanation;
+            feedback.innerHTML = 'Correct! ' + quizData[qIdx].explanation;
             quizCorrect++;
         } else {
             el.classList.add('incorrect');
             allOpts[quizData[qIdx].correct].classList.add('correct');
             feedback.className = 'quiz-feedback show incorrect-fb';
-            feedback.innerHTML = '❌ Incorrect. ' + quizData[qIdx].explanation;
+            feedback.innerHTML = 'Incorrect. ' + quizData[qIdx].explanation;
         }
 
         quizAnswered++;
@@ -1411,15 +1479,13 @@
     }
 
     function showScore() {
-        const pct = Math.round((quizCorrect / quizData.length) * 100);
+        var pct = Math.round((quizCorrect / quizData.length) * 100);
         document.getElementById('scorePercent').textContent = pct + '%';
-        
-        let msg = '';
-        if (pct === 100) msg = 'Outstanding! Perfect score — you clearly understand the critical role of observations.';
+        var msg = '';
+        if (pct === 100) msg = 'Outstanding! Perfect score - you clearly understand the critical role of observations.';
         else if (pct >= 80) msg = 'Great work! Strong understanding of observation principles. Review any missed questions.';
         else if (pct >= 60) msg = 'Good effort. Consider revisiting the knowledge sections above to strengthen your understanding.';
-        else msg = 'Keep learning! Review the module content and try again — this knowledge is critical for patient safety.';
-        
+        else msg = 'Keep learning! Review the module content and try again - this knowledge is critical for patient safety.';
         document.getElementById('scoreMsg').textContent = msg;
         document.getElementById('quizScore').classList.add('show');
         document.getElementById('quizScore').scrollIntoView({ behavior: 'smooth', block: 'center' });
