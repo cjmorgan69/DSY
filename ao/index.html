@@ -1,1 +1,245 @@
-placeholder
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSY Training — Ambulance Officer Modules</title>
+    <meta property="og:title" content="DSY Training — Ambulance Officer Modules">
+    <meta property="og:description" content="Walk-through scenarios and microlearning modules for 2-person Volunteer AO crews in regional and rural settings.">
+    <meta property="og:image" content="https://cdn.simtheory.ai/image/upload/v1771833608/u0223080005_image_vlkdfa.png">
+    <link rel="icon" href="https://cdn.simtheory.ai/image/upload/v1771833608/u0223080005_image_vlkdfa.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg-darkest: #001a00;
+            --bg-dark: #002200;
+            --bg-card: #003300;
+            --bg-card-hover: #004400;
+            --accent: #00cc44;
+            --accent-glow: #00ff55;
+            --accent-dim: #009933;
+            --text-primary: #e8e8e8;
+            --text-secondary: #a8c8a8;
+            --text-muted: #6a8a6a;
+            --border: #2a4a2a;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-darkest);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+        .back-nav {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-dark);
+        }
+        .back-nav a {
+            color: var(--accent-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        .back-nav a:hover { color: var(--accent); }
+        .wrap {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 3rem;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(0,204,68,0.15);
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.3rem 0.9rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0,204,68,0.25);
+            margin-bottom: 0.75rem;
+        }
+        .intro {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+        h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1rem;
+        }
+        .mod-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .mod-card {
+            display: block;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+        .mod-card:hover {
+            border-color: var(--accent-dim);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+        .mod-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            padding-right: 2rem;
+        }
+        .mod-card .desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .tag {
+            background: var(--bg-dark);
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+        .tag.new {
+            background: rgba(0,204,68,0.15);
+            color: var(--accent);
+            border-color: rgba(0,204,68,0.3);
+        }
+        .arrow {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.2rem;
+            color: var(--accent-dim);
+            transition: var(--transition);
+        }
+        .mod-card:hover .arrow {
+            color: var(--accent);
+            transform: translateX(3px);
+        }
+        .fade-s {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-s.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @media (max-width: 600px) {
+            .wrap { padding: 1.5rem 0.75rem 2rem; }
+            .mod-card { padding: 1.25rem; }
+            .mod-card h3 { font-size: 1.05rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="back-nav"><a href="/">&#8592; Back to Training Hub</a></div>
+
+<div class="wrap">
+
+<div class="fade-s">
+    <span class="badge">4 Live Modules</span>
+    <p class="intro">Scenario-based walk-through training and microlearning modules for 2-person Volunteer AO crews in regional and rural settings. Each module focuses on realistic patient presentations within AO scope of practice, with clear scope-of-practice markers where paramedic-only interventions are referenced.</p>
+</div>
+
+<h2 class="fade-s">Available Modules</h2>
+
+<div class="mod-grid">
+
+<a class="mod-card fade-s" href="/modules/sepsis/">
+    <h3>Prehospital Sepsis</h3>
+    <p class="desc">Walk-through scenario for early sepsis recognition in a rural setting. NEWS2 scoring, IM Ceftriaxone administration, structured EOC notification, and patient handover during extended transport.</p>
+    <div class="tags">
+        <span class="tag">Sepsis &mdash; AO</span>
+        <span class="tag">NEWS2</span>
+        <span class="tag">IM Ceftriaxone</span>
+        <span class="tag">Walk-through</span>
+    </div>
+    <span class="arrow">&rarr;</span>
+</a>
+
+<a class="mod-card fade-s" href="/modules/chest-pain/">
+    <h3>Chest Pain (AO)</h3>
+    <p class="desc">Systematic ACS assessment for volunteer ambulance officers. Aspirin and GTN administration, 4-lead ECG interpretation basics, risk stratification, and escalation pathways for rural crews.</p>
+    <div class="tags">
+        <span class="tag">ACS &mdash; AO</span>
+        <span class="tag">Aspirin / GTN</span>
+        <span class="tag">4-Lead ECG</span>
+        <span class="tag">Walk-through</span>
+    </div>
+    <span class="arrow">&rarr;</span>
+</a>
+
+<a class="mod-card fade-s" href="/modules/nausea-vomiting/">
+    <h3>Nausea &amp; Vomiting</h3>
+    <p class="desc">Clinical assessment and management of acute nausea and vomiting in the prehospital setting. Ondansetron ODT administration, red flag screening, contraindication identification, and appropriate escalation.</p>
+    <div class="tags">
+        <span class="tag">N&amp;V &mdash; AO</span>
+        <span class="tag">Ondansetron ODT</span>
+        <span class="tag">Red Flags</span>
+        <span class="tag">Walk-through</span>
+    </div>
+    <span class="arrow">&rarr;</span>
+</a>
+
+<a class="mod-card fade-s" href="/modules/rural-mva/">
+    <h3>High-Speed MVA Management</h3>
+    <p class="desc">Trauma management for rural high-speed MVAs on the Eyre Peninsula &mdash; the lethal triad, damage control resuscitation, Shock Index calculation, and RFDS/MedSTAR coordination during extended transport times.</p>
+    <div class="tags">
+        <span class="tag">Rural Trauma</span>
+        <span class="tag">Lethal Triad</span>
+        <span class="tag">DCR</span>
+        <span class="tag">~7 min</span>
+        <span class="tag new">NEW</span>
+    </div>
+    <span class="arrow">&rarr;</span>
+</a>
+
+</div>
+
+</div>
+
+<script>
+var fs = document.querySelectorAll('.fade-s');
+var ob = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('vis'); ob.unobserve(e.target); }
+    });
+}, { threshold: 0.1 });
+fs.forEach(function(s) { ob.observe(s); });
+</script>
+
+</body>
+</html>
