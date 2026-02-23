@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High-Speed MVA Management in Rural Settings | DSY Micro Learning</title>
+    <meta property="og:title" content="High-Speed MVA Management in Rural Settings">
+    <meta property="og:description" content="Effective trauma management strategies for the Eyre Peninsula — limited resources, extended transport times, and coordination with RFDS & MedSTAR.">
+    <meta property="og:image" content="https://cdn.simtheory.ai/image/upload/v1771833608/u0223080005_image_vlkdfa.png">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="https://cdn.simtheory.ai/image/upload/v1771833608/u0223080005_image_vlkdfa.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 18px; scroll-behavior: smooth; }
+        :root {
+            --bg-darkest: #001a00;
+            --bg-dark: #002200;
+            --bg-card: #003300;
+            --bg-card-hover: #004400;
+            --bg-input: #002a00;
+            --accent: #00cc44;
+            --accent-glow: #00ff55;
+            --accent-dim: #009933;
+            --text-primary: #e8e8e8;
+            --text-secondary: #a8c8a8;
+            --text-muted: #6a8a6a;
+            --warning: #ff6b35;
+            --danger: #ff3333;
+            --info: #33aaff;
+            --success: #00cc44;
+            --border: #2a4a2a;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --paramedic: #c084fc;
+            --paramedic-bg: rgba(192,132,252,0.08);
+            --paramedic-border: rgba(192,132,252,0.3);
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-darkest);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 1rem;
+            overflow-x: hidden;
+        }
+        .fade-section { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+        .fade-section.visible { opacity: 1; transform: translateY(0); }
+        .sticky-header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: linear-gradient(135deg, var(--bg-darkest) 0%, var(--bg-dark) 100%);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+            padding: 0.4rem 1rem;
+        }
+        .header-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 0.75rem; }
+        .header-logo {
+            width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; overflow: hidden;
+            background: var(--bg-dark); display: flex; align-items: center; justify-content: center;
+        }
+        .header-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .header-info { flex: 1; min-width: 0; }
+        .header-title { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .header-subtitle { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; }
+        .progress-track { height: 4px; background: var(--bg-card); border-radius: 2px; margin-top: 0.25rem; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-glow)); border-radius: 2px; transition: width 0.2s ease; }
+        .content-wrap { max-width: 800px; margin: 0 auto; padding: 0 1.25rem; padding-top: 90px; padding-bottom: 3rem; }
+        .hero {
+            text-align: center; padding: 2.5rem 1.5rem;
+            background: linear-gradient(180deg, rgba(0,204,68,0.08) 0%, transparent 100%);
+            border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 2rem;
+        }
+        .hero-badge {
+            display: inline-block; background: rgba(0,204,68,0.15); color: var(--accent);
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+            padding: 0.3rem 0.9rem; border-radius: 20px; border: 1px solid rgba(0,204,68,0.25); margin-bottom: 1rem;
+        }
+        .hero h1 {
+            font-size: 1.8rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.6rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-subtitle { font-size: 1rem; color: var(--text-secondary); margin-bottom: 1.2rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .hero-meta { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+        .hero-meta-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; color: var(--text-muted); }
+        .hero-meta-item svg { width: 16px; height: 16px; fill: var(--accent-dim); }
+        .outcome-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+        .outcome-tag { background: var(--bg-card); color: var(--text-secondary); font-size: 0.72rem; padding: 0.3rem 0.7rem; border-radius: 6px; border: 1px solid var(--border); }
+        .section-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.75rem; }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .section-heading { font-size: 1.35rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary); }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
+        .outcomes-list { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+        .outcomes-list li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 1rem; color: var(--text-primary); }
+        .outcome-icon { flex-shrink: 0; width: 26px; height: 26px; background: rgba(0,204,68,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+        .outcome-icon svg { width: 14px; height: 14px; fill: var(--accent); }
+        .callout { border-radius: var(--radius-sm); padding: 1rem 1.25rem; margin-bottom: 1rem; font-size: 1rem; border-left: 4px solid; }
+        .callout-warning { background: rgba(255,107,53,0.08); border-color: var(--warning); }
+        .callout-info { background: rgba(51,170,255,0.08); border-color: var(--info); }
+        .callout-danger { background: rgba(255,51,51,0.08); border-color: var(--danger); }
+        .callout-paramedic { background: var(--paramedic-bg); border-color: var(--paramedic); }
+        .callout-title { font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+        .callout-warning .callout-title { color: var(--warning); }
+        .callout-info .callout-title { color: var(--info); }
+        .callout-danger .callout-title { color: var(--danger); }
+        .callout-paramedic .callout-title { color: var(--paramedic); }
+        .scope-badge {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            background: var(--paramedic-bg); color: var(--paramedic);
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+            padding: 0.15rem 0.55rem; border-radius: 4px; border: 1px solid var(--paramedic-border);
+            vertical-align: middle; margin-left: 0.3rem; white-space: nowrap;
+        }
+        .scope-badge svg { width: 12px; height: 12px; fill: var(--paramedic); }
+        .media-block { margin: 1.5rem 0; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--bg-dark); }
+        .media-block-label { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; background: var(--bg-card); font-size: 0.78rem; font-weight: 600; color: var(--accent); border-bottom: 1px solid var(--border); }
+        .media-block-label svg { width: 18px; height: 18px; fill: var(--accent); }
+        .video-responsive { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+        .video-responsive iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .audio-container { padding: 1.25rem; }
+        .audio-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .audio-icon { width: 48px; height: 48px; background: rgba(0,204,68,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .audio-icon svg { width: 24px; height: 24px; fill: var(--accent); }
+        .audio-title { font-weight: 600; font-size: 0.9rem; color: var(--text-primary); }
+        .audio-desc { font-size: 0.78rem; color: var(--text-muted); }
+        .audio-gdrive-embed { width: 100%; height: 80px; border: none; border-radius: 8px; background: var(--bg-input); }
+        .toggle-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 0.75rem; overflow: hidden; transition: var(--transition); }
+        .toggle-section:hover { border-color: var(--accent-dim); }
+        .toggle-header {
+            display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; cursor: pointer; user-select: none;
+            background: transparent; border: none; width: 100%; text-align: left; color: var(--text-primary);
+            font-family: inherit; font-size: 1rem; font-weight: 600; transition: var(--transition);
+        }
+        .toggle-header:hover { background: var(--bg-card-hover); }
+        .toggle-icon-circle { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(0,204,68,0.12); }
+        .toggle-icon-circle svg { width: 18px; height: 18px; fill: var(--accent); }
+        .toggle-chevron { margin-left: auto; flex-shrink: 0; width: 20px; height: 20px; fill: var(--text-muted); transition: transform 0.3s ease; }
+        .toggle-section.open .toggle-chevron { transform: rotate(180deg); }
+        .toggle-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; }
+        .toggle-section.open .toggle-body { max-height: 4000px; }
+        .toggle-content { padding: 0 1.25rem 1.25rem; font-size: 1rem; color: var(--text-secondary); line-height: 1.7; }
+        .toggle-content h4 { color: var(--text-primary); font-size: 1rem; font-weight: 600; margin: 1rem 0 0.5rem; }
+        .toggle-content ul { padding-left: 1.25rem; margin: 0.5rem 0; }
+        .toggle-content ul li { margin-bottom: 0.4rem; font-size: 1rem; }
+        .toggle-content strong { color: var(--text-primary); }
+        .triad-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+        .triad-card { background: var(--bg-dark); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; text-align: center; }
+        .triad-card-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
+        .triad-card-title { font-weight: 700; font-size: 0.9rem; color: var(--warning); margin-bottom: 0.3rem; }
+        .triad-card-desc { font-size: 0.82rem; color: var(--text-muted); }
+        .checklist-phase { margin-bottom: 1.25rem; }
+        .phase-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
+        .phase-number { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--bg-darkest); font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .phase-title { font-weight: 700; font-size: 1rem; color: var(--text-primary); }
+        .checklist-items { list-style: none; margin-left: 0.5rem; }
+        .checklist-item { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(42,74,42,0.4); font-size: 1rem; color: var(--text-secondary); cursor: pointer; transition: var(--transition); }
+        .checklist-item:last-child { border-bottom: none; }
+        .checklist-item:hover { color: var(--text-primary); }
+        .checklist-item.checked { color: var(--text-muted); text-decoration: line-through; }
+        .checklist-item.checked .scope-badge { opacity: 0.5; }
+        .check-box { flex-shrink: 0; width: 22px; height: 22px; border: 2px solid var(--accent-dim); border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-top: 2px; transition: var(--transition); }
+        .checklist-item.checked .check-box { background: var(--accent); border-color: var(--accent); }
+        .check-box svg { width: 14px; height: 14px; fill: var(--bg-darkest); opacity: 0; transition: var(--transition); }
+        .checklist-item.checked .check-box svg { opacity: 1; }
+        .checklist-progress { margin-top: 0.75rem; font-size: 0.78rem; color: var(--text-muted); text-align: center; }
+        .checklist-progress-bar { height: 6px; background: var(--bg-dark); border-radius: 3px; overflow: hidden; margin-top: 0.3rem; }
+        .checklist-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-glow)); border-radius: 3px; transition: width 0.3s ease; }
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .calc-field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.3rem; }
+        .calc-field input { width: 100%; padding: 0.7rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 1rem; font-family: inherit; outline: none; transition: var(--transition); }
+        .calc-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,204,68,0.15); }
+        .calc-field input::placeholder { color: var(--text-muted); }
+        .calc-btn { width: 100%; padding: 0.75rem; background: linear-gradient(135deg, var(--accent-dim), var(--accent)); color: var(--bg-darkest); font-size: 1rem; font-weight: 700; font-family: inherit; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); }
+        .calc-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,204,68,0.3); }
+        .calc-result { margin-top: 1rem; padding: 1rem; background: var(--bg-dark); border-radius: var(--radius-sm); border: 1px solid var(--border); display: none; }
+        .calc-result.show { display: block; }
+        .calc-result-value { font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 0.4rem; }
+        .calc-result-label { text-align: center; font-size: 0.85rem; color: var(--text-secondary); }
+        .calc-result-interp { margin-top: 0.75rem; padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.9rem; text-align: center; font-weight: 600; }
+        .quiz-question { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+        .quiz-question:last-of-type { border-bottom: none; }
+        .quiz-q-header { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.75rem; }
+        .quiz-q-num { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--bg-darkest); font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+        .quiz-q-text { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .quiz-option { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 1rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; font-size: 1rem; color: var(--text-secondary); transition: var(--transition); }
+        .quiz-option:hover { border-color: var(--accent-dim); color: var(--text-primary); }
+        .quiz-option.selected { border-color: var(--accent); background: rgba(0,204,68,0.08); color: var(--text-primary); }
+        .quiz-option.correct { border-color: var(--success); background: rgba(0,204,68,0.12); color: var(--success); }
+        .quiz-option.incorrect { border-color: var(--danger); background: rgba(255,51,51,0.08); color: var(--danger); }
+        .quiz-option.show-correct { border-color: var(--success); background: rgba(0,204,68,0.08); }
+        .quiz-radio { width: 20px; height: 20px; border: 2px solid var(--text-muted); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+        .quiz-option.selected .quiz-radio { border-color: var(--accent); }
+        .quiz-option.selected .quiz-radio::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+        .quiz-option.correct .quiz-radio { border-color: var(--success); }
+        .quiz-option.correct .quiz-radio::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--success); }
+        .quiz-option.incorrect .quiz-radio { border-color: var(--danger); }
+        .quiz-feedback { margin-top: 0.5rem; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600; display: none; }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct-fb { background: rgba(0,204,68,0.1); color: var(--success); }
+        .quiz-feedback.incorrect-fb { background: rgba(255,51,51,0.08); color: var(--danger); }
+        .quiz-submit { width: 100%; padding: 0.85rem; background: linear-gradient(135deg, var(--accent-dim), var(--accent)); color: var(--bg-darkest); font-size: 1rem; font-weight: 700; font-family: inherit; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); margin-top: 0.5rem; }
+        .quiz-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,204,68,0.3); }
+        .quiz-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+        .quiz-score { text-align: center; padding: 1.25rem; margin-top: 1rem; background: var(--bg-dark); border-radius: var(--radius); border: 1px solid var(--border); display: none; }
+        .quiz-score.show { display: block; }
+        .quiz-score-value { font-size: 2.5rem; font-weight: 800; }
+        .quiz-score-label { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem; }
+        .takeaway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+        .takeaway-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; text-align: center; transition: var(--transition); }
+        .takeaway-card:hover { border-color: var(--accent-dim); transform: translateY(-2px); }
+        .takeaway-num { width: 36px; height: 36px; border-radius: 50%; background: rgba(0,204,68,0.12); color: var(--accent); font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; }
+        .takeaway-title { font-weight: 700; font-size: 1rem; color: var(--text-primary); margin-bottom: 0.4rem; }
+        .takeaway-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+        .module-footer { margin-top: 3rem; padding: 1.5rem; background: var(--bg-dark); border-radius: var(--radius); border: 1px solid var(--border); text-align: center; }
+        .footer-logo { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 0.75rem; overflow: hidden; background: var(--bg-card); }
+        .footer-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .footer-text { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+        .footer-text a { color: var(--accent-dim); text-decoration: none; }
+        .footer-text a:hover { color: var(--accent); }
+        .footer-divider { height: 1px; background: var(--border); margin: 0.75rem 0; }
+        @media (max-width: 600px) {
+            html { font-size: 16px; }
+            .hero h1 { font-size: 1.5rem; }
+            .calc-grid { grid-template-columns: 1fr; }
+            .triad-grid { grid-template-columns: 1fr; }
+            .takeaway-grid { grid-template-columns: 1fr; }
+            .header-title { font-size: 0.72rem; }
+            .content-wrap { padding: 0 0.75rem; padding-top: 85px; }
+        }
+    </style>
+</head>
+<body>
+<header class="sticky-header">
+    <div class="header-inner">
+        <div class="header-logo">
+            <img src="https://cdn.simtheory.ai/image/upload/v1771833608/u0223080005_image_vlkdfa.png" alt="DSY Training Logo">
+        </div>
+        <div class="header-info">
+            <div class="header-title">High-Speed MVA Management in Rural Settings</div>
+            <div class="header-subtitle">DSY Training &bull; LEP Prehospital Education</div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+</header>
+<main class="content-wrap">
+<section class="hero fade-section">
+    <span class="hero-badge">Micro Learning</span>
+    <h1>High-Speed MVA Management in Rural Settings</h1>
+    <p class="hero-subtitle">Effective trauma management strategies for the Eyre Peninsula &mdash; limited resources, extended transport times, and coordination with RFDS &amp; MedSTAR.</p>
+    <div class="hero-meta">
+        <span class="hero-meta-item"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg> ~7 min</span>
+        <span class="hero-meta-item"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg> Prehospital Trauma</span>
+        <span class="hero-meta-item"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> AOs / Paramedics</span>
+    </div>
+    <div class="outcome-tags">
+        <span class="outcome-tag">Rural Trauma</span>
+        <span class="outcome-tag">Lethal Triad</span>
+        <span class="outcome-tag">Damage Control Resuscitation</span>
+        <span class="outcome-tag">RFDS Coordination</span>
+    </div>
+</section>
+<section class="card fade-section">
+    <div class="section-label">Learning Outcomes</div>
+    <ul class="outcomes-list">
+        <li><span class="outcome-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Identify the unique challenges of managing high-speed MVAs in rural and remote settings on the Eyre Peninsula</span></li>
+        <li><span class="outcome-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Explain the lethal triad (coagulopathy, hypothermia, acidosis) and its impact on trauma resuscitation</span></li>
+        <li><span class="outcome-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Apply systematic scene, patient, and resource assessment principles for rural trauma</span></li>
+        <li><span class="outcome-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Demonstrate appropriate treatment interventions and coordination with RFDS / MedSTAR retrieval services</span></li>
+    </ul>
+</section>
+<section class="fade-section" style="margin-bottom:1.5rem;">
+    <div class="section-label">Core Principle</div>
+    <h2 class="section-heading">Why Rural High-Speed MVAs Demand a Different Approach</h2>
+    <p style="color:var(--text-secondary); margin-bottom:1rem;">Managing high-speed MVAs in rural settings requires a comprehensive understanding of trauma care principles adapted to remote environments. Extended response times, limited backup, and prolonged patient care make early recognition and prevention of the <strong style="color:var(--warning);">lethal triad</strong> the single most critical factor in patient survival.</p>
+    <div class="callout callout-danger">
+        <div class="callout-title">&#9888; The Lethal Triad</div>
+        Successful resuscitation of patients with severe haemorrhage requires understanding the <strong>lethal triad</strong> &mdash; a combination of <strong>coagulopathy</strong>, <strong>hypothermia</strong>, and <strong>acidosis</strong>. Each component independently and collectively potentiates bleeding. Once established, the triad creates a self-reinforcing cycle that is extremely difficult to reverse.
+    </div>
+    <div class="callout callout-warning">
+        <div class="callout-title">&#128337; Time Is Critical</div>
+        In rural settings, transport times to definitive care can exceed 60&ndash;120 minutes. Every intervention at the scene must focus on <strong>stopping haemorrhage</strong>, <strong>maintaining warmth</strong>, and <strong>preventing acidosis</strong> through appropriate resuscitation &mdash; this is the foundation of Damage Control Resuscitation (DCR).
+    </div>
+    <div class="callout callout-info">
+        <div class="callout-title">&#128222; Early Notification</div>
+        Contact RFDS / MedSTAR <strong>as early as possible</strong>. Rural retrieval services require lead time for crew mobilisation and flight planning. Early notification can save 30+ minutes in the retrieval chain.
+    </div>
+</section>
+<div class="fade-section">
+    <div class="media-block">
+        <div class="media-block-label"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Explanation Video &mdash; Lethal Triad of Trauma</div>
+        <div class="video-responsive">
+            <iframe src="https://www.youtube.com/embed/5vgrXiFibs4" title="Lethal Triad of Trauma" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        </div>
+    </div>
+</div>
+<section class="fade-section" style="margin-bottom:1.5rem;">
+    <div class="section-label">Knowledge Sections</div>
+    <div class="toggle-section">
+        <button class="toggle-header" onclick="toggleSection(this)">
+            <span class="toggle-icon-circle"><svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg></span>
+            <span>Rural MVA Challenges</span>
+            <svg class="toggle-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </button>
+        <div class="toggle-body"><div class="toggle-content">
+            <p>Rural high-speed MVAs present unique challenges that require adaptive thinking and resource management:</p>
+            <ul>
+                <li><strong>Extended response and transport times</strong> &mdash; definitive care may be 1&ndash;2+ hours away</li>
+                <li><strong>Limited immediate backup resources</strong> &mdash; you may be the only crew on scene</li>
+                <li><strong>Complex extrication scenarios</strong> &mdash; CFS/SES may have extended response times</li>
+                <li><strong>Weather and environmental factors</strong> &mdash; heat, cold, dust, and limited lighting</li>
+                <li><strong>Communication difficulties</strong> &mdash; radio and mobile blackspots</li>
+                <li><strong>Need for prolonged patient care</strong> &mdash; ongoing management during extended transport</li>
+                <li><strong>Wildlife and road hazards</strong> &mdash; scene safety considerations unique to rural settings</li>
+            </ul>
+        </div></div>
+    </div>
+    <div class="toggle-section">
+        <button class="toggle-header" onclick="toggleSection(this)">
+            <span class="toggle-icon-circle"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span>
+            <span>The Lethal Triad &mdash; Components &amp; Mechanism</span>
+            <svg class="toggle-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </button>
+        <div class="toggle-body"><div class="toggle-content">
+            <p>The lethal triad describes three interrelated physiological derangements that, once established, create a self-perpetuating cycle leading to death:</p>
+            <div class="triad-grid">
+                <div class="triad-card">
+                    <div class="triad-card-icon">&#129656;</div>
+                    <div class="triad-card-title">Coagulopathy</div>
+                    <div class="triad-card-desc">Impaired clotting from loss of clotting factors, accelerated consumption, and excessive clot breakdown (hyperfibrinolysis)</div>
+                </div>
+                <div class="triad-card">
+                    <div class="triad-card-icon">&#10052;&#65039;</div>
+                    <div class="triad-card-title">Hypothermia</div>
+                    <div class="triad-card-desc">Reduces platelet function and clotting cascade enzyme activity &mdash; even mild hypothermia (&lt;36&deg;C) impairs coagulation</div>
+                </div>
+                <div class="triad-card">
+                    <div class="triad-card-icon">&#9888;&#65039;</div>
+                    <div class="triad-card-title">Acidosis</div>
+                    <div class="triad-card-desc">Causes multiple negative impacts on the clotting cascade and coagulation; driven by tissue hypoperfusion and anaerobic metabolism</div>
+                </div>
+            </div>
+            <h4>How They Interact</h4>
+            <p>Haemorrhage leads to hypothermia (reduced metabolic heat production) and acidosis (tissue hypoperfusion). Hypothermia worsens coagulopathy. Acidosis further impairs clotting enzymes. Each worsens the others, accelerating haemorrhage and shock.</p>
+        </div></div>
+    </div>
+    <div class="toggle-section">
+        <button class="toggle-header" onclick="toggleSection(this)">
+            <span class="toggle-icon-circle"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></span>
+            <span>Assessment Principles &mdash; Scene, Patient &amp; Resource</span>
+            <svg class="toggle-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </button>
+        <div class="toggle-body"><div class="toggle-content">
+            <h4>Scene Assessment</h4>
+            <ul>
+                <li>Scene safety evaluation (fuel spills, unstable vehicles, traffic hazards)</li>
+                <li>Mechanism of injury assessment (speed, vehicle damage, intrusion)</li>
+                <li>Number of patients and triage requirements</li>
+                <li>Environmental factors (weather, terrain, lighting)</li>
+                <li>Available resources and estimated arrival of additional support</li>
+            </ul>
+            <h4>Patient Assessment</h4>
+            <ul>
+                <li>Signs of severe haemorrhage (internal and external)</li>
+                <li>Indicators of the lethal triad developing</li>
+                <li>Need for immediate life-saving interventions</li>
+                <li>Potential for deterioration during extended transport</li>
+            </ul>
+            <h4>Resource Assessment</h4>
+            <ul>
+                <li>Available equipment and medications</li>
+                <li>Transport options and estimated times</li>
+                <li>Communication capabilities (radio, satellite phone)</li>
+                <li>Need for additional resources (RFDS, MedSTAR, CFS, SES)</li>
+            </ul>
+        </div></div>
+    </div>
+    <div class="toggle-section">
+        <button class="toggle-header" onclick="toggleSection(this)">
+            <span class="toggle-icon-circle"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></span>
+            <span>Treatment &mdash; Damage Control Resuscitation (DCR)</span>
+            <svg class="toggle-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </button>
+        <div class="toggle-body"><div class="toggle-content">
+            <p>Damage Control Resuscitation (DCR) focuses on preventing and reversing the lethal triad while maintaining minimal acceptable tissue perfusion.</p>
+            <div class="callout callout-paramedic" style="margin-top:1rem;">
+                <div class="callout-title">&#9883; Scope of Practice Notice</div>
+                Items marked with a <span class="scope-badge" style="margin-left:0;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> PARAMEDIC</span> badge are <strong>Paramedic scope only</strong>. These interventions may only be performed with direct clinical support from a Paramedic, or once the patient arrives at a hospital facility. They are included here for informational awareness so all team members understand the full treatment pathway.
+            </div>
+            <h4>Key DCR Principles</h4>
+            <ul>
+                <li><strong>Haemorrhage control</strong> &mdash; direct pressure, tourniquets, haemostatic agents, pelvic binders</li>
+                <li><strong>IV/IO access &amp; fluid resuscitation</strong> <span class="scope-badge"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> PARAMEDIC</span> &mdash; warm IV fluids; avoid large volumes of cold crystalloid</li>
+                <li><strong>Permissive hypotension</strong> <span class="scope-badge"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> PARAMEDIC</span> &mdash; target SBP 80&ndash;90 mmHg (in the absence of TBI)</li>
+                <li><strong>Tranexamic acid (TXA)</strong> <span class="scope-badge"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> PARAMEDIC</span> &mdash; administer 1g IV within 3 hours of injury for suspected significant haemorrhage</li>
+                <li><strong>Hypothermia prevention</strong> &mdash; active and passive warming, minimise exposure</li>
+                <li><strong>Rapid transport to definitive care</strong> &mdash; minimise scene time; treat en route</li>
+            </ul>
+            <h4>Analgesia &mdash; Scope of Practice</h4>
+            <div class="callout callout-info" style="margin-bottom:0.75rem;">
+                <div class="callout-title">&#128203; AO Scope &mdash; Refer to SAAS CPG: Acute Pain Management</div>
+                Ambulance Officers may administer <strong>methoxyflurane (Penthrox)</strong> and <strong>oral paracetamol</strong> in accordance with the SAAS Clinical Practice Guideline for Acute Pain Management. Always refer to the current CPG for dosing, contraindications, and reassessment requirements.
+            </div>
+            <ul>
+                <li><strong>Methoxyflurane (Penthrox)</strong> &mdash; inhaled; AO scope as per SAAS Acute Pain Management CPG</li>
+                <li><strong>Oral paracetamol</strong> &mdash; AO scope as per SAAS Acute Pain Management CPG</li>
+                <li><strong>IV/IM ketamine</strong> <span class="scope-badge"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> PARAMEDIC</span> &mdash; as per SAAS CPG</li>
+                <li><strong>IV/IN fentanyl</strong> <span class="scope-badge"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> PARAMEDIC</span> &mdash; as per SAAS CPG</li>
+                <li><strong>IV/IM morphine</strong> <span class="scope-badge"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> PARAMEDIC</span> &mdash; as per SAAS CPG</li>
+            </ul>
+            <h4>RFDS / MedSTAR Coordination</h4>
+            <ul>
+                <li>Notify early &mdash; do not wait until you are overwhelmed</li>
+                <li>Provide structured handover (IMIST-AMBO / MIST)</li>
+                <li>Confirm landing site / rendezvous location</li>
+                <li>Prepare patient for aeromedical retrieval (secure lines, prepare documentation)</li>
+            </ul>
+        </div></div>
+    </div>
+</section>
+<div class="fade-section">
+    <div class="media-block">
+        <div class="media-block-label"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Educational Video &mdash; Hypovolemic Shock</div>
+        <div class="video-responsive">
+            <iframe src="https://www.youtube.com/embed/wbfDqHk-ryM" title="Hypovolemic Shock" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        </div>
+    </div>
+</div>
+<div class="fade-section">
+    <div class="media-block">
+        <div class="media-block-label"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7a9 9 0 0 0-9-9z"/></svg> Podcast &mdash; Lethal Trauma Triad: Haemorrhage, Hypothermia &amp; Coagulopathy</div>
+        <div class="audio-container">
+            <div class="audio-meta">
+                <div class="audio-icon"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7a9 9 0 0 0-9-9z"/></svg></div>
+                <div>
+                    <div class="audio-title">Lethal Trauma Triad: Haemorrhage, Hypothermia &amp; Coagulopathy</div>
+                    <div class="audio-desc">DSY Training &bull; LEP Prehospital Education Audio Series</div>
+                </div>
+            </div>
+            <iframe class="audio-gdrive-embed" src="https://drive.google.com/file/d/18rkgtGfTAZBjuBjApVmiqPq6Y6w36d12/preview" allow="autoplay" loading="lazy"></iframe>
+        </div>
+    </div>
+</div>
+<section class="card fade-section">
+    <div class="section-label">Field Checklist</div>
+    <h2 class="section-heading">Rural High-Speed MVA Management</h2>
+    <div class="checklist-phase">
+        <div class="phase-header"><span class="phase-number">1</span><span class="phase-title">Scene Safety &amp; Primary Survey</span></div>
+        <ul class="checklist-items">
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Assess scene safety &mdash; fuel spills, traffic, unstable vehicles, fire risk</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Determine mechanism of injury &mdash; estimated speed, vehicle damage, intrusion</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Triage &mdash; count patients, apply triage categories</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Primary survey (DRsABCD) &mdash; address life threats immediately</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Baseline vitals &mdash; HR, BP, RR, SpO2, GCS, temperature</span></li>
+        </ul>
+    </div>
+    <div class="checklist-phase">
+        <div class="phase-header"><span class="phase-number">2</span><span class="phase-title">Focused History &amp; Assessment</span></div>
+        <ul class="checklist-items">
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>SAMPLE history (if obtainable)</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Identify signs of severe haemorrhage (internal &amp; external)</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Assess for indicators of lethal triad development</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Head-to-toe secondary survey (if time permits)</span></li>
+        </ul>
+    </div>
+    <div class="checklist-phase">
+        <div class="phase-header"><span class="phase-number">3</span><span class="phase-title">Treatment &amp; DCR Interventions</span></div>
+        <ul class="checklist-items">
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Control haemorrhage &mdash; direct pressure, tourniquets, haemostatic agents, pelvic binder</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>IV/IO access &mdash; warm fluids, permissive hypotension (SBP 80&ndash;90 if no TBI) <span class="scope-badge"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> PARAMEDIC</span></span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Administer TXA 1g IV if &lt;3 hours from injury <span class="scope-badge"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> PARAMEDIC</span></span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Active &amp; passive warming &mdash; blankets, warm fluids, minimise exposure</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Analgesia &mdash; methoxyflurane / paracetamol (AO scope per SAAS CPG)</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>IV analgesia &mdash; ketamine / fentanyl / morphine as per SAAS CPG <span class="scope-badge"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> PARAMEDIC</span></span></li>
+        </ul>
+    </div>
+    <div class="checklist-phase">
+        <div class="phase-header"><span class="phase-number">4</span><span class="phase-title">Reassessment, Escalation &amp; Transport</span></div>
+        <ul class="checklist-items">
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Reassess vitals &amp; response to treatment every 5 min</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Calculate Shock Index (HR &divide; SBP) &mdash; monitor trends</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Contact RFDS / MedSTAR early &mdash; MIST handover, confirm rendezvous point</span></li>
+            <li class="checklist-item" onclick="toggleCheck(this)"><span class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span><span>Transport decision &mdash; load &amp; go vs. rendezvous; prepare for aeromedical retrieval</span></li>
+        </ul>
+    </div>
+    <div class="checklist-progress">
+        <span id="checklistCount">0 / 20 completed</span>
+        <div class="checklist-progress-bar"><div class="checklist-progress-fill" id="checklistFill"></div></div>
+    </div>
+</section>
+<section class="card fade-section">
+    <div class="section-label">Clinical Calculator</div>
+    <h2 class="section-heading">Shock Index Calculator</h2>
+    <p style="color:var(--text-secondary); margin-bottom:1rem; font-size:0.9rem;">Shock Index (SI) = Heart Rate &divide; Systolic Blood Pressure. A value &gt;1.0 suggests significant haemorrhage and the need for aggressive resuscitation. Serial measurements track response to treatment.</p>
+    <div class="calc-grid">
+        <div class="calc-field"><label for="calcHR">Heart Rate (bpm)</label><input type="number" id="calcHR" placeholder="e.g. 120" min="20" max="250"></div>
+        <div class="calc-field"><label for="calcSBP">Systolic BP (mmHg)</label><input type="number" id="calcSBP" placeholder="e.g. 90" min="30" max="300"></div>
+    </div>
+    <button class="calc-btn" onclick="calculateSI()">Calculate Shock Index</button>
+    <div class="calc-result" id="calcResult">
+        <div class="calc-result-value" id="calcValue">&mdash;</div>
+        <div class="calc-result-label">Shock Index (HR &divide; SBP)</div>
+        <div class="calc-result-interp" id="calcInterp"></div>
+    </div>
+</section>
+<section class="card fade-section">
+    <div class="section-label">Knowledge Check</div>
+    <h2 class="section-heading">Quiz &mdash; Test Your Understanding</h2>
+    <form id="quizForm" onsubmit="return false;">
+        <div class="quiz-question" data-correct="A">
+            <div class="quiz-q-header"><span class="quiz-q-num">1</span><span class="quiz-q-text">What are the three components of the "lethal triad" in trauma?</span></div>
+            <div class="quiz-options">
+                <div class="quiz-option" data-value="A" onclick="selectOption(this)"><span class="quiz-radio"></span>Coagulopathy, Hypothermia, Acidosis</div>
+                <div class="quiz-option" data-value="B" onclick="selectOption(this)"><span class="quiz-radio"></span>Haemorrhage, Fractures, Burns</div>
+                <div class="quiz-option" data-value="C" onclick="selectOption(this)"><span class="quiz-radio"></span>Hypoxia, Hypotension, Hypothermia</div>
+                <div class="quiz-option" data-value="D" onclick="selectOption(this)"><span class="quiz-radio"></span>Tachycardia, Hypotension, Bradycardia</div>
+            </div>
+            <div class="quiz-feedback"></div>
+        </div>
+        <div class="quiz-question" data-correct="B">
+            <div class="quiz-q-header"><span class="quiz-q-num">2</span><span class="quiz-q-text">What is the primary goal of Damage Control Resuscitation (DCR)?</span></div>
+            <div class="quiz-options">
+                <div class="quiz-option" data-value="A" onclick="selectOption(this)"><span class="quiz-radio"></span>Complete surgical repair at the scene</div>
+                <div class="quiz-option" data-value="B" onclick="selectOption(this)"><span class="quiz-radio"></span>Prevent and reverse the lethal triad while maintaining tissue perfusion</div>
+                <div class="quiz-option" data-value="C" onclick="selectOption(this)"><span class="quiz-radio"></span>Aggressive high-volume crystalloid resuscitation</div>
+                <div class="quiz-option" data-value="D" onclick="selectOption(this)"><span class="quiz-radio"></span>Normalise all vital signs before initiating transport</div>
+            </div>
+            <div class="quiz-feedback"></div>
+        </div>
+        <div class="quiz-question" data-correct="C">
+            <div class="quiz-q-header"><span class="quiz-q-num">3</span><span class="quiz-q-text">A Shock Index value above which threshold suggests clinically significant haemorrhage?</span></div>
+            <div class="quiz-options">
+                <div class="quiz-option" data-value="A" onclick="selectOption(this)"><span class="quiz-radio"></span>0.5</div>
+                <div class="quiz-option" data-value="B" onclick="selectOption(this)"><span class="quiz-radio"></span>0.7</div>
+                <div class="quiz-option" data-value="C" onclick="selectOption(this)"><span class="quiz-radio"></span>1.0</div>
+                <div class="quiz-option" data-value="D" onclick="selectOption(this)"><span class="quiz-radio"></span>1.5</div>
+            </div>
+            <div class="quiz-feedback"></div>
+        </div>
+        <div class="quiz-question" data-correct="B">
+            <div class="quiz-q-header"><span class="quiz-q-num">4</span><span class="quiz-q-text">On arrival at a rural high-speed MVA, what is your FIRST priority?</span></div>
+            <div class="quiz-options">
+                <div class="quiz-option" data-value="A" onclick="selectOption(this)"><span class="quiz-radio"></span>Begin patient assessment immediately</div>
+                <div class="quiz-option" data-value="B" onclick="selectOption(this)"><span class="quiz-radio"></span>Scene safety evaluation</div>
+                <div class="quiz-option" data-value="C" onclick="selectOption(this)"><span class="quiz-radio"></span>Call for additional resources</div>
+                <div class="quiz-option" data-value="D" onclick="selectOption(this)"><span class="quiz-radio"></span>Establish IV access on the nearest patient</div>
+            </div>
+            <div class="quiz-feedback"></div>
+        </div>
+        <div class="quiz-question" data-correct="A">
+            <div class="quiz-q-header"><span class="quiz-q-num">5</span><span class="quiz-q-text">Within what time frame from injury should Tranexamic Acid (TXA) be administered for maximum benefit?</span></div>
+            <div class="quiz-options">
+                <div class="quiz-option" data-value="A" onclick="selectOption(this)"><span class="quiz-radio"></span>Within 3 hours</div>
+                <div class="quiz-option" data-value="B" onclick="selectOption(this)"><span class="quiz-radio"></span>Within 6 hours</div>
+                <div class="quiz-option" data-value="C" onclick="selectOption(this)"><span class="quiz-radio"></span>Within 12 hours</div>
+                <div class="quiz-option" data-value="D" onclick="selectOption(this)"><span class="quiz-radio"></span>Any time after injury</div>
+            </div>
+            <div class="quiz-feedback"></div>
+        </div>
+        <button class="quiz-submit" id="quizSubmit" onclick="submitQuiz()" disabled>Submit Answers</button>
+    </form>
+    <div class="quiz-score" id="quizScore">
+        <div class="quiz-score-value" id="quizScoreValue"></div>
+        <div class="quiz-score-label" id="quizScoreLabel"></div>
+    </div>
+</section>
+<section class="fade-section" style="margin-bottom:1.5rem;">
+    <div class="section-label">Key Takeaways</div>
+    <div class="takeaway-grid">
+        <div class="takeaway-card">
+            <div class="takeaway-num">1</div>
+            <div class="takeaway-title">Prevent the Lethal Triad</div>
+            <div class="takeaway-desc">Control haemorrhage aggressively, maintain warmth, and avoid large-volume cold crystalloid. Every action should target coagulopathy, hypothermia, and acidosis.</div>
+        </div>
+        <div class="takeaway-card">
+            <div class="takeaway-num">2</div>
+            <div class="takeaway-title">Call for Help Early</div>
+            <div class="takeaway-desc">Notify RFDS / MedSTAR as early as possible. Rural retrieval requires significant lead time. Provide a structured MIST handover and confirm your rendezvous point.</div>
+        </div>
+        <div class="takeaway-card">
+            <div class="takeaway-num">3</div>
+            <div class="takeaway-title">Load &amp; Go</div>
+            <div class="takeaway-desc">Perform only life-saving interventions on scene. Continue treatment en route. Time to definitive care is the most powerful predictor of survival in major trauma.</div>
+        </div>
+    </div>
+</section>
+<footer class="module-footer fade-section">
+    <div class="footer-logo"><img src="https://cdn.simtheory.ai/image/upload/v1771833608/u0223080005_image_vlkdfa.png" alt="DSY Training Logo"></div>
+    <p class="footer-text"><strong>DSY Training</strong> &bull; LEP Prehospital Education<br>High-Speed MVA Management in Rural Settings</p>
+    <div class="footer-divider"></div>
+    <p class="footer-text">
+        <strong>Sources &amp; References:</strong> SA Ambulance Service Clinical Practice Guidelines (Acute Pain Management, Major Trauma); CRASH-2 Trial (TXA evidence); Damage Control Resuscitation principles (ATLS); RFDS &amp; MedSTAR Retrieval Protocols.<br><br>
+        <strong>Disclaimer:</strong> This module is for educational purposes only and does not replace local clinical practice guidelines or jurisdictional protocols. Always follow your organisation's approved CPGs and seek clinical support when required.
+    </p>
+</footer>
+</main>
+<script>
+window.addEventListener('scroll', function() {
+    var scrollTop = window.scrollY;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    document.getElementById('progressFill').style.width = Math.min(pct, 100) + '%';
+});
+var fadeSections = document.querySelectorAll('.fade-section');
+var fadeObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); fadeObserver.unobserve(entry.target); }
+    });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+fadeSections.forEach(function(s) { fadeObserver.observe(s); });
+function toggleSection(btn) { var section = btn.closest('.toggle-section'); section.classList.toggle('open'); }
+function toggleCheck(item) { item.classList.toggle('checked'); updateChecklistProgress(); }
+function updateChecklistProgress() {
+    var total = document.querySelectorAll('.checklist-item').length;
+    var checked = document.querySelectorAll('.checklist-item.checked').length;
+    document.getElementById('checklistCount').textContent = checked + ' / ' + total + ' completed';
+    document.getElementById('checklistFill').style.width = (total > 0 ? (checked / total) * 100 : 0) + '%';
+}
+function calculateSI() {
+    var hr = parseFloat(document.getElementById('calcHR').value);
+    var sbp = parseFloat(document.getElementById('calcSBP').value);
+    var result = document.getElementById('calcResult');
+    var valueEl = document.getElementById('calcValue');
+    var interpEl = document.getElementById('calcInterp');
+    if (isNaN(hr) || isNaN(sbp) || sbp === 0) {
+        valueEl.textContent = '\u2014';
+        interpEl.textContent = 'Please enter valid Heart Rate and Systolic BP values.';
+        interpEl.style.background = 'rgba(255,107,53,0.1)'; interpEl.style.color = '#ff6b35';
+        result.classList.add('show'); return;
+    }
+    var si = (hr / sbp).toFixed(2);
+    valueEl.textContent = si; result.classList.add('show');
+    if (si < 0.6) { valueEl.style.color = '#00cc44'; interpEl.style.background = 'rgba(0,204,68,0.1)'; interpEl.style.color = '#00cc44'; interpEl.textContent = 'Normal range \u2014 no immediate concern for significant haemorrhage.'; }
+    else if (si < 1.0) { valueEl.style.color = '#ffaa00'; interpEl.style.background = 'rgba(255,170,0,0.1)'; interpEl.style.color = '#ffaa00'; interpEl.textContent = 'Borderline \u2014 monitor closely. May indicate early compensated shock.'; }
+    else if (si < 1.4) { valueEl.style.color = '#ff6b35'; interpEl.style.background = 'rgba(255,107,53,0.1)'; interpEl.style.color = '#ff6b35'; interpEl.textContent = 'Elevated \u2014 suggestive of significant haemorrhage. Initiate aggressive DCR interventions.'; }
+    else { valueEl.style.color = '#ff3333'; interpEl.style.background = 'rgba(255,51,51,0.1)'; interpEl.style.color = '#ff3333'; interpEl.textContent = 'Critical \u2014 high likelihood of life-threatening haemorrhage. Immediate intervention and escalation required.'; }
+}
+var totalQuestions = 5;
+function selectOption(el) {
+    var question = el.closest('.quiz-question');
+    if (question.classList.contains('answered')) return;
+    question.querySelectorAll('.quiz-option').forEach(function(o) { o.classList.remove('selected'); });
+    el.classList.add('selected');
+    var uniqueQuestions = new Set();
+    document.querySelectorAll('.quiz-option.selected').forEach(function(o) { uniqueQuestions.add(o.closest('.quiz-question')); });
+    document.getElementById('quizSubmit').disabled = uniqueQuestions.size < totalQuestions;
+}
+function submitQuiz() {
+    var score = 0;
+    var questions = document.querySelectorAll('.quiz-question');
+    questions.forEach(function(q) {
+        q.classList.add('answered');
+        var correct = q.dataset.correct;
+        var selected = q.querySelector('.quiz-option.selected');
+        var feedback = q.querySelector('.quiz-feedback');
+        q.querySelectorAll('.quiz-option').forEach(function(o) {
+            o.style.pointerEvents = 'none';
+            if (o.dataset.value === correct) { o.classList.add('correct'); o.classList.add('show-correct'); }
+        });
+        if (selected) {
+            if (selected.dataset.value === correct) { score++; feedback.textContent = '\u2713 Correct!'; feedback.className = 'quiz-feedback show correct-fb'; }
+            else { selected.classList.add('incorrect'); feedback.textContent = '\u2717 Incorrect \u2014 the correct answer is highlighted above.'; feedback.className = 'quiz-feedback show incorrect-fb'; }
+        }
+    });
+    var pct = Math.round((score / totalQuestions) * 100);
+    var scoreEl = document.getElementById('quizScore');
+    var scoreValEl = document.getElementById('quizScoreValue');
+    var scoreLabelEl = document.getElementById('quizScoreLabel');
+    scoreValEl.textContent = pct + '%';
+    scoreValEl.style.color = pct >= 80 ? '#00cc44' : pct >= 60 ? '#ffaa00' : '#ff3333';
+    scoreLabelEl.textContent = score + ' of ' + totalQuestions + ' correct' + (pct >= 80 ? ' \u2014 Great work!' : pct >= 60 ? ' \u2014 Review the sections above.' : ' \u2014 Consider revisiting the content.');
+    scoreEl.classList.add('show');
+    document.getElementById('quizSubmit').disabled = true;
+    document.getElementById('quizSubmit').textContent = 'Quiz Submitted';
+}
+</script>
+</body>
+</html>
