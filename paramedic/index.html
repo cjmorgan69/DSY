@@ -1,120 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-AU">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Paramedic Modules — DSY Training</title>
-<meta name="description" content="Clinical education modules for Paramedic-level clinicians. Detailed assessment frameworks, differential diagnosis, and escalation pathways.">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>DSY Training — Paramedic Modules</title>
 <style>
-:root{--dsy-darkest:#001a00;--dsy-dark:#003300;--dsy-mid:#004d00;--dsy-accent:#1565c0;--dsy-bright:#42a5f5;--dsy-light:#e3f2fd;--dsy-bg:#f5f8fc;--green-dark:#003300}
-html{font-size:18px}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--dsy-bg);color:#1a2e1a;line-height:1.6}
-a{text-decoration:none;color:inherit}
+:root{
+--bg:#001a00;--bg-card:#0a1f0a;--bg-card-hover:#0d2610;
+--green:#00cc44;--green-mid:#1a6b35;--green-dark:#003300;
+--text:#d0d0d0;--text-bright:#fff;--text-muted:#7e957e;
+--yellow:#ffcc00;--orange:#ff8c00;--border:#1a3a1a;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:18px;}
+body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;}
 
-header{background:var(--green-dark);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.2)}
-.header-inner{max-width:1100px;margin:0 auto;padding:0.8rem 1.5rem;display:flex;align-items:center;gap:1rem}
-.header-logo img{display:block;border-radius:50%}
-.header-back{display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:rgba(255,255,255,0.7);transition:color 0.2s}
-.header-back:hover{color:#fff}
-.header-back svg{width:16px;height:16px;fill:currentColor}
-.header-title{flex:1;text-align:center}
-.header-title h1{font-size:1.15rem;font-weight:700;letter-spacing:-0.3px}
-.header-title span{font-size:0.7rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px}
+/* header */
+.site-hdr{background:linear-gradient(180deg,#002200,#001400);border-bottom:2px solid var(--green);
+padding:20px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.site-hdr img{width:80px;height:80px;border-radius:50%;object-fit:cover;}
+.hdr-text h1{font-size:1.5rem;color:var(--text-bright);font-weight:700;}
+.hdr-text p{font-size:.88rem;color:var(--green);margin-top:2px;}
 
-.page-intro{max-width:1100px;margin:0 auto;padding:2rem 1.5rem 1rem}
-.page-intro h2{font-size:1.6rem;font-weight:800;color:var(--green-dark);margin-bottom:0.4rem}
-.page-intro p{font-size:0.95rem;color:#555;max-width:720px}
+/* nav */
+.back-nav{padding:10px 24px;background:#00110a;font-size:.82rem;}
+.back-nav a{color:var(--green);text-decoration:none;}
+.back-nav a:hover{text-decoration:underline;}
 
-.scope-bar{max-width:1100px;margin:0.5rem auto 1.5rem;padding:0 1.5rem}
-.scope-bar-inner{background:var(--dsy-light);border-left:4px solid var(--dsy-accent);border-radius:0 10px 10px 0;padding:0.8rem 1.2rem;font-size:0.82rem;color:#0d47a1}
-.scope-bar-inner strong{font-weight:700}
+/* main */
+.wrap{max-width:860px;margin:0 auto;padding:30px 20px 80px;}
+.badge{display:inline-block;background:var(--green);color:#000;font-weight:700;
+font-size:.78rem;padding:4px 12px;border-radius:20px;margin-bottom:20px;}
+.intro{font-size:1rem;color:var(--text-muted);margin-bottom:30px;max-width:640px;}
+h2{font-size:1.25rem;color:var(--text-bright);margin-bottom:16px;}
 
-.modules-grid{max-width:1100px;margin:0 auto 2rem;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+/* module cards */
+.mod-grid{display:grid;grid-template-columns:1fr;gap:16px;}
+.mod-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;
+padding:24px;text-decoration:none;color:var(--text);display:block;
+transition:transform .2s,border-color .2s,background .2s;position:relative;overflow:hidden;}
+.mod-card:hover{transform:translateY(-3px);border-color:var(--green);background:var(--bg-card-hover);}
+.mod-card h3{font-size:1.1rem;color:var(--text-bright);margin-bottom:6px;}
+.mod-card .desc{font-size:.92rem;color:var(--text-muted);margin-bottom:12px;}
+.mod-card .tags{display:flex;flex-wrap:wrap;gap:6px;}
+.tag{display:inline-block;background:rgba(0,204,68,.1);border:1px solid rgba(0,204,68,.25);
+color:var(--green);font-size:.72rem;padding:3px 8px;border-radius:4px;font-weight:600;}
+.tag.new{background:rgba(255,204,0,.12);border-color:rgba(255,204,0,.3);color:var(--yellow);}
+.mod-card .arrow{position:absolute;right:20px;top:50%;transform:translateY(-50%);
+font-size:1.2rem;color:var(--green);opacity:.5;transition:opacity .2s;}
+.mod-card:hover .arrow{opacity:1;}
 
-.module-card{background:#fff;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,0.06);padding:1.8rem;transition:transform 0.25s ease,box-shadow 0.25s ease;border-left:5px solid var(--dsy-accent);display:flex;flex-direction:column}
-.module-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,0.1)}
-.module-card .badge{display:inline-block;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;padding:3px 10px;border-radius:20px;background:var(--dsy-bright);color:#fff;margin-bottom:0.8rem;width:fit-content}
-.module-card .badge.soon{background:#bdbdbd}
-.module-card h3{font-size:1.15rem;font-weight:700;color:var(--green-dark);margin-bottom:0.3rem}
-.module-card .protocol-ref{font-size:0.72rem;color:#888;margin-bottom:0.6rem;font-weight:500}
-.module-card p{font-size:0.88rem;color:#555;flex:1;margin-bottom:1rem}
-.module-card .card-meta{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem}
-.module-card .meta-tag{font-size:0.68rem;background:#f0f0f0;color:#555;padding:3px 8px;border-radius:6px}
-.module-link{display:inline-block;background:var(--dsy-accent);color:#fff;padding:0.6rem 1.4rem;border-radius:9px;font-size:0.85rem;font-weight:600;transition:background 0.2s}
-.module-link:hover{background:#0d47a1}
+/* fade */
+.fade-s{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;}
+.fade-s.vis{opacity:1;transform:translateY(0);}
 
-.section-label{max-width:1100px;margin:2rem auto 0.8rem;padding:0 1.5rem;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--dsy-accent)}
+/* footer */
+.site-ft{text-align:center;padding:30px 20px;color:var(--text-muted);font-size:.76rem;
+border-top:1px solid var(--border);margin-top:40px;}
 
-.coming-soon{max-width:1100px;margin:0 auto 3rem;padding:0 1.5rem}
-.coming-soon-inner{background:#fff;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,0.04);padding:2rem;text-align:center;border:2px dashed #ccc}
-.coming-soon-inner h3{font-size:1.1rem;color:#999;margin-bottom:0.5rem}
-.coming-soon-inner p{font-size:0.85rem;color:#aaa}
-
-footer{background:var(--dsy-darkest);color:rgba(255,255,255,0.5);text-align:center;padding:2rem 1.5rem;font-size:0.75rem;margin-top:2rem}
-footer a{color:var(--dsy-bright)}
-footer p+p{margin-top:0.3rem}
-
-@media(max-width:680px){.modules-grid{grid-template-columns:1fr}.header-logo{display:none}}
+@media(max-width:520px){
+.site-hdr{padding:16px;gap:14px;}
+.site-hdr img{width:60px;height:60px;}
+.hdr-text h1{font-size:1.2rem;}
+}
 </style>
 </head>
 <body>
 
-<header>
- <div class="header-inner">
- <div class="header-logo"><img src="https://cdn.simtheory.ai/image/upload/v1771236807/nanobanana_generated_2567_1771236807_3_osxywy.png" width="52" height="52" alt="DSY Training Logo"></div>
- <a href="../" class="header-back"><svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>All Modules</a>
- <div class="header-title">
- <span>Paramedic Level</span>
- <h1>Paramedic Modules</h1>
- </div>
- <div style="width:52px"></div>
- </div>
+<header class="site-hdr">
+<img src="https://cdn.simtheory.ai/image/upload/v1771236807/nanobanana_generated_2567_1771236807_3_osxywy.png" alt="DSY Training">
+<div class="hdr-text">
+<h1>Paramedic Modules</h1>
+<p>DSY Training &mdash; Walk-Through Scenarios for Paramedic Crews</p>
+</div>
 </header>
 
-<div class="page-intro">
- <h2>Paramedic Clinical Education</h2>
- <p>Clinical education modules for Paramedic-level clinicians. Detailed assessment frameworks, differential diagnosis, medication management, and escalation decision-making.</p>
+<div class="back-nav"><a href="../index.html">&larr; Back to Training Hub</a></div>
+
+<div class="wrap">
+
+<div class="fade-s">
+<span class="badge">2 Live Modules</span>
+<p class="intro">Scenario-based walk-through training for 2-paramedic crews. Each module combines realistic patient presentations with structured break points for skills practice, clinical decision-making, and team coordination.</p>
 </div>
 
-<div class="scope-bar">
- <div class="scope-bar-inner">
- <strong>Scope of Practice:</strong> Modules at this level include Paramedic-scope interventions, medications, and clinical decision-making as per current SAAS Paramedic protocols and Clinical Practice Guidelines.
- </div>
+<h2 class="fade-s">Available Modules</h2>
+
+<div class="mod-grid">
+
+<a class="mod-card fade-s" href="../modules/headache-p/index.html">
+<h3>Paramedic Headache Assessment</h3>
+<p class="desc">Systematic approach to undifferentiated headache. Red flag identification, secondary headache screening, targeted assessment and management within paramedic scope.</p>
+<div class="tags">
+<span class="tag">Headache &mdash; P (CPG-172-P)</span>
+<span class="tag">Assessment</span>
+<span class="tag">90 min</span>
+</div>
+<span class="arrow">&rarr;</span>
+</a>
+
+<a class="mod-card fade-s" href="../modules/multi-trauma/index.html">
+<h3>Multi-Trauma: Fall From Height</h3>
+<p class="desc">High-acuity rural scenario combining severe haemorrhage, traumatic brain injury, and spinal injury. Focuses on competing clinical priorities, damage control resuscitation, TXA administration, collar contraindications in TBI, and two-person crew coordination.</p>
+<div class="tags">
+<span class="tag">Severe Haemorrhage &mdash; P</span>
+<span class="tag">TBI &mdash; P</span>
+<span class="tag">Spinal Injury &mdash; P</span>
+<span class="tag new">NEW</span>
+<span class="tag">90&ndash;120 min</span>
+</div>
+<span class="arrow">&rarr;</span>
+</a>
+
 </div>
 
-<div class="section-label">Live Modules &mdash; 1 Available</div>
-
-<div class="modules-grid">
-
- <div class="module-card">
- <span class="badge">Live</span>
- <h3>Paramedic Headache Assessment</h3>
- <div class="protocol-ref">SAAS CPG-172-P &bull; Headache &mdash; Paramedic Protocol</div>
- <p>Comprehensive headache assessment framework including red flag identification, differential diagnosis, systematic assessment, medication management, and escalation criteria for time-critical presentations.</p>
- <div class="card-meta">
- <span class="meta-tag">Red Flag Screening</span>
- <span class="meta-tag">Differential Diagnosis</span>
- <span class="meta-tag">Escalation Criteria</span>
- </div>
- <a href="../modules/headache/" class="module-link">Open Module &rarr;</a>
- </div>
-
-</div>
-
-<div class="section-label">Coming Soon</div>
-
-<div class="coming-soon">
- <div class="coming-soon-inner">
- <h3>More Paramedic Modules in Development</h3>
- <p>Additional P-level modules covering Chest Pain (AR protocol), Pain Management, and other clinical topics are being developed. Check back for updates.</p>
- </div>
-</div>
-
-<footer>
- <p>&copy; 2025 DSY Training &mdash; <a href="../">Back to Hub</a></p>
- <p>For educational purposes. Always follow current clinical guidelines and local protocols.</p>
+<footer class="site-ft">
+<p>DSY Training &mdash; For training purposes only. Always refer to current SAAS CPGs for clinical practice.</p>
 </footer>
 
+</div>
+
+<script>
+const obs=new IntersectionObserver(entries=>{
+entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});
+},{threshold:0.1});
+document.querySelectorAll('.fade-s').forEach(el=>obs.observe(el));
+</script>
 </body>
 </html>
