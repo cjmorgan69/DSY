@@ -1,8 +1,10 @@
+
 <!DOCTYPE html>
+
 <html lang="en-AU">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Chest Pain (AO) — Walk-Through Scenario</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -172,8 +174,179 @@
     overflow: hidden;
     transition: max-height 0.4s ease;
   }
-  .toggle-content.open { max-height: 8000px; }
+  .toggle-content.open { max-height: 10000px; }
   .toggle-inner { padding: 20px; }
+
+/* ── CONVAI STANDALONE WIDGET ── */
+.convai-standalone {
+  background: var(--bg-card);
+  border: 2px solid var(--green-600);
+  border-radius: 14px;
+  padding: 12px 20px;
+  margin: 24px 0;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.convai-standalone.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.convai-widget-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 420px;
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border-card);
+  border-radius: 10px;
+  padding: 4px;
+  overflow: hidden;
+}
+
+.convai-widget-wrapper elevenlabs-convai {
+  width: 100%;
+  max-width: 480px;
+  height: 410px;
+  border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+  .convai-standalone {
+    padding: 10px 14px;
+  }
+  .convai-widget-wrapper {
+    min-height: 360px;
+    padding: 2px;
+  }
+  .convai-widget-wrapper elevenlabs-convai {
+    max-width: 100%;
+    height: 350px;
+  }
+}
+
+  /* ── INTERACTIVE QUIZ / DECISION TREE ── */
+  .decision-tree {
+    background: linear-gradient(135deg, rgba(46, 139, 46, 0.1), rgba(76, 175, 80, 0.05));
+    border: 1px solid var(--border-card);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 16px 0;
+  }
+  .decision-tree h4 {
+    color: var(--green-300);
+    margin-bottom: 14px;
+  }
+  .decision-prompt {
+    background: var(--bg-card-alt);
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border-left: 4px solid var(--green-400);
+  }
+  .decision-prompt p {
+    font-weight: 600;
+    color: var(--text-heading);
+    margin-bottom: 10px;
+  }
+  .decision-buttons {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+  .decision-btn {
+    background: var(--green-700);
+    border: 1px solid var(--green-600);
+    color: var(--text-heading);
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
+  .decision-btn:hover {
+    background: var(--green-600);
+    border-color: var(--green-400);
+  }
+  .decision-btn.correct {
+    background: var(--green-400);
+    border-color: var(--green-300);
+  }
+  .decision-btn.incorrect {
+    background: var(--red-alert);
+    border-color: #c62828;
+  }
+  .decision-feedback {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid;
+    display: none;
+  }
+  .decision-feedback.show {
+    display: block;
+  }
+  .decision-feedback.correct-feedback {
+    background: rgba(76, 175, 80, 0.15);
+    border-color: var(--green-400);
+    color: var(--green-300);
+  }
+  .decision-feedback.incorrect-feedback {
+    background: var(--red-bg);
+    border-color: var(--red-alert);
+    color: var(--red-alert);
+  }
+
+  /* ── LEARNING CHECKLIST TRACKER ── */
+  .learning-tracker {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border-card);
+    border-radius: 10px;
+    padding: 16px;
+    margin: 16px 0;
+  }
+  .learning-tracker h4 {
+    color: var(--green-300);
+    margin-bottom: 12px;
+  }
+  .tracker-progress {
+    background: rgba(255,255,255,0.05);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .tracker-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-400), var(--yellow-accent));
+    transition: width 0.3s ease;
+  }
+  .tracker-list {
+    list-style: none;
+    padding: 0;
+  }
+  .tracker-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.95rem;
+  }
+  .tracker-item:last-child { border-bottom: none; }
+  .tracker-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--green-400);
+    cursor: pointer;
+  }
+  .tracker-item.completed {
+    opacity: 0.6;
+    text-decoration: line-through;
+  }
 
   /* ── BREAK POINT CARDS ── */
   .break-point {
@@ -408,6 +581,40 @@
     margin: 20px 0;
   }
 
+  /* ── SKILL SIMULATION CARD ── */
+  .skill-sim {
+    background: linear-gradient(135deg, rgba(66,165,245,0.1), rgba(76, 175, 80, 0.05));
+    border: 2px solid var(--blue-info);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+  }
+  .skill-sim h4 {
+    color: var(--blue-info);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .skill-sim-content {
+    display: grid;
+    gap: 12px;
+  }
+  .sim-step {
+    background: var(--bg-card-alt);
+    padding: 12px 14px;
+    border-radius: 8px;
+    border-left: 4px solid var(--blue-info);
+  }
+  .sim-step-num {
+    font-weight: 800;
+    color: var(--blue-info);
+    font-size: 0.85rem;
+  }
+  .sim-step p {
+    margin: 4px 0 0 0;
+  }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 600px) {
     html { font-size: 16px; }
@@ -419,1000 +626,1352 @@
     .isbar-row { grid-template-columns: 60px 1fr; }
     .mdt-screen { font-size: 0.78rem; }
     .scenario-strip { grid-template-columns: 1fr 1fr; }
+    .convai-container { min-height: 400px; }
+    elevenlabs-convai { height: 380px; }
+    .decision-buttons { grid-template-columns: 1fr; }
   }
 </style>
-</head>
-<body>
+<meta content="https://simulationtheory.ai/8f200b78-4e35-4b52-8fb4-9bd733bd8bc2" property="og:url"/><script>
+        window.save_data_to_csv = (filename, data) => {
+            const submissionUrl = 'https://simtheory.ai/chat/save_csv/';
+            const payload = {
+                filename: filename,
+                data: data,
+                block_id: '8f200b78-4e35-4b52-8fb4-9bd733bd8bc2',
+                is_iframe: false,
+            };
 
+            return fetch(submissionUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    return data;
+                } else {
+                    console.error('Error saving data:', data.error);
+                    throw new Error(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error saving data:', error);
+                throw error;
+            });
+        };
+
+        window.load_data_from_csv = async (filename) => {
+            const submissionUrl = 'https://simtheory.ai/chat/load_csv/';
+            try {
+                const response = await fetch(submissionUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        filename: filename,
+                        block_id: '8f200b78-4e35-4b52-8fb4-9bd733bd8bc2',
+                        is_iframe: false
+                    }),
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error("HTTP error! status:", response.status);
+                }
+
+                const result = await response.json();
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to fetch CSV data');
+                }
+
+                return new Promise((resolve, reject) => {
+                    Papa.parse(result.data, {
+                        header: true,
+                        dynamicTyping: true,
+                        skipEmptyLines: true,
+                        complete: (results) => {
+                            resolve({
+                                success: true,
+                                data: results.data,
+                                meta: results.meta,
+                                filename: filename
+                            });
+                        },
+                        error: (error) => {
+                            reject(new Error("CSV parsing error", error));
+                        }
+                    });
+                });
+
+            } catch (error) {
+                console.error('Error processing CSV:', error);
+                throw error;
+            }
+        };
+
+        window.call_llm = (system_prompt, user_messages, json_fields) => {
+            const submissionUrl = 'https://simtheory.ai/chat/llm/';
+            const payload = {
+                system_prompt: system_prompt,
+                messages: user_messages,
+                json_fields: json_fields,
+                block_id: '8f200b78-4e35-4b52-8fb4-9bd733bd8bc2',
+                is_iframe: false
+            };
+
+            return fetch(submissionUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error!");
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    return data.response;
+                } else {
+                    console.error('Error calling LLM:', data.error);
+                    throw new Error(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error in LLM call:', error);
+                throw error;
+            });
+        };
+
+        // Add postMessage handler for iframe communication
+        window.addEventListener('message', (event) => {
+            // Verify origin
+            const allowedOrigins = [
+                'https://simtheory.ai',
+                'https://staging.simtheory.ai',
+                'http://localhost:8000'
+            ];
+            
+            if (!allowedOrigins.includes(event.origin)) {
+                console.error('Unauthorized origin:', event.origin);
+                return;
+            }
+
+            const {type, data} = event.data;
+            
+            if (type === 'save_csv') {
+                window.save_data_to_csv(data.filename, data.data)
+                    .then(result => {
+                        event.source.postMessage({
+                            type: 'csv_saved',
+                            success: true,
+                            data: result
+                        }, event.origin);
+                    })
+                    .catch(error => {
+                        event.source.postMessage({
+                            type: 'csv_saved',
+                            success: false,
+                            error: error.message
+                        }, event.origin);
+                    });
+            }
+            
+            if (type === 'call_llm') {
+                window.call_llm(data.system_prompt, data.messages, data.json_fields)
+                    .then(result => {
+                        event.source.postMessage({
+                            type: 'llm_response',
+                            success: true,
+                            data: result
+                        }, event.origin);
+                    })
+                    .catch(error => {
+                        event.source.postMessage({
+                            type: 'llm_response',
+                            success: false,
+                            error: error.message
+                        }, event.origin);
+                    });
+            }
+        });
+    </script><script>
+        (function(w,d,s,o,f,js,fjs){
+            w['SimtheoryObject']=o;w[o]=w[o]||function(){
+                (w[o].q=w[o].q||[]).push(arguments)};
+            js=d.createElement(s),fjs=d.getElementsByTagName(s)[0];
+            js.id='simtheory-watermark';js.src=f;js.async=1;
+            fjs.parentNode.insertBefore(js,fjs);
+        })(window,document,'script','simtheory','https://simulationtheory.ai/watermark/watermark.js');
+
+        simtheory('configure', { persistent: false });
+        </script></head>
+<body>
 <!-- ════════════════ STICKY HEADER ════════════════ -->
 <header class="sticky-header">
-  <img src="https://cdn.simtheory.ai/image/upload/v1771236807/nanobanana_generated_2567_1771236807_3_osxywy.png" alt="DSY Training" style="width:60px;height:60px;border-radius:50%;object-fit:cover;">
-  <div class="header-title">
-    <h1>Chest Pain (AO) — Walk-Through Scenario</h1>
-    <div class="subtitle">CPP-007-AO | Volunteer AO Scope | Walk-Through Exercise</div>
-  </div>
-  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+<img alt="DSY Training" src="https://cdn.simtheory.ai/image/upload/v1771236807/nanobanana_generated_2567_1771236807_3_osxywy.png" style="width:60px;height:60px;border-radius:50%;object-fit:cover;"/>
+<div class="header-title">
+<h1>Chest Pain (AO) — Walk-Through Scenario</h1>
+<div class="subtitle">CPP-007-AO | Volunteer AO Scope | Walk-Through Exercise</div>
+</div>
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
 </header>
-
 <div class="container">
-
 <!-- ════════════════ TITLE & CONTEXT ════════════════ -->
-<div class="section" data-anim>
-  <div class="section-header">
-    <h2>Title and Context</h2>
-  </div>
-  <div class="section-body">
-    <h3 style="color:var(--green-300);font-size:1.15rem;font-weight:700;margin-bottom:6px;">Managing the Cardiac Patient — Suspected ACS in a Rural Setting</h3>
-    <p>A 62-year-old male with known angina presents with central chest pain radiating to his left arm at a rural property approximately 35 minutes from the nearest hospital. He has a history of angina and carries his own prescribed GTN spray.</p>
-
-    <div class="scenario-strip">
-      <div class="strip-item">
-        <div class="label">Protocol</div>
-        <div class="value">CPP-007-AO</div>
-      </div>
-      <div class="strip-item">
-        <div class="label">Crew</div>
-        <div class="value">2 x Vol AO</div>
-      </div>
-      <div class="strip-item">
-        <div class="label">Setting</div>
-        <div class="value">Rural Property</div>
-      </div>
-      <div class="strip-item">
-        <div class="label">Duration</div>
-        <div class="value">90 minutes</div>
-      </div>
-      <div class="strip-item">
-        <div class="label">Time</div>
-        <div class="value">2115 hrs</div>
-      </div>
-      <div class="strip-item">
-        <div class="label">Season</div>
-        <div class="value">Winter</div>
-      </div>
-    </div>
-
-    <div class="key-point">
-      <strong>Key Principle:</strong> Cardiac ischaemia should be suspected as the cause of chest pain unless there is an obvious alternative. "Time is muscle" — urgent medical care is required to reduce the chance of sudden death from myocardial infarction.
-    </div>
-  </div>
+<div class="section" data-anim="">
+<div class="section-header">
+<h2>Title and Context</h2>
 </div>
-
+<div class="section-body">
+<h3 style="color:var(--green-300);font-size:1.15rem;font-weight:700;margin-bottom:6px;">Managing the Cardiac Patient — Suspected ACS in a Rural Setting</h3>
+<p>A 62-year-old male with known angina presents with central chest pain radiating to his left arm at a rural property approximately 35 minutes from the nearest hospital. He has a history of angina and carries his own prescribed GTN spray.</p>
+<div class="scenario-strip">
+<div class="strip-item">
+<div class="label">Protocol</div>
+<div class="value">CPP-007-AO</div>
+</div>
+<div class="strip-item">
+<div class="label">Crew</div>
+<div class="value">2 x Vol AO</div>
+</div>
+<div class="strip-item">
+<div class="label">Setting</div>
+<div class="value">Rural Property</div>
+</div>
+<div class="strip-item">
+<div class="label">Duration</div>
+<div class="value">90 minutes</div>
+</div>
+<div class="strip-item">
+<div class="label">Time</div>
+<div class="value">2115 hrs</div>
+</div>
+<div class="strip-item">
+<div class="label">Season</div>
+<div class="value">Winter</div>
+</div>
+</div>
+<div class="key-point">
+<strong>Key Principle:</strong> Cardiac ischaemia should be suspected as the cause of chest pain unless there is an obvious alternative. "Time is muscle" — urgent medical care is required to reduce the chance of sudden death from myocardial infarction.
+    </div>
+<!-- ── LEARNING TRACKER ── -->
+<div class="learning-tracker">
+<h4>📋 Your Learning Progress</h4>
+<div class="tracker-progress">
+<div class="tracker-progress-bar" id="trackerBar" style="width: 0%;"></div>
+</div>
+<ul class="tracker-list">
+<li class="tracker-item">
+<input class="tracker-checkbox" onchange="updateTracker()" type="checkbox"/>
+<span>Understand cardiac ischaemia presentation</span>
+</li>
+<li class="tracker-item">
+<input class="tracker-checkbox" onchange="updateTracker()" type="checkbox"/>
+<span>Master DRSABCD primary survey</span>
+</li>
+<li class="tracker-item">
+<input class="tracker-checkbox" onchange="updateTracker()" type="checkbox"/>
+<span>Apply Chest Pain (AO) protocol correctly</span>
+</li>
+<li class="tracker-item">
+<input class="tracker-checkbox" onchange="updateTracker()" type="checkbox"/>
+<span>Verify GTN safety criteria (SBP, HR, PDE-5)</span>
+</li>
+<li class="tracker-item">
+<input class="tracker-checkbox" onchange="updateTracker()" type="checkbox"/>
+<span>Practise conversational history taking</span>
+</li>
+<li class="tracker-item">
+<input class="tracker-checkbox" onchange="updateTracker()" type="checkbox"/>
+<span>Deliver structured ISBAR handover</span>
+</li>
+<li class="tracker-item">
+<input class="tracker-checkbox" onchange="updateTracker()" type="checkbox"/>
+<span>Understand escalation triggers</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
 <!-- ════════════════ LEARNING OBJECTIVES ════════════════ -->
-<div class="section" data-anim>
-  <div class="section-header">
-    <h2>Learning Objectives</h2>
-  </div>
-  <div class="section-body">
-    <p>On completion of this scenario, crew members will be able to:</p>
-    <ul class="checklist">
-      <li><input type="checkbox"><span>Recognise signs and symptoms of cardiac ischaemia including atypical presentations</span></li>
-      <li><input type="checkbox"><span>Perform a systematic primary survey using the DRSABCD framework in a chest pain patient</span></li>
-      <li><input type="checkbox"><span>Set up Corpuls3 monitoring including 4-lead ECG and correctly obtain a full set of observations</span></li>
-      <li><input type="checkbox"><span>Apply the Chest Pain (AO) protocol for Aspirin 300 mg and GTN 300 microg administration including all contraindication checks</span></li>
-      <li><input type="checkbox"><span>Identify PDE-5 inhibitor contraindications and appropriate time frames (24 hrs vs 48 hrs)</span></li>
-      <li><input type="checkbox"><span>Monitor and reassess vital signs at the correct frequency (every 3-5 minutes post GTN)</span></li>
-      <li><input type="checkbox"><span>Identify triggers for EOC Clinician consultation</span></li>
-      <li><input type="checkbox"><span>Deliver a structured ISBAR handover to the receiving facility</span></li>
-      <li><input type="checkbox"><span>Execute effective crew resource management with defined Clinician and Driver roles</span></li>
-    </ul>
-  </div>
+<div class="section" data-anim="">
+<div class="section-header">
+<h2>Learning Objectives</h2>
 </div>
-
+<div class="section-body">
+<p>On completion of this scenario, crew members will be able to:</p>
+<ul class="checklist">
+<li><input type="checkbox"/><span>Recognise signs and symptoms of cardiac ischaemia including atypical presentations</span></li>
+<li><input type="checkbox"/><span>Perform a systematic primary survey using the DRSABCD framework in a chest pain patient</span></li>
+<li><input type="checkbox"/><span>Set up Corpuls3 monitoring including 4-lead ECG and correctly obtain a full set of observations</span></li>
+<li><input type="checkbox"/><span>Apply the Chest Pain (AO) protocol for Aspirin 300 mg and GTN 300 microg administration including all contraindication checks</span></li>
+<li><input type="checkbox"/><span>Identify PDE-5 inhibitor contraindications and appropriate time frames (24 hrs vs 48 hrs)</span></li>
+<li><input type="checkbox"/><span>Monitor and reassess vital signs at the correct frequency (every 3-5 minutes post GTN)</span></li>
+<li><input type="checkbox"/><span>Identify triggers for EOC Clinician consultation</span></li>
+<li><input type="checkbox"/><span>Deliver a structured ISBAR handover to the receiving facility</span></li>
+<li><input type="checkbox"/><span>Execute effective crew resource management with defined Clinician and Driver roles</span></li>
+</ul>
+</div>
+</div>
 <!-- ════════════════ REQUIRED EQUIPMENT ════════════════ -->
-<div class="section" data-anim>
-  <div class="section-header">
-    <h2>Required Equipment</h2>
-  </div>
-  <div class="section-body">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;">
-      <div>
-        <h4 style="color:var(--green-300);margin-bottom:8px;">Monitoring and Assessment</h4>
-        <ul class="checklist">
-          <li><input type="checkbox"><span>Corpuls3 monitor (4-lead ECG, SpO2, NIBP)</span></li>
-          <li><input type="checkbox"><span>Manual BP cuff and stethoscope</span></li>
-          <li><input type="checkbox"><span>BGL monitor</span></li>
-          <li><input type="checkbox"><span>Thermometer</span></li>
-          <li><input type="checkbox"><span>ePCR tablet / paperwork</span></li>
-        </ul>
-      </div>
-      <div>
-        <h4 style="color:var(--green-300);margin-bottom:8px;">Medications (Red Kit)</h4>
-        <ul class="checklist">
-          <li><input type="checkbox"><span>Aspirin 300 mg (chewable tablet)</span></li>
-          <li><input type="checkbox"><span>GTN 300 microg sublingual tablets (patient's own for this scenario)</span></li>
-          <li><input type="checkbox"><span>Penthrox (standby — not indicated unless directed)</span></li>
-          <li><input type="checkbox"><span>Ondansetron wafers (for nausea if present)</span></li>
-        </ul>
-      </div>
-      <div>
-        <h4 style="color:var(--green-300);margin-bottom:8px;">Airway and Oxygen</h4>
-        <ul class="checklist">
-          <li><input type="checkbox"><span>Oxygen cylinder and regulator</span></li>
-          <li><input type="checkbox"><span>Non-rebreather mask</span></li>
-          <li><input type="checkbox"><span>Nasal cannula</span></li>
-          <li><input type="checkbox"><span>Bag-valve-mask (standby)</span></li>
-          <li><input type="checkbox"><span>Suction unit (standby)</span></li>
-        </ul>
-      </div>
-      <div>
-        <h4 style="color:var(--green-300);margin-bottom:8px;">General and Resuscitation</h4>
-        <ul class="checklist">
-          <li><input type="checkbox"><span>Red Kit and Blue Kit</span></li>
-          <li><input type="checkbox"><span>Ambulance Response Bag</span></li>
-          <li><input type="checkbox"><span>AED / Corpuls3 defibrillation pads</span></li>
-          <li><input type="checkbox"><span>Carry chair (green)</span></li>
-          <li><input type="checkbox"><span>Stretcher</span></li>
-          <li><input type="checkbox"><span>Blankets (winter setting — patient warmth)</span></li>
-          <li><input type="checkbox"><span>PPE (gloves, eyewear)</span></li>
-        </ul>
-      </div>
-    </div>
-    <div class="alert-box" style="margin-top:16px;">
-      <strong>Cardiac arrest readiness:</strong> Defibrillation pads must be accessible at all times. This patient is at risk of life-threatening rhythm changes. Have the Corpuls3 powered on with defib pads ready for immediate application.
-    </div>
-  </div>
+<div class="section" data-anim="">
+<div class="section-header">
+<h2>Required Equipment</h2>
 </div>
-
+<div class="section-body">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;">
+<div>
+<h4 style="color:var(--green-300);margin-bottom:8px;">Monitoring and Assessment</h4>
+<ul class="checklist">
+<li><input type="checkbox"/><span>Corpuls3 monitor (4-lead ECG, SpO2, NIBP)</span></li>
+<li><input type="checkbox"/><span>Manual BP cuff and stethoscope</span></li>
+<li><input type="checkbox"/><span>BGL monitor</span></li>
+<li><input type="checkbox"/><span>Thermometer</span></li>
+<li><input type="checkbox"/><span>ePCR tablet / paperwork</span></li>
+</ul>
+</div>
+<div>
+<h4 style="color:var(--green-300);margin-bottom:8px;">Medications (Red Kit)</h4>
+<ul class="checklist">
+<li><input type="checkbox"/><span>Aspirin 300 mg (chewable tablet)</span></li>
+<li><input type="checkbox"/><span>GTN 300 microg sublingual tablets (patient's own for this scenario)</span></li>
+<li><input type="checkbox"/><span>Penthrox (standby — not indicated unless directed)</span></li>
+<li><input type="checkbox"/><span>Ondansetron wafers (for nausea if present)</span></li>
+</ul>
+</div>
+<div>
+<h4 style="color:var(--green-300);margin-bottom:8px;">Airway and Oxygen</h4>
+<ul class="checklist">
+<li><input type="checkbox"/><span>Oxygen cylinder and regulator</span></li>
+<li><input type="checkbox"/><span>Non-rebreather mask</span></li>
+<li><input type="checkbox"/><span>Nasal cannula</span></li>
+<li><input type="checkbox"/><span>Bag-valve-mask (standby)</span></li>
+<li><input type="checkbox"/><span>Suction unit (standby)</span></li>
+</ul>
+</div>
+<div>
+<h4 style="color:var(--green-300);margin-bottom:8px;">General and Resuscitation</h4>
+<ul class="checklist">
+<li><input type="checkbox"/><span>Red Kit and Blue Kit</span></li>
+<li><input type="checkbox"/><span>Ambulance Response Bag</span></li>
+<li><input type="checkbox"/><span>AED / Corpuls3 defibrillation pads</span></li>
+<li><input type="checkbox"/><span>Carry chair (green)</span></li>
+<li><input type="checkbox"/><span>Stretcher</span></li>
+<li><input type="checkbox"/><span>Blankets (winter setting — patient warmth)</span></li>
+<li><input type="checkbox"/><span>PPE (gloves, eyewear)</span></li>
+</ul>
+</div>
+</div>
+<div class="alert-box" style="margin-top:16px;">
+<strong>Cardiac arrest readiness:</strong> Defibrillation pads must be accessible at all times. This patient is at risk of life-threatening rhythm changes. Have the Corpuls3 powered on with defib pads ready for immediate application.
+    </div>
+</div>
+</div>
 <!-- ════════════════ SESSION STRUCTURE OVERVIEW ════════════════ -->
-<div class="section" data-anim>
-  <div class="section-header">
-    <h2>Session Structure Overview</h2>
-  </div>
-  <div class="section-body">
-    <table class="data-table">
-      <thead>
-        <tr><th>Phase</th><th>Duration</th><th>Focus</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Pre-Brief</td><td>10 min</td><td>Roles, equipment, protocol review</td></tr>
-        <tr><td>Dispatch and En Route</td><td>10 min</td><td>MDT review, planning, role allocation</td></tr>
-        <tr><td>On Arrival and Scene Management</td><td>5 min</td><td>Scene safety, first impression</td></tr>
-        <tr><td>Patient Contact and Primary Survey</td><td>15 min</td><td>DRSABCD, history, Corpuls3 setup</td></tr>
-        <tr><td>Clinical Decision Point</td><td>10 min</td><td>Protocol selection, working diagnosis</td></tr>
-        <tr><td>Treatment Phase</td><td>15 min</td><td>Aspirin, GTN, monitoring — skills practice</td></tr>
-        <tr><td>Reassessment and Escalation</td><td>10 min</td><td>Repeat vitals, EOC contact decision</td></tr>
-        <tr><td>Extrication and Transport</td><td>5 min</td><td>Carry chair, patient positioning, load-and-go</td></tr>
-        <tr><td>Handover</td><td>5 min</td><td>ISBAR practice</td></tr>
-        <tr><td>Debrief</td><td>10-15 min</td><td>Reflective discussion, take-home messages</td></tr>
-      </tbody>
-    </table>
-  </div>
+<div class="section" data-anim="">
+<div class="section-header">
+<h2>Session Structure Overview</h2>
 </div>
-
+<div class="section-body">
+<table class="data-table">
+<thead>
+<tr><th>Phase</th><th>Duration</th><th>Focus</th></tr>
+</thead>
+<tbody>
+<tr><td>Pre-Brief</td><td>10 min</td><td>Roles, equipment, protocol review</td></tr>
+<tr><td>Dispatch and En Route</td><td>10 min</td><td>MDT review, planning, role allocation</td></tr>
+<tr><td>On Arrival and Scene Management</td><td>5 min</td><td>Scene safety, first impression</td></tr>
+<tr><td>Patient Contact and Primary Survey</td><td>15 min</td><td>DRSABCD, history, Corpuls3 setup</td></tr>
+<tr><td>Clinical Decision Point</td><td>10 min</td><td>Protocol selection, working diagnosis</td></tr>
+<tr><td>Treatment Phase</td><td>15 min</td><td>Aspirin, GTN, monitoring — skills practice</td></tr>
+<tr><td>Reassessment and Escalation</td><td>10 min</td><td>Repeat vitals, EOC contact decision</td></tr>
+<tr><td>Extrication and Transport</td><td>5 min</td><td>Carry chair, patient positioning, load-and-go</td></tr>
+<tr><td>Handover</td><td>5 min</td><td>ISBAR practice</td></tr>
+<tr><td>Debrief</td><td>10-15 min</td><td>Reflective discussion, take-home messages</td></tr>
+</tbody>
+</table>
+</div>
+</div>
 <!-- ════════════════ PRE-BRIEF ════════════════ -->
-<div class="toggle-section" data-anim>
-  <button class="toggle-btn" aria-expanded="false" onclick="toggleAccordion(this)">
-    <div>
-      <h2>Pre-Brief (10 minutes)</h2>
-    </div>
-    <span class="toggle-icon">&#9660;</span>
-  </button>
-  <div class="toggle-content">
-    <div class="toggle-inner">
-      <h4 style="color:var(--green-300);">Assign Roles</h4>
-      <table class="data-table">
-        <thead><tr><th>Role</th><th>Responsibilities</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><strong>AO 1 — Clinician</strong></td>
-            <td>Patient contact, history taking, medication administration, clinical decision-making, ePCR, EOC communication, team leadership</td>
-          </tr>
-          <tr>
-            <td><strong>AO 2 — Driver</strong></td>
-            <td>Scene safety, Corpuls3 setup and observations (4-lead ECG, SpO2, NIBP, manual pulse, RR, BP), equipment retrieval, carry chair and stretcher preparation, ongoing monitoring</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h4 style="color:var(--green-300);margin-top:16px;">Set the Scene</h4>
-      <ul>
-        <li>Winter evening, 2115 hrs — it is dark and cold</li>
-        <li>Rural farming property, 35 minutes from hospital</li>
-        <li>Patient is a 62-year-old male, sitting in a recliner chair in the lounge room</li>
-        <li>His wife called 000 — she is present and anxious</li>
-        <li>The patient has a known history of angina and carries his own prescribed GTN spray</li>
-      </ul>
-
-      <h4 style="color:var(--green-300);margin-top:16px;">Protocol Review</h4>
-      <div class="info-box">
-        <strong>Facilitator:</strong> Before starting, confirm crew members can locate the Chest Pain (AO) protocol (CPP-007-AO). Briefly review the key medication criteria — Aspirin 300 mg (allergy check) and GTN 300 microg sublingual (SBP, HR, PDE-5 checks). Do not over-teach here — let the scenario drive the learning.
-      </div>
-
-      <h4 style="color:var(--green-300);margin-top:16px;">Safety Brief</h4>
-      <ul>
-        <li>This is a walk-through exercise — pause at each break point for discussion</li>
-        <li>Anyone can call "real world" to stop the scenario for a genuine safety concern</li>
-        <li>The goal is operational decision-making, not perfection</li>
-      </ul>
-    </div>
-  </div>
+<div class="toggle-section" data-anim="">
+<button aria-expanded="false" class="toggle-btn" onclick="toggleAccordion(this)">
+<div>
+<h2>Pre-Brief (10 minutes)</h2>
 </div>
-
-<!-- ════════════════ DISPATCH & EN ROUTE ════════════════ -->
-<div class="toggle-section" data-anim>
-  <button class="toggle-btn" aria-expanded="false" onclick="toggleAccordion(this)">
-    <div>
-      <h2>Dispatch and En Route Phase</h2>
-    </div>
-    <span class="toggle-icon">&#9660;</span>
-  </button>
-  <div class="toggle-content">
-    <div class="toggle-inner">
-
-      <h4 style="color:var(--green-300);">MDT Dispatch Information</h4>
-      <div class="mdt-screen">
-        <div class="mdt-header">/// SAAS DISPATCH — PRIORITY 2 ///</div>
-        <span class="mdt-field">CASE:</span> <span class="mdt-value">CP-2026-0213-2115</span><br>
-        <span class="mdt-field">TIME:</span> <span class="mdt-value">21:15</span><br>
-        <span class="mdt-field">TYPE:</span> <span class="mdt-value">CHEST PAIN — CARDIAC HISTORY</span><br>
-        <span class="mdt-field">LOC:</span> <span class="mdt-value">742 BOUNDARY ROAD, RURAL PROPERTY</span><br>
-        <span class="mdt-field">GRID:</span> <span class="mdt-value">MAP 14 / H7</span><br>
-        <span class="mdt-field">PT:</span> <span class="mdt-value">62YO MALE — CHEST PAIN x 30 MIN</span><br>
-        <span class="mdt-field">INFO:</span> <span class="mdt-value">KNOWN ANGINA. HAS OWN GTN. PAIN NOT RESOLVING WITH OWN GTN. WIFE ON SCENE.</span><br>
-        <span class="mdt-field">ACCESS:</span> <span class="mdt-value">SEALED ROAD THEN 2KM DIRT. PROPERTY GATE OPEN. LIGHTS ON.</span><br>
-        <span class="mdt-field">BACKUP:</span> <span class="mdt-value">NEAREST ICP 55 MIN. MedSTAR RETRIEVAL TBC.</span><br>
-        <span class="mdt-field">DEST:</span> <span class="mdt-value">REGIONAL HOSPITAL — 35 MIN TRANSPORT</span>
+<span class="toggle-icon">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 style="color:var(--green-300);">Assign Roles</h4>
+<table class="data-table">
+<thead><tr><th>Role</th><th>Responsibilities</th></tr></thead>
+<tbody>
+<tr>
+<td><strong>AO 1 — Clinician</strong></td>
+<td>Patient contact, history taking, medication administration, clinical decision-making, ePCR, EOC communication, team leadership</td>
+</tr>
+<tr>
+<td><strong>AO 2 — Driver</strong></td>
+<td>Scene safety, Corpuls3 setup and observations (4-lead ECG, SpO2, NIBP, manual pulse, RR, BP), equipment retrieval, carry chair and stretcher preparation, ongoing monitoring</td>
+</tr>
+</tbody>
+</table>
+<h4 style="color:var(--green-300);margin-top:16px;">Set the Scene</h4>
+<ul>
+<li>Winter evening, 2115 hrs — it is dark and cold</li>
+<li>Rural farming property, 35 minutes from hospital</li>
+<li>Patient is a 62-year-old male, sitting in a recliner chair in the lounge room</li>
+<li>His wife called 000 — she is present and anxious</li>
+<li>The patient has a known history of angina and carries his own prescribed GTN spray</li>
+</ul>
+<h4 style="color:var(--green-300);margin-top:16px;">Protocol Review</h4>
+<div class="info-box">
+<strong>Facilitator:</strong> Before starting, confirm crew members can locate the Chest Pain (AO) protocol (CPP-007-AO). Briefly review the key medication criteria — Aspirin 300 mg (allergy check) and GTN 300 microg sublingual (SBP, HR, PDE-5 checks). Do not over-teach here — let the scenario drive the learning.
       </div>
-
-      <!-- ──── BREAK POINT 1 ──── -->
-      <div class="break-point">
-        <div class="break-header">
+<h4 style="color:var(--green-300);margin-top:16px;">Safety Brief</h4>
+<ul>
+<li>This is a walk-through exercise — pause at each break point for discussion</li>
+<li>Anyone can call "real world" to stop the scenario for a genuine safety concern</li>
+<li>The goal is operational decision-making, not perfection</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- ════════════════ DISPATCH & EN ROUTE ════════════════ -->
+<div class="toggle-section" data-anim="">
+<button aria-expanded="false" class="toggle-btn" onclick="toggleAccordion(this)">
+<div>
+<h2>Dispatch and En Route Phase</h2>
+</div>
+<span class="toggle-icon">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 style="color:var(--green-300);">MDT Dispatch Information</h4>
+<div class="mdt-screen">
+<div class="mdt-header">/// SAAS DISPATCH — PRIORITY 2 ///</div>
+<span class="mdt-field">CASE:</span> <span class="mdt-value">CP-2026-0213-2115</span><br/>
+<span class="mdt-field">TIME:</span> <span class="mdt-value">21:15</span><br/>
+<span class="mdt-field">TYPE:</span> <span class="mdt-value">CHEST PAIN — CARDIAC HISTORY</span><br/>
+<span class="mdt-field">LOC:</span> <span class="mdt-value">742 BOUNDARY ROAD, RURAL PROPERTY</span><br/>
+<span class="mdt-field">GRID:</span> <span class="mdt-value">MAP 14 / H7</span><br/>
+<span class="mdt-field">PT:</span> <span class="mdt-value">62YO MALE — CHEST PAIN x 30 MIN</span><br/>
+<span class="mdt-field">INFO:</span> <span class="mdt-value">KNOWN ANGINA. HAS OWN GTN. PAIN NOT RESOLVING WITH OWN GTN. WIFE ON SCENE.</span><br/>
+<span class="mdt-field">ACCESS:</span> <span class="mdt-value">SEALED ROAD THEN 2KM DIRT. PROPERTY GATE OPEN. LIGHTS ON.</span><br/>
+<span class="mdt-field">BACKUP:</span> <span class="mdt-value">NEAREST ICP 55 MIN. MedSTAR RETRIEVAL TBC.</span><br/>
+<span class="mdt-field">DEST:</span> <span class="mdt-value">REGIONAL HOSPITAL — 35 MIN TRANSPORT</span>
+</div>
+<!-- ──── BREAK POINT 1 ──── -->
+<div class="break-point">
+<div class="break-header">
           BREAK POINT 1 — En-Route Planning
           <span class="bp-type">Discussion</span>
-        </div>
-        <div class="break-body">
-          <h4>Facilitator Prompts</h4>
-          <ul>
-            <li>What does the MDT tell you about this patient and the urgency?</li>
-            <li>The patient has his own GTN and the pain is not resolving — what does that suggest?</li>
-            <li>What equipment will you take to the door? Who carries what?</li>
-            <li>What is your plan if the patient deteriorates to cardiac arrest en route or on scene?</li>
-            <li>Given 35 minutes transport and 55 minutes to the nearest ICP — what is your escalation plan?</li>
-          </ul>
-
-          <h4>Expected AO Reasoning</h4>
-          <ul>
-            <li>Chest pain not resolving with own GTN suggests this may be more than stable angina — suspect acute coronary syndrome (ACS)</li>
-            <li>62-year-old male with cardiac history — high-risk patient profile</li>
-            <li>This is potentially time-critical — "time is muscle"</li>
-            <li>Driver to take Corpuls3 (powered on), Clinician to take Red Kit (Aspirin, GTN tablets as backup), Response Bag, oxygen</li>
-            <li>Defib pads must be immediately accessible — have them ready in the Corpuls3 rear compartment or pre-connected</li>
-            <li>Plan for early EOC Clinician contact given unresolved pain</li>
-          </ul>
-
-          <h4>Key Teaching Points</h4>
-          <ul>
-            <li>Reading the MDT thoroughly saves time on scene — it gives you the working picture before you arrive</li>
-            <li>GTN not working is a red flag — the pain pattern has changed from their usual angina</li>
-            <li>Equipment allocation en route prevents delays at the door</li>
-            <li>Always have a cardiac arrest contingency — this patient is at risk of life-threatening rhythm changes</li>
-          </ul>
-
-          <h4>Real-Job Translation</h4>
-          <div class="key-point">
+</div>
+<div class="break-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>What does the MDT tell you about this patient and the urgency?</li>
+<li>The patient has his own GTN and the pain is not resolving — what does that suggest?</li>
+<li>What equipment will you take to the door? Who carries what?</li>
+<li>What is your plan if the patient deteriorates to cardiac arrest en route or on scene?</li>
+<li>Given 35 minutes transport and 55 minutes to the nearest ICP — what is your escalation plan?</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Chest pain not resolving with own GTN suggests this may be more than stable angina — suspect acute coronary syndrome (ACS)</li>
+<li>62-year-old male with cardiac history — high-risk patient profile</li>
+<li>This is potentially time-critical — "time is muscle"</li>
+<li>Driver to take Corpuls3 (powered on), Clinician to take Red Kit (Aspirin, GTN tablets as backup), Response Bag, oxygen</li>
+<li>Defib pads must be immediately accessible — have them ready in the Corpuls3 rear compartment or pre-connected</li>
+<li>Plan for early EOC Clinician contact given unresolved pain</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Reading the MDT thoroughly saves time on scene — it gives you the working picture before you arrive</li>
+<li>GTN not working is a red flag — the pain pattern has changed from their usual angina</li>
+<li>Equipment allocation en route prevents delays at the door</li>
+<li>Always have a cardiac arrest contingency — this patient is at risk of life-threatening rhythm changes</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<div class="key-point">
             On a real job, the drive to this property gives you 10-15 minutes of planning time. Use it. Discuss roles, confirm equipment, think through the worst case. The crew that arrives with a plan works faster than the crew that plans on the doorstep.
           </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
 </div>
-
+</div>
+<!-- ── DECISION TREE: En Route Planning ── -->
+<div class="decision-tree">
+<h4>🎯 Test Your Knowledge: En-Route Priorities</h4>
+<div class="decision-prompt">
+<p>You're en route to the scene. The MDT shows "CHEST PAIN — CARDIAC HISTORY" with "PAIN NOT RESOLVING WITH OWN GTN." What is your PRIMARY focus during this 10-minute drive?</p>
+<div class="decision-buttons">
+<button class="decision-btn" onclick="checkDecision(this, 'correct')">Role allocation &amp; equipment prep</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Practise your handover speech</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Review hospital directions</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Plan post-incident paperwork</button>
+</div>
+</div>
+<div class="decision-feedback" id="feedback1">
+<strong>Feedback:</strong> Correct! En route is your planning window. Define roles, confirm the Clinician has the Red Kit ready, the Driver has the Corpuls3 powered on, and both crew know the contingency for cardiac arrest. Hospital logistics can wait — operational readiness now saves lives.
+        </div>
+</div>
+</div>
+</div>
+</div>
 <!-- ════════════════ ON ARRIVAL ════════════════ -->
-<div class="toggle-section" data-anim>
-  <button class="toggle-btn" aria-expanded="false" onclick="toggleAccordion(this)">
-    <div>
-      <h2>On Arrival — Scene Management</h2>
-    </div>
-    <span class="toggle-icon">&#9660;</span>
-  </button>
-  <div class="toggle-content">
-    <div class="toggle-inner">
-
-      <h4 style="color:var(--green-300);">Scene Description</h4>
-      <p>You arrive at the property at 2132 hrs. The gate is open as advised. You drive down a sealed driveway to a well-lit farmhouse. The front door is open and you can see a woman waving from the doorway.</p>
-      <p>As you approach the front door, you can see into the lounge room. A man is sitting upright in a recliner chair. He is pale, still, and has one hand pressed flat against his sternum. He appears conscious but distressed. There is a GTN spray on the armrest beside him.</p>
-
-      <!-- ──── BREAK POINT 2 ──── -->
-      <div class="break-point">
-        <div class="break-header">
+<div class="toggle-section" data-anim="">
+<button aria-expanded="false" class="toggle-btn" onclick="toggleAccordion(this)">
+<div>
+<h2>On Arrival — Scene Management</h2>
+</div>
+<span class="toggle-icon">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 style="color:var(--green-300);">Scene Description</h4>
+<p>You arrive at the property at 2132 hrs. The gate is open as advised. You drive down a sealed driveway to a well-lit farmhouse. The front door is open and you can see a woman waving from the doorway.</p>
+<p>As you approach the front door, you can see into the lounge room. A man is sitting upright in a recliner chair. He is pale, still, and has one hand pressed flat against his sternum. He appears conscious but distressed. There is a GTN spray on the armrest beside him.</p>
+<!-- ──── BREAK POINT 2 ──── -->
+<div class="break-point">
+<div class="break-header">
           BREAK POINT 2 — Doorway / First Impression
           <span class="bp-type">Discussion</span>
-        </div>
-        <div class="break-body">
-          <h4>Facilitator Prompts</h4>
-          <ul>
-            <li>What is your first impression from the doorway? Describe what you see.</li>
-            <li>Is the scene safe? Any hazards you need to consider?</li>
-            <li>What does the patient's posture and colour tell you before you make contact?</li>
-            <li>What is your immediate priority?</li>
-          </ul>
-
-          <h4>Expected AO Reasoning</h4>
-          <ul>
-            <li>Scene appears safe — domestic residence, no visible hazards, adequate lighting</li>
-            <li>Patient is conscious, sitting upright, pale, guarding his chest — classic cardiac presentation</li>
-            <li>Hand on sternum with a GTN spray beside him — he has been self-managing and it has not worked</li>
-            <li>Immediate priority: get to the patient, introduce yourself, begin primary survey, get the Corpuls3 on early</li>
-            <li>Wife is present — useful historian, but may also need reassurance</li>
-          </ul>
-
-          <h4>Key Teaching Points</h4>
-          <ul>
-            <li>The "doorway assessment" takes 5 seconds and gives you critical information — patient position, colour, breathing effort, level of consciousness</li>
-            <li>Pale, still, guarding the chest = high concern for significant cardiac event</li>
-            <li>Scene safety is not just about physical hazards — consider the emotional environment (anxious family)</li>
-          </ul>
-
-          <h4>Real-Job Translation</h4>
-          <div class="key-point">
+</div>
+<div class="break-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>What is your first impression from the doorway? Describe what you see.</li>
+<li>Is the scene safe? Any hazards you need to consider?</li>
+<li>What does the patient's posture and colour tell you before you make contact?</li>
+<li>What is your immediate priority?</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Scene appears safe — domestic residence, no visible hazards, adequate lighting</li>
+<li>Patient is conscious, sitting upright, pale, guarding his chest — classic cardiac presentation</li>
+<li>Hand on sternum with a GTN spray beside him — he has been self-managing and it has not worked</li>
+<li>Immediate priority: get to the patient, introduce yourself, begin primary survey, get the Corpuls3 on early</li>
+<li>Wife is present — useful historian, but may also need reassurance</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>The "doorway assessment" takes 5 seconds and gives you critical information — patient position, colour, breathing effort, level of consciousness</li>
+<li>Pale, still, guarding the chest = high concern for significant cardiac event</li>
+<li>Scene safety is not just about physical hazards — consider the emotional environment (anxious family)</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<div class="key-point">
             The first 10 seconds at every front door set the tone for the job. A calm, confident approach reassures everyone — the patient, the family, and your partner. Walk in with purpose, not panic.
           </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
 </div>
-
+</div>
+<!-- ── DECISION TREE: Doorway Assessment ── -->
+<div class="decision-tree">
+<h4>🎯 Test Your Knowledge: First Impression Assessment</h4>
+<div class="decision-prompt">
+<p>From the doorway, you see a pale man guarding his chest, sitting upright, one hand flat on his sternum. Wife is anxious. GTN spray nearby. What is this presentation MOST consistent with?</p>
+<div class="decision-buttons">
+<button class="decision-btn" onclick="checkDecision(this, 'correct')">Significant cardiac ischaemia</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Anxiety disorder</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Musculoskeletal chest wall pain</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Indigestion</button>
+</div>
+</div>
+<div class="decision-feedback" id="feedback2">
+<strong>Feedback:</strong> Correct! Pale skin, guarding behaviour (one hand pressing on sternum), upright posture despite distress, and failed self-treatment with GTN are all consistent with significant cardiac ischaemia. Your working diagnosis starts forming at the doorway, not at the bedside.
+        </div>
+</div>
+</div>
+</div>
+</div>
 <!-- ════════════════ PATIENT CONTACT & PRIMARY SURVEY ════════════════ -->
-<div class="toggle-section" data-anim>
-  <button class="toggle-btn" aria-expanded="false" onclick="toggleAccordion(this)">
-    <div>
-      <h2>Patient Contact and Primary Survey</h2>
+<div class="toggle-section" data-anim="">
+<button aria-expanded="false" class="toggle-btn" onclick="toggleAccordion(this)">
+<div>
+<h2>Patient Contact and Primary Survey</h2>
+</div>
+<span class="toggle-icon">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 style="color:var(--green-300);">Patient Presentation</h4>
+<p>The patient's name is <strong>Graham</strong>. He is alert, oriented, and speaks in full sentences but appears distressed and diaphoretic.</p>
+<h4 style="color:var(--green-300);margin-top:14px;">Clinician (AO 1) — History Taking</h4>
+<p>Graham reports the following:</p>
+<table class="data-table">
+<tbody>
+<tr><td style="width:40%;font-weight:600;color:var(--green-300);">Presenting Complaint</td><td>"I've got this heavy pressure right across my chest — it's going down my left arm. Started about 40 minutes ago while I was watching the footy."</td></tr>
+<tr><td style="font-weight:600;color:var(--green-300);">Pain Description (DOLOR)</td><td><strong>D</strong> — "It's not sharp, more like a heavy weight sitting on me."<br/><strong>O</strong> — "Came on about 40 minutes ago, I was just sitting in the chair."<br/><strong>L</strong> — "Centre of my chest, spreading into my left arm and a bit into my jaw."<br/><strong>O</strong> — "Worse than my usual angina. Normally my spray fixes it. Not tonight."<br/><strong>R</strong> — "I tried my spray twice. It helped a tiny bit but came straight back."</td></tr>
+<tr><td style="font-weight:600;color:var(--green-300);">Associated Symptoms</td><td>Nausea (no vomiting), diaphoresis (sweating), mild shortness of breath</td></tr>
+<tr><td style="font-weight:600;color:var(--green-300);">Medical History</td><td>Angina (diagnosed 4 years ago), hypertension, hypercholesterolaemia</td></tr>
+<tr><td style="font-weight:600;color:var(--green-300);">Medications</td><td>GTN spray (own prescribed — Nitrolingual Pumpspray), Aspirin 100 mg daily, Atorvastatin 40 mg, Metoprolol 50 mg BD, Perindopril 5 mg</td></tr>
+<tr><td style="font-weight:600;color:var(--green-300);">Allergies</td><td>Nil known</td></tr>
+<tr><td style="font-weight:600;color:var(--green-300);">PDE-5 Inhibitor Check</td><td><strong>"No, I don't take any of those."</strong> (Wife confirms)</td></tr>
+<tr><td style="font-weight:600;color:var(--green-300);">Last Oral Intake</td><td>Dinner at 1830 hrs — steak and vegetables</td></tr>
+<tr><td style="font-weight:600;color:var(--green-300);">Own GTN Use</td><td>Self-administered 2 sprays over the last 30 minutes — minimal relief</td></tr>
+</tbody>
+</table>
+<h4 style="color:var(--green-300);margin-top:16px;">Driver (AO 2) — Corpuls3 Setup and Initial Observations</h4>
+<p>While the Clinician takes the history, the Driver sets up the Corpuls3 and obtains the first set of observations.</p>
+<div class="vitals-grid">
+<div class="vital-box"><div class="v-label">Time</div><div class="v-value v-normal">2135</div></div>
+<div class="vital-box"><div class="v-label">HR</div><div class="v-value v-normal">92 bpm</div></div>
+<div class="vital-box"><div class="v-label">BP (NIBP)</div><div class="v-value v-normal">138/86</div></div>
+<div class="vital-box"><div class="v-label">SpO2</div><div class="v-value v-warn">94%</div></div>
+<div class="vital-box"><div class="v-label">RR (manual)</div><div class="v-value v-normal">20</div></div>
+<div class="vital-box"><div class="v-label">Temp</div><div class="v-value v-normal">36.4°C</div></div>
+<div class="vital-box"><div class="v-label">BGL</div><div class="v-value v-normal">7.2</div></div>
+<div class="vital-box"><div class="v-label">GCS</div><div class="v-value v-normal">15</div></div>
+<div class="vital-box"><div class="v-label">Pain</div><div class="v-value v-warn">8/10</div></div>
+<div class="vital-box"><div class="v-label">ECG</div><div class="v-value v-warn">NSR</div></div>
+</div>
+<div class="info-box">
+<strong>Corpuls3 Notes:</strong> 4-lead ECG attached — normal sinus rhythm on monitor. SpO2 reading 94% — consider supplemental O2 via nasal cannula at 2-4 L/min. NIBP cycling set to 5-minute intervals. Manual radial pulse confirmed regular at 92.
+      </div>
+<!-- ──── INTERACTIVE CONVERSATIONAL PRACTICE ──── -->
+<div class="break-point">
+<div class="break-header">
+    PRACTICE ZONE — Conversational History Taking with Graham
+    <span class="bp-type">Interactive Skill</span>
+</div>
+<div class="break-body">
+<h4>How to Use This Widget</h4>
+<p>An interactive conversational AI will play the role of Graham, the patient. You can practice taking a structured cardiac history using the DOLOR framework (Duration, Onset, Location, Other symptoms, Relief/Radiation).</p>
+<div class="key-point">
+<strong>Goal:</strong> Extract a thorough history covering presenting complaint, pain characteristics, associated symptoms, medical history, medications, allergies, and PDE-5 inhibitor status. Keep the conversation clinical, empathetic, and efficient — exactly as you would on a real job.
     </div>
-    <span class="toggle-icon">&#9660;</span>
-  </button>
-  <div class="toggle-content">
-    <div class="toggle-inner">
-
-      <h4 style="color:var(--green-300);">Patient Presentation</h4>
-      <p>The patient's name is <strong>Graham</strong>. He is alert, oriented, and speaks in full sentences but appears distressed and diaphoretic.</p>
-
-      <h4 style="color:var(--green-300);margin-top:14px;">Clinician (AO 1) — History Taking</h4>
-      <p>Graham reports the following:</p>
-      <table class="data-table">
-        <tbody>
-          <tr><td style="width:40%;font-weight:600;color:var(--green-300);">Presenting Complaint</td><td>"I've got this heavy pressure right across my chest — it's going down my left arm. Started about 40 minutes ago while I was watching the footy."</td></tr>
-          <tr><td style="font-weight:600;color:var(--green-300);">Pain Description (DOLOR)</td><td><strong>D</strong> — "It's not sharp, more like a heavy weight sitting on me."<br><strong>O</strong> — "Came on about 40 minutes ago, I was just sitting in the chair."<br><strong>L</strong> — "Centre of my chest, spreading into my left arm and a bit into my jaw."<br><strong>O</strong> — "Worse than my usual angina. Normally my spray fixes it. Not tonight."<br><strong>R</strong> — "I tried my spray twice. It helped a tiny bit but came straight back."</td></tr>
-          <tr><td style="font-weight:600;color:var(--green-300);">Associated Symptoms</td><td>Nausea (no vomiting), diaphoresis (sweating), mild shortness of breath</td></tr>
-          <tr><td style="font-weight:600;color:var(--green-300);">Medical History</td><td>Angina (diagnosed 4 years ago), hypertension, hypercholesterolaemia</td></tr>
-          <tr><td style="font-weight:600;color:var(--green-300);">Medications</td><td>GTN spray (own prescribed — Nitrolingual Pumpspray), Aspirin 100 mg daily, Atorvastatin 40 mg, Metoprolol 50 mg BD, Perindopril 5 mg</td></tr>
-          <tr><td style="font-weight:600;color:var(--green-300);">Allergies</td><td>Nil known</td></tr>
-          <tr><td style="font-weight:600;color:var(--green-300);">PDE-5 Inhibitor Check</td><td><strong>"No, I don't take any of those."</strong> (Wife confirms)</td></tr>
-          <tr><td style="font-weight:600;color:var(--green-300);">Last Oral Intake</td><td>Dinner at 1830 hrs — steak and vegetables</td></tr>
-          <tr><td style="font-weight:600;color:var(--green-300);">Own GTN Use</td><td>Self-administered 2 sprays over the last 30 minutes — minimal relief</td></tr>
-        </tbody>
-      </table>
-
-      <h4 style="color:var(--green-300);margin-top:16px;">Driver (AO 2) — Corpuls3 Setup and Initial Observations</h4>
-      <p>While the Clinician takes the history, the Driver sets up the Corpuls3 and obtains the first set of observations.</p>
-
-      <div class="vitals-grid">
-        <div class="vital-box"><div class="v-label">Time</div><div class="v-value v-normal">2135</div></div>
-        <div class="vital-box"><div class="v-label">HR</div><div class="v-value v-normal">92 bpm</div></div>
-        <div class="vital-box"><div class="v-label">BP (NIBP)</div><div class="v-value v-normal">138/86</div></div>
-        <div class="vital-box"><div class="v-label">SpO2</div><div class="v-value v-warn">94%</div></div>
-        <div class="vital-box"><div class="v-label">RR (manual)</div><div class="v-value v-normal">20</div></div>
-        <div class="vital-box"><div class="v-label">Temp</div><div class="v-value v-normal">36.4°C</div></div>
-        <div class="vital-box"><div class="v-label">BGL</div><div class="v-value v-normal">7.2</div></div>
-        <div class="vital-box"><div class="v-label">GCS</div><div class="v-value v-normal">15</div></div>
-        <div class="vital-box"><div class="v-label">Pain</div><div class="v-value v-warn">8/10</div></div>
-        <div class="vital-box"><div class="v-label">ECG</div><div class="v-value v-warn">NSR</div></div>
-      </div>
-
-      <div class="info-box">
-        <strong>Corpuls3 Notes:</strong> 4-lead ECG attached — normal sinus rhythm on monitor. SpO2 reading 94% — consider supplemental O2 via nasal cannula at 2-4 L/min. NIBP cycling set to 5-minute intervals. Manual radial pulse confirmed regular at 92.
-      </div>
-
-      <!-- ──── BREAK POINT 3 ──── -->
-      <div class="break-point">
-        <div class="break-header">
+<h4 style="color:var(--green-300);margin-top:16px;">Suggested Opening</h4>
+<p style="font-style:italic;">"Hi Graham, I'm [name], an Ambulance Officer. My partner and I are here to help. Can you tell me what's been happening this evening?"</p>
+<h4 style="color:var(--green-300);margin-top:14px;">Key Questions to Cover</h4>
+<ul>
+<li>When did the pain start?</li>
+<li>What were you doing when it started?</li>
+<li>Where exactly is the pain? Does it go anywhere?</li>
+<li>What does the pain feel like? (pressure, tightness, heaviness, sharp, etc.)</li>
+<li>How bad is it on a scale of 1-10?</li>
+<li>Have you had this pain before?</li>
+<li>Is this pain different from your usual angina?</li>
+<li>Have you taken any medications for this? Did they help?</li>
+<li>Any nausea, shortness of breath, or sweating?</li>
+<li>Any medications you take regularly? Any allergies?</li>
+<li>Do you take any medications for erectile dysfunction?</li>
+</ul>
+<div class="info-box" style="margin-top:16px;">
+<strong>Ready to practise?</strong> Scroll down to the conversational interface below and click "Greet the patient" to begin.
+    </div>
+</div>
+</div>
+<!-- ════════════════ CONVAI WIDGET — SEPARATE SECTION ════════════════ -->
+<div class="convai-standalone" data-anim="">
+<div style="text-align:center;margin-bottom:16px;">
+<h3 style="color:var(--text-heading);font-size:1rem;font-weight:700;">Start Your Practice Conversation</h3>
+<p style="color:var(--text-muted);font-size:0.9rem;">Click below to begin speaking with Graham</p>
+</div>
+<div class="convai-widget-wrapper">
+<elevenlabs-convai agent-id="2a8y6kY6UVneUPizavVo"></elevenlabs-convai>
+</div>
+</div>
+<!-- ── REFLECTION PROMPTS (AFTER WIDGET) ── -->
+<div class="section" data-anim="">
+<div class="section-header">
+<h2>Reflect on Your Conversation</h2>
+</div>
+<div class="section-body">
+<p>After you've completed your conversation with Graham, consider these reflection questions:</p>
+<ul>
+<li>Did you cover all the key information? Anything missed?</li>
+<li>How was your pacing and tone? Did it feel natural and professional?</li>
+<li>How did you handle the PDE-5 inhibitor question? Was it clear and non-judgmental?</li>
+<li>If the patient's answers were vague, did you ask clarifying questions?</li>
+<li>Did you reassure the patient while gathering information?</li>
+</ul>
+<div class="info-box" style="margin-top:16px;">
+<strong>Facilitator Note:</strong> This conversational widget is designed to simulate realistic patient responses — some may be clear, others vague or evasive. Practise your communication skills in a safe environment before your next real job. It's perfectly fine to have multiple conversations to build confidence.
+    </div>
+</div>
+<!-- ──── BREAK POINT 3 ──── -->
+<div class="break-point">
+<div class="break-header">
           BREAK POINT 3 — Initial Observations and Corpuls3 Setup
           <span class="bp-type">Practical Skill / Discussion</span>
-        </div>
-        <div class="break-body">
-          <h4>Facilitator Prompts</h4>
-          <ul>
-            <li>Walk through how you set up the Corpuls3 on this patient — what goes on first?</li>
-            <li>What observations has the Driver obtained? Are any concerning?</li>
-            <li>Why is it important to get ECG monitoring on early for this patient?</li>
-            <li>SpO2 is 94% — what do you do about that?</li>
-            <li>The patient's NIBP reads 138/86 — is that significant for what comes next?</li>
-          </ul>
-
-          <h4>Expected AO Reasoning</h4>
-          <ul>
-            <li>Corpuls3 setup: SpO2 probe on first, then 4-lead ECG, then NIBP cuff. Power on the monitor en route so it is ready at the door</li>
-            <li>4-lead ECG is critical — this patient is at risk of dysrhythmia. You need continuous rhythm monitoring</li>
-            <li>SpO2 94% — supplemental O2 via nasal cannula is appropriate. Titrate to maintain SpO2 above 94%</li>
-            <li>SBP 138 is above 100 — this is relevant because the protocol requires SBP of 100 or above for GTN</li>
-            <li>HR 92, regular — within the protocol range of 60-120 for GTN</li>
-            <li>Pain is 8/10 — this is significant and drives treatment urgency</li>
-          </ul>
-
-          <h4>Practical Skill — Corpuls3 4-Lead ECG Application</h4>
-          <ul>
-            <li>Right arm (RA) — white lead</li>
-            <li>Left arm (LA) — black lead</li>
-            <li>Right leg (RL) — green lead</li>
-            <li>Left leg (LL) — red lead</li>
-            <li>Confirm good trace on monitor — no artefact, clear QRS complexes</li>
-            <li>Set NIBP to cycle every 5 minutes (increase to every 3 minutes once GTN is given)</li>
-          </ul>
-
-          <h4>Key Teaching Points</h4>
-          <ul>
-            <li>ECG monitoring should be established as early as possible — the patient is at risk of life-threatening rhythm changes</li>
-            <li>Every observation you take now becomes your baseline for treatment decisions</li>
-            <li>SpO2 of 94% in a cardiac patient needs attention — adequate oxygenation is a primary treatment for cardiac ischaemia</li>
-            <li>SBP and HR are your gatekeepers for GTN — always check these before administering</li>
-          </ul>
-
-          <h4>Real-Job Translation</h4>
-          <div class="key-point">
+</div>
+<div class="break-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>Walk through how you set up the Corpuls3 on this patient — what goes on first?</li>
+<li>What observations has the Driver obtained? Are any concerning?</li>
+<li>Why is it important to get ECG monitoring on early for this patient?</li>
+<li>SpO2 is 94% — what do you do about that?</li>
+<li>The patient's NIBP reads 138/86 — is that significant for what comes next?</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Corpuls3 setup: SpO2 probe on first, then 4-lead ECG, then NIBP cuff. Power on the monitor en route so it is ready at the door</li>
+<li>4-lead ECG is critical — this patient is at risk of dysrhythmia. You need continuous rhythm monitoring</li>
+<li>SpO2 94% — supplemental O2 via nasal cannula is appropriate. Titrate to maintain SpO2 above 94%</li>
+<li>SBP 138 is above 100 — this is relevant because the protocol requires SBP of 100 or above for GTN</li>
+<li>HR 92, regular — within the protocol range of 60-120 for GTN</li>
+<li>Pain is 8/10 — this is significant and drives treatment urgency</li>
+</ul>
+<h4>Practical Skill — Corpuls3 4-Lead ECG Application</h4>
+<ul>
+<li>Right arm (RA) — white lead</li>
+<li>Left arm (LA) — black lead</li>
+<li>Right leg (RL) — green lead</li>
+<li>Left leg (LL) — red lead</li>
+<li>Confirm good trace on monitor — no artefact, clear QRS complexes</li>
+<li>Set NIBP to cycle every 5 minutes (increase to every 3 minutes once GTN is given)</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>ECG monitoring should be established as early as possible — the patient is at risk of life-threatening rhythm changes</li>
+<li>Every observation you take now becomes your baseline for treatment decisions</li>
+<li>SpO2 of 94% in a cardiac patient needs attention — adequate oxygenation is a primary treatment for cardiac ischaemia</li>
+<li>SBP and HR are your gatekeepers for GTN — always check these before administering</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<div class="key-point">
             On a real job, the Driver should be connecting the Corpuls3 while the Clinician is still talking to the patient. Parallel tasking is what makes a two-person crew efficient. The first set of observations guides everything that follows.
           </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
 </div>
-
+</div>
+<!-- ── DECISION TREE: Corpuls3 Priority ── -->
+<div class="decision-tree">
+<h4>🎯 Test Your Knowledge: Corpuls3 Setup Priority</h4>
+<div class="decision-prompt">
+<p>You're connecting the Corpuls3 on a suspected ACS patient. What is the FIRST thing you attach?</p>
+<div class="decision-buttons">
+<button class="decision-btn" onclick="checkDecision(this, 'correct')">SpO2 probe</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">4-lead ECG pads</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">NIBP cuff</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Defib pads</button>
+</div>
+</div>
+<div class="decision-feedback" id="feedback3">
+<strong>Feedback:</strong> Correct! SpO2 probe first (fastest to apply, non-invasive, gives you O2 status immediately). Then ECG pads (rhythm monitoring is critical for a cardiac patient). Then NIBP cuff. Defib pads are pre-applied or in standby. This sequence saves time and ensures your most critical monitoring is up first.
+        </div>
+</div>
+</div>
+</div>
+</div>
 <!-- ════════════════ CLINICAL DECISION POINT ════════════════ -->
-<div class="toggle-section" data-anim>
-  <button class="toggle-btn" aria-expanded="false" onclick="toggleAccordion(this)">
-    <div>
-      <h2>Clinical Decision Point</h2>
-    </div>
-    <span class="toggle-icon">&#9660;</span>
-  </button>
-  <div class="toggle-content">
-    <div class="toggle-inner">
-
-      <h4 style="color:var(--green-300);">Working Diagnosis</h4>
-      <p>Based on the history and presentation, the working diagnosis is <strong>suspected acute coronary syndrome (ACS)</strong> — chest pain consistent with cardiac ischaemia that has not resolved with the patient's own GTN.</p>
-
-      <!-- ──── BREAK POINT 4 ──── -->
-      <div class="break-point">
-        <div class="break-header">
+<div class="toggle-section" data-anim="">
+<button aria-expanded="false" class="toggle-btn" onclick="toggleAccordion(this)">
+<div>
+<h2>Clinical Decision Point</h2>
+</div>
+<span class="toggle-icon">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 style="color:var(--green-300);">Working Diagnosis</h4>
+<p>Based on the history and presentation, the working diagnosis is <strong>suspected acute coronary syndrome (ACS)</strong> — chest pain consistent with cardiac ischaemia that has not resolved with the patient's own GTN.</p>
+<!-- ──── BREAK POINT 4 ──── -->
+<div class="break-point">
+<div class="break-header">
           BREAK POINT 4 — Screening Tools, Protocol and Working Diagnosis
           <span class="bp-type">Decision-Making</span>
-        </div>
-        <div class="break-body">
-          <h4>Facilitator Prompts</h4>
-          <ul>
-            <li>What protocol are you working under?</li>
-            <li>What is your working diagnosis and why?</li>
-            <li>Could this be anything other than cardiac ischaemia? What else would you consider?</li>
-            <li>The patient has already used his own GTN twice — does this change your approach?</li>
-            <li>Walk through the protocol criteria — does this patient meet them for Aspirin? For GTN?</li>
-          </ul>
-
-          <h4>Expected AO Reasoning</h4>
-          <ul>
-            <li>Protocol: Chest Pain (AO) — CPP-007-AO</li>
-            <li>Working diagnosis: Suspected ACS — central chest pain with radiation, nausea, diaphoresis, not resolving with GTN, worse than usual angina</li>
-            <li>Differentials to consider: musculoskeletal (but no mechanism), pulmonary embolism (but no risk factors described), gastro-oesophageal (but presentation is classical cardiac)</li>
-            <li>However — cardiac ischaemia should be suspected unless there is an obvious alternative. There is no obvious alternative here.</li>
-            <li>Patient has already used his own GTN x 2 — these count towards the maximum 3 doses under the protocol</li>
-          </ul>
-
-          <h4>Protocol Criteria Check</h4>
-          <table class="data-table">
-            <thead><tr><th>Criterion</th><th>Required</th><th>This Patient</th><th>Met?</th></tr></thead>
-            <tbody>
-              <tr><td>Aspirin allergy</td><td>No allergy</td><td>Nil known allergies</td><td style="color:var(--green-400);font-weight:700;">Yes</td></tr>
-              <tr><td>Systolic BP</td><td>100 mm Hg or above</td><td>138 mm Hg</td><td style="color:var(--green-400);font-weight:700;">Yes</td></tr>
-              <tr><td>Pulse rate</td><td>60 to 120</td><td>92 bpm</td><td style="color:var(--green-400);font-weight:700;">Yes</td></tr>
-              <tr><td>PDE-5 inhibitor use</td><td>Nil within 24/48 hrs</td><td>Nil — patient and wife confirm</td><td style="color:var(--green-400);font-weight:700;">Yes</td></tr>
-              <tr><td>GTN previously prescribed</td><td>Yes (for AO-initiated)</td><td>Yes — carries own GTN spray</td><td style="color:var(--green-400);font-weight:700;">Yes</td></tr>
-            </tbody>
-          </table>
-
-          <h4>Key Teaching Points</h4>
-          <ul>
-            <li>Always use the protocol as your checklist — work through each criterion methodically</li>
-            <li>The PDE-5 inhibitor question must be asked directly and clearly. Some patients may not volunteer this information. Use the drug names if needed (Viagra, Cialis, Levitra). Ask sensitively but do not skip this step.</li>
-            <li>This patient's own GTN use counts. He has had 2 doses — he has 1 remaining under the protocol maximum of 3</li>
-            <li>Because the patient already has prescribed GTN, you do not need to consult EOC Clinician before administering — but you will need to consult if pain persists after maximum doses</li>
-          </ul>
-
-          <h4>Real-Job Translation</h4>
-          <div class="key-point">
+</div>
+<div class="break-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>What protocol are you working under?</li>
+<li>What is your working diagnosis and why?</li>
+<li>Could this be anything other than cardiac ischaemia? What else would you consider?</li>
+<li>The patient has already used his own GTN twice — does this change your approach?</li>
+<li>Walk through the protocol criteria — does this patient meet them for Aspirin? For GTN?</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Protocol: Chest Pain (AO) — CPP-007-AO</li>
+<li>Working diagnosis: Suspected ACS — central chest pain with radiation, nausea, diaphoresis, not resolving with GTN, worse than usual angina</li>
+<li>Differentials to consider: musculoskeletal (but no mechanism), pulmonary embolism (but no risk factors described), gastro-oesophageal (but presentation is classical cardiac)</li>
+<li>However — cardiac ischaemia should be suspected unless there is an obvious alternative. There is no obvious alternative here.</li>
+<li>Patient has already used his own GTN x 2 — these count towards the maximum 3 doses under the protocol</li>
+</ul>
+<h4>Protocol Criteria Check</h4>
+<table class="data-table">
+<thead><tr><th>Criterion</th><th>Required</th><th>This Patient</th><th>Met?</th></tr></thead>
+<tbody>
+<tr><td>Aspirin allergy</td><td>No allergy</td><td>Nil known allergies</td><td style="color:var(--green-400);font-weight:700;">Yes</td></tr>
+<tr><td>Systolic BP</td><td>100 mm Hg or above</td><td>138 mm Hg</td><td style="color:var(--green-400);font-weight:700;">Yes</td></tr>
+<tr><td>Pulse rate</td><td>60 to 120</td><td>92 bpm</td><td style="color:var(--green-400);font-weight:700;">Yes</td></tr>
+<tr><td>PDE-5 inhibitor use</td><td>Nil within 24/48 hrs</td><td>Nil — patient and wife confirm</td><td style="color:var(--green-400);font-weight:700;">Yes</td></tr>
+<tr><td>GTN previously prescribed</td><td>Yes (for AO-initiated)</td><td>Yes — carries own GTN spray</td><td style="color:var(--green-400);font-weight:700;">Yes</td></tr>
+</tbody>
+</table>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Always use the protocol as your checklist — work through each criterion methodically</li>
+<li>The PDE-5 inhibitor question must be asked directly and clearly. Some patients may not volunteer this information. Use the drug names if needed (Viagra, Cialis, Levitra). Ask sensitively but do not skip this step.</li>
+<li>This patient's own GTN use counts. He has had 2 doses — he has 1 remaining under the protocol maximum of 3</li>
+<li>Because the patient already has prescribed GTN, you do not need to consult EOC Clinician before administering — but you will need to consult if pain persists after maximum doses</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<div class="key-point">
             The PDE-5 inhibitor question can feel awkward, especially in front of family members. A simple approach: "Graham, I need to ask — do you take any medications for erectile dysfunction, things like Viagra or Cialis? It's important because it affects what we can give you." Direct, clinical, no fuss.
           </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
 </div>
-
+</div>
+<!-- ── DECISION TREE: Protocol Criteria ── -->
+<div class="decision-tree">
+<h4>🎯 Test Your Knowledge: PDE-5 Inhibitor Safety Window</h4>
+<div class="decision-prompt">
+<p>A patient tells you he took sildenafil (Viagra) 20 hours ago. Can you give GTN?</p>
+<div class="decision-buttons">
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Yes — it's been more than 12 hours</button>
+<button class="decision-btn" onclick="checkDecision(this, 'correct')">No — sildenafil requires a 24-hour window</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Yes — only tadalafil has a 48-hour window</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Consult EOC Clinician and proceed</button>
+</div>
+</div>
+<div class="decision-feedback" id="feedback4">
+<strong>Feedback:</strong> Correct! Sildenafil, vardenafil, and avanafil all require a 24-hour window. Tadalafil requires 48 hours. At 20 hours post-sildenafil, GTN is contraindicated — you cannot give it. Consult EOC Clinician for alternative pain management. This is a non-negotiable safety rule.
+        </div>
+</div>
+</div>
+</div>
+</div>
 <!-- ════════════════ TREATMENT PHASE ════════════════ -->
-<div class="toggle-section" data-anim>
-  <button class="toggle-btn" aria-expanded="false" onclick="toggleAccordion(this)">
-    <div>
-      <h2>Treatment Phase — Skills Practice</h2>
-    </div>
-    <span class="toggle-icon">&#9660;</span>
-  </button>
-  <div class="toggle-content">
-    <div class="toggle-inner">
-
-      <h4 style="color:var(--green-300);">Treatment Sequence</h4>
-      <p>The Clinician now initiates protocol-directed treatment. The Driver continues monitoring.</p>
-
-      <!-- ──── BREAK POINT 5 ──── -->
-      <div class="break-point">
-        <div class="break-header">
+<div class="toggle-section" data-anim="">
+<button aria-expanded="false" class="toggle-btn" onclick="toggleAccordion(this)">
+<div>
+<h2>Treatment Phase — Skills Practice</h2>
+</div>
+<span class="toggle-icon">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 style="color:var(--green-300);">Treatment Sequence</h4>
+<p>The Clinician now initiates protocol-directed treatment. The Driver continues monitoring.</p>
+<!-- ──── BREAK POINT 5 ──── -->
+<div class="break-point">
+<div class="break-header">
           BREAK POINT 5 — Treatment Initiation and Medication Safety
           <span class="bp-type">Practical Skill</span>
-        </div>
-        <div class="break-body">
-
-          <h4>Step 1 — Supplemental Oxygen</h4>
-          <ul>
-            <li>SpO2 is 94% — apply nasal cannula at 2-4 L/min</li>
-            <li>Titrate to maintain SpO2 above 94%</li>
-            <li>Adequate oxygenation is a primary treatment for cardiac ischaemia</li>
-          </ul>
-
-          <h4>Step 2 — Aspirin 300 mg Oral</h4>
-          <div class="key-point">
-            <strong>Skill Practice — Aspirin Administration:</strong>
-            <ul style="margin-top:8px;">
-              <li>Confirm: "Graham, do you have any allergies, particularly to aspirin?" — <strong>Nil known</strong></li>
-              <li>Note: Patient takes Aspirin 100 mg daily — the protocol dose of 300 mg is still administered as it is an acute loading dose</li>
-              <li>Retrieve Aspirin 300 mg from the Red Kit medications</li>
-              <li>Instruct the patient: "Graham, I need you to chew this aspirin tablet — it works faster when you chew it rather than swallow it whole"</li>
-              <li>Document: time administered, dose, route (oral/chewed)</li>
-              <li>Observe for any adverse reaction</li>
-            </ul>
-          </div>
-
-          <h4>Step 3 — GTN 300 microg Sublingual</h4>
-          <div class="alert-box">
-            <strong>Critical Safety Checks Before Every GTN Dose:</strong>
-            <ul style="margin-top:8px;">
-              <li>Systolic BP 100 mm Hg or above — <strong>Current: 138 mm Hg — MET</strong></li>
-              <li>Pulse rate 60 to 120 — <strong>Current: 92 bpm — MET</strong></li>
-              <li>No PDE-5 inhibitor use within 24 hrs (sildenafil, vardenafil, avanafil) or 48 hrs (tadalafil) — <strong>Confirmed nil — MET</strong></li>
-              <li>Patient has own prescribed GTN — <strong>Yes — no EOC consult required for administration</strong></li>
-              <li>Previous doses: Patient self-administered 2 sprays — <strong>1 dose remaining of maximum 3</strong></li>
-            </ul>
-          </div>
-
-          <div class="key-point">
-            <strong>Skill Practice — GTN 300 microg Sublingual Tablet Administration:</strong>
-            <ul style="margin-top:8px;">
-              <li>Retrieve GTN 300 microg sublingual tablets from the Red Kit (or use patient's own spray if tablets are not available — 1 spray = 1 dose of 400 microg)</li>
-              <li>Confirm all safety criteria are met (SBP, HR, PDE-5) — <strong>verbalise these aloud</strong></li>
-              <li>Explain to patient: "Graham, I am going to give you a small tablet to place under your tongue. Let it dissolve — do not chew or swallow it."</li>
-              <li>Place the GTN tablet under the patient's tongue (or administer 1 spray under the tongue if using spray)</li>
-              <li>Advise patient to keep mouth closed and avoid swallowing for 1-2 minutes</li>
-              <li><strong>Warn the patient:</strong> "You may get a headache or feel a bit dizzy — that is normal. Tell me straight away if you feel worse."</li>
-              <li>Document: time, dose, route (sublingual), dose number (this is dose 3 of 3 maximum)</li>
-              <li><strong>Immediately instruct Driver to recheck vital signs at 3-5 minute intervals</strong></li>
-            </ul>
-          </div>
-
-          <h4>Medication Safety Points</h4>
-          <table class="data-table">
-            <thead><tr><th>Check</th><th>Detail</th></tr></thead>
-            <tbody>
-              <tr><td>Right patient</td><td>Confirmed — Graham, 62M</td></tr>
-              <tr><td>Right drug</td><td>Aspirin 300 mg / GTN 300 microg</td></tr>
-              <tr><td>Right dose</td><td>Aspirin: 300 mg (single dose). GTN: 300 microg (dose 3 of 3 max)</td></tr>
-              <tr><td>Right route</td><td>Aspirin: oral (chewed). GTN: sublingual</td></tr>
-              <tr><td>Right time</td><td>Now — acute presentation, criteria met</td></tr>
-              <tr><td>Allergy check</td><td>Nil known allergies confirmed</td></tr>
-              <tr><td>Contraindication check</td><td>PDE-5: Nil. SBP: 138 (above 100). HR: 92 (within 60-120)</td></tr>
-              <tr><td>Expiry checked</td><td>Check expiry on all medication packaging before use</td></tr>
-            </tbody>
-          </table>
-
-          <h4>Facilitator Prompts</h4>
-          <ul>
-            <li>Walk through the aspirin administration step by step — what do you check, what do you say to the patient?</li>
-            <li>Before giving GTN, what three criteria must be met? Verbalise them now.</li>
-            <li>How many GTN doses has this patient already had? How many can you give?</li>
-            <li>What are the common side effects of GTN? What would you warn the patient about?</li>
-            <li>What could go wrong with GTN? What would severe hypotension look like?</li>
-            <li>GTN can cause a profound drop in blood pressure — what is your plan if SBP drops below 100 after this dose?</li>
-          </ul>
-
-          <h4>Expected AO Reasoning</h4>
-          <ul>
-            <li>Aspirin 300 mg is given first — it is an antiplatelet agent that helps prevent further clot formation</li>
-            <li>GTN is a vasodilator that reduces cardiac workload — it may relieve ischaemic pain but can drop BP significantly</li>
-            <li>This is the patient's third and final GTN dose — if pain persists after this, EOC Clinician must be contacted</li>
-            <li>Common GTN side effects: headache, flushing, dizziness, hypotension</li>
-            <li>If SBP drops below 100: lie the patient flat (or as flat as tolerated), withhold further GTN, contact EOC Clinician immediately, consider raising legs</li>
-          </ul>
-
-          <h4>Key Teaching Points</h4>
-          <ul>
-            <li>GTN has a profound effect on blood pressure — you must recheck vitals every 3-5 minutes after each dose</li>
-            <li>The PDE-5 inhibitor check is non-negotiable. Concurrent use of GTN with PDE-5 inhibitors can cause life-threatening hypotension. The time frames are: 24 hours for sildenafil, vardenafil, or avanafil; 48 hours for tadalafil</li>
-            <li>Always verbalise your safety checks aloud — it protects the patient and your partner can confirm</li>
-            <li>The patient's own GTN doses count towards the protocol maximum of 3</li>
-            <li>Aspirin is given unless the patient is allergic — it is not withheld because the patient takes a daily low-dose aspirin</li>
-          </ul>
-
-          <h4>Real-Job Translation</h4>
-          <div class="key-point">
+</div>
+<div class="break-body">
+<h4>Step 1 — Supplemental Oxygen</h4>
+<ul>
+<li>SpO2 is 94% — apply nasal cannula at 2-4 L/min</li>
+<li>Titrate to maintain SpO2 above 94%</li>
+<li>Adequate oxygenation is a primary treatment for cardiac ischaemia</li>
+</ul>
+<h4>Step 2 — Aspirin 300 mg Oral</h4>
+<div class="key-point">
+<strong>Skill Practice — Aspirin Administration:</strong>
+<ul style="margin-top:8px;">
+<li>Confirm: "Graham, do you have any allergies, particularly to aspirin?" — <strong>Nil known</strong></li>
+<li>Note: Patient takes Aspirin 100 mg daily — the protocol dose of 300 mg is still administered as it is an acute loading dose</li>
+<li>Retrieve Aspirin 300 mg from the Red Kit medications</li>
+<li>Instruct the patient: "Graham, I need you to chew this aspirin tablet — it works faster when you chew it rather than swallow it whole"</li>
+<li>Document: time administered, dose, route (oral/chewed)</li>
+<li>Observe for any adverse reaction</li>
+</ul>
+</div>
+<!-- ── SKILL SIMULATION: Aspirin Administration ── -->
+<div class="skill-sim">
+<h4>🎓 Skill Simulation: Aspirin 300 mg Administration</h4>
+<div class="skill-sim-content">
+<div class="sim-step">
+<span class="sim-step-num">STEP 1</span>
+<p>Make eye contact and speak clearly: "Graham, I'm going to give you an aspirin tablet. It's important for your heart. Do you have any allergies to aspirin?"</p>
+</div>
+<div class="sim-step">
+<span class="sim-step-num">STEP 2</span>
+<p>Wait for response. If nil known allergies, continue: "I'm giving you a 300 mg tablet. I need you to chew it, not swallow it whole — chewing helps it work faster."</p>
+</div>
+<div class="sim-step">
+<span class="sim-step-num">STEP 3</span>
+<p>Place the tablet in the patient's hand or mouth. Observe as they chew. Reassure: "That's good, just keep chewing it."</p>
+</div>
+<div class="sim-step">
+<span class="sim-step-num">STEP 4</span>
+<p>Document immediately: time (e.g., 2136), medication (Aspirin), dose (300 mg), route (oral chewed), and any observed reaction.</p>
+</div>
+<div class="sim-step">
+<span class="sim-step-num">STEP 5</span>
+<p>Monitor for adverse effects over the next 2-3 minutes. Look for nausea, vomiting, or allergic reaction. If none occurs, proceed to GTN.</p>
+</div>
+</div>
+</div>
+<h4>Step 3 — GTN 300 microg Sublingual</h4>
+<div class="alert-box">
+<strong>Critical Safety Checks Before Every GTN Dose:</strong>
+<ul style="margin-top:8px;">
+<li>Systolic BP 100 mm Hg or above — <strong>Current: 138 mm Hg — MET</strong></li>
+<li>Pulse rate 60 to 120 — <strong>Current: 92 bpm — MET</strong></li>
+<li>No PDE-5 inhibitor use within 24 hrs (sildenafil, vardenafil, avanafil) or 48 hrs (tadalafil) — <strong>Confirmed nil — MET</strong></li>
+<li>Patient has own prescribed GTN — <strong>Yes — no EOC consult required for administration</strong></li>
+<li>Previous doses: Patient self-administered 2 sprays — <strong>1 dose remaining of maximum 3</strong></li>
+</ul>
+</div>
+<div class="key-point">
+<strong>Skill Practice — GTN 300 microg Sublingual Tablet Administration:</strong>
+<ul style="margin-top:8px;">
+<li>Retrieve GTN 300 microg sublingual tablets from the Red Kit (or use patient's own spray if tablets are not available — 1 spray = 1 dose of 400 microg)</li>
+<li>Confirm all safety criteria are met (SBP, HR, PDE-5) — <strong>verbalise these aloud</strong></li>
+<li>Explain to patient: "Graham, I am going to give you a small tablet to place under your tongue. Let it dissolve — do not chew or swallow it."</li>
+<li>Place the GTN tablet under the patient's tongue (or administer 1 spray under the tongue if using spray)</li>
+<li>Advise patient to keep mouth closed and avoid swallowing for 1-2 minutes</li>
+<li><strong>Warn the patient:</strong> "You may get a headache or feel a bit dizzy — that is normal. Tell me straight away if you feel worse."</li>
+<li>Document: time, dose, route (sublingual), dose number (this is dose 3 of 3 maximum)</li>
+<li><strong>Immediately instruct Driver to recheck vital signs at 3-5 minute intervals</strong></li>
+</ul>
+</div>
+<!-- ── SKILL SIMULATION: GTN Administration ── -->
+<div class="skill-sim">
+<h4>🎓 Skill Simulation: GTN 300 microg Sublingual Administration</h4>
+<div class="skill-sim-content">
+<div class="sim-step">
+<span class="sim-step-num">SAFETY CHECK 1</span>
+<p>Verbalise aloud: "BP is 138 — that's above 100. Heart rate is 92 — that's between 60 and 120. PDE-5 inhibitor — confirmed none. Criteria met, proceeding with GTN."</p>
+</div>
+<div class="sim-step">
+<span class="sim-step-num">STEP 1</span>
+<p>Retrieve the GTN tablet. Check expiry on the packet. Show it to the patient: "Graham, this is GTN — it will help relieve the pain in your chest."</p>
+</div>
+<div class="sim-step">
+<span class="sim-step-num">STEP 2</span>
+<p>Instruct: "I'm placing this tablet under your tongue. It needs to dissolve there — don't chew it or swallow it. Keep your mouth closed for a minute or two."</p>
+</div>
+<div class="sim-step">
+<span class="sim-step-num">STEP 3</span>
+<p>Place tablet under tongue gently. Wait 1-2 minutes while it dissolves. Watch for patient comfort and any adverse effects.</p>
+</div>
+<div class="sim-step">
+<span class="sim-step-num">STEP 4</span>
+<p>Warn the patient: "You might get a headache or feel dizzy — that's normal and it will pass. Tell me if you feel worse or if you get chest pain in a different place."</p>
+</div>
+<div class="sim-step">
+<span class="sim-step-num">STEP 5</span>
+<p>Document: time (2138), GTN 300 microg, sublingual, dose 3 of 3. Call to your partner: "Driver, check vitals again at 3-5 minutes."</p>
+</div>
+</div>
+</div>
+<h4>Medication Safety Points</h4>
+<table class="data-table">
+<thead><tr><th>Check</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td>Right patient</td><td>Confirmed — Graham, 62M</td></tr>
+<tr><td>Right drug</td><td>Aspirin 300 mg / GTN 300 microg</td></tr>
+<tr><td>Right dose</td><td>Aspirin: 300 mg (single dose). GTN: 300 microg (dose 3 of 3 max)</td></tr>
+<tr><td>Right route</td><td>Aspirin: oral (chewed). GTN: sublingual</td></tr>
+<tr><td>Right time</td><td>Now — acute presentation, criteria met</td></tr>
+<tr><td>Allergy check</td><td>Nil known allergies confirmed</td></tr>
+<tr><td>Contraindication check</td><td>PDE-5: Nil. SBP: 138 (above 100). HR: 92 (within 60-120)</td></tr>
+<tr><td>Expiry checked</td><td>Check expiry on all medication packaging before use</td></tr>
+</tbody>
+</table>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>Walk through the aspirin administration step by step — what do you check, what do you say to the patient?</li>
+<li>Before giving GTN, what three criteria must be met? Verbalise them now.</li>
+<li>How many GTN doses has this patient already had? How many can you give?</li>
+<li>What are the common side effects of GTN? What would you warn the patient about?</li>
+<li>What could go wrong with GTN? What would severe hypotension look like?</li>
+<li>GTN can cause a profound drop in blood pressure — what is your plan if SBP drops below 100 after this dose?</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Aspirin 300 mg is given first — it is an antiplatelet agent that helps prevent further clot formation</li>
+<li>GTN is a vasodilator that reduces cardiac workload — it may relieve ischaemic pain but can drop BP significantly</li>
+<li>This is the patient's third and final GTN dose — if pain persists after this, EOC Clinician must be contacted</li>
+<li>Common GTN side effects: headache, flushing, dizziness, hypotension</li>
+<li>If SBP drops below 100: lie the patient flat (or as flat as tolerated), withhold further GTN, contact EOC Clinician immediately, consider raising legs</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>GTN has a profound effect on blood pressure — you must recheck vitals every 3-5 minutes after each dose</li>
+<li>The PDE-5 inhibitor check is non-negotiable. Concurrent use of GTN with PDE-5 inhibitors can cause life-threatening hypotension. The time frames are: 24 hours for sildenafil, vardenafil, or avanafil; 48 hours for tadalafil</li>
+<li>Always verbalise your safety checks aloud — it protects the patient and your partner can confirm</li>
+<li>The patient's own GTN doses count towards the protocol maximum of 3</li>
+<li>Aspirin is given unless the patient is allergic — it is not withheld because the patient takes a daily low-dose aspirin</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<div class="key-point">
             On a real job, the medication administration sequence should feel automatic: check criteria, verbalise, administer, document, monitor. The five rights of medication safety are not a classroom exercise — they are your legal protection and the patient's safety net. Say the checks out loud every time.
           </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
 </div>
-
+</div>
+<!-- ── DECISION TREE: GTN Safety ── -->
+<div class="decision-tree">
+<h4>🎯 Test Your Knowledge: GTN Administration Safety</h4>
+<div class="decision-prompt">
+<p>Patient's vitals: SBP 92, HR 118, GCS 15. Pain 8/10. No PDE-5 inhibitor use. GTN criteria met?</p>
+<div class="decision-buttons">
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Yes — give GTN immediately</button>
+<button class="decision-btn" onclick="checkDecision(this, 'correct')">No — SBP is below 100, withhold GTN</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Yes — HR is acceptable at 118</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Consult EOC first then proceed</button>
+</div>
+</div>
+<div class="decision-feedback" id="feedback5">
+<strong>Feedback:</strong> Correct! SBP of 92 is below the minimum of 100 mm Hg required for GTN. While HR 118 is within range (60-120), the SBP criterion fails. GTN is contraindicated. Manage blood pressure (lie flat, fluids if needed, contact EOC), reassess in 5 minutes, and recheck before any future GTN attempt.
+        </div>
+</div>
+</div>
+</div>
+</div>
 <!-- ════════════════ REASSESSMENT & ESCALATION ════════════════ -->
-<div class="toggle-section" data-anim>
-  <button class="toggle-btn" aria-expanded="false" onclick="toggleAccordion(this)">
-    <div>
-      <h2>Reassessment and Escalation</h2>
-    </div>
-    <span class="toggle-icon">&#9660;</span>
-  </button>
-  <div class="toggle-content">
-    <div class="toggle-inner">
-
-      <h4 style="color:var(--green-300);">Post-Treatment Observations (3-5 minutes after GTN)</h4>
-      <div class="vitals-grid">
-        <div class="vital-box"><div class="v-label">Time</div><div class="v-value v-normal">2142</div></div>
-        <div class="vital-box"><div class="v-label">HR</div><div class="v-value v-normal">88 bpm</div></div>
-        <div class="vital-box"><div class="v-label">BP</div><div class="v-value v-warn">118/74</div></div>
-        <div class="vital-box"><div class="v-label">SpO2</div><div class="v-value v-normal">96%</div></div>
-        <div class="vital-box"><div class="v-label">RR</div><div class="v-value v-normal">18</div></div>
-        <div class="vital-box"><div class="v-label">GCS</div><div class="v-value v-normal">15</div></div>
-        <div class="vital-box"><div class="v-label">Pain</div><div class="v-value v-warn">6/10</div></div>
-        <div class="vital-box"><div class="v-label">ECG</div><div class="v-value v-warn">NSR</div></div>
+<div class="toggle-section" data-anim="">
+<button aria-expanded="false" class="toggle-btn" onclick="toggleAccordion(this)">
+<div>
+<h2>Reassessment and Escalation</h2>
+</div>
+<span class="toggle-icon">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 style="color:var(--green-300);">Post-Treatment Observations (3-5 minutes after GTN)</h4>
+<div class="vitals-grid">
+<div class="vital-box"><div class="v-label">Time</div><div class="v-value v-normal">2142</div></div>
+<div class="vital-box"><div class="v-label">HR</div><div class="v-value v-normal">88 bpm</div></div>
+<div class="vital-box"><div class="v-label">BP</div><div class="v-value v-warn">118/74</div></div>
+<div class="vital-box"><div class="v-label">SpO2</div><div class="v-value v-normal">96%</div></div>
+<div class="vital-box"><div class="v-label">RR</div><div class="v-value v-normal">18</div></div>
+<div class="vital-box"><div class="v-label">GCS</div><div class="v-value v-normal">15</div></div>
+<div class="vital-box"><div class="v-label">Pain</div><div class="v-value v-warn">6/10</div></div>
+<div class="vital-box"><div class="v-label">ECG</div><div class="v-value v-warn">NSR</div></div>
+</div>
+<p>Graham reports his pain has reduced from 8/10 to 6/10. He says it is "better but still there." BP has dropped from 138/86 to 118/74. He reports a mild headache. SpO2 has improved to 96% on nasal cannula.</p>
+<div class="alert-box">
+<strong>Protocol Trigger:</strong> Graham has now received the maximum 3 doses of GTN (2 self-administered + 1 crew-administered). Chest pain remains unresolved at 6/10. The protocol requires: <strong>Consult EOC Clinician</strong> — chest pain remains unresolved after maximum GTN doses.
       </div>
-
-      <p>Graham reports his pain has reduced from 8/10 to 6/10. He says it is "better but still there." BP has dropped from 138/86 to 118/74. He reports a mild headache. SpO2 has improved to 96% on nasal cannula.</p>
-
-      <div class="alert-box">
-        <strong>Protocol Trigger:</strong> Graham has now received the maximum 3 doses of GTN (2 self-administered + 1 crew-administered). Chest pain remains unresolved at 6/10. The protocol requires: <strong>Consult EOC Clinician</strong> — chest pain remains unresolved after maximum GTN doses.
-      </div>
-
-      <!-- ──── BREAK POINT 6 ──── -->
-      <div class="break-point">
-        <div class="break-header">
+<!-- ──── BREAK POINT 6 ──── -->
+<div class="break-point">
+<div class="break-header">
           BREAK POINT 6 — Reassessment and Escalation Decision
           <span class="bp-type">Decision-Making / Discussion</span>
-        </div>
-        <div class="break-body">
-          <h4>Facilitator Prompts</h4>
-          <ul>
-            <li>Compare the two sets of observations — what has changed?</li>
-            <li>The pain has reduced from 8/10 to 6/10 — is that a good response or a concern?</li>
-            <li>BP has dropped from 138/86 to 118/74 — is that expected? Is it still within limits?</li>
-            <li>Can you give another dose of GTN? Why or why not?</li>
-            <li>What does the protocol say you must do now?</li>
-            <li>How would you structure your call to the EOC Clinician?</li>
-          </ul>
-
-          <h4>Expected AO Reasoning</h4>
-          <ul>
-            <li>BP drop of 20 mmHg systolic is expected after GTN — it is a vasodilator. SBP 118 is still above 100, so it remains within limits</li>
-            <li>Pain reduction from 8 to 6 is partial relief — the ischaemia has not fully resolved</li>
-            <li>Maximum 3 doses of GTN have been administered — no further GTN without EOC Clinician direction</li>
-            <li>Headache is an expected side effect of GTN</li>
-            <li>Protocol states: Consult EOC Clinician if chest pain remains unresolved</li>
-            <li>EOC Clinician may advise further management, direct transport, or arrange MedSTAR retrieval</li>
-          </ul>
-
-          <h4>EOC Clinician Call — Practise This</h4>
-          <div class="info-box">
-            <strong>Suggested structure for EOC call:</strong><br>
+</div>
+<div class="break-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>Compare the two sets of observations — what has changed?</li>
+<li>The pain has reduced from 8/10 to 6/10 — is that a good response or a concern?</li>
+<li>BP has dropped from 138/86 to 118/74 — is that expected? Is it still within limits?</li>
+<li>Can you give another dose of GTN? Why or why not?</li>
+<li>What does the protocol say you must do now?</li>
+<li>How would you structure your call to the EOC Clinician?</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>BP drop of 20 mmHg systolic is expected after GTN — it is a vasodilator. SBP 118 is still above 100, so it remains within limits</li>
+<li>Pain reduction from 8 to 6 is partial relief — the ischaemia has not fully resolved</li>
+<li>Maximum 3 doses of GTN have been administered — no further GTN without EOC Clinician direction</li>
+<li>Headache is an expected side effect of GTN</li>
+<li>Protocol states: Consult EOC Clinician if chest pain remains unresolved</li>
+<li>EOC Clinician may advise further management, direct transport, or arrange MedSTAR retrieval</li>
+</ul>
+<h4>EOC Clinician Call — Practise This</h4>
+<div class="info-box">
+<strong>Suggested structure for EOC call:</strong><br/>
             "This is [name], AO crew from [station]. I have a 62-year-old male with a 40-minute history of central chest pain, radiating to the left arm and jaw. Known angina. He has had 3 doses of GTN total — 2 self-administered, 1 by us. Pain has reduced from 8 to 6 out of 10 but has not resolved. Current vitals: BP 118/74, HR 88 regular, SpO2 96% on nasal cannula, GCS 15. ECG shows normal sinus rhythm. Aspirin 300 mg given. We have reached maximum GTN doses. Requesting clinical advice. We are 35 minutes from [regional hospital]."
           </div>
-
-          <h4>Key Teaching Points</h4>
-          <ul>
-            <li>Trending observations is more important than any single number — the BP trend tells you whether the GTN effect is manageable or concerning</li>
-            <li>Unresolved chest pain after maximum GTN is a protocol trigger for EOC Clinician consultation — do not delay this</li>
-            <li>Partial pain relief does not mean the problem is solved — ACS can persist and evolve</li>
-            <li>When you call EOC, be structured: who you are, what you have found, what you have done, what you need</li>
-          </ul>
-
-          <h4>Real-Job Translation</h4>
-          <div class="key-point">
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Trending observations is more important than any single number — the BP trend tells you whether the GTN effect is manageable or concerning</li>
+<li>Unresolved chest pain after maximum GTN is a protocol trigger for EOC Clinician consultation — do not delay this</li>
+<li>Partial pain relief does not mean the problem is solved — ACS can persist and evolve</li>
+<li>When you call EOC, be structured: who you are, what you have found, what you have done, what you need</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<div class="key-point">
             The EOC Clinician is your clinical safety net. In a rural setting with limited backup, do not hesitate to call. A well-structured call takes 90 seconds and gives the EOC Clinician everything they need to help you. Have your observations written down before you call.
           </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
 </div>
-
+</div>
+<!-- ── DECISION TREE: Escalation ── -->
+<div class="decision-tree">
+<h4>🎯 Test Your Knowledge: Escalation Trigger</h4>
+<div class="decision-prompt">
+<p>Patient has received 3 GTN doses. Pain was 8/10, now 6/10. Still complaining of chest discomfort. What do you do?</p>
+<div class="decision-buttons">
+<button class="decision-btn" onclick="checkDecision(this, 'correct')">Contact EOC Clinician immediately</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Give more GTN if pain increases</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Transport without calling EOC</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Wait 10 minutes to see if pain resolves</button>
+</div>
+</div>
+<div class="decision-feedback" id="feedback6">
+<strong>Feedback:</strong> Correct! Maximum GTN doses have been given (3 total). Chest pain persists unresolved. This is a clear protocol trigger for EOC Clinician escalation. Do not delay — call now. Do not give additional GTN without EOC direction. Transport with monitoring and maintain communication with hospital.
+        </div>
+</div>
+</div>
+</div>
+</div>
 <!-- ════════════════ EXTRICATION & TRANSPORT ════════════════ -->
-<div class="toggle-section" data-anim>
-  <button class="toggle-btn" aria-expanded="false" onclick="toggleAccordion(this)">
-    <div>
-      <h2>Extrication and Transport</h2>
-    </div>
-    <span class="toggle-icon">&#9660;</span>
-  </button>
-  <div class="toggle-content">
-    <div class="toggle-inner">
-
-      <p>Following EOC Clinician advice, the decision is made to transport Graham to the regional hospital with pre-notification. No further medications are advised by EOC at this time. Continue monitoring and contact EOC if there is any change.</p>
-
-      <!-- ──── BREAK POINT 7 ──── -->
-      <div class="break-point">
-        <div class="break-header">
+<div class="toggle-section" data-anim="">
+<button aria-expanded="false" class="toggle-btn" onclick="toggleAccordion(this)">
+<div>
+<h2>Extrication and Transport</h2>
+</div>
+<span class="toggle-icon">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<p>Following EOC Clinician advice, the decision is made to transport Graham to the regional hospital with pre-notification. No further medications are advised by EOC at this time. Continue monitoring and contact EOC if there is any change.</p>
+<!-- ──── BREAK POINT 7 ──── -->
+<div class="break-point">
+<div class="break-header">
           BREAK POINT 7 — Extrication and Transport Planning
           <span class="bp-type">Practical Skill / Discussion</span>
-        </div>
-        <div class="break-body">
-          <h4>Facilitator Prompts</h4>
-          <ul>
-            <li>How are you going to move Graham from the recliner to the ambulance?</li>
-            <li>Why are we using the carry chair rather than asking him to walk?</li>
-            <li>Where do you position the carry chair relative to the patient?</li>
-            <li>What equipment stays on him during the move?</li>
-            <li>Who drives? Who rides in the back? Why?</li>
-            <li>It is a 35-minute drive — what is your monitoring plan during transport?</li>
-            <li>What are you watching for during transport that would make this time-critical?</li>
-          </ul>
-
-          <h4>Expected AO Reasoning</h4>
-          <ul>
-            <li>Use the green carry chair to move Graham from the recliner to the stretcher at the ambulance — do not allow him to walk. Any physical exertion increases myocardial oxygen demand on an already ischaemic heart</li>
-            <li>Position the carry chair as close to the recliner as practical. Assist Graham to stand briefly and pivot into the carry chair — minimise the effort required</li>
-            <li>Secure the seatbelt and ensure Graham is comfortable in the carry chair before moving</li>
-            <li>Wheel the carry chair to the ambulance. At the stretcher, assist Graham to stand briefly and pivot onto the stretcher — again, minimise exertion</li>
-            <li>Corpuls3 stays connected throughout the move — do not disconnect ECG monitoring at any point. If leads are likely to pull during the transfer, the Driver manages the monitor and cables while the Clinician guides the patient</li>
-            <li>Oxygen via nasal cannula stays on during the entire transfer</li>
-            <li>Position on the stretcher: sitting upright or semi-reclined at 45 degrees — patient preference and comfort, while maintaining access for monitoring</li>
-            <li>AO 1 (Clinician) rides in the back with Graham — continues monitoring, reassesses every 5 minutes, maintains ePCR</li>
-            <li>AO 2 (Driver) drives — smooth, steady driving. Avoid sudden braking or acceleration</li>
-            <li>Watch for: increase in pain, change in rhythm on ECG, drop in BP, change in consciousness, nausea/vomiting, cardiac arrest</li>
-          </ul>
-
-          <h4>Carry Chair Technique — Key Points</h4>
-          <div class="key-point">
-            <strong>Practical Skill — Carry Chair Use for Cardiac Patients:</strong>
-            <ul style="margin-top:8px;">
-              <li>Bring the carry chair into the room — position it beside the recliner on the patient's stronger side</li>
-              <li>Lock the carry chair wheels before the patient transfers</li>
-              <li>Brief the patient: "Graham, we are going to help you stand and turn into this chair. We will do the work — take it slow, no rushing"</li>
-              <li>One crew member each side — guide the patient to stand, pivot, and sit in the carry chair</li>
-              <li>Secure the lap belt. Wrap a blanket around the patient — it is a cold winter night</li>
-              <li>Tilt the carry chair back slightly, unlock the wheels, and wheel to the ambulance</li>
-              <li>At the stretcher: lock carry chair wheels, assist the patient to stand and pivot onto the stretcher. Lower the stretcher first if needed to reduce the step up</li>
-              <li>Throughout: one crew member manages the patient, the other manages the Corpuls3 monitor and oxygen tubing to prevent disconnection or entanglement</li>
-            </ul>
-          </div>
-
-          <h4>Key Teaching Points</h4>
-          <ul>
-            <li>The carry chair exists for exactly this reason — it minimises patient exertion. Walking a cardiac patient to the ambulance increases heart rate, blood pressure, and oxygen demand on an already ischaemic heart</li>
-            <li>Never disconnect ECG monitoring during a move — this is when rhythm changes are most likely</li>
-            <li>Defib pads should be accessible (or pre-applied if you are concerned about imminent arrest)</li>
-            <li>Consider pre-applying defib pads for the transport — it saves critical seconds if the patient arrests en route</li>
-            <li>Smooth driving is a clinical intervention — jarring or fast driving increases patient distress and can provoke rhythm changes</li>
-          </ul>
-
-          <h4>Real-Job Translation</h4>
-          <div class="key-point">
+</div>
+<div class="break-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>How are you going to move Graham from the recliner to the ambulance?</li>
+<li>Why are we using the carry chair rather than asking him to walk?</li>
+<li>Where do you position the carry chair relative to the patient?</li>
+<li>What equipment stays on him during the move?</li>
+<li>Who drives? Who rides in the back? Why?</li>
+<li>It is a 35-minute drive — what is your monitoring plan during transport?</li>
+<li>What are you watching for during transport that would make this time-critical?</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Use the green carry chair to move Graham from the recliner to the stretcher at the ambulance — do not allow him to walk. Any physical exertion increases myocardial oxygen demand on an already ischaemic heart</li>
+<li>Position the carry chair as close to the recliner as practical. Assist Graham to stand briefly and pivot into the carry chair — minimise the effort required</li>
+<li>Secure the seatbelt and ensure Graham is comfortable in the carry chair before moving</li>
+<li>Wheel the carry chair to the ambulance. At the stretcher, assist Graham to stand briefly and pivot onto the stretcher — again, minimise exertion</li>
+<li>Corpuls3 stays connected throughout the move — do not disconnect ECG monitoring at any point. If leads are likely to pull during the transfer, the Driver manages the monitor and cables while the Clinician guides the patient</li>
+<li>Oxygen via nasal cannula stays on during the entire transfer</li>
+<li>Position on the stretcher: sitting upright or semi-reclined at 45 degrees — patient preference and comfort, while maintaining access for monitoring</li>
+<li>AO 1 (Clinician) rides in the back with Graham — continues monitoring, reassesses every 5 minutes, maintains ePCR</li>
+<li>AO 2 (Driver) drives — smooth, steady driving. Avoid sudden braking or acceleration</li>
+<li>Watch for: increase in pain, change in rhythm on ECG, drop in BP, change in consciousness, nausea/vomiting, cardiac arrest</li>
+</ul>
+<h4>Carry Chair Technique — Key Points</h4>
+<div class="key-point">
+<strong>Practical Skill — Carry Chair Use for Cardiac Patients:</strong>
+<ul style="margin-top:8px;">
+<li>Bring the carry chair into the room — position it beside the recliner on the patient's stronger side</li>
+<li>Lock the carry chair wheels before the patient transfers</li>
+<li>Brief the patient: "Graham, we are going to help you stand and turn into this chair. We will do the work — take it slow, no rushing"</li>
+<li>One crew member each side — guide the patient to stand, pivot, and sit in the carry chair</li>
+<li>Secure the lap belt. Wrap a blanket around the patient — it is a cold winter night</li>
+<li>Tilt the carry chair back slightly, unlock the wheels, and wheel to the ambulance</li>
+<li>At the stretcher: lock carry chair wheels, assist the patient to stand and pivot onto the stretcher. Lower the stretcher first if needed to reduce the step up</li>
+<li>Throughout: one crew member manages the patient, the other manages the Corpuls3 monitor and oxygen tubing to prevent disconnection or entanglement</li>
+</ul>
+</div>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>The carry chair exists for exactly this reason — it minimises patient exertion. Walking a cardiac patient to the ambulance increases heart rate, blood pressure, and oxygen demand on an already ischaemic heart</li>
+<li>Never disconnect ECG monitoring during a move — this is when rhythm changes are most likely</li>
+<li>Defib pads should be accessible (or pre-applied if you are concerned about imminent arrest)</li>
+<li>Consider pre-applying defib pads for the transport — it saves critical seconds if the patient arrests en route</li>
+<li>Smooth driving is a clinical intervention — jarring or fast driving increases patient distress and can provoke rhythm changes</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<div class="key-point">
             The most dangerous part of many cardiac jobs is the move from the house to the ambulance. The transition from sitting still to being moved increases heart rate and oxygen demand. The carry chair keeps the patient seated and supported throughout — they do almost no work. Take it slow, keep them monitored, and be ready for deterioration at any point during the move.
           </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
 </div>
-
+</div>
+</div>
+</div>
+</div>
 <!-- ════════════════ HANDOVER ════════════════ -->
-<div class="toggle-section" data-anim>
-  <button class="toggle-btn" aria-expanded="false" onclick="toggleAccordion(this)">
-    <div>
-      <h2>Handover — ISBAR</h2>
-    </div>
-    <span class="toggle-icon">&#9660;</span>
-  </button>
-  <div class="toggle-content">
-    <div class="toggle-inner">
-
-      <p>You arrive at the regional hospital emergency department at 2210 hrs. Graham's pain is now 5/10. Vitals have remained stable during transport.</p>
-
-      <h4 style="color:var(--green-300);">Final Transport Observations</h4>
-      <div class="vitals-grid">
-        <div class="vital-box"><div class="v-label">Time</div><div class="v-value v-normal">2208</div></div>
-        <div class="vital-box"><div class="v-label">HR</div><div class="v-value v-normal">84 bpm</div></div>
-        <div class="vital-box"><div class="v-label">BP</div><div class="v-value v-normal">122/76</div></div>
-        <div class="vital-box"><div class="v-label">SpO2</div><div class="v-value v-normal">97%</div></div>
-        <div class="vital-box"><div class="v-label">RR</div><div class="v-value v-normal">16</div></div>
-        <div class="vital-box"><div class="v-label">GCS</div><div class="v-value v-normal">15</div></div>
-        <div class="vital-box"><div class="v-label">Pain</div><div class="v-value v-warn">5/10</div></div>
-        <div class="vital-box"><div class="v-label">ECG</div><div class="v-value v-normal">NSR</div></div>
-      </div>
-
-      <!-- ──── BREAK POINT 8 ──── -->
-      <div class="break-point">
-        <div class="break-header">
+<div class="toggle-section" data-anim="">
+<button aria-expanded="false" class="toggle-btn" onclick="toggleAccordion(this)">
+<div>
+<h2>Handover — ISBAR</h2>
+</div>
+<span class="toggle-icon">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<p>You arrive at the regional hospital emergency department at 2210 hrs. Graham's pain is now 5/10. Vitals have remained stable during transport.</p>
+<h4 style="color:var(--green-300);">Final Transport Observations</h4>
+<div class="vitals-grid">
+<div class="vital-box"><div class="v-label">Time</div><div class="v-value v-normal">2208</div></div>
+<div class="vital-box"><div class="v-label">HR</div><div class="v-value v-normal">84 bpm</div></div>
+<div class="vital-box"><div class="v-label">BP</div><div class="v-value v-normal">122/76</div></div>
+<div class="vital-box"><div class="v-label">SpO2</div><div class="v-value v-normal">97%</div></div>
+<div class="vital-box"><div class="v-label">RR</div><div class="v-value v-normal">16</div></div>
+<div class="vital-box"><div class="v-label">GCS</div><div class="v-value v-normal">15</div></div>
+<div class="vital-box"><div class="v-label">Pain</div><div class="v-value v-warn">5/10</div></div>
+<div class="vital-box"><div class="v-label">ECG</div><div class="v-value v-normal">NSR</div></div>
+</div>
+<!-- ──── BREAK POINT 8 ──── -->
+<div class="break-point">
+<div class="break-header">
           BREAK POINT 8 — ISBAR Handover
           <span class="bp-type">Practical Skill</span>
-        </div>
-        <div class="break-body">
-
-          <h4>Facilitator Prompt</h4>
-          <p>Deliver the ISBAR handover to the receiving clinician. Practise this out loud.</p>
-
-          <div class="isbar-grid">
-            <div class="isbar-row">
-              <div class="isbar-letter">I</div>
-              <div class="isbar-content">
-                <strong>Identify</strong><br>
+</div>
+<div class="break-body">
+<h4>Facilitator Prompt</h4>
+<p>Deliver the ISBAR handover to the receiving clinician. Practise this out loud.</p>
+<div class="isbar-grid">
+<div class="isbar-row">
+<div class="isbar-letter">I</div>
+<div class="isbar-content">
+<strong>Identify</strong><br/>
                 "I'm [name], Ambulance Officer from [station]. This is Graham, 62-year-old male."
               </div>
-            </div>
-            <div class="isbar-row">
-              <div class="isbar-letter">S</div>
-              <div class="isbar-content">
-                <strong>Situation</strong><br>
+</div>
+<div class="isbar-row">
+<div class="isbar-letter">S</div>
+<div class="isbar-content">
+<strong>Situation</strong><br/>
                 "Graham called us at 2115 with a 40-minute history of central crushing chest pain radiating to his left arm and jaw. Known angina. Pain was not resolving with his own GTN — this is different from his usual angina pattern."
               </div>
-            </div>
-            <div class="isbar-row">
-              <div class="isbar-letter">B</div>
-              <div class="isbar-content">
-                <strong>Background</strong><br>
+</div>
+<div class="isbar-row">
+<div class="isbar-letter">B</div>
+<div class="isbar-content">
+<strong>Background</strong><br/>
                 "Past history of angina diagnosed 4 years ago, hypertension, hypercholesterolaemia. Regular medications: own GTN spray, Aspirin 100 mg daily, Atorvastatin 40 mg, Metoprolol 50 mg BD, Perindopril 5 mg. No known allergies. No PDE-5 inhibitor use."
               </div>
-            </div>
-            <div class="isbar-row">
-              <div class="isbar-letter">A</div>
-              <div class="isbar-content">
-                <strong>Assessment</strong><br>
+</div>
+<div class="isbar-row">
+<div class="isbar-letter">A</div>
+<div class="isbar-content">
+<strong>Assessment</strong><br/>
                 "On our arrival at 2132: GCS 15, HR 92, BP 138/86, SpO2 94%, RR 20, BGL 7.2, pain 8/10, ECG normal sinus rhythm. Currently at 2208: HR 84, BP 122/76, SpO2 97% on 4L nasal cannula, pain 5/10, ECG remains NSR. He was pale and diaphoretic on arrival — colour has improved slightly."
               </div>
-            </div>
-            <div class="isbar-row">
-              <div class="isbar-letter">R</div>
-              <div class="isbar-content">
-                <strong>Recommendation / Response</strong><br>
+</div>
+<div class="isbar-row">
+<div class="isbar-letter">R</div>
+<div class="isbar-content">
+<strong>Recommendation / Response</strong><br/>
                 "We have administered Aspirin 300 mg oral at 2136 and one further GTN 300 microg sublingual at 2138 — this was his third GTN dose total. Pain reduced from 8 to 5 but has not resolved. EOC Clinician was contacted at 2144 and advised transport with monitoring. He has had a mild headache since GTN — no other adverse effects. I would appreciate an early 12-lead ECG and cardiology review."
               </div>
-            </div>
-          </div>
-
-          <h4>Key Teaching Points</h4>
-          <ul>
-            <li>ISBAR is a structured handover — it ensures nothing is missed and the receiving clinician gets a complete picture</li>
-            <li>Include medication doses, times, and total GTN count — this matters for the hospital team's next treatment decisions</li>
-            <li>State what you are concerned about and what you are recommending — the "R" is where you advocate for your patient</li>
-            <li>Include trends — "BP was 138, now 122" tells a better story than a single number</li>
-          </ul>
-
-          <h4>Real-Job Translation</h4>
-          <div class="key-point">
+</div>
+</div>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>ISBAR is a structured handover — it ensures nothing is missed and the receiving clinician gets a complete picture</li>
+<li>Include medication doses, times, and total GTN count — this matters for the hospital team's next treatment decisions</li>
+<li>State what you are concerned about and what you are recommending — the "R" is where you advocate for your patient</li>
+<li>Include trends — "BP was 138, now 122" tells a better story than a single number</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<div class="key-point">
             A good handover takes 60-90 seconds. Practise it during transport so it flows naturally at the hospital door. The receiving team's first impression of the patient's acuity comes from your handover — make it count.
           </div>
+</div>
+</div>
+<!-- ── DECISION TREE: Handover Content ── -->
+<div class="decision-tree">
+<h4>🎯 Test Your Knowledge: ISBAR Handover Components</h4>
+<div class="decision-prompt">
+<p>In your handover, which information is MOST critical to communicate first?</p>
+<div class="decision-buttons">
+<button class="decision-btn" onclick="checkDecision(this, 'correct')">Situation: 40-min chest pain, not resolving with GTN</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Background: patient's full medical history</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Assessment: all vital signs and measurements</button>
+<button class="decision-btn" onclick="checkDecision(this, 'incorrect')">Recommendation: your opinion on hospital actions</button>
+</div>
+</div>
+<div class="decision-feedback" id="feedback7">
+<strong>Feedback:</strong> Correct! Situation first — this is what the patient has and why they need to be here NOW. Situation sets urgency and triggers the hospital team's thinking. Background, assessment, and recommendations follow, building the clinical picture. Always lead with the acute problem.
         </div>
-      </div>
-
-    </div>
-  </div>
 </div>
-
+</div>
+</div>
+</div>
 <!-- ════════════════ DEBRIEF ════════════════ -->
-<div class="toggle-section" data-anim>
-  <button class="toggle-btn" aria-expanded="false" onclick="toggleAccordion(this)">
-    <div>
-      <h2>Debrief (10-15 minutes)</h2>
-    </div>
-    <span class="toggle-icon">&#9660;</span>
-  </button>
-  <div class="toggle-content">
-    <div class="toggle-inner">
-
-      <h4 style="color:var(--green-300);">Reflective Questions</h4>
-      <ol>
-        <li>At what point did you form your working diagnosis of suspected ACS — and what confirmed it for you?</li>
-        <li>How did you prioritise your actions on first patient contact? Would you change anything?</li>
-        <li>Walk through your GTN safety checks — were you confident with the PDE-5 inhibitor question? How did you handle it?</li>
-        <li>The patient had already used 2 GTN doses — how did that change your treatment plan?</li>
-        <li>At what point did you decide to call the EOC Clinician? Could you have called earlier?</li>
-        <li>How did the Clinician and Driver roles work together? Was there a point where communication could have been better?</li>
-        <li>Were you ready for cardiac arrest at every stage? Where were your defib pads?</li>
-      </ol>
-
-      <hr class="subtle">
-
-      <h4 style="color:var(--green-300);">Take-Home Messages</h4>
-      <div style="display:grid;gap:10px;">
-        <div class="key-point"><strong>1.</strong> Cardiac ischaemia should be suspected as the cause of chest pain unless there is an obvious alternative — do not second-guess a classical presentation.</div>
-        <div class="key-point"><strong>2.</strong> "Time is muscle" — every minute of ischaemia causes further damage. Work efficiently, not frantically.</div>
-        <div class="key-point"><strong>3.</strong> GTN has a profound effect on blood pressure. Check SBP, HR, and PDE-5 status before every dose. Monitor vitals every 3-5 minutes after administration.</div>
-        <div class="key-point"><strong>4.</strong> The patient's own GTN doses count towards the protocol maximum of 3. Always ask what they have already taken.</div>
-        <div class="key-point"><strong>5.</strong> Early escalation saves lives. If pain is unresolved after maximum GTN, the protocol requires EOC Clinician contact — do not delay this call.</div>
-        <div class="key-point"><strong>6.</strong> Trends matter more than single numbers. A BP of 118 is fine on its own, but a drop from 138 to 118 after GTN tells you the medication is having an effect — watch for further drops.</div>
-        <div class="key-point"><strong>7.</strong> Cardiac arrest readiness is non-negotiable. This patient could arrest at any moment. Defib pads must be accessible throughout the entire job — from the lounge room to the hospital door.</div>
-      </div>
-    </div>
-  </div>
+<div class="toggle-section" data-anim="">
+<button aria-expanded="false" class="toggle-btn" onclick="toggleAccordion(this)">
+<div>
+<h2>Debrief (10-15 minutes)</h2>
 </div>
-
+<span class="toggle-icon">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 style="color:var(--green-300);">Reflective Questions</h4>
+<ol>
+<li>At what point did you form your working diagnosis of suspected ACS — and what confirmed it for you?</li>
+<li>How did you prioritise your actions on first patient contact? Would you change anything?</li>
+<li>Walk through your GTN safety checks — were you confident with the PDE-5 inhibitor question? How did you handle it?</li>
+<li>The patient had already used 2 GTN doses — how did that change your treatment plan?</li>
+<li>At what point did you decide to call the EOC Clinician? Could you have called earlier?</li>
+<li>How did the Clinician and Driver roles work together? Was there a point where communication could have been better?</li>
+<li>Were you ready for cardiac arrest at every stage? Where were your defib pads?</li>
+</ol>
+<hr class="subtle"/>
+<h4 style="color:var(--green-300);">Take-Home Messages</h4>
+<div style="display:grid;gap:10px;">
+<div class="key-point"><strong>1.</strong> Cardiac ischaemia should be suspected as the cause of chest pain unless there is an obvious alternative — do not second-guess a classical presentation.</div>
+<div class="key-point"><strong>2.</strong> "Time is muscle" — every minute of ischaemia causes further damage. Work efficiently, not frantically.</div>
+<div class="key-point"><strong>3.</strong> GTN has a profound effect on blood pressure. Check SBP, HR, and PDE-5 status before every dose. Monitor vitals every 3-5 minutes after administration.</div>
+<div class="key-point"><strong>4.</strong> The patient's own GTN doses count towards the protocol maximum of 3. Always ask what they have already taken.</div>
+<div class="key-point"><strong>5.</strong> Early escalation saves lives. If pain is unresolved after maximum GTN, the protocol requires EOC Clinician contact — do not delay this call.</div>
+<div class="key-point"><strong>6.</strong> Trends matter more than single numbers. A BP of 118 is fine on its own, but a drop from 138 to 118 after GTN tells you the medication is having an effect — watch for further drops.</div>
+<div class="key-point"><strong>7.</strong> Cardiac arrest readiness is non-negotiable. This patient could arrest at any moment. Defib pads must be accessible throughout the entire job — from the lounge room to the hospital door.</div>
+</div>
+</div>
+</div>
+</div>
 <!-- ════════════════ OPTIONAL SCENARIO VARIATIONS ════════════════ -->
-<div class="toggle-section" data-anim>
-  <button class="toggle-btn" aria-expanded="false" onclick="toggleAccordion(this)">
-    <div>
-      <h2>Optional Scenario Variations</h2>
-    </div>
-    <span class="toggle-icon">&#9660;</span>
-  </button>
-  <div class="toggle-content">
-    <div class="toggle-inner">
-
-      <h4 style="color:var(--orange-warn);">Variation 1 — PDE-5 Inhibitor Complication</h4>
-      <p>Same patient, but when asked about PDE-5 inhibitors, Graham hesitates and then admits he took sildenafil (Viagra) approximately 18 hours ago. His wife did not know.</p>
-      <ul>
-        <li><strong>Impact:</strong> GTN is contraindicated — sildenafil requires a 24-hour window. You cannot administer GTN.</li>
-        <li><strong>Action:</strong> Aspirin 300 mg as per protocol. Consult EOC Clinician immediately for alternative pain management guidance. Maintain O2, monitoring, and transport.</li>
-        <li><strong>Discussion:</strong> How do you handle this sensitively? How does it change your treatment plan? What does the protocol say about GTN not previously prescribed — does it apply here?</li>
-      </ul>
-
-      <hr class="subtle">
-
-      <h4 style="color:var(--orange-warn);">Variation 2 — Hypotension Post GTN</h4>
-      <p>After administering the third GTN dose, Graham's observations at 5 minutes show: BP 88/54, HR 104, SpO2 95%. He reports feeling dizzy and lightheaded.</p>
-      <ul>
-        <li><strong>Impact:</strong> SBP has dropped below 100. The patient is now hypotensive — a known adverse effect of GTN.</li>
-        <li><strong>Action:</strong> Lay the patient flat (or as flat as tolerated). Withhold further GTN. Raise legs if tolerated. Contact EOC Clinician immediately. Continue monitoring every 3 minutes. Be prepared for further deterioration.</li>
-        <li><strong>Discussion:</strong> What is the protocol trigger here? How do you manage a patient who becomes hypotensive after GTN? How does this affect transport urgency?</li>
-      </ul>
-
-      <hr class="subtle">
-
-      <h4 style="color:var(--orange-warn);">Variation 3 — Cardiac Arrest on Scene</h4>
-      <p>Immediately after GTN administration, Graham becomes unresponsive. No pulse. ECG shows ventricular fibrillation (VF) on the Corpuls3.</p>
-      <ul>
-        <li><strong>Impact:</strong> This is now a cardiac arrest — the exact complication the protocol warns about. "A person experiencing cardiac ischaemia is at risk of life-threatening changes to the heart rhythm."</li>
-        <li><strong>Action:</strong> Commence CPR 30:2 at 110 compressions per minute, depth greater than 5 cm. Apply defib pads if not already on. Follow Corpuls3/AED prompts. Defibrillation safety check before shock delivery. Call for backup via EOC. Continue resuscitation per Cardiac Arrest (Adult) protocol.</li>
-        <li><strong>Discussion:</strong> Were your defib pads ready? How quickly can you transition from treatment to resuscitation? Who does compressions, who manages airway?</li>
-        <li><strong>Skills Reference:</strong> Chest compressions — lower 1/3 of sternum, greater than 5 cm depth, rate of 110/min, full recoil. Defib pad placement — check expiry, remove clothing, dry chest, standard or AP placement as needed. Follow Corpuls3 voice prompts for rhythm analysis and shock delivery.</li>
-      </ul>
-
-      <hr class="subtle">
-
-      <h4 style="color:var(--orange-warn);">Variation 4 — Atypical Presentation (Female Patient)</h4>
-      <p>Change the patient to a 58-year-old female, Margaret. She presents with nausea, jaw pain, back pain between the shoulder blades, and fatigue. She denies "chest pain." No cardiac history. No prescribed GTN.</p>
-      <ul>
-        <li><strong>Impact:</strong> Atypical ACS presentation — more common in women, elderly, and diabetic patients. "Cardiac ischaemia should be suspected unless there is an obvious alternative."</li>
-        <li><strong>Action:</strong> Aspirin 300 mg (allergy check). GTN is not previously prescribed — must consult EOC Clinician before administering. Maintain full monitoring, O2 if SpO2 below 94%, transport.</li>
-        <li><strong>Discussion:</strong> How does the protocol pathway change when GTN is not previously prescribed? What does the protocol require you to do before giving GTN in this situation?</li>
-      </ul>
-
-    </div>
-  </div>
+<div class="toggle-section" data-anim="">
+<button aria-expanded="false" class="toggle-btn" onclick="toggleAccordion(this)">
+<div>
+<h2>Optional Scenario Variations</h2>
 </div>
-
+<span class="toggle-icon">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 style="color:var(--orange-warn);">Variation 1 — PDE-5 Inhibitor Complication</h4>
+<p>Same patient, but when asked about PDE-5 inhibitors, Graham hesitates and then admits he took sildenafil (Viagra) approximately 18 hours ago. His wife did not know.</p>
+<ul>
+<li><strong>Impact:</strong> GTN is contraindicated — sildenafil requires a 24-hour window. You cannot administer GTN.</li>
+<li><strong>Action:</strong> Aspirin 300 mg as per protocol. Consult EOC Clinician immediately for alternative pain management guidance. Maintain O2, monitoring, and transport.</li>
+<li><strong>Discussion:</strong> How do you handle this sensitively? How does it change your treatment plan? What does the protocol say about GTN not previously prescribed — does it apply here?</li>
+</ul>
+<hr class="subtle"/>
+<h4 style="color:var(--orange-warn);">Variation 2 — Hypotension Post GTN</h4>
+<p>After administering the third GTN dose, Graham's observations at 5 minutes show: BP 88/54, HR 104, SpO2 95%. He reports feeling dizzy and lightheaded.</p>
+<ul>
+<li><strong>Impact:</strong> SBP has dropped below 100. The patient is now hypotensive — a known adverse effect of GTN.</li>
+<li><strong>Action:</strong> Lay the patient flat (or as flat as tolerated). Withhold further GTN. Raise legs if tolerated. Contact EOC Clinician immediately. Continue monitoring every 3 minutes. Be prepared for further deterioration.</li>
+<li><strong>Discussion:</strong> What is the protocol trigger here? How do you manage a patient who becomes hypotensive after GTN? How does this affect transport urgency?</li>
+</ul>
+<hr class="subtle"/>
+<h4 style="color:var(--orange-warn);">Variation 3 — Cardiac Arrest on Scene</h4>
+<p>Immediately after GTN administration, Graham becomes unresponsive. No pulse. ECG shows ventricular fibrillation (VF) on the Corpuls3.</p>
+<ul>
+<li><strong>Impact:</strong> This is now a cardiac arrest — the exact complication the protocol warns about. "A person experiencing cardiac ischaemia is at risk of life-threatening changes to the heart rhythm."</li>
+<li><strong>Action:</strong> Commence CPR 30:2 at 110 compressions per minute, depth greater than 5 cm. Apply defib pads if not already on. Follow Corpuls3/AED prompts. Defibrillation safety check before shock delivery. Call for backup via EOC. Continue resuscitation per Cardiac Arrest (Adult) protocol.</li>
+<li><strong>Discussion:</strong> Were your defib pads ready? How quickly can you transition from treatment to resuscitation? Who does compressions, who manages airway?</li>
+<li><strong>Skills Reference:</strong> Chest compressions — lower 1/3 of sternum, greater than 5 cm depth, rate of 110/min, full recoil. Defib pad placement — check expiry, remove clothing, dry chest, standard or AP placement as needed. Follow Corpuls3 voice prompts for rhythm analysis and shock delivery.</li>
+</ul>
+<hr class="subtle"/>
+<h4 style="color:var(--orange-warn);">Variation 4 — Atypical Presentation (Female Patient)</h4>
+<p>Change the patient to a 58-year-old female, Margaret. She presents with nausea, jaw pain, back pain between the shoulder blades, and fatigue. She denies "chest pain." No cardiac history. No prescribed GTN.</p>
+<ul>
+<li><strong>Impact:</strong> Atypical ACS presentation — more common in women, elderly, and diabetic patients. "Cardiac ischaemia should be suspected unless there is an obvious alternative."</li>
+<li><strong>Action:</strong> Aspirin 300 mg (allergy check). GTN is not previously prescribed — must consult EOC Clinician before administering. Maintain full monitoring, O2 if SpO2 below 94%, transport.</li>
+<li><strong>Discussion:</strong> How does the protocol pathway change when GTN is not previously prescribed? What does the protocol require you to do before giving GTN in this situation?</li>
+</ul>
+</div>
+</div>
+</div>
 <!-- ════════════════ FOOTER ════════════════ -->
 <div style="text-align:center;padding:30px 0 10px;color:var(--text-muted);font-size:0.75rem;">
-  <p>Chest Pain (AO) — CPP-007-AO | Walk-Through Scenario</p>
-  <p>Volunteer AO Scope of Practice | For training purposes only</p>
-  <p>Clinical Skills Study Guide v2.7 | SA Ambulance Service</p>
-  <p style="margin-top:8px;">Generated for DSY Training — February 2026</p>
+<p>Chest Pain (AO) — CPP-007-AO | Walk-Through Scenario</p>
+<p>Volunteer AO Scope of Practice | For training purposes only</p>
+<p>Clinical Skills Study Guide v2.8 | SA Ambulance Service</p>
+<p style="margin-top:8px;">Generated for DSY Training — February 2026</p>
 </div>
-
 </div><!-- end container -->
-
 <!-- ════════════════ JAVASCRIPT ════════════════ -->
+<!-- ════════════════ JAVASCRIPT ════════════════ -->
+<script async="" src="https://unpkg.com/@elevenlabs/convai-widget-embed" type="text/javascript"></script>
 <script>
-// ── Progress Bar ──
 window.addEventListener('scroll', () => {
   const scrollTop = window.scrollY;
   const docHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -1420,7 +1979,6 @@ window.addEventListener('scroll', () => {
   document.getElementById('progressBar').style.width = progress + '%';
 });
 
-// ── Fade-in on Scroll ──
 const animSections = document.querySelectorAll('[data-anim]');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -1431,7 +1989,6 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.08 });
 animSections.forEach(s => observer.observe(s));
 
-// ── Toggle Accordion ──
 function toggleAccordion(btn) {
   const content = btn.nextElementSibling;
   const isOpen = content.classList.contains('open');
@@ -1444,7 +2001,6 @@ function toggleAccordion(btn) {
   }
 }
 
-// ── Auto-open first toggle on load ──
 document.addEventListener('DOMContentLoaded', () => {
   animSections.forEach(s => {
     const rect = s.getBoundingClientRect();
@@ -1453,7 +2009,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-</script>
 
-</body>
+function checkDecision(btn, result) {
+  const decisionPrompt = btn.closest('.decision-prompt');
+  const decisionTree = btn.closest('.decision-tree');
+  const allBtns = decisionPrompt.querySelectorAll('.decision-btn');
+  
+  allBtns.forEach(b => b.disabled = true);
+  
+  if (result === 'correct') {
+    btn.classList.add('correct');
+    const feedbackElement = decisionTree.querySelector('.decision-feedback');
+    if (feedbackElement) {
+      feedbackElement.classList.add('show', 'correct-feedback');
+    }
+  } else {
+    btn.classList.add('incorrect');
+    const feedbackElement = decisionTree.querySelector('.decision-feedback');
+    if (feedbackElement) {
+      feedbackElement.classList.add('show', 'incorrect-feedback');
+    }
+  }
+}
+
+function updateTracker() {
+  const checkboxes = document.querySelectorAll('.tracker-checkbox');
+  const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+  const total = checkboxes.length;
+  const percentage = (checked / total) * 100;
+  
+  document.getElementById('trackerBar').style.width = percentage + '%';
+  
+  checkboxes.forEach((cb, idx) => {
+    const item = cb.closest('.tracker-item');
+    if (cb.checked) {
+      item.classList.add('completed');
+    } else {
+      item.classList.remove('completed');
+    }
+  });
+}
+</script>
+</div></body>
 </html>
