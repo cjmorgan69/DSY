@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rural ED — Clinical Simulation Scenarios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 18px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0A1628 0%, #1B2A4A 100%);
+            color: #FFFFFF;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0A1628 0%, #1B2A4A 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 3px solid #4A90D9;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #E8EEF7;
+        }
+
+        .header-subtitle {
+            font-size: 1.3rem;
+            color: #4A90D9;
+            margin-bottom: 1rem;
+        }
+
+        .header-description {
+            font-size: 1rem;
+            color: #E8EEF7;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Scenarios Grid */
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* Scenario Card */
+        .scenario-card {
+            background: #1B2A4A;
+            border: 2px solid #2C3E6B;
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 400px;
+        }
+
+        .scenario-card:hover {
+            border-color: #4A90D9;
+            box-shadow: 0 12px 32px rgba(74, 144, 217, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .scenario-card h3 {
+            font-size: 1.6rem;
+            color: #4A90D9;
+            margin-bottom: 0.8rem;
+        }
+
+        .scenario-card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #E8EEF7;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .scenario-tag {
+            display: inline-block;
+            background: #2C3E6B;
+            color: #4A90D9;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            margin-right: 0.5rem;
+        }
+
+        .scenario-details {
+            background: rgba(74, 144, 217, 0.1);
+            padding: 1rem;
+            border-left: 3px solid #4A90D9;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .scenario-details strong {
+            color: #4A90D9;
+        }
+
+        .btn {
+            background: #4A90D9;
+            color: #FFFFFF;
+            border: none;
+            padding: 0.9rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        .btn:hover {
+            background: #2C7DD1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 217, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: #4A90D9;
+        }
+
+        .btn-secondary {
+            background: #2C3E6B;
+            border: 2px solid #4A90D9;
+        }
+
+        .btn-secondary:hover {
+            background: #3D5280;
+        }
+
+        /* Info Section */
+        .info-section {
+            background: rgba(59, 130, 246, 0.15);
+            border-left: 5px solid #3B82F6;
+            padding: 2rem;
+            margin: 3rem 0;
+            border-radius: 8px;
+        }
+
+        .info-section h2 {
+            color: #93C5FD;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .info-section p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #E8EEF7;
+            margin-bottom: 1rem;
+        }
+
+        /* Section Header */
+        h2 {
+            font-size: 2rem;
+            color: #4A90D9;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid #2C3E6B;
+            padding-bottom: 1rem;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #E8EEF7;
+        }
+
+        /* Features List */
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature {
+            background: #1B2A4A;
+            border: 2px solid #2C3E6B;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: #4A90D9;
+            color: #FFFFFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .feature-text h4 {
+            color: #4A90D9;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .feature-text p {
+            font-size: 0.95rem;
+            color: #E8EEF7;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: #0A1628;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+            border-top: 3px solid #4A90D9;
+            font-size: 0.9rem;
+            color: #2C3E6B;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            html {
+                font-size: 16px;
+            }
+
+            .header-title {
+                font-size: 2rem;
+            }
+
+            .scenarios-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Emphasis */
+        strong {
+            color: #4A90D9;
+            font-weight: 700;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            background: #DC2626;
+            color: #FFFFFF;
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 0.5rem;
+        }
+
+        .badge-success {
+            background: #22C55E;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(74, 144, 217, 0.2) 0%, rgba(42, 113, 186, 0.2) 100%);
+            border: 2px solid #4A90D9;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .cta-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .cta-section p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: #E8EEF7;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-content">
+            <h1 class="header-title">Rural ED Clinical Simulation Scenarios</h1>
+            <p class="header-subtitle">High-Fidelity Training for Emergency Nurses in Resource-Limited Settings</p>
+            <p class="header-description">
+                Realistic, scenario-based learning modules designed for rural emergency departments. 
+                Practice critical decision-making, ANZCOR protocols, team communication, and resource management 
+                in the context of small-team, resource-constrained emergency care.
+            </p>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+
+        <!-- SCENARIOS SECTION -->
+        <section id="scenarios">
+            <h2>Available Scenarios</h2>
+
+            <div class="scenarios-grid">
+
+                <!-- Scenario 1: Peri-Arrest to ROSC -->
+                <div class="scenario-card">
+                    <span class="scenario-tag">Nurse-Led</span>
+                    <span class="scenario-tag">2-Person Team</span>
+                    <span class="scenario-tag">ALS</span>
+                    
+                    <h3>Peri-Arrest to ROSC</h3>
+                    
+                    <p>
+                        A 68-year-old male arrives peri-arrest via volunteer ambulance with acute coronary syndrome. 
+                        He deteriorates into ventricular fibrillation within minutes. RN and EN lead a 24-minute 
+                        resuscitation in a 2-person team until the doctor arrives. Patient achieves ROSC and is 
+                        retrieved by MedSTAR for definitive cardiac care.
+                    </p>
+
+                    <div class="scenario-details">
+                        <strong>Focus:</strong> Nurse-led ALS, fatigue management, medication safety, team communication, ROSC recognition<br>
+                        <strong>Duration:</strong> 76 minutes<br>
+                        <strong>Team:</strong> RN + EN (doctor arrives at 12–15 min mark)<br>
+                        <strong>Outcome:</strong> ROSC achieved at 24 minutes
+                    </div>
+
+                    <a href="../cardiac-arrest/index.html" class="btn btn-primary">Launch Scenario</a>
+                </div>
+
+                <!-- Scenario 2: Chest Pain to Cardiac Arrest (Future) -->
+                <div class="scenario-card">
+                    <span class="scenario-tag">Coming Soon</span>
+                    <span class="scenario-tag">3-Person Team</span>
+                    <span class="scenario-tag">ALS</span>
+                    
+                    <h3>Chest Pain to Sudden Arrest</h3>
+                    
+                    <p>
+                        A 65-year-old male presents with acute chest pain and is triaged as ATS Category 2. 
+                        Initial assessment shows STEMI on ECG. Patient is stabilised and prepared for MedSTAR retrieval. 
+                        Minutes before retrieval arrives, patient arrests into VF. Full ANZCOR ALS protocol is run with 
+                        doctor present. Scenario explores rapid deterioration and resuscitation in a fully-staffed scenario.
+                    </p>
+
+                    <div class="scenario-details">
+                        <strong>Focus:</strong> ACS recognition, STEMI escalation, sudden arrest, full team resuscitation<br>
+                        <strong>Duration:</strong> 65 minutes<br>
+                        <strong>Team:</strong> RN + EN + Doctor (on-site)<br>
+                        <strong>Outcome:</strong> Variable (ROSC, ongoing arrest, or termination)
+                    </div>
+
+                    <a href="#" class="btn btn-secondary" style="opacity: 0.5; cursor: not-allowed;">Coming Soon</a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FEATURES SECTION -->
+        <section id="features">
+            <h2>What You'll Learn</h2>
+
+            <div class="features-list">
+
+                <div class="feature">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-text">
+                        <h4>Early Recognition & Escalation</h4>
+                        <p>Identify red flags in peri-arrest presentations and escalate to MedSTAR and doctor immediately.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">❤️</div>
+                    <div class="feature-text">
+                        <h4>ANZCOR ALS Protocol</h4>
+                        <p>Execute the full Advanced Life Support algorithm: CPR, defibrillation, medication timing, and rhythm analysis.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">👥</div>
+                    <div class="feature-text">
+                        <h4>2-Person Team Dynamics</h4>
+                        <p>Manage resuscitation with minimal staffing, including fatigue management, role rotation, and task prioritisation.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">💊</div>
+                    <div class="feature-text">
+                        <h4>Medication Safety</h4>
+                        <p>Establish IV/IO access, prepare and administer adrenaline and amiodarone, with focus on the five rights.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">📞</div>
+                    <div class="feature-text">
+                        <h4>MedSTAR Coordination</h4>
+                        <p>Communicate effectively with retrieval services using ISBAR format. Practice urgent referral conversations.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-text">
+                        <h4>Emotional Resilience</h4>
+                        <p>Reflect on the psychological and operational strain of rural emergency care. Debrief in a safe, supportive environment.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CONTEXT SECTION -->
+        <section id="context">
+            <div class="info-section">
+                <h2>Rural ED Context</h2>
+                <p>
+                    <strong>These scenarios are designed for small rural SA hospitals (Level 4–5 ED) with:</strong>
+                </p>
+                <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                    <li>Limited staffing (often 2 RNs + 1 EN during off-hours)</li>
+                    <li>Doctor on call, 10–15 minutes away</li>
+                    <li>No CT, MRI, or on-site cardiologist</li>
+                    <li>After-hours pathology limitations</li>
+                    <li>MedSTAR retrieval 40–60 minutes away</li>
+                    <li>Strong community connection (staff know patients)</li>
+                </ul>
+                <p>
+                    The scenarios reflect the reality of rural emergency nursing: you are the first responder, 
+                    you often lead initial care, your team is small but skilled, and the decisions you make in the 
+                    first minutes can save lives.
+                </p>
+            </div>
+        </section>
+
+        <!-- HOW TO USE SECTION -->
+        <section id="how-to-use">
+            <h2>How to Use These Scenarios</h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 2rem 0;">
+
+                <div class="feature" style="flex-direction: column;">
+                    <div class="feature-icon" style="width: 50px; height: 50px; font-size: 1.8rem; margin-bottom: 1rem;">📋</div>
+                    <div class="feature-text">
+                        <h4>Pre-Briefing (5–10 min)</h4>
+                        <p>Facilitator orients the team, allocates roles (RN, EN, Doctor), sets psychological safety, and explains ground rules.</p>
+                    </div>
+                </div>
+
+                <div class="feature" style="flex-direction: column;">
+                    <div class="feature-icon" style="width: 50px; height: 50px; font-size: 1.8rem; margin-bottom: 1rem;">🎬</div>
+                    <div class="feature-text">
+                        <h4>Scenario Execution (45–60 min)</h4>
+                        <p>Team runs the scenario using a manikin or confederate patient. Facilitator guides with pauses at key decision points.</p>
+                    </div>
+                </div>
+
+                <div class="feature" style="flex-direction: column;">
+                    <div class="feature-icon" style="width: 50px; height: 50px; font-size: 1.8rem; margin-bottom: 1rem;">💬</div>
+                    <div class="feature-text">
+                        <h4>Structured Debrief (12–15 min)</h4>
+                        <p>Reflection using Advocacy-Inquiry model: What went well? What could be different? What did we learn emotionally?</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FACILITATOR GUIDE CTA -->
+        <section id="facilitator-guide">
+            <div class="cta-section">
+                <h3>For Facilitators</h3>
+                <p>Each scenario includes a full facilitator guide with break points, prompts, expected clinical reasoning, and debrief structure. Scenarios are self-contained and can be run with minimal preparation.</p>
+                <a href="#" class="btn btn-primary">Download Facilitator Guide (Coming Soon)</a>
+            </div>
+        </section>
+
+        <!-- CLINICAL FRAMEWORK SECTION -->
+        <section id="frameworks">
+            <h2>Clinical Frameworks Used</h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin: 2rem 0;">
+
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-text">
+                        <h4>ATS Triage</h4>
+                        <p>Australasian Triage Scale for category assignment and immediate action triggers.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🔍</div>
+                    <div class="feature-text">
+                        <h4>HIRAID</h4>
+                        <p>History, Identify Red Flags, Assessment, Interventions, Diagnostics, Reassessment & Communication.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">📞</div>
+                    <div class="feature-text">
+                        <h4>ISBAR</h4>
+                        <p>Identify, Situation, Background, Assessment, Recommendation for clinical handovers.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">❤️</div>
+                    <div class="feature-text">
+                        <h4>ANZCOR ALS</h4>
+                        <p>Australian & New Zealand Committee on Resuscitation Advanced Life Support protocol.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">⚕️</div>
+                    <div class="feature-text">
+                        <h4>SA Health Directives</h4>
+                        <p>South Australia Health clinical directives for emergency care and cardiac management.</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-text">
+                        <h4>Advocacy-Inquiry Debrief</h4>
+                        <p>Structured reflection model focusing on learning, not blame.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CONTACT / MORE INFO -->
+        <section id="more-info" style="text-align: center; margin: 3rem 0;">
+            <h2>Questions or Feedback?</h2>
+            <p style="font-size: 1.05rem; margin-bottom: 1.5rem;">
+                These scenarios are living documents. They evolve based on feedback from rural ED teams and facilitators. 
+                If you have suggestions, encounter issues, or want to contribute, please reach out.
+            </p>
+            <a href="https://github.com/cjmorgan69/DSY" class="btn btn-primary" target="_blank">View on GitHub</a>
+        </section>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p><strong>Clinical Skills ED — Rural Emergency Department Simulation</strong></p>
+        <p>Designed for rural emergency nurses and clinical teams in South Australia</p>
+        <p>Based on ANZCOR protocols, SA Health directives, and best-practice rural emergency medicine</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">&copy; 2024. For educational use only. Always follow your local clinical guidelines and protocols.</p>
+    </footer>
+
+</body>
+</html>
