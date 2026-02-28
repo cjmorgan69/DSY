@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fluid Resuscitation in Medical Emergencies | P-Level Training Module</title>
+<style>
+        :root {
+            --primary-dark: #003300;
+            --primary-mid: #005500;
+            --primary-light: #007700;
+            --accent: #00aa44;
+            --accent-light: #66cc88;
+            --bg-dark: #001a00;
+            --bg-card: #002200;
+            --text-primary: #e8f5e9;
+            --text-secondary: #a5d6a7;
+            --warning: #ffb74d;
+            --danger: #ef5350;
+            --highlight: #c8e6c9;
+            --break-point: #ffcc00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 18px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--primary-dark) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Sticky Header */
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, var(--primary-dark) 0%, var(--bg-dark) 100%);
+            padding: 0.5rem 1rem;
+            z-index: 1000;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .back-button {
+            text-decoration: none;
+            color: var(--accent-light);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+        }
+
+        .back-button:hover {
+            color: var(--accent);
+        }
+
+        .header-logo {
+            flex-shrink: 0;
+        }
+
+        .header-logo img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .header-title {
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .header-title h1 {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .header-title .subtitle {
+            font-size: 0.8rem;
+            color: var(--accent-light);
+        }
+
+        .progress-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--bg-dark);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 90px;
+            padding-bottom: 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        /* Section Styling */
+        .section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--primary-mid);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, var(--primary-mid) 0%, var(--primary-dark) 100%);
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 44px;
+        }
+
+        .section-header:hover {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-mid) 100%);
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .toggle-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            color: var(--accent-light);
+        }
+
+        .section-header.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            padding: 1.25rem;
+            display: none;
+        }
+
+        .section-content.show {
+            display: block;
+        }
+
+        /* Non-collapsible sections */
+        .section-static {
+            background: var(--bg-card);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--primary-mid);
+            padding: 1.25rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section-static.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-static h2 {
+            font-size: 1.1rem;
+            color: var(--accent-light);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-mid);
+        }
+
+        /* Break Point Cards */
+        .break-point {
+            background: linear-gradient(135deg, #1a1a00 0%, #2a2a00 100%);
+            border: 2px solid var(--break-point);
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .break-point-header {
+            background: linear-gradient(135deg, var(--break-point) 0%, #cc9900 100%);
+            color: #000;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .break-point-type {
+            background: #000;
+            color: var(--break-point);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .break-point-content {
+            padding: 1rem;
+        }
+
+        .break-point h4 {
+            color: var(--break-point);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .checklist li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+            border-bottom: 1px solid var(--primary-mid);
+        }
+
+        .checklist li::before {
+            content: "\2610";
+            position: absolute;
+            left: 0;
+            color: var(--accent-light);
+            font-size: 1.1rem;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: var(--primary-dark);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-box {
+            background: rgba(255, 183, 77, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .danger-box {
+            background: rgba(239, 83, 80, 0.1);
+            border-left: 4px solid var(--danger);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .clinical-box {
+            background: rgba(0, 170, 68, 0.15);
+            border: 2px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+
+        .clinical-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Scenario Box */
+        .scenario-box {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #001500 100%);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .scenario-box h3 {
+            color: var(--accent-light);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        /* MDT Display */
+        .mdt-screen {
+            background: #000;
+            border: 3px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+
+        .mdt-header {
+            color: #00ff00;
+            border-bottom: 1px solid #333;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .mdt-content {
+            color: #00cc00;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .mdt-content span {
+            color: #ffff00;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        .data-table th {
+            background: var(--primary-mid);
+            color: var(--text-primary);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--primary-mid);
+        }
+
+        .data-table tr:nth-child(even) {
+            background: rgba(0, 85, 0, 0.2);
+        }
+
+        /* Vital Signs Display */
+        .vitals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .vital-card {
+            background: var(--primary-dark);
+            border: 1px solid var(--primary-mid);
+            border-radius: 8px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .vital-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .vital-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-light);
+        }
+
+        .vital-value.abnormal {
+            color: var(--danger);
+        }
+
+        .vital-value.caution {
+            color: var(--warning);
+        }
+
+        /* Skill Steps */
+        .skill-steps {
+            counter-reset: step-counter;
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .skill-steps li {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed var(--primary-mid);
+        }
+
+        .skill-steps li::before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: var(--accent);
+            color: #000;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        /* Protocol Reference */
+        .protocol-ref {
+            background: var(--primary-dark);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            display: inline-block;
+        }
+
+        .protocol-ref span {
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+
+        /* Debrief Questions */
+        .debrief-question {
+            background: var(--primary-dark);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.75rem 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .debrief-question strong {
+            color: var(--accent-light);
+        }
+
+        /* Take Home Messages */
+        .take-home {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary-light) 100%);
+            color: #000;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.75rem 0;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            html {
+                font-size: 16px;
+            }
+
+            .header-title h1 {
+                font-size: 0.95rem;
+            }
+
+            .sticky-header {
+                padding: 0.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 1rem;
+            }
+
+            .vitals-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Touch targets */
+        button, .section-header, a {
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        /* Highlight */
+        .highlight {
+            background: var(--break-point);
+            color: #000;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* Time Critical Banner */
+        .time-critical {
+            background: linear-gradient(90deg, var(--danger) 0%, #c62828 100%);
+            color: #fff;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            font-weight: 700;
+            margin: 1rem 0;
+            border-radius: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+</style>
+</head>
+<body>
+<!-- Sticky Header -->
+<header class="sticky-header">
+    <a href="/" class="back-button" aria-label="Back to hub">&#8592;</a>
+    <div class="header-title">
+        <h1>Fluid Resuscitation in Medical Emergencies</h1>
+        <div class="subtitle">P-Level | Single Responder Scenario</div>
+    </div>
+    <div class="header-logo">
+        <img alt="DSY Training" src="https://cdn.simtheory.ai/image/upload/v1772274962/u0228103420_img_4658f28a_dnlqum.png"/>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+
+    <!-- Title & Context -->
+    <div class="section-static" id="context">
+        <h2>Scenario Context</h2>
+        <div class="scenario-box">
+            <h3>Hypotension Secondary to Dehydration — Rural Home Setting</h3>
+            <p><strong>Time:</strong> 10:30 hours (mid-morning)</p>
+            <p><strong>Location:</strong> Isolated rural property, 35 minutes from nearest hospital</p>
+            <p><strong>Crew Configuration:</strong> Paramedic single responder (fast response vehicle) with full equipment. Volunteer AO crew backup en route (ETA 12 minutes)</p>
+            <p><strong>Duration:</strong> 90–120 minutes (walk-through with break points)</p>
+        </div>
+        <div class="protocol-ref">
+            <span>Reference:</span> CPG — Fluid Resuscitation in Medical Emergencies — P
+        </div>
+    </div>
+
+    <!-- Learning Objectives -->
+    <div class="section-static" id="objectives">
+        <h2>Learning Objectives</h2>
+        <p>By the end of this session, participants will be able to:</p>
+        <ul class="checklist">
+            <li>Apply the general approach to fluid resuscitation per SAAS protocol</li>
+            <li>Differentiate dehydration-related hypotension from other shock states</li>
+            <li>Establish IV access and administer appropriate fluid therapy</li>
+            <li>Recognise acute vs subacute dehydration presentations</li>
+            <li>Integrate single responder workflow with incoming backup crew</li>
+            <li>Apply appropriate postural management for hypotensive patients</li>
+            <li>Determine transport priority and ongoing monitoring requirements</li>
+        </ul>
+    </div>
+
+    <!-- Required Equipment -->
+    <div class="section" id="equipment">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>Required Equipment</h2>
+            <span class="toggle-icon">&#9660;</span>
+        </div>
+        <div class="section-content">
+            <p><strong>Monitoring &amp; Assessment:</strong></p>
+            <ul class="checklist">
+                <li>Corpuls3 monitor (SpO2, NIBP, HR, ECG, Temp)</li>
+                <li>BGL meter and lancets</li>
+                <li>Thermometer (if separate from monitor)</li>
+                <li>ePCR tablet</li>
+            </ul>
+            <p><strong>IV Therapy &amp; Fluid Resuscitation:</strong></p>
+            <ul class="checklist">
+                <li>IV cannulation kit (18G, 20G cannulae)</li>
+                <li>Sodium Chloride 0.9% 1000mL bags (x2 minimum)</li>
+                <li>IV giving sets (standard and pressure infusion capable)</li>
+                <li>Pressure bag (if available)</li>
+                <li>Tourniquets, alcohol swabs, tegaderm</li>
+                <li>Sharps container</li>
+            </ul>
+            <p><strong>General Care:</strong></p>
+            <ul class="checklist">
+                <li>Ambulance Response Bag</li>
+                <li>Oxygen therapy equipment (if hypoxic)</li>
+                <li>Blankets</li>
+                <li>Green carry chair</li>
+                <li>Stretcher (ambulance crew)</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Session Structure Overview -->
+    <div class="section-static" id="structure">
+        <h2>Session Structure Overview</h2>
+        <table class="data-table">
+            <tr>
+                <th>Phase</th>
+                <th>Duration</th>
+            </tr>
+            <tr>
+                <td>Pre-Brief</td>
+                <td>10 minutes</td>
+            </tr>
+            <tr>
+                <td>Dispatch &amp; En Route</td>
+                <td>5–10 minutes</td>
+            </tr>
+            <tr>
+                <td>Scene Management &amp; Assessment</td>
+                <td>20–25 minutes</td>
+            </tr>
+            <tr>
+                <td>Treatment Phase (IV Fluid Therapy)</td>
+                <td>25–30 minutes</td>
+            </tr>
+            <tr>
+                <td>Backup Integration &amp; Transport</td>
+                <td>15–20 minutes</td>
+            </tr>
+            <tr>
+                <td>Handover Practice</td>
+                <td>10 minutes</td>
+            </tr>
+            <tr>
+                <td>Debrief</td>
+                <td>10–15 minutes</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Pre-Brief -->
+    <div class="section" id="prebrief">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>Pre-Brief (10 minutes)</h2>
+            <span class="toggle-icon">&#9660;</span>
+        </div>
+        <div class="section-content">
+            <p><strong>Facilitator sets the scene:</strong></p>
+            <div class="info-box">
+                <p>"You're working as a single Paramedic responder this shift, covering a large rural area. It's been a warm few days — mid-30s. You're about to receive a Priority 2 dispatch. A volunteer ambulance crew is also being tasked and will be approximately 12 minutes behind you."</p>
+            </div>
+            <p><strong>Key discussion points before starting:</strong></p>
+            <ul>
+                <li>Single responder challenges — what can you achieve before backup arrives?</li>
+                <li>Importance of early IV access in dehydration</li>
+                <li>Differential diagnoses for hypotension in elderly patients</li>
+                <li>Protocol principle: "Transport to hospital is the desired outcome in all cases"</li>
+            </ul>
+            <div class="warning-box">
+                <strong>Psychological Safety:</strong> This is a learning environment. We'll pause at key decision points. All questions are welcome. If you need to stop at any point, say "time out."
+            </div>
+        </div>
+    </div>
+
+    <!-- Dispatch & En Route -->
+    <div class="section-static" id="dispatch">
+        <h2>Dispatch &amp; En Route Phase</h2>
+        <div class="mdt-screen">
+            <div class="mdt-header">&#9552;&#9552;&#9552; SAAS CAD &#9552;&#9552;&#9552; PRIORITY 2 &#9552;&#9552;&#9552;</div>
+            <div class="mdt-content">
+                <span>CASE:</span> SA-2026-0227-1028<br/>
+                <span>TIME:</span> 10:28 HRS<br/>
+                <span>LOCATION:</span> 847 Boundary Road, Rural Property<br/>
+                <span>MAP REF:</span> Grid 456-J<br/>
+                <span>ACCESS:</span> Via gravel driveway, 400m from main road. Dogs secured.<br/><br/>
+                <span>PROBLEM:</span> 76 YOM — UNWELL / DIZZY<br/>
+                <span>INFO:</span> Patient found by wife this morning. Very weak. Unable to get out of bed. Not eating or drinking well for 3 days. Vomiting x2 yesterday. No chest pain. Breathing OK.<br/>
+                <span>PMHx:</span> Heart condition (unknown), BP tablets<br/>
+                <span>CALLER:</span> Wife — on scene<br/><br/>
+                <span>BACKUP:</span> VOL CREW TASKED — ETA 12 MINS BEHIND
+            </div>
+        </div>
+
+        <!-- BREAK POINT 1 -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span>BREAK POINT 1</span>
+                <span class="break-point-type">Discussion / Planning</span>
+            </div>
+            <div class="break-point-content">
+                <h4>Facilitator Prompts:</h4>
+                <ul>
+                    <li>What differential diagnoses are you considering from this MDT information?</li>
+                    <li>What's your index of suspicion for dehydration vs cardiac cause?</li>
+                    <li>As a single responder, what's your priority when you arrive?</li>
+                    <li>What equipment will you take in first?</li>
+                </ul>
+                <h4>Expected Paramedic Reasoning:</h4>
+                <ul>
+                    <li>76 YOM with 3-day history of reduced oral intake + vomiting = high suspicion for dehydration</li>
+                    <li>History of "heart condition" and BP tablets — need to exclude cardiac cause for hypotension</li>
+                    <li>Warm weather context increases dehydration likelihood</li>
+                    <li>Priority: Rapid assessment, rule out time-critical differentials, establish IV access before backup arrives</li>
+                </ul>
+                <h4>Key Teaching Points:</h4>
+                <div class="clinical-box">
+                    <h4>Protocol Principle</h4>
+                    <p>"This guideline does not apply to hypotension resulting from a primary cardiac cause."</p>
+                    <p>Always consider: Is this medical hypovolaemia OR is there an underlying cardiac problem driving the hypotension?</p>
+                </div>
+                <h4>Real-Job Translation:</h4>
+                <p>On real jobs, you often arrive solo before backup. Use that time wisely — get eyes on the patient, establish rapport, begin assessment, and ideally have IV access ready before the crew arrives to assist with transport.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- On Arrival -->
+    <div class="section-static" id="arrival">
+        <h2>On Arrival — Scene Management</h2>
+        <p><strong>Facilitator reads:</strong></p>
+        <div class="info-box">
+            <p>"You arrive at a weatherboard farmhouse. An elderly woman meets you at the front door, appearing anxious. 'He's in the bedroom — he couldn't even get up for breakfast. I've never seen him this weak.' The house is warm but not excessively hot. The bedroom is down a short hallway."</p>
+        </div>
+
+        <!-- BREAK POINT 2 -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span>BREAK POINT 2</span>
+                <span class="break-point-type">Decision-Making</span>
+            </div>
+            <div class="break-point-content">
+                <h4>Facilitator Prompts:</h4>
+                <ul>
+                    <li>What's your doorway assessment telling you?</li>
+                    <li>Scene safety considerations?</li>
+                    <li>How will you position yourself and your equipment?</li>
+                    <li>What information do you need from the wife?</li>
+                </ul>
+                <h4>Expected Paramedic Reasoning:</h4>
+                <ul>
+                    <li>Scene appears safe — domestic environment, dogs secured</li>
+                    <li>Wife can provide collateral history while I assess</li>
+                    <li>Need to gather: onset, duration, oral intake, urine output, medication compliance, recent illness</li>
+                    <li>Position equipment for immediate access — monitor, IV kit, response bag</li>
+                </ul>
+                <h4>Real-Job Translation:</h4>
+                <p>The spouse or carer often has crucial information. Keep them engaged but focused. In rural settings, the history from family may be the only reliable history you get before transport.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Contact & Primary Survey -->
+    <div class="section-static" id="primary">
+        <h2>Patient Contact &amp; Primary Survey</h2>
+        <p><strong>Facilitator reads:</strong></p>
+        <div class="info-box">
+            <p>"You enter the bedroom. Mr Harold Patterson is lying supine in bed, covered by a light sheet. He's pale, eyes open but appears lethargic. He looks at you and gives a weak wave. His lips appear dry and cracked."</p>
+        </div>
+        <p><strong>Initial Observations (within 60 seconds):</strong></p>
+        <ul>
+            <li><strong>Airway:</strong> Patent, speaking in short sentences</li>
+            <li><strong>Breathing:</strong> Slightly increased rate, no distress</li>
+            <li><strong>Circulation:</strong> Pale, dry skin, weak radial pulse</li>
+            <li><strong>Disability:</strong> GCS 14 (E4 V4 M6) — oriented but slow to respond</li>
+            <li><strong>Exposure:</strong> No obvious rashes, skin tenting noted on assessment</li>
+        </ul>
+
+        <!-- BREAK POINT 3 -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span>BREAK POINT 3</span>
+                <span class="break-point-type">Practical Skill</span>
+            </div>
+            <div class="break-point-content">
+                <h4>Corpuls3 Setup &amp; Initial Observations</h4>
+                <p><strong>Facilitator Prompts:</strong></p>
+                <ul>
+                    <li>Talk through your Corpuls3 setup — what are you connecting first?</li>
+                    <li>What observations are priority for suspected dehydration?</li>
+                    <li>NIBP may be difficult with dehydration — what's your backup?</li>
+                </ul>
+
+                <h4>Vital Signs Obtained:</h4>
+                <div class="vitals-grid">
+                    <div class="vital-card">
+                        <div class="vital-label">Blood Pressure</div>
+                        <div class="vital-value abnormal">82/50</div>
+                    </div>
+                    <div class="vital-card">
+                        <div class="vital-label">Heart Rate</div>
+                        <div class="vital-value caution">112</div>
+                    </div>
+                    <div class="vital-card">
+                        <div class="vital-label">SpO2</div>
+                        <div class="vital-value">96%</div>
+                    </div>
+                    <div class="vital-card">
+                        <div class="vital-label">Resp Rate</div>
+                        <div class="vital-value">20</div>
+                    </div>
+                    <div class="vital-card">
+                        <div class="vital-label">Temp</div>
+                        <div class="vital-value">37.8&#176;C</div>
+                    </div>
+                    <div class="vital-card">
+                        <div class="vital-label">BGL</div>
+                        <div class="vital-value">5.8</div>
+                    </div>
+                    <div class="vital-card">
+                        <div class="vital-label">GCS</div>
+                        <div class="vital-value caution">14</div>
+                    </div>
+                    <div class="vital-card">
+                        <div class="vital-label">ECG</div>
+                        <div class="vital-value">Sinus Tachy</div>
+                    </div>
+                </div>
+
+                <h4>Clinical Signs of Dehydration:</h4>
+                <ul>
+                    <li>Dry mucous membranes</li>
+                    <li>Reduced skin turgor (tenting)</li>
+                    <li>Sunken eyes</li>
+                    <li>Concentrated urine (wife reports minimal output)</li>
+                    <li>Tachycardia with hypotension</li>
+                    <li>Delayed capillary refill (&gt;3 seconds)</li>
+                </ul>
+
+                <h4>Key Teaching Points:</h4>
+                <div class="clinical-box">
+                    <h4>Dehydration Assessment Triad</h4>
+                    <p><strong>1. History:</strong> Reduced intake, increased losses (vomiting, diarrhoea, sweating), duration</p>
+                    <p><strong>2. Clinical Signs:</strong> Skin turgor, mucous membranes, urine output, mental state</p>
+                    <p><strong>3. Vital Signs:</strong> Tachycardia, hypotension, narrow pulse pressure</p>
+                </div>
+
+                <h4>Real-Job Translation:</h4>
+                <p>In elderly patients, dehydration can develop insidiously over days. The compensatory tachycardia may be blunted by beta-blockers. Always check medication lists — this patient may not mount the expected heart rate response.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Gathering -->
+    <div class="section" id="history">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>Detailed History (from patient &amp; wife)</h2>
+            <span class="toggle-icon">&#9660;</span>
+        </div>
+        <div class="section-content">
+            <table class="data-table">
+                <tr>
+                    <th>SAMPLE</th>
+                    <th>Information</th>
+                </tr>
+                <tr>
+                    <td><strong>Signs/Symptoms</strong></td>
+                    <td>Progressive weakness x 3 days, dizziness on standing, nausea, vomited x2 yesterday (watery), no appetite, "just not right"</td>
+                </tr>
+                <tr>
+                    <td><strong>Allergies</strong></td>
+                    <td>Penicillin (rash)</td>
+                </tr>
+                <tr>
+                    <td><strong>Medications</strong></td>
+                    <td>Metoprolol 50mg BD, Perindopril 5mg daily, Aspirin 100mg daily</td>
+                </tr>
+                <tr>
+                    <td><strong>Past History</strong></td>
+                    <td>Atrial fibrillation (rate controlled), hypertension, previous TIA (2 years ago)</td>
+                </tr>
+                <tr>
+                    <td><strong>Last Intake</strong></td>
+                    <td>Small amount of water this morning. No food since yesterday lunch (few bites). Minimal fluids for 3 days.</td>
+                </tr>
+                <tr>
+                    <td><strong>Events</strong></td>
+                    <td>Gastro symptoms started 3 days ago after eating reheated leftovers. Initially just nausea, then vomiting. Hasn't been able to keep much down. Wife noticed increasing confusion yesterday evening.</td>
+                </tr>
+            </table>
+            <div class="warning-box">
+                <strong>Medication Consideration:</strong> Patient takes Metoprolol (beta-blocker) — this may blunt tachycardic response to hypovolaemia. Also takes Perindopril (ACE inhibitor) — may worsen hypotension in volume-depleted states.
+            </div>
+        </div>
+    </div>
+
+    <!-- Clinical Decision Point -->
+    <div class="section-static" id="decision">
+        <h2>Clinical Decision Point</h2>
+
+        <!-- BREAK POINT 4 -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span>BREAK POINT 4</span>
+                <span class="break-point-type">Decision-Making</span>
+            </div>
+            <div class="break-point-content">
+                <h4>Screening &amp; Working Diagnosis</h4>
+                <p><strong>Facilitator Prompts:</strong></p>
+                <ul>
+                    <li>What's your working diagnosis?</li>
+                    <li>How do you differentiate this from a cardiac cause of hypotension?</li>
+                    <li>Does this patient fit the "symptomatic dehydration with hypotension" criteria?</li>
+                    <li>What other shock states should you consider?</li>
+                </ul>
+
+                <h4>Expected Paramedic Reasoning:</h4>
+                <div class="info-box">
+                    <p><strong>Working Diagnosis:</strong> Hypotension secondary to dehydration (subacute, 3-day history)</p>
+                    <p><strong>Likely Cause:</strong> Gastroenteritis leading to volume depletion</p>
+                </div>
+
+                <p><strong>Ruling OUT other causes:</strong></p>
+                <ul>
+                    <li><strong>Primary Cardiac:</strong> No chest pain, no acute ECG changes (just sinus tachycardia from known AF patient), no acute pulmonary oedema — UNLIKELY</li>
+                    <li><strong>Sepsis:</strong> Temp 37.8&#176;C borderline, no clear source other than likely viral gastro, no rigors — LESS LIKELY but monitor</li>
+                    <li><strong>Haemorrhage:</strong> No melaena, no haematemesis, no trauma — RULED OUT</li>
+                    <li><strong>Obstructive:</strong> No respiratory distress, no JVP elevation, equal breath sounds — RULED OUT</li>
+                </ul>
+
+                <div class="clinical-box">
+                    <h4>Protocol Application</h4>
+                    <p><strong>From CPG — Fluid Resuscitation in Medical Emergencies:</strong></p>
+                    <p>"Symptomatic dehydration with hypotension &#8594; Adopt general approach to fluid resuscitation"</p>
+                    <p>"Consider if acute or subacute dehydration"</p>
+                    <p>This is <span class="highlight">SUBACUTE</span> — 3-day history with progressive deterioration.</p>
+                </div>
+
+                <h4>Key Teaching Points:</h4>
+                <ul>
+                    <li>Always exclude cardiac cause before attributing hypotension to dehydration</li>
+                    <li>The protocol explicitly states it "does not apply to hypotension from primary cardiac cause"</li>
+                    <li>Subacute dehydration (days) vs acute (hours) affects both clinical picture and response to treatment</li>
+                    <li>Beta-blockers mask compensatory tachycardia — don't rely on heart rate alone to assess volume status</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>Elderly patients on multiple cardiac medications are complex. Don't let the "simple" presentation of dehydration lull you into complacency. Get a 12-lead ECG before committing to your diagnosis if there's any doubt.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Treatment Phase -->
+    <div class="section-static" id="treatment">
+        <h2>Treatment Phase — Fluid Resuscitation</h2>
+        <div class="time-critical">
+            PATIENT IS HYPOTENSIVE — INITIATE TREATMENT
+        </div>
+
+        <!-- BREAK POINT 5 -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span>BREAK POINT 5</span>
+                <span class="break-point-type">Practical Skill</span>
+            </div>
+            <div class="break-point-content">
+                <h4>IV Access &amp; Fluid Administration</h4>
+                <p><strong>Facilitator Prompts:</strong></p>
+                <ul>
+                    <li>Talk me through your IV cannulation approach in a dehydrated patient</li>
+                    <li>What gauge cannula and why?</li>
+                    <li>What fluid, what volume, what rate?</li>
+                    <li>What are you monitoring during the infusion?</li>
+                </ul>
+
+                <h4>Skill Practice: IV Cannulation (Dehydrated Patient)</h4>
+                <ol class="skill-steps">
+                    <li><strong>Assess venous access:</strong> Dehydrated patients have collapsed veins. Use a tourniquet, hang the arm down, palpate for deeper veins. Consider antecubital fossa for reliable access.</li>
+                    <li><strong>Select cannula:</strong> 18G preferred for rapid fluid administration. 20G acceptable if veins are poor.</li>
+                    <li><strong>Prepare equipment:</strong> Cannula, tegaderm, saline lock, giving set already primed with NaCl 0.9%</li>
+                    <li><strong>Aseptic technique:</strong> Alcohol swab, allow to dry, anchor vein, insert cannula at 15-30&#176; angle</li>
+                    <li><strong>Confirm placement:</strong> Blood flashback, advance cannula, remove needle, connect giving set</li>
+                    <li><strong>Secure:</strong> Tegaderm over site, loop and secure tubing</li>
+                    <li><strong>Document:</strong> Time, gauge, site, number of attempts</li>
+                </ol>
+
+                <div class="clinical-box">
+                    <h4>Fluid Resuscitation — General Approach (Per Protocol)</h4>
+                    <ul>
+                        <li><strong>Fluid:</strong> Sodium Chloride 0.9% (Normal Saline)</li>
+                        <li><strong>Initial Bolus:</strong> 250–500mL</li>
+                        <li><strong>Rate:</strong> Rapid infusion (consider pressure bag if severely hypotensive)</li>
+                        <li><strong>Reassess:</strong> After each bolus — BP, HR, mental state</li>
+                        <li><strong>Repeat:</strong> If still hypotensive, repeat bolus</li>
+                        <li><strong>Caution:</strong> Cardiac history — monitor for signs of fluid overload</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Fluid Overload Warning Signs:</strong>
+                    <ul>
+                        <li>New or worsening dyspnoea</li>
+                        <li>Increased respiratory rate</li>
+                        <li>New crackles on auscultation</li>
+                        <li>Falling SpO2</li>
+                        <li>JVP elevation</li>
+                    </ul>
+                    <p>This patient has cardiac history — fluid resuscitate judiciously and reassess frequently.</p>
+                </div>
+
+                <h4>Additional Interventions:</h4>
+                <ul class="checklist">
+                    <li>Position patient supine with legs elevated (if tolerated)</li>
+                    <li>Remove excessive bedding if warm</li>
+                    <li>Small sips of water if conscious and able to swallow (oral rehydration adjunct)</li>
+                    <li>Keep patient warm if peripherally shut down</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>As a single responder, getting IV access established before backup arrives is gold. When the crew arrives, you can hand over with IV running and move straight to transport planning. Efficiency matters in rural settings with long transport times.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reassessment -->
+    <div class="section-static" id="reassess">
+        <h2>Reassessment &amp; Escalation</h2>
+        <p><strong>Facilitator reads (after 250mL bolus):</strong></p>
+        <div class="info-box">
+            <p>"You've administered the first 250mL bolus over approximately 10 minutes. The volunteer crew has just arrived and is bringing the stretcher to the door. Time to reassess."</p>
+        </div>
+
+        <h4>Post-Bolus Vital Signs:</h4>
+        <div class="vitals-grid">
+            <div class="vital-card">
+                <div class="vital-label">Blood Pressure</div>
+                <div class="vital-value caution">94/58</div>
+            </div>
+            <div class="vital-card">
+                <div class="vital-label">Heart Rate</div>
+                <div class="vital-value caution">104</div>
+            </div>
+            <div class="vital-card">
+                <div class="vital-label">SpO2</div>
+                <div class="vital-value">97%</div>
+            </div>
+            <div class="vital-card">
+                <div class="vital-label">GCS</div>
+                <div class="vital-value caution">14</div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <p><strong>Clinical Response:</strong> BP improved from 82/50 to 94/58. HR decreased from 112 to 104. Patient reports feeling "slightly less dizzy." Responding to fluid therapy but still hypotensive.</p>
+        </div>
+
+        <!-- BREAK POINT 6 -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span>BREAK POINT 6</span>
+                <span class="break-point-type">Decision-Making</span>
+            </div>
+            <div class="break-point-content">
+                <h4>Reassessment &amp; Escalation Decision</h4>
+                <p><strong>Facilitator Prompts:</strong></p>
+                <ul>
+                    <li>How do you interpret this response to fluid?</li>
+                    <li>Do you give more fluid? How much?</li>
+                    <li>Does this patient need EOC consultation?</li>
+                    <li>What's your transport priority?</li>
+                </ul>
+
+                <h4>Expected Paramedic Reasoning:</h4>
+                <ul>
+                    <li>Positive response to initial bolus — supports dehydration as primary cause</li>
+                    <li>Still hypotensive — warrants second bolus</li>
+                    <li>Cardiac history requires cautious approach — smaller boluses with frequent reassessment</li>
+                    <li>Transport is indicated — this patient needs hospital-based rehydration and investigation</li>
+                </ul>
+
+                <h4>Decision: Second Bolus</h4>
+                <div class="clinical-box">
+                    <p><strong>Plan:</strong> Administer second 250mL NaCl 0.9% bolus during transport preparation</p>
+                    <p><strong>Rationale:</strong> Continuing response, no signs of fluid overload, patient remains symptomatic</p>
+                    <p><strong>EOC:</strong> Consider notification if BP fails to respond to second bolus or if concerns arise</p>
+                </div>
+
+                <h4>Key Teaching Points:</h4>
+                <ul>
+                    <li>"Assess, treat, reassess" — the cornerstone of fluid resuscitation</li>
+                    <li>Improvement confirms your working diagnosis</li>
+                    <li>Deterioration should prompt reconsideration of differentials</li>
+                    <li>Document response to treatment — this guides hospital management</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>Subacute dehydration won't be fully corrected in the field. Your role is to stabilise, prevent deterioration, and transport. The hospital will complete the rehydration with lab-guided therapy.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backup Integration & Extrication -->
+    <div class="section-static" id="extrication">
+        <h2>Backup Integration &amp; Extrication</h2>
+        <p><strong>Facilitator reads:</strong></p>
+        <div class="info-box">
+            <p>"The volunteer AO crew has arrived — two experienced officers with the ambulance stretcher. They're ready to assist. The patient is in the bedroom, approximately 15 metres from where the stretcher can be positioned at the front door."</p>
+        </div>
+
+        <!-- BREAK POINT 7 -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span>BREAK POINT 7</span>
+                <span class="break-point-type">Practical Skill / Discussion</span>
+            </div>
+            <div class="break-point-content">
+                <h4>Extrication &amp; Transport Planning</h4>
+                <p><strong>Facilitator Prompts:</strong></p>
+                <ul>
+                    <li>How do you brief the backup crew?</li>
+                    <li>What's your extrication plan for a hypotensive patient?</li>
+                    <li>Who does what during the move?</li>
+                    <li>Patient positioning for transport?</li>
+                </ul>
+
+                <h4>Crew Briefing (Paramedic to AO Crew):</h4>
+                <div class="info-box">
+                    <p>"This is Harold, 76 years old, hypotensive secondary to dehydration from gastro over the last 3 days. BP was 82 systolic on arrival, now 94 after 250mL fluid. IV is running in his right ACF. He's got cardiac history — AF and hypertension — so we're being cautious with fluids. He's weak but cooperative. We'll use the carry chair to the stretcher — no walking. I'll manage the IV and monitor, can you two manage the chair?"</p>
+                </div>
+
+                <h4>Extrication Plan:</h4>
+                <ul class="checklist">
+                    <li>Sit patient up slowly (monitor for orthostatic symptoms)</li>
+                    <li>Transfer to green carry chair with assistance</li>
+                    <li>Paramedic manages IV line and monitors patient</li>
+                    <li>AO crew wheels carry chair to stretcher at front door</li>
+                    <li>Transfer to stretcher — position supine with legs slightly elevated</li>
+                    <li>Secure patient, continue IV infusion</li>
+                </ul>
+
+                <div class="warning-box">
+                    <strong>Postural Hypotension Risk:</strong> This patient is volume depleted. Moving from supine to sitting may cause significant BP drop. Move slowly, monitor continuously, be prepared to lower back down if needed.
+                </div>
+
+                <h4>Transport Configuration:</h4>
+                <ul>
+                    <li><strong>Paramedic:</strong> In rear with patient, managing ongoing care</li>
+                    <li><strong>AO Clinician:</strong> Can assist in rear or drive (Paramedic's discretion)</li>
+                    <li><strong>Transport Priority:</strong> Priority 2 — lights and sirens not required, but prompt transport</li>
+                    <li><strong>Destination:</strong> Nearest appropriate ED (35 minutes)</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>Clear communication with backup crews is essential. They've arrived mid-job — give them the key information they need to assist effectively. Use their skills but maintain clinical oversight as the Paramedic.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transport & Ongoing Care -->
+    <div class="section" id="transport">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>Transport &amp; Ongoing Care</h2>
+            <span class="toggle-icon">&#9660;</span>
+        </div>
+        <div class="section-content">
+            <h4>En Route Monitoring:</h4>
+            <ul class="checklist">
+                <li>Continuous SpO2 and HR monitoring</li>
+                <li>NIBP every 5 minutes</li>
+                <li>Ongoing IV fluid as per response</li>
+                <li>Monitor for fluid overload (respiratory status)</li>
+                <li>Reassess GCS and orientation</li>
+                <li>Document all observations and interventions</li>
+            </ul>
+
+            <h4>Fluids Administered (Total):</h4>
+            <table class="data-table">
+                <tr>
+                    <th>Time</th>
+                    <th>Intervention</th>
+                    <th>Response</th>
+                </tr>
+                <tr>
+                    <td>10:42</td>
+                    <td>NaCl 0.9% 250mL bolus #1</td>
+                    <td>BP 82/50 &#8594; 94/58</td>
+                </tr>
+                <tr>
+                    <td>10:55</td>
+                    <td>NaCl 0.9% 250mL bolus #2</td>
+                    <td>BP 94/58 &#8594; 102/64</td>
+                </tr>
+                <tr>
+                    <td>Ongoing</td>
+                    <td>Maintenance ~100mL/hr</td>
+                    <td>Stable</td>
+                </tr>
+            </table>
+
+            <h4>Final Pre-Hospital Vital Signs:</h4>
+            <div class="vitals-grid">
+                <div class="vital-card">
+                    <div class="vital-label">Blood Pressure</div>
+                    <div class="vital-value">102/64</div>
+                </div>
+                <div class="vital-card">
+                    <div class="vital-label">Heart Rate</div>
+                    <div class="vital-value">96</div>
+                </div>
+                <div class="vital-card">
+                    <div class="vital-label">SpO2</div>
+                    <div class="vital-value">98%</div>
+                </div>
+                <div class="vital-card">
+                    <div class="vital-label">GCS</div>
+                    <div class="vital-value">15</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Clinical Improvement:</strong> Patient now more alert, GCS improved to 15, BP approaching normal range. Good response to fluid resuscitation supports dehydration as primary cause.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Handover -->
+    <div class="section-static" id="handover">
+        <h2>Hospital Handover</h2>
+
+        <!-- BREAK POINT 8 -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span>BREAK POINT 8</span>
+                <span class="break-point-type">Practical Skill</span>
+            </div>
+            <div class="break-point-content">
+                <h4>ISBAR Handover Practice</h4>
+                <p><strong>Facilitator:</strong> "You've arrived at the ED. The triage nurse is ready to receive handover. Deliver your ISBAR."</p>
+
+                <div class="clinical-box">
+                    <h4>Sample ISBAR Handover:</h4>
+                    <p><strong>I – Identify:</strong> "This is Harold Patterson, 76 years old, from a rural property on Boundary Road."</p>
+                    <p><strong>S – Situation:</strong> "Harold presented with hypotension secondary to dehydration. He's been unwell with gastro symptoms for 3 days with minimal oral intake and vomiting."</p>
+                    <p><strong>B – Background:</strong> "Past history of atrial fibrillation, hypertension, and previous TIA. He takes Metoprolol, Perindopril, and Aspirin. Allergic to Penicillin — causes a rash."</p>
+                    <p><strong>A – Assessment:</strong> "On our arrival, BP was 82/50 with a heart rate of 112. He was pale, lethargic, with dry mucous membranes and reduced skin turgor. GCS was 14. ECG showed sinus tachycardia only. We established IV access and administered 500mL of normal saline in two boluses. BP improved to 102/64, heart rate down to 96, and GCS improved to 15. He's responded well to fluids with no signs of overload."</p>
+                    <p><strong>R – Recommendation:</strong> "He'll likely need ongoing IV rehydration and bloods to check his electrolytes and renal function. The wife is following behind and can provide more history."</p>
+                </div>
+
+                <h4>Key Handover Points:</h4>
+                <ul>
+                    <li>Quantify the fluid given and the response</li>
+                    <li>Highlight cardiac history and medication (Penicillin allergy)</li>
+                    <li>Note the clinical improvement — confirms your working diagnosis</li>
+                    <li>Clear recommendation supports continuity of care</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>A good handover saves time and prevents errors. The ED staff need to know what you found, what you did, and how the patient responded. Be concise but complete.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Debrief -->
+    <div class="section-static" id="debrief">
+        <h2>Debrief (10–15 minutes)</h2>
+
+        <h4>Reflective Questions:</h4>
+        <div class="debrief-question">
+            <strong>1. Clinical Reasoning:</strong> How did you differentiate dehydration from cardiac causes of hypotension in this patient?
+        </div>
+        <div class="debrief-question">
+            <strong>2. Protocol Application:</strong> What are the key principles of the Fluid Resuscitation guideline that guided your treatment?
+        </div>
+        <div class="debrief-question">
+            <strong>3. Single Responder Challenges:</strong> What did you prioritise while waiting for backup? How did this affect patient outcomes?
+        </div>
+        <div class="debrief-question">
+            <strong>4. Medication Considerations:</strong> How did the patient's beta-blocker and ACE inhibitor influence your assessment and treatment?
+        </div>
+        <div class="debrief-question">
+            <strong>5. Fluid Therapy:</strong> Why did we use smaller boluses (250mL) rather than larger volumes? When would you escalate to EOC?
+        </div>
+        <div class="debrief-question">
+            <strong>6. Team Integration:</strong> How effectively did you brief and utilise the volunteer backup crew?
+        </div>
+        <div class="debrief-question">
+            <strong>7. Transport Decision:</strong> At what point was transport "locked in" as the priority? Could anything have changed this?
+        </div>
+
+        <h4>Take-Home Messages:</h4>
+        <div class="take-home">
+            1. Always exclude cardiac causes before attributing hypotension to dehydration — the protocol explicitly states this.
+        </div>
+        <div class="take-home">
+            2. Subacute dehydration (days) presents differently to acute — expect a more insidious picture with greater total volume deficit.
+        </div>
+        <div class="take-home">
+            3. Beta-blockers mask compensatory tachycardia — don't rely on heart rate alone to assess volume status.
+        </div>
+        <div class="take-home">
+            4. Fluid resuscitate judiciously in patients with cardiac history — smaller boluses, frequent reassessment, watch for overload.
+        </div>
+        <div class="take-home">
+            5. "Assess, treat, reassess" — response to fluid confirms or challenges your diagnosis.
+        </div>
+        <div class="take-home">
+            6. Transport to hospital is the goal — prehospital care is stabilisation, not definitive treatment.
+        </div>
+        <div class="take-home">
+            7. Single responder efficiency: prioritise assessment and IV access before backup arrives — this accelerates the overall care timeline.
+        </div>
+    </div>
+
+    <!-- Scenario Variations -->
+    <div class="section" id="variations">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>Optional Scenario Variations</h2>
+            <span class="toggle-icon">&#9660;</span>
+        </div>
+        <div class="section-content">
+            <h4>Variation 1: No Response to Fluids</h4>
+            <div class="info-box">
+                <p>After 500mL, BP remains 84/52. Patient becomes more confused. What differentials do you now consider? When do you escalate to EOC? Consider: underlying sepsis, occult bleeding, cardiac cause missed on initial assessment.</p>
+            </div>
+
+            <h4>Variation 2: Fluid Overload</h4>
+            <div class="info-box">
+                <p>After second bolus, patient develops dyspnoea and you hear bilateral crackles. SpO2 drops to 92%. How do you manage this? What does this tell you about the underlying condition?</p>
+            </div>
+
+            <h4>Variation 3: Hyperthermia Component</h4>
+            <div class="info-box">
+                <p>Same scenario, but temperature is 39.8&#176;C and the house has no air conditioning. Patient was working outside yesterday. Apply the protocol's hyperthermia-specific interventions: remove clothing, moisten skin, cold packs to groin/axillae.</p>
+            </div>
+
+            <h4>Variation 4: Extended Transport</h4>
+            <div class="info-box">
+                <p>Nearest hospital is 90 minutes away. Retrieval services unavailable. How does this change your fluid strategy? What ongoing care is required? Consider: larger total fluid volumes, more frequent reassessment, EOC consultation for guidance.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Protocol Reference Section -->
+    <div class="section" id="protocol">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>Protocol Quick Reference</h2>
+            <span class="toggle-icon">&#9660;</span>
+        </div>
+        <div class="section-content">
+            <div class="clinical-box">
+                <h4>CPG — Fluid Resuscitation in Medical Emergencies — P</h4>
+                <p><strong>Principle:</strong> Fluid resuscitation should be used to treat hypovolaemia in conjunction with other treatments such as universal care, posture and where possible, treatment of the cause.</p>
+                <p><strong>Exclusion:</strong> This guideline does not apply to hypotension resulting from a primary cardiac cause.</p>
+                <p><strong>Goal:</strong> Transport to hospital is the desired outcome in all cases.</p>
+            </div>
+
+            <h4>General Approach to Fluid Resuscitation:</h4>
+            <ul>
+                <li>Establish IV access</li>
+                <li>Administer NaCl 0.9% boluses (250–500mL)</li>
+                <li>Reassess after each bolus</li>
+                <li>Repeat as needed</li>
+                <li>Prompt transport</li>
+            </ul>
+
+            <h4>Symptomatic Dehydration with Hypotension:</h4>
+            <ul>
+                <li>Adopt general approach as above</li>
+                <li>Consider if acute or subacute dehydration</li>
+                <li>If secondary to hyperthermia: remove excessive clothing, moisten skin, enhance evaporation, apply cold packs to groin and axillae</li>
+            </ul>
+
+            <h4>Related Protocols:</h4>
+            <ul>
+                <li>CPG-133-P Severe Haemorrhage (for haemorrhagic hypovolaemia)</li>
+                <li>CPG-143-P Sepsis Adult (if sepsis suspected)</li>
+                <li>CPG-173-P Sepsis Paediatric (paediatric cases)</li>
+            </ul>
+        </div>
+    </div>
+
+</main>
+
+<!-- JavaScript -->
+<script>
+    // Toggle sections
+    function toggleSection(header) {
+        header.classList.toggle('active');
+        const content = header.nextElementSibling;
+        content.classList.toggle('show');
+    }
+
+    // Progress bar
+    function updateProgress() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = (scrollTop / docHeight) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+    }
+
+    // Fade in on scroll
+    function handleScroll() {
+        const sections = document.querySelectorAll('.section, .section-static');
+        sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            if (rect.top < windowHeight * 0.85) {
+                section.classList.add('visible');
+            }
+        });
+        updateProgress();
+    }
+
+    // Initialize
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('load', () => {
+        handleScroll();
+        // Open first few sections by default
+        const firstSections = document.querySelectorAll('.section-content');
+        if (firstSections[0]) {
+            firstSections[0].classList.add('show');
+            firstSections[0].previousElementSibling.classList.add('active');
+        }
+    });
+</script>
+</body>
+</html>
