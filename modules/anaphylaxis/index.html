@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anaphylaxis & Allergy — Volunteer AO Walk-Through Scenario</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:18px;scroll-behavior:smooth}
+body{font-family:'Segoe UI',Inter,system-ui,-apple-system,sans-serif;background:#001a00;color:#e0e8e0;line-height:1.6;padding-top:90px}
+
+/* ── Sticky Header ── */
+.sticky-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:linear-gradient(135deg,#002200 0%,#003300 100%);border-bottom:2px solid #00aa44;padding:10px 20px;display:flex;align-items:center;gap:16px}
+.sticky-header img{width:60px;height:60px;object-fit:contain;border-radius:8px}
+.header-title{flex:1}
+.header-title h1{font-size:1.1rem;color:#fff;font-weight:700;line-height:1.2}
+.header-title p{font-size:.78rem;color:#88cc88;margin-top:2px}
+.progress-bar-container{position:absolute;bottom:0;left:0;right:0;height:3px;background:#001a00}
+.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#00cc55,#44ff88);transition:width .2s ease}
+
+/* ── Main Container ── */
+.container{max-width:800px;margin:0 auto;padding:20px 16px 60px}
+
+/* ── Section Cards ── */
+.section-card{background:linear-gradient(135deg,#002a00,#003d00);border:1px solid #005500;border-radius:12px;padding:24px 20px;margin-bottom:24px;opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.section-card.visible{opacity:1;transform:translateY(0)}
+.section-card h2{font-size:1.2rem;color:#44ff88;margin-bottom:14px;border-bottom:1px solid #005500;padding-bottom:8px}
+.section-card h3{font-size:1.05rem;color:#88ffaa;margin:16px 0 8px}
+.section-card p,.section-card li{font-size:1rem;color:#cce0cc}
+.section-card ul,.section-card ol{padding-left:20px;margin:8px 0}
+.section-card li{margin-bottom:6px}
+
+/* ── Checklist ── */
+.checklist{list-style:none;padding:0}
+.checklist li{position:relative;padding-left:28px;margin-bottom:8px;font-size:1rem;color:#cce0cc}
+.checklist li::before{content:'☐';position:absolute;left:0;color:#44ff88;font-size:1.1rem}
+
+/* ── Break Point Cards ── */
+.break-point{background:linear-gradient(135deg,#003300,#004d00);border:2px solid #00aa44;border-radius:12px;margin-bottom:28px;overflow:hidden;opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.break-point.visible{opacity:1;transform:translateY(0)}
+.bp-header{background:linear-gradient(135deg,#004400,#006600);padding:16px 20px;cursor:default}
+.bp-label{display:inline-block;background:#00aa44;color:#001a00;font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.bp-type{display:inline-block;background:#005500;color:#88ffaa;font-size:.75rem;padding:3px 8px;border-radius:4px;margin-left:8px}
+.bp-header h2{font-size:1.15rem;color:#fff;margin-top:6px}
+.bp-body{padding:20px}
+.bp-body h3{font-size:1rem;color:#44ff88;margin:14px 0 8px}
+.bp-body p,.bp-body li{font-size:1rem;color:#cce0cc}
+.bp-body ul{padding-left:20px;margin:6px 0}
+.bp-body li{margin-bottom:5px}
+
+/* ── MDT Box ── */
+.mdt-box{background:#001a00;border:2px solid #00aa44;border-radius:8px;padding:16px;margin:12px 0;font-family:'Courier New',monospace}
+.mdt-box h4{color:#00ff66;font-size:.9rem;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+.mdt-box p{font-size:.95rem;color:#88ffaa;margin-bottom:4px}
+
+/* ── Observation Box ── */
+.obs-box{background:#002200;border:1px solid #338844;border-radius:8px;padding:14px;margin:12px 0}
+.obs-box h4{color:#44ff88;font-size:.9rem;margin-bottom:8px}
+.obs-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px}
+.obs-item{font-size:.95rem;color:#aaddaa}
+.obs-item span{color:#fff;font-weight:600}
+
+/* ── Highlight Boxes ── */
+.key-point{background:#1a3300;border-left:4px solid #44ff88;padding:12px 16px;margin:10px 0;border-radius:0 8px 8px 0}
+.key-point p{font-size:1rem;color:#bbddbb}
+.warning-box{background:#331a00;border-left:4px solid #ff8844;padding:12px 16px;margin:10px 0;border-radius:0 8px 8px 0}
+.warning-box p{font-size:1rem;color:#ffccaa}
+
+/* ── ISBAR Box ── */
+.isbar-box{background:#002200;border:1px solid #338844;border-radius:8px;padding:16px;margin:10px 0}
+.isbar-box h4{color:#00ff66;font-weight:700;margin-bottom:4px;font-size:.95rem}
+.isbar-box p{font-size:.95rem;color:#bbddbb;margin-bottom:10px}
+
+/* ── Toggle / Accordion ── */
+.toggle-section{margin-bottom:12px}
+.toggle-btn{width:100%;text-align:left;background:#003300;border:1px solid #005500;color:#88ffaa;font-size:1rem;font-weight:600;padding:14px 20px;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;min-height:44px;transition:background .2s}
+.toggle-btn:hover,.toggle-btn:active{background:#004400}
+.toggle-btn .arrow{transition:transform .3s;font-size:.85rem}
+.toggle-btn.active .arrow{transform:rotate(180deg)}
+.toggle-btn.active{border-radius:8px 8px 0 0;border-bottom-color:transparent}
+.toggle-content{display:none;background:#002200;border:1px solid #005500;border-top:none;border-radius:0 0 8px 8px;padding:16px 20px}
+.toggle-content.open{display:block}
+
+/* ── Dose Table ── */
+.dose-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.95rem}
+.dose-table th{background:#004400;color:#88ffaa;padding:10px;text-align:left;border:1px solid #005500}
+.dose-table td{padding:10px;border:1px solid #005500;color:#cce0cc}
+.dose-table tr:nth-child(even) td{background:#002a00}
+
+/* ── Scenario Intro ── */
+.scenario-intro{background:linear-gradient(135deg,#002200,#003a00);border:2px solid #00aa44;border-radius:12px;padding:24px 20px;margin-bottom:28px;text-align:center;opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.scenario-intro.visible{opacity:1;transform:translateY(0)}
+.scenario-intro h2{font-size:1.3rem;color:#44ff88;margin-bottom:10px}
+.scenario-intro p{font-size:1rem;color:#bbddbb}
+
+/* ── Debrief ── */
+.debrief-card{background:linear-gradient(135deg,#002a00,#004000);border:2px solid #00cc55;border-radius:12px;padding:24px 20px;margin-bottom:24px;opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.debrief-card.visible{opacity:1;transform:translateY(0)}
+.debrief-card h2{font-size:1.2rem;color:#44ff88;margin-bottom:14px;border-bottom:1px solid #005500;padding-bottom:8px}
+.debrief-card ol{padding-left:20px}
+.debrief-card li{margin-bottom:8px;font-size:1rem;color:#cce0cc}
+
+.take-home{background:#1a3300;border:1px solid #00aa44;border-radius:8px;padding:16px;margin-top:14px}
+.take-home h3{color:#44ff88;font-size:1rem;margin-bottom:8px}
+.take-home li{color:#bbddbb}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  .sticky-header{padding:8px 12px;gap:10px}
+  .sticky-header img{width:44px;height:44px}
+  .header-title h1{font-size:1rem}
+  .container{padding:14px 10px 40px}
+  .section-card,.break-point,.debrief-card{padding:16px 14px}
+  .bp-body{padding:14px}
+  .obs-grid{grid-template-columns:1fr}
+  .dose-table{font-size:.85rem}
+  .dose-table th,.dose-table td{padding:8px 6px}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════ STICKY HEADER ════════════ -->
+<header class="sticky-header">
+  <img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" alt="DSY Training Logo" width="120" height="120">
+  <div class="header-title">
+    <h1>Anaphylaxis & Allergy</h1>
+    <p>Volunteer AO Walk-Through Scenario</p>
+  </div>
+  <div class="progress-bar-container"><div class="progress-bar" id="progressBar"></div></div>
+</header>
+
+<main class="container">
+
+<!-- ════════════ TITLE & CONTEXT ════════════ -->
+<div class="section-card fade-in">
+  <h2>Title & Context</h2>
+  <p><strong>Session:</strong> Anaphylaxis and Allergy — Recognition, IM Adrenaline Administration & Management</p>
+  <p><strong>Source Protocol:</strong> SAAS Anaphylaxis and Allergy (CPG-004-P) — adapted to Volunteer AO scope of practice</p>
+  <p><strong>Duration:</strong> 60–90 minutes</p>
+  <p><strong>Crew Configuration:</strong> 2-person Volunteer AO crew (Clinician + Driver)</p>
+  <p><strong>Setting:</strong> Rural property, regional South Australia</p>
+  <div class="key-point" style="margin-top:14px">
+    <p><strong>Key principle:</strong> Anaphylaxis is most responsive to treatment in its early phases, before shock has developed. There are no absolute contraindications to adrenaline use in anaphylaxis. Early IM Adrenaline saves lives.</p>
+  </div>
+</div>
+
+<!-- ════════════ LEARNING OBJECTIVES ════════════ -->
+<div class="section-card fade-in">
+  <h2>Learning Objectives</h2>
+  <ol>
+    <li>Differentiate mild or moderate allergy from anaphylaxis</li>
+    <li>Identify the key clinical features of anaphylaxis — skin plus respiratory and/or cardiovascular and/or persistent severe gastrointestinal symptoms</li>
+    <li>Prepare and administer IM Adrenaline 1:1000 correctly — drug, dose, route, site, technique</li>
+    <li>Describe when to repeat IM Adrenaline and the clinical rationale</li>
+    <li>Manage positioning, airway and oxygen therapy in the anaphylactic patient</li>
+    <li>Recognise escalation triggers requiring EOC Clinician consultation</li>
+    <li>Deliver a structured ISBAR handover for an anaphylaxis patient</li>
+  </ol>
+</div>
+
+<!-- ════════════ REQUIRED EQUIPMENT ════════════ -->
+<div class="section-card fade-in">
+  <h2>Required Equipment</h2>
+  <h3>Clinical Equipment</h3>
+  <ul class="checklist">
+    <li>Ambulance Response Bag (Red/Blue Kit)</li>
+    <li>Corpuls3 monitor</li>
+    <li>Oxygen therapy equipment — non-rebreather mask, nasal prongs</li>
+    <li>Suction unit</li>
+    <li>OPA and NPA airways</li>
+    <li>Bag-valve-mask</li>
+    <li>PPE — gloves, safety glasses</li>
+  </ul>
+  <h3>Medications (for practice and discussion)</h3>
+  <ul class="checklist">
+    <li>Adrenaline 1:1000 (1mg/mL) ampoules x 3</li>
+    <li>1mL syringes</li>
+    <li>IM needles (23G, 25mm)</li>
+    <li>Alcohol swabs</li>
+    <li>Sharps container</li>
+  </ul>
+  <h3>Transport and Documentation</h3>
+  <ul class="checklist">
+    <li>Stretcher</li>
+    <li>Green carry chair</li>
+    <li>Blanket</li>
+    <li>ePCR tablet or paperwork</li>
+  </ul>
+</div>
+
+<!-- ════════════ SESSION STRUCTURE OVERVIEW ════════════ -->
+<div class="section-card fade-in">
+  <h2>Session Structure Overview</h2>
+  <ol>
+    <li>Pre-Brief — approximately 10 minutes</li>
+    <li>Dispatch and En Route — Break Point 1</li>
+    <li>Doorway and First Impression — Break Point 2</li>
+    <li>Patient Contact, Primary Survey and Corpuls3 — Break Point 3</li>
+    <li>Screening, Protocols and Working Diagnosis — Break Point 4</li>
+    <li>Treatment Initiation and Medication Safety — Break Point 5 (practical skill)</li>
+    <li>Reassessment and Escalation Decision — Break Point 6</li>
+    <li>Extrication and Transport Planning — Break Point 7</li>
+    <li>ISBAR Handover — Break Point 8</li>
+    <li>Debrief — 10 to 15 minutes</li>
+  </ol>
+</div>
+
+<!-- ════════════ KNOWLEDGE — PRE-BRIEF ════════════ -->
+<div class="section-card fade-in">
+  <h2>Pre-Brief (approximately 10 minutes)</h2>
+  <p>Set the scene. This is a walk-through — we pause at key decision points to discuss, practice skills and reinforce clinical reasoning.</p>
+  <h3>Ask the group before starting</h3>
+  <ul>
+    <li>What is anaphylaxis and how is it different from a mild allergy?</li>
+    <li>What are the common triggers?</li>
+    <li>What is the first-line treatment?</li>
+    <li>Where do we give IM Adrenaline and what is the adult dose?</li>
+    <li>When do we call the EOC Clinician?</li>
+  </ul>
+</div>
+
+<!-- ════════════ KNOWLEDGE TOGGLES ════════════ -->
+<div class="section-card fade-in">
+  <h2>Knowledge Reference</h2>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">Anaphylaxis vs Mild or Moderate Allergy <span class="arrow">▼</span></button>
+    <div class="toggle-content">
+      <h3>Mild or Moderate Allergy</h3>
+      <ul>
+        <li>Swelling of lips, face, eyes</li>
+        <li>Hives or welts on the skin</li>
+        <li>Tingling mouth</li>
+        <li>Abdominal pain or vomiting (without systemic features)</li>
+      </ul>
+      <div class="key-point"><p>Mild or moderate allergy does NOT always occur before anaphylaxis. A patient can have anaphylaxis as their first reaction.</p></div>
+      <h3>Anaphylaxis — Suspect when you see</h3>
+      <p>Acute onset illness with typical <strong>skin features</strong> (present in up to 90% of episodes) PLUS involvement of one or more of:</p>
+      <ul>
+        <li><strong>Respiratory:</strong> bronchospasm, upper airway obstruction, wheeze, stridor, hoarse voice, shortness of breath</li>
+        <li><strong>Cardiovascular:</strong> hypotension, tachycardia, poor perfusion, dizziness, collapse</li>
+        <li><strong>Persistent severe gastrointestinal:</strong> repeated vomiting, severe abdominal pain</li>
+      </ul>
+      <p><strong>Skin features</strong> include urticarial rash, erythema or flushing, and angioedema (swelling of deeper tissues — face, lips, tongue, throat).</p>
+      <div class="warning-box"><p>Anaphylaxis can mimic asthma, syncope and panic attacks. The presence of skin features plus a known or suspected trigger should point you towards anaphylaxis.</p></div>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">Why Adrenaline is First Line <span class="arrow">▼</span></button>
+    <div class="toggle-content">
+      <p>Adrenaline is the <strong>only first-line treatment</strong> for anaphylaxis. It works on multiple receptor types:</p>
+      <ul>
+        <li><strong>Alpha receptors:</strong> vasoconstriction — reverses hypotension and reduces oedema</li>
+        <li><strong>Beta-1 receptors:</strong> increases heart rate and contractility — supports cardiac output</li>
+        <li><strong>Beta-2 receptors:</strong> bronchodilation — relieves bronchospasm</li>
+        <li><strong>Mast cell stabilisation:</strong> reduces further mediator release</li>
+      </ul>
+      <div class="key-point"><p>There are <strong>no absolute contraindications</strong> to adrenaline use in anaphylaxis. Adjunctive treatments such as bronchodilators, glucocorticoids and antihistamines are NOT lifesaving and must never replace or delay adrenaline.</p></div>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">IM Adrenaline — Dose Reference <span class="arrow">▼</span></button>
+    <div class="toggle-content">
+      <table class="dose-table">
+        <thead><tr><th>Age / Weight</th><th>Dose</th><th>Volume (1:1000)</th></tr></thead>
+        <tbody>
+          <tr><td>Adult and child over 12 years</td><td>500 microg</td><td>0.5 mL</td></tr>
+          <tr><td>Child 6 to 12 years</td><td>300 microg</td><td>0.3 mL</td></tr>
+          <tr><td>Child 1 to 5 years</td><td>150 microg</td><td>0.15 mL</td></tr>
+          <tr><td>Infant under 1 year</td><td>10 microg/kg</td><td>Weight-based</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li><strong>Route:</strong> intramuscular — lateral mid-thigh (vastus lateralis)</li>
+        <li><strong>Concentration:</strong> 1:1000 (1 mg/mL) — NOT 1:10,000</li>
+        <li><strong>Repeat:</strong> every 5 minutes as needed if symptoms persist</li>
+        <li><strong>Single maximum dose:</strong> 500 microg</li>
+      </ul>
+      <div class="warning-box"><p>Always confirm 1:1000 concentration. 1:10,000 is for IV use by Paramedics — not within AO scope.</p></div>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">EOC Clinician Escalation Triggers <span class="arrow">▼</span></button>
+    <div class="toggle-content">
+      <p>Contact the EOC Clinician when:</p>
+      <ul>
+        <li>Any <strong>paediatric</strong> anaphylaxis — mandatory</li>
+        <li>No response or partial response after first dose of Adrenaline</li>
+        <li>Any <strong>upper airway concern</strong> — hoarse voice, stridor, tongue or throat swelling</li>
+        <li><strong>Persistent hypotension</strong> despite Adrenaline</li>
+        <li>Uncertainty about diagnosis or management</li>
+        <li>Clinical support or MedSTAR activation may be required</li>
+      </ul>
+      <div class="key-point"><p>Early upper airway oedema — including any voice alteration — represents rapidly developing airway compromise. Early EOC Clinician contact is essential. MedSTAR may be needed for advanced airway interventions beyond AO scope.</p></div>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">Positioning in Anaphylaxis <span class="arrow">▼</span></button>
+    <div class="toggle-content">
+      <ul>
+        <li><strong>Hypotension predominant:</strong> supine with legs elevated</li>
+        <li><strong>Respiratory distress predominant:</strong> sitting upright or in the position the patient breathes best</li>
+        <li><strong>Vomiting:</strong> recovery position</li>
+        <li><strong>Unconscious:</strong> recovery position, manage airway</li>
+      </ul>
+      <div class="warning-box"><p>Do NOT stand the patient up or allow them to walk. Sudden postural change in anaphylaxis can cause cardiac arrest due to an empty ventricle pumping against no preload.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ SCENARIO INTRODUCTION ════════════ -->
+<div class="scenario-intro fade-in">
+  <h2>The Job</h2>
+  <p>It is 1430 on a Saturday afternoon in late spring. You are the Volunteer AO crew on call for your rural station. Your pagers activate.</p>
+</div>
+
+<!-- ════════════ BREAK POINT 1 — EN ROUTE ════════════ -->
+<div class="break-point fade-in">
+  <div class="bp-header">
+    <span class="bp-label">Break Point 1</span><span class="bp-type">Discussion / Decision-Making</span>
+    <h2>En-Route Planning</h2>
+  </div>
+  <div class="bp-body">
+    <div class="mdt-box">
+      <h4>MDT Display</h4>
+      <p><strong>Priority:</strong> 1 — Immediate</p>
+      <p><strong>Case:</strong> Allergic reaction / Difficulty breathing</p>
+      <p><strong>Patient:</strong> Male, 54 years</p>
+      <p><strong>Location:</strong> Rural property — 12 minutes from station</p>
+      <p><strong>Caller:</strong> Wife (on scene)</p>
+      <p><strong>Info:</strong> Patient stung by bee. Known bee allergy. Increasing difficulty breathing. Has EpiPen but has not used it.</p>
+    </div>
+
+    <h3>Facilitator Prompts</h3>
+    <ul>
+      <li>What are you thinking as you read this MDT?</li>
+      <li>What is your index of suspicion?</li>
+      <li>How are you planning your approach?</li>
+      <li>What equipment are you prioritising?</li>
+      <li>Clinician versus Driver — who is doing what on arrival?</li>
+    </ul>
+
+    <h3>Expected AO Reasoning</h3>
+    <ul>
+      <li>Bee sting plus known allergy plus difficulty breathing equals high suspicion for anaphylaxis</li>
+      <li>This is potentially time-critical</li>
+      <li>Adrenaline 1:1000 must be immediately accessible on arrival — consider having it ready in the response bag</li>
+      <li>Ensure Corpuls3, oxygen, airway and suction are grab-and-go</li>
+      <li>Clinician: primary patient contact, assessment, Adrenaline administration</li>
+      <li>Driver: Corpuls3 setup, observations, equipment assist, prepare for rapid transport</li>
+    </ul>
+
+    <h3>Key Teaching Points</h3>
+    <div class="key-point"><p>Known bee allergy plus respiratory symptoms — treat as anaphylaxis until proven otherwise. Early adrenaline saves lives. Have it ready before you arrive.</p></div>
+    <ul>
+      <li>Pre-plan crew roles en route to reduce on-scene time</li>
+      <li>Think about vehicle positioning for rapid departure</li>
+      <li>The MDT says "has EpiPen but has not used it" — find out why on arrival (expired, unable to use, chose not to)</li>
+    </ul>
+
+    <h3>Real-Job Translation</h3>
+    <p>On a real job, you are reading this MDT while driving. Your partner should be preparing — checking Adrenaline stock, opening the response bag, thinking ahead. Rural response means longer transport. Early treatment on scene is critical.</p>
+  </div>
+</div>
+
+<!-- ════════════ BREAK POINT 2 — DOORWAY ════════════ -->
+<div class="break-point fade-in">
+  <div class="bp-header">
+    <span class="bp-label">Break Point 2</span><span class="bp-type">Discussion / Decision-Making</span>
+    <h2>Doorway / First Impression</h2>
+  </div>
+  <div class="bp-body">
+    <p>You arrive at the rural property. The wife meets you at the gate, visibly distressed. She leads you around the side of the house to the back garden.</p>
+    <p>You see a male patient sitting on a garden chair, leaning forward. From the doorway you observe:</p>
+    <ul>
+      <li>Red, blotchy skin on arms and neck</li>
+      <li>Swollen face — particularly around the eyes and lips</li>
+      <li>Using accessory muscles to breathe</li>
+      <li>Audible wheeze</li>
+      <li>Conscious but anxious and distressed</li>
+    </ul>
+    <p>Wife says: <em>"He was stung about 15 minutes ago. He took an antihistamine tablet but it's getting worse. His EpiPen expired last year and he never replaced it."</em></p>
+
+    <h3>Facilitator Prompts</h3>
+    <ul>
+      <li>What is your first impression — sick or not sick?</li>
+      <li>What are you seeing that tells you this is anaphylaxis rather than a mild allergy?</li>
+      <li>What is your immediate priority?</li>
+      <li>Any scene safety considerations?</li>
+    </ul>
+
+    <h3>Expected AO Reasoning</h3>
+    <ul>
+      <li>This patient is SICK</li>
+      <li>Multiple system involvement — skin (urticaria, facial angioedema) plus respiratory (wheeze, accessory muscle use) equals anaphylaxis</li>
+      <li>Immediate priority: IM Adrenaline</li>
+      <li>Scene is safe — outdoor, no ongoing hazard (check for bee swarm or nest nearby)</li>
+      <li>Remove stinger if still present — scrape, do not squeeze</li>
+    </ul>
+
+    <h3>Key Teaching Points</h3>
+    <div class="warning-box"><p>Do not be reassured by the fact he is sitting up and talking. Anaphylaxis can deteriorate rapidly. The antihistamine has NOT treated the anaphylaxis — it is adjunctive only and not lifesaving.</p></div>
+    <ul>
+      <li>Your doorway assessment should take seconds, not minutes</li>
+      <li>If it looks like anaphylaxis, it probably is — act early</li>
+    </ul>
+
+    <h3>Real-Job Translation</h3>
+    <p>Time is adrenaline. The longer you wait, the harder it is to reverse. Expired EpiPen means this patient has had no effective pre-hospital treatment yet.</p>
+  </div>
+</div>
+
+<!-- ════════════ BREAK POINT 3 — INITIAL OBS & CORPULS3 ════════════ -->
+<div class="break-point fade-in">
+  <div class="bp-header">
+    <span class="bp-label">Break Point 3</span><span class="bp-type">Practical Skill / Discussion</span>
+    <h2>Initial Observations & Corpuls3 Setup</h2>
+  </div>
+  <div class="bp-body">
+    <h3>Primary Survey Findings</h3>
+    <ul>
+      <li><strong>D:</strong> No immediate dangers. Bee stinger removed by wife.</li>
+      <li><strong>R:</strong> Responsive, anxious, speaking in short sentences</li>
+      <li><strong>S:</strong> Send for help — confirm Priority 1, consider early EOC Clinician contact</li>
+      <li><strong>A:</strong> Patent but voice is becoming hoarse — early upper airway oedema</li>
+      <li><strong>B:</strong> RR 28, bilateral wheeze, SpO2 93% on air, accessory muscle use</li>
+      <li><strong>C:</strong> HR 118, skin warm and flushed, radial pulse present but thready, CRT 3 seconds</li>
+      <li><strong>D:</strong> GCS 15 (E4 V5 M6), pupils equal and reactive, BSL 7.2</li>
+    </ul>
+
+    <div class="obs-box">
+      <h4>Corpuls3 Observations (Driver)</h4>
+      <div class="obs-grid">
+        <div class="obs-item">HR: <span>118 bpm — sinus tachycardia</span></div>
+        <div class="obs-item">BP: <span>92/58 mmHg</span></div>
+        <div class="obs-item">SpO2: <span>93% on room air</span></div>
+        <div class="obs-item">RR: <span>28/min</span></div>
+        <div class="obs-item">Temp: <span>36.8°C</span></div>
+        <div class="obs-item">ECG: <span>Sinus tachycardia, no acute changes</span></div>
+      </div>
+    </div>
+
+    <h3>Facilitator Prompts</h3>
+    <ul>
+      <li>Talk through your primary survey — what are you finding?</li>
+      <li>Driver — walk through your Corpuls3 setup and what readings concern you</li>
+      <li>What systems are involved?</li>
+      <li>What does the hoarse voice tell you?</li>
+    </ul>
+
+    <h3>Expected AO Reasoning</h3>
+    <ul>
+      <li>Skin involvement: urticaria plus facial angioedema — confirmed</li>
+      <li>Respiratory involvement: wheeze, tachypnoea, reduced SpO2, accessory muscles — confirmed</li>
+      <li>Cardiovascular involvement: tachycardia, hypotension (SBP 92), thready pulse — confirmed</li>
+      <li>Hoarse voice equals upper airway oedema — this is a RED FLAG indicating rapidly developing airway compromise</li>
+      <li>Three-system involvement equals severe anaphylaxis</li>
+      <li>This patient needs Adrenaline NOW</li>
+    </ul>
+
+    <h3>Key Teaching Points</h3>
+    <div class="warning-box"><p>Voice change or hoarse voice equals developing upper airway oedema. This represents rapidly developing airway compromise requiring prompt action and early EOC Clinician contact.</p></div>
+    <ul>
+      <li>Hypotension in anaphylaxis reflects massive vasodilation plus fluid shift — up to 35% of intravascular volume can shift to the extravascular space within minutes</li>
+      <li>Tachycardia is a compensatory response — the body is trying to maintain cardiac output</li>
+      <li>Do not delay Adrenaline to complete a full set of observations — if anaphylaxis is clinically obvious, treat first</li>
+      <li>Driver: Corpuls3 goes on while Clinician is assessing and preparing Adrenaline</li>
+      <li>Manual pulse check and respiratory rate count remain valuable — do not rely solely on the monitor</li>
+      <li>If NIBP is unreliable due to patient movement, palpate for radial pulse quality and repeat</li>
+    </ul>
+
+    <h3>Real-Job Translation</h3>
+    <p>In real life, you may need to give Adrenaline before you have full Corpuls3 readings. The clinical picture already tells you what you need to know. The Corpuls3 data confirms your assessment.</p>
+  </div>
+</div>
+
+<!-- ════════════ BREAK POINT 4 — WORKING DIAGNOSIS ════════════ -->
+<div class="break-point fade-in">
+  <div class="bp-header">
+    <span class="bp-label">Break Point 4</span><span class="bp-type">Discussion / Decision-Making</span>
+    <h2>Screening, Protocols & Working Diagnosis</h2>
+  </div>
+  <div class="bp-body">
+    <h3>Facilitator Prompts</h3>
+    <ul>
+      <li>What is your working diagnosis?</li>
+      <li>How did you reach it?</li>
+      <li>What protocol are you working from?</li>
+      <li>Could this be anything else?</li>
+    </ul>
+
+    <h3>Expected AO Reasoning</h3>
+    <p><strong>Working Diagnosis: Anaphylaxis — severe, multi-system</strong></p>
+    <ul>
+      <li>Acute onset within 15 minutes of a known allergen exposure (bee sting)</li>
+      <li>Skin features: urticaria plus angioedema</li>
+      <li>Respiratory: bronchospasm (wheeze) plus upper airway oedema (hoarse voice)</li>
+      <li>Cardiovascular: hypotension (SBP 92) plus tachycardia (HR 118)</li>
+    </ul>
+
+    <h3>Differential Diagnoses</h3>
+    <ul>
+      <li><strong>Severe asthma</strong> — but has skin features plus known trigger</li>
+      <li><strong>Vasovagal syncope</strong> — but has skin features plus respiratory symptoms</li>
+      <li><strong>Panic attack</strong> — but has skin features plus objective clinical signs</li>
+      <li><strong>Localised allergic reaction</strong> — but has multi-system features</li>
+    </ul>
+
+    <h3>Key Teaching Points</h3>
+    <div class="key-point"><p>You do not need to be 100% certain to give Adrenaline. If you suspect anaphylaxis, treat it. The protocol states: prioritise early IM adrenaline administration over all other treatments.</p></div>
+    <ul>
+      <li>Bee sting plus swelling plus wheeze plus hypotension equals give Adrenaline</li>
+      <li>Document your clinical reasoning on the ePCR</li>
+    </ul>
+
+    <h3>Real-Job Translation</h3>
+    <p>On a real job you will not always have time to run through differentials systematically. Pattern recognition matters. If it looks like anaphylaxis and the trigger fits — treat.</p>
+  </div>
+</div>
+
+<!-- ════════════ BREAK POINT 5 — TREATMENT & MEDICATION SAFETY ════════════ -->
+<div class="break-point fade-in">
+  <div class="bp-header">
+    <span class="bp-label">Break Point 5</span><span class="bp-type">Practical Skill — Key Skills Practice</span>
+    <h2>Treatment Initiation & Medication Safety</h2>
+  </div>
+  <div class="bp-body">
+    <h3>Treatment Plan</h3>
+    <ol>
+      <li>IM Adrenaline 500 microg (0.5 mL of 1:1000) — lateral mid-thigh</li>
+      <li>High-flow oxygen 15 L/min via non-rebreather mask</li>
+      <li>Position: supine with legs elevated if tolerated, or sitting upright if needed for breathing</li>
+      <li>EOC Clinician consultation</li>
+      <li>Prepare repeat Adrenaline — set 5-minute timer</li>
+      <li>Continuous Corpuls3 monitoring</li>
+    </ol>
+
+    <h3>Practical Skill: IM Adrenaline Administration</h3>
+    <p><strong>Facilitator: Walk the crew through this step by step. Have them talk out loud as they go.</strong></p>
+
+    <h3>Preparation</h3>
+    <ul class="checklist">
+      <li>Confirm indication: anaphylaxis suspected</li>
+      <li>Verbal confirmation with partner: "This patient has anaphylaxis — I am giving IM Adrenaline 500 micrograms"</li>
+      <li>Select Adrenaline 1:1000 (1 mg/mL) ampoule from drug kit</li>
+      <li>Check: right drug — Adrenaline 1:1000 (NOT 1:10,000)</li>
+      <li>Check: expiry date</li>
+      <li>Check: ampoule integrity — clear solution, no discolouration, no particles</li>
+      <li>Snap open ampoule (use ampoule snapper or gauze if needed)</li>
+      <li>Draw up 0.5 mL (equals 500 microg) using a 1 mL syringe</li>
+      <li>Partner to independently verify: drug name, concentration, dose drawn up, expiry</li>
+    </ul>
+
+    <h3>Administration</h3>
+    <ul class="checklist">
+      <li>Identify injection site: lateral mid-thigh — vastus lateralis muscle</li>
+      <li>Expose the site (through clothing only if life-threatening delay and no time to expose)</li>
+      <li>Clean site with alcohol swab if time permits — do not delay administration to clean</li>
+      <li>Insert needle at 90 degrees to skin surface</li>
+      <li>Aspirate briefly to confirm not in a blood vessel</li>
+      <li>Inject steadily</li>
+      <li>Withdraw needle and apply gentle pressure with gauze</li>
+      <li>Dispose of sharp immediately into sharps container</li>
+      <li>Note the time of administration</li>
+      <li>Document on ePCR: drug, dose, route, site, time</li>
+    </ul>
+
+    <h3>Post-Administration</h3>
+    <ul class="checklist">
+      <li>Monitor for clinical response — improvement in breathing, reduction in wheeze, improvement in skin colour, rise in BP, reduction in HR</li>
+      <li>Start 5-minute timer for reassessment</li>
+      <li>If no improvement or partial improvement at 5 minutes — repeat IM Adrenaline 500 microg</li>
+      <li>Adrenaline may be repeated every 5 minutes as needed</li>
+      <li>Contact EOC Clinician if no response after 2 doses or if any airway concern</li>
+    </ul>
+
+    <h3>Medication Safety — Five Rights</h3>
+    <ul class="checklist">
+      <li>RIGHT patient — confirmed identity</li>
+      <li>RIGHT drug — Adrenaline 1:1000 (NOT 1:10,000)</li>
+      <li>RIGHT dose — 500 microg for adults (0.5 mL)</li>
+      <li>RIGHT route — IM, lateral mid-thigh</li>
+      <li>RIGHT time — NOW, do not delay</li>
+      <li>Partner cross-check completed before administration</li>
+      <li>Sharps disposal completed immediately after use</li>
+    </ul>
+
+    <h3>Facilitator Prompts</h3>
+    <ul>
+      <li>Walk me through drawing up the Adrenaline — talk out loud as you do it</li>
+      <li>How are you confirming the right drug and dose?</li>
+      <li>Where exactly are you injecting and why that site?</li>
+      <li>What are you telling the patient?</li>
+      <li>What are you telling your partner?</li>
+      <li>When would you repeat?</li>
+    </ul>
+
+    <h3>Expected AO Reasoning</h3>
+    <ul>
+      <li>Adrenaline 1:1000 IM is first and most important treatment</li>
+      <li>Lateral thigh is preferred — good blood supply, large muscle mass, easily accessible</li>
+      <li>500 microg is the standard adult dose</li>
+      <li>Must differentiate 1:1000 (for IM) from 1:10,000 (IV use — not in AO scope)</li>
+      <li>Partner cross-check is mandatory for medication safety</li>
+      <li>Repeat every 5 minutes if symptoms persist or recur</li>
+    </ul>
+
+    <h3>Key Teaching Points</h3>
+    <div class="key-point"><p>The lateral thigh gives faster absorption than the deltoid. If in doubt, give the Adrenaline — there are no absolute contraindications in anaphylaxis.</p></div>
+    <ul>
+      <li>A common error is delay — crews sometimes want to "wait and see" or try other treatments first</li>
+      <li>Antihistamines, steroids, and bronchodilators do NOT replace Adrenaline and are NOT first-line</li>
+      <li>Tell the patient: "I am going to give you an injection of adrenaline in your thigh. This will help with your breathing and the swelling."</li>
+      <li>Start the 5-minute timer the moment the needle is withdrawn</li>
+    </ul>
+
+    <h3>Additional Treatment — Oxygen Therapy</h3>
+    <ul>
+      <li>High-flow O2 at 15 L/min via non-rebreather mask</li>
+      <li>Target SpO2 94% or above</li>
+      <li>If SpO2 not improving, reassess airway patency</li>
+    </ul>
+
+    <h3>Airway Preparedness</h3>
+    <ul class="checklist">
+      <li>Suction unit assembled and tested</li>
+      <li>OPA and NPA available — appropriate sizes selected</li>
+      <li>BVM assembled and ready if ventilation required</li>
+      <li>Hoarse voice means monitor closely and prepare for deterioration</li>
+    </ul>
+
+    <h3>Real-Job Translation</h3>
+    <p>On a real job you may need to give Adrenaline in the back garden, a car park, or a restaurant. The technique is simple but must be practised — muscle memory matters. Practise it now so it is automatic when you need it at 0200 on a cold night.</p>
+  </div>
+</div>
+
+<!-- ════════════ BREAK POINT 6 — REASSESSMENT & ESCALATION ════════════ -->
+<div class="break-point fade-in">
+  <div class="bp-header">
+    <span class="bp-label">Break Point 6</span><span class="bp-type">Discussion / Decision-Making</span>
+    <h2>Reassessment & Escalation Decision</h2>
+  </div>
+  <div class="bp-body">
+    <h3>5-Minute Reassessment</h3>
+    <div class="obs-box">
+      <h4>Corpuls3 — 5 Minutes Post First Adrenaline</h4>
+      <div class="obs-grid">
+        <div class="obs-item">HR: <span>108 bpm (was 118)</span></div>
+        <div class="obs-item">BP: <span>96/62 mmHg (was 92/58)</span></div>
+        <div class="obs-item">SpO2: <span>96% on 15L O2 (was 93%)</span></div>
+        <div class="obs-item">RR: <span>24/min (was 28)</span></div>
+      </div>
+    </div>
+
+    <h3>Clinical Reassessment</h3>
+    <ul>
+      <li>Wheeze improving but still present</li>
+      <li>Voice still slightly hoarse — not worsening</li>
+      <li>Urticaria unchanged</li>
+      <li>Facial swelling unchanged</li>
+      <li>Patient reports feeling "slightly better" but still anxious</li>
+      <li>GCS 15 maintained</li>
+    </ul>
+
+    <h3>Facilitator Prompts</h3>
+    <ul>
+      <li>Is the Adrenaline working?</li>
+      <li>Do you give a second dose? What are you looking for to decide?</li>
+      <li>When do you call the EOC Clinician?</li>
+      <li>What would make this time-critical for you?</li>
+    </ul>
+
+    <h3>Expected AO Reasoning</h3>
+    <ul>
+      <li>Some improvement but incomplete response</li>
+      <li>BP still below 100 mmHg — adult target is SBP 100 or above</li>
+      <li>Wheeze still present</li>
+      <li>Voice hoarseness persists — ongoing airway concern</li>
+      <li><strong>Decision:</strong> administer second dose of IM Adrenaline 500 microg</li>
+      <li><strong>Decision:</strong> call EOC Clinician — multi-system anaphylaxis, incomplete response to first dose, airway concern (hoarse voice)</li>
+      <li>This is time-critical — prepare for transport while giving second dose</li>
+    </ul>
+
+    <h3>Key Teaching Points</h3>
+    <ul>
+      <li>Reassessment at 5 minutes is mandatory — you need to know if treatment is working</li>
+      <li>Partial response does not mean "resolved" — do not be falsely reassured</li>
+      <li>SBP target for adults: 100 mmHg or above</li>
+      <li>For paediatrics: SBP lower end of normal range for age per the RDR chart</li>
+      <li>Prepare for rapid transport — do not stay on scene waiting for a complete response</li>
+    </ul>
+
+    <h3>Real-Job Translation</h3>
+    <p>On a real job you may give two or three doses of Adrenaline before the patient improves fully. The EOC Clinician can provide clinical support, activate MedSTAR if needed, and guide escalation decisions. "Improving but not fixed" means keep treating AND transport.</p>
+  </div>
+</div>
+
+<!-- ════════════ BREAK POINT 7 — EXTRICATION & TRANSPORT ════════════ -->
+<div class="break-point fade-in">
+  <div class="bp-header">
+    <span class="bp-label">Break Point 7</span><span class="bp-type">Discussion / Decision-Making</span>
+    <h2>Extrication & Transport Planning</h2>
+  </div>
+  <div class="bp-body">
+    <h3>Scenario Update — 10 Minutes Post First Adrenaline (after second dose)</h3>
+    <div class="obs-box">
+      <h4>Corpuls3 — Post Second Dose</h4>
+      <div class="obs-grid">
+        <div class="obs-item">HR: <span>96 bpm (improving)</span></div>
+        <div class="obs-item">BP: <span>104/68 mmHg (above target)</span></div>
+        <div class="obs-item">SpO2: <span>97% on O2</span></div>
+        <div class="obs-item">RR: <span>20/min</span></div>
+      </div>
+    </div>
+    <ul>
+      <li>Wheeze resolving</li>
+      <li>Voice still slightly husky but improving</li>
+      <li>Facial swelling unchanged but not worsening</li>
+      <li>Patient feels "much better"</li>
+    </ul>
+    <p>EOC Clinician has been consulted — agrees with management, advises transport to nearest appropriate facility, MedSTAR on standby, pre-notify receiving facility.</p>
+
+    <h3>Facilitator Prompts</h3>
+    <ul>
+      <li>How are you getting this patient to the ambulance?</li>
+      <li>What is your transport plan?</li>
+      <li>Who is doing what during transport?</li>
+      <li>What are you monitoring en route?</li>
+      <li>What could go wrong during transport?</li>
+    </ul>
+
+    <h3>Expected AO Reasoning</h3>
+    <ul>
+      <li>Use the green carry chair from the garden to the stretcher — do NOT allow the patient to walk</li>
+      <li>Supine on the stretcher with head slightly elevated (compromise between hypotension management and breathing comfort)</li>
+      <li>Continued oxygen therapy</li>
+      <li>Continuous Corpuls3 monitoring</li>
+      <li>Third dose of Adrenaline drawn up and ready in case of deterioration</li>
+      <li>Driver: smooth transport, pre-notify receiving facility via radio</li>
+      <li>Clinician: continuous monitoring, reassess every 5 minutes, manage any deterioration</li>
+    </ul>
+
+    <h3>Key Teaching Points</h3>
+    <div class="warning-box"><p>Anaphylaxis can be biphasic — recurrence can happen hours later even after successful initial treatment. Do NOT let the patient walk. Postural changes can precipitate cardiac arrest in anaphylaxis due to reduced preload in a vasodilated system.</p></div>
+    <ul>
+      <li>Green carry chair to the stretcher minimises patient exertion and avoids postural changes</li>
+      <li>Have the next dose of Adrenaline drawn up and within reach</li>
+      <li>Keep the patient warm — blanket</li>
+      <li>Continuous monitoring en route: HR, BP, SpO2, RR, GCS, airway sounds</li>
+    </ul>
+
+    <h3>Real-Job Translation</h3>
+    <p>Rural transport times can be long. You may need further Adrenaline en route. If the patient deteriorates, re-contact EOC Clinician immediately. "Better on scene" does not mean "better for the whole transport." Stay vigilant.</p>
+  </div>
+</div>
+
+<!-- ════════════ BREAK POINT 8 — ISBAR HANDOVER ════════════ -->
+<div class="break-point fade-in">
+  <div class="bp-header">
+    <span class="bp-label">Break Point 8</span><span class="bp-type">Practical Skill</span>
+    <h2>ISBAR Handover</h2>
+  </div>
+  <div class="bp-body">
+    <p><strong>Facilitator:</strong> Have one crew member deliver the ISBAR handover. The other listens and fills in any gaps.</p>
+
+    <div class="isbar-box">
+      <h4>I — Identify</h4>
+      <p>"This is [name], Volunteer Ambulance Officer from [station]. I am handing over the care of Mr David Collins, date of birth 15th March 1972, age 54."</p>
+
+      <h4>S — Situation</h4>
+      <p>"Mr Collins has presented with anaphylaxis following a bee sting approximately 45 minutes ago. He had multi-system involvement including urticaria, facial angioedema, bronchospasm, upper airway oedema with voice changes, and hypotension."</p>
+
+      <h4>B — Background</h4>
+      <p>"Known bee allergy. Had an EpiPen but it had expired and was not used. No other significant medical history. No regular medications. No known drug allergies."</p>
+
+      <h4>A — Assessment</h4>
+      <p>"On arrival his observations were: HR 118, BP 92 over 58, SpO2 93% on air, RR 28, GCS 15, with audible wheeze, facial swelling, urticaria, and hoarse voice."</p>
+      <p>"He received two doses of IM Adrenaline 500 micrograms to the left lateral thigh — the first at 1445 and the second at 1450."</p>
+      <p>"Current observations: HR 96, BP 104 over 68, SpO2 97% on 15 litres O2, RR 20, GCS 15. Wheeze has resolved. Facial swelling unchanged. Voice hoarseness improving."</p>
+
+      <h4>R — Recommendation</h4>
+      <p>"He has responded to treatment but I remain concerned about ongoing facial swelling and the history of upper airway oedema. I would recommend continued monitoring for biphasic reaction, ongoing observation for at least four hours, and review regarding upper airway status. EOC Clinician was consulted and MedSTAR is on standby."</p>
+    </div>
+
+    <h3>Facilitator Prompts</h3>
+    <ul>
+      <li>Was that handover clear and structured?</li>
+      <li>Did it cover all the key information — treatment given, times, response?</li>
+      <li>Did it communicate the ongoing concerns?</li>
+      <li>Did it include a clear recommendation?</li>
+      <li>What would you add or change?</li>
+    </ul>
+
+    <h3>Key Teaching Points</h3>
+    <ul>
+      <li>ISBAR keeps your handover structured and prevents critical information being missed</li>
+      <li>Always include: what treatment you gave, when you gave it, and what the response was</li>
+      <li>Include your concerns — "I remain concerned about..." flags ongoing risk</li>
+      <li>Practise ISBAR on every job — it becomes second nature</li>
+    </ul>
+
+    <h3>Real-Job Translation</h3>
+    <p>A good handover equals good continuity of care. If you are stressed or fatigued, ISBAR keeps you on track. Write key times and treatments on your glove or a notepad during the job — you will need them for handover and the ePCR.</p>
+  </div>
+</div>
+
+<!-- ════════════ DEBRIEF ════════════ -->
+<div class="debrief-card fade-in">
+  <h2>Debrief (10 to 15 minutes)</h2>
+  <h3>Reflective Questions</h3>
+  <ol>
+    <li>How confident did you feel recognising anaphylaxis versus a mild allergy in this patient?</li>
+    <li>Was there any point where you hesitated to give Adrenaline? Why?</li>
+    <li>How did the crew roles work — was the division of tasks between Clinician and Driver clear and effective?</li>
+    <li>Did the 5-minute reassessment change your management plan?</li>
+    <li>When did you decide to call the EOC Clinician — was that the right time, or could you have called earlier?</li>
+    <li>How did the extrication go — any improvements for next time?</li>
+    <li>Was the ISBAR handover complete, structured and clear?</li>
+  </ol>
+
+  <div class="take-home">
+    <h3>Take-Home Messages</h3>
+    <ol>
+      <li>Anaphylaxis is a clinical diagnosis — acute onset, skin features, plus respiratory and/or cardiovascular and/or GI involvement. If you suspect it, treat it.</li>
+      <li>IM Adrenaline is the ONLY first-line treatment. Give it early, give it to the lateral thigh, and do not delay for any other intervention.</li>
+      <li>There are no absolute contraindications to adrenaline in anaphylaxis — the risk of not giving it is far greater.</li>
+      <li>Reassess at 5 minutes. Repeat Adrenaline if the patient has not improved or has only partially improved.</li>
+      <li>Escalate early — the EOC Clinician is there to support you, especially with airway concerns, persistent hypotension, and paediatric patients.</li>
+      <li>Never let an anaphylaxis patient walk. Use the carry chair. Postural changes can be fatal.</li>
+      <li>Anaphylaxis can recur — biphasic reactions mean ongoing vigilance during transport and the recommendation for at least four hours of clinical observation.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ════════════ OPTIONAL SCENARIO VARIATIONS ════════════ -->
+<div class="section-card fade-in">
+  <h2>Optional Scenario Variations</h2>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">Variation 1 — Paediatric Patient <span class="arrow">▼</span></button>
+    <div class="toggle-content">
+      <p>6-year-old child at a birthday party. Eaten cake containing peanuts. Known peanut allergy but no EpiPen at the party.</p>
+      <ul>
+        <li>Presenting with facial swelling, widespread urticaria, wheeze, and repeated vomiting</li>
+        <li>Adrenaline dose: 150 microg IM (0.15 mL of 1:1000) if under 6 years, or 300 microg (0.3 mL) if 6 to 12 years</li>
+        <li>EOC Clinician consultation is <strong>mandatory</strong> for all paediatric anaphylaxis</li>
+        <li>Additional challenge: distressed parents, weight estimation for dosing, child may be uncooperative</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">Variation 2 — Unknown Allergen <span class="arrow">▼</span></button>
+    <div class="toggle-content">
+      <p>38-year-old female at a restaurant. Sudden onset symptoms approximately 20 minutes after eating. No known allergies. No clear trigger identified.</p>
+      <ul>
+        <li>Presenting with urticaria, throat tightness, sensation of impending doom, tachycardia</li>
+        <li>Demonstrates that anaphylaxis can occur without a known allergy history</li>
+        <li>First episode — no prior mild or moderate allergic reaction</li>
+        <li>Management is the same: IM Adrenaline if anaphylaxis is suspected</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">Variation 3 — No Response to Treatment <span class="arrow">▼</span></button>
+    <div class="toggle-content">
+      <p>Same scenario but the patient does not respond to the first or second dose of IM Adrenaline.</p>
+      <ul>
+        <li>Progressive upper airway oedema — audible stridor developing</li>
+        <li>Worsening hypotension despite two doses (BP 82/50)</li>
+        <li>Requires urgent EOC Clinician escalation and potential MedSTAR activation</li>
+        <li>Demonstrates the limit of AO scope and the critical importance of early escalation</li>
+        <li>Prepare for airway deterioration: suction, BVM, position for best airway patency</li>
+        <li>IV fluid resuscitation and IV adrenaline are Paramedic-level interventions — discuss what backup would bring</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">Variation 4 — Self-Administered EpiPen <span class="arrow">▼</span></button>
+    <div class="toggle-content">
+      <p>Same patient but has successfully used an in-date EpiPen before crew arrival.</p>
+      <ul>
+        <li>Some initial improvement but symptoms now recurring — wheezing and urticaria returning</li>
+        <li>EpiPen delivers 300 microg IM — so the patient has already had one dose</li>
+        <li>Crew needs to assess current clinical status, confirm timing of EpiPen use, and decide whether further Adrenaline is needed</li>
+        <li>Demonstrates that a single dose may not be sufficient and pre-hospital treatment may need augmenting</li>
+        <li>Still transport — observation period still required</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ FOOTER ════════════ -->
+<div style="text-align:center;padding:30px 0 10px;color:#446644;font-size:.8rem">
+  <p>DSY Training — Anaphylaxis & Allergy — Volunteer AO Walk-Through Scenario</p>
+  <p>Source Protocol: SAAS CPG-004-P (adapted to AO scope) | Version 4.2, November 2021</p>
+  <p>For training purposes only. Always refer to current SAAS protocols.</p>
+</div>
+
+</main>
+
+<!-- ════════════ SCRIPTS ════════════ -->
+<script>
+// Progress bar
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  const s=window.scrollY;
+  document.getElementById('progressBar').style.width=(h>0?(s/h)*100:0)+'%';
+});
+
+// Fade-in on scroll
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}});
+},{threshold:0.08});
+document.querySelectorAll('.fade-in').forEach(el=>observer.observe(el));
+
+// Toggle sections
+function toggleSection(btn){
+  const content=btn.nextElementSibling;
+  const isOpen=content.classList.contains('open');
+  content.classList.toggle('open');
+  btn.classList.toggle('active');
+  btn.setAttribute('aria-expanded',!isOpen);
+}
+</script>
+</body>
+</html>
