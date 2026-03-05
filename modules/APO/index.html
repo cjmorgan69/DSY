@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acute Cardiogenic Pulmonary Oedema (APO) — AO Walk-Through Module</title>
+    <meta property="og:title" content="APO Walk-Through Module — SAAS AO Training">
+    <meta property="og:description" content="Acute Cardiogenic Pulmonary Oedema scenario-based training for SAAS Ambulance Officers">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="https://cdn.simulationtheory.ai/gasset/?asset=img&prompt=green ambulance cross medical icon simple&w=64&h=64&transparent=true">
+    <style>
+        :root {
+            --primary-dark: #003300;
+            --primary-mid: #004d00;
+            --primary-light: #006600;
+            --accent: #00cc66;
+            --accent-light: #66ffaa;
+            --text-light: #f0f0f0;
+            --text-muted: #b0b0b0;
+            --card-bg: #0a2a0a;
+            --card-border: #1a4a1a;
+            --warning: #ffcc00;
+            --danger: #ff4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 18px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #001a00 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            background: rgba(0, 26, 0, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            z-index: 1000;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .header img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .header-title {
+            flex: 1;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-light);
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+        }
+
+        .section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .toggle-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .toggle-header {
+            background: var(--primary-mid);
+            padding: 18px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-light);
+            transition: background 0.3s ease;
+            min-height: 44px;
+        }
+
+        .toggle-header:hover {
+            background: var(--primary-light);
+        }
+
+        .toggle-header::after {
+            content: '+';
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-header.active::after {
+            transform: rotate(45deg);
+        }
+
+        .toggle-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            padding: 0 24px;
+        }
+
+        .toggle-content.show {
+            max-height: 2000px;
+            padding: 24px;
+        }
+
+        .break-point {
+            background: linear-gradient(135deg, #1a3d1a 0%, #0d2d0d 100%);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .break-point-label {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--primary-dark);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .break-point-type {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--text-light);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        ul, ol {
+            padding-left: 24px;
+            margin: 12px 0;
+        }
+
+        li {
+            margin: 8px 0;
+            font-size: 1rem;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 10px 0 10px 36px;
+            position: relative;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .checklist li::before {
+            content: '☐';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .info-box {
+            background: rgba(0, 204, 102, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-box {
+            background: rgba(255, 204, 0, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .danger-box {
+            background: rgba(255, 68, 68, 0.1);
+            border-left: 4px solid var(--danger);
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .danger-box strong, .warning-box strong {
+            color: var(--warning);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid var(--card-border);
+            font-size: 1rem;
+        }
+
+        th {
+            background: var(--primary-mid);
+            color: var(--accent-light);
+        }
+
+        .scenario-box {
+            background: linear-gradient(135deg, #002200 0%, #001100 100%);
+            border: 2px solid var(--accent);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+
+        .scenario-box h3 {
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .mdt-screen {
+            background: #000;
+            border: 3px solid #333;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            margin: 16px 0;
+        }
+
+        .mdt-screen .mdt-header {
+            color: #ffcc00;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+
+        h4 {
+            color: var(--accent-light);
+            margin: 20px 0 12px;
+            font-size: 1.1rem;
+        }
+
+        strong {
+            color: var(--accent);
+        }
+
+        @media (max-width: 600px) {
+            html {
+                font-size: 16px;
+            }
+
+            .header-content {
+                justify-content: center;
+                text-align: center;
+            }
+
+            .header-title {
+                width: 100%;
+            }
+
+            .section, .toggle-content.show {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" 
+                 alt="DSY Training Logo"
+                 width="60" 
+                 height="60">
+            <div class="header-title">Acute Cardiogenic Pulmonary Oedema (APO) — AO Walk-Through Scenario</div>
+        </div>
+        <div class="progress-bar" id="progressBar"></div>
+    </header>
+
+    <main class="container">
+        <section class="section">
+            <h2 class="section-title">Title & Context</h2>
+            <p><strong>Module:</strong> Acute Cardiogenic Pulmonary Oedema (APO) — Walk-Through Scenario</p>
+            <p><strong>Source Protocol:</strong> SAAS CPP-001-AO — Acute Cardiogenic Pulmonary Oedema - AO</p>
+            <p><strong>Duration:</strong> 60–90 minutes (including debrief)</p>
+            <p><strong>Crew:</strong> 2-person Volunteer AO crew (Clinician + Driver)</p>
+            <p><strong>Setting:</strong> Rural South Australia — 30 minutes from nearest hospital, limited backup</p>
+            
+            <div class="info-box">
+                <strong>Clinical Context:</strong> APO is a life-threatening emergency where fluid accumulates in the lungs due to acute left ventricular failure. The patient is literally drowning in their own fluid. Prompt recognition, positioning, oxygenation, and GTN (with EOC guidance) are critical.
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Learning Objectives</h2>
+            <ul class="checklist">
+                <li>Recognise the clinical presentation of acute cardiogenic pulmonary oedema</li>
+                <li>Prioritise positioning (sitting upright) and high-flow oxygen therapy</li>
+                <li>Identify GTN indications, contraindications, and PDE-5 inhibitor timeframes</li>
+                <li>Demonstrate appropriate EOC Clinician consultation for GTN administration</li>
+                <li>Monitor vital signs every 3–5 minutes and escalate appropriately</li>
+                <li>Coordinate time-critical transport with receiving facility notification</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Required Equipment</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                <div>
+                    <h4>Assessment</h4>
+                    <ul class="checklist">
+                        <li>Corpuls3 monitor</li>
+                        <li>Manual BP cuff (backup)</li>
+                        <li>Stethoscope</li>
+                        <li>SpO2 probe</li>
+                        <li>Pen torch</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Airway/Oxygen</h4>
+                    <ul class="checklist">
+                        <li>Non-rebreather mask</li>
+                        <li>Oxygen cylinder (portable + main)</li>
+                        <li>Suction unit</li>
+                        <li>Yankauer sucker</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Medications</h4>
+                    <ul class="checklist">
+                        <li>GTN 300 microg tablets (sublingual)</li>
+                        <li>Aspirin 300mg (if ACS suspected)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Transport</h4>
+                    <ul class="checklist">
+                        <li>Green carry chair</li>
+                        <li>Stretcher (head elevated position)</li>
+                        <li>ePCR / documentation</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Session Structure Overview</h2>
+            <table>
+                <tr>
+                    <th>Phase</th>
+                    <th>Duration</th>
+                    <th>Focus</th>
+                </tr>
+                <tr>
+                    <td>Pre-Brief</td>
+                    <td>10 min</td>
+                    <td>Equipment check, protocol review, role allocation</td>
+                </tr>
+                <tr>
+                    <td>Scenario Walk-Through</td>
+                    <td>40–60 min</td>
+                    <td>8 break points with discussion and skills practice</td>
+                </tr>
+                <tr>
+                    <td>Debrief</td>
+                    <td>15 min</td>
+                    <td>Reflection, key learning points, take-home messages</td>
+                </tr>
+            </table>
+        </section>
+
+        <div class="toggle-section">
+            <div class="toggle-header" onclick="toggleSection(this)">
+                APO Clinical Knowledge — Tap to Expand
+            </div>
+            <div class="toggle-content">
+                <h4>What is Acute Cardiogenic Pulmonary Oedema?</h4>
+                <p>APO occurs when the left ventricle fails to pump blood effectively, causing fluid to back up into the pulmonary circulation. This fluid leaks into the alveoli, severely impairing gas exchange.</p>
+
+                <h4>Classic Presentation</h4>
+                <ul>
+                    <li><strong>Severe dyspnoea</strong> — often sudden onset, worse lying flat</li>
+                    <li><strong>Orthopnoea</strong> — can only breathe sitting upright</li>
+                    <li><strong>Pink frothy sputum</strong> — fluid in alveoli</li>
+                    <li><strong>Crackles/rales</strong> — on auscultation bilaterally</li>
+                    <li><strong>Diaphoresis</strong> — cold, clammy, pale</li>
+                    <li><strong>Tachycardia & tachypnoea</strong></li>
+                    <li><strong>Anxiety/distress</strong> — "sense of doom"</li>
+                    <li><strong>Hypoxia</strong> — SpO2 often &lt;90%</li>
+                </ul>
+
+                <h4>Common Triggers</h4>
+                <ul>
+                    <li>Acute myocardial infarction / ACS</li>
+                    <li>Uncontrolled hypertension</li>
+                    <li>Arrhythmias (especially AF with rapid ventricular response)</li>
+                    <li>Medication non-compliance (heart failure patients)</li>
+                    <li>Dietary indiscretion (high salt/fluid intake)</li>
+                </ul>
+
+                <div class="danger-box">
+                    <strong>⚠️ PDE-5 Inhibitor Contraindication</strong><br>
+                    GTN is contraindicated if patient has taken:<br>
+                    • <strong>Sildenafil, Vardenafil, or Avanafil</strong> — within <strong>24 hours</strong><br>
+                    • <strong>Tadalafil</strong> — within <strong>48 hours</strong><br><br>
+                    Concurrent use can cause life-threatening hypotension.
+                </div>
+            </div>
+        </div>
+
+        <div class="toggle-section">
+            <div class="toggle-header" onclick="toggleSection(this)">
+                CPP-001-AO Protocol Summary — Tap to Expand
+            </div>
+            <div class="toggle-content">
+                <h4>Core Management (AO Scope)</h4>
+                <ul class="checklist">
+                    <li><strong>Posture:</strong> Sit patient upright — legs dependent if possible</li>
+                    <li><strong>Oxygen:</strong> High-flow via non-rebreather mask</li>
+                    <li><strong>Request clinical support</strong></li>
+                    <li><strong>Consult EOC Clinician</strong> — who may advise GTN</li>
+                </ul>
+
+                <h4>GTN Administration (EOC Clinician Direction)</h4>
+                <div class="info-box">
+                    <strong>GTN 300 microg sublingual</strong> — only if ALL criteria met:
+                    <ul>
+                        <li>Systolic BP &gt; 100 mmHg</li>
+                        <li>Heart rate 60–120 bpm</li>
+                        <li><strong>No PDE-5 inhibitor use within:</strong>
+                            <ul>
+                                <li>24 hours — Sildenafil, Vardenafil, Avanafil</li>
+                                <li>48 hours — Tadalafil</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <h4>Ongoing Management</h4>
+                <ul class="checklist">
+                    <li>Monitor vital signs every 3–5 minutes</li>
+                    <li>Repeat GTN as directed by EOC Clinician if vitals remain within limits</li>
+                    <li>Consult EOC Clinician ANY time vitals fall outside limits</li>
+                    <li>Prompt transport — notify receiving facility</li>
+                </ul>
+            </div>
+        </div>
+
+        <section class="section">
+            <h2 class="section-title">The Scenario</h2>
+            <div class="scenario-box">
+                <h3>🚑 "Difficulty Breathing — 72-year-old male"</h3>
+                <p><strong>Location:</strong> 14 Railway Terrace — a small rural township, 30 minutes from nearest hospital</p>
+                <p><strong>Time:</strong> 0247 hours — cold winter night</p>
+                <p><strong>Patient:</strong> Kevin, 72 years, known cardiac history</p>
+                <p><strong>Caller:</strong> Wife (Margaret) — "He can't breathe, he's gone grey"</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Pre-Brief (10 minutes)</h2>
+            <ul class="checklist">
+                <li>Assign roles: Clinician (patient contact) / Driver (obs, equipment, transport)</li>
+                <li>Equipment check: Corpuls3, oxygen, non-rebreather, GTN, suction, stretcher</li>
+                <li>Brief protocol review: CPP-001-AO key points</li>
+                <li>Discuss: What makes APO time-critical?</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Dispatch & En-Route Phase</h2>
+            
+            <div class="mdt-screen">
+                <div class="mdt-header">📟 MDT DISPATCH — PRIORITY 2</div>
+                <p><strong>CAD:</strong> 2847-1402</p>
+                <p><strong>RESPONSE:</strong> P2 — BREATHING PROBLEMS</p>
+                <p><strong>LOCATION:</strong> 14 Railway Terrace, [RURAL TOWNSHIP]</p>
+                <p><strong>PATIENT:</strong> 72 YOM — KEVIN</p>
+                <p><strong>CALLER:</strong> Wife — Margaret</p>
+                <p><strong>COMPLAINT:</strong> Sudden onset SOB, unable to lie down, "gone grey"</p>
+                <p><strong>PMHx:</strong> CARDIAC HISTORY — details unknown</p>
+                <p><strong>ACCESS:</strong> Front door — wife will meet crew</p>
+                <p><strong>SCENE:</strong> Safe — no hazards noted</p>
+                <p><strong>TIME:</strong> 0247 hrs</p>
+                <p><strong>TRANSPORT:</strong> ~30 mins to nearest hospital</p>
+            </div>
+
+            <div class="break-point">
+                <span class="break-point-label">BREAK POINT 1</span>
+                <span class="break-point-type">Discussion / Planning</span>
+                <h4>En-Route Planning</h4>
+                
+                <p><strong>⏸️ PAUSE — Facilitator Discussion</strong></p>
+                
+                <h4>Facilitator Prompts:</h4>
+                <ul>
+                    <li>"What does this dispatch information tell you?"</li>
+                    <li>"What's your working differential diagnosis?"</li>
+                    <li>"What equipment are you taking to the door?"</li>
+                    <li>"What makes this potentially time-critical?"</li>
+                    <li>"How does the 30-minute transport time affect your planning?"</li>
+                </ul>
+
+                <h4>Expected AO Reasoning:</h4>
+                <ul>
+                    <li>72 YOM with cardiac history + sudden severe SOB + "gone grey" = high-acuity</li>
+                    <li>Differentials: APO, ACS, arrhythmia, PE, respiratory infection</li>
+                    <li>"Can't lie down" = orthopnoea — classic APO red flag</li>
+                    <li>Need: Response bag, Corpuls3, oxygen, suction, stretcher nearby</li>
+                    <li>30-minute transport = need to optimise on-scene treatment, may need multiple GTN doses en route</li>
+                </ul>
+
+                <h4>Key Teaching Points:</h4>
+                <ul>
+                    <li>Cardiac history + sudden dyspnoea at 0200hrs = high index of suspicion for APO</li>
+                    <li>Orthopnoea is a key differentiator — patient can't tolerate lying flat</li>
+                    <li>Colour change ("gone grey") suggests poor perfusion</li>
+                    <li>Rural transport time means treatment continues throughout transport</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>"This is the 3am call where you need to be switched on immediately. The dispatch gives you clues — use them. Have your plan before you arrive. That 30-minute transport means you're the definitive care for half an hour."</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">On Arrival — Scene Management</h2>
+            
+            <div class="scenario-box">
+                <h3>Scene Description</h3>
+                <p>You arrive at a weatherboard house in a quiet rural street. Lights are on. Margaret meets you at the front door — she's distressed, in her dressing gown.</p>
+                <p><em>"Please hurry — he's in the bedroom, he can't breathe. He woke up gasping about 30 minutes ago. I've never seen him this bad."</em></p>
+                <p>You can hear laboured breathing from inside the house.</p>
+            </div>
+
+            <div class="break-point">
+                <span class="break-point-label">BREAK POINT 2</span>
+                <span class="break-point-type">Discussion / Decision-Making</span>
+                <h4>Doorway / First Impression</h4>
+                
+                <p><strong>⏸️ PAUSE — Facilitator Discussion</strong></p>
+                
+                <h4>Facilitator Prompts:</h4>
+                <ul>
+                    <li>"What information has Margaret given you?"</li>
+                    <li>"What can you already hear? What does that tell you?"</li>
+                    <li>"Is this scene safe? Any concerns?"</li>
+                    <li>"What's your immediate priority?"</li>
+                </ul>
+
+                <h4>Expected AO Reasoning:</h4>
+                <ul>
+                    <li>Audible laboured breathing from distance = severe respiratory distress</li>
+                    <li>30-minute onset, woke from sleep = classic APO presentation</li>
+                    <li>Scene appears safe — proceed quickly</li>
+                    <li>Priority: Get to patient, oxygen on, sit them up</li>
+                </ul>
+
+                <h4>Key Teaching Points:</h4>
+                <ul>
+                    <li>APO classically presents in early morning hours (paroxysmal nocturnal dyspnoea)</li>
+                    <li>Trust what you can hear — audible respiratory distress from distance = critical</li>
+                    <li>Don't delay — this is time-critical</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>"When you can hear them struggling to breathe before you even see them — move with purpose. Every second counts."</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Patient Contact & Primary Survey</h2>
+            
+            <div class="scenario-box">
+                <h3>First Patient Contact</h3>
+                <p>You enter the bedroom. Kevin is sitting on the edge of the bed, leaning forward on his arms, tripod position. He's pale/grey, diaphoretic, and breathing rapidly with obvious effort.</p>
+                <p><em>"Can't... breathe..."</em> (gasping between words)</p>
+                <p>You notice pink-tinged frothy sputum at his lips.</p>
+            </div>
+
+            <h4>Primary Survey — DRSABCD</h4>
+            <table>
+                <tr>
+                    <th>Assessment</th>
+                    <th>Finding</th>
+                </tr>
+                <tr>
+                    <td>Danger</td>
+                    <td>Nil — scene safe</td>
+                </tr>
+                <tr>
+                    <td>Response</td>
+                    <td>Alert but distressed, can speak only single words</td>
+                </tr>
+                <tr>
+                    <td>Send for help</td>
+                    <td>Request clinical support</td>
+                </tr>
+                <tr>
+                    <td>Airway</td>
+                    <td>Patent, pink frothy sputum present</td>
+                </tr>
+                <tr>
+                    <td>Breathing</td>
+                    <td>Severe respiratory distress, bilateral crackles, RR 32</td>
+                </tr>
+                <tr>
+                    <td>Circulation</td>
+                    <td>Grey/pale, diaphoretic, radial pulse present but rapid</td>
+                </tr>
+                <tr>
+                    <td>Disability</td>
+                    <td>GCS 15 (E4 V5 M6), anxious</td>
+                </tr>
+            </table>
+
+            <div class="danger-box">
+                <strong>🚨 Immediate Actions:</strong>
+                <ul>
+                    <li>Keep patient sitting upright — do NOT lie flat</li>
+                    <li>High-flow oxygen via non-rebreather mask immediately</li>
+                    <li>Reassure patient — calm, confident manner</li>
+                    <li>Driver: Set up Corpuls3 for observations</li>
+                </ul>
+            </div>
+
+            <div class="break-point">
+                <span class="break-point-label">BREAK POINT 3</span>
+                <span class="break-point-type">Practical Skill / Discussion</span>
+                <h4>Initial Observations & Corpuls3 Setup</h4>
+                
+                <p><strong>⏸️ PAUSE — Facilitator Discussion + Practical</strong></p>
+                
+                <h4>Facilitator Prompts:</h4>
+                <ul>
+                    <li>"What clinical signs confirm APO?"</li>
+                    <li>"Why is positioning so critical in APO?"</li>
+                    <li>"What oxygen device and flow rate?"</li>
+                    <li>"Driver — demonstrate Corpuls3 setup"</li>
+                </ul>
+
+                <h4>Practical Skill — Corpuls3 Setup (Driver):</h4>
+                <ul class="checklist">
+                    <li>SpO2 probe on finger</li>
+                    <li>3-lead ECG — check for arrhythmias</li>
+                    <li>NIBP — may need manual if unreliable due to diaphoresis</li>
+                    <li>Set monitoring to 3-minute cycles initially</li>
+                </ul>
+
+                <h4>Expected AO Reasoning:</h4>
+                <ul>
+                    <li>Pink frothy sputum = pathognomonic for APO — fluid in alveoli</li>
+                    <li>Tripod position — patient instinctively optimises respiratory mechanics</li>
+                    <li>Sitting upright reduces venous return = less preload on failing heart</li>
+                    <li>High-flow O2 via NRB — maximum FiO2 while maintaining spontaneous breathing</li>
+                </ul>
+
+                <h4>Key Teaching Points:</h4>
+                <ul>
+                    <li>Pink frothy sputum + orthopnoea + bilateral crackles = APO until proven otherwise</li>
+                    <li>Positioning is treatment — upright position reduces preload</li>
+                    <li>Never lay an APO patient flat — they may arrest</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>"The first thing you do for APO is NOT reach for a drug — it's sit them up and get oxygen on. Position is your first treatment."</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">History & Initial Observations</h2>
+            
+            <h4>Observations (Corpuls3)</h4>
+            <table>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                    <th>Interpretation</th>
+                </tr>
+                <tr>
+                    <td>SpO2</td>
+                    <td>82% (on air)</td>
+                    <td>Severe hypoxia</td>
+                </tr>
+                <tr>
+                    <td>RR</td>
+                    <td>32/min</td>
+                    <td>Tachypnoea — respiratory distress</td>
+                </tr>
+                <tr>
+                    <td>HR</td>
+                    <td>118 bpm, irregular</td>
+                    <td>Tachycardia, likely AF</td>
+                </tr>
+                <tr>
+                    <td>BP</td>
+                    <td>156/92 mmHg</td>
+                    <td>Hypertensive — GTN may be beneficial</td>
+                </tr>
+                <tr>
+                    <td>GCS</td>
+                    <td>15</td>
+                    <td>Alert</td>
+                </tr>
+                <tr>
+                    <td>Temp</td>
+                    <td>36.4°C</td>
+                    <td>Afebrile</td>
+                </tr>
+                <tr>
+                    <td>BGL</td>
+                    <td>7.8 mmol/L</td>
+                    <td>Normal</td>
+                </tr>
+            </table>
+
+            <h4>History (from Margaret — Kevin too breathless)</h4>
+            <table>
+                <tr>
+                    <th>SAMPLE</th>
+                    <th>Information</th>
+                </tr>
+                <tr>
+                    <td>Signs/Symptoms</td>
+                    <td>Sudden SOB woke him 30 mins ago, unable to lie down, cough with pink sputum</td>
+                </tr>
+                <tr>
+                    <td>Allergies</td>
+                    <td>Nil known</td>
+                </tr>
+                <tr>
+                    <td>Medications</td>
+                    <td>Metoprolol, Perindopril, Frusemide, Aspirin, Atorvastatin</td>
+                </tr>
+                <tr>
+                    <td>Past History</td>
+                    <td>CCF (heart failure), AF, MI 4 years ago, HTN</td>
+                </tr>
+                <tr>
+                    <td>Last meal</td>
+                    <td>Dinner ~1900hrs — fish and chips (high salt)</td>
+                </tr>
+                <tr>
+                    <td>Events</td>
+                    <td>Woke gasping, couldn't get comfortable, progressive dyspnoea</td>
+                </tr>
+            </table>
+
+            <div class="break-point">
+                <span class="break-point-label">BREAK POINT 4</span>
+                <span class="break-point-type">Decision-Making / Discussion</span>
+                <h4>Screening Tools, Protocols & Working Diagnosis</h4>
+                
+                <p><strong>⏸️ PAUSE — Facilitator Discussion</strong></p>
+                
+                <h4>Facilitator Prompts:</h4>
+                <ul>
+                    <li>"What's your working diagnosis and why?"</li>
+                    <li>"What in the history supports APO?"</li>
+                    <li>"Is this patient time-critical? Why?"</li>
+                    <li>"What protocol applies here?"</li>
+                </ul>
+
+                <h4>Critical Question — PDE-5 Inhibitors:</h4>
+                <div class="warning-box">
+                    <strong>You MUST ask:</strong><br>
+                    "Has Kevin taken any medications for erectile dysfunction in the last 48 hours? Viagra, Cialis, Levitra?"<br><br>
+                    <em>Margaret: "No, nothing like that."</em>
+                </div>
+
+                <h4>Expected AO Reasoning:</h4>
+                <ul>
+                    <li>Working diagnosis: Acute Cardiogenic Pulmonary Oedema</li>
+                    <li>Supporting evidence: Known CCF, sudden nocturnal onset, orthopnoea, pink frothy sputum, bilateral crackles, AF, hypertension</li>
+                    <li>Trigger likely: High-salt meal → fluid overload</li>
+                    <li>Protocol: CPP-001-AO — Acute Cardiogenic Pulmonary Oedema</li>
+                    <li>Time-critical: Yes — severe hypoxia, respiratory failure risk</li>
+                </ul>
+
+                <h4>Key Teaching Points:</h4>
+                <ul>
+                    <li>Known CCF + paroxysmal nocturnal dyspnoea + pink frothy sputum = APO</li>
+                    <li>ALWAYS ask about PDE-5 inhibitors before considering GTN</li>
+                    <li>High-salt meals are a common precipitant in heart failure patients</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>"The PDE-5 question is awkward at 3am with the wife standing there — but it's non-negotiable. You need that answer before GTN. Find a way to ask it."</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Treatment Phase — AO Protocol</h2>
+            
+            <h4>Initial Treatment Checklist</h4>
+            <ul class="checklist">
+                <li>Position: Sitting upright, legs dependent over bed edge ✓</li>
+                <li>Oxygen: High-flow 15L/min via non-rebreather mask ✓</li>
+                <li>Request clinical support ✓</li>
+                <li>Consult EOC Clinician for GTN authorisation</li>
+            </ul>
+
+            <h4>After 5 minutes high-flow oxygen:</h4>
+            <table>
+                <tr>
+                    <td>SpO2</td>
+                    <td>89% (improved from 82%)</td>
+                </tr>
+                <tr>
+                    <td>BP</td>
+                    <td>152/94 mmHg</td>
+                </tr>
+                <tr>
+                    <td>HR</td>
+                    <td>114 bpm, irregular</td>
+                </tr>
+            </table>
+
+            <div class="break-point">
+                <span class="break-point-label">BREAK POINT 5</span>
+                <span class="break-point-type">Practical Skill / Discussion</span>
+                <h4>Treatment Initiation & Medication Safety</h4>
+                
+                <p><strong>⏸️ PAUSE — Facilitator Discussion + Practical Skills</strong></p>
+                
+                <h4>Practical Skill — EOC Consultation:</h4>
+                <div class="info-box">
+                    <strong>Role-play the EOC call:</strong><br><br>
+                    "EOC Clinician, this is [callsign] with a 72-year-old male in acute pulmonary oedema. He has known CCF, AF, and previous MI. He woke 30 minutes ago with severe dyspnoea, pink frothy sputum, bilateral crackles. Currently sitting upright on high-flow oxygen. Obs are: SpO2 89%, BP 152/94, HR 114 irregular. No PDE-5 inhibitors. Requesting authorisation for GTN. Note: We are approximately 30 minutes from nearest hospital."
+                </div>
+
+                <h4>EOC Clinician Response (Facilitator):</h4>
+                <p><em>"Authorisation granted for GTN 300 microg sublingual. Monitor BP and HR closely. Repeat GTN in 5 minutes if BP remains above 100 systolic and HR 60–120. Call back if vitals fall outside those parameters. Expedite transport."</em></p>
+
+                <h4>Practical Skill — GTN Administration:</h4>
+                <ul class="checklist">
+                    <li>Confirm patient identity and allergies</li>
+                    <li>Confirm no PDE-5 inhibitor use (24/48hr rule)</li>
+                    <li>Check BP &gt; 100 mmHg systolic</li>
+                    <li>Check HR 60–120 bpm</li>
+                    <li>Administer GTN 300 microg sublingual tablet</li>
+                    <li>Instruct: "Place under your tongue, let it dissolve"</li>
+                    <li>Document time of administration</li>
+                    <li>Reassess vitals in 3–5 minutes</li>
+                </ul>
+
+                <h4>Facilitator Prompts:</h4>
+                <ul>
+                    <li>"Walk me through your EOC consult — what key information do you give?"</li>
+                    <li>"What are the THREE criteria for GTN?"</li>
+                    <li>"How do you administer sublingual GTN?"</li>
+                    <li>"What are you monitoring for after GTN?"</li>
+                </ul>
+
+                <h4>Expected AO Reasoning:</h4>
+                <ul>
+                    <li>GTN is a vasodilator — reduces preload and afterload</li>
+                    <li>In APO, this reduces the workload on the failing heart</li>
+                    <li>Must have adequate BP (>100 systolic) — GTN will drop it further</li>
+                    <li>Monitor for hypotension, headache, dizziness</li>
+                </ul>
+
+                <h4>Key Teaching Points:</h4>
+                <ul>
+                    <li>GTN in APO requires EOC Clinician authorisation — not autonomous</li>
+                    <li>Three-point safety check: BP >100, HR 60–120, no PDE-5 inhibitors</li>
+                    <li>GTN reduces preload/afterload — takes pressure off the failing heart</li>
+                    <li>Repeat doses only with EOC direction and vitals within limits</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>"Your EOC consult needs to be crisp and complete. They can't see the patient — paint the picture quickly. And always confirm the three GTN criteria out loud before you give it."</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Reassessment & Escalation</h2>
+            
+            <h4>Post-GTN Observations (5 minutes after first dose):</h4>
+            <table>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                    <th>Change</th>
+                </tr>
+                <tr>
+                    <td>SpO2</td>
+                    <td>92%</td>
+                    <td>↑ Improving</td>
+                </tr>
+                <tr>
+                    <td>RR</td>
+                    <td>26/min</td>
+                    <td>↓ Improving</td>
+                </tr>
+                <tr>
+                    <td>HR</td>
+                    <td>108 bpm</td>
+                    <td>↓ Improving</td>
+                </tr>
+                <tr>
+                    <td>BP</td>
+                    <td>138/86 mmHg</td>
+                    <td>↓ Expected with GTN</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>Patient status:</strong> Kevin reports "a bit better" — still dyspnoeic but less distressed. Work of breathing reduced. Still requires sitting position.
+            </div>
+
+            <div class="break-point">
+                <span class="break-point-label">BREAK POINT 6</span>
+                <span class="break-point-type">Decision-Making / Discussion</span>
+                <h4>Reassessment & Escalation Decision</h4>
+                
+                <p><strong>⏸️ PAUSE — Facilitator Discussion</strong></p>
+                
+                <h4>Facilitator Prompts:</h4>
+                <ul>
+                    <li>"What do these observations tell you?"</li>
+                    <li>"Is the patient improving or deteriorating?"</li>
+                    <li>"Would you give more GTN? What do you need to do first?"</li>
+                    <li>"What are your escalation triggers?"</li>
+                </ul>
+
+                <h4>Expected AO Reasoning:</h4>
+                <ul>
+                    <li>Improving: SpO2 up, RR down, HR down, subjective improvement</li>
+                    <li>BP drop is expected and appropriate with GTN</li>
+                    <li>Still symptomatic — consider repeat GTN with EOC direction</li>
+                    <li>Vitals still within GTN criteria (BP >100, HR 60–120)</li>
+                </ul>
+
+                <h4>Escalation Triggers (call EOC immediately if):</h4>
+                <ul>
+                    <li>SBP drops ≤100 mmHg</li>
+                    <li>HR drops &lt;60 or rises &gt;120 bpm</li>
+                    <li>Deteriorating conscious state</li>
+                    <li>SpO2 not improving or dropping</li>
+                    <li>Increasing respiratory distress</li>
+                </ul>
+
+                <h4>Key Teaching Points:</h4>
+                <ul>
+                    <li>Reassess every 3–5 minutes — APO can change rapidly</li>
+                    <li>Improving trend is what you want — but don't relax</li>
+                    <li>BP drop with GTN is expected — concern is if it drops too far</li>
+                    <li>Always re-consult EOC before repeat GTN doses</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>"Improvement doesn't mean you're done. Keep monitoring, keep reassessing. APO patients can crash quickly if something changes. Stay vigilant."</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Extrication & Transport</h2>
+            
+            <div class="scenario-box">
+                <h3>Transport Planning</h3>
+                <p>Kevin is showing improvement but remains symptomatic. Nearest hospital is 30 minutes away. Need to move patient from bedroom to ambulance while maintaining upright position.</p>
+            </div>
+
+            <div class="break-point">
+                <span class="break-point-label">BREAK POINT 7</span>
+                <span class="break-point-type">Practical Skill / Discussion</span>
+                <h4>Extrication & Transport Planning</h4>
+                
+                <p><strong>⏸️ PAUSE — Facilitator Discussion + Practical</strong></p>
+                
+                <h4>Facilitator Prompts:</h4>
+                <ul>
+                    <li>"How are you getting Kevin to the ambulance?"</li>
+                    <li>"What position must you maintain?"</li>
+                    <li>"What's your transport priority?"</li>
+                    <li>"Who needs to be notified?"</li>
+                    <li>"How will you manage the 30-minute transport?"</li>
+                </ul>
+
+                <h4>Practical Skill — APO Patient Extrication:</h4>
+                <ul class="checklist">
+                    <li>Green carry chair — patient remains upright</li>
+                    <li>DO NOT lay patient flat on stretcher</li>
+                    <li>Stretcher positioned with head elevated (45-90°)</li>
+                    <li>Maintain oxygen therapy throughout move</li>
+                    <li>Move smoothly — minimise exertion for patient</li>
+                    <li>Portable oxygen ready for transit</li>
+                </ul>
+
+                <div class="warning-box">
+                    <strong>⚠️ Critical:</strong> APO patients MUST remain upright. Laying flat can cause rapid deterioration and potential cardiac arrest. Use carry chair → stretcher with head elevated.
+                </div>
+
+                <h4>Transport Considerations (30-minute journey):</h4>
+                <ul>
+                    <li>Continue high-flow oxygen</li>
+                    <li>Vitals every 3–5 minutes during transport</li>
+                    <li>Repeat GTN as directed by EOC if required</li>
+                    <li>Pre-notify receiving facility early</li>
+                    <li>Have suction ready — pink frothy sputum may increase</li>
+                    <li>Plan for potential deterioration en route</li>
+                    <li>Ensure adequate oxygen supply for 30+ minute transport</li>
+                </ul>
+
+                <h4>Expected AO Reasoning:</h4>
+                <ul>
+                    <li>Green carry chair maintains upright position</li>
+                    <li>Patient should NOT walk — exertion increases myocardial oxygen demand</li>
+                    <li>Transport is time-critical — don't delay</li>
+                    <li>Pre-notify allows ED to prepare</li>
+                    <li>30-minute transport = continue active treatment, may need 2-3 GTN doses total</li>
+                </ul>
+
+                <h4>Key Teaching Points:</h4>
+                <ul>
+                    <li>Position is therapy — never compromise it during extrication</li>
+                    <li>Green carry chair is your friend for APO</li>
+                    <li>Stretcher head UP before transferring patient</li>
+                    <li>Rural transport time means you ARE the treatment for 30 minutes</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>"The move from house to ambulance is where things can go wrong. Plan it, communicate it, and keep that patient sitting up the whole way. That 30-minute drive means you're providing definitive care — this isn't just a taxi ride to hospital."</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Handover — ISBAR</h2>
+            
+            <div class="break-point">
+                <span class="break-point-label">BREAK POINT 8</span>
+                <span class="break-point-type">Practical Skill / Discussion</span>
+                <h4>ISBAR Handover</h4>
+                
+                <p><strong>⏸️ PAUSE — Role-Play Handover</strong></p>
+                
+                <h4>Practical Skill — Deliver ISBAR Handover:</h4>
+                <div class="info-box">
+                    <p><strong>I</strong> — "This is Kevin, 72-year-old male"</p>
+                    <p><strong>S</strong> — "Presenting with acute cardiogenic pulmonary oedema"</p>
+                    <p><strong>B</strong> — "Known CCF, AF, previous MI 4 years ago. Woke at 0215 with sudden severe dyspnoea, unable to lie flat, pink frothy sputum. Likely precipitated by high-salt meal."</p>
+                    <p><strong>A</strong> — "On arrival: SpO2 82%, RR 32, HR 118 irregular, BP 156/92. Tripod position, bilateral crackles, diaphoretic. Currently: SpO2 94%, RR 22, HR 102, BP 128/82 — improving."</p>
+                    <p><strong>R</strong> — "Treated with upright positioning, high-flow oxygen, GTN 300mcg x2 with EOC authorisation. No PDE-5 inhibitors. Allergies: Nil. Needs ongoing monitoring and likely diuretics."</p>
+                </div>
+
+                <h4>Facilitator Prompts:</h4>
+                <ul>
+                    <li>"Deliver your ISBAR handover"</li>
+                    <li>"What's the most critical information to convey?"</li>
+                    <li>"What ongoing management does this patient need?"</li>
+                </ul>
+
+                <h4>Key Teaching Points:</h4>
+                <ul>
+                    <li>ISBAR keeps handover structured and complete</li>
+                    <li>Include what you found, what you did, how they responded</li>
+                    <li>Mention GTN given and PDE-5 status confirmed</li>
+                    <li>Trend is important — improving vs deteriorating</li>
+                </ul>
+
+                <h4>Real-Job Translation:</h4>
+                <p>"Your handover sets up the ED to continue care seamlessly. Be clear, be concise, and make sure they know the trajectory — this patient was critical but is improving with treatment."</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Debrief (10–15 minutes)</h2>
+            
+            <h4>Reflective Questions</h4>
+            <ol>
+                <li>What clinical signs made you confident this was APO?</li>
+                <li>Why is patient positioning so critical in APO management?</li>
+                <li>What was the most challenging part of this scenario?</li>
+                <li>How did you ensure medication safety with GTN?</li>
+                <li>What would you do differently next time?</li>
+                <li>How did crew communication work during the job?</li>
+                <li>What are your escalation triggers for APO?</li>
+                <li>How did the 30-minute transport time affect your management?</li>
+            </ol>
+
+            <h4>Take-Home Messages</h4>
+            <div class="info-box">
+                <ul>
+                    <li><strong>Position is treatment</strong> — sit them up, keep them up</li>
+                    <li><strong>Pink frothy sputum = APO</strong> until proven otherwise</li>
+                    <li><strong>High-flow oxygen early</strong> — don't delay</li>
+                    <li><strong>GTN requires EOC authorisation</strong> and three-point safety check</li>
+                    <li><strong>PDE-5 inhibitor question is mandatory</strong> — ask it every time</li>
+                    <li><strong>Reassess every 3–5 minutes</strong> — APO changes quickly</li>
+                    <li><strong>Never lay an APO patient flat</strong> — green carry chair to elevated stretcher</li>
+                    <li><strong>Rural transport = extended treatment time</strong> — you ARE the care</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Optional Scenario Variations</h2>
+            
+            <div class="scenario-box">
+                <h4>Variation 1: PDE-5 Inhibitor Positive</h4>
+                <p>Patient admits to taking Viagra 18 hours ago. GTN is contraindicated. Management: Position, oxygen, request clinical support, expedite transport. Discuss alternative management with EOC.</p>
+            </div>
+
+            <div class="scenario-box">
+                <h4>Variation 2: Hypotensive APO</h4>
+                <p>Patient presents with BP 88/60 — cardiogenic shock. GTN contraindicated. Position, oxygen, urgent transport. Discuss escalation pathway and potential MedSTAR involvement.</p>
+            </div>
+
+            <div class="scenario-box">
+                <h4>Variation 3: Deterioration Post-GTN</h4>
+                <p>After first GTN, BP drops to 94/58. Patient becomes more drowsy. Discuss withholding further GTN, EOC escalation, and urgent transport priorities.</p>
+            </div>
+
+            <div class="scenario-box">
+                <h4>Variation 4: Extended Transport (60+ minutes)</h4>
+                <p>Same presentation but 60-90 minutes from hospital. Discuss extended transport management, GTN dosing strategy, oxygen supply management, and MedSTAR/retrieval considerations.</p>
+            </div>
+        </section>
+
+        <section class="section" style="text-align: center; padding: 32px;">
+            <p><strong>Source Protocol:</strong> SAAS CPP-001-AO — Acute Cardiogenic Pulmonary Oedema - AO</p>
+            <p style="color: var(--text-muted); margin-top: 12px;">DSY Training — Lower Eyre Peninsula Ambulance Training</p>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">This scenario could be your next job.</p>
+        </section>
+    </main>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        const sections = document.querySelectorAll('.section');
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
+
+        function toggleSection(header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            content.classList.toggle('show');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstSections = document.querySelectorAll('.section');
+            firstSections.forEach((section, index) => {
+                if (index < 3) {
+                    setTimeout(() => section.classList.add('visible'), index * 150);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
