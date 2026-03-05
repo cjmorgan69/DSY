@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asthma Management – AO Walk-Through Scenario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            font-size: 18px;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
+            background: linear-gradient(135deg, #001a00 0%, #002200 50%, #003300 100%);
+            color: #e8f5e8;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Sticky Header */
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 26, 0, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            border-bottom: 1px solid #004d00;
+        }
+        
+        .header-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .header-title {
+            flex: 1;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #90EE90;
+        }
+        
+        .header-spacer {
+            width: 60px;
+        }
+        
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #32CD32, #90EE90);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 100px 20px 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+            background: linear-gradient(145deg, rgba(0, 77, 0, 0.4), rgba(0, 51, 0, 0.6));
+            border-radius: 16px;
+            border: 1px solid #006600;
+        }
+        
+        .hero h1 {
+            font-size: 1.8rem;
+            color: #90EE90;
+            margin-bottom: 10px;
+        }
+        
+        .hero .protocol-ref {
+            font-size: 0.9rem;
+            color: #66BB66;
+            margin-bottom: 15px;
+        }
+        
+        .hero .scenario-type {
+            display: inline-block;
+            background: #004d00;
+            color: #90EE90;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        /* Content Cards */
+        .card {
+            background: rgba(0, 51, 0, 0.6);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid #004d00;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .card h2 {
+            color: #90EE90;
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #006600;
+        }
+        
+        .card h3 {
+            color: #7CFC00;
+            font-size: 1.1rem;
+            margin: 20px 0 12px;
+        }
+        
+        /* Checklists */
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            padding: 10px 0 10px 32px;
+            position: relative;
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(0, 102, 0, 0.3);
+        }
+        
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+        
+        .checklist li::before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            color: #32CD32;
+            font-size: 1.2rem;
+        }
+        
+        /* Break Point Cards */
+        .break-point {
+            background: linear-gradient(145deg, rgba(0, 77, 0, 0.6), rgba(0, 51, 0, 0.8));
+            border: 2px solid #FFD700;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 30px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .break-point.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .break-point-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .break-point-badge {
+            background: #FFD700;
+            color: #003300;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .break-point-type {
+            background: rgba(255, 215, 0, 0.2);
+            color: #FFD700;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        
+        .break-point h3 {
+            color: #FFD700;
+            font-size: 1.15rem;
+            margin-bottom: 16px;
+        }
+        
+        .break-point-section {
+            margin-bottom: 16px;
+        }
+        
+        .break-point-section h4 {
+            color: #90EE90;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .break-point-section p,
+        .break-point-section li {
+            font-size: 1rem;
+            color: #e8f5e8;
+        }
+        
+        /* Severity Table */
+        .severity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.95rem;
+        }
+        
+        .severity-table th {
+            background: #004d00;
+            color: #90EE90;
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .severity-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #006600;
+            vertical-align: top;
+        }
+        
+        .severity-table tr:nth-child(even) {
+            background: rgba(0, 77, 0, 0.3);
+        }
+        
+        .severity-mild { border-left: 4px solid #32CD32; }
+        .severity-severe { border-left: 4px solid #FFA500; }
+        .severity-life { border-left: 4px solid #FF4444; }
+        
+        /* Toggle Sections */
+        .toggle-section {
+            margin-bottom: 12px;
+        }
+        
+        .toggle-btn {
+            width: 100%;
+            background: rgba(0, 77, 0, 0.5);
+            border: 1px solid #006600;
+            color: #90EE90;
+            padding: 16px 20px;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+            min-height: 44px;
+        }
+        
+        .toggle-btn:hover,
+        .toggle-btn:focus {
+            background: rgba(0, 102, 0, 0.6);
+            outline: 2px solid #90EE90;
+        }
+        
+        .toggle-btn::after {
+            content: "+";
+            font-size: 1.4rem;
+            font-weight: 300;
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-btn.active::after {
+            transform: rotate(45deg);
+        }
+        
+        .toggle-content {
+            display: none;
+            padding: 20px;
+            background: rgba(0, 51, 0, 0.4);
+            border: 1px solid #004d00;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .toggle-content.show {
+            display: block;
+        }
+        
+        /* Highlight Boxes */
+        .clinical-pearl {
+            background: rgba(50, 205, 50, 0.15);
+            border-left: 4px solid #32CD32;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .clinical-pearl strong {
+            color: #7CFC00;
+        }
+        
+        .warning-box {
+            background: rgba(255, 165, 0, 0.15);
+            border-left: 4px solid #FFA500;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .warning-box strong {
+            color: #FFA500;
+        }
+        
+        .critical-box {
+            background: rgba(255, 68, 68, 0.15);
+            border-left: 4px solid #FF4444;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .critical-box strong {
+            color: #FF4444;
+        }
+        
+        /* Medication Dosing Box */
+        .dose-box {
+            background: rgba(0, 77, 0, 0.5);
+            border: 2px solid #32CD32;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .dose-box h4 {
+            color: #7CFC00;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .dose-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        @media (max-width: 600px) {
+            .dose-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .dose-item {
+            background: rgba(0, 51, 0, 0.6);
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        .dose-item .age {
+            color: #90EE90;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .dose-item .dose {
+            color: #e8f5e8;
+            font-size: 0.95rem;
+        }
+        
+        /* Debrief Section */
+        .debrief-question {
+            background: rgba(0, 77, 0, 0.3);
+            padding: 14px 16px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 3px solid #90EE90;
+        }
+        
+        .take-home {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 102, 0, 0.3);
+        }
+        
+        .take-home:last-child {
+            border-bottom: none;
+        }
+        
+        .take-home-icon {
+            color: #32CD32;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #66BB66;
+            font-size: 0.85rem;
+            border-top: 1px solid #004d00;
+            margin-top: 40px;
+        }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 600px) {
+            html {
+                font-size: 16px;
+            }
+            
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+            
+            .header-title {
+                font-size: 0.9rem;
+            }
+            
+            .card {
+                padding: 18px;
+            }
+            
+            .break-point {
+                padding: 18px;
+            }
+            
+            .severity-table {
+                font-size: 0.85rem;
+            }
+            
+            .severity-table th,
+            .severity-table td {
+                padding: 10px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sticky Header -->
+    <header class="sticky-header">
+        <img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" 
+             alt="DSY Training Logo" 
+             class="header-logo"
+             width="60" 
+             height="60">
+        <div class="header-title">Asthma Management – AO Walk-Through</div>
+        <div class="header-spacer"></div>
+        <div class="progress-bar" id="progressBar"></div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Asthma – AO Protocol</h1>
+            <p class="protocol-ref">SAAS CPP-050-AO | Severity & Treatment Table</p>
+            <span class="scenario-type">Walk-Through Scenario – 2-Person Volunteer AO Crew</span>
+        </section>
+
+        <!-- Title & Context -->
+        <div class="card">
+            <h2>Scenario Overview</h2>
+            <p style="margin-bottom: 16px;">An 8-year-old girl with known asthma is having difficulty breathing at home. Mum has tried her reliever puffer but she's not improving. This scenario covers the full spectrum from assessment through to treatment and escalation for a deteriorating paediatric asthma patient.</p>
+            
+            <div class="clinical-pearl">
+                <strong>Key Concept:</strong> Asthma treatment focuses on relief of bronchospasm using bronchodilators. Severity is determined by ability to speak, work of breathing, AND oxygen saturations — never SpO₂ alone.
+            </div>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="card">
+            <h2>Learning Objectives</h2>
+            <ul class="checklist">
+                <li>Accurately classify asthma severity using the SAAS Asthma Severity Table</li>
+                <li>Demonstrate correct MDI + spacer technique for paediatric patients</li>
+                <li>Prepare and administer nebulised salbutamol and ipratropium</li>
+                <li>Recognise signs of deterioration requiring escalation to EOC Clinician</li>
+                <li>Differentiate asthma from anaphylaxis and follow appropriate pathway</li>
+                <li>Understand IPPV considerations in life-threatening asthma</li>
+            </ul>
+        </div>
+
+        <!-- Required Equipment -->
+        <div class="card">
+            <h2>Required Equipment</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h3>Assessment</h3>
+                    <ul class="checklist">
+                        <li>Corpuls3 monitor</li>
+                        <li>SpO₂ probe (paediatric)</li>
+                        <li>Stethoscope</li>
+                        <li>ePCR tablet</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Treatment</h3>
+                    <ul class="checklist">
+                        <li>MDI spacer device</li>
+                        <li>Salbutamol MDI (100 microg/puff)</li>
+                        <li>Nebuliser mask (paediatric)</li>
+                        <li>Salbutamol nebules (2.5mg & 5mg)</li>
+                        <li>Ipratropium nebules (250 & 500 microg)</li>
+                        <li>Normal saline 3mL</li>
+                        <li>Oxygen cylinder + regulator</li>
+                        <li>BVM with paediatric mask</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Session Structure Overview -->
+        <div class="card">
+            <h2>Session Structure</h2>
+            <p style="margin-bottom: 16px;"><strong>Total Duration:</strong> 45–60 minutes</p>
+            <ul class="checklist">
+                <li>Pre-Brief: 10 minutes</li>
+                <li>Scenario Walk-Through: 25–35 minutes (8 break points)</li>
+                <li>Debrief: 10–15 minutes</li>
+            </ul>
+        </div>
+
+        <!-- Pre-Brief -->
+        <div class="card">
+            <h2>Pre-Brief (≈10 minutes)</h2>
+            <p style="margin-bottom: 16px;">Facilitator sets the scene and reviews key concepts with the crew before running the scenario.</p>
+            
+            <h3>Brief Crew On:</h3>
+            <ul class="checklist">
+                <li>This is a walk-through with pause points for discussion</li>
+                <li>Clinician and Driver roles — both will be hands-on</li>
+                <li>Focus on assessment, severity classification, and treatment selection</li>
+                <li>Emphasis on recognising deterioration and EOC escalation triggers</li>
+            </ul>
+            
+            <div class="warning-box">
+                <strong>Facilitator Reminder:</strong> If the patient shows signs consistent with anaphylaxis (urticaria, angioedema, known allergen exposure), crew should be redirected to CPP-003-AO Anaphylaxis protocol — adrenaline first, bronchodilators second.
+            </div>
+        </div>
+
+        <!-- BREAK POINT 1: En-Route Planning -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 1</span>
+                <span class="break-point-type">Discussion / Planning</span>
+            </div>
+            <h3>Dispatch & En-Route Phase</h3>
+            
+            <div class="break-point-section">
+                <h4>MDT Information:</h4>
+                <div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 8px; font-family: monospace; font-size: 0.95rem;">
+                    <strong>CASE: 2847</strong><br>
+                    Priority 2 – Breathing Difficulty<br>
+                    8 y/o female, difficulty breathing<br>
+                    Known asthmatic – reliever not working<br>
+                    Mother on scene, child conscious<br>
+                    Location: 47 Murray Street, Port Lincoln<br>
+                    Cross: Boston Road<br>
+                    Contact: 0412 XXX XXX (Mum – Sarah)
+                </div>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Facilitator Prompts:</h4>
+                <ul class="checklist">
+                    <li>"What's your initial thinking based on this dispatch info?"</li>
+                    <li>"What equipment will you stage at the door?"</li>
+                    <li>"What severity are you anticipating and why?"</li>
+                    <li>"What would change your approach if this was anaphylaxis?"</li>
+                </ul>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning:</h4>
+                <p>8-year-old with known asthma, reliever not effective = likely more severe than mild. Should prepare for nebuliser therapy. Need to rule out anaphylaxis on arrival. Stage: Response bag, Corpuls3, oxygen, nebuliser setup, MDI + spacer.</p>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Key Teaching Points:</h4>
+                <ul class="checklist">
+                    <li>"Reliever not working" suggests severity beyond mild</li>
+                    <li>Prepare for nebulised medication — don't just grab MDI</li>
+                    <li>Child conscious is reassuring but doesn't rule out severe asthma</li>
+                </ul>
+            </div>
+            
+            <div class="clinical-pearl">
+                <strong>Real-Job Translation:</strong> En-route mental preparation prevents fumbling on scene. Anticipate worst-case (severe asthma → life-threatening) while hoping for best-case (mild, responds to MDI).
+            </div>
+        </div>
+
+        <!-- BREAK POINT 2: Doorway / First Impression -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 2</span>
+                <span class="break-point-type">Discussion / Assessment</span>
+            </div>
+            <h3>Doorway / First Impressions</h3>
+            
+            <div class="break-point-section">
+                <h4>Scene Description:</h4>
+                <p>You arrive at a suburban home. Mum meets you at the door looking worried. She leads you to the lounge room where <strong>Lily</strong> (8 y/o) is sitting upright on the couch, leaning forward with her hands on her knees. You can hear audible wheeze from the doorway. She looks at you but doesn't speak.</p>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Facilitator Prompts:</h4>
+                <ul class="checklist">
+                    <li>"What do you see and hear from the doorway?"</li>
+                    <li>"What severity category does this presentation suggest?"</li>
+                    <li>"Any safety concerns in this environment?"</li>
+                    <li>"What's your immediate priority?"</li>
+                </ul>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning:</h4>
+                <p>Tripod position, audible wheeze, not speaking = more severe asthma (talks in phrases/words or unable to speak). Need to get oxygen and nebuliser ready immediately. Scene safe — domestic setting, no hazards. Priority: Primary survey + severity classification.</p>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Key Teaching Points:</h4>
+                <ul class="checklist">
+                    <li>Tripod position = respiratory distress — body positioning to maximise breathing</li>
+                    <li>Not speaking on arrival is a red flag for severity</li>
+                    <li>Audible wheeze indicates significant bronchospasm</li>
+                </ul>
+            </div>
+            
+            <div class="clinical-pearl">
+                <strong>Real-Job Translation:</strong> Your doorway impression often tells you more than 5 minutes of questions. A child who can't greet you is working hard to breathe.
+            </div>
+        </div>
+
+        <!-- BREAK POINT 3: Initial Observations & Corpuls3 Setup -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 3</span>
+                <span class="break-point-type">Practical Skill / Assessment</span>
+            </div>
+            <h3>Initial Observations & Corpuls3 Setup</h3>
+            
+            <div class="break-point-section">
+                <h4>Scenario Progression:</h4>
+                <p>You approach Lily. She looks at you with wide eyes. When you ask her name, she says <strong>"Li...ly"</strong> in two separate breaths. Mum says "she's been like this for about 20 minutes, her puffer isn't helping at all."</p>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Facilitator Prompts:</h4>
+                <ul class="checklist">
+                    <li>"Driver — what observations are you getting and in what order?"</li>
+                    <li>"Clinician — what history are you getting from Mum while obs are done?"</li>
+                    <li>"What specific features are you looking for on assessment?"</li>
+                </ul>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Observations (Driver to obtain):</h4>
+                <div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 8px; margin: 12px 0;">
+                    <strong>Corpuls3 Readings:</strong><br>
+                    SpO₂: 91% (room air)<br>
+                    HR: 128 bpm<br>
+                    RR: 32/min (count manually to confirm)<br>
+                    Skin: Pale, using accessory muscles<br>
+                    Wheeze: Widespread bilateral on auscultation
+                </div>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>History (Clinician to obtain):</h4>
+                <ul class="checklist">
+                    <li>Trigger: Playing outside, dust and pollen high today</li>
+                    <li>Onset: Gradual over 1 hour, worsening rapidly last 20 mins</li>
+                    <li>Reliever used: 4 puffs salbutamol MDI 20 mins ago — no improvement</li>
+                    <li>PMHx: Asthma since age 3, previous hospital admission age 5</li>
+                    <li>Medications: Salbutamol PRN, no preventer currently</li>
+                    <li>Allergies: Nil known</li>
+                    <li>Last ate: Lunch 2 hours ago</li>
+                </ul>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning:</h4>
+                <p>Speaking in single words, SpO₂ 91%, tachycardic, accessory muscle use = MORE SEVERE asthma. Not just mild. No urticaria/angioedema = asthma not anaphylaxis. Previous admission = higher risk patient. Need nebulised bronchodilators NOW.</p>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Key Teaching Points:</h4>
+                <ul class="checklist">
+                    <li>SpO₂ < 95% on room air + difficulty speaking = more severe</li>
+                    <li>Previous hospital admission indicates higher-risk asthmatic</li>
+                    <li>No improvement with reliever = escalate treatment</li>
+                    <li>Always exclude anaphylaxis features</li>
+                </ul>
+            </div>
+            
+            <div class="clinical-pearl">
+                <strong>Real-Job Translation:</strong> Your Corpuls3 confirms what your eyes told you at the door. SpO₂ alone never determines severity — it's the whole picture.
+            </div>
+        </div>
+
+        <!-- Asthma Severity Knowledge Toggle -->
+        <div class="card">
+            <h2>Clinical Knowledge: Asthma Severity Classification</h2>
+            
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleSection(this)">
+                    Asthma Severity & Treatment Table (SAAS)
+                </button>
+                <div class="toggle-content">
+                    <table class="severity-table">
+                        <thead>
+                            <tr>
+                                <th>Severity</th>
+                                <th>Signs</th>
+                                <th>Under 6 years</th>
+                                <th>Over 6 years & Adults</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="severity-mild">
+                                <td><strong>MILD</strong></td>
+                                <td>Talks in sentences<br>Normal work of breathing<br>SpO₂ usually >95%</td>
+                                <td>6 puffs salbutamol MDI + spacer<br><em>EOC may advise repeats</em></td>
+                                <td>12 puffs salbutamol MDI + spacer<br><em>EOC may advise repeats</em></td>
+                            </tr>
+                            <tr class="severity-severe">
+                                <td><strong>MORE SEVERE</strong></td>
+                                <td>Talks in phrases/words or unable to speak<br>Distressed<br>SpO₂ usually <95%</td>
+                                <td>Salbutamol 2.5mg + Ipratropium 250 microg<br>(+ 3mL saline to make 5mL)<br><em>Consult EOC for repeats/adrenaline</em></td>
+                                <td>Salbutamol 5mg + Ipratropium 500 microg<br>(one neb of each)<br><em>Consult EOC for repeats/adrenaline</em></td>
+                            </tr>
+                            <tr class="severity-life">
+                                <td><strong>LIFE-THREATENING</strong></td>
+                                <td>Unable to speak<br>Drowsy/unconscious<br>Poor respiratory effort<br>Respiratory arrest</td>
+                                <td colspan="2">High-flow oxygen<br>Early clinical support<br>If IPPV: slow gentle ventilations (4/min)<br><em>Consult EOC for continuous nebs or IM adrenaline</em></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="warning-box">
+                        <strong>Critical Reminder:</strong> SpO₂ alone should NEVER determine asthma severity — always assess speech, work of breathing, and overall presentation together.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleSection(this)">
+                    MDI + Spacer Technique (Under 4 years consideration)
+                </button>
+                <div class="toggle-content">
+                    <h4>Standard MDI + Spacer Administration:</h4>
+                    <ul class="checklist">
+                        <li>Shake MDI canister well (5 seconds)</li>
+                        <li>Insert MDI into spacer</li>
+                        <li>Patient places mouth around spacer mouthpiece (seal lips)</li>
+                        <li>Actuate one puff into spacer</li>
+                        <li>Patient takes 4 slow deep breaths (or 4 tidal breaths if child)</li>
+                        <li>Wait 30 seconds between puffs</li>
+                        <li>Repeat for prescribed number of puffs</li>
+                    </ul>
+                    
+                    <div class="clinical-pearl">
+                        <strong>Under 4 years:</strong> Consider adding a resuscitation mask to the spacer to improve medication delivery — creates better seal for small faces.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BREAK POINT 4: Screening Tools & Working Diagnosis -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 4</span>
+                <span class="break-point-type">Decision-Making</span>
+            </div>
+            <h3>Screening Tools, Protocols & Working Diagnosis</h3>
+            
+            <div class="break-point-section">
+                <h4>Facilitator Prompts:</h4>
+                <ul class="checklist">
+                    <li>"Based on your assessment, what severity classification applies?"</li>
+                    <li>"What protocol pathway are you following?"</li>
+                    <li>"Have you ruled out anaphylaxis? How?"</li>
+                    <li>"What treatment does the severity table direct you to?"</li>
+                </ul>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning:</h4>
+                <p><strong>Working Diagnosis:</strong> More Severe Asthma (CPP-050-AO)<br>
+                <strong>Rationale:</strong> Speaks in words only, SpO₂ 91%, distressed, accessory muscle use<br>
+                <strong>Not anaphylaxis because:</strong> No urticaria, no angioedema, no known allergen exposure, gradual onset consistent with asthma exacerbation<br>
+                <strong>Treatment indicated:</strong> Nebulised salbutamol 5mg + ipratropium 500 microg (patient is 8 y/o = >6 years)</p>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Key Teaching Points:</h4>
+                <ul class="checklist">
+                    <li>Severity classification drives treatment selection</li>
+                    <li>Always consider: "Could this be anaphylaxis?"</li>
+                    <li>Document your reasoning for pathway selection</li>
+                    <li>Age determines dosing (under 6 vs over 6)</li>
+                </ul>
+            </div>
+            
+            <div class="clinical-pearl">
+                <strong>Real-Job Translation:</strong> Your clinical reasoning must be clear enough to explain to the EOC Clinician when you call. "More severe asthma — speaking words only, sats 91%, I'm starting nebulised bronchodilators."
+            </div>
+        </div>
+
+        <!-- BREAK POINT 5: Treatment Initiation -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 5</span>
+                <span class="break-point-type">Practical Skill</span>
+            </div>
+            <h3>Treatment Initiation & Medication Safety</h3>
+            
+            <div class="break-point-section">
+                <h4>Scenario Progression:</h4>
+                <p>You've classified Lily as MORE SEVERE asthma. Time to commence nebulised bronchodilator therapy.</p>
+            </div>
+            
+            <div class="dose-box">
+                <h4>Medication Dosing: More Severe Asthma (≥6 years)</h4>
+                <div class="dose-grid">
+                    <div class="dose-item">
+                        <div class="age">Salbutamol</div>
+                        <div class="dose">5mg nebule (5mg/2.5mL)<br>Use one full nebule</div>
+                    </div>
+                    <div class="dose-item">
+                        <div class="age">Ipratropium</div>
+                        <div class="dose">500 microg nebule (500 microg/2mL)<br>Use one full nebule</div>
+                    </div>
+                </div>
+                <p style="margin-top: 12px; font-size: 0.9rem; color: #90EE90;">Combined volume ≈ 4.5mL — no additional saline required for >6 years</p>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Practical Skill: Nebuliser Setup & Administration</h4>
+                <ul class="checklist">
+                    <li><strong>Check medications:</strong> Correct drug, correct dose, expiry date, patient age</li>
+                    <li><strong>Prepare nebuliser chamber:</strong> Open and add salbutamol 5mg nebule</li>
+                    <li><strong>Add ipratropium:</strong> 500 microg nebule to same chamber</li>
+                    <li><strong>Assemble:</strong> Connect nebuliser mask to chamber, connect to oxygen tubing</li>
+                    <li><strong>Oxygen flow:</strong> 6-8 L/min to drive nebuliser (mist should be visible)</li>
+                    <li><strong>Apply mask:</strong> Position comfortably on patient's face</li>
+                    <li><strong>Coach breathing:</strong> "Breathe normally through your mouth, Lily"</li>
+                    <li><strong>Monitor:</strong> Watch for improvement, observe for side effects</li>
+                    <li><strong>Duration:</strong> Until nebule is finished (approximately 10-15 minutes)</li>
+                </ul>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Facilitator Prompts:</h4>
+                <ul class="checklist">
+                    <li>"Talk me through your medication checks"</li>
+                    <li>"What oxygen flow rate do you need to drive the neb?"</li>
+                    <li>"What side effects might you see from these medications?"</li>
+                    <li>"When would you call EOC Clinician for further doses?"</li>
+                </ul>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Expected Side Effects (counsel parent):</h4>
+                <ul class="checklist">
+                    <li>Salbutamol: Tremor, tachycardia, anxiety — usually mild, self-limiting</li>
+                    <li>Ipratropium: Dry mouth — minimal systemic effects</li>
+                </ul>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Key Teaching Points:</h4>
+                <ul class="checklist">
+                    <li>Right patient, right drug, right dose, right route, right time</li>
+                    <li>6-8 L/min oxygen flow creates adequate nebulisation</li>
+                    <li>Ipratropium added for synergistic bronchodilation in more severe asthma</li>
+                    <li>Under 6 years: different doses + needs 3mL saline to make up volume</li>
+                </ul>
+            </div>
+            
+            <div class="warning-box">
+                <strong>Medication Safety Check:</strong> Under 6 years dosing is DIFFERENT (Salbutamol 2.5mg + Ipratropium 250 microg + 3mL saline). Always confirm patient age before drawing up medications.
+            </div>
+            
+            <div class="clinical-pearl">
+                <strong>Real-Job Translation:</strong> Verbalise your medication checks out loud — "Salbutamol 5mg, checking expiry, patient is 8 years old." This becomes habit and catches errors.
+            </div>
+        </div>
+
+        <!-- BREAK POINT 6: Reassessment & Escalation -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 6</span>
+                <span class="break-point-type">Decision-Making</span>
+            </div>
+            <h3>Reassessment & Escalation Decision</h3>
+            
+            <div class="break-point-section">
+                <h4>Scenario Progression — Version A (Improving):</h4>
+                <p>After 10 minutes of nebulised therapy, Lily is looking better. She says <strong>"I feel a bit better now"</strong> — a full short sentence. Wheeze is still present but reduced.</p>
+                <div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 8px; margin: 12px 0;">
+                    <strong>Repeat Observations:</strong><br>
+                    SpO₂: 95% (on neb oxygen)<br>
+                    HR: 112 bpm<br>
+                    RR: 24/min<br>
+                    Work of breathing: Improved, less accessory muscle use
+                </div>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Facilitator Prompts (Improving):</h4>
+                <ul class="checklist">
+                    <li>"What's your reassessment telling you?"</li>
+                    <li>"Is she back to 'mild' now?"</li>
+                    <li>"Do you need to call EOC Clinician?"</li>
+                    <li>"What's your transport decision?"</li>
+                </ul>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning (Improving):</h4>
+                <p>Improvement from words → short sentences, SpO₂ improved, HR decreasing, less work of breathing. Responding to treatment. Continue monitoring, complete neb, transport for medical review. Document improvement. EOC call not immediately required but should be considered for any concerns.</p>
+            </div>
+            
+            <hr style="border-color: #006600; margin: 24px 0;">
+            
+            <div class="break-point-section">
+                <h4>Scenario Progression — Version B (Deteriorating):</h4>
+                <p>After 10 minutes of nebulised therapy, Lily is not improving. She's now <strong>barely responding to you</strong>, appears drowsy, and her wheeze has become quieter.</p>
+                <div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 8px; margin: 12px 0;">
+                    <strong>Repeat Observations:</strong><br>
+                    SpO₂: 85% (on neb oxygen)<br>
+                    HR: 140 bpm<br>
+                    RR: 12/min (decreasing — ominous sign)<br>
+                    Work of breathing: Paradoxically reduced — exhaustion<br>
+                    Wheeze: Quiet/"silent chest"
+                </div>
+            </div>
+            
+            <div class="critical-box">
+                <strong>RED FLAG:</strong> Quiet chest + drowsiness + falling RR = LIFE-THREATENING asthma. This is pre-respiratory arrest. Immediate escalation required.
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Facilitator Prompts (Deteriorating):</h4>
+                <ul class="checklist">
+                    <li>"What does a 'quiet chest' mean in asthma?"</li>
+                    <li>"Why is decreasing RR worrying here?"</li>
+                    <li>"What severity is she now?"</li>
+                    <li>"What are your immediate actions?"</li>
+                </ul>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning (Deteriorating):</h4>
+                <p><strong>Severity change:</strong> More Severe → LIFE-THREATENING<br>
+                <strong>Signs:</strong> Unable to speak, drowsy, poor respiratory effort, silent chest (not moving enough air to wheeze)<br>
+                <strong>Immediate actions:</strong><br>
+                1. High-flow oxygen (switch from neb to NRB mask at 15L/min)<br>
+                2. Call EOC Clinician immediately — request clinical support<br>
+                3. Prepare BVM for assisted ventilation<br>
+                4. Urgent transport — load and go<br>
+                5. EOC may advise: Continuous nebs OR IM Adrenaline (10 microg/kg, max 500 microg)</p>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Key Teaching Points:</h4>
+                <ul class="checklist">
+                    <li>Silent chest = not moving enough air to generate wheeze — WORSE not better</li>
+                    <li>Falling respiratory rate in asthma = exhaustion/pre-arrest</li>
+                    <li>Drowsiness = hypoxia affecting brain — time critical</li>
+                    <li>LIFE-THREATENING requires immediate EOC escalation</li>
+                </ul>
+            </div>
+            
+            <div class="clinical-pearl">
+                <strong>Real-Job Translation:</strong> Don't be falsely reassured by a "quiet" chest. A child who stops wheezing and becomes sleepy is about to arrest. Call EOC NOW.
+            </div>
+        </div>
+
+        <!-- IPPV Knowledge Toggle -->
+        <div class="card">
+            <h2>Clinical Knowledge: Ventilation in Severe Asthma</h2>
+            
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleSection(this)">
+                    IPPV Considerations in Life-Threatening Asthma
+                </button>
+                <div class="toggle-content">
+                    <p style="margin-bottom: 16px;">If assisted ventilation is required in life-threatening asthma, technique is critical to avoid worsening the situation.</p>
+                    
+                    <div class="critical-box">
+                        <strong>BVM Ventilation in Severe Asthma — MUST be:</strong>
+                        <ul class="checklist" style="margin-top: 12px;">
+                            <li><strong>Small tidal volumes</strong> — just enough to see chest rise</li>
+                            <li><strong>Slow ventilation rate</strong> — approximately 4 per minute</li>
+                            <li><strong>Allow adequate chest deflation</strong> — the problem is air trapping</li>
+                            <li><strong>Gentle pressure</strong> — avoid over-pressurising lungs</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>Why slow and gentle?</strong> In severe asthma, air can get INTO the lungs but can't get OUT (bronchospasm/mucus). Fast ventilation causes air trapping, hyperinflation, and can cause pneumothorax or cardiovascular collapse. Let the chest deflate fully before each breath.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleSection(this)">
+                    IM Adrenaline in Severe Asthma (EOC Consultation Required)
+                </button>
+                <div class="toggle-content">
+                    <p style="margin-bottom: 16px;">IM Adrenaline may be authorised by EOC Clinician for life-threatening asthma not responding to bronchodilators.</p>
+                    
+                    <div class="dose-box">
+                        <h4>IM Adrenaline (EOC authorisation required)</h4>
+                        <p><strong>Dose:</strong> 10 microg/kg<br>
+                        <strong>Maximum single dose:</strong> 500 microg<br>
+                        <strong>Preparation:</strong> Adrenaline 1:1000 (1mg/mL)<br>
+                        <strong>Route:</strong> IM (anterolateral thigh)<br>
+                        <strong>May repeat:</strong> PRN (as per EOC direction)</p>
+                    </div>
+                    
+                    <div class="clinical-pearl">
+                        <strong>Rationale:</strong> Adrenaline causes bronchodilation via beta-2 receptors. Used when nebulised bronchodilators fail or in pre-arrest/arrest situations. Always via EOC consultation for AOs.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BREAK POINT 7: Extrication & Transport -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 7</span>
+                <span class="break-point-type">Practical / Planning</span>
+            </div>
+            <h3>Extrication & Transport Planning</h3>
+            
+            <div class="break-point-section">
+                <h4>Scenario Progression:</h4>
+                <p>Lily has improved with the first nebuliser (Version A scenario). She's speaking in short sentences, SpO₂ 95%, work of breathing improved. Time to move to the ambulance and transport for further assessment.</p>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Facilitator Prompts:</h4>
+                <ul class="checklist">
+                    <li>"How are you getting Lily to the ambulance?"</li>
+                    <li>"What position for transport?"</li>
+                    <li>"What monitoring continues en route?"</li>
+                    <li>"Mum wants to come — what's your plan?"</li>
+                </ul>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning:</h4>
+                <p><strong>Extrication:</strong> Green carry chair to stretcher — no walking (minimise exertion)<br>
+                <strong>Position:</strong> Sitting upright (Fowler's position) — improves respiratory mechanics<br>
+                <strong>Monitoring:</strong> Continuous SpO₂, reassess every 5 minutes, watch for deterioration<br>
+                <strong>Mum:</strong> Travel in front with Driver — keeps Lily calm, Mum can provide history at hospital</p>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Key Teaching Points:</h4>
+                <ul class="checklist">
+                    <li>Carry chair minimises patient exertion and oxygen demand</li>
+                    <li>Upright positioning essential for respiratory patients</li>
+                    <li>Parent in ambulance often beneficial for paediatric calm</li>
+                    <li>Continue treatment en route if required — can repeat nebs per EOC</li>
+                </ul>
+            </div>
+            
+            <div class="clinical-pearl">
+                <strong>Real-Job Translation:</strong> The trip to hospital isn't "post-treatment" — it's ongoing care. Asthma can deteriorate rapidly. Keep monitoring, keep reassessing.
+            </div>
+        </div>
+
+        <!-- BREAK POINT 8: ISBAR Handover -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 8</span>
+                <span class="break-point-type">Practical Skill</span>
+            </div>
+            <h3>ISBAR Handover</h3>
+            
+            <div class="break-point-section">
+                <h4>Facilitator Prompts:</h4>
+                <ul class="checklist">
+                    <li>"Deliver your handover to the ED team using ISBAR"</li>
+                    <li>"What are the critical points they need to know?"</li>
+                    <li>"What observations are you handing over?"</li>
+                </ul>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Example ISBAR Handover:</h4>
+                <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; font-size: 1rem;">
+                    <p><strong>I — Identify:</strong> "Hi, I'm [Name] from SA Ambulance. This is Lily, 8 years old."</p>
+                    <p style="margin-top: 12px;"><strong>S — Situation:</strong> "Lily has had an acute asthma exacerbation. She was initially classified as more severe asthma — speaking in words only, SpO₂ 91% on room air. She's responded well to treatment."</p>
+                    <p style="margin-top: 12px;"><strong>B — Background:</strong> "Known asthmatic since age 3, previous hospital admission at age 5. On PRN salbutamol only, no preventer. Triggered today by outdoor play — high pollen. Mum gave 4 puffs reliever at home with no improvement."</p>
+                    <p style="margin-top: 12px;"><strong>A — Assessment:</strong> "On arrival: SpO₂ 91%, HR 128, RR 32, widespread wheeze, accessory muscle use. We administered nebulised salbutamol 5mg and ipratropium 500 microg. Post-treatment: SpO₂ 95% on room air, HR 112, RR 24, speaking short sentences, wheeze reduced."</p>
+                    <p style="margin-top: 12px;"><strong>R — Recommendation:</strong> "She's improved but I'd recommend ongoing monitoring, consideration of steroids, and review of her asthma management plan given no preventer. Mum is here with her."</p>
+                </div>
+            </div>
+            
+            <div class="break-point-section">
+                <h4>Key Teaching Points:</h4>
+                <ul class="checklist">
+                    <li>State severity classification AND what it was based on</li>
+                    <li>Include what treatment was given and response</li>
+                    <li>Previous admission history is relevant for risk stratification</li>
+                    <li>Hand over concerns about current management (no preventer)</li>
+                </ul>
+            </div>
+            
+            <div class="clinical-pearl">
+                <strong>Real-Job Translation:</strong> A good handover paints a picture. The ED team should understand the trajectory — where she started, what you did, where she is now.
+            </div>
+        </div>
+
+        <!-- Debrief Section -->
+        <div class="card">
+            <h2>Debrief (10–15 minutes)</h2>
+            
+            <h3>Reflective Questions</h3>
+            <div class="debrief-question">
+                <p>1. What clinical features moved Lily from "mild" to "more severe" classification?</p>
+            </div>
+            <div class="debrief-question">
+                <p>2. How did you differentiate this presentation from anaphylaxis?</p>
+            </div>
+            <div class="debrief-question">
+                <p>3. What would have triggered you to call EOC Clinician earlier?</p>
+            </div>
+            <div class="debrief-question">
+                <p>4. How did your Driver/Clinician roles work together during treatment?</p>
+            </div>
+            <div class="debrief-question">
+                <p>5. What are the red flags for life-threatening asthma?</p>
+            </div>
+            <div class="debrief-question">
+                <p>6. Why is BVM ventilation different in severe asthma?</p>
+            </div>
+            <div class="debrief-question">
+                <p>7. What would you do differently next time?</p>
+            </div>
+            
+            <h3 style="margin-top: 30px;">Take-Home Messages</h3>
+            <div class="take-home">
+                <span class="take-home-icon">✓</span>
+                <p>Severity classification drives treatment — use the SAAS Asthma Severity Table every time</p>
+            </div>
+            <div class="take-home">
+                <span class="take-home-icon">✓</span>
+                <p>SpO₂ alone NEVER determines severity — assess speech, work of breathing, and overall presentation together</p>
+            </div>
+            <div class="take-home">
+                <span class="take-home-icon">✓</span>
+                <p>Always consider: "Could this be anaphylaxis?" — if yes, adrenaline comes first</p>
+            </div>
+            <div class="take-home">
+                <span class="take-home-icon">✓</span>
+                <p>Silent chest + drowsiness = pre-arrest — escalate immediately to EOC Clinician</p>
+            </div>
+            <div class="take-home">
+                <span class="take-home-icon">✓</span>
+                <p>Nebuliser therapy for MORE SEVERE asthma — MDI + spacer is first-line for MILD only</p>
+            </div>
+            <div class="take-home">
+                <span class="take-home-icon">✓</span>
+                <p>If you need to ventilate: slow, gentle, small volumes — avoid air trapping</p>
+            </div>
+            <div class="take-home">
+                <span class="take-home-icon">✓</span>
+                <p>Early EOC consultation saves lives — don't wait for deterioration to ask for help</p>
+            </div>
+        </div>
+
+        <!-- Optional Scenario Variations -->
+        <div class="card">
+            <h2>Optional Scenario Variations</h2>
+            
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleSection(this)">
+                    Variation 1: Adult with No Asthma History
+                </button>
+                <div class="toggle-content">
+                    <p><strong>Setup:</strong> 45-year-old male, no known asthma, acute wheeze and dyspnoea after bushfire smoke exposure.</p>
+                    <p style="margin-top: 12px;"><strong>Key Learning:</strong> "Asthmatic symptoms may occur in patients with no history of asthma, especially in the setting of chest infection or smoke inhalation." Treat the presentation, not the history.</p>
+                    <p style="margin-top: 12px;"><strong>Considerations:</strong> Rule out cardiac cause (ACS can present with dyspnoea), consider smoke inhalation injury, follow asthma protocol if bronchospasm is primary issue.</p>
+                </div>
+            </div>
+            
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleSection(this)">
+                    Variation 2: Under 6 Years — Toddler
+                </button>
+                <div class="toggle-content">
+                    <p><strong>Setup:</strong> 3-year-old with viral URTI, now wheezing and struggling to breathe. First presentation — no asthma diagnosis yet.</p>
+                    <p style="margin-top: 12px;"><strong>Key Learning:</strong> Different dosing for under 6 years. MDI + spacer with resuscitation mask for better seal. Salbutamol 2.5mg + Ipratropium 250 microg (+ 3mL saline) if nebulising.</p>
+                    <p style="margin-top: 12px;"><strong>Considerations:</strong> Viral-induced wheeze common in this age group, parental reassurance important, lower threshold for EOC consultation in very young patients.</p>
+                </div>
+            </div>
+            
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleSection(this)">
+                    Variation 3: Asthma Progressing to Anaphylaxis Picture
+                </button>
+                <div class="toggle-content">
+                    <p><strong>Setup:</strong> 12-year-old at birthday party, eating cake, develops wheeze. Initially treated as asthma but then develops urticaria and facial swelling.</p>
+                    <p style="margin-top: 12px;"><strong>Key Learning:</strong> If severe asthma occurs in setting of anaphylaxis, follow anaphylaxis protocol FIRST (CPP-003-AO) — IM Adrenaline before bronchodilators.</p>
+                    <p style="margin-top: 12px;"><strong>Considerations:</strong> Recognise evolving anaphylaxis, don't delay adrenaline while giving bronchodilators, request early clinical support.</p>
+                </div>
+            </div>
+            
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleSection(this)">
+                    Variation 4: Remote Location — Long Transport
+                </button>
+                <div class="toggle-content">
+                    <p><strong>Setup:</strong> 10-year-old at remote campsite, 90-minute transport to hospital. Severe asthma, responds partially to initial neb.</p>
+                    <p style="margin-top: 12px;"><strong>Key Learning:</strong> Early EOC consultation essential. May need repeat nebs en route per EOC advice. Plan for deterioration during long transport.</p>
+                    <p style="margin-top: 12px;"><strong>Considerations:</strong> Oxygen supply planning, medication supply for repeated doses, rendezvous with backup if available, continuous monitoring even more critical.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>DSY Training | Asthma Management – AO Walk-Through Scenario</p>
+            <p style="margin-top: 8px;">Source: SAAS CPP-050-AO & Asthma Severity/Treatment Table | Version: December 2024</p>
+        </footer>
+    </main>
+
+    <script>
+        // Progress bar
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Fade in on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card, .break-point').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Toggle sections
+        function toggleSection(btn) {
+            btn.classList.toggle('active');
+            const content = btn.nextElementSibling;
+            content.classList.toggle('show');
+        }
+    </script>
+</body>
+</html>
