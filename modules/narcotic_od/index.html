@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narcotic Overdose - AO Walk-Through Scenario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 18px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #001a00 0%, #002200 50%, #003300 100%);
+            color: #e8f5e8;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Sticky Header */
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, #002200 0%, #001a00 100%);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            border-bottom: 2px solid #00aa00;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #90EE90;
+        }
+
+        .header-subtitle {
+            font-size: 0.8rem;
+            color: #66bb66;
+        }
+
+        .progress-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #003300;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #90EE90);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 100px 20px 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, rgba(0, 100, 0, 0.3) 0%, rgba(0, 50, 0, 0.5) 100%);
+            border-radius: 16px;
+            border: 1px solid #006600;
+        }
+
+        .hero h1 {
+            font-size: 1.8rem;
+            color: #90EE90;
+            margin-bottom: 10px;
+        }
+
+        .hero .protocol-ref {
+            font-size: 0.9rem;
+            color: #66bb66;
+            margin-bottom: 15px;
+        }
+
+        .hero .duration {
+            display: inline-block;
+            background: #004400;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #90EE90;
+        }
+
+        /* Section Cards */
+        .section-card {
+            background: linear-gradient(145deg, #003300 0%, #002200 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #005500;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .section-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-card h2 {
+            color: #90EE90;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #006600;
+        }
+
+        .section-card h3 {
+            color: #7FD17F;
+            font-size: 1rem;
+            margin: 15px 0 10px;
+        }
+
+        /* Checklists */
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 10px 0 10px 35px;
+            position: relative;
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(0, 100, 0, 0.3);
+        }
+
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+
+        .checklist li::before {
+            content: '☐';
+            position: absolute;
+            left: 5px;
+            color: #00aa00;
+            font-size: 1.1rem;
+        }
+
+        /* Break Point Cards */
+        .break-point {
+            background: linear-gradient(145deg, #1a3300 0%, #0d2600 100%);
+            border: 2px solid #ff9900;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .break-point.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .break-point-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .break-point-badge {
+            background: #ff9900;
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .break-point-type {
+            background: #004400;
+            color: #90EE90;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+        }
+
+        .break-point h3 {
+            color: #ffcc00;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .break-point-section {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(0, 50, 0, 0.5);
+            border-radius: 8px;
+        }
+
+        .break-point-section h4 {
+            color: #90EE90;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Toggle Sections */
+        .toggle-section {
+            margin: 15px 0;
+        }
+
+        .toggle-button {
+            width: 100%;
+            background: linear-gradient(145deg, #004400 0%, #003300 100%);
+            border: 1px solid #006600;
+            color: #90EE90;
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-height: 44px;
+        }
+
+        .toggle-button:hover, .toggle-button:focus {
+            background: linear-gradient(145deg, #005500 0%, #004400 100%);
+            outline: 2px solid #00aa00;
+        }
+
+        .toggle-button::after {
+            content: '+';
+            font-size: 1.3rem;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-button.active::after {
+            transform: rotate(45deg);
+        }
+
+        .toggle-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: rgba(0, 40, 0, 0.5);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .toggle-content.active {
+            max-height: 2000px;
+        }
+
+        .toggle-content-inner {
+            padding: 20px;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(145deg, #002244 0%, #001a33 100%);
+            border: 1px solid #0066aa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .info-box.warning {
+            background: linear-gradient(145deg, #442200 0%, #331a00 100%);
+            border-color: #aa6600;
+        }
+
+        .info-box.critical {
+            background: linear-gradient(145deg, #440000 0%, #330000 100%);
+            border-color: #aa0000;
+        }
+
+        .info-box-title {
+            font-weight: 700;
+            color: #66aaff;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .info-box.warning .info-box-title {
+            color: #ffaa00;
+        }
+
+        .info-box.critical .info-box-title {
+            color: #ff6666;
+        }
+
+        /* Scenario Box */
+        .scenario-box {
+            background: linear-gradient(145deg, #1a2e1a 0%, #0f1f0f 100%);
+            border: 2px solid #00aa00;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .scenario-box h3 {
+            color: #00ff00;
+            margin-bottom: 15px;
+        }
+
+        /* MDT Display */
+        .mdt-display {
+            background: #000;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+
+        .mdt-header {
+            color: #00ff00;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        .mdt-content {
+            color: #00ff00;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .mdt-content .label {
+            color: #666;
+        }
+
+        /* Debrief Section */
+        .debrief-questions {
+            counter-reset: question;
+        }
+
+        .debrief-questions li {
+            counter-increment: question;
+            padding-left: 40px;
+        }
+
+        .debrief-questions li::before {
+            content: counter(question) '.';
+            color: #00aa00;
+            font-weight: 700;
+        }
+
+        /* Take Home Messages */
+        .take-home {
+            background: linear-gradient(145deg, #003322 0%, #002211 100%);
+            border: 2px solid #00aa66;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .take-home h3 {
+            color: #00ffaa;
+            margin-bottom: 15px;
+        }
+
+        .take-home li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .take-home li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #00ff66;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            html {
+                font-size: 16px;
+            }
+
+            .sticky-header {
+                padding: 10px 15px;
+            }
+
+            .header-logo {
+                width: 50px;
+                height: 50px;
+            }
+
+            .header-title {
+                font-size: 0.95rem;
+            }
+
+            .main-content {
+                padding: 90px 15px 30px;
+            }
+
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .section-card, .break-point {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sticky Header -->
+    <header class="sticky-header">
+        <div class="header-left">
+            <img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" 
+                 alt="DSY Training Logo" 
+                 class="header-logo"
+                 width="60" 
+                 height="60">
+            <div>
+                <div class="header-title">Narcotic Overdose - AO</div>
+                <div class="header-subtitle">Walk-Through Scenario</div>
+            </div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Narcotic Overdose - AO</h1>
+            <p class="protocol-ref">Source Protocol: CPP-011-AO | SAAS Clinical Practice Protocols</p>
+            <span class="duration">⏱ 60-75 minutes</span>
+        </section>
+
+        <!-- Title & Context -->
+        <section class="section-card">
+            <h2>Title & Context</h2>
+            <p>This walk-through scenario prepares Volunteer AO crews to assess and manage a patient with suspected narcotic overdose. The scenario emphasises airway assessment, ventilation support, EOC consultation for naloxone administration, and transport to definitive care.</p>
+            
+            <div class="info-box">
+                <div class="info-box-title">Protocol Scope</div>
+                <p>Narcotic overdose may present from recreational and prescribed medication use. The aim is to re-establish airway control and effective ventilation. IM Naloxone requires EOC Clinician consultation and direction.</p>
+            </div>
+        </section>
+
+        <!-- Learning Objectives -->
+        <section class="section-card">
+            <h2>Learning Objectives</h2>
+            <ul class="checklist">
+                <li>Recognise signs and symptoms of narcotic overdose</li>
+                <li>Differentiate between effective and ineffective breathing with airway compromise</li>
+                <li>Demonstrate safe airway management and IPPV techniques</li>
+                <li>Understand indications and process for EOC consultation regarding naloxone</li>
+                <li>Administer IM Naloxone 400 microg as directed by EOC Clinician</li>
+                <li>Manage patient who regains consciousness post-naloxone</li>
+                <li>Provide appropriate transport and handover</li>
+            </ul>
+        </section>
+
+        <!-- Required Equipment -->
+        <section class="section-card">
+            <h2>Required Equipment</h2>
+            <h3>Clinical Equipment</h3>
+            <ul class="checklist">
+                <li>Ambulance Response Bag</li>
+                <li>Corpuls3 monitor</li>
+                <li>BVM with reservoir and oxygen</li>
+                <li>Suction unit with Yankauer</li>
+                <li>OPA/NPA airways</li>
+                <li>Stretcher</li>
+                <li>PPE (gloves, eyewear)</li>
+            </ul>
+
+            <h3>Medications (for demonstration)</h3>
+            <ul class="checklist">
+                <li>Naloxone ampoules (400 microg/mL)</li>
+                <li>Syringes (1mL, 3mL)</li>
+                <li>IM needles (21G or 23G)</li>
+                <li>Alcohol swabs</li>
+                <li>Sharps container</li>
+            </ul>
+
+            <h3>Documentation</h3>
+            <ul class="checklist">
+                <li>ePCR tablet or paperwork</li>
+                <li>CPP-011-AO protocol reference</li>
+            </ul>
+        </section>
+
+        <!-- Session Structure Overview -->
+        <section class="section-card">
+            <h2>Session Structure Overview</h2>
+            <ul class="checklist">
+                <li>Pre-Brief (10 minutes)</li>
+                <li>Dispatch & En Route Phase</li>
+                <li>On Arrival – Scene Management</li>
+                <li>Patient Contact & Primary Survey</li>
+                <li>Clinical Decision Point</li>
+                <li>Treatment Phase (IM Naloxone)</li>
+                <li>Reassessment & Escalation</li>
+                <li>Extrication & Transport</li>
+                <li>Handover</li>
+                <li>Debrief (10-15 minutes)</li>
+            </ul>
+        </section>
+
+        <!-- Pre-Brief -->
+        <section class="section-card">
+            <h2>Pre-Brief (≈10 minutes)</h2>
+            <p>Gather your crew and review the following before commencing the scenario:</p>
+            
+            <ul class="checklist">
+                <li>Review CPP-011-AO Narcotic Overdose protocol</li>
+                <li>Confirm roles: Clinician and Driver</li>
+                <li>Check equipment readiness</li>
+                <li>Discuss airway assessment and IPPV technique</li>
+                <li>Review IM injection technique (deltoid/vastus lateralis)</li>
+                <li>Discuss potential scene safety considerations</li>
+            </ul>
+
+            <div class="info-box warning">
+                <div class="info-box-title">Scene Safety Reminder</div>
+                <p>Narcotic overdose scenes may involve drug paraphernalia, sharps, unknown substances, or agitated bystanders. Prioritise crew safety. Do not enter until scene is assessed as safe.</p>
+            </div>
+        </section>
+
+        <!-- Scenario Introduction -->
+        <section class="scenario-box">
+            <h3>📍 Scenario: Port Lincoln Foreshore</h3>
+            <p><strong>Location:</strong> Public toilet block near the marina carpark, Port Lincoln foreshore</p>
+            <p><strong>Time:</strong> 2230 hours, Thursday evening</p>
+            <p><strong>Weather:</strong> Cool, 12°C, clear night</p>
+            <p><strong>Caller:</strong> Security guard doing routine patrol</p>
+        </section>
+
+        <!-- BREAK POINT 1: En-Route Planning -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 1</span>
+                <span class="break-point-type">Discussion / Planning</span>
+            </div>
+            <h3>En-Route Planning</h3>
+            
+            <div class="mdt-display">
+                <div class="mdt-header">📟 MDT DISPATCH INFORMATION</div>
+                <div class="mdt-content">
+                    <span class="label">CASE:</span> P2 - OVERDOSE<br>
+                    <span class="label">TIME:</span> 22:31<br>
+                    <span class="label">LOCATION:</span> Public toilets, Marina Carpark, Port Lincoln Foreshore<br>
+                    <span class="label">CALLER:</span> Security guard - not with patient<br>
+                    <span class="label">INFO:</span> Male found unresponsive in toilet cubicle. Possible drug use. Security has called out - no response. Unknown if breathing.<br>
+                    <span class="label">BACKUP:</span> MedSTAR retrieval 45+ mins if required<br>
+                    <span class="label">NOTES:</span> Security will meet crew at carpark entrance. Police notified - ETA unknown.
+                </div>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Facilitator Prompts</h4>
+                <ul class="checklist">
+                    <li>What does "P2 Overdose" tell you about expected acuity?</li>
+                    <li>What are your scene safety concerns?</li>
+                    <li>What equipment will you take in first?</li>
+                    <li>What differential diagnoses come to mind?</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning</h4>
+                <ul class="checklist">
+                    <li>Scene safety priority - public toilet, unknown substances, sharps risk</li>
+                    <li>Take response bag, Corpuls3, suction, BVM, oxygen</li>
+                    <li>Consider: narcotic OD, other drug OD, hypoglycaemia, head injury, stroke, cardiac event</li>
+                    <li>Wait for security escort - don't enter alone</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Key Teaching Points</h4>
+                <ul class="checklist">
+                    <li>P2 overdose can rapidly become time-critical if airway/breathing compromised</li>
+                    <li>Bring airway equipment - anticipate the worst</li>
+                    <li>Security escort provides safety and information</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Real-Job Translation</h4>
+                <p>On a real job, you'd be planning access, considering lighting (torches), confirming police attendance, and mentally preparing for airway intervention. The MDT info shapes your approach before you arrive.</p>
+            </div>
+        </div>
+
+        <!-- On Arrival -->
+        <section class="section-card">
+            <h2>On Arrival – Scene Management</h2>
+            <p>Security guard meets you at the carpark entrance. He's anxious and provides the following information:</p>
+            
+            <div class="info-box">
+                <div class="info-box-title">Security Guard Report</div>
+                <p>"I found him about 10 minutes ago. He's in the second cubicle - door's not locked. I called out but he didn't respond. I could see his legs through the gap - he's on the floor. I didn't touch him. There's some stuff on the floor near him - looks like drug gear."</p>
+            </div>
+
+            <ul class="checklist">
+                <li>Confirm security has not seen anyone else in the area</li>
+                <li>Request security remains at entrance to direct police</li>
+                <li>Don PPE before entering (gloves, eyewear)</li>
+                <li>Driver collects additional equipment from vehicle</li>
+            </ul>
+        </section>
+
+        <!-- BREAK POINT 2: Doorway/First Impression -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 2</span>
+                <span class="break-point-type">Discussion / Observation</span>
+            </div>
+            <h3>Doorway / First Impression</h3>
+
+            <div class="scenario-box">
+                <h3>What You See</h3>
+                <p>Male patient, appears 30-40 years old, lying supine on the toilet floor. Head tilted back against the wall. Skin appears pale/grey under the fluorescent light. You can see very slow, shallow chest movement - maybe 4-6 breaths per minute. Lips appear dusky. A used syringe and tourniquet visible on the floor beside him. No obvious injuries or blood.</p>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Facilitator Prompts</h4>
+                <ul class="checklist">
+                    <li>What's your immediate impression?</li>
+                    <li>Is the scene safe to approach?</li>
+                    <li>What's your first action?</li>
+                    <li>Which pathway does this patient fit - "effective breathing" or "ineffective breathing"?</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning</h4>
+                <ul class="checklist">
+                    <li>Classic narcotic overdose presentation - pinpoint pupils, slow/shallow breathing, drug paraphernalia</li>
+                    <li>Scene relatively safe - note sharps location, don't kneel on them</li>
+                    <li>This is INEFFECTIVE breathing - RR 4-6, cyanosis = airway/breathing compromise</li>
+                    <li>Immediate priority: Danger check, then airway and breathing support</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Key Teaching Points</h4>
+                <ul class="checklist">
+                    <li>Respiratory depression is the killer in narcotic overdose</li>
+                    <li>RR less than 10 with cyanosis = ineffective breathing pathway</li>
+                    <li>Naloxone is NOT your first action - airway and ventilation come first</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Real-Job Translation</h4>
+                <p>That doorway pause takes 3-5 seconds but gives you critical information. You've already identified the pathway (ineffective breathing) and your immediate priorities before touching the patient.</p>
+            </div>
+        </div>
+
+        <!-- Patient Contact & Primary Survey -->
+        <section class="section-card">
+            <h2>Patient Contact & Primary Survey</h2>
+            
+            <h3>DRSABCD Approach</h3>
+            <ul class="checklist">
+                <li><strong>Danger:</strong> Sharps identified - move carefully, dispose safely when possible</li>
+                <li><strong>Response:</strong> Verbal stimulus - no response. Painful stimulus (trapezius squeeze) - slight groan only</li>
+                <li><strong>Send for help:</strong> Driver to bring stretcher, oxygen, suction closer</li>
+                <li><strong>Airway:</strong> Partial obstruction - gurgling sounds, tongue fallen back</li>
+                <li><strong>Breathing:</strong> Present but inadequate - RR 4, shallow, SpO2 78% on room air</li>
+                <li><strong>Circulation:</strong> Pulse present - weak, regular, rate 52</li>
+                <li><strong>Defibrillation:</strong> Not required - has pulse</li>
+            </ul>
+
+            <div class="info-box critical">
+                <div class="info-box-title">Critical Finding</div>
+                <p>Patient has a pulse but breathing is INEFFECTIVE. This is NOT a cardiac arrest - but without intervention, it will become one. Start IPPV immediately.</p>
+            </div>
+        </section>
+
+        <!-- BREAK POINT 3: Initial Observations & Corpuls3 Setup -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 3</span>
+                <span class="break-point-type">Practical Skill / Decision-Making</span>
+            </div>
+            <h3>Initial Observations & Corpuls3 Setup</h3>
+
+            <div class="scenario-box">
+                <h3>Initial Observations</h3>
+                <p><strong>Time:</strong> 22:38</p>
+                <ul class="checklist">
+                    <li>GCS: E1 V1 M2 = 4</li>
+                    <li>RR: 4 breaths/min (shallow)</li>
+                    <li>SpO2: 78% (room air)</li>
+                    <li>HR: 52 bpm (regular)</li>
+                    <li>BP: 88/52 mmHg</li>
+                    <li>Pupils: Pinpoint bilaterally</li>
+                    <li>Skin: Pale, cool, cyanotic lips</li>
+                    <li>BGL: 5.8 mmol/L</li>
+                    <li>Temp: 35.8°C</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Facilitator Prompts</h4>
+                <ul class="checklist">
+                    <li>What do these observations tell you?</li>
+                    <li>What's the classic narcotic overdose triad?</li>
+                    <li>What's your immediate airway intervention?</li>
+                    <li>Who manages the airway while observations continue?</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning</h4>
+                <ul class="checklist">
+                    <li>Classic opioid toxidrome: CNS depression, respiratory depression, miosis (pinpoint pupils)</li>
+                    <li>SpO2 78% is critically low - brain damage occurring</li>
+                    <li>BGL normal - rules out hypoglycaemia as cause</li>
+                    <li>Clinician: Open airway (head tilt/chin lift), insert OPA, commence IPPV with BVM + high-flow O2</li>
+                    <li>Driver: Continue observations, prepare equipment, document</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Key Teaching Points</h4>
+                <ul class="checklist">
+                    <li>Opioid triad: Decreased LOC + respiratory depression + pinpoint pupils</li>
+                    <li>IPPV before naloxone - oxygenation is the priority</li>
+                    <li>Target 10-12 breaths/min with BVM, visible chest rise</li>
+                    <li>Don't hyperventilate - squeeze, release, count "one-thousand-one"</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Real-Job Translation</h4>
+                <p>On a real job, you're multitasking immediately. One crew member controls the airway while the other gets monitoring on. BGL is a quick win to rule out hypo. Every minute of low SpO2 causes harm.</p>
+            </div>
+        </div>
+
+        <!-- BREAK POINT 4: Screening Tools & Working Diagnosis -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 4</span>
+                <span class="break-point-type">Discussion / Decision-Making</span>
+            </div>
+            <h3>Screening Tools, Protocols & Working Diagnosis</h3>
+
+            <div class="break-point-section">
+                <h4>Facilitator Prompts</h4>
+                <ul class="checklist">
+                    <li>What's your working diagnosis?</li>
+                    <li>What protocol applies?</li>
+                    <li>Does this patient have "effective breathing" or "ineffective breathing" per the protocol?</li>
+                    <li>What does the protocol direct you to do now?</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning</h4>
+                <ul class="checklist">
+                    <li>Working diagnosis: Narcotic (opioid) overdose</li>
+                    <li>Protocol: CPP-011-AO Narcotic Overdose</li>
+                    <li>Pathway: INEFFECTIVE breathing, airway compromised (absent gag/cough reflexes)</li>
+                    <li>Protocol directs: Basic care including IPPV → Consult EOC Clinician → IM Naloxone as directed</li>
+                </ul>
+            </div>
+
+            <div class="toggle-section">
+                <button class="toggle-button" onclick="toggleSection(this)">
+                    CPP-011-AO Protocol Summary
+                </button>
+                <div class="toggle-content">
+                    <div class="toggle-content-inner">
+                        <h4>Effective Breathing, Airway Patent</h4>
+                        <ul class="checklist">
+                            <li>Basic care</li>
+                            <li>Consider clinical support</li>
+                            <li>Provide transport and notify receiving facility</li>
+                        </ul>
+                        
+                        <h4>Ineffective Breathing, Airway Compromised</h4>
+                        <ul class="checklist">
+                            <li>If unresponsive and pulseless → CPR per cardiac arrest protocol</li>
+                            <li>Basic care including IPPV</li>
+                            <li>Consult EOC Clinician who may advise:</li>
+                            <li>IM Naloxone 400 microg - repeat doses as directed</li>
+                            <li>Request clinical support</li>
+                            <li>Provide transport and notify receiving facility</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Key Teaching Points</h4>
+                <ul class="checklist">
+                    <li>The protocol has TWO pathways - you must assess which one applies</li>
+                    <li>Naloxone requires EOC consultation - it's not automatic</li>
+                    <li>IPPV must be established BEFORE calling EOC</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Treatment Phase -->
+        <section class="section-card">
+            <h2>Clinical Decision Point</h2>
+            <p>After 2 minutes of IPPV with high-flow oxygen:</p>
+            
+            <div class="scenario-box">
+                <h3>Reassessment</h3>
+                <ul class="checklist">
+                    <li>SpO2: Improving to 89%</li>
+                    <li>HR: 58 bpm</li>
+                    <li>Still unresponsive (GCS 4)</li>
+                    <li>No gag reflex when OPA checked</li>
+                    <li>Pupils remain pinpoint</li>
+                </ul>
+            </div>
+
+            <p><strong>Decision:</strong> Patient requires ongoing IPPV. Time to consult EOC Clinician regarding naloxone administration.</p>
+        </section>
+
+        <!-- BREAK POINT 5: Treatment Initiation & Medication Safety -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 5</span>
+                <span class="break-point-type">Practical Skill / Communication</span>
+            </div>
+            <h3>Treatment Initiation & Medication Safety</h3>
+
+            <div class="break-point-section">
+                <h4>EOC Consultation Structure</h4>
+                <p>Clinician calls EOC while Driver maintains IPPV:</p>
+                <div class="mdt-display">
+                    <div class="mdt-header">📞 EOC CALL SCRIPT</div>
+                    <div class="mdt-content">
+                        "EOC this is [Unit] at Port Lincoln foreshore.<br><br>
+                        We have a male approximately 35 years, found unresponsive in public toilets with drug paraphernalia present.<br><br>
+                        He has ineffective breathing - RR was 4, SpO2 78% on arrival. Pinpoint pupils. GCS 4.<br><br>
+                        We've established IPPV with OPA and high-flow oxygen. SpO2 now 89% and improving. He has a pulse - rate 58.<br><br>
+                        Requesting advice regarding IM Naloxone per CPP-011-AO."
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">EOC Clinician Response (Simulated)</div>
+                <p>"Copy that. Sounds like opioid overdose with respiratory depression. Continue IPPV. I'm authorising IM Naloxone 400 micrograms. Administer now and reassess in 2-3 minutes. Call back if no response - may need repeat dose. Are you able to transport? Notify Port Lincoln Hospital."</p>
+            </div>
+
+            <div class="break-point-section">
+                <h4>IM Naloxone Administration - Step by Step</h4>
+                <ul class="checklist">
+                    <li>Confirm order: IM Naloxone 400 microg (0.4mg)</li>
+                    <li>Check ampoule: Naloxone 400 microg/mL (or 1mg/mL - adjust volume)</li>
+                    <li>Check expiry date</li>
+                    <li>Draw up correct volume (1mL if 400microg/mL)</li>
+                    <li>Select injection site: Deltoid (upper arm) or Vastus Lateralis (lateral thigh)</li>
+                    <li>Clean site with alcohol swab</li>
+                    <li>Insert needle at 90° angle</li>
+                    <li>Aspirate briefly (check not in vessel)</li>
+                    <li>Inject medication steadily</li>
+                    <li>Withdraw needle, apply pressure</li>
+                    <li>Dispose of sharps safely</li>
+                    <li>Document time and dose given</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Facilitator Prompts</h4>
+                <ul class="checklist">
+                    <li>Walk through the IM injection technique</li>
+                    <li>What concentration is your Naloxone? How much do you draw up?</li>
+                    <li>Why do we aspirate before injecting IM?</li>
+                    <li>What response are you looking for?</li>
+                    <li>What's the risk if we give too much naloxone too quickly?</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning</h4>
+                <ul class="checklist">
+                    <li>400 microg = 0.4 mg = 1mL of standard ampoule</li>
+                    <li>Aspiration checks needle isn't in a blood vessel</li>
+                    <li>Looking for: Increased RR, improved LOC, pupil dilation</li>
+                    <li>Risk of rapid reversal: Acute withdrawal - agitation, aggression, vomiting, risk of aspiration</li>
+                </ul>
+            </div>
+
+            <div class="info-box warning">
+                <div class="info-box-title">Naloxone Considerations</div>
+                <p><strong>Goal:</strong> Restore adequate breathing - NOT full consciousness. We want the patient breathing adequately, not wide awake and combative.</p>
+                <p><strong>Duration:</strong> Naloxone lasts 20-90 minutes. Many opioids last longer. Patient may re-sedate → continuous monitoring essential.</p>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Key Teaching Points</h4>
+                <ul class="checklist">
+                    <li>Naloxone is NOT a magic fix - it's an adjunct to ventilation</li>
+                    <li>EOC authorisation is mandatory for AO administration</li>
+                    <li>Aim for breathing improvement, not full reversal</li>
+                    <li>Prepare for agitation if reversal is rapid</li>
+                    <li>Short acting - patient may re-sedate</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Real-Job Translation</h4>
+                <p>On a real job, you're maintaining IPPV while preparing the naloxone - this requires coordination. Driver holds the mask seal while Clinician draws up and administers. Communication is constant: "Keep bagging, I'm giving the naloxone now."</p>
+            </div>
+        </div>
+
+        <!-- Reassessment & Escalation -->
+        <section class="section-card">
+            <h2>Reassessment Post-Naloxone</h2>
+            <p><strong>Time:</strong> 3 minutes post-naloxone administration</p>
+            
+            <div class="scenario-box">
+                <h3>Patient Response</h3>
+                <ul class="checklist">
+                    <li>Patient begins to stir</li>
+                    <li>RR increases to 12/min spontaneously</li>
+                    <li>SpO2: 96% on high-flow O2</li>
+                    <li>HR: 72 bpm</li>
+                    <li>BP: 102/68 mmHg</li>
+                    <li>GCS improving: E2 V2 M4 = 8</li>
+                    <li>Pupils: Dilating slightly</li>
+                    <li>Begins to move arms purposefully</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">Positive Response</div>
+                <p>This is a good response. Continue monitoring closely. Maintain oxygen via mask. Be prepared for the patient to become more alert and potentially confused/agitated.</p>
+            </div>
+        </section>
+
+        <!-- BREAK POINT 6: Reassessment & Escalation Decision -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 6</span>
+                <span class="break-point-type">Discussion / Decision-Making</span>
+            </div>
+            <h3>Reassessment & Escalation Decision</h3>
+
+            <div class="break-point-section">
+                <h4>Facilitator Prompts</h4>
+                <ul class="checklist">
+                    <li>Has the naloxone worked?</li>
+                    <li>Do you need a repeat dose?</li>
+                    <li>What's your ongoing plan?</li>
+                    <li>What if the patient wants to refuse transport?</li>
+                    <li>What are you monitoring for during transport?</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning</h4>
+                <ul class="checklist">
+                    <li>Good response - adequate spontaneous breathing restored</li>
+                    <li>No repeat dose needed currently</li>
+                    <li>Must transport - naloxone may wear off before opioid</li>
+                    <li>If patient refuses: Explain risks clearly, involve EOC, document thoroughly</li>
+                    <li>Monitor for: Re-sedation, respiratory depression, vomiting/aspiration</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Key Teaching Points</h4>
+                <ul class="checklist">
+                    <li>Response to naloxone confirms opioid as cause</li>
+                    <li>Transport is essential - re-sedation risk is real</li>
+                    <li>Patient capacity to refuse may be impaired</li>
+                    <li>Continuous monitoring throughout transport</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- BREAK POINT 7: Extrication & Transport Planning -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 7</span>
+                <span class="break-point-type">Practical / Planning</span>
+            </div>
+            <h3>Extrication & Transport Planning</h3>
+
+            <div class="scenario-box">
+                <h3>Current Patient Status</h3>
+                <p>Patient is now semi-conscious, GCS 11 (E3 V3 M5). He's confused, asking "What happened? Where am I?" He's cooperative but unsteady. He states his name is "Dave" and says he "used a bit too much."</p>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Facilitator Prompts</h4>
+                <ul class="checklist">
+                    <li>How do you get this patient out of the toilet cubicle safely?</li>
+                    <li>What position for transport?</li>
+                    <li>What equipment stays with the patient?</li>
+                    <li>What's your transport priority?</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Expected AO Reasoning</h4>
+                <ul class="checklist">
+                    <li>Assist patient to stand if able, support to carry chair or stretcher</li>
+                    <li>Don't let patient walk unassisted - fall risk, may re-sedate</li>
+                    <li>Transport on stretcher with rails up</li>
+                    <li>Position: Semi-recumbent or recovery position if vomiting risk</li>
+                    <li>Keep suction immediately available</li>
+                    <li>Continuous SpO2 and observation throughout</li>
+                    <li>Priority 2 transport - stable but requires monitoring</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Key Teaching Points</h4>
+                <ul class="checklist">
+                    <li>These patients can deteriorate rapidly - stay vigilant</li>
+                    <li>Suction must be ready - vomiting common post-naloxone</li>
+                    <li>Recovery position if any concern about airway protection</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Real-Job Translation</h4>
+                <p>Extrication from confined spaces is always challenging. The patient might seem better but they're not stable. Use the carry chair to get them to the stretcher. Keep talking to them - their responsiveness is your early warning system.</p>
+            </div>
+        </div>
+
+        <!-- BREAK POINT 8: ISBAR Handover -->
+        <div class="break-point">
+            <div class="break-point-header">
+                <span class="break-point-badge">Break Point 8</span>
+                <span class="break-point-type">Practical Skill / Communication</span>
+            </div>
+            <h3>ISBAR Handover</h3>
+
+            <div class="break-point-section">
+                <h4>Practice the Handover</h4>
+                <div class="mdt-display">
+                    <div class="mdt-header">📋 ISBAR HANDOVER</div>
+                    <div class="mdt-content">
+                        <strong>I - Identify:</strong><br>
+                        "I'm [Name] from SAAS. This is Dave, approximately 35-year-old male."<br><br>
+                        
+                        <strong>S - Situation:</strong><br>
+                        "Dave was found unresponsive in public toilets with evidence of IV drug use. Suspected opioid overdose."<br><br>
+                        
+                        <strong>B - Background:</strong><br>
+                        "Found at 2238 with ineffective breathing - RR 4, SpO2 78%, GCS 4, pinpoint pupils. Drug paraphernalia on scene. Unknown medical history - unable to obtain collateral. No medications or allergies known."<br><br>
+                        
+                        <strong>A - Assessment:</strong><br>
+                        "On arrival, patient had respiratory depression requiring IPPV for approximately 5 minutes. Responded to IM Naloxone 400 microg given at 2245 following EOC authorisation. Currently GCS 11, RR 14, SpO2 97% on 8L O2, BP 108/70, HR 76. Alert but confused."<br><br>
+                        
+                        <strong>R - Recommendation:</strong><br>
+                        "He'll need ongoing monitoring for re-sedation - the naloxone may wear off. He's at risk of aspiration. May benefit from social work or drug and alcohol services referral."
+                    </div>
+                </div>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Facilitator Prompts</h4>
+                <ul class="checklist">
+                    <li>Practise delivering this handover clearly and concisely</li>
+                    <li>What's the most important information the ED needs?</li>
+                    <li>What are you recommending and why?</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Key Teaching Points</h4>
+                <ul class="checklist">
+                    <li>Time of naloxone administration is critical for ED planning</li>
+                    <li>Mention risk of re-sedation explicitly</li>
+                    <li>Honest handover - "IV drug use" not judgmental but accurate</li>
+                </ul>
+            </div>
+
+            <div class="break-point-section">
+                <h4>Real-Job Translation</h4>
+                <p>A clear ISBAR ensures the ED team understands why this patient needs close monitoring. The timing of naloxone tells them when to expect potential re-sedation. Your recommendation prompts them to consider the whole patient - not just the acute overdose.</p>
+            </div>
+        </div>
+
+        <!-- Debrief Section -->
+        <section class="section-card">
+            <h2>Debrief (10-15 minutes)</h2>
+            
+            <h3>Reflective Questions</h3>
+            <ol class="checklist debrief-questions">
+                <li>What clinical signs confirmed this was an opioid overdose rather than another cause of unconsciousness?</li>
+                <li>Why is IPPV the priority intervention before naloxone?</li>
+                <li>What information did you need to provide EOC to get naloxone authorisation?</li>
+                <li>How did crew roles work during this scenario? What would you do differently?</li>
+                <li>What's the risk of naloxone wearing off before the opioid? How does this affect your transport planning?</li>
+                <li>How would you handle this patient if they became agitated or aggressive post-naloxone?</li>
+                <li>What scene safety considerations did you address?</li>
+            </ol>
+        </section>
+
+        <!-- Take Home Messages -->
+        <div class="take-home">
+            <h3>Take-Home Messages</h3>
+            <ul>
+                <li><strong>Oxygenation first, naloxone second</strong> - IPPV saves lives while you prepare the antidote</li>
+                <li><strong>Naloxone requires EOC authorisation</strong> - establish IPPV, then call</li>
+                <li><strong>Aim for breathing, not consciousness</strong> - partial reversal is safer than full reversal</li>
+                <li><strong>Naloxone is short-acting</strong> - patients can re-sedate, transport and monitor continuously</li>
+                <li><strong>Scene safety is paramount</strong> - sharps, unknown substances, unpredictable people</li>
+                <li><strong>These patients need hospital</strong> - even if they feel "fine" after naloxone</li>
+                <li><strong>Non-judgmental care matters</strong> - professional, compassionate care regardless of circumstances</li>
+            </ul>
+        </div>
+
+        <!-- Toggle Section: Knowledge Content -->
+        <section class="section-card">
+            <h2>Reference Information</h2>
+            
+            <div class="toggle-section">
+                <button class="toggle-button" onclick="toggleSection(this)">
+                    Opioid Overdose Pathophysiology
+                </button>
+                <div class="toggle-content">
+                    <div class="toggle-content-inner">
+                        <p>Opioids bind to receptors in the brainstem that control respiratory drive. This causes:</p>
+                        <ul class="checklist">
+                            <li>Decreased respiratory rate</li>
+                            <li>Decreased tidal volume</li>
+                            <li>Hypoxia → hypercapnia → respiratory acidosis</li>
+                            <li>CNS depression (sedation, unconsciousness)</li>
+                            <li>Miosis (pinpoint pupils) - parasympathetic effect</li>
+                        </ul>
+                        <p>Death occurs from respiratory arrest leading to hypoxic cardiac arrest.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="toggle-section">
+                <button class="toggle-button" onclick="toggleSection(this)">
+                    Naloxone Pharmacology
+                </button>
+                <div class="toggle-content">
+                    <div class="toggle-content-inner">
+                        <ul class="checklist">
+                            <li><strong>Mechanism:</strong> Competitive opioid receptor antagonist</li>
+                            <li><strong>Onset:</strong> IM 2-5 minutes (IV faster but not AO scope)</li>
+                            <li><strong>Duration:</strong> 20-90 minutes (shorter than most opioids)</li>
+                            <li><strong>AO Dose:</strong> 400 microg IM, repeat as directed by EOC</li>
+                            <li><strong>Side effects:</strong> Acute withdrawal syndrome - agitation, nausea, vomiting, tachycardia, hypertension</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="toggle-section">
+                <button class="toggle-button" onclick="toggleSection(this)">
+                    Differential Diagnoses
+                </button>
+                <div class="toggle-content">
+                    <div class="toggle-content-inner">
+                        <p>Not all "found unconscious" patients are opioid overdoses. Consider:</p>
+                        <ul class="checklist">
+                            <li>Hypoglycaemia (check BGL early)</li>
+                            <li>Head injury (look for signs of trauma)</li>
+                            <li>Stroke (focal neurological signs)</li>
+                            <li>Post-ictal state (evidence of seizure)</li>
+                            <li>Other drug overdose (stimulants, sedatives, alcohol)</li>
+                            <li>Sepsis (fever, infection source)</li>
+                            <li>Cardiac event</li>
+                        </ul>
+                        <p>The opioid triad (CNS depression + respiratory depression + miosis) + drug paraphernalia points strongly to opioid overdose.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Optional Scenario Variations -->
+        <section class="section-card">
+            <h2>Optional Scenario Variations</h2>
+            
+            <div class="info-box">
+                <div class="info-box-title">Variation 1: No Response to Naloxone</div>
+                <p>Patient shows no improvement after 400 microg naloxone. EOC directs repeat dose. Still no improvement. Consider: mixed overdose (benzodiazepines + opioids), non-opioid cause, very high opioid load. Continue IPPV and transport urgently.</p>
+            </div>
+
+            <div class="info-box warning">
+                <div class="info-box-title">Variation 2: Aggressive Patient Post-Naloxone</div>
+                <p>Patient wakes abruptly, becomes agitated and combative. Attempts to remove monitoring, refuses care, wants to leave. Practise de-escalation, safety positioning, EOC consultation regarding capacity. Police may be required.</p>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">Variation 3: Paediatric Overdose</div>
+                <p>18-month-old child found with grandmother's oxycodone tablets nearby. Modify approach: smaller BVM, paediatric OPA sizing, weight-based naloxone dosing via EOC, parental communication, mandatory transport.</p>
+            </div>
+
+            <div class="info-box critical">
+                <div class="info-box-title">Variation 4: Cardiac Arrest on Arrival</div>
+                <p>Patient found pulseless and apnoeic. Switch to CPP-002-AO Cardiac Arrest protocol. CPR, AED, request backup. Naloxone is NOT indicated in cardiac arrest - focus on high-quality CPR and defibrillation if shockable.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Progress bar functionality
+        function updateProgressBar() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('progressBar').style.width = scrollPercent + '%';
+        }
+
+        window.addEventListener('scroll', updateProgressBar);
+
+        // Fade in on scroll
+        function handleScrollAnimation() {
+            const elements = document.querySelectorAll('.section-card, .break-point');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (elementTop < windowHeight * 0.85) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleScrollAnimation);
+        window.addEventListener('load', handleScrollAnimation);
+
+        // Toggle sections
+        function toggleSection(button) {
+            button.classList.toggle('active');
+            const content = button.nextElementSibling;
+            content.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
