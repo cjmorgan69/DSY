@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVA with Hypoglycaemia - AO Training Module</title>
+    <style>
+        :root {
+            --primary-dark: #003300;
+            --primary-mid: #004d00;
+            --primary-light: #006600;
+            --accent-green: #00994d;
+            --card-bg: #f0f7f0;
+            --text-dark: #1a1a1a;
+            --text-light: #ffffff;
+            --warning: #cc7a00;
+            --critical: #cc0000;
+            --highlight: #ffeb3b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 18px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* Sticky Header */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            background: var(--primary-dark);
+            color: var(--text-light);
+            padding: 12px 20px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 51, 0, 0.3);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .header-title {
+            flex: 1;
+        }
+
+        .header-title h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .header-title p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            margin-top: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-green);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Protocol Reference Box */
+        .protocol-ref {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+
+        .protocol-ref a {
+            color: var(--highlight);
+            text-decoration: none;
+        }
+
+        .protocol-ref a:hover {
+            text-decoration: underline;
+        }
+
+        /* Section Styling */
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 51, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent-green);
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--primary-dark);
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            color: var(--primary-mid);
+            margin: 16px 0 12px 0;
+        }
+
+        /* Scenario Card */
+        .scenario-card {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-mid) 100%);
+            color: var(--text-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .scenario-card h3 {
+            color: var(--highlight);
+            margin-top: 0;
+        }
+
+        /* MDT Display */
+        .mdt-screen {
+            background: #1a1a2e;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            padding: 16px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+
+        .mdt-screen .priority {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .mdt-screen .info-line {
+            margin: 4px 0;
+        }
+
+        /* Checklists */
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 12px 16px;
+            margin: 8px 0;
+            background: var(--card-bg);
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 1rem;
+            min-height: 44px;
+        }
+
+        .checklist li::before {
+            content: "☐";
+            color: var(--primary-dark);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* Break Point Cards */
+        .break-point {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 5px solid var(--warning);
+            border-radius: 0 12px 12px 0;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .break-point-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .break-point-badge {
+            background: var(--warning);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .break-point-type {
+            background: var(--primary-dark);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .break-point h4 {
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        /* Critical Alert */
+        .critical-alert {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-left: 5px solid var(--critical);
+            border-radius: 0 12px 12px 0;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .critical-alert h4 {
+            color: var(--critical);
+            margin-bottom: 8px;
+        }
+
+        /* Toggle Sections */
+        .toggle-section {
+            margin: 12px 0;
+        }
+
+        .toggle-btn {
+            width: 100%;
+            background: var(--primary-mid);
+            color: white;
+            border: none;
+            padding: 16px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 44px;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-btn:hover, .toggle-btn:active {
+            background: var(--primary-dark);
+        }
+
+        .toggle-btn::after {
+            content: "▼";
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-btn.active::after {
+            transform: rotate(180deg);
+        }
+
+        .toggle-content {
+            display: none;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 0 0 12px 12px;
+            margin-top: -8px;
+        }
+
+        .toggle-content.show {
+            display: block;
+        }
+
+        /* Skill Box */
+        .skill-box {
+            background: white;
+            border: 2px solid var(--accent-green);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .skill-box h4 {
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .skill-box h4::before {
+            content: "🔧";
+        }
+
+        /* Protocol Box */
+        .protocol-box {
+            background: #e8f5e9;
+            border: 2px solid var(--primary-dark);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .protocol-box h4 {
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .protocol-box h4::before {
+            content: "📋";
+        }
+
+        /* Steps */
+        .steps {
+            counter-reset: step;
+            list-style: none;
+            padding: 0;
+        }
+
+        .steps li {
+            position: relative;
+            padding: 16px 16px 16px 50px;
+            margin: 12px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-green);
+            font-size: 1rem;
+        }
+
+        .steps li::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-dark);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+        }
+
+        /* Teaching Points */
+        .teaching-points {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .teaching-points h5 {
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .teaching-points ul {
+            margin-left: 20px;
+        }
+
+        .teaching-points li {
+            margin: 6px 0;
+            font-size: 0.95rem;
+        }
+
+        /* Facilitator Prompt */
+        .facilitator-prompt {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 12px 0;
+            font-style: italic;
+        }
+
+        .facilitator-prompt::before {
+            content: "💬 Ask: ";
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        /* Observations Table */
+        .obs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.95rem;
+        }
+
+        .obs-table th, .obs-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .obs-table th {
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .obs-table tr:nth-child(even) {
+            background: var(--card-bg);
+        }
+
+        .obs-table .abnormal {
+            color: var(--critical);
+            font-weight: bold;
+        }
+
+        /* Medication Box */
+        .medication-box {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border: 2px solid var(--warning);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .medication-box h4 {
+            color: var(--warning);
+            margin-bottom: 12px;
+        }
+
+        .dose-highlight {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            border-left: 4px solid var(--warning);
+        }
+
+        /* Debrief Section */
+        .debrief-question {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .debrief-question strong {
+            color: var(--primary-dark);
+        }
+
+        /* Take Home Messages */
+        .take-home {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 16px 0;
+        }
+
+        .take-home h4 {
+            color: var(--highlight);
+            margin-bottom: 12px;
+        }
+
+        .take-home ul {
+            margin-left: 20px;
+        }
+
+        .take-home li {
+            margin: 8px 0;
+        }
+
+        /* Equipment Grid */
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .equipment-item {
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .equipment-item::before {
+            content: "✓";
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            html {
+                font-size: 16px;
+            }
+
+            .header-title h1 {
+                font-size: 1rem;
+            }
+
+            .section {
+                padding: 16px;
+            }
+
+            .mdt-screen {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sticky Header -->
+    <header class="sticky-header">
+        <div class="header-content">
+            <img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" 
+                 alt="DSY Training Logo" 
+                 class="header-logo"
+                 width="60" 
+                 height="60">
+            <div class="header-title">
+                <h1>MVA with Hypoglycaemia</h1>
+                <p>Volunteer AO Walk-Through Scenario | CPP-009-AO</p>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Section 1: Title & Context -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">🚑</div>
+                <h2>Scenario Overview</h2>
+            </div>
+
+            <div class="protocol-ref">
+                <strong>Source Protocol:</strong> Hypoglycaemia - AO (CPP-009-AO)<br>
+                <a href="https://clinical.saambulance.sa.gov.au/assets/pdf/home/Hypoglycaemia%20-%20AO.pdf" target="_blank">View Protocol Document →</a>
+            </div>
+            
+            <div class="scenario-card">
+                <h3>Single Vehicle MVA — Medical Origin</h3>
+                <p><strong>Setting:</strong> Rural road, late afternoon. Car has left the road and struck a tree. Caller reports the driver is confused and not responding normally.</p>
+                <p><strong>Clinical Focus:</strong> Hypoglycaemia causing altered consciousness leading to MVA. C-spine precautions required due to mechanism. Airway management during transport.</p>
+            </div>
+
+            <h3>Learning Objectives</h3>
+            <ul class="checklist">
+                <li>Recognise hypoglycaemia in a patient with altered conscious state (including trauma)</li>
+                <li>Apply CPP-009-AO correctly: oral glucose if GCS adequate, IM Glucagon if not</li>
+                <li>Identify when to consult EOC Clinician for Glucagon administration</li>
+                <li>Perform C-spine immobilisation using collar and modified towel rolls</li>
+                <li>Manage airway compromise (vomiting) during transport</li>
+                <li>Deliver structured ISBAR handover at hospital</li>
+            </ul>
+        </section>
+
+        <!-- Section 2: Protocol Summary -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">📋</div>
+                <h2>Protocol Summary: Hypoglycaemia - AO (CPP-009-AO)</h2>
+            </div>
+
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleContent(this)">
+                    Key Protocol Principles
+                </button>
+                <div class="toggle-content">
+                    <h4>From CPP-009-AO:</h4>
+                    <blockquote style="border-left: 4px solid var(--primary-dark); padding-left: 16px; margin: 12px 0; font-style: italic;">
+                        "Hypoglycaemia can manifest as a variety of symptoms ranging from confusion, altered behaviour, and diaphoresis to unconsciousness and seizure. The appropriate management for hypoglycaemia is <strong>the least invasive therapy that increases blood glucose</strong>."
+                    </blockquote>
+
+                    <div class="info-box">
+                        <strong>Critical Point:</strong> "Measure the BGL on all patients (particularly children) who have an altered conscious state or altered cerebral function, <strong>including trauma and seizures</strong>."
+                    </div>
+
+                    <h4>Normal BGL Ranges</h4>
+                    <ul class="checklist">
+                        <li><strong>Adults and children:</strong> Usually &gt; 3.5 mmol/L</li>
+                        <li><strong>Neonates:</strong> &gt; 2.5 mmol/L</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleContent(this)">
+                    AO Treatment Pathway (Patients ≥ 2 years)
+                </button>
+                <div class="toggle-content">
+                    <div class="protocol-box">
+                        <h4>All patients ≥ 2 years with BGL &lt; 3.5 mmol/L</h4>
+                        
+                        <h4>Step 1: Assess swallowing ability</h4>
+                        <p><strong>Key indicator:</strong> "A cough is a good indicator" of adequate GCS to swallow</p>
+
+                        <h4>Step 2: If patient CAN swallow safely</h4>
+                        <div class="dose-highlight">
+                            <strong>Oral glucose up to 15 g</strong><br>
+                            (glucose gel, glucose tablets, or sugary drink)
+                        </div>
+
+                        <h4>Step 3: If oral glucose CANNOT be given or is INEFFECTIVE</h4>
+                        <p><strong>Consult EOC Clinician</strong> who may advise:</p>
+                        
+                        <div class="medication-box">
+                            <h4>IM Glucagon Doses (EOC Clinician authorisation required)</h4>
+                            <div class="dose-highlight">
+                                <strong>≥ 6 years (or ≥ 25 kg):</strong> IM Glucagon 1 mg
+                            </div>
+                            <div class="dose-highlight">
+                                <strong>≥ 2 years to &lt; 6 years (or &lt; 25 kg):</strong> IM Glucagon 0.5 mg
+                            </div>
+                        </div>
+
+                        <h4>Step 4: Post-treatment</h4>
+                        <ul class="checklist">
+                            <li>If recovery occurs, consider offering <strong>complex carbohydrates</strong> to eat</li>
+                            <li>Provide transport and notify receiving facility</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Equipment -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">🎒</div>
+                <h2>Required Equipment</h2>
+            </div>
+            
+            <div class="equipment-grid">
+                <div class="equipment-item">Ambulance Response Bag</div>
+                <div class="equipment-item">Corpuls3 Monitor</div>
+                <div class="equipment-item">Glucometer + test strips</div>
+                <div class="equipment-item">Oral glucose gel (15g)</div>
+                <div class="equipment-item">Glucagon 1mg (IM)</div>
+                <div class="equipment-item">Complex carbohydrates (biscuits/sandwich)</div>
+                <div class="equipment-item">Semi-rigid cervical collar</div>
+                <div class="equipment-item">Towels × 2</div>
+                <div class="equipment-item">500mL NaCl 0.9% bags × 2</div>
+                <div class="equipment-item">Transpore tape</div>
+                <div class="equipment-item">Vacuum mattress</div>
+                <div class="equipment-item">Stretcher</div>
+                <div class="equipment-item">Suction unit (portable + vehicle)</div>
+                <div class="equipment-item">Yankauer suction catheter</div>
+                <div class="equipment-item">PPE (gloves, eyewear)</div>
+                <div class="equipment-item">ePCR tablet</div>
+            </div>
+        </section>
+
+        <!-- Section 4: Pre-Brief -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">📝</div>
+                <h2>Pre-Brief (≈10 minutes)</h2>
+            </div>
+            
+            <p>Facilitator sets the scene and reviews key protocol points before commencing the walk-through.</p>
+            
+            <h3>Crew Briefing Points</h3>
+            <ul class="checklist">
+                <li>Today's scenario involves an MVA with an underlying medical cause</li>
+                <li>We'll practice primary/secondary survey at the scene</li>
+                <li>C-spine precautions are indicated due to mechanism of injury</li>
+                <li>BGL measurement and CPP-009-AO (Hypoglycaemia) management will be key</li>
+                <li>Remember: "Least invasive therapy that increases blood glucose"</li>
+                <li>We'll manage an airway complication during transport</li>
+                <li>Session concludes with ISBAR handover practice</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>Role Allocation:</strong><br>
+                <strong>Clinician (AO1):</strong> Patient contact, history, clinical decisions, medication administration<br>
+                <strong>Driver (AO2):</strong> Scene safety, observations/Corpuls3, equipment, documentation
+            </div>
+        </section>
+
+        <!-- Section 5: Dispatch & En Route -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">📱</div>
+                <h2>Dispatch & En Route Phase</h2>
+            </div>
+
+            <div class="mdt-screen">
+                <div class="info-line"><span class="priority">● PRIORITY 2</span></div>
+                <div class="info-line">TYPE: MVA — Single Vehicle vs Tree</div>
+                <div class="info-line">LOCATION: Flinders Highway, 8km west of Port Lincoln</div>
+                <div class="info-line">CALLER: Passing motorist</div>
+                <div class="info-line">INFO: Car off road into tree. Driver confused,</div>
+                <div class="info-line">      not making sense. Still in vehicle.</div>
+                <div class="info-line">      No other occupants. Vehicle upright.</div>
+                <div class="info-line">ACCESS: Via highway. Police/CFS en route.</div>
+                <div class="info-line">HAZARDS: Traffic. Vehicle damage unknown.</div>
+            </div>
+
+            <!-- BREAK POINT 1 -->
+            <div class="break-point">
+                <div class="break-point-header">
+                    <span class="break-point-badge">BREAK POINT 1</span>
+                    <span class="break-point-type">Discussion / Planning</span>
+                </div>
+                <h4>En-Route Planning</h4>
+                
+                <div class="facilitator-prompt">
+                    "You're en route, about 8 minutes out. What are you thinking? What causes a single vehicle MVA with a confused driver?"
+                </div>
+
+                <h4>Expected AO Reasoning</h4>
+                <ul class="checklist">
+                    <li>"Confused driver" — could be head injury, <strong>hypoglycaemia</strong>, stroke, drugs/alcohol, or post-ictal</li>
+                    <li>Single vehicle MVA into tree — mechanism suggests potential C-spine injury</li>
+                    <li>Need to consider both trauma AND medical causes</li>
+                    <li>Protocol reminder: "Measure BGL on all patients with altered conscious state, <strong>including trauma</strong>"</li>
+                    <li>Scene safety: traffic management, vehicle stability, fuel leak</li>
+                </ul>
+
+                <div class="teaching-points">
+                    <h5>Key Teaching Points</h5>
+                    <ul>
+                        <li>Single vehicle MVAs often have an underlying medical cause</li>
+                        <li>CPP-009-AO specifically states to check BGL in trauma patients with altered consciousness</li>
+                        <li>Don't let the "trauma call" blind you to medical causes</li>
+                        <li>Plan for C-spine precautions until mechanism is assessed</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <strong>Real-Job Translation:</strong> Use travel time productively. Brief your partner on roles. Ensure glucometer is accessible — it should be one of the first things you reach for with any altered conscious state.
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: On Arrival -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">🚗</div>
+                <h2>On Arrival — Scene Management</h2>
+            </div>
+
+            <div class="scenario-card">
+                <h3>Scene Description</h3>
+                <p>You arrive to find a sedan that has left the road on a gentle curve and struck a tree at moderate speed. The front end is crumpled, airbags deployed. Vehicle is upright and stable. The driver, a male approximately 55 years old, is still in the driver's seat with seatbelt on. He appears awake but is moving slowly and making incomprehensible sounds.</p>
+                <p>A passing motorist is standing nearby. No other services on scene yet.</p>
+            </div>
+
+            <!-- BREAK POINT 2 -->
+            <div class="break-point">
+                <div class="break-point-header">
+                    <span class="break-point-badge">BREAK POINT 2</span>
+                    <span class="break-point-type">Discussion / Decision-Making</span>
+                </div>
+                <h4>Doorway / First Impressions</h4>
+
+                <div class="facilitator-prompt">
+                    "You've just arrived and can see the scene. What's your first impression? What are the immediate priorities?"
+                </div>
+
+                <h4>Expected AO Reasoning</h4>
+                <ul class="checklist">
+                    <li>Scene safety first: vehicle stable, no obvious fuel leak, traffic hazard</li>
+                    <li>Position ambulance to protect scene from traffic</li>
+                    <li>Patient is conscious but altered — need to get to him quickly</li>
+                    <li>Single occupant — confirmed</li>
+                    <li>Mechanism + airbag deployment = C-spine precautions indicated</li>
+                </ul>
+
+                <div class="teaching-points">
+                    <h5>Key Teaching Points</h5>
+                    <ul>
+                        <li>Scene safety is non-negotiable — dead paramedics save no one</li>
+                        <li>Use the ambulance as a shield from traffic</li>
+                        <li>Get general impression before tunnel-visioning on the patient</li>
+                        <li>Airbag deployment indicates significant deceleration force</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Patient Contact & Primary Survey -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">👤</div>
+                <h2>Patient Contact & Primary Survey</h2>
+            </div>
+
+            <h3>Initial Approach</h3>
+            <ul class="checklist">
+                <li>Approach from front of vehicle where patient can see you</li>
+                <li>Introduce yourself: "Ambulance — we're here to help"</li>
+                <li>Instruct patient NOT to move their head</li>
+                <li>Driver (AO2) provides manual in-line stabilisation from behind</li>
+            </ul>
+
+            <div class="scenario-card">
+                <h3>Patient Presentation</h3>
+                <p><strong>Name:</strong> Barry, 56 years old</p>
+                <p><strong>Appearance:</strong> Pale, diaphoretic, eyes open but vacant stare. Seatbelt on. No visible external injuries. Airbag deflated in lap.</p>
+                <p><strong>Response:</strong> Eyes open spontaneously. Makes incomprehensible sounds. Not following commands. Localises to pain.</p>
+                <p><strong>Airway:</strong> Clear, maintaining own airway currently</p>
+                <p><strong>Breathing:</strong> Rate appears slightly elevated, adequate depth</p>
+            </div>
+
+            <!-- BREAK POINT 3 -->
+            <div class="break-point">
+                <div class="break-point-header">
+                    <span class="break-point-badge">BREAK POINT 3</span>
+                    <span class="break-point-type">Practical Skill / Assessment</span>
+                </div>
+                <h4>Initial Observations & Corpuls3 Setup</h4>
+
+                <div class="facilitator-prompt">
+                    "Talk me through your primary survey findings. What observations are you getting? AO2 — show me your Corpuls setup. What's the ONE test the protocol tells us to do in altered conscious state?"
+                </div>
+
+                <h4>Primary Survey Findings</h4>
+                <table class="obs-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Finding</th>
+                    </tr>
+                    <tr>
+                        <td>Airway</td>
+                        <td>Clear, self-maintaining</td>
+                    </tr>
+                    <tr>
+                        <td>Breathing</td>
+                        <td>RR 22, adequate depth, SpO2 97% RA</td>
+                    </tr>
+                    <tr>
+                        <td>Circulation</td>
+                        <td>HR 110, BP 145/90, peripheries cool/clammy</td>
+                    </tr>
+                    <tr>
+                        <td>Disability</td>
+                        <td class="abnormal">GCS: E4 V2 M5 = 11 (confused, not obeying)</td>
+                    </tr>
+                    <tr>
+                        <td>Exposure</td>
+                        <td>Pale, diaphoretic, no obvious external trauma</td>
+                    </tr>
+                    <tr>
+                        <td class="abnormal">BGL</td>
+                        <td class="abnormal">2.1 mmol/L (CRITICAL — below 3.5 threshold)</td>
+                    </tr>
+                    <tr>
+                        <td>Temp</td>
+                        <td>36.4°C</td>
+                    </tr>
+                </table>
+
+                <div class="critical-alert">
+                    <h4>⚠️ CRITICAL FINDING: Hypoglycaemia</h4>
+                    <p><strong>BGL 2.1 mmol/L</strong> — Well below the 3.5 mmol/L threshold in CPP-009-AO</p>
+                    <p>This explains the altered conscious state and is the likely cause of the accident.</p>
+                </div>
+
+                <div class="teaching-points">
+                    <h5>Key Teaching Points</h5>
+                    <ul>
+                        <li><strong>Protocol quote:</strong> "Measure the BGL on all patients who have an altered conscious state, <strong>including trauma</strong>"</li>
+                        <li>Pale, cool, clammy + confusion = classic hypoglycaemia presentation</li>
+                        <li>The tachycardia and elevated BP are adrenergic response to low glucose</li>
+                        <li>This patient had a medical event BEFORE the crash — the trauma is secondary</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <strong>Real-Job Translation:</strong> Always check a BGL in trauma patients with altered consciousness. The "drunk driver" or "head injury" may actually be hypoglycaemic. It takes 30 seconds and changes everything.
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 8: Clinical Decision & History -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">🔍</div>
+                <h2>Clinical Decision Point</h2>
+            </div>
+
+            <!-- BREAK POINT 4 -->
+            <div class="break-point">
+                <div class="break-point-header">
+                    <span class="break-point-badge">BREAK POINT 4</span>
+                    <span class="break-point-type">Decision-Making / Protocol Application</span>
+                </div>
+                <h4>Screening Tools, Protocols & Working Diagnosis</h4>
+
+                <div class="facilitator-prompt">
+                    "You've got a BGL of 2.1. According to CPP-009-AO, what's your first question? Can this patient swallow safely? How do you assess that?"
+                </div>
+
+                <h4>Expected AO Reasoning</h4>
+                <ul class="checklist">
+                    <li><strong>Working diagnosis:</strong> Hypoglycaemia (BGL 2.1 &lt; 3.5) causing altered consciousness, leading to MVA</li>
+                    <li><strong>Protocol check:</strong> Can patient swallow safely?</li>
+                    <li><strong>Key indicator from protocol:</strong> "A cough is a good indicator" of adequate GCS</li>
+                    <li>Patient GCS 11, making incomprehensible sounds, NOT following commands</li>
+                    <li>Ask patient to cough — assess response</li>
+                </ul>
+
+                <div class="scenario-card">
+                    <h3>Swallow Assessment</h3>
+                    <p>You ask Barry to cough. He doesn't respond to your command. He's not following simple instructions. When you gently touch his face, he pulls away but doesn't cough on command.</p>
+                    <p><strong>Assessment:</strong> GCS inadequate for safe oral glucose administration</p>
+                </div>
+
+                <div class="protocol-box">
+                    <h4>CPP-009-AO Decision Tree — This Patient</h4>
+                    <ol class="steps">
+                        <li>Patient ≥ 2 years? <strong>YES</strong> (56 years old)</li>
+                        <li>BGL &lt; 3.5 mmol/L? <strong>YES</strong> (2.1 mmol/L)</li>
+                        <li>Adequate GCS to swallow (cough test)? <strong>NO</strong></li>
+                        <li>Oral glucose cannot be safely administered → <strong>Consult EOC Clinician</strong></li>
+                        <li>EOC may advise: <strong>IM Glucagon 1 mg</strong> (patient ≥ 6 years / ≥ 25 kg)</li>
+                    </ol>
+                </div>
+
+                <div class="teaching-points">
+                    <h5>Key Teaching Points</h5>
+                    <ul>
+                        <li>The cough test is your quick indicator — can they protect their airway?</li>
+                        <li>GCS 11 with incomprehensible speech = NOT safe for oral glucose</li>
+                        <li>Aspiration risk is real — glucose gel in an obtunded patient can be fatal</li>
+                        <li>Protocol is clear: if oral glucose cannot be given → consult EOC Clinician</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>History (from bystander & MedicAlert bracelet)</h3>
+            <ul class="checklist">
+                <li><strong>MedicAlert bracelet found:</strong> "Type 1 Diabetes — Insulin dependent"</li>
+                <li>Bystander: "He was driving erratically before he went off the road"</li>
+                <li>No other medical history visible</li>
+                <li>Wallet contains insulin pen</li>
+            </ul>
+        </section>
+
+        <!-- Section 9: Treatment Phase -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">💊</div>
+                <h2>Treatment Phase (CPP-009-AO)</h2>
+            </div>
+
+            <!-- BREAK POINT 5 -->
+            <div class="break-point">
+                <div class="break-point-header">
+                    <span class="break-point-badge">BREAK POINT 5</span>
+                    <span class="break-point-type">Practical Skill / Treatment</span>
+                </div>
+                <h4>Treatment Initiation & Medication Safety</h4>
+
+                <div class="facilitator-prompt">
+                    "This patient can't swallow safely. The protocol says consult EOC Clinician. What information do they need? What are you expecting them to authorise?"
+                </div>
+
+                <h4>EOC Clinician Contact</h4>
+                <div class="info-box">
+                    <strong>Structured EOC Call:</strong><br>
+                    "This is [unit] on scene at a single vehicle MVA, Flinders Highway west of Port Lincoln.<br><br>
+                    We have a 56-year-old male, known Type 1 diabetic — insulin dependent per MedicAlert bracelet.<br><br>
+                    Found in vehicle, GCS 11, BGL 2.1. He's not alert enough to safely swallow — failed cough test.<br><br>
+                    C-spine precautions in place due to mechanism.<br><br>
+                    Requesting authorisation for IM Glucagon per CPP-009-AO."
+                </div>
+
+                <div class="scenario-card">
+                    <h3>EOC Clinician Response</h3>
+                    <p>"Copy that. Authorised for <strong>IM Glucagon 1 mg</strong> — patient is over 6 years and over 25 kg. Administer to lateral thigh or deltoid. Continue C-spine precautions. Monitor for response — expect improvement within 10-15 minutes. If BGL rises and GCS improves enough to swallow, offer oral glucose then complex carbs. Transport priority. Call back if no response or patient deteriorates."</p>
+                </div>
+
+                <div class="skill-box">
+                    <h4>IM Glucagon Administration</h4>
+                    <p><strong>Dose (per CPP-009-AO, EOC authorised):</strong></p>
+                    <div class="dose-highlight">
+                        <strong>Patient ≥ 6 years (or ≥ 25 kg): IM Glucagon 1 mg</strong>
+                    </div>
+
+                    <h4>Preparation</h4>
+                    <ol class="steps">
+                        <li>Retrieve Glucagon kit from drug bag</li>
+                        <li>Reconstitute: Add diluent (water for injection) to powder vial</li>
+                        <li>Gently swirl until dissolved — do not shake vigorously</li>
+                        <li>Draw up 1 mg (entire vial) into syringe</li>
+                    </ol>
+
+                    <h4>Administration</h4>
+                    <ol class="steps">
+                        <li>Select site: <strong>Lateral thigh</strong> (easiest in seated patient) or deltoid</li>
+                        <li>Clean site with alcohol swab</li>
+                        <li>Insert needle at 90° angle to skin</li>
+                        <li>Aspirate briefly — if blood, withdraw and select new site</li>
+                        <li>Inject medication steadily</li>
+                        <li>Withdraw needle, apply pressure with gauze</li>
+                        <li>Dispose of sharps safely</li>
+                        <li>Document time of administration</li>
+                    </ol>
+
+                    <h4>Expected Response</h4>
+                    <ul class="checklist">
+                        <li>Onset: 10-15 minutes for IM glucagon</li>
+                        <li>BGL should rise as liver releases stored glucose</li>
+                        <li>GCS should improve as brain glucose normalises</li>
+                        <li>Patient may become nauseated — have suction ready</li>
+                    </ul>
+                </div>
+
+                <div class="critical-alert">
+                    <h4>⚠️ Glucagon Limitations</h4>
+                    <ul>
+                        <li>Requires liver glycogen stores — may be depleted in malnourished, alcoholic, or prolonged hypoglycaemia</li>
+                        <li>Slower onset than IV glucose (which AOs do not administer)</li>
+                        <li>Nausea/vomiting common as patient recovers — anticipate airway issues</li>
+                    </ul>
+                </div>
+
+                <div class="teaching-points">
+                    <h5>Key Teaching Points</h5>
+                    <ul>
+                        <li>Glucagon is the escalation pathway when oral glucose cannot be given</li>
+                        <li>Always requires EOC Clinician consultation first</li>
+                        <li>Lateral thigh is easiest site in a seated/trapped patient</li>
+                        <li>Don't delay extrication waiting for response — can work during transport</li>
+                        <li>Warn your partner: "Expect vomiting as he wakes up"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="skill-box">
+                <h4>Cervical Collar Application (while awaiting Glucagon response)</h4>
+                <p><strong>Technique while patient in vehicle:</strong></p>
+                <ol class="steps">
+                    <li>AO2 maintains manual in-line stabilisation from behind the seat</li>
+                    <li>AO1 sizes collar: measure from chin to shoulder with collar sizing guide</li>
+                    <li>Remove any clothing/jewellery from neck area</li>
+                    <li>Slide back portion of collar behind neck</li>
+                    <li>Position front of collar under chin, ensuring chin sits IN the cup</li>
+                    <li>Secure velcro — snug but not compressing airway</li>
+                    <li>Reassess airway and breathing post-application</li>
+                    <li>Manual stabilisation continues until patient secured on stretcher</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 10: Reassessment -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">🔄</div>
+                <h2>Reassessment & Response</h2>
+            </div>
+
+            <!-- BREAK POINT 6 -->
+            <div class="break-point">
+                <div class="break-point-header">
+                    <span class="break-point-badge">BREAK POINT 6</span>
+                    <span class="break-point-type">Discussion / Decision-Making</span>
+                </div>
+                <h4>Reassessment & Escalation Decision</h4>
+
+                <div class="facilitator-prompt">
+                    "It's been 10 minutes since you gave Glucagon. What are you reassessing? What's your threshold to call EOC back?"
+                </div>
+
+                <h4>10-Minute Reassessment</h4>
+                <table class="obs-table">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Initial</th>
+                        <th>10 min post-Glucagon</th>
+                    </tr>
+                    <tr>
+                        <td>GCS</td>
+                        <td>11 (E4V2M5)</td>
+                        <td>13 (E4V4M5) — improved, speaking words</td>
+                    </tr>
+                    <tr>
+                        <td>BGL</td>
+                        <td class="abnormal">2.1</td>
+                        <td>3.2 — rising but still below 3.5</td>
+                    </tr>
+                    <tr>
+                        <td>HR</td>
+                        <td>110</td>
+                        <td>98</td>
+                    </tr>
+                    <tr>
+                        <td>BP</td>
+                        <td>145/90</td>
+                        <td>132/82</td>
+                    </tr>
+                    <tr>
+                        <td>SpO2</td>
+                        <td>97%</td>
+                        <td>98%</td>
+                    </tr>
+                </table>
+
+                <div class="info-box">
+                    <strong>Interpretation:</strong> Glucagon is working. BGL rising, GCS improving. Continue current plan — prepare for extrication. Reassess swallow ability as GCS improves.
+                </div>
+
+                <div class="scenario-card">
+                    <h3>CFS Arrival</h3>
+                    <p>CFS have arrived and confirmed vehicle is stable with no fuel leak. Driver's door can be opened normally. Ready to assist with extrication when you are.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 11: Extrication -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">🚨</div>
+                <h2>Extrication & Transport</h2>
+            </div>
+
+            <!-- BREAK POINT 7 -->
+            <div class="break-point">
+                <div class="break-point-header">
+                    <span class="break-point-badge">BREAK POINT 7</span>
+                    <span class="break-point-type">Practical Skill</span>
+                </div>
+                <h4>Extrication & Transport Planning</h4>
+
+                <div class="facilitator-prompt">
+                    "Walk me through your extrication plan. How are you going to get this patient out safely and maintain C-spine? What about on the stretcher?"
+                </div>
+
+                <h4>Extrication Sequence</h4>
+                <ol class="steps">
+                    <li><strong>Pre-extrication:</strong> Collar in place, manual stabilisation maintained, long board ready</li>
+                    <li><strong>Seatbelt release:</strong> AO1 supports patient's torso while AO2 releases seatbelt</li>
+                    <li><strong>Rotate patient:</strong> Using controlled movements, rotate patient 90° to face door opening</li>
+                    <li><strong>Long board placement:</strong> Slide board under patient from side, maintaining alignment</li>
+                    <li><strong>Lift and transfer:</strong> Minimum 4 people (AO crew + CFS) lift patient on board</li>
+                    <li><strong>To stretcher:</strong> Place board on stretcher, transfer patient to vacuum mattress</li>
+                </ol>
+
+                <div class="skill-box">
+                    <h4>Modified Towel Roll Technique (on stretcher)</h4>
+                    <p><strong>Equipment:</strong> Towels × 2, 500mL NaCl 0.9% bags × 2, Transpore tape</p>
+                    <ol class="steps">
+                        <li>Patient positioned supine on vacuum mattress with collar in place</li>
+                        <li>Place two towels (folded lengthways) under patient's head for padding</li>
+                        <li>Roll 500mL saline bag in each side of TOP towel to form head blocks</li>
+                        <li>Position saline bags on narrow edge beside patient's ears</li>
+                        <li>Roll BOTTOM towel tightly on each side to support the larger rolls</li>
+                        <li>Secure with Transpore tape across forehead (NOT across chin/throat)</li>
+                        <li>Mould vacuum mattress around patient and evacuate</li>
+                        <li>Apply "Cervical Spine Not Cleared" sticker to ePCR/paperwork</li>
+                    </ol>
+                </div>
+
+                <div class="teaching-points">
+                    <h5>Key Teaching Points</h5>
+                    <ul>
+                        <li>The towel roll technique provides lateral head support once on stretcher</li>
+                        <li>Saline bags add weight and stability to the towel rolls</li>
+                        <li>Tape across forehead only — never restrict airway access</li>
+                        <li>Vacuum mattress should be moulded AROUND the head support</li>
+                        <li>Patient must be able to vomit safely — keep suction ready</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="scenario-card">
+                <h3>Pre-Transport Check</h3>
+                <p>Barry is now on the stretcher in the vacuum mattress with collar and towel rolls in place. His GCS has improved to 14 (E4V4M6). BGL is 3.8 mmol/L — still slightly low but improving. He's now following commands and asking what happened.</p>
+            </div>
+
+            <div class="protocol-box">
+                <h4>CPP-009-AO: Post-Recovery Step</h4>
+                <p><strong>Protocol states:</strong> "If recovery occurs, consider offering <strong>complex carbohydrates</strong> to eat"</p>
+                
+                <div class="facilitator-prompt">
+                    "Barry's GCS is now 14 and he's following commands. His BGL is 3.8. Can you give him anything to eat now?"
+                </div>
+
+                <h4>Assessment</h4>
+                <ul class="checklist">
+                    <li>GCS 14 — alert, following commands</li>
+                    <li>Can he cough on command? <strong>YES</strong> — test this</li>
+                    <li>If cough reflex present → safe to offer oral intake</li>
+                    <li>Offer complex carbohydrates (biscuits, sandwich) for sustained glucose</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 12: Transport & Airway Emergency -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">🚑</div>
+                <h2>Transport Phase — Airway Emergency</h2>
+            </div>
+
+            <div class="scenario-card">
+                <h3>En Route to Hospital</h3>
+                <p>You're 10 minutes into transport. Barry has eaten a few biscuits and his BGL is now 4.2 mmol/L — above the 3.5 threshold. He's more alert but still a bit nauseated.</p>
+                <p><strong>Suddenly:</strong> Barry gags, his face contorts, and he begins to vomit.</p>
+            </div>
+
+            <div class="critical-alert">
+                <h4>⚠️ AIRWAY EMERGENCY: Vomiting with C-Spine Precautions</h4>
+                <p>Patient is vomiting while immobilised in cervical collar and vacuum mattress. Immediate airway management required.</p>
+                <p><strong>Remember:</strong> Glucagon commonly causes nausea — this was anticipated!</p>
+            </div>
+
+            <div class="facilitator-prompt">
+                "Barry's vomiting. He's still in the collar and vacuum mattress. What do you do? Talk me through it step by step."
+            </div>
+
+            <h4>Immediate Actions</h4>
+            <ol class="steps">
+                <li><strong>Call to driver:</strong> "Stop when safe — I need help back here!"</li>
+                <li><strong>Tilt stretcher/mattress:</strong> If possible, tilt entire stretcher to side (patient + mattress together)</li>
+                <li><strong>If cannot tilt:</strong> Perform log roll with mattress — keep patient IN the vacuum mattress</li>
+                <li><strong>Suction immediately:</strong> Use Yankauer to clear mouth and oropharynx</li>
+                <li><strong>Open airway:</strong> Jaw thrust (maintains C-spine) — do NOT head tilt</li>
+                <li><strong>Reassess airway:</strong> Look, listen, feel for clear airway</li>
+                <li><strong>Continue suction</strong> until airway clear</li>
+                <li><strong>Reassess breathing:</strong> SpO2, chest rise, air entry</li>
+            </ol>
+
+            <div class="skill-box">
+                <h4>Log Roll for Airway Clearance</h4>
+                <p><strong>Modified technique when patient in vacuum mattress:</strong></p>
+                <ol class="steps">
+                    <li>Person 1 (at head): Controls head/neck movement — coordinates all movement</li>
+                    <li>Person 2 (if available): Supports shoulders and hip</li>
+                    <li>On command from Person 1: Roll patient AND mattress together as a unit (approximately 45°)</li>
+                    <li>Allow vomit to drain from mouth — gravity assists</li>
+                    <li>Suction as material drains</li>
+                    <li>Return to supine only when airway is clear</li>
+                </ol>
+                <p><strong>Key point:</strong> The vacuum mattress maintains spinal alignment during the roll — use it to your advantage</p>
+            </div>
+
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleContent(this)">
+                    Suction Technique Review
+                </button>
+                <div class="toggle-content">
+                    <h4>Effective Suctioning</h4>
+                    <ul class="checklist">
+                        <li>Use rigid Yankauer catheter for oropharyngeal suction</li>
+                        <li>Insert catheter only as far as you can see</li>
+                        <li>Apply suction while withdrawing — not while inserting</li>
+                        <li>Limit suction to 10-15 seconds at a time</li>
+                        <li>Reassess airway between suction attempts</li>
+                        <li>Clear catheter with water if blocked</li>
+                        <li>Monitor SpO2 — prolonged suctioning causes desaturation</li>
+                    </ul>
+
+                    <h4>Jaw Thrust (C-spine safe)</h4>
+                    <ul class="checklist">
+                        <li>Position yourself at head of patient</li>
+                        <li>Place fingers behind angle of mandible (jaw)</li>
+                        <li>Lift jaw forward and upward</li>
+                        <li>Use thumbs to open mouth if needed</li>
+                        <li>This opens airway WITHOUT moving the neck</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="scenario-card">
+                <h3>Post-Suction Status</h3>
+                <p>Airway cleared after approximately 30 seconds of suctioning. Barry is coughing but breathing adequately. SpO2 dropped to 94% during the event but recovered to 97% on room air. He's apologising for the mess.</p>
+            </div>
+
+            <h4>Post-Event Reassessment</h4>
+            <table class="obs-table">
+                <tr>
+                    <th>Parameter</th>
+                    <th>Finding</th>
+                </tr>
+                <tr>
+                    <td>Airway</td>
+                    <td>Clear, patient coughing, self-protecting</td>
+                </tr>
+                <tr>
+                    <td>Breathing</td>
+                    <td>RR 18, SpO2 97% RA, bilateral air entry</td>
+                </tr>
+                <tr>
+                    <td>GCS</td>
+                    <td>15 (E4V5M6) — fully alert now</td>
+                </tr>
+                <tr>
+                    <td>BGL</td>
+                    <td>4.2 mmol/L — above threshold</td>
+                </tr>
+            </table>
+
+            <div class="teaching-points">
+                <h5>Key Teaching Points</h5>
+                <ul>
+                    <li>Vomiting is a common side effect of Glucagon — anticipate it</li>
+                    <li>Vomiting in an immobilised patient is a genuine emergency</li>
+                    <li>Aspiration can be fatal — act immediately</li>
+                    <li>Tilting the whole stretcher/mattress is often quicker than a formal log roll</li>
+                    <li>Suction saves lives — know where it is and how to use it</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 13: Hospital Handover -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">🏥</div>
+                <h2>Hospital Handover</h2>
+            </div>
+
+            <!-- BREAK POINT 8 -->
+            <div class="break-point">
+                <div class="break-point-header">
+                    <span class="break-point-badge">BREAK POINT 8</span>
+                    <span class="break-point-type">Practical Skill / Communication</span>
+                </div>
+                <h4>ISBAR Handover</h4>
+
+                <div class="facilitator-prompt">
+                    "You've arrived at the ED. The triage nurse is ready. Give me your ISBAR handover. Make sure you cover the hypo, the Glucagon, AND the vomiting event."
+                </div>
+
+                <div class="scenario-card">
+                    <h3>Model ISBAR Handover</h3>
+                    
+                    <p><strong>I — Identify:</strong><br>
+                    "Hi, I'm [name] from [unit]. This is Barry, 56 years old."</p>
+
+                    <p><strong>S — Situation:</strong><br>
+                    "Barry was involved in a single vehicle MVA — car versus tree. We believe the accident was caused by hypoglycaemia. He's a known Type 1 diabetic, insulin dependent."</p>
+
+                    <p><strong>B — Background:</strong><br>
+                    "Found in vehicle, GCS 11, BGL 2.1 on arrival. MedicAlert bracelet confirmed Type 1 diabetes. Mechanism indicated C-spine precautions. He couldn't swallow safely so we gave IM Glucagon 1 mg with EOC authorisation at [time]. He vomited during transport — airway was managed with suction, no aspiration."</p>
+
+                    <p><strong>A — Assessment:</strong><br>
+                    "Current status: GCS 15, BGL 4.2. He's had some biscuits. Airway clear post-suction. C-collar and vacuum mattress in place — cervical spine not cleared. No obvious traumatic injuries but mechanism was significant."</p>
+
+                    <p><strong>R — Request/Recommendation:</strong><br>
+                    "He'll need review for why he went hypo — was it missed meal, insulin dose issue, something else? And imaging to clear his C-spine. Happy to answer any questions."</p>
+                </div>
+
+                <div class="teaching-points">
+                    <h5>Key Teaching Points</h5>
+                    <ul>
+                        <li>ISBAR provides structure — the ED knows what's coming</li>
+                        <li>Lead with the headline: "MVA caused by hypoglycaemia"</li>
+                        <li>Include the Glucagon dose and time — this is important for ongoing management</li>
+                        <li>Mention the vomiting/suction event — it's relevant to aspiration risk</li>
+                        <li>Be clear about what's NOT cleared: C-spine needs imaging</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 14: Debrief -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">💭</div>
+                <h2>Debrief (10–15 minutes)</h2>
+            </div>
+
+            <h3>Reflective Questions</h3>
+            
+            <div class="debrief-question">
+                <strong>1. Protocol Application:</strong> Walk me through the CPP-009-AO decision tree for this patient. Why couldn't we give oral glucose? What triggered the Glucagon?
+            </div>
+
+            <div class="debrief-question">
+                <strong>2. Clinical Reasoning:</strong> The protocol says "measure BGL on all patients with altered conscious state, including trauma." Why is this so important? What would have happened if we'd assumed this was just a head injury?
+            </div>
+
+            <div class="debrief-question">
+                <strong>3. Assessment Skills:</strong> How did you assess whether Barry could swallow safely? What's the "cough test" and why does it work?
+            </div>
+
+            <div class="debrief-question">
+                <strong>4. Prioritisation:</strong> How did you balance treating the hypoglycaemia against maintaining C-spine precautions? Both were important — how did you manage both?
+            </div>
+
+            <div class="debrief-question">
+                <strong>5. Airway Emergency:</strong> When Barry vomited, were you surprised? What does the protocol warn us about Glucagon that should have prepared you?
+            </div>
+
+            <div class="debrief-question">
+                <strong>6. Team Coordination:</strong> How did you divide tasks between clinician and driver roles? What worked well?
+            </div>
+
+            <div class="debrief-question">
+                <strong>7. Real-World Application:</strong> What's the one thing from tonight's session you'll remember on your next job with an altered patient?
+            </div>
+
+            <div class="take-home">
+                <h4>Take-Home Messages</h4>
+                <ul>
+                    <li><strong>"Measure BGL on all patients with altered conscious state, including trauma"</strong> — it's in the protocol for a reason</li>
+                    <li><strong>Cough test</strong> — quick, simple indicator of safe swallowing (adequate GCS)</li>
+                    <li><strong>Least invasive first</strong> — oral glucose if they can swallow, Glucagon if they can't</li>
+                    <li><strong>EOC Clinician consultation</strong> — required before giving Glucagon</li>
+                    <li><strong>Glucagon causes nausea</strong> — anticipate vomiting during recovery</li>
+                    <li><strong>Complex carbs after recovery</strong> — sustains the BGL rise</li>
+                    <li><strong>Suction saves lives</strong> — know where it is and practice using it</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 15: Scenario Variations -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">🔄</div>
+                <h2>Optional Scenario Variations</h2>
+            </div>
+
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleContent(this)">
+                    Variation 1: Patient Responds to Oral Glucose
+                </button>
+                <div class="toggle-content">
+                    <p><strong>Change:</strong> Patient is GCS 13, follows commands, coughs on request</p>
+                    <ul class="checklist">
+                        <li>Cough test positive = safe to give oral glucose</li>
+                        <li>Administer oral glucose up to 15 g (glucose gel)</li>
+                        <li>Recheck BGL every 5 minutes</li>
+                        <li>Once BGL &gt; 3.5, offer complex carbohydrates</li>
+                        <li>No need for Glucagon or EOC consultation</li>
+                    </ul>
+                    <p><strong>Teaching focus:</strong> The simpler pathway — "least invasive therapy"</p>
+                </div>
+            </div>
+
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleContent(this)">
+                    Variation 2: Glucagon Ineffective
+                </button>
+                <div class="toggle-content">
+                    <p><strong>Change:</strong> 15 minutes post-Glucagon, BGL only rises to 2.5 mmol/L, GCS unchanged</p>
+                    <ul class="checklist">
+                        <li>Glucagon requires liver glycogen — may be depleted</li>
+                        <li>Contact EOC Clinician — report ineffective response</li>
+                        <li>EOC may request ICP/Paramedic backup if available</li>
+                        <li>Priority transport — patient needs IV glucose (hospital only)</li>
+                        <li>Continue monitoring, maintain airway</li>
+                    </ul>
+                    <p><strong>Teaching focus:</strong> Glucagon limitations and escalation when treatment fails</p>
+                </div>
+            </div>
+
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleContent(this)">
+                    Variation 3: Paediatric Patient (8 years old)
+                </button>
+                <div class="toggle-content">
+                    <p><strong>Change:</strong> Passenger is an 8-year-old child, Type 1 diabetic, same presentation</p>
+                    <ul class="checklist">
+                        <li>Protocol applies: patient ≥ 2 years with BGL &lt; 3.5</li>
+                        <li>If oral glucose cannot be given → consult EOC Clinician</li>
+                        <li>Glucagon dose: <strong>1 mg IM</strong> (patient ≥ 6 years or ≥ 25 kg)</li>
+                        <li>If child was 4 years old: dose would be <strong>0.5 mg IM</strong></li>
+                        <li>Same management principles apply</li>
+                    </ul>
+                    <p><strong>Teaching focus:</strong> Paediatric dosing from CPP-009-AO</p>
+                </div>
+            </div>
+
+            <div class="toggle-section">
+                <button class="toggle-btn" onclick="toggleContent(this)">
+                    Variation 4: Patient Seizes
+                </button>
+                <div class="toggle-content">
+                    <p><strong>Change:</strong> Before Glucagon can be given, Barry has a generalised tonic-clonic seizure</p>
+                    <ul class="checklist">
+                        <li>Hypoglycaemia can cause seizures — protocol mentions this</li>
+                        <li>Protect from injury — can't remove from vehicle mid-seizure</li>
+                        <li>Time the seizure — note duration</li>
+                        <li>Do NOT restrain — let it run</li>
+                        <li>Prepare suction for post-ictal phase</li>
+                        <li>Post-seizure: Give IM Glucagon (EOC authorised) — treats the cause</li>
+                        <li>Contact EOC if seizure &gt; 5 minutes</li>
+                    </ul>
+                    <p><strong>Teaching focus:</strong> Hypoglycaemic seizures — treat the underlying cause</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Protocol Quick Reference -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">📋</div>
+                <h2>Quick Reference: CPP-009-AO</h2>
+            </div>
+
+            <div class="protocol-box">
+                <h4>Hypoglycaemia - AO (CPP-009-AO) Summary</h4>
+                
+                <table class="obs-table">
+                    <tr>
+                        <th>Patient Group</th>
+                        <th>BGL Threshold</th>
+                        <th>Management</th>
+                    </tr>
+                    <tr>
+                        <td>Adults & children ≥ 2 yrs</td>
+                        <td>&lt; 3.5 mmol/L</td>
+                        <td>Oral glucose 15g if can swallow (cough test)</td>
+                    </tr>
+                    <tr>
+                        <td>If oral glucose cannot be given</td>
+                        <td>—</td>
+                        <td>Consult EOC Clinician</td>
+                    </tr>
+                    <tr>
+                        <td>≥ 6 yrs (or ≥ 25 kg)</td>
+                        <td>—</td>
+                        <td>IM Glucagon <strong>1 mg</strong> (EOC authorised)</td>
+                    </tr>
+                    <tr>
+                        <td>≥ 2 yrs to &lt; 6 yrs (or &lt; 25 kg)</td>
+                        <td>—</td>
+                        <td>IM Glucagon <strong>0.5 mg</strong> (EOC authorised)</td>
+                    </tr>
+                    <tr>
+                        <td>&lt; 2 yrs</td>
+                        <td>&lt; 3.5 mmol/L</td>
+                        <td>Consult EOC first — oral glucose gel or IM Glucagon 0.5 mg</td>
+                    </tr>
+                    <tr>
+                        <td>Neonates</td>
+                        <td>&lt; 2.5 mmol/L</td>
+                        <td>Consult EOC Clinician</td>
+                    </tr>
+                </table>
+
+                <div class="info-box" style="margin-top: 16px;">
+                    <strong>Key Principles:</strong>
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li>Least invasive therapy that increases blood glucose</li>
+                        <li>Measure BGL in ALL altered conscious states, including trauma</li>
+                        <li>Cough = good indicator of safe swallowing</li>
+                        <li>If recovery occurs → offer complex carbohydrates</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressFill').style.width = scrolled + '%';
+        });
+
+        // Fade in on scroll
+        const sections = document.querySelectorAll('.section');
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Make first section visible immediately
+        document.querySelector('.section').classList.add('visible');
+
+        // Toggle sections
+        function toggleContent(button) {
+            button.classList.toggle('active');
+            const content = button.nextElementSibling;
+            content.classList.toggle('show');
+        }
+    </script>
+
+</body>
+</html>
