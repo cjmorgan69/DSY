@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anaphylaxis in the Rural ED — Simulation Scenario</title>
+<style>
+:root{
+  --base:#0A1628;--card:#1B2A4A;--sec:#2C3E6B;--acc:#4A90D9;
+  --light:#E8EEF7;--txt:#FFFFFF;--muted:#94A3B8;
+  --danger:#E74C3C;--warn:#F59E0B;--ok:#22C55E;
+  --font:'Segoe UI',system-ui,-apple-system,sans-serif;
+  --radius:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:18px;scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:var(--font);background:var(--base);color:var(--txt);line-height:1.65;-webkit-font-smoothing:antialiased}
+
+/* ── Sticky Header ── */
+.site-header{position:sticky;top:0;z-index:100;background:var(--base);border-bottom:1px solid rgba(74,144,217,.15);backdrop-filter:blur(12px)}
+.header-inner{max-width:960px;margin:0 auto;padding:14px 20px;text-align:center}
+.header-inner h1{font-size:1.15rem;font-weight:700;letter-spacing:.02em;color:var(--txt)}
+.header-inner .subtitle{font-size:.78rem;color:var(--acc);margin-top:2px;font-weight:500}
+.progress-track{height:3px;background:rgba(74,144,217,.15)}
+.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--acc),#6BB9F0);transition:width .15s linear;border-radius:0 2px 2px 0}
+
+/* ── Layout ── */
+.container{max-width:820px;margin:0 auto;padding:0 20px 80px}
+section{margin-top:48px}
+
+/* ── Cards ── */
+.card{background:var(--card);border-radius:var(--radius);padding:28px 24px;margin-top:20px;border:1px solid rgba(74,144,217,.08)}
+.card-dark{background:var(--base);border:1px solid var(--sec)}
+
+/* ── Typography ── */
+h2{font-size:1.3rem;font-weight:700;color:var(--acc);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid rgba(74,144,217,.2)}
+h3{font-size:1.1rem;font-weight:700;color:var(--light);margin:20px 0 10px}
+h4{font-size:1rem;font-weight:600;color:var(--acc);margin:16px 0 8px}
+p,li{font-size:1rem;color:var(--light);line-height:1.7}
+ul,ol{padding-left:22px;margin:8px 0}
+li{margin-bottom:6px}
+strong{color:var(--txt)}
+.small{font-size:.78rem;color:var(--muted)}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,var(--card) 0%,var(--sec) 100%);border-radius:var(--radius);padding:36px 28px;margin-top:32px;border:1px solid rgba(74,144,217,.15)}
+.hero h2{border:none;padding:0;margin:0 0 4px;font-size:1.5rem;color:var(--txt)}
+.hero .tagline{color:var(--acc);font-size:.95rem;font-weight:600;margin-bottom:18px}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.meta-item{background:rgba(10,22,40,.5);border-radius:8px;padding:12px 14px}
+.meta-item .label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.meta-item .value{font-size:.95rem;color:var(--txt);margin-top:2px;font-weight:500}
+
+/* ── Objectives ── */
+.obj-list{list-style:none;padding:0;counter-reset:obj}
+.obj-list li{counter-increment:obj;padding:10px 14px 10px 44px;position:relative;background:rgba(74,144,217,.06);border-radius:8px;margin-bottom:8px}
+.obj-list li::before{content:counter(obj);position:absolute;left:12px;top:10px;width:24px;height:24px;background:var(--acc);color:var(--base);border-radius:50%;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* ── Equipment Grid ── */
+.equip-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+.equip-box{border-radius:8px;padding:18px 16px}
+.equip-box.avail{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15)}
+.equip-box.unavail{background:rgba(231,76,60,.06);border:1px solid rgba(231,76,60,.15)}
+.equip-box h4{margin-top:0;font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}
+.equip-box.avail h4{color:var(--ok)}
+.equip-box.unavail h4{color:var(--danger)}
+.equip-box ul{padding-left:18px}
+.equip-box li{font-size:.9rem;margin-bottom:4px}
+
+/* ── Timeline ── */
+.timeline{margin-top:14px}
+.tl-item{display:flex;gap:14px;padding:10px 0;border-left:2px solid var(--sec);margin-left:8px;padding-left:20px;position:relative}
+.tl-item::before{content:'';position:absolute;left:-5px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--acc);border:2px solid var(--base)}
+.tl-time{font-size:.78rem;color:var(--acc);font-weight:700;min-width:70px;flex-shrink:0}
+.tl-desc{font-size:.9rem;color:var(--light)}
+
+/* ── Accordions ── */
+.accordion{margin-top:16px}
+.acc-trigger{width:100%;background:var(--sec);border:1px solid rgba(74,144,217,.15);border-radius:var(--radius);padding:16px 20px;color:var(--txt);font-size:1rem;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s;text-align:left;font-family:var(--font);min-height:52px}
+.acc-trigger:hover,.acc-trigger:focus{background:rgba(74,144,217,.2);outline:none}
+.acc-trigger .chevron{transition:transform .3s;font-size:.85rem;color:var(--acc);flex-shrink:0;margin-left:12px}
+.acc-trigger.open .chevron{transform:rotate(180deg)}
+.acc-panel{max-height:0;overflow:hidden;transition:max-height .4s ease;background:var(--card);border-radius:0 0 var(--radius) var(--radius);border:1px solid rgba(74,144,217,.08);border-top:none}
+.acc-panel.open{max-height:none}
+.acc-panel-inner{padding:22px 20px}
+
+/* ── Break Points ── */
+.bp{background:rgba(231,76,60,.04);border:1px solid rgba(231,76,60,.2);border-left:4px solid var(--danger);border-radius:0 var(--radius) var(--radius) 0;padding:22px 20px;margin:24px 0}
+.bp-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.bp-badge{background:var(--danger);color:#fff;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.bp-type{font-size:.75rem;color:var(--warn);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.bp h4{color:var(--txt);margin:10px 0 6px}
+
+/* ── Vital Signs Table ── */
+.vitals{width:100%;border-collapse:collapse;margin:12px 0;font-size:.88rem}
+.vitals th{text-align:left;padding:8px 10px;background:var(--sec);color:var(--acc);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+.vitals td{padding:8px 10px;border-bottom:1px solid rgba(74,144,217,.08);color:var(--light)}
+.vitals tr:last-child td{border-bottom:none}
+
+/* ── ISBAR Box ── */
+.isbar{background:rgba(74,144,217,.06);border:1px solid rgba(74,144,217,.2);border-radius:var(--radius);padding:20px;margin:16px 0}
+.isbar h4{color:var(--acc);margin:0 0 12px;font-size:.95rem}
+.isbar-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
+.isbar-label{background:var(--acc);color:var(--base);font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:4px;min-width:26px;text-align:center;flex-shrink:0;margin-top:2px}
+.isbar-text{font-size:.9rem;color:var(--light);line-height:1.55}
+
+/* ── Dose Card ── */
+.dose-card{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:var(--radius);padding:18px;margin:14px 0}
+.dose-card h4{color:var(--warn);margin:0 0 10px;font-size:.9rem;text-transform:uppercase;letter-spacing:.04em}
+.dose-card p{font-size:.9rem;margin:4px 0}
+.dose-card .critical{color:var(--danger);font-weight:700}
+.dose-card code{background:rgba(245,158,11,.12);color:var(--warn);padding:1px 6px;border-radius:4px;font-size:.88rem}
+
+/* ── Checklist ── */
+.checklist{list-style:none;padding:0;margin:10px 0}
+.checklist li{padding:8px 12px 8px 36px;position:relative;margin-bottom:4px;font-size:.92rem;background:rgba(74,144,217,.03);border-radius:6px}
+.checklist li::before{content:'☐';position:absolute;left:12px;top:8px;color:var(--acc);font-size:.9rem}
+
+/* ── Red Flag List ── */
+.red-flags{list-style:none;padding:0;margin:10px 0}
+.red-flags li{padding:8px 12px 8px 36px;position:relative;margin-bottom:4px;font-size:.92rem;background:rgba(231,76,60,.05);border-radius:6px;border-left:3px solid var(--danger)}
+.red-flags li::before{content:'⚑';position:absolute;left:10px;top:8px;color:var(--danger);font-size:.9rem}
+
+/* ── Variation Cards ── */
+.var-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+.var-card{background:var(--sec);border-radius:var(--radius);padding:18px;border:1px solid rgba(74,144,217,.1)}
+.var-card h4{color:var(--warn);margin:0 0 6px;font-size:.9rem}
+.var-card p{font-size:.88rem;color:var(--muted)}
+
+/* ── Fade Animation ── */
+.fade-section{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.fade-section.visible{opacity:1;transform:translateY(0)}
+
+/* ── Responsive ── */
+@media(max-width:640px){
+  html{font-size:16px}
+  .meta-grid,.equip-grid{grid-template-columns:1fr}
+  .hero{padding:24px 18px}
+  .card{padding:20px 16px}
+  .bp{padding:18px 14px}
+  .isbar{padding:14px}
+  .acc-trigger{padding:14px 16px;font-size:.95rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ STICKY HEADER ═══════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <h1>Anaphylaxis in the Rural ED</h1>
+    <div class="subtitle">Simulation Scenario &mdash; Walk-Through &amp; Skills Practice</div>
+  </div>
+  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+</header>
+
+<div class="container">
+
+<!-- ═══════════ SECTION 1: TITLE & CONTEXT ═══════════ -->
+<div class="hero">
+  <h2>The Sting That Won't Settle</h2>
+  <div class="tagline">Refractory Anaphylaxis &mdash; Bee Sting in a Beta-Blocked Patient</div>
+  <p>A 52-year-old male farmer presents to a small rural hospital ED on the lower Eyre Peninsula after a bee sting. He is becoming progressively unwell. The GP is on call from home, 20 minutes away. You are it.</p>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="label">Setting</div><div class="value">Small rural hospital ED, lower Eyre Peninsula, SA. Level 5 facility.</div></div>
+    <div class="meta-item"><div class="label">Day / Time</div><div class="value">Saturday, 1430 hrs &mdash; January (mid-summer)</div></div>
+    <div class="meta-item"><div class="label">Staffing</div><div class="value">1 RN, 1 EN on shift. GP/VMO on call from home (20 min ETA).</div></div>
+    <div class="meta-item"><div class="label">ED Status</div><div class="value">Department clear. No other patients. EN restocking; RN at triage desk.</div></div>
+    <div class="meta-item"><div class="label">Nearest Regional Centre</div><div class="value">60 minutes by road once ambulance arrives. Port Lincoln paramedics: 45 min response.</div></div>
+    <div class="meta-item"><div class="label">Retrieval</div><div class="value">MedSTAR via RFDS fixed-wing from Adelaide. Estimated 1.5 hr response to bedside.</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ SECTION 2: LEARNING OBJECTIVES ═══════════ -->
+<section class="fade-section">
+  <h2>Learning Objectives</h2>
+  <ol class="obj-list">
+    <li>Recognise anaphylaxis using ASCIA diagnostic criteria, including presentations <strong>without</strong> typical skin features.</li>
+    <li>Assign the correct ATS triage category and initiate time-critical interventions, including nurse-initiated IM adrenaline.</li>
+    <li>Apply the HIRAID framework to structure assessment, identify red flags, and prioritise interventions in a 2-person nursing team.</li>
+    <li>Correctly prepare and administer <strong>IM adrenaline 1:1000</strong> (ampoule and syringe), repeat dosing at 5-minute intervals, and escalate to an <strong>IV adrenaline infusion</strong> using the pre-hospital protocol.</li>
+    <li>Recognise refractory anaphylaxis in a <strong>beta-blocked patient</strong> and identify glucagon as a rescue agent.</li>
+    <li>Demonstrate structured communication using ISBAR: phone call to on-call GP, MedSTAR retrieval referral, and clinical handover to retrieval team.</li>
+    <li>Coordinate roles between RN, EN, and GP within their respective scopes of practice in a resource-limited, time-critical scenario.</li>
+    <li>Prepare a patient for retrieval, including transfer documentation, ongoing monitoring, and contingency planning for delayed retrieval.</li>
+  </ol>
+</section>
+
+<!-- ═══════════ SECTION 3: REQUIRED EQUIPMENT ═══════════ -->
+<section class="fade-section">
+  <h2>Required Equipment</h2>
+  <div class="equip-grid">
+    <div class="equip-box avail">
+      <h4>Available in this ED</h4>
+      <ul>
+        <li>Cardiac monitor / defibrillator with SpO2, NIBP, ECG</li>
+        <li>Resuscitation trolley (stocked, checked)</li>
+        <li><strong>Adrenaline 1:1000 ampoules</strong> (1mg/mL) &times; 10</li>
+        <li>1mL syringes; 22&ndash;25G needles (25mm)</li>
+        <li>IV access equipment (16G, 18G, 20G cannulae)</li>
+        <li>Normal saline 0.9% &times; 4 litres (1L bags)</li>
+        <li>IV giving sets (standard &amp; blood/fluid warmer)</li>
+        <li>Infusion pump (volumetric)</li>
+        <li>Oxygen: Hudson mask, non-rebreather, nasal prongs, nebuliser mask</li>
+        <li>Salbutamol nebules 5mg</li>
+        <li>Hydrocortisone 100mg vials (imprest)</li>
+        <li>Glucagon 1mg vials (imprest &mdash; confirm availability)</li>
+        <li>Manual BP cuff (backup)</li>
+        <li>Suction equipment</li>
+        <li>BGL meter</li>
+        <li>Oropharyngeal/nasopharyngeal airways</li>
+        <li>Bag-valve-mask (adult)</li>
+        <li>Hands-free phone in resus area</li>
+        <li>ASCIA Acute Management of Anaphylaxis poster (wall)</li>
+        <li>SA Health clinical guidelines (electronic access)</li>
+      </ul>
+    </div>
+    <div class="equip-box unavail">
+      <h4>Not Available</h4>
+      <ul>
+        <li>CT scanner</li>
+        <li>MRI</li>
+        <li>Ultrasound (no credentialed operator)</li>
+        <li>Point-of-care troponin</li>
+        <li>Specialist on site</li>
+        <li>Blood bank / crossmatch</li>
+        <li>After-hours pathology (Saturday &mdash; closed)</li>
+        <li>Arterial blood gas analyser (not at this site)</li>
+        <li>Intensive care capability</li>
+        <li>Advanced airway equipment beyond BVM and OPA/NPA (no video laryngoscope; basic intubation kit only)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 4: SESSION OVERVIEW ═══════════ -->
+<section class="fade-section">
+  <h2>Session Structure Overview</h2>
+  <p>Total estimated time: 60&ndash;75 minutes (including debrief).</p>
+  <div class="timeline">
+    <div class="tl-item"><span class="tl-time">0&ndash;10 min</span><span class="tl-desc"><strong>Pre-Brief:</strong> Orientation, role allocation, psychological safety, ground rules.</span></div>
+    <div class="tl-item"><span class="tl-time">10&ndash;15 min</span><span class="tl-desc"><strong>Presentation &amp; Triage:</strong> Patient arrives. RN conducts ATS triage. Immediate actions. <em>Break Points 1 &amp; 2.</em></span></div>
+    <div class="tl-item"><span class="tl-time">15&ndash;25 min</span><span class="tl-desc"><strong>Assessment &amp; History (HIRAID):</strong> Focused history, red flag screening, monitoring, GP phone call. <em>Break Point 3.</em></span></div>
+    <div class="tl-item"><span class="tl-time">25&ndash;30 min</span><span class="tl-desc"><strong>Clinical Decision Point:</strong> Working diagnosis, escalation decision. <em>Break Point 4.</em></span></div>
+    <div class="tl-item"><span class="tl-time">30&ndash;42 min</span><span class="tl-desc"><strong>Treatment &amp; Stabilisation:</strong> Adrenaline, fluids, infusion, skills practice. <em>Break Point 5.</em></span></div>
+    <div class="tl-item"><span class="tl-time">42&ndash;48 min</span><span class="tl-desc"><strong>Reassessment &amp; Escalation:</strong> Response to treatment, MedSTAR referral. <em>Break Point 6.</em></span></div>
+    <div class="tl-item"><span class="tl-time">48&ndash;55 min</span><span class="tl-desc"><strong>Transfer Preparation &amp; Handover:</strong> Packaging, documentation, ISBAR. <em>Break Points 7 &amp; 8.</em></span></div>
+    <div class="tl-item"><span class="tl-time">55&ndash;70 min</span><span class="tl-desc"><strong>Debrief:</strong> Structured debrief, learning review, emotional check-in.</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 5: PRE-BRIEF (ACCORDION) ═══════════ -->
+<section>
+  <h2>Pre-Brief</h2>
+  <div class="accordion">
+
+    <button class="acc-trigger" onclick="toggleAcc(this)" aria-expanded="false">Orientation &amp; Environment Setup <span class="chevron">&#9662;</span></button>
+    <div class="acc-panel"><div class="acc-panel-inner">
+      <ul>
+        <li>Walk participants through the sim environment. Identify: resus bay, resuscitation trolley, cardiac monitor, oxygen outlets, phone location, medication imprest.</li>
+        <li>Confirm the resus trolley has been checked and adrenaline 1:1000 ampoules are present and in-date.</li>
+        <li>Identify the ASCIA anaphylaxis management poster on the wall &mdash; this is your protocol reference during the scenario.</li>
+        <li>Explain that the manikin (or simulated patient) will present with progressive symptoms. Facilitator will voice the patient and provide vital signs when requested.</li>
+        <li>Note: the GP is <strong>not on site</strong> at scenario start. The GP role-player will be available by phone and will physically arrive at the 15&ndash;20 minute mark.</li>
+      </ul>
+    </div></div>
+
+    <button class="acc-trigger" onclick="toggleAcc(this)" aria-expanded="false">Role Allocation <span class="chevron">&#9662;</span></button>
+    <div class="acc-panel"><div class="acc-panel-inner">
+      <h4>RN &mdash; Triage / Primary Nurse / Clinical Lead (until GP arrives)</h4>
+      <ul>
+        <li>First contact with the patient at triage</li>
+        <li>Conducts ATS triage and initiates HIRAID assessment</li>
+        <li>Initiates nurse-initiated IM adrenaline under SA Health clinical directive / nursing clinical guideline</li>
+        <li>Directs the EN and allocates tasks</li>
+        <li>Communicates with GP by phone (ISBAR)</li>
+        <li>Leads clinical care until GP arrives, then supports GP as primary nurse</li>
+      </ul>
+      <h4>EN &mdash; Secondary / Assisting Nurse</h4>
+      <ul>
+        <li>Works under <strong>direct supervision</strong> of the RN at all times</li>
+        <li>Sets up monitoring (cardiac monitor, SpO2, NIBP)</li>
+        <li>Records observations and documents interventions with times</li>
+        <li>Prepares equipment: draws up adrenaline for RN to check and administer; prepares IV access equipment; spikes fluid bags</li>
+        <li>Assists with IV cannulation if competent and directed by RN</li>
+        <li>Makes phone calls as directed (GP, ambulance, MedSTAR) &mdash; uses hands-free phone where possible</li>
+        <li>Positions and reassures the patient</li>
+        <li><strong>Does not</strong> independently administer S4/S8 medications without RN direction and supervision</li>
+      </ul>
+      <h4>GP / VMO &mdash; On-Call Doctor</h4>
+      <ul>
+        <li>Available by phone from scenario start; physically arrives at ~15&ndash;20 minutes</li>
+        <li>Provides phone orders for initial management (confirms adrenaline, orders IV fluids)</li>
+        <li>On arrival: assumes clinical lead role &mdash; assessment, prescribing, escalation decisions</li>
+        <li>Initiates MedSTAR referral and specialist consultation</li>
+        <li>Decides on adrenaline infusion, glucagon, further interventions</li>
+        <li>Leads clinical handover to retrieval team</li>
+      </ul>
+    </div></div>
+
+    <button class="acc-trigger" onclick="toggleAcc(this)" aria-expanded="false">Psychological Safety &amp; Ground Rules <span class="chevron">&#9662;</span></button>
+    <div class="acc-panel"><div class="acc-panel-inner">
+      <h4>Psychological Safety Statement</h4>
+      <p>&ldquo;This is a learning environment. We are here to practise, not to be tested. Mistakes made here are learning opportunities &mdash; that is exactly what this space is for. Everything that happens in this room stays in this room. We respect each other's practice and experience. If at any point you feel distressed, signal to the facilitator and we will pause.&rdquo;</p>
+      <h4>Ground Rules</h4>
+      <ul>
+        <li>Work within your real scope of practice &mdash; do what you would do on a real shift</li>
+        <li>Communicate as you would in practice: closed-loop, use names, speak up if unsure</li>
+        <li>If you need to check a reference (e.g. ASCIA poster, clinical guideline), do it &mdash; that is good practice, not a weakness</li>
+        <li>The facilitator will call &ldquo;PAUSE&rdquo; at break points for discussion &mdash; step out of role briefly, then resume</li>
+        <li>Acknowledge: <strong>In a small town, you may know this patient.</strong> Keith is a local farmer. His wife is in the waiting area. You went to school with her. This is the reality of rural practice. We will debrief on this.</li>
+      </ul>
+    </div></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 6: PRESENTATION & TRIAGE (ACCORDION) ═══════════ -->
+<section>
+  <h2>Presentation &amp; Triage Phase</h2>
+  <div class="accordion">
+
+    <button class="acc-trigger" onclick="toggleAcc(this)" aria-expanded="false">Patient Arrival <span class="chevron">&#9662;</span></button>
+    <div class="acc-panel"><div class="acc-panel-inner">
+      <h4>Mode of Arrival</h4>
+      <p><strong>Self-presentation.</strong> Patient arrives in his wife's ute, driven to the front entrance. Wife runs in: &ldquo;My husband's been stung by a bee &mdash; he's swelling up and he can't breathe properly. Please help.&rdquo;</p>
+      <p>Keith is walking in, leaning on his wife. He is flushed, visibly swollen around the face, and you can hear audible wheeze from the doorway. He is talking in short sentences.</p>
+      <h4>No Ambulance Handover</h4>
+      <p>There is no paramedic ISBAR. History must be obtained from the patient and his wife. This is typical of a rural self-presentation.</p>
+      <h4>What the Wife Tells You</h4>
+      <ul>
+        <li>&ldquo;He was working in the top paddock, got stung on the forearm about 25 minutes ago.&rdquo;</li>
+        <li>&ldquo;He started getting hives and his face puffed up. Then he said his throat felt funny.&rdquo;</li>
+        <li>&ldquo;He's allergic to bees &mdash; he had a reaction a few years back but it wasn't this bad.&rdquo;</li>
+        <li>&ldquo;He doesn't have an EpiPen. The doctor told him to get one but he never did.&rdquo;</li>
+        <li>&ldquo;He takes a blood pressure tablet &mdash; metoprolol, I think &mdash; and a puffer for his asthma sometimes.&rdquo;</li>
+      </ul>
+    </div></div>
+
+    <button class="acc-trigger" onclick="toggleAcc(this)" aria-expanded="false">ATS Triage &amp; Immediate Actions <span class="chevron">&#9662;</span></button>
+    <div class="acc-panel"><div class="acc-panel-inner">
+
+      <!-- BREAK POINT 1 -->
+      <div class="bp">
+        <div class="bp-header">
+          <span class="bp-badge">Break Point 1</span>
+          <span class="bp-type">Decision-Making</span>
+        </div>
+        <h4>Triage Decision</h4>
+        <p><strong>Facilitator:</strong> PAUSE the scenario. Ask the RN participant:</p>
+        <ul>
+          <li>&ldquo;What ATS category are you assigning and why?&rdquo;</li>
+          <li>&ldquo;Where is this patient going &mdash; waiting room, acute bay, or resus?&rdquo;</li>
+          <li>&ldquo;What are your immediate actions before you even get him onto a bed?&rdquo;</li>
+        </ul>
+
+        <h4>Expected Clinical Reasoning</h4>
+        <p><strong>ATS Category 2 &mdash; Imminently Life-Threatening.</strong> The patient has features of anaphylaxis (urticaria + angioedema + respiratory compromise + haemodynamic compromise). ATS 2 requires clinical assessment and treatment within 10 minutes. However, in practice this presentation demands <strong>immediate</strong> action &mdash; treat as a functional ATS 1.</p>
+        <p>If hypotension, stridor, or loss of consciousness develop at any point, formally escalate to <strong>ATS Category 1</strong>.</p>
+
+        <h4>Immediate Actions</h4>
+        <ul class="checklist">
+          <li><strong>Do NOT allow patient to walk further.</strong> Assist onto trolley immediately at triage. Use a wheelchair if needed to get to resus &mdash; do not let him walk.</li>
+          <li>Call EN to resus bay immediately: &ldquo;I need you in resus now &mdash; anaphylaxis.&rdquo;</li>
+          <li>Lay patient flat. If breathing is difficult, allow to sit with legs outstretched. Do NOT sit him in a chair.</li>
+          <li>RN: locate adrenaline from resus trolley. Prepare 0.5mL of 1:1000 (0.5mg) IM.</li>
+          <li>EN: begin setting up monitoring (cardiac monitor, SpO2, NIBP).</li>
+          <li>Call GP on call: &ldquo;I have an anaphylaxis in resus. I'm giving adrenaline. Please come in now.&rdquo;</li>
+        </ul>
+
+        <h4>Key Teaching Points</h4>
+        <ul>
+          <li><strong>Positioning is critical and kills people.</strong> Fatality can occur within minutes if an anaphylaxis patient stands or walks. This includes not walking them to a bed, not sitting them in a chair, and not standing them up to transfer. The ASCIA guidelines are explicit on this.</li>
+          <li>Triage is a 30-second decision here. Do not delay to complete paperwork. Triage category, bed allocation, and first intervention happen almost simultaneously.</li>
+          <li>The RN can and should initiate IM adrenaline under SA Health nursing clinical guidelines for anaphylaxis. Do not wait for the GP.</li>
+        </ul>
+
+        <h4>Real-Job Translation</h4>
+        <p>At 2:30 on a Saturday afternoon, your ED is empty but you might be mid-way through restocking or on a break. The arrival is unannounced &mdash; no ambulance pre-alert, no warning. The wife is distressed and Keith is walking in under his own steam. The instinct is to walk him to a bed. <strong>Stop him at triage. Get him flat. Get the adrenaline.</strong> Everything else is secondary. You won't have the GP for 20 minutes. You are the clinical decision-maker right now.</p>
+      </div>
+      <!-- END BREAK POINT 1 -->
+
+    </div></div>
+
+    <button class="acc-trigger" onclick="toggleAcc(this)" aria-expanded="false">First Impression &amp; Primary Survey <span class="chevron">&#9662;</span></button>
+    <div class="acc-panel"><div class="acc-panel-inner">
+
+      <!-- BREAK POINT 2 -->
+      <div class="bp">
+        <div class="bp-header">
+          <span class="bp-badge">Break Point 2</span>
+          <span class="bp-type">Discussion / Practical Skill</span>
+        </div>
+        <h4>Doorway Assessment &amp; ABCDE</h4>
+        <p><strong>Facilitator:</strong> PAUSE. Ask all participants:</p>
+        <ul>
+          <li>&ldquo;What do you see from the doorway? What are you worried about?&rdquo;</li>
+          <li>&ldquo;Walk me through your ABCDE &mdash; what are you checking first?&rdquo;</li>
+          <li>&ldquo;Does this patient meet ASCIA criteria for anaphylaxis? Which criteria?&rdquo;</li>
+        </ul>
+
+        <h4>Doorway Assessment</h4>
+        <ul>
+          <li><strong>General:</strong> Flushed, anxious, visibly swollen face and lips, widespread urticaria on arms and trunk</li>
+          <li><strong>Audible:</strong> Wheeze heard without stethoscope, speaking in short sentences, voice slightly hoarse</li>
+          <li><strong>Posture:</strong> Wants to sit up (breathing difficulty) &mdash; allow to sit with legs outstretched</li>
+        </ul>
+
+        <h4>ABCDE Assessment</h4>
+        <table class="vitals">
+          <tr><th>System</th><th>Finding</th></tr>
+          <tr><td><strong>A &mdash; Airway</strong></td><td>Tongue mildly swollen. Lips oedematous. Voice slightly hoarse. No stridor at this point.</td></tr>
+          <tr><td><strong>B &mdash; Breathing</strong></td><td>RR 28. Bilateral wheeze. SpO2 93% on room air. Using accessory muscles. Persistent cough.</td></tr>
+          <tr><td><strong>C &mdash; Circulation</strong></td><td>HR 110 (note: on metoprolol &mdash; this HR is significant). BP 95/60. Peripherally warm but mildly diaphoretic. Cap refill 3 sec.</td></tr>
+          <tr><td><strong>D &mdash; Disability</strong></td><td>GCS 15. Alert but anxious. &ldquo;I feel really weird.&rdquo; BGL 7.2.</td></tr>
+          <tr><td><strong>E &mdash; Exposure</strong></td><td>Generalised urticaria. Bee sting site visible on right forearm (erythematous, swollen). No stinger visible. Temp 36.8&deg;C.</td></tr>
+        </table>
+
+        <h4>Does This Meet ASCIA Criteria?</h4>
+        <p><strong>Yes &mdash; Criteria 1.</strong> Acute onset illness with skin features (urticaria, angioedema) PLUS respiratory compromise (wheeze, cough, dyspnoea, SpO2 93%) PLUS cardiovascular compromise (hypotension, tachycardia). This is unequivocal anaphylaxis.</p>
+        <p>Individual signs of anaphylaxis present: difficult/noisy breathing, wheeze, persistent cough, hoarse voice, persistent dizziness. <strong>Any ONE of these signs indicates anaphylaxis.</strong></p>
+
+        <h4>Key Teaching Points</h4>
+        <ul>
+          <li>Anaphylaxis can occur <strong>without skin features</strong>. If a patient has acute onset hypotension, bronchospasm, or upper airway obstruction after a known allergen exposure, treat as anaphylaxis even without urticaria.</li>
+          <li>The HR of 110 on a beta-blocker is significant. Without metoprolol, this patient's heart rate would likely be 130&ndash;150+. The beta-blocker is masking the true degree of cardiovascular compromise.</li>
+          <li>Do not delay adrenaline to complete the full assessment. If the doorway assessment shows anaphylaxis, give adrenaline and then complete the detailed assessment.</li>
+        </ul>
+
+        <h4>Real-Job Translation</h4>
+        <p>You know this man. He's Keith from out on the Brennan property. You went to school with his wife, Jenny. That recognition can either help (you know his history, you know he's &ldquo;allergic to bees&rdquo;) or hinder (emotional response, disbelief: &ldquo;not Keith&rdquo;). Use the knowledge. Manage the emotion. Do the job.</p>
+      </div>
+      <!-- END BREAK POINT 2 -->
+
+    </div></div>
+
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 7: PRIMARY SURVEY & ASSESSMENT ═══════════ -->
+<section class="fade-section">
+  <h2>Primary Survey &amp; Initial Assessment (HIRAID)</h2>
+  <div class="card">
+
+    <h3>H &mdash; History</h3>
+    <h4>Presenting Complaint</h4>
+    <p>&ldquo;Got stung by a bee about 25&ndash;30 minutes ago. Started getting itchy, then my face swelled up, now I can't breathe properly and my throat feels tight.&rdquo;</p>
+
+    <h4>History of Presenting Complaint</h4>
+    <ul>
+      <li>Bee sting to right forearm, single sting, approximately 25&ndash;30 minutes prior to arrival</li>
+      <li>Symptom progression: localised sting reaction &rarr; generalised itch &rarr; urticaria &rarr; facial swelling &rarr; throat tightness &rarr; wheeze &rarr; feeling &ldquo;funny&rdquo; (light-headed)</li>
+      <li>Progressive worsening over the drive to hospital</li>
+      <li>No adrenaline given prior to arrival. No EpiPen at home.</li>
+    </ul>
+
+    <h4>Past Medical History</h4>
+    <ul>
+      <li><strong>Bee venom allergy:</strong> Previous reaction ~5 years ago &mdash; widespread urticaria only, no respiratory/cardiovascular compromise. Seen by GP. Advised to obtain EpiPen but did not follow through. Never referred to an allergist.</li>
+      <li><strong>Mild asthma:</strong> Uses salbutamol MDI PRN. Rarely needed. No preventer. No hospital admissions for asthma.</li>
+      <li><strong>Hypertension:</strong> On <strong>metoprolol 50mg daily</strong> (beta-blocker).</li>
+    </ul>
+
+    <h4>Medications</h4>
+    <ul>
+      <li>Metoprolol 50mg mane</li>
+      <li>Salbutamol 100mcg MDI PRN</li>
+    </ul>
+
+    <h4>Allergies</h4>
+    <ul>
+      <li>Bee venom (documented &mdash; previous urticarial reaction)</li>
+      <li>NKDA</li>
+    </ul>
+
+    <h4>Social History (Rural Context)</h4>
+    <ul>
+      <li>Farmer. Lives 15km from hospital on a grazing property.</li>
+      <li>Wife (Jenny) present &mdash; drove him in. She is in the waiting area, distressed.</li>
+      <li>Two adult children &mdash; one in Adelaide, one in Port Lincoln.</li>
+      <li>Known to nursing staff. Community member.</li>
+      <li>Weight: approximately 85kg.</li>
+    </ul>
+
+    <h3>I &mdash; Identify Red Flags</h3>
+
+    <!-- BREAK POINT 3 -->
+    <div class="bp">
+      <div class="bp-header">
+        <span class="bp-badge">Break Point 3</span>
+        <span class="bp-type">Discussion</span>
+      </div>
+      <h4>History &amp; Red Flag Screening</h4>
+      <p><strong>Facilitator:</strong> PAUSE. Ask the RN:</p>
+      <ul>
+        <li>&ldquo;What are the red flags in this history that increase the risk of a severe or fatal outcome?&rdquo;</li>
+        <li>&ldquo;What questions must you not miss asking?&rdquo;</li>
+        <li>&ldquo;What is the significance of his metoprolol?&rdquo;</li>
+      </ul>
+
+      <h4>Red Flags Checklist</h4>
+      <ul class="red-flags">
+        <li><strong>Known bee venom allergy with previous systemic reaction</strong> &mdash; escalating severity pattern</li>
+        <li><strong>Concurrent asthma</strong> &mdash; risk factor for fatal anaphylaxis (even mild asthma)</li>
+        <li><strong>Beta-blocker therapy (metoprolol)</strong> &mdash; may cause refractory anaphylaxis; adrenaline may be less effective; masks tachycardia as a clinical marker</li>
+        <li><strong>No adrenaline autoinjector</strong> &mdash; delayed first dose of adrenaline</li>
+        <li><strong>Rapid progression of symptoms</strong> &mdash; 25 minutes from sting to multi-system involvement</li>
+        <li><strong>Hypotension on presentation</strong> &mdash; cardiovascular compromise already present</li>
+        <li><strong>Hoarse voice + tongue swelling</strong> &mdash; airway compromise developing</li>
+        <li><strong>Remote from definitive care</strong> &mdash; retrieval 1.5+ hours away</li>
+      </ul>
+
+      <h4>Questions You Must Not Miss</h4>
+      <ul>
+        <li>&ldquo;Have you had any adrenaline already?&rdquo; (No &mdash; no EpiPen available)</li>
+        <li>&ldquo;What medications are you on?&rdquo; (Metoprolol &mdash; critical information)</li>
+        <li>&ldquo;Do you have asthma?&rdquo; (Yes &mdash; risk factor for severe bronchospasm)</li>
+        <li>&ldquo;How quickly did the symptoms come on?&rdquo; (Rapid &mdash; suggests high-risk reaction)</li>
+        <li>&ldquo;Any chest pain or palpitations?&rdquo; (Differentials; also adrenaline safety)</li>
+      </ul>
+
+      <h4>Key Teaching Points</h4>
+      <ul>
+        <li><strong>Beta-blockers and anaphylaxis:</strong> Patients on beta-blockers may have a more severe and prolonged anaphylaxis because adrenaline's beta-adrenergic effects (bronchodilation, inotropy, chronotropy) are blocked. These patients may be refractory to standard adrenaline dosing. Glucagon is the specific rescue agent &mdash; it works via a non-adrenergic pathway.</li>
+        <li><strong>Asthma + anaphylaxis = high risk of fatal outcome.</strong> Most fatalities from food or venom anaphylaxis occur in patients with coexisting asthma.</li>
+        <li>The delay from sting to first adrenaline dose (now ~30+ minutes) increases the risk of a severe and protracted reaction. Every minute of delay matters.</li>
+      </ul>
+
+      <h4>Real-Job Translation</h4>
+      <p>At 3am you might not get the medication history so easily. The patient might be alone, confused, or unable to speak. Medication lists might be at home 40km away. In this scenario, the wife is a good historian &mdash; use her. In real life, your local pharmacy might know Keith's medications. Community knowledge is a rural asset. Use it.</p>
+    </div>
+    <!-- END BREAK POINT 3 -->
+
+    <h3>A &mdash; Assessment</h3>
+    <h4>Initial Vital Signs</h4>
+    <table class="vitals">
+      <tr><th>Parameter</th><th>Value</th><th>Interpretation</th></tr>
+      <tr><td>HR</td><td>110 bpm</td><td>Significant tachycardia for a beta-blocked patient</td></tr>
+      <tr><td>BP</td><td>95/60 mmHg</td><td>Hypotensive &mdash; cardiovascular compromise</td></tr>
+      <tr><td>RR</td><td>28/min</td><td>Tachypnoeic &mdash; respiratory compromise</td></tr>
+      <tr><td>SpO2</td><td>93% (RA)</td><td>Hypoxaemic</td></tr>
+      <tr><td>Temp</td><td>36.8&deg;C</td><td>Normal</td></tr>
+      <tr><td>GCS</td><td>15 (E4V5M6)</td><td>Alert, anxious</td></tr>
+      <tr><td>BGL</td><td>7.2 mmol/L</td><td>Normal</td></tr>
+      <tr><td>Pain</td><td>3/10 (sting site)</td><td>Not the primary concern</td></tr>
+      <tr><td>ECG</td><td>Sinus tachycardia</td><td>No acute ischaemic changes</td></tr>
+    </table>
+
+    <h3>I &mdash; Interventions (Nursing-Initiated)</h3>
+    <ul class="checklist">
+      <li><strong>Position flat</strong> with legs elevated (or sitting with legs outstretched if breathing difficulty is predominant)</li>
+      <li><strong>IM Adrenaline 0.5mg</strong> (0.5mL of 1:1000) into outer mid-thigh &mdash; RN-initiated, EN assists with preparation and checking</li>
+      <li><strong>Oxygen</strong> via Hudson mask at 8L/min (escalate to non-rebreather 15L/min if SpO2 not improving)</li>
+      <li><strong>IV access</strong> &mdash; 16G or 18G cannula, left antecubital fossa. Flush and secure. Spike 1L NaCl 0.9%.</li>
+      <li><strong>Continuous monitoring</strong> &mdash; cardiac monitor, SpO2, NIBP cycling q3 min initially</li>
+      <li><strong>Remove allergen</strong> &mdash; inspect sting site, flick out any remaining stinger (do not squeeze)</li>
+      <li><strong>Call GP</strong> &mdash; ISBAR by phone (EN can make the call on hands-free while RN gives adrenaline)</li>
+    </ul>
+
+    <h3>D &mdash; Diagnostics</h3>
+    <h4>What can be done in this setting?</h4>
+    <ul>
+      <li>12-lead ECG &mdash; yes (baseline, monitor for arrhythmia with adrenaline)</li>
+      <li>BGL &mdash; yes (point-of-care)</li>
+      <li>Urinalysis &mdash; yes (not indicated acutely)</li>
+      <li>Bloods &mdash; <strong>no</strong> (pathology closed on Saturday). Mast cell tryptase cannot be done here.</li>
+    </ul>
+    <p class="small">Note: Serum mast cell tryptase is useful to confirm anaphylaxis retrospectively but requires pathology laboratory processing. Note the time of the reaction for future tryptase timing if bloods can be collected at the receiving facility (ideally 1&ndash;2 hours post-onset, and a baseline at 24+ hours).</p>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 8: CLINICAL DECISION POINT ═══════════ -->
+<section class="fade-section">
+  <h2>Clinical Decision Point</h2>
+  <div class="card">
+
+    <!-- BREAK POINT 4 -->
+    <div class="bp">
+      <div class="bp-header">
+        <span class="bp-badge">Break Point 4</span>
+        <span class="bp-type">Decision-Making</span>
+      </div>
+      <h4>Working Diagnosis &amp; Escalation Decision</h4>
+      <p><strong>Facilitator:</strong> PAUSE. This break point is for all participants &mdash; RN, EN, and GP (by phone or in person if arrived).</p>
+      <ul>
+        <li>&ldquo;What is your working diagnosis?&rdquo;</li>
+        <li>&ldquo;What are your differentials?&rdquo;</li>
+        <li>&ldquo;Can this patient be managed here, or do you need retrieval?&rdquo;</li>
+        <li>&ldquo;Who are you calling, in what order, and what information do you need before you call?&rdquo;</li>
+      </ul>
+
+      <h4>Working Diagnosis</h4>
+      <p><strong>Anaphylaxis &mdash; bee venom (Hymenoptera) &mdash; with cardiovascular and respiratory compromise in a beta-blocked patient.</strong></p>
+
+      <h4>Differential Diagnoses to Consider</h4>
+      <ul>
+        <li>Severe allergic reaction (non-anaphylaxis) &mdash; excluded by presence of multi-system involvement</li>
+        <li>Acute asthma exacerbation &mdash; possible concomitant, but the urticaria, angioedema, and hypotension point to anaphylaxis</li>
+        <li>Vasovagal episode &mdash; does not explain wheeze, urticaria, angioedema</li>
+        <li>Panic attack &mdash; does not explain hypotension, wheeze, urticaria</li>
+        <li>Acute coronary syndrome &mdash; consider if chest pain develops, especially post-adrenaline (Kounis syndrome)</li>
+      </ul>
+
+      <h4>Escalation Pathway</h4>
+      <ol>
+        <li><strong>GP on-call</strong> &mdash; already contacted. Confirm ETA. Provide ISBAR update.</li>
+        <li><strong>MedSTAR (1800 MedSTAR / 1800 633 782)</strong> &mdash; call early. Do not wait for the patient to deteriorate further. MedSTAR provides real-time clinical advice AND coordinates retrieval.</li>
+        <li><strong>SA Ambulance (000)</strong> &mdash; request ambulance for potential road transfer. Volunteer crew may arrive sooner than Port Lincoln paramedics.</li>
+      </ol>
+      <p><strong>This patient cannot be managed locally to discharge.</strong> He has multi-system anaphylaxis with risk factors for refractory and biphasic reactions (beta-blocker, asthma, severity). He requires at minimum 12&ndash;24 hours of monitored observation in a facility with ICU capability. Retrieval is needed.</p>
+
+      <h4>ISBAR &mdash; Phone Call to GP</h4>
+      <div class="isbar">
+        <h4>RN &rarr; GP (phone)</h4>
+        <div class="isbar-row"><span class="isbar-label">I</span><span class="isbar-text">&ldquo;Dr [name], it's [RN name], RN at [hospital] ED.&rdquo;</span></div>
+        <div class="isbar-row"><span class="isbar-label">S</span><span class="isbar-text">&ldquo;I have Keith Brennan, 52 years old, presenting with anaphylaxis after a bee sting approximately 30 minutes ago. He is in the resus bay.&rdquo;</span></div>
+        <div class="isbar-row"><span class="isbar-label">B</span><span class="isbar-text">&ldquo;He has a documented bee venom allergy with a previous urticarial reaction. He's on metoprolol 50mg daily and has mild asthma. No EpiPen &mdash; he's had no adrenaline prior to arrival.&rdquo;</span></div>
+        <div class="isbar-row"><span class="isbar-label">A</span><span class="isbar-text">&ldquo;He has generalised urticaria, facial angioedema, tongue swelling, audible wheeze, and is hypotensive. HR 110, BP 95/60, SpO2 93%, RR 28, GCS 15. He meets ASCIA criteria for anaphylaxis.&rdquo;</span></div>
+        <div class="isbar-row"><span class="isbar-label">R</span><span class="isbar-text">&ldquo;I am giving IM adrenaline 0.5mg now. I have him on O2 and monitoring. I'm gaining IV access. I need you here as soon as possible. What is your ETA? Do you have any additional orders?&rdquo;</span></div>
+      </div>
+
+      <h4>Key Teaching Points</h4>
+      <ul>
+        <li>Call MedSTAR <strong>early</strong>. You do not need to be in crisis to call. MedSTAR provides clinical advice from the first call. They can guide you through adrenaline infusion setup, help you decide on glucagon, and get retrieval wheels turning while you stabilise.</li>
+        <li>Know your numbers: MedSTAR &mdash; 1800 633 782. SA Ambulance &mdash; 000. Have these on the wall in resus.</li>
+        <li>The GP may ask: &ldquo;Have you given adrenaline?&rdquo; The answer should be &ldquo;yes&rdquo; before you even call. Do not wait for permission. Nurse-initiated adrenaline for anaphylaxis is within scope and supported by SA Health clinical guidelines.</li>
+      </ul>
+
+      <h4>Real-Job Translation</h4>
+      <p>The GP might be 20 minutes away, or they might be stuck at a farm accident 40 minutes in the other direction. You cannot count on them arriving quickly. Call them, give the ISBAR, get what orders you can, and continue managing. If the GP is significantly delayed, escalate to MedSTAR directly for phone clinical support. You are authorised and expected to do this.</p>
+    </div>
+    <!-- END BREAK POINT 4 -->
+
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 9: TREATMENT & STABILISATION ═══════════ -->
+<section class="fade-section">
+  <h2>Treatment &amp; Stabilisation Phase</h2>
+  <div class="card">
+
+    <!-- BREAK POINT 5 -->
+    <div class="bp">
+      <div class="bp-header">
+        <span class="bp-badge">Break Point 5</span>
+        <span class="bp-type">Practical Skill / Medication Safety</span>
+      </div>
+      <h4>Treatment Initiation &amp; Skills Practice</h4>
+      <p><strong>Facilitator:</strong> PAUSE for hands-on skills practice. Walk through each intervention in real time.</p>
+
+      <h4>Skill 1: IM Adrenaline Administration</h4>
+      <div class="dose-card">
+        <h4>Adrenaline &mdash; First-Line Treatment</h4>
+        <p><strong>Drug:</strong> Adrenaline (epinephrine) 1:1000 (1mg/mL ampoule)</p>
+        <p><strong>Dose:</strong> <code>0.5mg</code> (0.5mL) for adults &gt;50kg &mdash; maximum single dose</p>
+        <p><strong>Route:</strong> Intramuscular (IM) injection &mdash; <strong>outer mid-thigh</strong></p>
+        <p><strong>Needle:</strong> 22&ndash;25G, 25mm length</p>
+        <p><strong>Syringe:</strong> 1mL syringe (allows accurate measurement)</p>
+        <p><strong>Repeat:</strong> Every <code>5 minutes</code> if no response or deterioration</p>
+        <p class="critical">CAUTION: IV bolus adrenaline is NOT recommended unless the patient is in cardiac arrest. IM only for anaphylaxis.</p>
+      </div>
+
+      <p><strong>Facilitator Prompts &mdash; Medication Safety (NSQHS Standard 4):</strong></p>
+      <ul>
+        <li>&ldquo;Talk me through your 5 rights: right patient, right drug, right dose, right route, right time.&rdquo;</li>
+        <li>&ldquo;What concentration are you using? Show me the ampoule.&rdquo; (1:1000 = 1mg/mL. Do NOT use 1:10,000 &mdash; that is for cardiac arrest IV bolus only.)</li>
+        <li>&ldquo;How are you drawing it up? Show me.&rdquo; (Draw 0.5mL into a 1mL syringe.)</li>
+        <li>&ldquo;Where are you injecting? Show me the site.&rdquo; (Outer mid-thigh, through clothing if necessary.)</li>
+        <li>&ldquo;EN &mdash; what is your role in this medication administration?&rdquo; (Preparing the ampoule, checking the drug/dose/expiry with the RN, documenting the time of administration, monitoring the patient's response.)</li>
+      </ul>
+
+      <h4>Skill 2: IV Access &amp; Fluid Preparation</h4>
+      <ul class="checklist">
+        <li>Insert 16G or 18G IV cannula &mdash; antecubital fossa preferred (large, accessible)</li>
+        <li>Flush with 10mL NaCl to confirm patency</li>
+        <li>Spike 1L bag NaCl 0.9%. Connect giving set. Ready to run if hypotension worsens.</li>
+        <li>If hypotensive (BP &lt;90 systolic): <strong>20mL/kg NaCl rapidly under pressure</strong>. For 85kg = 1700mL stat. Use pressure bag if available.</li>
+        <li>Consider second IV line (opposite arm) if significant fluid resuscitation anticipated</li>
+      </ul>
+
+      <h4>Skill 3: Oxygen Therapy</h4>
+      <ul>
+        <li>Start with Hudson mask at 8L/min</li>
+        <li>If SpO2 not improving or &lt;94%: escalate to non-rebreather mask at 15L/min</li>
+        <li>Supplemental O2 is indicated for all patients with respiratory distress, reduced consciousness, or requiring repeated adrenaline</li>
+      </ul>
+
+      <h4>Scenario Progression &mdash; 5 Minutes Post First Adrenaline</h4>
+      <p><strong>Facilitator provides updated observations:</strong></p>
+      <table class="vitals">
+        <tr><th>Parameter</th><th>5 min post 1st adrenaline</th><th>Trend</th></tr>
+        <tr><td>HR</td><td>108</td><td>Minimal change</td></tr>
+        <tr><td>BP</td><td>88/52</td><td style="color:var(--danger)">Worsening</td></tr>
+        <tr><td>RR</td><td>30</td><td style="color:var(--danger)">Worsening</td></tr>
+        <tr><td>SpO2</td><td>91% (on 8L O2)</td><td style="color:var(--danger)">Worsening</td></tr>
+        <tr><td>GCS</td><td>14 (E3V5M6)</td><td style="color:var(--danger)">Deteriorating &mdash; drowsy</td></tr>
+      </table>
+      <p><strong>Clinical picture:</strong> Wheeze worsening. Facial swelling progressing. Patient becoming drowsy and nauseous. Urticaria spreading to legs.</p>
+      <p><strong>The first dose of adrenaline has not worked adequately. This patient is deteriorating.</strong></p>
+
+      <p><strong>Facilitator:</strong> &ldquo;What do you do now?&rdquo;</p>
+      <ul class="checklist">
+        <li><strong>Repeat IM adrenaline 0.5mg</strong> (second dose at 5 minutes)</li>
+        <li>Escalate O2 to non-rebreather 15L/min</li>
+        <li>Lay flat &mdash; elevate legs if tolerated</li>
+        <li>Start IV NaCl 0.9% 20mL/kg rapidly (1700mL under pressure)</li>
+        <li>Consider <strong>nebulised salbutamol 5mg</strong> for persistent bronchospasm (adjunct only &mdash; not a replacement for adrenaline)</li>
+        <li>EN: document second adrenaline dose time. Prepare third dose.</li>
+        <li>If GP not yet arrived: call back with update. Consider calling MedSTAR now for clinical advice.</li>
+      </ul>
+
+      <h4>Scenario Progression &mdash; 10 Minutes (Post 2nd Adrenaline, GP Arriving)</h4>
+      <table class="vitals">
+        <tr><th>Parameter</th><th>10 min post 2nd adrenaline</th><th>Trend</th></tr>
+        <tr><td>HR</td><td>105</td><td>Slight improvement</td></tr>
+        <tr><td>BP</td><td>90/55 (500mL NaCl in)</td><td>Marginally improved</td></tr>
+        <tr><td>RR</td><td>26</td><td>Slight improvement</td></tr>
+        <tr><td>SpO2</td><td>93% (15L NRB)</td><td>Slight improvement</td></tr>
+        <tr><td>GCS</td><td>15</td><td>More alert</td></tr>
+      </table>
+      <p><strong>Partial response only.</strong> Wheeze still present. Angioedema not resolving. BP still low despite 500mL fluid. The GP arrives at this point.</p>
+
+      <h4>GP Arrives &mdash; Clinical Handover at Bedside</h4>
+      <p>The RN provides a rapid bedside ISBAR to the GP. The GP assumes clinical lead.</p>
+
+      <h4>GP Decision: Adrenaline Infusion</h4>
+      <p>After 2 doses of IM adrenaline with inadequate response, the GP (in liaison with MedSTAR if available by phone) decides to commence an <strong>IV adrenaline infusion</strong>.</p>
+
+      <div class="dose-card">
+        <h4>IV Adrenaline Infusion &mdash; Pre-Hospital Protocol</h4>
+        <p><strong>Preparation:</strong> Mix <code>1mL of 1:1000 adrenaline</code> (1mg) in <code>1000mL NaCl 0.9%</code></p>
+        <p><strong>Concentration:</strong> 1 microgram/mL</p>
+        <p><strong>Starting rate:</strong> <code>~5mL/kg/hr</code> (~0.1 microgram/kg/min)</p>
+        <p><strong>For 85kg patient:</strong> 5 &times; 85 = <code>425mL/hr</code> initially</p>
+        <p><strong>If no infusion pump:</strong> Standard giving set = ~20 drops/mL. Start at ~2 drops/second for an adult.</p>
+        <p><strong>Titrate:</strong> Up or down according to response and side effects.</p>
+        <p><strong>Monitor:</strong> Continuous ECG, SpO2, frequent NIBP (minimum q3 min).</p>
+        <p><strong>Use dedicated IV line.</strong> Use infusion pump and anti-reflux valves wherever possible.</p>
+        <p class="critical">CAUTION: IV boluses of adrenaline are NOT recommended due to risk of cardiac arrhythmia &mdash; UNLESS the patient is in cardiac arrest.</p>
+      </div>
+
+      <h4>Glucagon &mdash; Consider for Beta-Blocker Refractory Anaphylaxis</h4>
+      <div class="dose-card">
+        <h4>Glucagon (if adrenaline infusion ineffective)</h4>
+        <p><strong>Indication:</strong> Refractory anaphylaxis in patients on beta-blockers where adrenaline is failing to achieve adequate haemodynamic response.</p>
+        <p><strong>Dose (adult):</strong> <code>1&ndash;2mg IV bolus</code></p>
+        <p><strong>May repeat</strong> or follow with infusion at <code>1mg/hr</code></p>
+        <p><strong>Mechanism:</strong> Acts via a non-adrenergic pathway (increases cAMP independent of beta receptors), supporting cardiac output and bronchodilation.</p>
+        <p class="small">Note: Check imprest for glucagon availability. If not stocked, flag this as a system improvement in debrief.</p>
+      </div>
+
+      <h4>Additional Measures</h4>
+      <ul>
+        <li><strong>Nebulised salbutamol 5mg</strong> for persistent wheeze (via nebuliser mask with O2 at 8L/min)</li>
+        <li><strong>IV hydrocortisone 200mg</strong> &mdash; may be given but is NOT first-line and should NOT delay adrenaline. Evidence for preventing biphasic reactions is unproven but commonly administered.</li>
+        <li><strong>Do NOT give injectable promethazine</strong> &mdash; it can worsen hypotension and cause muscle necrosis. Antihistamines have no role in treating cardiovascular or respiratory symptoms of anaphylaxis.</li>
+        <li>Continue IV NaCl bolus to target SBP &gt;100. Maximum 50mL/kg in first 30 minutes if needed.</li>
+      </ul>
+
+      <h4>Scope of Practice &mdash; Who Does What?</h4>
+      <table class="vitals">
+        <tr><th>Task</th><th>RN</th><th>EN</th><th>GP</th></tr>
+        <tr><td>Initiate IM adrenaline (1st &amp; 2nd dose)</td><td>Yes &mdash; nurse-initiated</td><td>Assists preparation/check</td><td>Orders confirmed by phone</td></tr>
+        <tr><td>IV adrenaline infusion</td><td>Prepares and administers under GP order</td><td>Assists with setup, dedicated line</td><td>Orders, prescribes, titrates</td></tr>
+        <tr><td>IV fluid bolus</td><td>Administers under protocol/GP order</td><td>Assists &mdash; pressure bag, monitoring</td><td>Orders</td></tr>
+        <tr><td>Glucagon</td><td>Prepares and administers</td><td>Assists</td><td>Orders, prescribes</td></tr>
+        <tr><td>Nebulised salbutamol</td><td>Administers (nurse-initiated for asthma)</td><td>Sets up nebuliser</td><td>Confirms</td></tr>
+        <tr><td>MedSTAR call</td><td>Can initiate if GP delayed</td><td>Can make call if directed</td><td>Primary caller once on site</td></tr>
+        <tr><td>Documentation</td><td>Oversees</td><td>Primary documenter</td><td>Medical notes</td></tr>
+      </table>
+
+      <h4>Key Teaching Points</h4>
+      <ul>
+        <li><strong>Adrenaline is safe and you cannot withhold it.</strong> There are no absolute contraindications to adrenaline in anaphylaxis. The risk of not giving it far exceeds any risk of giving it. If in doubt, give adrenaline.</li>
+        <li>The IV infusion protocol for a rural ED / pre-hospital setting uses a <strong>dilute</strong> solution (1mg in 1000mL) because it is safer and more forgiving of rate errors than the ED/tertiary protocol (1mg in 100mL).</li>
+        <li>Watch for <strong>adrenaline toxicity</strong>: if the patient becomes nauseous, shaky, vomiting, or hypertensive with a normal or elevated SBP, this may be overtreatment, not worsening anaphylaxis. Measure palpable SBP to guide ongoing dosing.</li>
+        <li><strong>Fluid resuscitation is critical</strong> &mdash; massive vasodilatation and fluid extravasation occur in severe anaphylaxis. Do not forget the fluids while focusing on the adrenaline.</li>
+      </ul>
+
+      <h4>Real-Job Translation</h4>
+      <p>You have now given two doses of adrenaline and your patient is still hypotensive. The GP has just walked through the door. You need to hand over clearly and concisely so they can hit the ground running. The infusion setup takes time &mdash; the EN should be preparing it while the RN does the handover. Every person has a job. No one is standing idle. This is a 3-person resuscitation and every set of hands counts.</p>
+    </div>
+    <!-- END BREAK POINT 5 -->
+
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 10: REASSESSMENT & ESCALATION ═══════════ -->
+<section class="fade-section">
+  <h2>Reassessment &amp; Escalation</h2>
+  <div class="card">
+
+    <!-- BREAK POINT 6 -->
+    <div class="bp">
+      <div class="bp-header">
+        <span class="bp-badge">Break Point 6</span>
+        <span class="bp-type">Decision-Making / Practical Skill</span>
+      </div>
+      <h4>Reassessment &amp; MedSTAR Retrieval Referral</h4>
+      <p><strong>Facilitator:</strong> PAUSE. The adrenaline infusion has been running for 10 minutes. Provide updated observations:</p>
+
+      <table class="vitals">
+        <tr><th>Parameter</th><th>30 min (infusion running 10 min)</th><th>Trend</th></tr>
+        <tr><td>HR</td><td>88</td><td style="color:var(--ok)">Improving</td></tr>
+        <tr><td>BP</td><td>108/68 (1500mL NaCl given)</td><td style="color:var(--ok)">Improving</td></tr>
+        <tr><td>RR</td><td>20</td><td style="color:var(--ok)">Improving</td></tr>
+        <tr><td>SpO2</td><td>96% (8L O2)</td><td style="color:var(--ok)">Improving</td></tr>
+        <tr><td>GCS</td><td>15</td><td style="color:var(--ok)">Alert, less anxious</td></tr>
+      </table>
+      <p><strong>Clinical picture:</strong> Wheeze resolving. Angioedema still present but not worsening. Urticaria fading. Patient feels &ldquo;a bit better&rdquo; but still unwell. Infusion running at 425mL/hr.</p>
+
+      <p><strong>Facilitator Prompts:</strong></p>
+      <ul>
+        <li>&ldquo;Is this patient improving, static, or deteriorating?&rdquo; (Improving &mdash; but not out of danger.)</li>
+        <li>&ldquo;Can you stop the infusion?&rdquo; (No. Titrate to response. Continue monitoring. Gradual wean when stable.)</li>
+        <li>&ldquo;What are the escalation triggers that would make you call MedSTAR if you haven't already?&rdquo;</li>
+        <li>&ldquo;GP: take us through your MedSTAR referral. Use ISBAR.&rdquo;</li>
+      </ul>
+
+      <h4>Escalation Triggers &mdash; Call MedSTAR If:</h4>
+      <ul class="red-flags">
+        <li>Inadequate response after 2&ndash;3 IM adrenaline doses (THIS PATIENT &mdash; already met)</li>
+        <li>Requirement for adrenaline infusion (THIS PATIENT &mdash; already met)</li>
+        <li>Refractory hypotension despite fluids and adrenaline</li>
+        <li>Airway compromise (stridor, inability to speak, worsening tongue/throat swelling)</li>
+        <li>Altered consciousness / GCS drop</li>
+        <li>Cardiac arrest</li>
+        <li>Any patient you are concerned about and want clinical advice &mdash; <strong>you're worried, they're listening</strong></li>
+      </ul>
+
+      <h4>ISBAR &mdash; MedSTAR Retrieval Referral</h4>
+      <div class="isbar">
+        <h4>GP &rarr; MedSTAR (1800 633 782)</h4>
+        <div class="isbar-row"><span class="isbar-label">I</span><span class="isbar-text">&ldquo;This is Dr [name], GP at [hospital] on the lower Eyre Peninsula. I'm calling for retrieval consultation.&rdquo;</span></div>
+        <div class="isbar-row"><span class="isbar-label">S</span><span class="isbar-text">&ldquo;I have a 52-year-old male with refractory anaphylaxis following a bee sting. He has required 2 doses of IM adrenaline with inadequate response and is now on an IV adrenaline infusion.&rdquo;</span></div>
+        <div class="isbar-row"><span class="isbar-label">B</span><span class="isbar-text">&ldquo;Background: known bee venom allergy. On metoprolol 50mg daily &mdash; beta-blocked. Mild asthma. No EpiPen. Stung approximately 50 minutes ago. Rapid progression to multi-system anaphylaxis with hypotension, bronchospasm, and angioedema.&rdquo;</span></div>
+        <div class="isbar-row"><span class="isbar-label">A</span><span class="isbar-text">&ldquo;Current observations on adrenaline infusion at 425mL/hr with 1500mL NaCl given: HR 88, BP 108/68, SpO2 96% on 8L O2, RR 20, GCS 15. Wheeze resolving. Angioedema present but not worsening. He's had 2 &times; 0.5mg IM adrenaline, 1500mL NaCl, nebulised salbutamol 5mg, and is on IV adrenaline infusion 1mg in 1000mL at 5mL/kg/hr. I am considering glucagon given the beta-blockade.&rdquo;</span></div>
+        <div class="isbar-row"><span class="isbar-label">R</span><span class="isbar-text">&ldquo;I'm requesting retrieval to a facility with ICU-level monitoring. He's at high risk of biphasic reaction given the severity, repeated adrenaline requirement, asthma, and beta-blockade. We're 60 minutes by road from the nearest regional centre. Can you advise on retrieval options and any further management you'd recommend?&rdquo;</span></div>
+      </div>
+
+      <h4>Key Teaching Points</h4>
+      <ul>
+        <li>MedSTAR will provide <strong>real-time clinical advice</strong> alongside retrieval coordination. They may suggest adjustments to the infusion rate, recommend glucagon, or advise on additional interventions. Listen carefully and implement their guidance.</li>
+        <li>Retrieval options: RFDS fixed-wing from Adelaide (~1.5 hr), SA Ambulance road transfer (~60 min once on scene), or a combination. MedSTAR will determine the most appropriate platform based on patient acuity and logistics.</li>
+        <li>While waiting for retrieval, you are still managing the patient. Do not &ldquo;hand over mentally&rdquo; once the retrieval call is made. The patient can still deteriorate.</li>
+        <li><strong>Biphasic reactions</strong> can occur hours after initial improvement. The minimum observation period is 4 hours after the last adrenaline dose, but this patient warrants overnight observation given the severity, beta-blockade, and asthma history.</li>
+      </ul>
+
+      <h4>Real-Job Translation</h4>
+      <p>MedSTAR are pragmatic and solution-focused. They will ask you for specific information: what drugs have been given, current infusion rate, vital signs, airway status. Have the EN keep a clear, legible medication/observation chart so you can read off the numbers. When MedSTAR say &ldquo;we'll send the RFDS,&rdquo; that clock starts ticking &mdash; 1.5 hours until a retrieval team is at your bedside. You need to keep this patient stable until then. That is your job.</p>
+    </div>
+    <!-- END BREAK POINT 6 -->
+
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 11: TRANSFER PREPARATION ═══════════ -->
+<section class="fade-section">
+  <h2>Preparation for Transfer / Retrieval</h2>
+  <div class="card">
+
+    <!-- BREAK POINT 7 -->
+    <div class="bp">
+      <div class="bp-header">
+        <span class="bp-badge">Break Point 7</span>
+        <span class="bp-type">Discussion / Practical Skill</span>
+      </div>
+      <h4>Transfer Preparation &amp; Packaging</h4>
+      <p><strong>Facilitator:</strong> PAUSE. The RFDS retrieval is confirmed. ETA 1 hour 20 minutes. The patient is currently stable on the infusion.</p>
+
+      <p><strong>Facilitator Prompts:</strong></p>
+      <ul>
+        <li>&ldquo;What monitoring continues while we wait?&rdquo;</li>
+        <li>&ldquo;What documentation do you need to prepare?&rdquo;</li>
+        <li>&ldquo;What if retrieval is delayed by 2 hours &mdash; weather, aircraft availability? What's your contingency?&rdquo;</li>
+        <li>&ldquo;The patient's wife is in the waiting area. Who is speaking to her? What are you telling her?&rdquo;</li>
+      </ul>
+
+      <h4>Ongoing Monitoring</h4>
+      <ul class="checklist">
+        <li>Continuous cardiac monitoring (ECG) &mdash; watch for arrhythmias (adrenaline-related or anaphylaxis-related)</li>
+        <li>Continuous SpO2</li>
+        <li>NIBP every 5 minutes (can extend to q10 min if stable)</li>
+        <li>Respiratory assessment q15 min (wheeze, RR, work of breathing, voice quality)</li>
+        <li>Ongoing GCS / AVPU assessment</li>
+        <li>Monitor adrenaline infusion rate and IV site patency</li>
+        <li>Monitor fluid balance &mdash; intake (NaCl volume) and output (urine if catheterised)</li>
+        <li>Watch for signs of <strong>adrenaline toxicity</strong>: tremor, nausea, hypertension, chest pain, arrhythmias</li>
+        <li>Watch for signs of <strong>biphasic reaction</strong>: recurrence of urticaria, wheeze, hypotension, angioedema after initial improvement</li>
+      </ul>
+
+      <h4>Transfer Documentation Checklist</h4>
+      <ul class="checklist">
+        <li>Complete set of timed observations from arrival to present</li>
+        <li>All medications given with <strong>exact times, doses, routes</strong></li>
+        <li>Adrenaline infusion: concentration, rate, start time, rate changes</li>
+        <li>IV fluid volumes: type, volume, rate</li>
+        <li>Clinical findings: presenting complaint, history, examination findings, working diagnosis</li>
+        <li>GP clinical notes</li>
+        <li>Copy of ECG tracing</li>
+        <li>Patient demographics, NOK details, Medicare number</li>
+        <li>Allergy status (documented and labelled on patient and notes)</li>
+        <li>Medication list (regular medications)</li>
+        <li>MedSTAR advice received and implemented</li>
+      </ul>
+
+      <h4>Contingency Planning &mdash; Retrieval Delayed</h4>
+      <ul>
+        <li><strong>If RFDS delayed 2+ hours:</strong> Can you road-transfer? Volunteer ambulance crew may be available but may not have the skill set for an adrenaline infusion. Port Lincoln paramedics (45 min response) would be more appropriate for a monitored road transfer. Discuss with MedSTAR.</li>
+        <li><strong>If patient deteriorates while waiting:</strong> Increase infusion rate. Give further IM adrenaline. Consider glucagon. Fluid resuscitation. Prepare for advanced airway if airway compromise. Call MedSTAR back immediately.</li>
+        <li><strong>If cardiac arrest:</strong> Standard ALS. IV adrenaline 1mg q2&ndash;3 min (cardiac arrest dosing). Aggressive fluid resuscitation 20mL/kg stat. Prolonged CPR is appropriate &mdash; this is a reversible cause. Call MedSTAR.</li>
+        <li><strong>Consumables:</strong> Check remaining adrenaline ampoules, NaCl bags, oxygen supply. Is there enough for a prolonged wait?</li>
+      </ul>
+
+      <h4>Family Communication</h4>
+      <ul>
+        <li>Assign one person (ideally the EN, when not performing clinical tasks) to update Jenny.</li>
+        <li>Be honest, clear, and compassionate: &ldquo;Keith has had a severe allergic reaction to the bee sting. We've given him medication and he's responding, but he needs to go to a bigger hospital for closer monitoring. We've arranged a retrieval team from Adelaide. They'll be here in about an hour and a half.&rdquo;</li>
+        <li>Ask if she wants to come and sit with him (if safe and appropriate).</li>
+        <li>Ask about contacting family: their adult children. Does she need someone to drive her to Adelaide?</li>
+        <li>Acknowledge: <strong>you know this family.</strong> This is not a stranger. Maintain professional boundaries but do not pretend you don't know them. Empathy is not weakness.</li>
+      </ul>
+
+      <h4>Real-Job Translation</h4>
+      <p>The wait for retrieval is the hardest part of rural emergency nursing. You have done everything right. The patient is responding. But you have to maintain vigilance for 90+ minutes with a 3-person team. Fatigue, adrenaline (yours, not the drug), and the emotional weight of knowing this patient will all be factors. Take turns for a 5-minute break if possible. Drink water. This is a marathon, not a sprint.</p>
+    </div>
+    <!-- END BREAK POINT 7 -->
+
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 12: HANDOVER ═══════════ -->
+<section class="fade-section">
+  <h2>Clinical Handover</h2>
+  <div class="card">
+
+    <!-- BREAK POINT 8 -->
+    <div class="bp">
+      <div class="bp-header">
+        <span class="bp-badge">Break Point 8</span>
+        <span class="bp-type">Practical Skill</span>
+      </div>
+      <h4>ISBAR Handover to Retrieval Team</h4>
+      <p><strong>Facilitator:</strong> PAUSE. The MedSTAR / RFDS retrieval team has arrived at the hospital. Practise the full handover.</p>
+
+      <p><strong>Facilitator Prompts:</strong></p>
+      <ul>
+        <li>&ldquo;GP: give the full ISBAR handover to the retrieval team. Take your time. Be thorough.&rdquo;</li>
+        <li>&ldquo;RN: add anything the GP misses &mdash; nursing observations, medication times, patient response details.&rdquo;</li>
+        <li>&ldquo;EN: have the documentation ready to hand over. Can you read back the medication chart clearly?&rdquo;</li>
+      </ul>
+
+      <div class="isbar">
+        <h4>GP &rarr; MedSTAR Retrieval Team (Face-to-Face at Bedside)</h4>
+        <div class="isbar-row"><span class="isbar-label">I</span><span class="isbar-text">&ldquo;I'm Dr [name], GP here at [hospital]. This is [RN name] our RN and [EN name] our EN. The patient is Keith Brennan, 52 years old, DOB [date], UR number [X].&rdquo;</span></div>
+        <div class="isbar-row"><span class="isbar-label">S</span><span class="isbar-text">&ldquo;Keith presented approximately 2 hours ago with anaphylaxis following a bee sting. He required 2 doses of IM adrenaline without adequate response and has been on an IV adrenaline infusion for the past 90 minutes. He is currently haemodynamically stable on the infusion.&rdquo;</span></div>
+        <div class="isbar-row"><span class="isbar-label">B</span><span class="isbar-text">&ldquo;Background: known bee venom allergy &mdash; previous urticarial reaction 5 years ago. Mild asthma, salbutamol PRN. Hypertension on metoprolol 50mg daily &mdash; he's beta-blocked, which we believe contributed to the refractory response. No other significant history. No known drug allergies. Weight approximately 85kg.&rdquo;</span></div>
+        <div class="isbar-row"><span class="isbar-label">A</span><span class="isbar-text">&ldquo;Current observations: HR 82, BP 112/70, RR 18, SpO2 97% on 6L O2 via Hudson, GCS 15, temp 36.9. Wheeze has resolved. Angioedema has improved significantly. Urticaria mostly resolved. He is comfortable, alert, and oriented.<br><br>Treatment given: IM adrenaline 0.5mg at [time], repeated at [time +5]. IV adrenaline infusion commenced at [time +15] &mdash; 1mg in 1000mL NaCl at 5mL/kg/hr, currently weaned to 200mL/hr. Total IV NaCl: 2500mL. Nebulised salbutamol 5mg &times;2. IV hydrocortisone 200mg. ECG: sinus rhythm, no acute changes. No bloods &mdash; pathology closed today. Glucagon was considered but not required as he responded to the infusion.&rdquo;</span></div>
+        <div class="isbar-row"><span class="isbar-label">R</span><span class="isbar-text">&ldquo;He needs ongoing monitored observation for at least 24 hours given the severity, beta-blockade, and asthma. High risk for biphasic reaction. The infusion is still running and will need to be weaned further during transport. He'll need bloods at the receiving facility &mdash; including mast cell tryptase if within the window. He'll also need an allergist referral, an EpiPen prescription, and an ASCIA Action Plan before eventual discharge. His wife Jenny is here &mdash; she'll need to make arrangements to get to Adelaide. All documentation is ready for you.&rdquo;</span></div>
+      </div>
+
+      <h4>Key Teaching Points</h4>
+      <ul>
+        <li>Good handover saves lives. Poor handover loses information. Practise ISBAR until it is second nature.</li>
+        <li>Include <strong>exact times</strong> of all medication administration. The retrieval team needs to know when the last adrenaline was given to plan ongoing management.</li>
+        <li>Hand over the <strong>paper documentation</strong> (observation chart, medication chart, nursing notes, GP notes, ECG) as well as the verbal handover.</li>
+        <li>The RN should actively contribute to handover &mdash; they were the first clinician to see the patient and have the most continuous observations.</li>
+        <li>Don't forget the discharge planning elements that the receiving facility will need to action: allergist referral, EpiPen prescription, ASCIA Action Plan.</li>
+      </ul>
+
+      <h4>Real-Job Translation</h4>
+      <p>When the retrieval team arrives, you might feel an overwhelming sense of relief. That's normal. But do not rush the handover. Take 5 minutes to do it properly. The retrieval team will want to examine the patient themselves and will take over the infusion. Your job is to give them every piece of information they need to continue seamless care. Once Keith is in the aircraft, your work on this patient is done &mdash; but the emotional processing may just be starting. That's what the debrief is for.</p>
+    </div>
+    <!-- END BREAK POINT 8 -->
+
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 13: DEBRIEF ═══════════ -->
+<section class="fade-section">
+  <h2>Debrief (10&ndash;15 Minutes)</h2>
+  <div class="card">
+    <h3>Structured Debrief: Advocacy-Inquiry Model</h3>
+    <p>Sit down together. Remove sim equipment from hands. Take a breath. This is protected time.</p>
+
+    <h4>Phase 1: Reactions (2 minutes)</h4>
+    <ul>
+      <li>&ldquo;How are you feeling right now?&rdquo;</li>
+      <li>&ldquo;What was going through your mind during the scenario?&rdquo;</li>
+      <li>Allow all participants to express initial reactions without analysis.</li>
+    </ul>
+
+    <h4>Phase 2: What Went Well (Plus) (3&ndash;4 minutes)</h4>
+    <ul>
+      <li>&ldquo;What did the team do well?&rdquo;</li>
+      <li>Specifically explore: early adrenaline administration, team communication, role clarity, escalation decisions, ISBAR quality.</li>
+      <li>Facilitator should reinforce good practice with specific observations.</li>
+    </ul>
+
+    <h4>Phase 3: What Would We Do Differently (Delta) (3&ndash;4 minutes)</h4>
+    <ul>
+      <li>&ldquo;If this happened again tomorrow, what would you change?&rdquo;</li>
+      <li>Use Advocacy-Inquiry: &ldquo;I noticed [observation]. I'm curious about what you were thinking at that point?&rdquo;</li>
+      <li>Explore: Was there any hesitation giving adrenaline? Was the GP contacted early enough? Was MedSTAR called at the right time? Did the EN feel clear about their role?</li>
+    </ul>
+
+    <h4>Phase 4: Systems Issues (2 minutes)</h4>
+    <ul>
+      <li>Was the resus trolley stocked and ready?</li>
+      <li>Is glucagon on the imprest at this site? If not, who do we escalate this to?</li>
+      <li>Is the ASCIA poster current and visible in resus?</li>
+      <li>Do we have a nurse-initiated adrenaline protocol accessible to all staff?</li>
+      <li>Are the phone numbers for MedSTAR and SA Ambulance posted in resus?</li>
+      <li>Do staff know the EN scope regarding medication administration in emergencies?</li>
+    </ul>
+
+    <h4>Phase 5: Emotional Check-In (2 minutes)</h4>
+    <ul>
+      <li>&ldquo;In a real scenario, Keith is someone you know. His wife is someone you went to school with. How does that change things for you?&rdquo;</li>
+      <li>&ldquo;What support would you need after a case like this on a real shift?&rdquo;</li>
+      <li>Remind participants of EAP, peer support, and the importance of debriefing after real critical events.</li>
+      <li>Normalise the emotional impact of rural emergency care. It is harder when you know the patient. That doesn't make you less professional &mdash; it makes you human.</li>
+    </ul>
+
+    <h4>Key Take-Home Points</h4>
+    <ol>
+      <li><strong>Adrenaline is the drug. IM is the route. Do not delay. Do not wait for the doctor.</strong></li>
+      <li><strong>Position flat. Do not allow the patient to stand or walk.</strong> This single action prevents deaths.</li>
+      <li><strong>Beta-blockers change the game.</strong> Know about glucagon. Check your imprest.</li>
+      <li><strong>Call MedSTAR early.</strong> They give advice, not just retrieval.</li>
+      <li><strong>ISBAR is your framework.</strong> Use it every time &mdash; phone, bedside, handover.</li>
+      <li><strong>The EN is essential.</strong> Clear role allocation and communication make a 2-nurse + GP team function like a resuscitation team.</li>
+      <li><strong>Document as you go.</strong> Times matter. Doses matter. The retrieval team needs this.</li>
+      <li><strong>You are enough.</strong> With the right knowledge, the right protocol, and the right communication, a small rural team can stabilise this patient and get them to definitive care.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 14: OPTIONAL VARIATIONS ═══════════ -->
+<section class="fade-section">
+  <h2>Scenario Variations</h2>
+  <p>Use these to increase complexity or run the scenario a second time with a different focus.</p>
+  <div class="var-grid">
+    <div class="var-card">
+      <h4>Variation 1: Cardiac Arrest Before Retrieval</h4>
+      <p>Keith deteriorates 45 minutes into the wait for retrieval. The adrenaline infusion line occludes unnoticed. He becomes unresponsive &mdash; PEA arrest. Tests: ALS in anaphylaxis, IV adrenaline bolus dosing (1mg q2&ndash;3 min in cardiac arrest), aggressive fluid resuscitation (20mL/kg stat under pressure), recognition that prolonged CPR is appropriate for a reversible cause.</p>
+    </div>
+    <div class="var-card">
+      <h4>Variation 2: GP Unavailable &mdash; RN Leads Alone</h4>
+      <p>The GP is at a farm accident 50 minutes away and cannot come. The RN must manage the entire case with the EN, supported by MedSTAR phone advice. Tests: RN clinical leadership, nurse-initiated protocols, ISBAR to MedSTAR without a doctor intermediary, EN scope maximisation, emotional resilience.</p>
+    </div>
+    <div class="var-card">
+      <h4>Variation 3: Paediatric Presentation</h4>
+      <p>A 6-year-old (22kg) attending the local sports day has a peanut anaphylaxis. Parents are present and distressed. Tests: paediatric adrenaline dosing (0.22mL of 1:1000 IM or 300mcg autoinjector), weight-based fluid calculations (20mL/kg = 440mL), paediatric infusion rates, communication with distressed parents, SAAS MedSTAR Kids retrieval pathway.</p>
+    </div>
+    <div class="var-card">
+      <h4>Variation 4: Patient Refuses Transfer</h4>
+      <p>Keith stabilises after the first adrenaline dose and says: &ldquo;I'm fine now. I'm not going to Adelaide. The harvest is on.&rdquo; His wife supports his decision. Tests: capacity assessment, risk communication, documentation of informed refusal, safety netting (what to watch for, when to return), prescription of an EpiPen, follow-up planning, the ethical and medicolegal complexities of refusal in a rural context.</p>
+    </div>
+    <div class="var-card">
+      <h4>Variation 5: Second Patient Arrives</h4>
+      <p>Thirty minutes into the scenario, a second patient arrives by private car: a 70-year-old female with chest pain. The ED now has two patients and three staff. Tests: prioritisation, resource allocation, communication under pressure, EN managing the stable-but-monitored patient while RN and GP focus on the deteriorating one (or vice versa), calling for backup staff.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ REFERENCES ═══════════ -->
+<section class="fade-section">
+  <h2>References &amp; Source Protocols</h2>
+  <div class="card">
+    <ul>
+      <li>ASCIA Guidelines &mdash; Acute Management of Anaphylaxis (updated July 2024, with 2026 device updates) &mdash; <em>allergy.org.au</em></li>
+      <li>ASCIA Appendix A: Advanced Acute Management of Anaphylaxis for EDs, Ambulance Services, and Rural/Regional Areas &mdash; <em>allergy.org.au</em></li>
+      <li>Australian Commission on Safety and Quality in Health Care &mdash; Acute Anaphylaxis Clinical Care Standard (2021) &mdash; <em>safetyandquality.gov.au</em></li>
+      <li>SA Health &mdash; Anaphylaxis Clinical Directives and Nursing Clinical Guidelines &mdash; <em>sahealth.sa.gov.au</em></li>
+      <li>ANZCOR Guideline 9.2.7 &mdash; Anaphylaxis &mdash; <em>anzcor.org</em></li>
+      <li>NPS MedicineWise &mdash; Anaphylaxis: Emergency Management for Health Professionals (2018) and Updated Anaphylaxis Guidelines: Management in Infants and Children (2021) &mdash; <em>nps.org.au</em></li>
+      <li>SA Ambulance Service &amp; MedSTAR Emergency Medical Retrieval Service &mdash; <em>saambulance.sa.gov.au / sahealth.sa.gov.au</em></li>
+      <li>NSQHS Standards &mdash; Standard 4: Medication Safety &mdash; <em>safetyandquality.gov.au</em></li>
+    </ul>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:40px 20px;color:var(--muted);font-size:.75rem;">
+  <p>Clinical Skills ED &mdash; Rural ED Simulation Module</p>
+  <p>Content aligned to ASCIA Guidelines (2024), SA Health Directives, ACSQHC Acute Anaphylaxis Clinical Care Standard (2021)</p>
+  <p>For clinical education purposes only. Always refer to current local protocols.</p>
+</footer>
+
+</div><!-- /.container -->
+
+<!-- ═══════════ JAVASCRIPT ═══════════ -->
+<script>
+// ── Progress Bar ──
+const progressBar = document.getElementById('progressBar');
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = scrollPercent + '%';
+});
+
+// ── Accordion Toggle ──
+function toggleAcc(trigger) {
+  const panel = trigger.nextElementSibling;
+  const isOpen = panel.classList.contains('open');
+  // Close all panels in the same accordion group
+  const accordion = trigger.closest('.accordion');
+  accordion.querySelectorAll('.acc-panel').forEach(p => p.classList.remove('open'));
+  accordion.querySelectorAll('.acc-trigger').forEach(t => {
+    t.classList.remove('open');
+    t.setAttribute('aria-expanded', 'false');
+  });
+  // Open clicked panel if it was closed
+  if (!isOpen) {
+    panel.classList.add('open');
+    trigger.classList.add('open');
+    trigger.setAttribute('aria-expanded', 'true');
+  }
+}
+
+// ── Fade-in on Scroll ──
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-section').forEach(el => fadeObserver.observe(el));
+</script>
+</body>
+</html>
