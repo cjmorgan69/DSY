@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pregnancy &amp; Birth — AO Walk-Through Scenario</title>
+<meta property="og:title" content="Pregnancy & Birth — AO Walk-Through">
+<meta property="og:description" content="CPP-059-AO Walk-Through Scenario for Volunteer AO Crews">
+<meta property="og:type" content="website">
+<link rel="icon" href="https://cdn.simulationtheory.ai/gasset/?asset=sprite&prompt=green ambulance cross medical icon&w=32&h=32&transparent=true&style=pixel_art" type="image/png">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:18px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;background:#001a00;color:#e8f5e9;line-height:1.65;padding-top:84px;padding-bottom:80px}
+.sticky-hdr{position:fixed;top:0;left:0;right:0;z-index:1000;background:#002200;border-bottom:2px solid #1a4a2a;padding:8px 16px}
+.hdr-inner{display:flex;align-items:center;gap:14px;max-width:860px;margin:0 auto}
+.hdr-inner img{flex-shrink:0;border-radius:8px}
+.hdr-text{flex:1;text-align:center}
+.hdr-text h1{font-size:1.1rem;color:#fff;font-weight:700;line-height:1.3}
+.hdr-sub{font-size:.75rem;color:#a5d6a7;margin-top:2px}
+.prog-wrap{height:3px;background:#0a3d0a;margin-top:8px;border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:linear-gradient(90deg,#4caf50,#81c784);transition:width .12s ease-out}
+main{max-width:860px;margin:0 auto;padding:20px 14px 60px}
+.card{background:#0a2e0a;border:1px solid #1a4a2a;border-radius:12px;padding:22px 20px;margin-bottom:22px;opacity:0;transform:translateY(28px);transition:opacity .5s ease,transform .5s ease}
+.card.vis{opacity:1;transform:translateY(0)}
+.card h2{font-size:1.25rem;color:#fff;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #2d8a4e}
+.card h3{font-size:1.08rem;color:#81c784;margin:14px 0 8px}
+.card p,.card li{font-size:1rem;line-height:1.7;margin-bottom:6px}
+.card ul,.card ol{padding-left:22px;margin:8px 0}
+.bp{border-left:4px solid #ff9800;background:#0f2e0a}
+.bp h2{border-bottom-color:#ff9800}
+.bp-tag{display:inline-block;background:#ff9800;color:#1a1a00;font-size:.75rem;font-weight:700;padding:3px 11px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.bp-type{display:inline-block;background:#1a4a2a;color:#a5d6a7;font-size:.72rem;padding:3px 10px;border-radius:4px;margin-left:6px}
+.read{background:#132e13;border:1px solid #2d6a4f;border-radius:8px;padding:16px;margin:12px 0;font-style:italic;color:#c8e6c9}
+.read::before{content:"READ TO CREW:";display:block;font-style:normal;font-weight:700;font-size:.72rem;color:#4caf50;margin-bottom:6px;letter-spacing:.5px}
+.mdt{background:#0d1f0d;border:1px solid #2d6a4f;border-radius:8px;padding:16px;margin:12px 0;font-family:'Courier New',Courier,monospace;font-size:.78rem;color:#a5d6a7;white-space:pre-wrap;word-break:break-word;line-height:1.5}
+.mdt::before{content:"MDT SCREEN";display:block;font-family:-apple-system,sans-serif;font-weight:700;font-size:.72rem;color:#ff9800;margin-bottom:8px;letter-spacing:1px}
+.ck{list-style:none;padding:0;margin:8px 0}
+.ck li{position:relative;padding:7px 0 7px 28px;font-size:1rem;border-bottom:1px solid rgba(26,74,42,.4)}
+.ck li:last-child{border-bottom:none}
+.ck li::before{content:"\2610";position:absolute;left:0;color:#4caf50;font-size:1rem}
+.ib{background:#132e13;border-left:3px solid #4caf50;padding:12px 16px;margin:12px 0;border-radius:0 8px 8px 0}
+.ib.warn{border-left-color:#ff9800;background:#1f1a00}
+.ib.crit{border-left-color:#f44336;background:#1f0a0a}
+.ib-lbl{font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;color:#4caf50}
+.ib.warn .ib-lbl{color:#ff9800}
+.ib.crit .ib-lbl{color:#f44336}
+.tb{display:flex;align-items:center;justify-content:space-between;width:100%;background:#1a4a2a;color:#e8f5e9;border:1px solid #2d6a4f;border-radius:8px;padding:14px 18px;font-size:1.05rem;font-weight:600;cursor:pointer;transition:background .2s;min-height:48px;text-align:left;font-family:inherit;margin-bottom:0}
+.tb:hover,.tb:focus{background:#2d6a4f;outline:2px solid #4caf50}
+.tb.act{border-radius:8px 8px 0 0;border-bottom:none}
+.tb-ico{font-size:1.2rem;transition:transform .3s;flex-shrink:0}
+.tb.act .tb-ico{transform:rotate(45deg)}
+.tc{max-height:0;overflow:hidden;background:#0a2e0a;border:1px solid #2d6a4f;border-top:none;border-radius:0 0 8px 8px;transition:max-height .5s ease-out;padding:0 18px}
+.tc.open{max-height:6000px;padding:18px}
+.tc h4{color:#81c784;margin:12px 0 6px;font-size:1rem}
+.tc p,.tc li{font-size:1rem;line-height:1.7}
+.ts{margin-bottom:14px}
+.sk{background:#0d2a0d;border:2px solid #2d8a4e;border-radius:8px;padding:18px;margin:14px 0}
+.sk h4{color:#4caf50;font-size:1rem;margin-bottom:8px}
+.ctx{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.ctx-i{background:#132e13;padding:12px;border-radius:8px;text-align:center}
+.ctx-i .l{font-size:.72rem;color:#a5d6a7;text-transform:uppercase;letter-spacing:.5px}
+.ctx-i .v{font-size:1rem;color:#fff;font-weight:600;margin-top:3px}
+.iso{margin-bottom:14px;padding-left:48px;position:relative;font-size:1rem}
+.iso-l{position:absolute;left:0;top:0;display:inline-block;background:#2d8a4e;color:#fff;font-weight:700;width:32px;height:32px;line-height:32px;text-align:center;border-radius:50%;font-size:.82rem}
+.dq{padding:12px 0;border-bottom:1px solid #1a4a2a}
+.dq:last-child{border-bottom:none}
+.ta{background:#132e13;border-radius:8px;padding:12px 16px;margin:8px 0;border-left:3px solid #4caf50}
+.vc{background:#0f2e0a;border:1px solid #1a4a2a;border-radius:8px;padding:16px;margin:12px 0}
+.vc h3{color:#ff9800;margin-top:0}
+.st{width:100%;border-collapse:collapse;margin:12px 0}
+.st th{background:#1a4a2a;color:#e8f5e9;padding:10px 12px;text-align:left;font-size:.85rem}
+.st td{padding:10px 12px;border-bottom:1px solid #1a4a2a;font-size:.95rem}
+.ftr{text-align:center;padding:40px 16px 20px;color:#4a7a4a;font-size:.72rem;border-top:1px solid #1a4a2a;margin-top:32px}
+@media(max-width:600px){body{padding-top:92px}.hdr-inner img{width:44px!important;height:44px!important}.hdr-text h1{font-size:.92rem}.card{padding:16px 14px}.ctx{grid-template-columns:1fr}.mdt{font-size:.7rem}}
+</style>
+</head>
+<body>
+
+<header class="sticky-hdr">
+<div class="hdr-inner">
+<img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" alt="DSY Training" width="60" height="60" style="object-fit:contain;">
+<div class="hdr-text">
+<h1>Pregnancy &amp; Birth — AO Walk-Through</h1>
+<div class="hdr-sub">CPP-059-AO &bull; 2-Person Volunteer AO Crew</div>
+</div>
+</div>
+<div class="prog-wrap"><div class="prog-fill" id="pf"></div></div>
+</header>
+
+<main>
+
+<!-- ============ CONTEXT ============ -->
+<section class="card">
+<h2>Scenario Context</h2>
+<p>A 2-person Volunteer AO crew is dispatched to a rural property for a 31-year-old female in active labour at 38 weeks gestation. The crew must assess, manage, and potentially deliver on scene with limited backup and extended transport times.</p>
+<div class="ctx">
+<div class="ctx-i"><div class="l">Crew</div><div class="v">2-Person Vol AO</div></div>
+<div class="ctx-i"><div class="l">Paramedic Backup</div><div class="v">50 minutes</div></div>
+<div class="ctx-i"><div class="l">Country Hospital</div><div class="v">30 minutes</div></div>
+<div class="ctx-i"><div class="l">MedSTAR (air)</div><div class="v">90 min (unlikely)</div></div>
+</div>
+<div class="ib">
+<div class="ib-lbl">Protocol References</div>
+<p>CPP-059-AO Pregnancy and Birth &bull; CTL-128 Obstetric Aide-Memoire &bull; Pregnancy RDR Chart &bull; CPP-012-AO Newborn Care &bull; CPP-053-AO PPH &bull; CPPRO-046 Newborn Temperature Management &bull; CPP-013-AO Pain Management</p>
+</div>
+</section>
+
+<!-- ============ LEARNING OBJECTIVES ============ -->
+<section class="card">
+<h2>Learning Objectives</h2>
+<ul class="ck">
+<li>Apply the hands-off approach to labour and delivery as per CPP-059-AO</li>
+<li>Utilise the Pregnancy RDR chart and CTL-128 Obstetric Aide-Memoire</li>
+<li>Recognise stages of labour and signs of imminent delivery</li>
+<li>Demonstrate perineal guarding and supported delivery technique</li>
+<li>Perform delayed cord clamping and correct cord clamping/cutting procedure</li>
+<li>Deliver immediate skin-to-skin and newborn temperature management</li>
+<li>Perform post-delivery VPA and birthing parent reassessment</li>
+<li>Identify signs of PPH and escalation triggers</li>
+<li>Demonstrate birthing-parent-centred care including dignity, privacy, and consent</li>
+<li>Coordinate EOC Clinician consultation and early facility notification</li>
+</ul>
+</section>
+
+<!-- ============ EQUIPMENT ============ -->
+<div class="ts">
+<button class="tb" onclick="tog(this)">Required Equipment <span class="tb-ico">+</span></button>
+<div class="tc">
+<h4>Clinical Equipment</h4>
+<ul class="ck">
+<li>Maternity kit (cord clamps x3, cord scissors, combine dressings, zip-lock bags, pads)</li>
+<li>Newborn resuscitation equipment (neonatal BVM, suction, towels)</li>
+<li>Corpuls3 monitor (SpO2, HR, NIBP, Temp)</li>
+<li>Ambulance Response Bag</li>
+<li>Warm blankets and towels (multiple)</li>
+<li>PPE — gloves (multiple pairs), aprons, eye protection</li>
+<li>Warm water source (flask/thermos for warm combines)</li>
+<li>Newborn hat</li>
+</ul>
+<h4>Reference Materials</h4>
+<ul class="ck">
+<li>CTL-128 Obstetric Aide-Memoire (printed/laminated)</li>
+<li>Pregnancy RDR chart</li>
+<li>CPP-059-AO protocol</li>
+<li>CPP-012-AO Newborn Care and Resuscitation</li>
+</ul>
+<h4>Transport</h4>
+<ul class="ck">
+<li>Stretcher with clean warm linen</li>
+<li>Green carry chair</li>
+<li>ePCR tablet or paperwork</li>
+<li>Watch/clock for timing (birth times, cord clamping)</li>
+</ul>
+</div>
+</div>
+
+<!-- ============ SESSION OVERVIEW ============ -->
+<section class="card">
+<h2>Session Overview</h2>
+<p>Estimated total duration: 60–75 minutes</p>
+<table class="st">
+<thead><tr><th>Phase</th><th>Duration</th><th>Focus</th></tr></thead>
+<tbody>
+<tr><td>Pre-Brief</td><td>~10 min</td><td>Protocol review, crew roles, equipment check</td></tr>
+<tr><td>Walk-Through (8 Break Points)</td><td>35–45 min</td><td>Scenario progression with discussion and skills practice</td></tr>
+<tr><td>Debrief</td><td>10–15 min</td><td>Reflection, key learning, real-job translation</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ============ PRE-BRIEF ============ -->
+<div class="ts">
+<button class="tb" onclick="tog(this)">Pre-Brief (~10 minutes) <span class="tb-ico">+</span></button>
+<div class="tc">
+<h4>Facilitator Notes</h4>
+<p>This is a walk-through, not a test. Pause at each break point for discussion and skills practice. Encourage the crew to think aloud and communicate as they would on a real job.</p>
+<h4>Assign Roles</h4>
+<ul class="ck">
+<li><strong>Clinician (AO1):</strong> Patient contact, history, clinical assessment, delivery support, perineal guarding</li>
+<li><strong>Driver (AO2):</strong> Corpuls3 observations, equipment preparation, maternity kit, newborn resuscitation readiness, EOC Clinician communication, timekeeping</li>
+</ul>
+<h4>Key Protocol Reminders</h4>
+<ul class="ck">
+<li>Hands-off approach — minimum intervention compatible with optimal safety</li>
+<li>Birthing-parent-centred care — dignity, privacy, voluntary consent before any assessment</li>
+<li>Pregnancy RDR chart for any patient &gt;20 weeks gestation</li>
+<li>EOC Clinician consultation for ALL deliveries — mandatory</li>
+<li>Pain management per CPP-013-AO — NO opiates, NO ketamine at AO level</li>
+<li>Delayed cord clamping &gt;1 minute; clamps at 10cm, 15cm, 20cm from newborn</li>
+<li>Transport: semi-recumbent or left lateral (&gt;30 degrees) for &gt;28 weeks gestation</li>
+</ul>
+</div>
+</div>
+
+<!-- ============ PROTOCOL QUICK REFERENCE ============ -->
+<div class="ts">
+<button class="tb" onclick="tog(this)">Protocol Quick Reference — CPP-059-AO <span class="tb-ico">+</span></button>
+<div class="tc">
+<h4>First Stage (Start of labour to full dilation)</h4>
+<ul class="ck">
+<li>General management principles — basic care and life support</li>
+<li>No intervention if birthing parent and fetal wellbeing not compromised</li>
+<li>Encourage position most comfortable for birthing parent</li>
+<li>If &lt;37 weeks: prepare for newborn resuscitation, prioritise rapid transport</li>
+</ul>
+<h4>Second Stage (Full dilation to delivery of newborn)</h4>
+<ul class="ck">
+<li>If imminent: remain on scene, prepare maternity kit</li>
+<li>Warm/dry combine to perineum when crowning commences</li>
+<li>Gentle pressure: flat tips of minimum 2 fingers to top of fetal head (NOT if &lt;37 weeks)</li>
+<li>Other hand for continuing perineal guarding</li>
+<li>Verbal guidance: panting at crowning, controlled breathing, follow own urge to push</li>
+<li>Note time of fetal head delivery, wait for next contraction</li>
+<li>Shoulders born within &lt;60 seconds — if not, suspect shoulder dystocia, CTL-128</li>
+<li>Support body — do NOT pull on fetal head/body</li>
+<li>Note time of full delivery</li>
+</ul>
+<h4>Third Stage (Delivery of newborn to delivery of placenta)</h4>
+<ul class="ck">
+<li>Immediate skin-to-skin — remove wet clothing from newborn</li>
+<li>Temperature management (environmental, birthing parent, newborn)</li>
+<li>VPA — check for tears and bleeding</li>
+<li>Delay cord cutting &gt;1 minute post-delivery</li>
+<li>3 clamps: 10cm, 15cm, 20cm from newborn; cut between 2 furthest from newborn</li>
+<li>Await spontaneous placental expulsion — gravity and maternal effort only</li>
+<li>Placenta usually within 60 minutes post-delivery</li>
+<li>Encourage birthing parent to void bladder</li>
+<li>Placenta products in zip-lock bag for transport</li>
+</ul>
+<h4>Red Flags</h4>
+<div class="ib crit">
+<div class="ib-lbl">Obstetric Emergencies</div>
+<ul class="ck">
+<li>Presenting part not a head → suspect breech → all-fours position → CTL-128 + EOC</li>
+<li>Cord visible → suspect cord prolapse → knee-chest position → CTL-128 + EOC + transport in exaggerated SIMS</li>
+<li>Shoulders not delivered &lt;60 seconds → suspect shoulder dystocia → CTL-128 + EOC</li>
+<li>Continual flow/trickle of blood post-delivery → suspect PPH → CPP-053-AO</li>
+<li>Signs of shock (rising HR, rising RR, falling BP) → escalate immediately</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- ============ BREAK POINT 1 ============ -->
+<section class="card bp">
+<div><span class="bp-tag">Break Point 1</span><span class="bp-type">Discussion / Decision-Making</span></div>
+<h2>En-Route Planning</h2>
+<div class="mdt">PRIORITY 1 — LABOUR / IMMINENT DELIVERY
+CASE: 2026-031345     TIME: 19:42
+
+LOCATION: "Glendale", Range Road
+          12km NW of township
+PATIENT:  Female, 31 years
+CC:       Labour — strong contractions every 2-3 min
+          Urge to push
+          38 weeks gestation, G2P1
+          Membranes ruptured ~1hr ago, clear fluid
+          Previous uncomplicated vaginal delivery 3yrs ago
+
+CALLER:   Partner (James) — anxious
+          "She says the baby is coming"
+
+ACCESS:   Sealed road, gate open, 800m driveway
+ALLERGIES: NKDA
+MEDS:     Pregnancy multivitamin only
+
+BACKUP:   Nearest Para 50 min | Hospital 30 min
+          MedSTAR 90 min air (unlikely required)</div>
+<h3>Facilitator Prompts</h3>
+<ul class="ck">
+<li>What are your initial thoughts reading this MDT?</li>
+<li>How will you assign crew roles?</li>
+<li>What equipment must be prepared before arrival?</li>
+<li>When should you contact EOC Clinician?</li>
+<li>What complications should you anticipate?</li>
+</ul>
+<h3>Expected AO Reasoning</h3>
+<ul class="ck">
+<li>G2P1 at 38 weeks with urge to push — second babies can come fast, delivery may be imminent</li>
+<li>Membranes ruptured 1 hour ago, clear fluid — reassuring (no meconium)</li>
+<li>Maternity kit AND newborn resuscitation equipment must be taken to the patient on arrival</li>
+<li>Assign roles en route: AO1 clinician manages delivery, AO2 manages equipment/obs/comms</li>
+<li>Contact EOC Clinician en route — mandatory for all deliveries, they can access the SA Health Perinatal Advice Line</li>
+<li>Request Paramedic backup now — even if 50 minutes away, start the clock early</li>
+</ul>
+<div class="ib">
+<div class="ib-lbl">Real-Job Translation</div>
+<p>On a real job, the drive gives you planning time. Use it. Discuss roles, check equipment, form your plan. If the partner says "the baby is coming" — believe it. Second babies are often faster than the first. Prepare for on-scene delivery.</p>
+</div>
+</section>
+
+<!-- ============ BREAK POINT 2 ============ -->
+<section class="card bp">
+<div><span class="bp-tag">Break Point 2</span><span class="bp-type">Discussion / Decision-Making</span></div>
+<h2>Doorway / First Impression</h2>
+<div class="read">You arrive at the homestead at 19:58. James meets you at the door, anxious: "She's in the bedroom — she's been pushing for about 10 minutes. I can see something — I think the baby's coming." The house is warm. You can hear Sarah vocalising loudly from a back room — deep, guttural sounds with each contraction.</div>
+<h3>Facilitator Prompts</h3>
+<ul class="ck">
+<li>What is your immediate impression from the doorway?</li>
+<li>What do the vocalisations tell you?</li>
+<li>How do you manage the anxious partner?</li>
+<li>What about dignity and privacy?</li>
+<li>What goes into the house with you?</li>
+</ul>
+<h3>Expected AO Reasoning</h3>
+<ul class="ck">
+<li>Deep guttural vocalisation + active pushing + partner reports seeing something = advanced second stage</li>
+<li>Delivery is likely imminent — do NOT attempt to move the patient to the ambulance</li>
+<li>Warm house = good for temperature management</li>
+<li>Reassure James: "You're doing well. We're here to help." Give him a task — warm towels, warm water</li>
+<li>Close the door — minimise observers, maintain dignity and privacy</li>
+<li>Bring maternity kit, response bag, newborn resus equipment, warm towels in ONE trip</li>
+<li>PPE on before entering the room — gloves, apron, eye protection</li>
+</ul>
+<div class="ib">
+<div class="ib-lbl">Real-Job Translation</div>
+<p>You will not always deliver babies in ideal conditions. Bathrooms, bedrooms, back seats. Work with what you have. The patient's instincts are guiding her. Your job is to support, not direct. Bring everything in one trip — you may not get another chance.</p>
+</div>
+</section>
+
+<!-- ============ BREAK POINT 3 ============ -->
+<section class="card bp">
+<div><span class="bp-tag">Break Point 3</span><span class="bp-type">Practical Skill / Discussion</span></div>
+<h2>Patient Contact &amp; Initial Observations</h2>
+<div class="read">You enter the bedroom. Sarah is on all fours on the bed, wearing a loose nightdress. She looks up between contractions: "The baby is coming — I need to push." Contractions every 2 minutes, 60-90 seconds duration. You can see perineal bulging and the beginning of crowning.</div>
+<h3>AO1 (Clinician) Tasks</h3>
+<ul class="ck">
+<li>Introduce yourself calmly, gain voluntary consent before any assessment</li>
+<li>Brief focused history: confirm gestation, allergies, complications, birth plan</li>
+<li>Visual perineal assessment (with consent) — confirm crowning, check presenting part looks like a head</li>
+<li>Assess contraction pattern (frequency, duration, intensity)</li>
+<li>Open and prepare maternity kit</li>
+</ul>
+<h3>AO2 (Driver) Tasks</h3>
+<ul class="ck">
+<li>Set up Corpuls3 — SpO2 probe, NIBP cuff (attempt between contractions)</li>
+<li>Obtain baseline: HR, SpO2, RR, BP, temperature</li>
+<li>Interpret using Pregnancy RDR chart (not standard adult parameters)</li>
+<li>Contact/update EOC Clinician</li>
+<li>Document all findings and times</li>
+</ul>
+<h3>Facilitator Prompts</h3>
+<ul class="ck">
+<li>How do you get observations on someone who is on all fours pushing every 2 minutes?</li>
+<li>Which chart are you using — and why?</li>
+<li>What does crowning with a visible head tell you about the stage of labour?</li>
+<li>What would concern you on VPA — what would NOT look normal?</li>
+</ul>
+<h3>Observations Obtained</h3>
+<div class="ib">
+<p><strong>HR:</strong> 98 &bull; <strong>SpO2:</strong> 98% RA &bull; <strong>RR:</strong> 22 &bull; <strong>BP:</strong> 118/74 &bull; <strong>Temp:</strong> 36.8°C &bull; <strong>GCS:</strong> 15</p>
+<p><strong>History:</strong> G2P1, 38 weeks, no antenatal complications, NKDA, pregnancy vitamins only. Membranes ruptured ~1.5hrs ago, clear fluid. First baby: uncomplicated vaginal delivery 3 years ago.</p>
+</div>
+<div class="ib">
+<div class="ib-lbl">Key Teaching Point</div>
+<p>Getting textbook observations on a patient in advanced labour is difficult. Do your best — SpO2 and manual pulse may be all you get initially. Do NOT wrestle with a BP cuff during a contraction. Baseline observations now are essential for comparison post-delivery.</p>
+</div>
+</section>
+
+<!-- ============ BREAK POINT 4 ============ -->
+<section class="card bp">
+<div><span class="bp-tag">Break Point 4</span><span class="bp-type">Decision-Making</span></div>
+<h2>Screening Tools, Protocols &amp; Working Diagnosis</h2>
+<h3>Facilitator Prompts</h3>
+<ul class="ck">
+<li>What is your working assessment?</li>
+<li>Clinical decision: deliver on scene or attempt transport?</li>
+<li>What protocols and reference tools are guiding your management?</li>
+<li>Have you consulted EOC Clinician?</li>
+</ul>
+<h3>Expected AO Reasoning</h3>
+<ul class="ck">
+<li><strong>Working assessment:</strong> Active second-stage labour, imminent uncomplicated vaginal delivery, 38 weeks, G2P1</li>
+<li><strong>Decision:</strong> Deliver on scene — crowning with active pushing, hospital 30 min away, delivery will occur before arrival</li>
+<li><strong>Protocols:</strong> CPP-059-AO (primary), CTL-128 Aide-Memoire, Pregnancy RDR chart, CPP-012-AO standing by</li>
+<li><strong>VPA confirms:</strong> Head presenting, crowning — this is a normal cephalic presentation</li>
+<li><strong>EOC Clinician:</strong> Must be consulted — they can access the Perinatal Advice Line for expert support</li>
+</ul>
+<div class="ib">
+<div class="ib-lbl">Real-Job Translation</div>
+<p>The decision to stay and deliver can feel daunting. But the signs are clear — crowning, strong pushing, contractions every 2 minutes. Attempting transport means delivering in a moving ambulance with less space and less support. A controlled delivery on scene in a warm bedroom is the right call.</p>
+</div>
+</section>
+
+<!-- ============ BREAK POINT 5 ============ -->
+<section class="card bp">
+<div><span class="bp-tag">Break Point 5 — Extended</span><span class="bp-type">Practical Skill</span></div>
+<h2>Treatment — Delivery Management Skills Practice</h2>
+<p>This is the core skills station. Work through each skill methodically. Practise hands-on where indicated.</p>
+
+<div class="sk">
+<h4>Skill 1 — Perineal Guarding</h4>
+<ul class="ck">
+<li>Apply warm (or dry) combine to perineum once crowning commences</li>
+<li>Replace warm combine PRN to maintain temperature</li>
+<li>As head crowns: gentle pressure using flat tips of minimum 2 fingers to top of fetal head</li>
+<li>Do NOT apply pressure if &lt;37 weeks gestation (this scenario is 38 weeks — pressure appropriate)</li>
+<li>Other hand maintains perineal guarding with combine throughout</li>
+</ul>
+</div>
+
+<div class="sk">
+<h4>Skill 2 — Verbal Guidance During Delivery</h4>
+<ul class="ck">
+<li>Encourage panting as crowning occurs — "Short breaths, Sarah, pant for me"</li>
+<li>Encourage controlled, slowed, or shallow breathing for slow safe delivery of the head</li>
+<li>Encourage birthing parent to follow their own urge to push with contractions</li>
+<li>Voice: calm, steady, reassuring — not loud or commanding</li>
+</ul>
+</div>
+
+<div class="sk">
+<h4>Skill 3 — Supported Delivery of Head and Shoulders</h4>
+<ul class="ck">
+<li>Support the head as it delivers — do NOT pull</li>
+<li>NOTE TIME of fetal head delivery</li>
+<li>Wait for restitution — baby will rotate to face inside of birthing parent's thigh</li>
+<li>Wait for next contraction</li>
+<li>Encourage active pushing — shoulders should be born within &lt;60 seconds</li>
+<li>If shoulders NOT delivered within 60 seconds — suspect shoulder dystocia → CTL-128 → EOC Clinician</li>
+<li>Support rest of body — do NOT pull on head or body</li>
+<li>NOTE TIME of full delivery</li>
+</ul>
+<div class="ib crit">
+<div class="ib-lbl">Critical Checks</div>
+<p><strong>Presenting part not a head?</strong> → Suspect breech → all-fours position → CTL-128 + EOC</p>
+<p><strong>Cord visible before baby?</strong> → Suspect cord prolapse → knee-chest position → CTL-128 + EOC → transport in exaggerated SIMS</p>
+<p><strong>En Caul delivery?</strong> (baby born in intact amniotic sac) → Await full delivery → gently break sac with fingers</p>
+</div>
+</div>
+
+<div class="sk">
+<h4>Skill 4 — Immediate Newborn Care</h4>
+<ul class="ck">
+<li>Place newborn directly on birthing parent's bare chest — immediate skin-to-skin</li>
+<li>Remove wet clothing/towels from newborn</li>
+<li>Dry gently with warm towel — stimulate by rubbing back</li>
+<li>Cover both birthing parent and newborn with warm dry blankets</li>
+<li>Place hat on newborn</li>
+<li>Assess: breathing, tone, colour, cry, heart rate</li>
+<li>If concerns → CPP-012-AO Newborn Care and Resuscitation</li>
+<li>Temperature management per CPPRO-046</li>
+</ul>
+<div class="ib">
+<div class="ib-lbl">Why Skin-to-Skin</div>
+<p>Promotes oxytocin release → aids uterine contraction, milk production, temperature management, and bonding. This is clinical management, not optional.</p>
+</div>
+</div>
+
+<div class="sk">
+<h4>Skill 5 — Cord Clamping and Cutting</h4>
+<ul class="ck">
+<li>Delay cord clamping for at least 1 minute post-delivery (increases neonatal blood volume)</li>
+<li>Apply 3 cord clamps:</li>
+<li>— Clamp 1: <strong>10cm</strong> from newborn</li>
+<li>— Clamp 2: <strong>15cm</strong> from newborn</li>
+<li>— Clamp 3: <strong>20cm</strong> from newborn</li>
+<li>Cut between the <strong>2 clamps furthest from the newborn</strong> (between 15cm and 20cm)</li>
+<li>Check clamp security after cutting</li>
+</ul>
+<div class="ib warn">
+<div class="ib-lbl">Practice Point</div>
+<p>Lay out 3 clamps and practise placement with distances. The most common error is cutting in the wrong position. The clamp closest to the newborn (10cm) stays with the baby. Cut between the two furthest clamps.</p>
+</div>
+</div>
+
+<div class="sk">
+<h4>Skill 6 — AO2 Driver Tasks During Delivery</h4>
+<ul class="ck">
+<li>Maintain EOC Clinician communication — relay updates</li>
+<li>Note and document time of head delivery and time of full delivery</li>
+<li>Have newborn resuscitation equipment immediately accessible</li>
+<li>Hand warm towels and equipment to AO1 as needed</li>
+<li>Monitor room temperature — close doors/windows, increase heating</li>
+<li>Prepare stretcher for post-delivery transport</li>
+<li>Pre-warm the ambulance (turn heater on)</li>
+<li>Provide early notification to receiving hospital</li>
+</ul>
+</div>
+</section>
+
+<!-- ============ SCENARIO PROGRESSION ============ -->
+<section class="card">
+<h2>Scenario Progression — Delivery</h2>
+<div class="read">At 20:04 the fetal head delivers. AO2 notes the time. Sarah pauses briefly. Restitution occurs — the baby rotates. With the next contraction at 20:05, Sarah pushes and the shoulders and body deliver. A baby girl. Time of full delivery: 20:05. The newborn has good tone, cries within 10 seconds, pink centrally, moving all limbs. She is placed immediately skin-to-skin on Sarah's chest, dried with a warm towel, and a hat is placed. Cord is clamped at 10cm, 15cm, and 20cm from the newborn and cut between the 15cm and 20cm clamps after &gt;1 minute.</div>
+</section>
+
+<!-- ============ BREAK POINT 6 ============ -->
+<section class="card bp">
+<div><span class="bp-tag">Break Point 6</span><span class="bp-type">Discussion / Decision-Making</span></div>
+<h2>Post-Delivery Assessment &amp; Third Stage</h2>
+<h3>Facilitator Prompts</h3>
+<ul class="ck">
+<li>What are you reassessing now — on the birthing parent and on the newborn?</li>
+<li>What are the red flags for PPH?</li>
+<li>Does the placenta need to deliver before you transport?</li>
+<li>What observations would concern you compared to baseline?</li>
+</ul>
+<h3>Post-Delivery Observations (20:12)</h3>
+<div class="ib">
+<p><strong>HR:</strong> 92 &bull; <strong>BP:</strong> 114/70 &bull; <strong>RR:</strong> 18 &bull; <strong>SpO2:</strong> 99% RA &bull; <strong>Temp:</strong> 36.6°C</p>
+<p><strong>VPA:</strong> Small perineal graze, minimal ooze, no active bleeding. Estimated blood loss ~200ml.</p>
+<p><strong>Placenta:</strong> Not yet delivered. No signs of separation at this stage.</p>
+<p><strong>Newborn:</strong> Pink, good tone, breastfeeding commenced, warm on skin-to-skin.</p>
+</div>
+<h3>Expected AO Reasoning</h3>
+<ul class="ck">
+<li>Birthing parent observations stable — within Pregnancy RDR parameters, consistent with pre-delivery baseline</li>
+<li>VPA: small graze, minimal blood loss — no immediate concern</li>
+<li>PPH red flags to watch for: continual flow or trickle of blood, rising HR, rising RR, falling BP</li>
+<li>Concealed PPH: abnormal vitals WITH no visible blood loss → refer CPP-053-AO</li>
+<li>Placenta not delivered yet — await spontaneous expulsion by gravity and maternal effort ONLY, do NOT pull the cord</li>
+<li>Do NOT delay transport waiting for the placenta — it usually delivers within 60 minutes</li>
+<li>Encourage Sarah to void her bladder — full bladder impedes uterine contraction</li>
+<li>Newborn: warm, feeding, pink — continue skin-to-skin and temperature management</li>
+</ul>
+<div class="ib warn">
+<div class="ib-lbl">Critical Reminder</div>
+<p>The delivery is not the end of the job. PPH can develop rapidly. Keep monitoring, keep comparing to baseline, keep watching for blood loss. If something changes — escalate immediately.</p>
+</div>
+</section>
+
+<!-- ============ BREAK POINT 7 ============ -->
+<section class="card bp">
+<div><span class="bp-tag">Break Point 7</span><span class="bp-type">Practical Skill / Discussion</span></div>
+<h2>Extrication &amp; Transport</h2>
+<h3>Facilitator Prompts</h3>
+<ul class="ck">
+<li>How are you getting Sarah and the baby from the bedroom to the ambulance?</li>
+<li>What position must she be transported in?</li>
+<li>Temperature management for a 30-minute mid-winter transport?</li>
+<li>Where are you transporting to — and why?</li>
+<li>What about the placenta?</li>
+</ul>
+<h3>Expected AO Reasoning</h3>
+<ul class="ck">
+<li>Assist Sarah to the stretcher — she has just delivered, may be lightheaded. Use carry chair if needed.</li>
+<li>Baby remains skin-to-skin during the move — do NOT separate unless clinical concern</li>
+<li>Wrap both together: skin-to-skin under blankets, newborn hat on, minimise cold exposure during house-to-ambulance transfer</li>
+<li>Transport position: semi-recumbent or left lateral (&gt;30 degrees) — avoid supine</li>
+<li>Pre-warm the ambulance — AO2 should have heater running before loading</li>
+<li>Placenta: have zip-lock bag ready, may deliver en route — do NOT delay transport</li>
+<li>Transport destination: country hospital (30 minutes) — if this was the planned birthing hospital, transport here. Discuss with EOC Clinician if concerns.</li>
+<li>Collect any blood-stained items for transport</li>
+<li>Continue observations en route — watch for PPH</li>
+<li>Notify receiving facility early with ETA and brief clinical summary</li>
+</ul>
+<div class="ib">
+<div class="ib-lbl">Real-Job Translation</div>
+<p>The hardest part is often the house-to-truck transfer. It is mid-winter, dark, cold. You have a patient who just delivered, a minutes-old newborn, and the placenta has not come yet. Plan the move: pre-warm the vehicle, wrap them both, move efficiently. Every minute of cold exposure matters for that newborn.</p>
+</div>
+</section>
+
+<!-- ============ BREAK POINT 8 ============ -->
+<section class="card bp">
+<div><span class="bp-tag">Break Point 8</span><span class="bp-type">Practical Skill</span></div>
+<h2>ISBAR Handover</h2>
+<h3>Facilitator Prompts</h3>
+<ul class="ck">
+<li>Deliver your ISBAR handover to the receiving facility</li>
+<li>What key times must you include?</li>
+<li>What products are you handing over with the patient?</li>
+</ul>
+<h3>Expected ISBAR</h3>
+<div class="ib" style="background:#0d2a0d;border:2px solid #2d8a4e;border-left:3px solid #4caf50;">
+<div class="iso"><span class="iso-l">I</span><p><strong>Introduction:</strong> "I am [name], Ambulance Officer from [station]. This is Sarah, 31 years old."</p></div>
+<div class="iso"><span class="iso-l">S</span><p><strong>Situation:</strong> "Sarah has had an uncomplicated pre-hospital delivery of a live baby girl at 38 weeks gestation. Both birthing parent and newborn are currently stable."</p></div>
+<div class="iso"><span class="iso-l">B</span><p><strong>Background:</strong> "G2P1, uncomplicated antenatal history, NKDA, pregnancy vitamins only. Membranes ruptured spontaneously at approximately 18:45 — clear liquor. Labour progressed rapidly at home."</p></div>
+<div class="iso"><span class="iso-l">A</span><p><strong>Assessment:</strong> "Head delivered at 20:04. Full delivery at 20:05. Delayed cord clamping performed — clamped at 10cm, 15cm, and 20cm, cut between 15 and 20cm clamps after &gt;1 minute. Baby cried spontaneously, good tone, skin-to-skin since delivery, breastfeeding commenced. Placenta has [not yet] delivered. VPA: small perineal graze, minimal bleeding. Estimated blood loss ~200ml. All blood-stained items collected."</p></div>
+<div class="iso"><span class="iso-l">R</span><p><strong>Recommendation:</strong> "Current observations stable — HR 92, BP 114/70, RR 18, SpO2 99%. Newborn warm, feeding, well. Ongoing monitoring for PPH and newborn assessment recommended. EOC Clinician consulted throughout."</p></div>
+</div>
+<div class="ib">
+<div class="ib-lbl">Key Teaching Point</div>
+<p>A maternity handover includes details you would not normally include — delivery times to the minute, cord clamping distances, liquor colour, placental status, and blood loss estimates. Write them down as they happen. You will not remember accurately later.</p>
+</div>
+</section>
+
+<!-- ============ DEBRIEF ============ -->
+<section class="card">
+<h2>Debrief (10-15 minutes)</h2>
+<h3>Reflective Questions</h3>
+<div class="dq"><p><strong>1.</strong> At what point did you commit to an on-scene delivery, and what information drove that decision?</p></div>
+<div class="dq"><p><strong>2.</strong> How did you maintain dignity and privacy for Sarah?</p></div>
+<div class="dq"><p><strong>3.</strong> What was the most challenging aspect of the hands-off approach?</p></div>
+<div class="dq"><p><strong>4.</strong> How did you divide tasks between clinician and driver during delivery? What would you change?</p></div>
+<div class="dq"><p><strong>5.</strong> What specific signs would have prompted you to escalate during or after delivery?</p></div>
+<div class="dq"><p><strong>6.</strong> How did you manage newborn temperature? What were the key risk moments for heat loss?</p></div>
+<div class="dq"><p><strong>7.</strong> Were there points where you felt unsure of the protocol? What would you review before your next shift?</p></div>
+
+<h3>Take-Home Messages</h3>
+<div class="ta"><p><strong>1.</strong> Pre-hospital birth is about supporting a natural process — not directing it. Hands off, eyes on.</p></div>
+<div class="ta"><p><strong>2.</strong> Second babies can come fast. If the MDT says "the baby is coming" — believe it and prepare for on-scene delivery.</p></div>
+<div class="ta"><p><strong>3.</strong> EOC Clinician consultation is mandatory for every delivery — they access the Perinatal Advice Line for expert support.</p></div>
+<div class="ta"><p><strong>4.</strong> The delivery is not the end. Post-delivery PPH surveillance is critical — keep comparing to baseline observations.</p></div>
+<div class="ta"><p><strong>5.</strong> Temperature management saves newborn lives. Skin-to-skin, warm towels, hat, pre-warm the ambulance.</p></div>
+<div class="ta"><p><strong>6.</strong> Cord clamping: 10cm, 15cm, 20cm from newborn. Cut between the two clamps furthest from the baby.</p></div>
+<div class="ta"><p><strong>7.</strong> Do NOT delay transport for the placenta. Gravity and maternal effort only — never pull the cord.</p></div>
+</section>
+
+<!-- ============ SCENARIO VARIATIONS ============ -->
+<section class="card">
+<h2>Scenario Variations</h2>
+<p>Use these to extend the session or repeat with a different clinical challenge.</p>
+
+<div class="vc">
+<h3>Variation 1 — Pre-Term Labour (34 Weeks)</h3>
+<p><strong>Change:</strong> Sarah is 34 weeks, not 38. Contractions started unexpectedly.</p>
+<ul class="ck">
+<li>&lt;37 weeks = prepare for newborn resuscitation as a priority</li>
+<li>DO NOT apply pressure to fetal head during crowning at any stage</li>
+<li>Activate MedSTAR Kids early for neonatal support</li>
+<li>Pre-term newborns: higher risk of hypothermia, respiratory distress, hypoglycaemia</li>
+<li>Temperature management even more critical — plastic wrap per CPPRO-046</li>
+<li>If birth not imminent at 34 weeks — prioritise transport over on-scene delivery</li>
+<li>Request Paramedic backup and EOC Clinician immediately</li>
+</ul>
+</div>
+
+<div class="vc">
+<h3>Variation 2 — Breech Presentation</h3>
+<p><strong>Change:</strong> VPA reveals the presenting part does not look like a head — buttock or foot visible.</p>
+<ul class="ck">
+<li>Suspect breech presentation immediately</li>
+<li>Encourage birthing parent into all-fours position immediately</li>
+<li>Refer to CTL-128 Obstetric Aide-Memoire</li>
+<li>Consult EOC Clinician immediately — Perinatal Advice Line access</li>
+<li>Request Paramedic backup and consider MedSTAR activation</li>
+<li>DO NOT attempt to push presenting part back or manipulate</li>
+<li>This is an obstetric emergency</li>
+</ul>
+</div>
+
+<div class="vc">
+<h3>Variation 3 — Cord Prolapse</h3>
+<p><strong>Change:</strong> VPA reveals the umbilical cord presenting before the baby.</p>
+<ul class="ck">
+<li>Time-critical obstetric emergency</li>
+<li>Immediately: knee-chest position (chest down, knees up — gravity reduces cord pressure)</li>
+<li>CTL-128 + EOC Clinician + activate MedSTAR + Paramedic backup</li>
+<li>Transport in exaggerated SIMS position — urgent transport</li>
+<li>DO NOT push the cord back in</li>
+<li>Keep exposed cord warm and moist (wrap in warm moist towel)</li>
+<li>Transport to closest emergency department, not booked hospital</li>
+</ul>
+</div>
+
+<div class="vc">
+<h3>Variation 4 — Postpartum Haemorrhage (PPH)</h3>
+<p><strong>Change:</strong> Post-delivery, Sarah deteriorates. HR rising to 128, BP dropping to 92/58, continual trickle of blood. Estimated blood loss &gt;500ml and increasing.</p>
+<ul class="ck">
+<li>Clinical signs of shock: rising HR, falling BP, increasing RR</li>
+<li>Refer to CPP-053-AO Postpartum Haemorrhage</li>
+<li>Consult EOC Clinician immediately — time-critical</li>
+<li>Request Paramedic backup urgently</li>
+<li>Consider MedSTAR depending on clinical trajectory</li>
+<li>If no external haemorrhage but abnormal vitals → suspect concealed PPH</li>
+<li>Encourage voiding bladder (full bladder impedes uterine contraction)</li>
+<li>Keep warm — hypothermia worsens coagulopathy</li>
+<li>Rapid transport to closest emergency department</li>
+</ul>
+</div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<div class="ftr">
+<p>CPP-059-AO Pregnancy and Birth — AO Walk-Through Scenario</p>
+<p>Developed for DSY Training &bull; SA Ambulance Service Volunteer AO Crews</p>
+<p>Protocol Version 1.0 — 22 January 2025</p>
+</div>
+
+</main>
+
+<script>
+(function(){
+  var pf=document.getElementById('pf');
+  window.addEventListener('scroll',function(){
+    var st=document.documentElement.scrollTop||document.body.scrollTop;
+    var sh=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+    if(sh>0)pf.style.width=(st/sh*100)+'%';
+  });
+
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('vis');
+      }
+    });
+  },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+
+  document.querySelectorAll('.card').forEach(function(c){obs.observe(c);});
+
+  setTimeout(function(){
+    document.querySelectorAll('.card').forEach(function(c){
+      var r=c.getBoundingClientRect();
+      if(r.top<window.innerHeight&&r.bottom>0){
+        c.classList.add('vis');
+      }
+    });
+  },100);
+})();
+
+function tog(btn){
+  btn.classList.toggle('act');
+  var tc=btn.nextElementSibling;
+  if(tc){
+    tc.classList.toggle('open');
+    btn.setAttribute('aria-expanded',tc.classList.contains('open'));
+  }
+}
+</script>
+
+</body>
+</html>
