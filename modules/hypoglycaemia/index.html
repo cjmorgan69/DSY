@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hypoglycaemia Management — CPP-009-AO | DSY Training</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:18px;scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;background:#f5f5f7;color:#1d1d1f;line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+/* ===== STICKY HEADER ===== */
+.sticky-header{position:sticky;top:0;z-index:1000;background:rgba(251,251,253,0.82);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;padding:0.4rem 1.2rem;min-height:56px}
+.logo-wrap{flex-shrink:0;display:flex;align-items:center}
+.logo-wrap img{display:block;width:44px;height:44px;border-radius:10px;object-fit:contain}
+.header-title{flex:1;text-align:center;font-size:0.88rem;font-weight:600;color:#1d1d1f;letter-spacing:-0.01em}
+.progress-track{position:absolute;bottom:0;left:0;width:100%;height:2.5px;background:rgba(0,0,0,0.06)}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#34c759,#30d158);transition:width 0.25s ease-out;border-radius:0 2px 2px 0}
+
+/* ===== SECTION WRAPPER ===== */
+.section{max-width:720px;margin:0 auto;padding:2.5rem 1.5rem;opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
+.section.visible{opacity:1;transform:translateY(0)}
+
+/* ===== HERO ===== */
+.hero-section{text-align:center;padding-top:3.5rem;padding-bottom:1.5rem}
+.hero-section h1{font-size:2.4rem;font-weight:700;color:#1d1d1f;letter-spacing:-0.025em;line-height:1.15;margin-bottom:0.4rem}
+.hero-section .subtitle{font-size:1.05rem;color:#6e6e73;font-weight:400;margin-bottom:1.4rem}
+.badge{display:inline-block;background:#f0fdf0;color:#1a7a2e;padding:0.32rem 1rem;border-radius:100px;font-size:0.78rem;font-weight:600;margin-bottom:1.4rem;border:1px solid rgba(52,199,89,0.2)}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:0.45rem}
+.pill{background:#fff;color:#1d1d1f;padding:0.38rem 0.9rem;border-radius:100px;font-size:0.78rem;font-weight:500;border:1px solid rgba(0,0,0,0.08);box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+
+/* ===== CARDS ===== */
+.card{background:#fff;border-radius:18px;padding:1.8rem;margin-bottom:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.04)}
+.card h2{font-size:1.25rem;color:#1d1d1f;font-weight:700;margin-bottom:0.8rem;letter-spacing:-0.015em}
+.card h3{color:#1d1d1f;font-weight:600}
+.card p{color:#3a3a3c;margin-bottom:0.7rem}
+.card-accent{border-left:4px solid #34c759}
+.card p strong{color:#1d1d1f}
+
+.alert-card{background:#fff8f0;border:1px solid rgba(255,149,0,0.2);border-left:4px solid #ff9500;border-radius:14px;padding:1.1rem 1.3rem;margin:1.2rem 0}
+.alert-card .alert-title{color:#cc6a00;font-weight:700;font-size:0.95rem;margin-bottom:0.25rem}
+.alert-card p{color:#5a4020;font-size:0.95rem;margin-bottom:0}
+
+/* ===== VIDEO ===== */
+.video-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;margin-bottom:0.8rem;box-shadow:0 2px 10px rgba(0,0,0,0.08)}
+.video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+.media-desc{font-size:0.88rem;color:#6e6e73;margin-bottom:0.5rem}
+
+/* ===== SECTION HEADINGS ===== */
+.section-title{font-size:1.35rem;font-weight:700;color:#1d1d1f;letter-spacing:-0.02em;margin-bottom:1.2rem}
+
+/* ===== TOGGLES / ACCORDION ===== */
+.toggle-group{margin-bottom:0.6rem}
+.toggle-btn{width:100%;background:#fff;border:1px solid rgba(0,0,0,0.06);border-radius:14px;padding:1rem 1.2rem;text-align:left;color:#1d1d1f;font-size:1rem;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;min-height:52px;-webkit-tap-highlight-color:transparent;box-shadow:0 1px 2px rgba(0,0,0,0.04);letter-spacing:-0.01em}
+.toggle-btn:hover{background:#fafafa;box-shadow:0 2px 6px rgba(0,0,0,0.06)}
+.toggle-btn:focus{outline:2px solid rgba(52,199,89,0.4);outline-offset:2px}
+.toggle-btn .arrow{transition:transform 0.3s;font-size:0.75rem;color:#8e8e93;margin-left:0.5rem}
+.toggle-btn.open .arrow{transform:rotate(180deg)}
+.toggle-btn.open{border-radius:14px 14px 0 0;border-bottom-color:transparent}
+.toggle-content{max-height:0;overflow:hidden;transition:max-height 0.45s ease;background:#fff;border-radius:0 0 14px 14px;border:1px solid transparent}
+.toggle-content.open{max-height:5000px;border-color:rgba(0,0,0,0.06);border-top:none;margin-top:-1px;margin-bottom:0.2rem;box-shadow:0 2px 6px rgba(0,0,0,0.04)}
+.toggle-inner{padding:0.4rem 1.4rem 1.4rem}
+.toggle-inner ul{padding-left:1.2rem;margin-bottom:0.6rem}
+.toggle-inner ol{padding-left:1.2rem;margin-bottom:0.6rem;color:#3a3a3c}
+.toggle-inner li{margin-bottom:0.4rem;color:#3a3a3c}
+.toggle-inner li ul{margin-top:0.3rem}
+.toggle-inner strong{color:#1d1d1f}
+.toggle-inner p{margin-bottom:0.6rem;color:#3a3a3c}
+
+/* ===== CHECKLIST ===== */
+.cl-heading{color:#1a7a2e;font-size:0.9rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.6rem;padding-bottom:0.4rem;border-bottom:1px solid rgba(0,0,0,0.06)}
+.cl-heading:not(:first-child){margin-top:1.2rem}
+.checklist-item{display:flex;align-items:flex-start;gap:0.7rem;padding:0.55rem 0;min-height:44px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;border-radius:8px;transition:background 0.15s}
+.checklist-item:hover{background:rgba(0,0,0,0.02)}
+.checklist-item input[type="checkbox"]{width:22px;height:22px;min-width:22px;margin-top:0.15rem;accent-color:#34c759;cursor:pointer;border-radius:6px}
+.checklist-item label{cursor:pointer;color:#3a3a3c;font-size:1rem}
+.checklist-item.checked label{text-decoration:line-through;color:#aeaeb2}
+
+/* ===== CALCULATOR ===== */
+.calc-card{background:#fff;border-radius:18px;padding:1.8rem;box-shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.04)}
+.calc-card h2{font-size:1.25rem;color:#1d1d1f;font-weight:700;margin-bottom:0.2rem;letter-spacing:-0.015em}
+.calc-desc{color:#6e6e73;margin-bottom:1.4rem;font-size:0.9rem}
+.input-group{margin-bottom:1.1rem}
+.input-group label{display:block;color:#6e6e73;font-size:0.82rem;margin-bottom:0.35rem;font-weight:600;letter-spacing:0.01em}
+.input-group input,.input-group select{width:100%;padding:0.72rem 0.9rem;font-size:1rem;background:#f5f5f7;border:1px solid rgba(0,0,0,0.1);border-radius:12px;color:#1d1d1f;outline:none;min-height:48px;transition:all 0.2s;font-family:inherit}
+.input-group input:focus,.input-group select:focus{border-color:#34c759;box-shadow:0 0 0 3px rgba(52,199,89,0.15);background:#fff}
+.input-group input::placeholder{color:#aeaeb2}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.calc-btn{width:100%;padding:0.85rem;background:#34c759;color:#fff;border:none;border-radius:14px;font-size:1rem;font-weight:600;cursor:pointer;transition:all 0.2s;min-height:50px;font-family:inherit;letter-spacing:-0.01em}
+.calc-btn:hover{background:#2db84e;transform:scale(1.005)}
+.calc-btn:active{transform:scale(0.98)}
+.calc-result{margin-top:1.4rem;padding:1.3rem;background:#f5f5f7;border-radius:14px;border:1px solid rgba(0,0,0,0.06);display:none}
+.calc-result.show{display:block}
+.calc-result .dose-display{font-size:1.35rem;font-weight:700;color:#1a7a2e;margin-bottom:0.5rem;line-height:1.3;letter-spacing:-0.02em}
+.calc-result .dose-detail{color:#3a3a3c;font-size:0.92rem;line-height:1.65}
+.calc-result .dose-note{color:#8a5a00;font-size:0.86rem;margin-top:0.7rem;padding:0.65rem 0.8rem;background:#fff8f0;border-radius:10px;border-left:3px solid #ff9500;display:none}
+.calc-result .dose-note.show{display:block}
+
+/* ===== QUIZ ===== */
+.quiz-q{background:#fff;border:1px solid rgba(0,0,0,0.04);border-radius:18px;padding:1.5rem;margin-bottom:1.2rem;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.quiz-q h3{color:#6e6e73;font-size:0.8rem;font-weight:600;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.04em}
+.quiz-q .q-text{font-size:1.02rem;color:#1d1d1f;margin-bottom:1rem;font-weight:600;letter-spacing:-0.01em}
+.quiz-opt{display:block;width:100%;padding:0.78rem 1rem;background:#f5f5f7;border:1.5px solid rgba(0,0,0,0.06);border-radius:12px;color:#3a3a3c;font-size:1rem;text-align:left;cursor:pointer;margin-bottom:0.45rem;transition:all 0.2s;min-height:48px;-webkit-tap-highlight-color:transparent;font-family:inherit}
+.quiz-opt:hover{background:#ececee;border-color:rgba(0,0,0,0.1)}
+.quiz-opt.correct{background:#e8f9ed;border-color:#34c759;color:#1a7a2e;font-weight:600}
+.quiz-opt.incorrect{background:#fef0f0;border-color:#ff3b30;color:#cc2020}
+.quiz-opt.disabled{pointer-events:none;opacity:0.55}
+.quiz-opt.disabled.correct{opacity:1}
+.quiz-exp{font-size:0.86rem;color:#3a3a3c;padding:0.8rem;background:#f0fdf0;border-radius:10px;margin-top:0.6rem;display:none;border-left:3px solid #34c759;line-height:1.6}
+.quiz-exp.show{display:block}
+.quiz-score{text-align:center;padding:2rem;background:#fff;border-radius:18px;border:1px solid rgba(0,0,0,0.04);margin-top:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.quiz-score .s-num{font-size:2.8rem;font-weight:800;color:#34c759;letter-spacing:-0.03em}
+.quiz-score .s-msg{color:#6e6e73;margin-top:0.5rem;font-size:0.95rem}
+.retry-btn{display:inline-block;margin-top:1.2rem;padding:0.72rem 1.8rem;background:#34c759;color:#fff;border:none;border-radius:100px;font-size:0.95rem;font-weight:600;cursor:pointer;min-height:48px;transition:all 0.2s;font-family:inherit}
+.retry-btn:hover{background:#2db84e;transform:scale(1.02)}
+.retry-btn:active{transform:scale(0.97)}
+
+/* ===== TAKEAWAYS ===== */
+.tk-cards{display:grid;gap:1rem}
+.tk{background:#fff;border:1px solid rgba(0,0,0,0.04);border-radius:16px;padding:1.3rem 1.4rem;display:flex;gap:1rem;align-items:flex-start;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.tk .tk-icon{font-size:1.8rem;flex-shrink:0;line-height:1}
+.tk .tk-text{font-size:0.98rem;color:#3a3a3c}
+.tk .tk-text strong{color:#1d1d1f}
+
+/* ===== FORMULA BLOCK ===== */
+.formula-block{background:#f5f5f7;padding:1rem 1.2rem;border-radius:12px;font-family:'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;color:#1d1d1f;font-size:0.88rem;margin:0.6rem 0;line-height:1.8;border:1px solid rgba(0,0,0,0.06)}
+
+/* ===== FOOTER ===== */
+.footer{max-width:720px;margin:0 auto;padding:2.5rem 1.5rem;text-align:center;color:#8e8e93;font-size:0.76rem;line-height:1.8}
+.footer a{color:#6e6e73}
+.footer .disclaimer{color:#6e6e73;margin:1rem 0;padding:1rem 1.2rem;background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06);text-align:left;line-height:1.65;font-size:0.82rem;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:600px){
+html{font-size:16px}
+.hero-section h1{font-size:1.85rem}
+.input-row{grid-template-columns:1fr}
+.sticky-header{padding:0.3rem 0.8rem}
+.header-title{font-size:0.82rem}
+.section{padding:2rem 1rem}
+.card{padding:1.4rem}
+.calc-card{padding:1.4rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ======== SECTION 1: STICKY HEADER ======== -->
+<header class="sticky-header">
+<div class="logo-wrap">
+<img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" alt="DSY Training Logo" width="44" height="44" style="object-fit:contain;border-radius:10px">
+</div>
+<div class="header-title">Hypoglycaemia Management — AO</div>
+<div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+</header>
+
+<!-- ======== SECTION 2: HERO ======== -->
+<section class="section hero-section" id="hero">
+<h1>Hypoglycaemia<br>Management</h1>
+<p class="subtitle">Ambulance Officer Protocol — CPP-009-AO</p>
+<span class="badge">⏱ Estimated: 5–7 minutes</span>
+<div class="pills">
+<span class="pill">🔍 Recognise hypo signs &amp; symptoms</span>
+<span class="pill">📊 Perform accurate BGL measurement</span>
+<span class="pill">💉 Prepare &amp; administer IM glucagon</span>
+<span class="pill">📋 Follow the AO protocol pathway</span>
+</div>
+</section>
+
+<!-- ======== SECTION 3: INTRO VIDEO ======== -->
+<section class="section" id="introVideo">
+<div class="card">
+<h2>📹 Introduction</h2>
+<div class="video-wrap">
+<iframe src="https://www.youtube.com/embed/J9ainfMbD8Q" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe>
+</div>
+<p class="media-desc">An overview of hypoglycaemia recognition and the Ambulance Officer treatment pathway, including BGL measurement and glucagon administration.</p>
+</div>
+</section>
+
+<!-- ======== SECTION 4: CORE CONCEPT ======== -->
+<section class="section" id="coreConcept">
+<div class="card card-accent">
+<h2>🧠 Why This Matters</h2>
+<p>Hypoglycaemia — abnormally low blood glucose — is one of the most <strong>time-critical and treatable</strong> emergencies you will encounter. The brain depends almost entirely on glucose for fuel. When levels fall below <strong>3.5 mmol/L</strong>, cognitive function deteriorates rapidly.</p>
+<p>Without prompt treatment, hypoglycaemia can progress from confusion and behavioural changes to <strong>unconsciousness, seizures, and permanent brain injury</strong>.</p>
+<p>The good news: intervention is straightforward. <strong>Oral glucose</strong> is first-line for conscious patients who can swallow. When that's not possible, <strong>intramuscular glucagon</strong> is your key treatment at AO scope. Knowing how to recognise the signs, measure BGL accurately, and prepare glucagon from a powder vial can make the difference between a routine call and a critical one.</p>
+<p>Glucagon must be <strong>reconstituted from a dry powder</strong> before administration — a skill that requires familiarity with the drawing up procedure (CPPRO-010) to perform safely under pressure.</p>
+
+<div class="alert-card">
+<div class="alert-title">⚠️ Critical Reminder</div>
+<p><strong>Always measure BGL</strong> on any patient with altered conscious state, altered behaviour, trauma, or seizures — especially children. A presentation that looks like intoxication, stroke, or behavioural disturbance may be hypoglycaemia.</p>
+</div>
+</div>
+</section>
+
+<!-- ======== SECTION 5: KNOWLEDGE SECTIONS ======== -->
+<section class="section" id="knowledge">
+<h2 class="section-title">📚 Key Knowledge</h2>
+
+<div class="toggle-group">
+<button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">
+Signs &amp; Symptoms of Hypoglycaemia <span class="arrow">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<p><strong>Mild–Moderate (BGL typically 2.5–3.5 mmol/L):</strong></p>
+<ul>
+<li>Confusion, altered behaviour, irritability</li>
+<li>Diaphoresis (sweating) — often profuse</li>
+<li>Tremor, palpitations, tachycardia</li>
+<li>Hunger, nausea</li>
+<li>Pallor, weakness, dizziness</li>
+<li>Slurred speech, poor coordination</li>
+</ul>
+<p><strong>Severe (BGL &lt; 2.5 mmol/L or symptomatic decline):</strong></p>
+<ul>
+<li>Decreased GCS / unconsciousness</li>
+<li>Seizures</li>
+<li>Focal neurological signs (may mimic stroke)</li>
+<li>Coma (if prolonged and untreated)</li>
+</ul>
+<div class="alert-card">
+<div class="alert-title">💡 Clinical Tip</div>
+<p>In children, hypoglycaemia often presents primarily as <strong>behavioural change, lethargy, or irritability</strong> rather than classic adult symptoms. Maintain a high index of suspicion and check BGL early.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="toggle-group">
+<button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">
+Blood Glucose Level (BGL) Measurement <span class="arrow">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<ul>
+<li>Perform hand hygiene</li>
+<li>Ensure meter is calibrated (lot number matches test strip foil packets)</li>
+<li>Clean sampling site with alcohol swab — <strong>allow to dry</strong></li>
+<li>Use lancet to obtain capillary blood sample (fingertip)</li>
+<li>Insert blue test strip, apply blood to white test area</li>
+<li>Read result after 5-second countdown</li>
+</ul>
+<p><strong>Normal Ranges:</strong></p>
+<ul>
+<li>Adults &amp; children: <strong>&gt; 3.5 mmol/L</strong></li>
+<li>Neonates: <strong>&gt; 2.5 mmol/L</strong></li>
+</ul>
+<p><strong>Paediatric Note:</strong> In small infants and newborns, <strong>heel prick testing</strong> may be the most appropriate sampling location.</p>
+</div>
+</div>
+</div>
+
+<div class="toggle-group">
+<button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">
+Glucagon — Pharmacology &amp; Indications (DMO-011) <span class="arrow">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<p><strong>What is Glucagon?</strong> A hormone that stimulates the liver to convert stored glycogen into glucose, raising blood glucose levels.</p>
+<p><strong>AO Scope — Indication:</strong></p>
+<ul>
+<li>Hypoglycaemia where oral treatment is ineffective or inappropriate — <strong>IM route only</strong></li>
+</ul>
+<p><strong>Dosage:</strong></p>
+<ul>
+<li>≥ 6 years (or ≥ 25 kg): <strong>1 mg IM</strong></li>
+<li>≥ 2 to &lt; 6 years (or &lt; 25 kg): <strong>0.5 mg IM</strong></li>
+<li>&lt; 2 years: <strong>Consult EOC clinician</strong> — may advise 0.5 mg IM</li>
+</ul>
+<p><strong>Key Pharmacology:</strong></p>
+<ul>
+<li><strong>Onset:</strong> Response should occur within <strong>10 minutes</strong></li>
+<li><strong>Duration:</strong> 1–2 hours</li>
+<li>If no response within 10 mins → IV glucose needed — <strong>escalate</strong></li>
+</ul>
+<p><strong>Important Considerations:</strong></p>
+<ul>
+<li>IV glucose is preferred where available (not standard AO scope)</li>
+<li>Hypoglycaemia from <strong>gliclazide</strong> (Diamicron® MR, Glyade® MR) is typically <strong>protracted</strong> — vigilant BGL monitoring required</li>
+<li>Following reversal, encourage <strong>complex carbohydrates</strong></li>
+<li>Glucagon may be <strong>less effective</strong> in patients with depleted glycogen stores (starvation, chronic alcohol use, liver disease)</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="toggle-group">
+<button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">
+Drawing Up &amp; Reconstituting Glucagon (CPPRO-010) <span class="arrow">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<p><strong>Presentation:</strong> Glucagon is supplied as a <strong>glass vial containing 1 mg dry powder</strong>. It must be reconstituted with <strong>1 mL of water for injection</strong> (0.9% saline is acceptable).</p>
+
+<div class="alert-card">
+<div class="alert-title">⚠️ Key Principle</div>
+<p>Always draw up the <strong>diluent first</strong>, then inject it into the medication vial. Prepare in a clean area with minimal distractions.</p>
+</div>
+
+<p><strong>Equipment Required:</strong></p>
+<ul>
+<li>Glucagon vial (1 mg dry powder)</li>
+<li>Water for injection — 1 mL plastic ampoule (or 0.9% saline)</li>
+<li>Blunt fill needle (18g)</li>
+<li>Appropriately sized syringe</li>
+<li>IM needle (23–25g)</li>
+<li>70% isopropyl alcohol swab</li>
+<li>Sharps container</li>
+</ul>
+
+<p><strong>Step-by-Step Method:</strong></p>
+<ol>
+<li>Complete all pre-preparation medication checks</li>
+<li>Perform hand hygiene</li>
+<li>Prepare a clean work area (use a blue sheet if needed)</li>
+<li>Open syringe, blunt fill needle, and IM needle packages — peel from corner, leave in plastic cradles</li>
+<li><strong>Draw up diluent first:</strong> Twist open the plastic ampoule of water for injection. Attach syringe directly, withdraw 1 mL</li>
+<li>Separate ampoule from syringe</li>
+<li>Attach the <strong>blunt fill needle</strong> to the syringe</li>
+<li>Remove protective cap from the glucagon vial</li>
+<li><strong>Scrub the rubber stopper</strong> with alcohol swab — allow to dry</li>
+<li>Insert needle through the rubber stopper</li>
+<li><strong>Inject the 1 mL diluent</strong> into the vial</li>
+<li><strong>Agitate the vial</strong> (needle/syringe still in situ) until powder is fully dissolved</li>
+<li>Invert the vial and withdraw the <strong>required dose</strong></li>
+<li>Withdraw needle and syringe from the vial</li>
+<li>Discard blunt fill needle into sharps container</li>
+<li>Attach <strong>IM needle (23–25g)</strong></li>
+<li>Expel air and <strong>prime syringe to the required dose</strong> with IM needle attached</li>
+</ol>
+
+<p><strong>Dose Calculation:</strong></p>
+<div class="formula-block">
+Desired dose (mg) ÷ Total prepared dose (mg) × Total volume (mL) = Volume to give<br>
+• 1 mg dose: 1 ÷ 1 × 1 mL = <strong>1 mL</strong> (full vial)<br>
+• 0.5 mg dose: 0.5 ÷ 1 × 1 mL = <strong>0.5 mL</strong>
+</div>
+
+<p><strong>Administration:</strong> IM injection into the <strong>lateral thigh</strong> or <strong>deltoid</strong>.</p>
+<p><strong>If in doubt</strong> about the preparation at any point — <strong>discard and prepare a new syringe</strong>.</p>
+</div>
+</div>
+</div>
+
+<div class="toggle-group">
+<button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">
+Medication Labelling Requirements (CPPRO-010) <span class="arrow">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<p><strong>When to Label:</strong></p>
+<ul>
+<li>Any medication <strong>not being immediately administered in full</strong> must be labelled</li>
+<li>Prepare and label <strong>one medicine at a time</strong></li>
+</ul>
+<p><strong>Syringe Labels:</strong></p>
+<ul>
+<li>Use small <strong>coloured labels</strong> conforming to AS/NZS 4375</li>
+<li>If no specific label available, use a blank (white) label with: generic name, total dose, total volume (mL)</li>
+</ul>
+<p><strong>Important Rules:</strong></p>
+<ul>
+<li>Labels must not obscure <strong>graduation marks</strong></li>
+<li>If no labels available — write drug name and dose on syringe with <strong>permanent marker</strong></li>
+<li><strong>Discard</strong> any medication not clearly labelled or where there is any doubt</li>
+</ul>
+<p><strong>Infection Control:</strong> All equipment is <strong>single use</strong>. Report any sharps injury via Incident Report.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ======== SECTION 6: PROTOCOL CHECKLIST ======== -->
+<section class="section" id="checklist">
+<h2 class="section-title">✅ Protocol Checklist — CPP-009-AO</h2>
+
+<div class="toggle-group">
+<button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">
+Step 1 — Initial Assessment <span class="arrow">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 class="cl-heading">Scene Safety &amp; Primary Survey</h4>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Scene safety confirmed, standard precautions applied (PPE, gloves)</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Primary survey: DRSABCD — assess and manage immediate life threats</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Assess level of consciousness using AVPU / GCS</label></div>
+<h4 class="cl-heading">BGL &amp; Vital Signs</h4>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Measure blood glucose level (BGL) — confirm reading</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Record baseline vitals: HR, RR, BP, SpO₂, temperature</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Begin continuous monitoring — apply Corpuls if indicated</label></div>
+</div>
+</div>
+</div>
+
+<div class="toggle-group">
+<button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">
+Step 2 — Focused History &amp; Assessment <span class="arrow">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 class="cl-heading">SAMPLE History</h4>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label><strong>S</strong> — Signs &amp; symptoms: confusion, sweating, tremor, seizure, altered behaviour?</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label><strong>A</strong> — Allergies (including to glucagon)</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label><strong>M</strong> — Medications: insulin type/dose, oral hypoglycaemics (sulfonylureas e.g. gliclazide), beta-blockers?</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label><strong>P</strong> — Past medical history: diabetes (Type 1 or Type 2), liver disease, adrenal insufficiency?</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label><strong>L</strong> — Last oral intake: when did they last eat? Missed meal?</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label><strong>E</strong> — Events: recent insulin dose change, unusual exercise, alcohol intake, illness?</label></div>
+<h4 class="cl-heading">Protocol-Specific Assessment</h4>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Confirm BGL &lt; 3.5 mmol/L (or &lt; 2.5 mmol/L for neonates)</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Assess GCS — can patient safely swallow? (cough is a good indicator)</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Determine patient age and weight (for glucagon dosing)</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Ask specifically about gliclazide / slow-release sulfonylurea use</label></div>
+</div>
+</div>
+</div>
+
+<div class="toggle-group">
+<button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">
+Step 3 — Treatment &amp; Interventions <span class="arrow">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 class="cl-heading">First Line — Oral Glucose</h4>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>GCS adequate to swallow → administer <strong>oral glucose up to 15 g</strong></label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Recheck BGL after 5–10 minutes</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Request clinical support as appropriate</label></div>
+<h4 class="cl-heading">Second Line — IM Glucagon</h4>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label><strong>Consult EOC clinician</strong> before administration</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Complete all pre-preparation medication checks</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Perform hand hygiene, prepare clean work area</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Draw up <strong>1 mL water for injection</strong> (diluent first)</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Attach blunt fill needle → scrub vial stopper with alcohol swab → allow to dry</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Inject diluent into vial → agitate until fully dissolved</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Withdraw correct dose: <strong>1 mg = 1 mL</strong> (≥ 6 yrs / ≥ 25 kg) or <strong>0.5 mg = 0.5 mL</strong> (&lt; 6 yrs / &lt; 25 kg)</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Discard blunt fill needle → attach <strong>IM needle (23–25g)</strong> → expel air → prime to dose</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Complete pre-administration medication checks</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Administer <strong>IM</strong> — lateral thigh or deltoid</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Dispose of all sharps immediately</label></div>
+<h4 class="cl-heading">Paediatric &lt; 2 Years</h4>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label><strong>Consult EOC clinician</strong> — may advise oral glucose gel or IM glucagon 0.5 mg</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Request clinical support</label></div>
+</div>
+</div>
+</div>
+
+<div class="toggle-group">
+<button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">
+Step 4 — Reassessment &amp; Escalation <span class="arrow">▼</span>
+</button>
+<div class="toggle-content">
+<div class="toggle-inner">
+<h4 class="cl-heading">Reassessment</h4>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Recheck BGL within <strong>10 minutes</strong> of glucagon</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Reassess GCS, vitals, and symptom resolution</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Continue BGL monitoring — glucagon lasts only <strong>1–2 hours</strong></label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>If recovery → offer <strong>complex carbohydrates</strong></label></div>
+<h4 class="cl-heading">Escalation Triggers</h4>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>No response within 10 min → <strong>escalate for IV glucose</strong></label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Patient on gliclazide → <strong>vigilant BGL monitoring</strong> — protracted hypo likely</label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>GCS deterioration, seizures, or haemodynamic instability → escalate immediately</label></div>
+<h4 class="cl-heading">Transport &amp; Handover</h4>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Provide transport and <strong>notify receiving facility</strong></label></div>
+<div class="checklist-item" onclick="toggleCheck(this)"><input type="checkbox"><label>Handover: BGL readings, treatment given, response, medications, last meal time</label></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ======== SECTION 9: CALCULATOR ======== -->
+<section class="section" id="calculator">
+<div class="calc-card">
+<h2>🧮 Glucagon Dosage Calculator</h2>
+<p class="calc-desc">Enter patient details to determine the correct treatment pathway and glucagon IM dose for hypoglycaemia.</p>
+
+<div class="input-row">
+<div class="input-group">
+<label for="calcAge">Patient Age (years)</label>
+<input type="number" id="calcAge" min="0" max="120" step="0.1" placeholder="e.g. 45">
+</div>
+<div class="input-group">
+<label for="calcWeight">Weight (kg) — if known</label>
+<input type="number" id="calcWeight" min="0" max="300" step="0.5" placeholder="e.g. 70 (optional)">
+</div>
+</div>
+<div class="input-group">
+<label for="calcBGL">Current BGL (mmol/L)</label>
+<input type="number" id="calcBGL" min="0" max="40" step="0.1" placeholder="e.g. 2.8">
+</div>
+<div class="input-group">
+<label for="calcSwallow">Can patient safely swallow?</label>
+<select id="calcSwallow">
+<option value="">— Select —</option>
+<option value="yes">Yes — can swallow safely</option>
+<option value="no">No — cannot swallow / decreased GCS</option>
+</select>
+</div>
+
+<button class="calc-btn" onclick="calculateDose()">Calculate Treatment Pathway</button>
+
+<div class="calc-result" id="calcResult">
+<div class="dose-display" id="doseDisplay"></div>
+<div class="dose-detail" id="doseDetail"></div>
+<div class="dose-note" id="doseNote"></div>
+</div>
+</div>
+</section>
+
+<!-- ======== SECTION 10: QUIZ ======== -->
+<section class="section" id="quiz">
+<h2 class="section-title">📝 Knowledge Check</h2>
+<div id="quizContainer"></div>
+<div class="quiz-score" id="quizScore" style="display:none">
+<div class="s-num" id="scoreNum"></div>
+<div class="s-msg" id="scoreMsg"></div>
+<button class="retry-btn" onclick="resetQuiz()">🔄 Retry Quiz</button>
+</div>
+</section>
+
+<!-- ======== SECTION 11: TAKEAWAYS ======== -->
+<section class="section" id="takeaways">
+<h2 class="section-title">🎯 Key Takeaways</h2>
+<div class="tk-cards">
+<div class="tk">
+<div class="tk-icon">📊</div>
+<div class="tk-text"><strong>Always check the BGL.</strong> Any patient with altered consciousness, confusion, behavioural changes, trauma, or seizures needs a BGL — it takes seconds and changes management entirely.</div>
+</div>
+<div class="tk">
+<div class="tk-icon">🥤</div>
+<div class="tk-text"><strong>Least invasive first.</strong> Oral glucose up to 15 g is first-line if the patient can swallow safely. IM glucagon is second-line — consult EOC, reconstitute from powder with 1 mL WFI, and know your dose by age/weight.</div>
+</div>
+<div class="tk">
+<div class="tk-icon">⏱️</div>
+<div class="tk-text"><strong>Monitor, prevent recurrence, escalate early.</strong> Expect glucagon response within 10 minutes (duration 1–2 hours only). Recheck BGL, offer complex carbohydrates, and be especially vigilant with gliclazide-induced hypoglycaemia.</div>
+</div>
+</div>
+</section>
+
+<!-- ======== SECTION 12: FOOTER ======== -->
+<footer class="footer">
+<div class="disclaimer">⚕️ <strong>Clinical Disclaimer:</strong> This module is for educational purposes only. Always follow your local clinical guidelines and scope of practice. This content does not replace Clinical Practice Protocols or Clinical Practice Procedures.</div>
+<p style="margin-top:1.2rem"><strong>Sources:</strong> SAAS CPP-009-AO Hypoglycaemia (v4.1, June 2021) · SAAS DMO-011 Glucagon · SAAS CPPRO-010 Drawing Up and Labelling Medications (v1.0, 2017)</p>
+<p style="margin-top:0.8rem"><strong>DSY Training</strong> — Microlearning for Clinical Excellence</p>
+</footer>
+
+<script>
+/* ===== PROGRESS BAR ===== */
+window.addEventListener('scroll',function(){
+var h=document.documentElement;
+var pct=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;
+document.getElementById('progressBar').style.width=Math.min(pct,100)+'%';
+},{passive:true});
+
+/* ===== FADE-IN ON SCROLL ===== */
+var fadeObserver=new IntersectionObserver(function(entries){
+entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.08});
+document.querySelectorAll('.section').forEach(function(s){fadeObserver.observe(s);});
+
+/* ===== TOGGLE / ACCORDION ===== */
+function toggleSection(btn){
+var content=btn.nextElementSibling;
+var isOpen=content.classList.contains('open');
+content.classList.toggle('open');
+btn.classList.toggle('open');
+btn.setAttribute('aria-expanded',!isOpen);
+}
+
+/* ===== CHECKLIST ===== */
+function toggleCheck(item){
+var cb=item.querySelector('input[type="checkbox"]');
+cb.checked=!cb.checked;
+item.classList.toggle('checked',cb.checked);
+}
+
+/* ===== CALCULATOR ===== */
+function calculateDose(){
+var age=parseFloat(document.getElementById('calcAge').value);
+var weight=parseFloat(document.getElementById('calcWeight').value);
+var bgl=parseFloat(document.getElementById('calcBGL').value);
+var canSwallow=document.getElementById('calcSwallow').value;
+var result=document.getElementById('calcResult');
+var display=document.getElementById('doseDisplay');
+var detail=document.getElementById('doseDetail');
+var note=document.getElementById('doseNote');
+note.classList.remove('show');
+
+if(isNaN(age)||age<0){display.textContent='⚠️ Please enter a valid age';display.style.color='#cc6a00';detail.textContent='';result.classList.add('show');return;}
+if(isNaN(bgl)||bgl<=0){display.textContent='⚠️ Please enter a valid BGL';display.style.color='#cc6a00';detail.textContent='';result.classList.add('show');return;}
+if(!canSwallow){display.textContent='⚠️ Please select swallowing status';display.style.color='#cc6a00';detail.textContent='';result.classList.add('show');return;}
+result.classList.add('show');
+var threshold=age<0.08?2.5:3.5;
+
+if(bgl>=threshold){
+display.textContent='✅ BGL is within normal range';display.style.color='#1a7a2e';
+detail.textContent='BGL of '+bgl+' mmol/L does not meet the hypoglycaemia threshold. Glucagon is not indicated. Continue monitoring.';return;
+}
+if(canSwallow==='yes'){
+display.textContent='🥤 First Line — Oral Glucose up to 15 g';display.style.color='#1a7a2e';
+detail.textContent='Patient can swallow safely (BGL: '+bgl+' mmol/L). Administer oral glucose up to 15 g. Recheck BGL after 5–10 minutes.';
+var fb='';
+if(age<2)fb='If ineffective: Consult EOC — may advise 0.5 mg IM.';
+else if(age<6||(!isNaN(weight)&&weight<25))fb='If ineffective (after EOC consult): Glucagon 0.5 mg IM (0.5 mL).';
+else fb='If ineffective (after EOC consult): Glucagon 1 mg IM (1 mL — full vial).';
+note.textContent=fb;note.classList.add('show');return;
+}
+if(age<2){
+display.textContent='📞 Consult EOC Clinician';display.style.color='#cc6a00';
+detail.innerHTML='Patient <strong>under 2 years</strong>, BGL '+bgl+' mmol/L.<br>EOC may advise: oral glucose gel or IM glucagon 0.5 mg (0.5 mL).<br>Request clinical support. Provide transport.';
+note.textContent='All patients < 2 years require EOC consultation.';note.classList.add('show');
+}else if(age<6||(!isNaN(weight)&&weight<25)){
+var r=age<6?'Age '+age+' yrs (< 6)':'Weight '+weight+' kg (< 25 kg)';
+display.textContent='💉 Glucagon 0.5 mg IM — 0.5 mL';display.style.color='#1a7a2e';
+detail.innerHTML=r+' · BGL: '+bgl+' mmol/L<br><strong>Dose:</strong> 0.5 mg = 0.5 mL (reconstitute 1 mg vial with 1 mL WFI)<br><strong>Route:</strong> IM — lateral thigh or deltoid<br>Consult EOC clinician prior to administration.';
+note.textContent='Expect response within 10 min. If no response → escalate for IV glucose. Duration: 1–2 hours.';note.classList.add('show');
+}else{
+var wi=(!isNaN(weight)&&weight>0)?' · '+weight+' kg':'';
+display.textContent='💉 Glucagon 1 mg IM — 1 mL';display.style.color='#1a7a2e';
+detail.innerHTML='Age '+age+' yrs'+wi+' · BGL: '+bgl+' mmol/L<br><strong>Dose:</strong> 1 mg = 1 mL (full reconstituted vial)<br><strong>Route:</strong> IM — lateral thigh or deltoid<br>Consult EOC clinician prior to administration.';
+note.textContent='Expect response within 10 min. If no response → escalate for IV glucose. Duration: 1–2 hours. Offer complex carbs after recovery.';note.classList.add('show');
+}
+}
+
+/* ===== QUIZ ===== */
+var quizData=[
+{q:'At what blood glucose level is hypoglycaemia treatment indicated in an adult patient?',opts:['< 5.0 mmol/L','< 4.0 mmol/L','< 3.5 mmol/L','< 2.5 mmol/L'],correct:2,exp:'Hypoglycaemia in adults and children is defined as BGL < 3.5 mmol/L. The threshold of < 2.5 mmol/L applies to neonates only.'},
+{q:'A conscious 50-year-old with BGL 2.9 mmol/L is alert and has a strong cough reflex. What is the first-line treatment?',opts:['IM glucagon 1 mg','Oral glucose up to 15 g','IV dextrose 10%','Complex carbohydrates'],correct:1,exp:'A patient with adequate GCS who can safely swallow should receive oral glucose up to 15 g as first-line. Glucagon is second-line when oral glucose cannot be given or is ineffective.'},
+{q:'A 4-year-old (18 kg) is hypoglycaemic and cannot swallow safely. After consulting EOC, what is the correct glucagon dose?',opts:['0.25 mg IM','0.5 mg IM','1 mg IM','2 mg IM'],correct:1,exp:'For patients aged 2 to < 6 years (or < 25 kg), the glucagon dose is 0.5 mg IM = 0.5 mL after reconstituting the 1 mg vial with 1 mL WFI.'},
+{q:'When reconstituting glucagon from a powder vial, what should be drawn into the syringe FIRST?',opts:['The glucagon powder dissolved in the vial','Air to create positive pressure','The diluent — water for injection (1 mL)','Normal saline 10 mL flush'],correct:2,exp:'Per CPPRO-010, diluents should always be drawn up first, then injected into the medication vial. Glucagon is reconstituted with 1 mL of water for injection.'},
+{q:'After administering IM glucagon, within what timeframe should you expect a clinical response?',opts:['Within 2 minutes','Within 5 minutes','Within 10 minutes','Within 20 minutes'],correct:2,exp:'Reversal should occur within 10 minutes. If no response, escalate for IV glucose. Duration of action is only 1–2 hours — continue monitoring.'}
+];
+var answered=0,correctCount=0;
+function buildQuiz(){
+var c=document.getElementById('quizContainer');c.innerHTML='';answered=0;correctCount=0;
+document.getElementById('quizScore').style.display='none';
+quizData.forEach(function(item,qi){
+var h='<div class="quiz-q" id="q'+qi+'"><h3>Question '+(qi+1)+' of '+quizData.length+'</h3><p class="q-text">'+item.q+'</p>';
+item.opts.forEach(function(opt,oi){h+='<button class="quiz-opt" onclick="answerQuiz('+qi+','+oi+')">'+String.fromCharCode(65+oi)+') '+opt+'</button>';});
+h+='<div class="quiz-exp" id="exp'+qi+'">'+item.exp+'</div></div>';c.innerHTML+=h;});
+}
+function answerQuiz(qi,oi){
+var qEl=document.getElementById('q'+qi);var btns=qEl.querySelectorAll('.quiz-opt');
+if(btns[0].classList.contains('disabled'))return;
+btns.forEach(function(b,i){b.classList.add('disabled');if(i===quizData[qi].correct)b.classList.add('correct');if(i===oi&&i!==quizData[qi].correct)b.classList.add('incorrect');});
+document.getElementById('exp'+qi).classList.add('show');answered++;if(oi===quizData[qi].correct)correctCount++;
+if(answered===quizData.length)setTimeout(showScore,500);
+}
+function showScore(){
+var pct=Math.round((correctCount/quizData.length)*100);
+document.getElementById('scoreNum').textContent=pct+'%';
+var msg='';
+if(pct===100)msg='🌟 Perfect! Outstanding knowledge of the hypoglycaemia protocol.';
+else if(pct>=80)msg='👏 Great work! Review any missed questions above.';
+else if(pct>=60)msg='👍 Good effort. Consider revisiting the knowledge sections.';
+else msg='📖 Review the protocol content above and try again.';
+document.getElementById('scoreMsg').textContent=msg;
+document.getElementById('quizScore').style.display='block';
+document.getElementById('quizScore').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function resetQuiz(){buildQuiz();document.getElementById('quiz').scrollIntoView({behavior:'smooth'});}
+buildQuiz();
+</script>
+</body>
+</html>
