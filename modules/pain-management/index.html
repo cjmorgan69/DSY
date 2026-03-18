@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pain Management — AO Walk-Through Scenario | DSY Training</title>
+<style>
+  :root {
+    --primary: #1a5c28;
+    --primary-dark: #114d1a;
+    --primary-darker: #0a3d12;
+    --primary-light: #2e7d3e;
+    --primary-lighter: #4a9a5a;
+    --accent: #3ea055;
+    --accent-light: #6dc07e;
+    --bg: #f1f8f2;
+    --bg-alt: #e4f0e6;
+    --card-bg: #ffffff;
+    --text: #1a1a1a;
+    --text-secondary: #3a3a3a;
+    --text-on-primary: #ffffff;
+    --border: #c8dccb;
+    --highlight: #fff9e6;
+    --break-bg: #fff3e0;
+    --break-border: #e6982e;
+    --skill-bg: #e8f5e9;
+    --skill-border: var(--primary-light);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-size: 18px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding-top: 90px;
+  }
+
+  /* ── Sticky Header ── */
+  .sticky-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--primary-dark);
+    color: var(--text-on-primary);
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    min-height: 74px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+
+  .sticky-header img {
+    width: 58px;
+    height: 58px;
+    object-fit: contain;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .header-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 0 12px;
+  }
+
+  .header-title span {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 400;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+
+  .progress-bar-track {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent-light);
+    transition: width 0.2s ease;
+  }
+
+  /* ── Main Container ── */
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  /* ── Section Blocks ── */
+  .section {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 24px 20px;
+    margin-bottom: 20px;
+    border-left: 5px solid var(--primary);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+
+  .section h2 {
+    font-size: 1.2rem;
+    color: var(--primary-dark);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--bg-alt);
+  }
+
+  .section h3 {
+    font-size: 1.05rem;
+    color: var(--primary);
+    margin: 16px 0 8px 0;
+  }
+
+  .section h4 {
+    font-size: 0.95rem;
+    color: var(--primary-dark);
+    margin: 12px 0 6px 0;
+  }
+
+  p, li {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+
+  ul, ol {
+    padding-left: 20px;
+  }
+
+  ul li { list-style: disc; }
+
+  .checklist {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .checklist li {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 8px;
+    font-size: 1rem;
+  }
+
+  .checklist li::before {
+    content: '☐';
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1.1rem;
+    color: var(--primary);
+  }
+
+  /* ── Meta Label ── */
+  .meta {
+    font-size: 0.8rem;
+    color: #5a5a5a;
+    margin-bottom: 10px;
+  }
+
+  /* ── Highlight Box ── */
+  .highlight-box {
+    background: var(--highlight);
+    border-left: 4px solid #e6a817;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 14px 0;
+    font-size: 1rem;
+  }
+
+  /* ── Break Point Box ── */
+  .break-point {
+    background: var(--break-bg);
+    border: 2px solid var(--break-border);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+
+  .break-point .bp-label {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #b36b00;
+    margin-bottom: 4px;
+  }
+
+  .break-point .bp-type {
+    font-size: 0.8rem;
+    color: #7a5000;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+
+  .break-point h4 {
+    font-size: 0.95rem;
+    color: #7a4000;
+    margin: 12px 0 4px 0;
+  }
+
+  .break-point ul {
+    padding-left: 18px;
+  }
+
+  .break-point li {
+    font-size: 1rem;
+    margin-bottom: 5px;
+  }
+
+  /* ── Skill Box ── */
+  .skill-box {
+    background: var(--skill-bg);
+    border: 2px solid var(--skill-border);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 16px 0;
+  }
+
+  .skill-box h4 {
+    color: var(--primary-dark);
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .skill-box ol {
+    padding-left: 20px;
+  }
+
+  .skill-box li {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+
+  /* ── MDT Box ── */
+  .mdt-box {
+    background: #111;
+    color: #33ff33;
+    font-family: 'Courier New', Courier, monospace;
+    border-radius: 8px;
+    padding: 18px;
+    margin: 14px 0;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    border: 2px solid #33ff33;
+  }
+
+  .mdt-box .mdt-label {
+    color: #aaa;
+    font-size: 0.78rem;
+  }
+
+  /* ── Toggle / Accordion ── */
+  .toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 50px;
+    background: var(--primary);
+    color: var(--text-on-primary);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 0;
+    text-align: left;
+    transition: background 0.2s;
+  }
+
+  .toggle-btn:hover, .toggle-btn:focus {
+    background: var(--primary-light);
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .toggle-btn .arrow {
+    font-size: 1.2rem;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+    margin-left: 10px;
+  }
+
+  .toggle-btn.open .arrow {
+    transform: rotate(180deg);
+  }
+
+  .toggle-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    background: var(--card-bg);
+    border-radius: 0 0 8px 8px;
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 0 18px;
+  }
+
+  .toggle-content.open {
+    max-height: 10000px;
+    padding: 18px;
+  }
+
+  .toggle-wrapper {
+    margin-bottom: 14px;
+  }
+
+  /* ── ISBAR Table ── */
+  .isbar-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 1rem;
+  }
+
+  .isbar-table th {
+    background: var(--primary);
+    color: var(--text-on-primary);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    width: 60px;
+  }
+
+  .isbar-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  /* ── Fade In Animation ── */
+  .fade-section {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Resource Box ── */
+  .resource-box {
+    background: #f0e6f6;
+    border-left: 4px solid #7b1fa2;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 14px 0;
+  }
+
+  .resource-box strong {
+    color: #4a148c;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    html { font-size: 17px; }
+    .sticky-header { padding: 6px 10px; min-height: 64px; }
+    .sticky-header img { width: 46px; height: 46px; }
+    .header-title { font-size: 0.92rem; }
+    .header-title span { font-size: 0.68rem; }
+    .section { padding: 18px 14px; }
+    .break-point { padding: 16px 14px; }
+    .skill-box { padding: 16px 14px; }
+    .container { padding: 10px; }
+    body { padding-top: 80px; }
+  }
+
+  @media print {
+    .sticky-header { position: relative; }
+    body { padding-top: 0; }
+    .fade-section { opacity: 1; transform: none; }
+    .toggle-content { max-height: none; padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ STICKY HEADER ═══════════════ -->
+<header class="sticky-header">
+  <img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg"
+       alt="DSY Training Logo" width="120" height="120">
+  <div class="header-title">
+    Pain Management — AO
+    <span>Walk-Through Scenario | Volunteer AO Crew</span>
+  </div>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progressBar"></div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ═══════════════ TITLE & CONTEXT ═══════════════ -->
+<div class="section fade-section">
+  <h2>Title and Context</h2>
+  <p class="meta">Source Protocol: Pain Management — AO | SAAS Clinical Practice Protocols</p>
+  <p><strong>Scenario:</strong> Isolated closed limb injury following a fall from height on a rural farming property. A 58-year-old male with a suspected tibial fracture requiring multimodal pain management within AO scope.</p>
+  <p><strong>Setting:</strong> Lower Eyre Peninsula, winter evening, 1845 hours. Temperature 8 degrees Celsius, fading light, rural property.</p>
+  <div class="resource-box">
+    <strong>Available Resources</strong>
+    <ul>
+      <li>Volunteer AO crew (2-person)</li>
+      <li>Nearest country hospital: approximately 30 minutes</li>
+      <li>Paramedic backup: approximately 50 minutes</li>
+      <li>MedSTAR (air): approximately 90 minutes</li>
+      <li>EOC Clinician: available by phone</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════ LEARNING OBJECTIVES ═══════════════ -->
+<div class="section fade-section">
+  <h2>Learning Objectives</h2>
+  <ul class="checklist">
+    <li>Perform a structured pain assessment using the Numeric Rating Scale (NRS 0-10)</li>
+    <li>Identify and apply non-pharmacological pain management strategies</li>
+    <li>Correctly prepare and administer Paracetamol PO within AO scope</li>
+    <li>Correctly prepare and coach patient self-administration of Methoxyflurane (Penthrox) inhaler</li>
+    <li>Screen for contraindications to both Paracetamol and Methoxyflurane before administration</li>
+    <li>Apply a limb splint and perform distal neurovascular checks before and after splinting</li>
+    <li>Reassess pain score after each intervention and escalate if inadequate response</li>
+    <li>Plan and execute a safe extrication and transport for a patient with a lower limb injury</li>
+    <li>Deliver a structured ISBAR handover to the receiving facility</li>
+  </ul>
+</div>
+
+<!-- ═══════════════ REQUIRED EQUIPMENT ═══════════════ -->
+<div class="section fade-section">
+  <h2>Required Equipment</h2>
+  <h3>Clinical Equipment</h3>
+  <ul class="checklist">
+    <li>Corpuls3 monitor (SpO2, HR, NIBP, Temp)</li>
+    <li>Ambulance Response Bag</li>
+    <li>Manual BP cuff (if Corpuls NIBP unreliable)</li>
+    <li>Pen torch</li>
+    <li>Thermometer</li>
+    <li>BSL meter</li>
+  </ul>
+  <h3>Medications (for demonstration and administration)</h3>
+  <ul class="checklist">
+    <li>Paracetamol 500mg tablets (x2 = 1g dose)</li>
+    <li>Methoxyflurane (Penthrox) inhaler kit (sealed pouch, inhaler, activated carbon chamber, 3mL bottle)</li>
+    <li>Cup of water (for oral medication)</li>
+  </ul>
+  <h3>Splinting and Extrication</h3>
+  <ul class="checklist">
+    <li>Box splint or SAM splint (lower leg)</li>
+    <li>Padding material (towels, combine dressings)</li>
+    <li>Roller bandages / securing straps</li>
+    <li>Stretcher</li>
+    <li>Blankets (patient warmth management)</li>
+    <li>Carry sheet (if required for ground-level transfer)</li>
+    <li>Ambulance torch / headlamp (evening scenario)</li>
+  </ul>
+  <h3>Documentation</h3>
+  <ul class="checklist">
+    <li>ePCR tablet or paperwork</li>
+  </ul>
+</div>
+
+<!-- ═══════════════ SESSION STRUCTURE OVERVIEW ═══════════════ -->
+<div class="section fade-section">
+  <h2>Session Structure Overview</h2>
+  <p>This walk-through scenario runs for approximately 45-60 minutes. The scenario is paused at eight explicit break points for discussion, practical skill practice, and decision-making. The facilitator controls the pace. Crew members work in their standard roles: one as clinician (patient-facing), one as driver (observations, equipment, logistics).</p>
+  <h3>Scenario Timeline</h3>
+  <ol>
+    <li>Pre-Brief (10 minutes)</li>
+    <li>Dispatch and En Route — Break Point 1</li>
+    <li>On Arrival and Scene Management — Break Point 2</li>
+    <li>Patient Contact and Primary Survey — Break Point 3</li>
+    <li>Clinical Decision Point — Break Point 4</li>
+    <li>Treatment Phase — Break Point 5 (extended practical skill station)</li>
+    <li>Reassessment and Escalation — Break Point 6</li>
+    <li>Extrication and Transport — Break Point 7</li>
+    <li>ISBAR Handover — Break Point 8</li>
+    <li>Debrief (10-15 minutes)</li>
+  </ol>
+</div>
+
+<!-- ═══════════════ PRE-BRIEF ═══════════════ -->
+<div class="section fade-section">
+  <h2>Pre-Brief</h2>
+  <p class="meta">Approximately 10 minutes</p>
+  <h3>Set the Scene</h3>
+  <ul>
+    <li>Tonight's scenario focuses on pain management within AO scope of practice</li>
+    <li>We will walk through the job from page to handover, pausing at key decision points</li>
+    <li>This is a walk-through, not a time-pressure test — we want good clinical reasoning and safe, structured practice</li>
+    <li>Ask questions at any point — this is a learning environment</li>
+  </ul>
+  <h3>Role Allocation</h3>
+  <ul>
+    <li><strong>Clinician:</strong> leads patient contact, history, clinical decisions, medication administration</li>
+    <li><strong>Driver:</strong> Corpuls3 setup, observations, equipment preparation, documentation, extrication logistics</li>
+  </ul>
+  <h3>Expectations</h3>
+  <ul>
+    <li>Treat the scenario as a real job — make decisions as you would at 2am on a cold night</li>
+    <li>Verbalise your thinking out loud: what are you seeing, what are you worried about, what is your plan</li>
+    <li>Check in with each other — crew resource management matters</li>
+  </ul>
+</div>
+
+<!-- ═══════════════ DISPATCH & EN ROUTE ═══════════════ -->
+<div class="section fade-section">
+  <h2>Dispatch and En Route Phase</h2>
+  <div class="mdt-box">
+    <div class="mdt-label">MDT — INCOMING CASE</div><br>
+    CASE: 2026-0318-1845<br>
+    PRIORITY: P2<br>
+    NATURE: FALL FROM HEIGHT — SUSPECTED LEG INJURY<br>
+    LOCATION: 42 BOUNDARY ROAD, CUMMINS SA 5631<br>
+    MAP REF: RURAL FARMING PROPERTY — SEALED ROAD ACCESS<br>
+    PATIENT: 58YO MALE<br>
+    CALLER: WIFE (MARGARET)<br>
+    INFO: PATIENT FELL APPROX 2M FROM SHED ROOF ONTO CONCRETE.<br>
+    LEFT LEG INJURED. CONSCIOUS AND BREATHING.<br>
+    IN SIGNIFICANT PAIN. WIFE HAS PLACED BLANKET OVER HIM.<br>
+    PATIENT IS ON GROUND NEXT TO SHED.<br>
+    RESPONSE: VOLUNTEER AO CREW
+  </div>
+
+  <!-- BREAK POINT 1 -->
+  <div class="break-point">
+    <div class="bp-label">BREAK POINT — En-Route Planning</div>
+    <div class="bp-type">Type: Discussion / Decision-Making</div>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"You have just read the MDT. What are you thinking on the way out?"</li>
+      <li>"What mechanism of injury concerns you here?"</li>
+      <li>"What equipment will you want ready when you arrive?"</li>
+      <li>"It is getting dark and cold — how does that affect your plan?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Fall from 2 metres — potential for significant lower limb fracture, consider other injuries (spinal, pelvis, bilateral lower limbs, upper limbs from landing)</li>
+      <li>Patient is on the ground outside — will need warmth management, lighting, and a plan to get him onto the stretcher</li>
+      <li>Anticipate pain management: Paracetamol and Methoxyflurane likely required</li>
+      <li>Prepare splinting equipment en route if possible</li>
+      <li>Driver considers ambulance positioning — drive as close to shed area as practical</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>A 2-metre fall is a significant mechanism — do not focus only on the obvious injury</li>
+      <li>Planning equipment before arrival saves time on scene</li>
+      <li>Environmental factors (cold, dark) are real-world problems that affect patient care and crew safety</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, the time between page and arrival is your only preparation window. Use it. Discuss the plan with your partner. Decide who is doing what before you step out of the vehicle.</p>
+  </div>
+</div>
+
+<!-- ═══════════════ ON ARRIVAL — SCENE MANAGEMENT ═══════════════ -->
+<div class="section fade-section">
+  <h2>On Arrival — Scene Management</h2>
+  <p>You arrive at 42 Boundary Road. It is 1855 hours. The sun has set. Margaret meets you at the front gate, visibly anxious. She directs you down a gravel track to the shed approximately 80 metres from the house.</p>
+  <p>Gary is lying on the concrete apron beside the shed, a blanket over his torso. A ladder is leaning against the shed wall. There is a section of loose corrugated iron visible on the shed roof.</p>
+  <p>The area is unlit apart from a single shed light. The concrete is dry. No other hazards are immediately visible.</p>
+
+  <!-- BREAK POINT 2 -->
+  <div class="break-point">
+    <div class="bp-label">BREAK POINT — Doorway / First Impression</div>
+    <div class="bp-type">Type: Discussion</div>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"You have just walked up. What do you see from five metres away?"</li>
+      <li>"Is the scene safe?"</li>
+      <li>"What is your first impression of the patient?"</li>
+      <li>"What is your immediate priority?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Scene safety: ladder still up (risk of falling material), check overhead, shed light adequate or need torches</li>
+      <li>Mechanism visible — loose roofing iron, 2m fall height onto hard surface</li>
+      <li>Patient is alert (calling out / talking to wife) — not immediately time-critical from an airway/breathing perspective</li>
+      <li>Patient is on the ground and in pain — first priority is to get to the patient and begin assessment</li>
+      <li>Note environmental exposure risk: cold concrete, patient has been down for at least 15-20 minutes</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Do not walk past hazards — the ladder leaning on the shed could slide, loose iron could fall</li>
+      <li>Your first impression gives you a working picture: alert, breathing, in pain, not bleeding out</li>
+      <li>Time on ground in 8-degree weather means hypothermia prevention starts now</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>Rural property jobs often have environmental hazards that do not exist in suburban homes. Take two seconds to look up, look around, and make sure the scene is safe before committing. You cannot help anyone if you get hurt.</p>
+  </div>
+</div>
+
+<!-- ═══════════════ PATIENT CONTACT & PRIMARY SURVEY ═══════════════ -->
+<div class="section fade-section">
+  <h2>Patient Contact and Primary Survey</h2>
+  <p>Gary is alert and talking. He is distressed, gripping the blanket, and says: "Mate, my leg is killing me — I think it's broken."</p>
+
+  <h3>Clinician — Primary Survey and History</h3>
+  <ul class="checklist">
+    <li><strong>A — Airway:</strong> Patent, speaking in full sentences</li>
+    <li><strong>B — Breathing:</strong> RR 20, adequate depth, no respiratory distress, air entry bilateral</li>
+    <li><strong>C — Circulation:</strong> Radial pulse present, skin pale and cool (cold environment), no visible external haemorrhage</li>
+    <li><strong>D — Disability:</strong> GCS 15 (E4 V5 M6), PEARL, no head strike reported, no LOC</li>
+    <li><strong>E — Exposure:</strong> Left lower leg — visible swelling and angulation at mid-shaft. No open wound. No skin tenting. Distal pedal pulse palpable, toes warm, sensation intact, can wiggle toes. Minor graze to left palm.</li>
+  </ul>
+
+  <h3>SAMPLE History (Clinician)</h3>
+  <ul>
+    <li><strong>S — Signs/Symptoms:</strong> Severe left lower leg pain (NRS 8/10 at rest, worse with any movement). No other pain reported.</li>
+    <li><strong>A — Allergies:</strong> Nil known</li>
+    <li><strong>M — Medications:</strong> Perindopril 4mg daily (hypertension). Occasional Paracetamol for arthritis — last taken more than 24 hours ago</li>
+    <li><strong>P — Past medical history:</strong> Hypertension (controlled), mild osteoarthritis</li>
+    <li><strong>L — Last intake:</strong> Dinner at approximately 1730 hours</li>
+    <li><strong>E — Events leading:</strong> Was on shed roof replacing a loose iron sheet. Foot slipped on corrugated iron. Fell approximately 2 metres, landed on feet then collapsed onto left side. No head strike. Fully conscious throughout.</li>
+  </ul>
+
+  <h3>Driver — Corpuls3 Setup and Observations</h3>
+  <p>While the clinician takes the history, the driver sets up the Corpuls3 and obtains the first set of observations:</p>
+  <ul>
+    <li>HR: 98 bpm (sinus, regular)</li>
+    <li>BP: 148/92 mmHg</li>
+    <li>SpO2: 98% on room air</li>
+    <li>RR: 20 (manual count)</li>
+    <li>Temp: 36.4 degrees Celsius</li>
+    <li>BSL: 6.2 mmol/L</li>
+    <li>Pain: NRS 8/10</li>
+    <li>GCS: 15</li>
+  </ul>
+  <div class="highlight-box">
+    <strong>Clinical note:</strong> Elevated HR and BP are consistent with a pain and stress response in this context. Not unexpected for a 58-year-old with known hypertension who has just sustained a significant injury. These should be monitored for trend.
+  </div>
+
+  <!-- BREAK POINT 3 -->
+  <div class="break-point">
+    <div class="bp-label">BREAK POINT — Initial Observations and Corpuls3 Setup</div>
+    <div class="bp-type">Type: Practical Skill / Discussion</div>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"Walk me through what each crew member is doing right now."</li>
+      <li>"What do the observations tell you?"</li>
+      <li>"What is the significance of HR 98 and BP 148/92 in this patient?"</li>
+      <li>"You have confirmed distal neurovascular status is intact — why does that matter now?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Clinician is at the patient's side: introduction, primary survey, SAMPLE history, pain assessment</li>
+      <li>Driver is setting up Corpuls3: SpO2 probe, NIBP cuff (consider which arm — avoid injured side if applicable), getting a baseline set of numbers</li>
+      <li>HR and BP elevation likely pain-mediated — expect improvement with analgesia</li>
+      <li>Intact distal neurovascular status is reassuring but must be rechecked after any splint application or movement</li>
+      <li>This is not a time-critical patient based on current assessment — but pain is severe and needs addressing promptly</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Split tasks between clinician and driver — work in parallel, not in sequence</li>
+      <li>First observations are your baseline — everything after this is a trend</li>
+      <li>Pain drives vital signs: tachycardia and hypertension in a pain response are common. Track whether they improve with treatment.</li>
+      <li>Distal neurovascular status (pulse, sensation, colour, capillary refill, movement) must be assessed before and after every intervention that affects the injured limb</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>Getting a full set of observations early gives you a safety net. If this patient deteriorates during extrication or transport, you have a documented baseline to compare against. Do not skip the numbers because "it is just a broken leg."</p>
+  </div>
+</div>
+
+<!-- ═══════════════ CLINICAL DECISION POINT ═══════════════ -->
+<div class="section fade-section">
+  <h2>Clinical Decision Point</h2>
+
+  <div class="toggle-wrapper">
+    <button class="toggle-btn" onclick="toggleSection(this)">
+      Pain Assessment and Protocol Selection
+      <span class="arrow">&#9660;</span>
+    </button>
+    <div class="toggle-content">
+      <h3>Pain Assessment — Numeric Rating Scale</h3>
+      <ul>
+        <li>"Gary, on a scale of zero to ten — where zero is no pain at all and ten is the worst pain you can imagine — how would you rate your pain right now?"</li>
+        <li>Gary reports: <strong>8 out of 10</strong></li>
+        <li>Pain is constant, localised to the left lower leg, sharp and throbbing in character, worse with any movement</li>
+      </ul>
+      <h3>Working Diagnosis</h3>
+      <ul>
+        <li>Suspected closed fracture to left tibia/fibula (mid-shaft)</li>
+        <li>Isolated limb injury — no other injuries identified on primary survey</li>
+        <li>No signs of circulatory compromise</li>
+      </ul>
+      <h3>Applicable Protocol</h3>
+      <ul>
+        <li><strong>Pain Management — AO</strong> (SAAS Clinical Practice Protocol)</li>
+        <li>NRS 8/10 = severe pain</li>
+        <li>Treatment approach: non-pharmacological interventions + Paracetamol PO + Methoxyflurane (Penthrox)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="toggle-wrapper">
+    <button class="toggle-btn" onclick="toggleSection(this)">
+      Contraindication Screening
+      <span class="arrow">&#9660;</span>
+    </button>
+    <div class="toggle-content">
+      <h3>Paracetamol — Contraindication Check</h3>
+      <ul class="checklist">
+        <li>Known allergy or hypersensitivity to Paracetamol? — No</li>
+        <li>Severe hepatic impairment or liver disease? — No</li>
+        <li>Paracetamol taken within the last 4 hours? — No (last taken more than 24 hours ago)</li>
+        <li>Maximum daily dose (4g in 24 hours) already reached? — No</li>
+        <li>Can the patient safely swallow? — Yes (GCS 15, no nausea, no vomiting)</li>
+      </ul>
+      <p><strong>Decision: Paracetamol 1g PO is indicated and safe to administer.</strong></p>
+
+      <h3>Methoxyflurane (Penthrox) — Contraindication Check</h3>
+      <ul class="checklist">
+        <li>Known hypersensitivity to methoxyflurane or any fluorinated anaesthetic? — No</li>
+        <li>Known or suspected renal impairment? — No</li>
+        <li>History of malignant hyperthermia (personal or family)? — No</li>
+        <li>Currently taking tetracycline antibiotics? — No</li>
+        <li>Methoxyflurane administered within the previous week? — No</li>
+        <li>Cardiovascular instability? — No (haemodynamically stable, pain-mediated elevations only)</li>
+        <li>Impaired consciousness? — No (GCS 15)</li>
+      </ul>
+      <p><strong>Decision: Methoxyflurane via Penthrox inhaler is indicated and safe to administer.</strong></p>
+    </div>
+  </div>
+
+  <!-- BREAK POINT 4 -->
+  <div class="break-point">
+    <div class="bp-label">BREAK POINT — Screening Tools, Protocols and Working Diagnosis</div>
+    <div class="bp-type">Type: Discussion / Decision-Making</div>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"What is your working diagnosis?"</li>
+      <li>"Which protocol are you working to?"</li>
+      <li>"Walk me through your contraindication screening for Paracetamol."</li>
+      <li>"Now walk me through contraindications for Methoxyflurane."</li>
+      <li>"Why is the order of interventions important — what do you give first?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Working diagnosis: suspected closed tibial fracture, isolated, NRS 8/10 — severe pain</li>
+      <li>Protocol: Pain Management — AO</li>
+      <li>Contraindication screening is mandatory before any medication administration — not optional, not rushed</li>
+      <li>Treatment plan: non-pharmacological measures first (reassurance, positioning, warmth), then Paracetamol PO, then Methoxyflurane for breakthrough/immediate relief</li>
+      <li>Paracetamol has a delayed onset (30-60 minutes) — give it early so it is working during transport</li>
+      <li>Methoxyflurane provides rapid onset analgesia — ideal for bridging pain while Paracetamol takes effect and during splinting/movement</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Contraindication screening must be verbalised and documented — not assumed</li>
+      <li>A multimodal approach (non-pharmacological + Paracetamol + Methoxyflurane) gives the best chance of meaningful pain reduction</li>
+      <li>Giving Paracetamol early is a strategic decision — it takes time to work, so the sooner it is given, the sooner it contributes</li>
+      <li>Document the pain score before any intervention. This is your reference point.</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, it is tempting to jump straight to Penthrox because the patient is in severe pain. That instinct is right — but take 30 seconds to screen for contraindications first. Giving Paracetamol at the same time means you are building analgesia in layers rather than relying on a single agent.</p>
+  </div>
+</div>
+
+<!-- ═══════════════ TREATMENT PHASE ═══════════════ -->
+<div class="section fade-section">
+  <h2>Treatment Phase — AO Protocol</h2>
+  <p class="meta">This is the primary practical skills station. Take time here to walk through each skill step by step.</p>
+
+  <div class="toggle-wrapper">
+    <button class="toggle-btn" onclick="toggleSection(this)">
+      Non-Pharmacological Pain Management
+      <span class="arrow">&#9660;</span>
+    </button>
+    <div class="toggle-content">
+      <h3>Interventions (commence immediately)</h3>
+      <ul class="checklist">
+        <li><strong>Reassurance:</strong> Calm, clear communication. "Gary, we are going to look after you. We will get your pain under control before we move you anywhere."</li>
+        <li><strong>Positioning:</strong> Do not move the injured leg. Support in position found. Place padding (rolled towels or blankets) alongside the leg for comfort and to prevent involuntary movement.</li>
+        <li><strong>Warmth management:</strong> Patient has been on cold concrete for approximately 20 minutes. Place a blanket underneath him if you can do so without moving the leg excessively. Add blankets on top. Protect from wind.</li>
+        <li><strong>Explanation:</strong> Tell the patient what you are going to do before you do it. "I am going to put a blood pressure cuff on your arm." "I am going to give you some pain relief."</li>
+        <li><strong>Minimise movement:</strong> Every unnecessary movement of the fractured limb increases pain. Be deliberate. Plan each intervention before executing it.</li>
+      </ul>
+      <div class="highlight-box">
+        <strong>Key principle:</strong> Non-pharmacological interventions are not secondary to medications. They are the foundation. Reassurance, warmth, and avoiding unnecessary movement should continue throughout the entire job, not just at the start.
+      </div>
+    </div>
+  </div>
+
+  <div class="toggle-wrapper">
+    <button class="toggle-btn" onclick="toggleSection(this)">
+      Practical Skill — Paracetamol PO Administration
+      <span class="arrow">&#9660;</span>
+    </button>
+    <div class="toggle-content">
+      <div class="skill-box">
+        <h4>Paracetamol 1g PO — Step-by-Step</h4>
+        <ol>
+          <li>Confirm indication: pain (NRS 8/10)</li>
+          <li>Confirm contraindication screening completed and documented (see above)</li>
+          <li>Confirm dose: <strong>1g (two x 500mg tablets)</strong> for an adult weighing more than 50kg</li>
+          <li>Remove tablets from packaging — check expiry date</li>
+          <li>Confirm with patient: "Gary, have you taken any Paracetamol or Panadol in the last four hours?" — reconfirm</li>
+          <li>Confirm patient can safely swallow: GCS 15, no nausea, no vomiting, no airway concern</li>
+          <li>Provide tablets with a cup of water</li>
+          <li>Observe the patient swallow the tablets</li>
+          <li>Document: time of administration, dose (1g PO), route (oral), patient response</li>
+        </ol>
+        <h4>Key Points</h4>
+        <ul>
+          <li>Onset of action: approximately 30-60 minutes</li>
+          <li>Give early — this is a background analgesic that builds over time</li>
+          <li>Maximum adult dose: 4g in 24 hours</li>
+          <li>Ask about over-the-counter use — many patients take Paracetamol at home and may not consider it a "medication"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="toggle-wrapper">
+    <button class="toggle-btn" onclick="toggleSection(this)">
+      Practical Skill — Methoxyflurane (Penthrox) Inhaler Administration
+      <span class="arrow">&#9660;</span>
+    </button>
+    <div class="toggle-content">
+      <div class="skill-box">
+        <h4>Methoxyflurane (Penthrox) — Step-by-Step</h4>
+        <ol>
+          <li>Confirm indication: moderate to severe pain (NRS 4 or above — this patient is NRS 8/10)</li>
+          <li>Confirm contraindication screening completed and documented (see above)</li>
+          <li>Retrieve the Penthrox kit from the drug bag</li>
+          <li>Open the sealed foil pouch and remove the inhaler device</li>
+          <li>Remove the cap from the 3mL methoxyflurane bottle</li>
+          <li>Tilt the inhaler and pour the <strong>entire 3mL bottle</strong> of methoxyflurane liquid into the base well of the inhaler</li>
+          <li>Attach the <strong>activated carbon (AC) chamber</strong> to the exhaust port on the back of the inhaler — this captures exhaled methoxyflurane vapour and reduces environmental exposure to the crew</li>
+          <li>Explain the device to the patient:
+            <ul>
+              <li>"Gary, this is a pain-relieving inhaler called Penthrox. You control it yourself."</li>
+              <li>"Place your lips around the mouthpiece and breathe in through it."</li>
+              <li>"Then breathe out through the mouthpiece as well — the green chamber on the back catches the exhaled gas."</li>
+              <li>"Start with the <strong>dilutor hole open</strong> — this is the small hole on the side of the inhaler. This gives you a milder dose."</li>
+              <li>"If you need a stronger dose, cover the hole with your finger and inhale."</li>
+              <li>"You are in control. Take breaths as you need them. If you feel dizzy or drowsy, stop inhaling for a moment."</li>
+            </ul>
+          </li>
+          <li>Hand the inhaler to the patient — the patient must <strong>self-administer</strong>. AOs do not hold the device in the patient's mouth.</li>
+          <li>Coach the patient through the first few inhalations. Watch their technique.</li>
+          <li>Monitor continuously:
+            <ul>
+              <li>Conscious state (GCS) — Methoxyflurane can cause sedation</li>
+              <li>Respiratory rate — watch for excessive sedation or respiratory depression</li>
+              <li>SpO2 via Corpuls3</li>
+              <li>Pain score — reassess after 2-3 minutes of use</li>
+              <li>Patient's ability to hold the device (self-limiting safety mechanism — if sedated, they drop it)</li>
+            </ul>
+          </li>
+          <li>Maximum single-session dose: <strong>6mL</strong> (two x 3mL bottles). If the first bottle is exhausted and pain remains severe, a second bottle may be added to the same inhaler.</li>
+          <li>Document: time commenced, volume administered, pain score before and after, any adverse effects</li>
+        </ol>
+        <h4>Important Safety Points</h4>
+        <ul>
+          <li>The self-administration design is a built-in safety feature — if the patient becomes over-sedated, they will drop the inhaler and stop inhaling</li>
+          <li>Never hold the inhaler for the patient or tape it in place</li>
+          <li>The AC chamber reduces crew exposure — ensure it is attached before use</li>
+          <li>If the patient reports dizziness, nausea, or excessive drowsiness, pause administration and reassess</li>
+          <li>Effects begin within 6-8 breaths and are rapid-onset</li>
+          <li>Use in a well-ventilated area where possible (in this scenario, the patient is outdoors — ideal ventilation)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="toggle-wrapper">
+    <button class="toggle-btn" onclick="toggleSection(this)">
+      Practical Skill — Lower Limb Splinting
+      <span class="arrow">&#9660;</span>
+    </button>
+    <div class="toggle-content">
+      <div class="skill-box">
+        <h4>Splint Application — Left Lower Leg (Suspected Tibial Fracture)</h4>
+        <p><strong>Timing:</strong> Ideally splint after Methoxyflurane has taken effect (allow 2-5 minutes of Penthrox use first). Splinting a limb with NRS 8/10 pain and no analgesia on board causes unnecessary distress.</p>
+        <ol>
+          <li><strong>Assess distal neurovascular status before splinting:</strong>
+            <ul>
+              <li>Pedal pulse — palpable?</li>
+              <li>Sensation — can the patient feel you touching their toes?</li>
+              <li>Colour — toes pink or pale/cyanotic?</li>
+              <li>Capillary refill — less than 2 seconds?</li>
+              <li>Movement — can the patient wiggle toes?</li>
+            </ul>
+          </li>
+          <li>Select appropriate splint: <strong>box splint</strong> is practical for mid-shaft tibia injuries. Alternatively, SAM splint or vacuum splint if available.</li>
+          <li>Prepare the splint and gather padding materials (combine dressings, towels, rolled blankets)</li>
+          <li>Explain to patient: "Gary, I am going to put a splint on your leg to keep it still. This will reduce the pain when we move you. I will be as gentle as I can. Keep using the Penthrox."</li>
+          <li>Apply padding around the leg — fill any voids between the limb and the splint, pad bony prominences (ankle bones, knee)</li>
+          <li>Position the splint to immobilise the <strong>joint above (knee) and joint below (ankle)</strong> the suspected fracture site</li>
+          <li>Splint the limb <strong>in the position found</strong> — do not attempt to straighten or realign</li>
+          <li>Secure with roller bandages or straps — firm but not tight. Check that you can slide a finger under each securing point.</li>
+          <li><strong>Reassess distal neurovascular status immediately after splinting:</strong>
+            <ul>
+              <li>Pedal pulse — still palpable?</li>
+              <li>Sensation — intact?</li>
+              <li>Colour — unchanged?</li>
+              <li>Capillary refill — less than 2 seconds?</li>
+              <li>Movement — can still wiggle toes?</li>
+            </ul>
+          </li>
+          <li>If any neurovascular compromise is noted after splinting — loosen and reapply</li>
+          <li>Elevate the limb slightly if practical (pillow or folded blanket under the splint)</li>
+          <li>Reassess pain score post-splinting</li>
+        </ol>
+      </div>
+      <div class="highlight-box">
+        <strong>Clinical principle:</strong> Splinting reduces pain by preventing movement at the fracture site. Good splinting is itself an analgesic intervention. Always check circulation before and after.
+      </div>
+    </div>
+  </div>
+
+  <!-- BREAK POINT 5 -->
+  <div class="break-point">
+    <div class="bp-label">BREAK POINT — Treatment Initiation and Medication Safety</div>
+    <div class="bp-type">Type: Practical Skill / Decision-Making</div>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"Demonstrate the preparation and administration of Paracetamol — talk me through it."</li>
+      <li>"Now prepare the Penthrox inhaler from the sealed pouch — narrate every step."</li>
+      <li>"Show me how you would coach the patient to use the Penthrox. What instructions do you give?"</li>
+      <li>"When is the right time to splint — why not immediately?"</li>
+      <li>"Walk me through your splinting technique and neurovascular checks."</li>
+      <li>"What would you do if the patient said they are allergic to Paracetamol?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Administers Paracetamol early for background analgesia (slow onset, give it time to work)</li>
+      <li>Prepares Penthrox correctly: pour 3mL into inhaler, attach AC chamber, hand to patient</li>
+      <li>Coaches patient through self-administration: start with dilutor hole open, cover for stronger effect</li>
+      <li>Waits for Penthrox to take effect before splinting (reduces distress and improves splint application quality)</li>
+      <li>Checks distal neurovascular status before and after splint application</li>
+      <li>Splints in position found, immobilising joint above and below</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Medication administration follows: indication confirmed, contraindications screened, dose confirmed, patient informed, administered, documented</li>
+      <li>Penthrox is patient-controlled by design — never hold it for them</li>
+      <li>The AC chamber protects the crew — always use it</li>
+      <li>Timing of splinting matters: analgesia first, then splint. This is better patient care and better clinical practice.</li>
+      <li>Neurovascular checks before and after splinting are non-negotiable</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>Penthrox is one of the most effective tools in the AO toolkit. But it only works well if you know how to prepare it, explain it, and monitor the patient while they use it. Practice the setup now so that on a cold dark night it is second nature. The patient is watching you — confidence and competence go hand in hand.</p>
+  </div>
+</div>
+
+<!-- ═══════════════ REASSESSMENT & ESCALATION ═══════════════ -->
+<div class="section fade-section">
+  <h2>Reassessment and Escalation</h2>
+  <h3>Post-Treatment Observations (Driver — Corpuls3)</h3>
+  <ul>
+    <li>HR: 88 bpm (improved from 98)</li>
+    <li>BP: 140/88 mmHg (improved from 148/92)</li>
+    <li>SpO2: 98% on room air</li>
+    <li>RR: 16 (improved from 20)</li>
+    <li>Temp: 36.2 degrees Celsius (slight drop — environmental exposure)</li>
+    <li>GCS: 15</li>
+    <li>Pain: NRS 4/10 (improved from 8/10)</li>
+  </ul>
+
+  <div class="highlight-box">
+    <strong>Clinical trend:</strong> Pain has reduced from 8/10 to 4/10. Vital signs are trending towards normal. HR and RR have improved consistent with reduced pain and stress response. This patient is responding to treatment. Continue current management and prepare for extrication.
+  </div>
+
+  <h3>Reassessment Checklist</h3>
+  <ul class="checklist">
+    <li>Pain score reassessed and documented (NRS 4/10)</li>
+    <li>Vital signs trending in the right direction</li>
+    <li>Distal neurovascular status intact post-splinting</li>
+    <li>No new symptoms or concerns</li>
+    <li>Patient is warmer (additional blankets applied)</li>
+    <li>Penthrox available for ongoing use during extrication and transport</li>
+    <li>No adverse effects from Paracetamol or Methoxyflurane noted</li>
+  </ul>
+
+  <!-- BREAK POINT 6 -->
+  <div class="break-point">
+    <div class="bp-label">BREAK POINT — Reassessment and Escalation Decision</div>
+    <div class="bp-type">Type: Discussion / Decision-Making</div>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"What has changed since your first set of observations?"</li>
+      <li>"Pain has dropped from 8 to 4. Is that good enough? What is your target?"</li>
+      <li>"At what point would you call the EOC Clinician for this patient?"</li>
+      <li>"What would you do if the pain score had not changed at all after Penthrox?"</li>
+      <li>"The temperature has dropped slightly — what are you going to do about that?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>A 4-point reduction in NRS is significant — treatment is working</li>
+      <li>Aim for the lowest achievable pain score — a score of 4/10 with a fracture is a realistic and acceptable target within AO scope</li>
+      <li>If pain had not improved, or had worsened: contact EOC Clinician, consider requesting paramedic backup for advanced analgesia</li>
+      <li>Escalation triggers: no response to treatment, deteriorating conscious state, new symptoms (chest pain, shortness of breath, limb pallor), suspected compartment syndrome signs (escalating pain despite analgesia, pain on passive stretch, tense swelling)</li>
+      <li>Temperature management: additional blankets, limit exposure time, keep the ambulance warm for transport</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Reassessment is not a single event — it is continuous. Pain score, vital signs, and neurovascular status should be rechecked regularly</li>
+      <li>Trends matter more than single numbers. The direction of change tells the story.</li>
+      <li>Know your escalation thresholds: if AO-scope treatment is not achieving adequate pain relief, the EOC Clinician is one phone call away</li>
+      <li>Temperature management is often forgotten in the urgency of pain management — do not neglect it</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>A pain score of 4/10 with a fractured tibia is a win. You are not going to get it to zero with AO-scope analgesia, and the patient does not expect you to. What matters is that you have made a meaningful difference, you are monitoring, and you have a plan for what to do if things change.</p>
+  </div>
+</div>
+
+<!-- ═══════════════ EXTRICATION & TRANSPORT ═══════════════ -->
+<div class="section fade-section">
+  <h2>Extrication and Transport</h2>
+  <h3>Extrication Plan</h3>
+  <p>Gary is on the ground next to the shed, approximately 80 metres from where the ambulance is parked. His left leg is splinted. He cannot bear weight on the left leg.</p>
+
+  <h3>Decision: How to Move the Patient</h3>
+  <ul>
+    <li><strong>Option 1 (preferred):</strong> Reposition the ambulance as close to the shed as possible. Bring the stretcher to the patient. Lower the stretcher to ground level. With both crew members, carefully lift/assist the patient onto the stretcher using a slide/log-roll technique, keeping the splinted leg supported and aligned.</li>
+    <li><strong>Option 2:</strong> If the stretcher cannot reach the shed area (terrain, access), use a carry sheet to move the patient to a point where the stretcher can be positioned.</li>
+    <li><strong>Option 3:</strong> If the patient can sit upright and the injury allows (with adequate splinting and analgesia), the green carry chair may be considered to transport to the stretcher. However, for a mid-shaft tibial fracture, the stretcher-to-patient approach is generally safer and more comfortable.</li>
+  </ul>
+
+  <h3>Pre-Movement Checklist</h3>
+  <ul class="checklist">
+    <li>Splint is secure and neurovascular status rechecked</li>
+    <li>Penthrox available — instruct Gary to use it during the move</li>
+    <li>Explain the plan to Gary: "We are going to lift you onto the stretcher. Keep using the Penthrox. Tell us if the pain gets worse."</li>
+    <li>Both crew members have a clear role and grip plan before lifting</li>
+    <li>Path from shed to ambulance is clear and lit (torches positioned or headlights on)</li>
+    <li>Stretcher is prepared: head slightly elevated, blankets ready, pillow under splinted leg for elevation</li>
+  </ul>
+
+  <h3>Transport Considerations</h3>
+  <ul>
+    <li>Destination: nearest country hospital — approximately 30 minutes</li>
+    <li>Corpuls3 monitoring continues during transport</li>
+    <li>Pain reassessment every 10 minutes during transport</li>
+    <li>Penthrox remains with the patient — they can self-administer as needed</li>
+    <li>Splinted leg elevated on pillow, supported during transit</li>
+    <li>Warm ambulance — heater on</li>
+    <li>Pre-notify receiving hospital en route</li>
+  </ul>
+
+  <!-- BREAK POINT 7 -->
+  <div class="break-point">
+    <div class="bp-label">BREAK POINT — Extrication and Transport Planning</div>
+    <div class="bp-type">Type: Discussion / Decision-Making</div>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"How are you going to get this patient from the ground to the stretcher?"</li>
+      <li>"What is the safest option for a patient with a splinted lower leg fracture?"</li>
+      <li>"What are you going to tell the patient before you move him?"</li>
+      <li>"How will you manage pain during the move itself?"</li>
+      <li>"Where are you transporting to and why?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Bring the stretcher to the patient rather than making the patient travel further than necessary</li>
+      <li>Pre-medicate with Penthrox before the move — anticipate that movement will increase pain</li>
+      <li>Two-person lift coordination: one crew member supports the upper body, one supports the legs (protecting the splinted limb)</li>
+      <li>Transport to nearest country hospital (30 minutes) — this patient needs X-ray, definitive pain management, and orthopaedic assessment</li>
+      <li>Pre-notification allows the hospital to prepare: X-ray, analgesia, orthopaedic review</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>The extrication is one of the highest-risk moments for increasing pain — plan it, communicate it, and medicate before it</li>
+      <li>For lower limb injuries, avoid weight-bearing and minimise limb movement during transfer</li>
+      <li>Bringing the stretcher to the patient is almost always better than making the patient come to the stretcher</li>
+      <li>Rural property access: drive as close as you safely can. Use headlights for lighting. Watch for uneven ground.</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>The move from the ground to the stretcher is where patients often say "that was the worst part." Take the time to plan it. Three minutes of preparation and communication before the lift saves the patient significant distress. And instruct them to use the Penthrox during the move — that is exactly what it is for.</p>
+  </div>
+</div>
+
+<!-- ═══════════════ HANDOVER ═══════════════ -->
+<div class="section fade-section">
+  <h2>Handover</h2>
+  <h3>ISBAR Handover to Receiving Hospital</h3>
+  <table class="isbar-table">
+    <tr>
+      <th>I</th>
+      <td><strong>Identify:</strong> "This is [name], Volunteer Ambulance Officer from [station]. I am handing over Gary Henderson, 58 years old, date of birth [DOB]. Our ePCR reference is [number]."</td>
+    </tr>
+    <tr>
+      <th>S</th>
+      <td><strong>Situation:</strong> "Gary has a suspected closed fracture to his left tibia and fibula following a fall of approximately 2 metres from a shed roof onto concrete this evening at around 1845."</td>
+    </tr>
+    <tr>
+      <th>B</th>
+      <td><strong>Background:</strong> "He was on the roof replacing iron sheeting, his foot slipped. He landed on his feet and collapsed. No head strike, no LOC, GCS 15 throughout. Isolated left lower leg injury, no other injuries identified on primary and secondary survey. Past history: hypertension on Perindopril 4mg daily, mild osteoarthritis. No allergies. Last ate at approximately 1730."</td>
+    </tr>
+    <tr>
+      <th>A</th>
+      <td><strong>Assessment:</strong> "Current observations: HR 84, BP 138/86, RR 14, SpO2 98% room air, temp 36.3, GCS 15. Pain has reduced from 8 out of 10 to 4 out of 10. Left lower leg: closed deformity mid-shaft, splinted, distal neurovascular status intact — pedal pulse present, sensation and movement preserved, toes pink and warm."</td>
+    </tr>
+    <tr>
+      <th>R</th>
+      <td><strong>Recommendation:</strong> "He has received Paracetamol 1g orally at 1905 and Methoxyflurane 3mL via Penthrox inhaler commencing at 1907, ongoing use during transport. Splinted on scene. He will need X-ray imaging, further analgesia as required, and orthopaedic review. His wife Margaret is following in her car."</td>
+    </tr>
+  </table>
+
+  <!-- BREAK POINT 8 -->
+  <div class="break-point">
+    <div class="bp-label">BREAK POINT — ISBAR Handover</div>
+    <div class="bp-type">Type: Practical Skill / Discussion</div>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"Deliver the ISBAR handover as if you are standing in the ED. Say it out loud."</li>
+      <li>"What key information must be included in the handover for this patient?"</li>
+      <li>"You gave Paracetamol at 1905 and started Penthrox at 1907 — why does the timing matter in your handover?"</li>
+      <li>"What would you hand over differently if the patient had not responded to your treatment?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>ISBAR is structured and practiced — not ad-libbed</li>
+      <li>Include medication names, doses, times, and routes — the receiving team needs to know what has been given and when to plan further analgesia</li>
+      <li>Include the pain trend (8/10 to 4/10) — this shows the trajectory and treatment response</li>
+      <li>Distal neurovascular status is a critical handover point for limb injuries</li>
+      <li>Family location and contact information is practical and appreciated by the receiving team</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Practice the handover out loud — verbal delivery is a skill that improves with repetition</li>
+      <li>Medication timing matters: the ED needs to know when Paracetamol was given to determine when the next dose can be administered</li>
+      <li>The handover should paint a complete picture in under two minutes</li>
+      <li>Include what was found, what was done, and what still needs to happen</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>A clean ISBAR handover sets the patient up for good ongoing care. If the ED does not know you gave Paracetamol at 1905, they might give another dose too early. If they do not know the neurovascular status was intact throughout, they lose a critical reference point. Your handover is the bridge between prehospital and in-hospital care.</p>
+  </div>
+</div>
+
+<!-- ═══════════════ DEBRIEF ═══════════════ -->
+<div class="section fade-section">
+  <h2>Debrief</h2>
+  <p class="meta">10-15 minutes</p>
+
+  <h3>Reflective Questions</h3>
+  <ol>
+    <li>How did you structure your pain assessment, and how did the NRS score guide your treatment decisions?</li>
+    <li>Walk through the contraindication checks you performed — were there any you had to think twice about?</li>
+    <li>Why did you choose to give Paracetamol and Methoxyflurane together rather than one at a time?</li>
+    <li>How confident did you feel preparing and coaching the Penthrox inhaler? What would make you more confident?</li>
+    <li>What non-pharmacological interventions did you use, and how early did you start them?</li>
+    <li>How did you and your crewmate divide tasks? Was there a point where the workload felt unbalanced?</li>
+    <li>At what point would this patient have required EOC Clinician contact, and what would you have asked for?</li>
+  </ol>
+
+  <h3>Take-Home Messages</h3>
+  <ol>
+    <li><strong>Pain is assessed, treated, and reassessed — it is not just documented and ignored.</strong></li>
+    <li><strong>Non-pharmacological management is the foundation, not an afterthought.</strong> Reassurance, positioning, warmth, and splinting all reduce pain.</li>
+    <li><strong>Paracetamol and Methoxyflurane together provide a multimodal analgesic approach that is greater than either agent alone.</strong></li>
+    <li><strong>Give Paracetamol early.</strong> It takes 30-60 minutes to reach peak effect. The sooner it goes in, the sooner it contributes.</li>
+    <li><strong>Know your Penthrox setup cold.</strong> Practice it until you can prepare the inhaler in under 60 seconds without thinking.</li>
+    <li><strong>Contraindication screening is mandatory before every medication.</strong> It takes 30 seconds and prevents harm.</li>
+    <li><strong>If AO-scope analgesia is not working, escalate early.</strong> The EOC Clinician is there to help, not to judge.</li>
+  </ol>
+</div>
+
+<!-- ═══════════════ OPTIONAL SCENARIO VARIATIONS ═══════════════ -->
+<div class="section fade-section">
+  <h2>Optional Scenario Variations</h2>
+
+  <h3>Variation 1 — Paediatric Patient</h3>
+  <p>10-year-old who has fallen from a trampoline with a suspected forearm fracture. NRS 7/10. Parent present and anxious. Requires paediatric Paracetamol dosing (15mg/kg PO), age-appropriate communication, and coaching a child through Penthrox use with parental support.</p>
+
+  <h3>Variation 2 — Paracetamol Contraindicated</h3>
+  <p>Same scenario, but Gary reports he has taken "two Panadol about an hour ago" before the crew arrived. This removes Paracetamol from the treatment plan and makes Methoxyflurane the sole pharmacological option within AO scope. Discussion point: does this change your escalation threshold?</p>
+
+  <h3>Variation 3 — Inadequate Pain Response</h3>
+  <p>After Paracetamol and 6mL of Methoxyflurane, Gary's pain remains NRS 7/10. Maximum Penthrox dose has been reached. Crew must contact the EOC Clinician to discuss options, request paramedic backup for advanced analgesia (50-minute wait), and manage ongoing pain with non-pharmacological measures while awaiting support.</p>
+
+  <h3>Variation 4 — Deterioration During Transport</h3>
+  <p>Fifteen minutes into transport, Gary becomes pale, diaphoretic, and reports feeling "faint." HR rises to 112, BP drops to 100/68. Left lower leg has increased swelling. Discussion: could this be occult haemorrhage from the fracture site? What is the escalation plan? Does the transport destination change?</p>
+</div>
+
+</div><!-- end container -->
+
+<!-- ═══════════════ JAVASCRIPT ═══════════════ -->
+<script>
+// Progress bar
+function updateProgressBar() {
+  var scrollTop = window.scrollY;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progressBar').style.width = progress + '%';
+}
+window.addEventListener('scroll', updateProgressBar);
+window.addEventListener('resize', updateProgressBar);
+
+// Toggle / Accordion
+function toggleSection(btn) {
+  var content = btn.nextElementSibling;
+  btn.classList.toggle('open');
+  content.classList.toggle('open');
+}
+
+// Fade-in on scroll
+function handleFadeIn() {
+  var sections = document.querySelectorAll('.fade-section');
+  var windowHeight = window.innerHeight;
+  sections.forEach(function(section) {
+    var rect = section.getBoundingClientRect();
+    if (rect.top < windowHeight - 60) {
+      section.classList.add('visible');
+    }
+  });
+}
+window.addEventListener('scroll', handleFadeIn);
+window.addEventListener('load', handleFadeIn);
+window.addEventListener('resize', handleFadeIn);
+</script>
+
+</body>
+</html>
