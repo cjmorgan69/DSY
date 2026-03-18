@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Envenomation — AO Walk-Through Scenario | DSY Training</title>
+<style>
+:root{
+  --bg-page:#0e3b20;
+  --bg-header:#0a2e18;
+  --bg-card:#134a2c;
+  --bg-card-inner:#17573680;
+  --bg-input:#1a5c32;
+  --accent:#2ecc71;
+  --accent-dim:#1e8449;
+  --accent-bright:#58d68d;
+  --text:#e8f5ec;
+  --text-sec:#a3d4b5;
+  --text-muted:#6fa68a;
+  --border:#1a6b3a;
+  --bp-border:#e6a817;
+  --bp-bg:#111e16;
+  --highlight:#f0c040;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:18px;scroll-behavior:smooth;}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-page);color:var(--text);line-height:1.6;padding-bottom:4rem;}
+
+/* ── Sticky Header ── */
+.sticky-header{position:sticky;top:0;z-index:1000;background:var(--bg-header);border-bottom:1px solid var(--border);padding:.5rem 1rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 2px 12px rgba(0,0,0,.4);}
+.sticky-header img{width:54px;height:54px;object-fit:contain;border-radius:8px;flex-shrink:0;}
+.sticky-header .hdr-title{flex:1;font-size:1.05rem;font-weight:700;color:var(--accent-bright);letter-spacing:.02em;}
+.progress-wrap{position:absolute;bottom:0;left:0;width:100%;height:3px;background:var(--bg-card);}
+.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent-dim),var(--accent-bright));transition:width .15s;}
+
+/* ── Layout ── */
+.container{max-width:800px;margin:0 auto;padding:1rem;}
+section{margin-bottom:1.5rem;}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1rem;}
+.card-inner{background:var(--bg-card-inner);border-radius:8px;padding:1rem;margin-top:.75rem;}
+h2{font-size:1.25rem;color:var(--accent-bright);margin-bottom:.75rem;border-bottom:2px solid var(--accent-dim);padding-bottom:.4rem;}
+h3{font-size:1.1rem;color:var(--accent);margin-bottom:.5rem;}
+h4{font-size:1rem;color:var(--highlight);margin-bottom:.35rem;}
+ul,ol{padding-left:1.4rem;margin-bottom:.5rem;}
+li{margin-bottom:.3rem;font-size:1rem;}
+p{margin-bottom:.6rem;font-size:1rem;}
+strong{color:var(--accent-bright);}
+
+/* ── Break Points ── */
+.bp{background:var(--bp-bg);border-left:4px solid var(--bp-border);border-radius:0 10px 10px 0;padding:1.25rem;margin:1.25rem 0;}
+.bp-label{display:inline-block;background:var(--bp-border);color:#111;font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;}
+.bp-type{display:inline-block;background:var(--accent-dim);color:var(--text);font-size:.78rem;font-weight:600;padding:2px 8px;border-radius:4px;margin-left:.4rem;}
+.bp h3{margin-top:.5rem;color:var(--highlight);}
+.bp h4{color:var(--accent-bright);margin-top:.7rem;}
+.bp ul{margin-top:.2rem;}
+
+/* ── Toggles ── */
+.toggle-header{display:flex;align-items:center;justify-content:space-between;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;cursor:pointer;min-height:44px;-webkit-tap-highlight-color:transparent;user-select:none;transition:background .2s;}
+.toggle-header:hover,.toggle-header:active{background:var(--bg-input);}
+.toggle-header h2{margin:0;border:none;padding:0;font-size:1.15rem;}
+.toggle-icon{font-size:1.4rem;color:var(--accent);transition:transform .3s;flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;}
+.toggle-content{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+.toggle-content.open{max-height:6000px;}
+.toggle-inner{padding:1rem 1.25rem;background:var(--bg-card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;}
+
+/* ── MDT Box ── */
+.mdt{background:#0a1e10;border:1px solid var(--accent-dim);border-radius:8px;padding:1rem;font-family:'Courier New',monospace;font-size:.92rem;color:var(--accent);line-height:1.55;white-space:pre-line;overflow-x:auto;}
+
+/* ── Checklist ── */
+.checklist{list-style:none;padding-left:0;}
+.checklist li{position:relative;padding-left:1.8rem;margin-bottom:.45rem;font-size:1rem;}
+.checklist li::before{content:"\2610";position:absolute;left:0;color:var(--accent);font-size:1.1rem;}
+
+/* ── Obs Table ── */
+.obs-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem .75rem;font-size:.95rem;margin:.5rem 0;}
+.obs-grid dt{color:var(--text-sec);font-weight:600;}
+.obs-grid dd{color:var(--text);margin:0;}
+
+/* ── Fade-in ── */
+.fade-in{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+
+/* ── Variation Cards ── */
+.var-card{background:var(--bg-card-inner);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:.75rem;}
+
+/* ── Footer ── */
+.footer{text-align:center;color:var(--text-muted);font-size:.8rem;padding:2rem 1rem .5rem;border-top:1px solid var(--border);margin-top:2rem;}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  html{font-size:17px;}
+  .sticky-header .hdr-title{font-size:.92rem;}
+  .obs-grid{grid-template-columns:1fr;}
+  .card,.bp,.toggle-inner{padding:1rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<header class="sticky-header">
+  <img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" alt="DSY Training Logo" width="120" height="120">
+  <span class="hdr-title">Envenomation — AO Walk-Through Scenario</span>
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+</header>
+
+<div class="container">
+
+<!-- TITLE & CONTEXT -->
+<section class="fade-in">
+  <div class="card">
+    <h2>Title &amp; Context</h2>
+    <p><strong>Module:</strong> Envenomation — Walk-Through Scenario (Snake Bite)</p>
+    <p><strong>Protocol:</strong> CPP-008-AO Envenomation — AO</p>
+    <p><strong>Crew:</strong> 2-person Volunteer AO crew</p>
+    <p><strong>Setting:</strong> Rural property, Lower Eyre Peninsula — Saturday afternoon in January</p>
+    <p><strong>Duration:</strong> Approximately 60–75 minutes (including debrief)</p>
+    <p>This session walks through a suspected brown snake bite on a rural property. The scenario focuses on <strong>pressure immobilisation bandaging</strong>, <strong>limb and whole-body immobilisation</strong>, <strong>minimal patient exertion</strong>, early EOC Clinician consultation, and transport decision-making with limited backup.</p>
+    <p>Australian native snake bite is the most common envenomation emergency in South Australia. Early cardiovascular collapse leading to cardiac arrest is the most significant immediate risk.</p>
+  </div>
+</section>
+
+<!-- LEARNING OBJECTIVES -->
+<section class="fade-in">
+  <div class="card">
+    <h2>Learning Objectives</h2>
+    <ol>
+      <li>Apply the CPP-008-AO Envenomation protocol accurately for a native snake bite to a limb</li>
+      <li>Demonstrate correct pressure immobilisation bandage (PIB) technique on a lower limb</li>
+      <li>Demonstrate vacuum mattress application with head elevation (20–30°)</li>
+      <li>Minimise patient exertion throughout the entire encounter</li>
+      <li>Identify early signs of systemic envenomation and escalation triggers</li>
+      <li>Deliver a structured ISBAR handover for a snake bite patient</li>
+      <li>Articulate the rationale for NOT washing the bite site or applying a tourniquet</li>
+    </ol>
+  </div>
+</section>
+
+<!-- REQUIRED EQUIPMENT -->
+<section class="fade-in">
+  <div class="card">
+    <h2>Required Equipment</h2>
+    <div class="card-inner">
+      <h3>Physical Equipment</h3>
+      <ul class="checklist">
+        <li>PPE — gloves, eye protection</li>
+        <li>Ambulance response bag</li>
+        <li>Corpuls3 monitor</li>
+        <li>2–3 broad elastic (crepe) bandages — 10–15 cm width</li>
+        <li>Rigid splint material (SAM splint or equivalent)</li>
+        <li>Pen or marker (for marking bite site on bandage)</li>
+        <li>Vacuum mattress + vacuum pump</li>
+        <li>Green carry chair</li>
+        <li>Stretcher</li>
+        <li>Airway management kit (OPA, NPA, BVM)</li>
+        <li>Suction unit</li>
+        <li>Oxygen therapy equipment</li>
+        <li>Blankets</li>
+        <li>ePCR tablet / paperwork</li>
+      </ul>
+    </div>
+    <div class="card-inner">
+      <h3>For Discussion / Reference</h3>
+      <ul class="checklist">
+        <li>CPP-008-AO Envenomation protocol (printed or on device)</li>
+        <li>Phone for EOC Clinician consultation</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SESSION STRUCTURE OVERVIEW (TOGGLE) -->
+<section>
+  <div class="toggle-header" onclick="toggleSection('structureContent')">
+    <h2>Session Structure Overview</h2>
+    <span class="toggle-icon" id="structureIcon">+</span>
+  </div>
+  <div class="toggle-content" id="structureContent">
+    <div class="toggle-inner">
+      <ol>
+        <li><strong>Pre-Brief</strong> — Protocol review, key principles, equipment check (approx 10 min)</li>
+        <li><strong>Dispatch &amp; En Route</strong> — MDT info, planning, crew roles (BP 1)</li>
+        <li><strong>On Arrival — Scene Management</strong> — Doorway assessment, hazards (BP 2)</li>
+        <li><strong>Patient Contact &amp; Primary Survey</strong> — Corpuls3 setup, history, obs (BP 3)</li>
+        <li><strong>Clinical Decision Point</strong> — Protocol identification, working diagnosis (BP 4)</li>
+        <li><strong>Treatment Phase</strong> — PIB technique, limb splinting, skills practice (BP 5)</li>
+        <li><strong>Reassessment &amp; Escalation</strong> — Trending, EOC consultation, deterioration (BP 6)</li>
+        <li><strong>Extrication &amp; Transport</strong> — Carry chair, vacuum mattress, transport plan (BP 7)</li>
+        <li><strong>Handover</strong> — ISBAR to receiving facility (BP 8)</li>
+        <li><strong>Debrief</strong> — Reflective questions, take-home messages (10–15 min)</li>
+      </ol>
+      <p>The scenario runs linearly with 8 explicit break points. Each break point pauses the scenario for discussion, skill practice, or decision-making before resuming flow.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRE-BRIEF (TOGGLE) -->
+<section>
+  <div class="toggle-header" onclick="toggleSection('prebriefContent')">
+    <h2>Pre-Brief (approx 10 minutes)</h2>
+    <span class="toggle-icon" id="prebriefIcon">+</span>
+  </div>
+  <div class="toggle-content" id="prebriefContent">
+    <div class="toggle-inner">
+      <h3>Protocol Refresher — CPP-008-AO</h3>
+      <p>Before beginning the scenario, ensure both crew members are familiar with the following key points from the Envenomation protocol:</p>
+      <div class="card-inner">
+        <h4>Australian Native Snake Bites — Key Principles</h4>
+        <ul>
+          <li>The most significant immediate clinical risk is <strong>early cardiovascular collapse leading to cardiac arrest</strong></li>
+          <li>Envenomation can also cause paralysis, muscle breakdown (rhabdomyolysis), renal damage, and coagulopathy</li>
+          <li><strong>Do NOT wash the bite site</strong> — venom residue is needed for venom detection kit (VDK) at hospital</li>
+          <li><strong>Do NOT apply a tourniquet</strong> — if one is already applied, consult EOC Clinician before removal</li>
+          <li>Ensure <strong>minimal patient exertion</strong> — movement accelerates venom absorption through the lymphatic system</li>
+          <li>Request clinical support for all native snake bites</li>
+        </ul>
+      </div>
+      <div class="card-inner">
+        <h4>Management — Bite to a Limb</h4>
+        <ul>
+          <li>Apply pressure immobilisation bandage to the affected limb</li>
+          <li>Immobilise the limb with a rigid splint</li>
+          <li>Immobilise the whole patient with a vacuum mattress if available</li>
+          <li>Where possible, position with head elevated approximately 20–30 degrees</li>
+          <li>Provide transport and notify the receiving facility</li>
+        </ul>
+      </div>
+      <div class="card-inner">
+        <h4>Management — Bite to Head or Torso</h4>
+        <ul>
+          <li>Cover bite area with a simple dressing only</li>
+          <li>Pressure immobilisation bandage is NOT applicable to head/torso</li>
+          <li>Same principles: minimal exertion, immobilise, transport</li>
+        </ul>
+      </div>
+      <div class="card-inner">
+        <h4>Equipment Check</h4>
+        <p>Before starting, confirm the following is available and functional:</p>
+        <ul class="checklist">
+          <li>Broad elastic bandages x 2–3 (10–15 cm)</li>
+          <li>Rigid splint (SAM splint)</li>
+          <li>Vacuum mattress + pump on stretcher</li>
+          <li>Green carry chair accessible</li>
+          <li>Corpuls3 powered and ready</li>
+          <li>Pen or marker in pocket</li>
+          <li>Airway/suction equipment checked</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISPATCH & EN ROUTE -->
+<section class="fade-in">
+  <div class="card">
+    <h2>Dispatch &amp; En Route</h2>
+    <p>The MDT activates. Both crew read the following dispatch information:</p>
+    <div class="mdt">CASE: 26-SA-2041837
+PRIORITY: P2
+NATURE: SNAKE BITE
+LOCATION: 847 Wangary Rd, WANGARY SA 5607
+MAP REF: LEP-142 G7
+PATIENT: 52yo Male
+INFO: Bitten R lower leg approx 15 min ago.
+      Brown snake seen ~1.5m long.
+      Pt conscious, breathing, ambulant.
+      Now sitting on back verandah.
+CALLER: Wife — at scene with patient
+PHONE: 0412 XXX XXX
+TIME DISPATCHED: 14:32
+CREW: [Your callsign]
+NOTES: Rural property. Gravel driveway
+       200m from road to homestead.
+       Dogs on property — caller will
+       secure before arrival.</div>
+    <div class="card-inner">
+      <h4>Resource Availability</h4>
+      <ul>
+        <li><strong>Paramedic backup:</strong> ~50 minutes away</li>
+        <li><strong>Port Lincoln Hospital (closest ED):</strong> ~30 minutes transport</li>
+        <li><strong>MedSTAR (air):</strong> ~90 minutes</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- BP 1 -->
+  <div class="bp">
+    <span class="bp-label">Break Point 1</span><span class="bp-type">Discussion</span>
+    <h3>En-Route Planning</h3>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"You've just read the MDT. What stands out to you?"</li>
+      <li>"What are your initial concerns about this job?"</li>
+      <li>"What equipment do you want ready before you arrive?"</li>
+      <li>"What are your crew roles — who is doing what?"</li>
+      <li>"What are your transport options and timeframes?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Brown snake bite — potentially life-threatening, even if the patient currently seems well</li>
+      <li>Patient has been ambulant (walked to house) — venom may be spreading faster through lymphatic system</li>
+      <li>15 minutes since bite — still within early window; symptoms may not yet be apparent</li>
+      <li>Rural property — need to plan extrication from verandah to ambulance (carry chair, then stretcher)</li>
+      <li>Priority equipment: elastic bandages, splint, marker pen, vacuum mattress prepared on stretcher, carry chair</li>
+      <li>Crew roles: Clinician leads assessment/bandaging; Driver sets up Corpuls3 and prepares extrication equipment</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Snake bite patients can deteriorate rapidly and without warning — treat every native snake bite as potentially lethal</li>
+      <li>"Ambulant" on the MDT does not mean the patient should continue walking — plan to immobilise on arrival</li>
+      <li>Preparing equipment en route saves critical time on scene</li>
+      <li>Know your transport timeframes before arriving — informs escalation decisions</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, you read the MDT and start planning immediately. Your partner drives; you prep the kit. By the time you arrive, bandages are out, splint is ready, carry chair is accessible, and both of you know the plan. That 25-minute drive is your planning time — do not waste it.</p>
+  </div>
+</section>
+
+<!-- ON ARRIVAL — SCENE MANAGEMENT -->
+<section class="fade-in">
+  <div class="card">
+    <h2>On Arrival — Scene Management</h2>
+    <p><strong>Time:</strong> 1457 hrs — you arrive at a rural homestead via a long gravel driveway. Single-storey weatherboard house with a wrap-around verandah. Hot day, 36 degrees C, dry grass paddocks surrounding the property.</p>
+    <p><strong>You see:</strong> A man (Greg) sitting in a deck chair on the back verandah, right leg extended on a footstool. His wife (Denise) is standing next to him, visibly anxious. A damp cloth is on his right calf. A dog is secured in a pen. No snakes visible.</p>
+    <p><strong>Initial impression:</strong> Patient is conscious, talking to his wife, appears mildly distressed. Skin colour slightly pale. Mild diaphoresis noted on forehead. No obvious respiratory distress.</p>
+  </div>
+
+  <!-- BP 2 -->
+  <div class="bp">
+    <span class="bp-label">Break Point 2</span><span class="bp-type">Discussion</span>
+    <h3>Doorway / First Impression</h3>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"Before you approach the patient — what do you see from the driveway?"</li>
+      <li>"Any scene safety concerns?"</li>
+      <li>"What's your first clinical impression from a distance?"</li>
+      <li>"Notice anything about how the bite is being managed?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Scene safety: snake may still be in the area — scan the ground, wear boots, do not go searching for the snake</li>
+      <li>Patient appears conscious and talking — not immediately time-critical but can deteriorate at any time</li>
+      <li>Diaphoresis and pallor may indicate early systemic envenomation — or anxiety</li>
+      <li>A damp cloth on the leg suggests the bite site has been washed — this affects venom detection but does NOT change AO management</li>
+      <li>Patient is on an elevated verandah — will need carry chair to get to stretcher</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Snake bite scenes: the snake is rarely seen again — do not waste time looking. Focus on the patient</li>
+      <li>Doorway assessment begins before you touch the patient: conscious state, breathing effort, colour, posture</li>
+      <li>Note the environment: how will you get this patient to the ambulance without them walking?</li>
+      <li>A washed bite site is a common bystander action — acknowledge it, document it, move on</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>On a real snake bite job in the country, the patient's family will have often done something to the wound — washed it, applied ice, cut it, sucked it. None of these change your protocol. Document what happened, reassure the family, and focus on what you can control: pressure bandage, immobilisation, transport.</p>
+  </div>
+</section>
+
+<!-- PATIENT CONTACT & PRIMARY SURVEY -->
+<section class="fade-in">
+  <div class="card">
+    <h2>Patient Contact &amp; Primary Survey</h2>
+    <p><strong>Clinician</strong> approaches the patient, introduces the crew, and begins history-taking.</p>
+    <p><strong>Driver</strong> sets up the Corpuls3 and obtains a full set of observations.</p>
+
+    <div class="card-inner">
+      <h3>Patient Presentation — Greg, 52 years old</h3>
+      <p>"I was clearing some scrub near the water tank and felt a sharp sting on my right calf. Looked down and saw a brown snake — big one, maybe a metre and a half — sliding off into the grass. I walked back to the house. Denise put a cold cloth on it and cleaned it up. I'm feeling a bit crook now — got a headache and I feel like I might be sick."</p>
+    </div>
+
+    <div class="card-inner">
+      <h3>History — SAMPLE</h3>
+      <dl class="obs-grid">
+        <dt>Signs/Symptoms</dt><dd>Sharp pain at bite site, developing headache, mild nausea, mild diaphoresis</dd>
+        <dt>Allergies</dt><dd>Nil known</dd>
+        <dt>Medications</dt><dd>Perindopril 5 mg daily (hypertension)</dd>
+        <dt>Past History</dt><dd>Hypertension — well controlled, no other conditions</dd>
+        <dt>Last Intake</dt><dd>Lunch ~1 hour ago (sandwich and water)</dd>
+        <dt>Events</dt><dd>Bitten ~15 min ago. Walked ~100 m back to house. Wife washed bite and applied cold cloth. No first aid bandage applied</dd>
+      </dl>
+    </div>
+
+    <div class="card-inner">
+      <h3>Initial Observations — Corpuls3 + Manual</h3>
+      <dl class="obs-grid">
+        <dt>Heart Rate</dt><dd>92 bpm — mild tachycardia</dd>
+        <dt>Blood Pressure</dt><dd>138/82 mmHg</dd>
+        <dt>Respiratory Rate</dt><dd>18 /min (manual count)</dd>
+        <dt>SpO2</dt><dd>98% on room air</dd>
+        <dt>Temperature</dt><dd>36.8 degrees C</dd>
+        <dt>GCS</dt><dd>15 (E4 V5 M6)</dd>
+        <dt>BSL</dt><dd>6.2 mmol/L</dd>
+        <dt>Pupils</dt><dd>Equal and reactive, 3 mm bilaterally</dd>
+        <dt>ECG</dt><dd>Sinus rhythm, rate 92, no acute changes</dd>
+      </dl>
+    </div>
+
+    <div class="card-inner">
+      <h3>Focused Examination — Bite Site</h3>
+      <ul>
+        <li>Two small puncture marks visible on the right lateral calf (partially obscured by washing)</li>
+        <li>Mild localised swelling around the bite area</li>
+        <li>No active bleeding</li>
+        <li>No evidence of tissue necrosis</li>
+        <li>Distal pulses intact, normal sensation in right foot, full range of movement</li>
+      </ul>
+    </div>
+
+    <div class="card-inner">
+      <h3>Systemic Envenomation Screening</h3>
+      <ul class="checklist">
+        <li>Ptosis (drooping eyelids) — Nil</li>
+        <li>Difficulty swallowing — Nil</li>
+        <li>Slurred speech — Nil</li>
+        <li>Double vision — Nil</li>
+        <li>Muscle pain / tenderness — Nil generalised (local soreness only)</li>
+        <li>Bleeding from gums or other sites — Nil</li>
+        <li>Dark urine — Not assessed yet</li>
+        <li>Headache — Yes, developing</li>
+        <li>Nausea/vomiting — Nausea present, no vomiting yet</li>
+        <li>Diaphoresis — Mild</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- BP 3 -->
+  <div class="bp">
+    <span class="bp-label">Break Point 3</span><span class="bp-type">Practical Skill</span>
+    <h3>Initial Observations &amp; Corpuls3 Setup</h3>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"Driver — walk us through how you're setting up the Corpuls3 on this patient."</li>
+      <li>"What observations are you prioritising and why?"</li>
+      <li>"What's the significance of the heart rate being 92?"</li>
+      <li>"Clinician — what specific questions are you asking about the snake and the bite?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Corpuls3 provides continuous HR, SpO2, ECG, and NIBP cycling — gives early warning of cardiovascular deterioration</li>
+      <li>Manual RR count and BP are important if NIBP is unreliable (movement, position)</li>
+      <li>HR 92 could be anxiety or early sympathetic response to envenomation — cannot distinguish yet, so treat as potentially significant</li>
+      <li>Headache and nausea with tachycardia in a snake bite patient = concerning until proven otherwise</li>
+      <li>Key history: type/colour of snake, time of bite, distance walked, any first aid applied, symptom progression</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>In snake bite, observations are your early warning system — baseline obs are critical for trending</li>
+      <li>A "normal-looking" patient with a snake bite can arrest within minutes</li>
+      <li>Document the time of bite accurately — hospital will need this for antivenom decision-making</li>
+      <li>Systematic envenomation screening (ptosis, swallowing, speech, coagulopathy signs) should be performed and documented</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, the Corpuls3 goes on early and stays on. You are watching trends, not single numbers. A heart rate that climbs from 92 to 110 over 10 minutes tells you more than any single reading. Get a solid baseline before you start treatment.</p>
+  </div>
+</section>
+
+<!-- CLINICAL DECISION POINT -->
+<section class="fade-in">
+  <div class="card">
+    <h2>Clinical Decision Point</h2>
+    <div class="card-inner">
+      <h3>Working Through the Protocol</h3>
+      <ul>
+        <li><strong>What bit the patient?</strong> Australian native snake — brown, ~1.5 m</li>
+        <li><strong>Where is the bite?</strong> Right lower limb (lateral calf)</li>
+        <li><strong>Protocol pathway?</strong> CPP-008-AO — AU native snake bite — bite on a limb</li>
+        <li><strong>Required actions:</strong></li>
+      </ul>
+      <ol>
+        <li>Request clinical support (EOC Clinician)</li>
+        <li>Ensure minimal patient exertion</li>
+        <li>Do NOT wash the bite site (already washed — document, move on)</li>
+        <li>Apply pressure immobilisation bandage to the limb</li>
+        <li>Immobilise the limb with a splint</li>
+        <li>Immobilise the patient with vacuum mattress (head elevated 20–30 degrees)</li>
+        <li>Provide transport and notify receiving facility</li>
+      </ol>
+    </div>
+    <div class="card-inner">
+      <h3>Working Diagnosis</h3>
+      <p><strong>Suspected brown snake envenomation — right lower limb — symptomatic (headache, nausea, tachycardia)</strong></p>
+      <p>Treat as potentially life-threatening. This patient needs pressure immobilisation, whole-body immobilisation, and transport to Port Lincoln Hospital for venom detection testing, bloods, and possible antivenom.</p>
+    </div>
+  </div>
+
+  <!-- BP 4 -->
+  <div class="bp">
+    <span class="bp-label">Break Point 4</span><span class="bp-type">Decision-Making</span>
+    <h3>Screening Tools, Protocols &amp; Working Diagnosis</h3>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"Which protocol are you working from and what pathway are you following?"</li>
+      <li>"Is this patient time-critical? Why or why not?"</li>
+      <li>"The wife washed the wound — does that change your management?"</li>
+      <li>"When should you contact the EOC Clinician — now or after treatment?"</li>
+      <li>"What can go wrong with this patient in the next 30 minutes?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>CPP-008-AO, AU native snake pathway, bite to a limb — clear protocol pathway</li>
+      <li>This IS time-critical: brown snakes cause the majority of snake bite deaths in Australia; this patient has early systemic symptoms</li>
+      <li>Washed bite site is unfortunate (reduces VDK accuracy) but does NOT change prehospital management</li>
+      <li>EOC Clinician should be contacted now — request clinical support for all native snake bites. They may also contact Toxinology Service SA</li>
+      <li>In the next 30 minutes: cardiovascular collapse (hypotension, arrest), coagulopathy (bleeding), progressive paralysis (airway compromise)</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Brown snakes are responsible for more snake bite deaths in Australia than any other species</li>
+      <li>Early symptoms (headache, nausea, tachycardia) may seem mild but indicate systemic absorption has begun</li>
+      <li>"Request clinical support" in the protocol means contact EOC Clinician — do this early, not as an afterthought</li>
+      <li>Document everything: time of bite, type of snake (description), what first aid was done, symptom timeline</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, you call the EOC Clinician early. You tell them: "52-year-old male, suspected brown snake bite to right lower leg approximately 30 minutes ago. Patient symptomatic with headache, nausea, and mild tachycardia. Bite site has been washed by bystander. Applying PIB now. Transporting to Port Lincoln Hospital, ETA 30 minutes. Requesting clinical support." That call takes 60 seconds and puts the whole system on notice.</p>
+  </div>
+</section>
+
+<!-- TREATMENT PHASE -->
+<section class="fade-in">
+  <div class="card">
+    <h2>Treatment Phase — AO Protocol (Skills Practice)</h2>
+    <p>This is the primary skills practice section. Both crew members should physically practise the pressure immobilisation bandage and splinting technique.</p>
+
+    <div class="card-inner">
+      <h4>Step 1 — Preparation</h4>
+      <ul class="checklist">
+        <li>Reassure the patient: "Greg, we're going to put a firm bandage on your leg to slow down the venom. It's important you stay completely still — don't move your leg at all. We'll do all the work."</li>
+        <li>Gain verbal consent</li>
+        <li>Instruct the patient: "Do not move. We will move you when we're ready."</li>
+        <li>Gather equipment: 2–3 broad elastic bandages (10–15 cm), SAM splint, pen/marker</li>
+        <li>Position yourself at the affected limb — remove the damp cloth carefully</li>
+      </ul>
+    </div>
+
+    <div class="card-inner">
+      <h4>Step 2 — Mark the Bite Site</h4>
+      <ul class="checklist">
+        <li>If puncture marks are visible, mark their location on the skin with a pen</li>
+        <li>In this scenario, the wash has partially obscured the marks — mark the approximate area</li>
+        <li>This mark will be transferred to the outside of the bandage after application</li>
+      </ul>
+    </div>
+
+    <div class="card-inner">
+      <h4>Step 3 — Apply the Pressure Immobilisation Bandage</h4>
+      <p><strong>First bandage — directly over the bite site:</strong></p>
+      <ul class="checklist">
+        <li>Place the start of the bandage directly over the bite site</li>
+        <li>Wrap firmly around the calf 2–3 times to anchor the bandage</li>
+        <li>This provides direct pressure over the bite to slow lymphatic drainage</li>
+      </ul>
+      <p><strong>Second bandage — full limb coverage:</strong></p>
+      <ul class="checklist">
+        <li>Begin at the toes — start wrapping from the most distal point of the limb</li>
+        <li>Wrap firmly up the limb towards the trunk (toes, foot, ankle, calf, knee, thigh)</li>
+        <li>Overlap each wrap by approximately half the bandage width</li>
+        <li>Continue as far up the limb as possible — ideally to the groin</li>
+        <li>Use a third bandage to complete full limb coverage if needed</li>
+      </ul>
+      <p><strong>Firmness guide:</strong></p>
+      <ul>
+        <li>As firm as you would bandage a sprained ankle</li>
+        <li>Should be able to slide one finger underneath the bandage</li>
+        <li>Firm enough to compress lymphatic flow — NOT tight enough to occlude arterial flow</li>
+        <li>This is NOT a tourniquet</li>
+      </ul>
+    </div>
+
+    <div class="card-inner">
+      <h4>Step 4 — Mark the Bite Site on the Bandage</h4>
+      <ul class="checklist">
+        <li>Using your pen, draw a clear mark (cross or circle) on the outside of the bandage over the bite location</li>
+        <li>This allows hospital staff to locate the bite for venom detection without removing the bandage</li>
+      </ul>
+    </div>
+
+    <div class="card-inner">
+      <h4>Step 5 — Splint the Limb</h4>
+      <ul class="checklist">
+        <li>Apply a rigid splint (SAM splint or improvised) along the length of the limb</li>
+        <li>Immobilise the joints above and below the bite — for calf: immobilise the ankle and the knee</li>
+        <li>Secure the splint over the bandage with additional bandage or tape</li>
+        <li>The goal: the patient cannot bend or move the affected limb</li>
+      </ul>
+    </div>
+
+    <div class="card-inner">
+      <h4>Step 6 — Check Distal Circulation</h4>
+      <ul class="checklist">
+        <li>Check right foot: colour (pink, not blue/white), warmth, sensation (can feel touch), movement (can wiggle toes — gently), capillary refill (less than 2 seconds)</li>
+        <li>If circulation is compromised — bandage is too tight — loosen slightly and recheck</li>
+        <li>Recheck distal circulation every 5 minutes</li>
+      </ul>
+    </div>
+
+    <div class="card-inner">
+      <h4>Critical Reminders</h4>
+      <ul>
+        <li><strong>Do NOT remove the bandage once applied</strong> — it is only removed in hospital with antivenom available and IV access established</li>
+        <li><strong>Do NOT allow the patient to walk</strong> — not to the toilet, not to the ambulance, not at all</li>
+        <li>Keep the limb at or below heart level until positioned on the vacuum mattress</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- BP 5 -->
+  <div class="bp">
+    <span class="bp-label">Break Point 5</span><span class="bp-type">Practical Skill</span>
+    <h3>Treatment Initiation &amp; Bandaging Technique</h3>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"Both crew — practise the PIB on each other now. Start from the bite, then full limb, distal to proximal."</li>
+      <li>"Check your partner's bandage — can you slide a finger underneath?"</li>
+      <li>"Where have you marked the bite on the bandage? Can you see it clearly?"</li>
+      <li>"How have you immobilised the ankle and knee joints?"</li>
+      <li>"Check distal circulation — what are you looking for?"</li>
+      <li>"Greg's wife asks: 'Should I have left the wound alone?' — what do you say?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>The PIB slows lymphatic spread of venom — it buys time for transport to definitive care</li>
+      <li>Starting distally and wrapping proximally ensures even compression</li>
+      <li>Marking the bite on the bandage allows hospital VDK swab without removing the bandage</li>
+      <li>Splinting prevents limb movement — any muscle contraction accelerates lymphatic flow</li>
+      <li>Distal circulation checks confirm the bandage is not acting as a tourniquet</li>
+      <li>Response to wife: "You did the right thing calling us quickly. In future, the best first aid is to keep them still and put a firm bandage on — but what matters now is we've got it under control."</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>The most common error with PIB is applying it too loosely — firm like a sprained ankle</li>
+      <li>Full limb coverage (toes to groin) is the gold standard — a bandage only over the bite is insufficient</li>
+      <li>Practise this skill until it is automatic — you do not want to be learning this technique at 0200 on a dark verandah</li>
+      <li>The bandage is the single most important prehospital intervention for Australian snake bite</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, the PIB is the difference-maker. It is your treatment. Everything else — Corpuls3, oxygen, vacuum mattress — supports this. If you can apply a solid PIB and keep the patient still, you have done the most important thing. Practise it until your hands know what to do.</p>
+  </div>
+</section>
+
+<!-- REASSESSMENT & ESCALATION -->
+<section class="fade-in">
+  <div class="card">
+    <h2>Reassessment &amp; Escalation</h2>
+    <p><strong>Time:</strong> 10 minutes after PIB applied. Preparing for extrication.</p>
+    <div class="card-inner">
+      <h3>Repeat Observations — Corpuls3 + Manual</h3>
+      <dl class="obs-grid">
+        <dt>Heart Rate</dt><dd>104 bpm — increasing</dd>
+        <dt>Blood Pressure</dt><dd>130/78 mmHg — slight decrease</dd>
+        <dt>Respiratory Rate</dt><dd>20 /min — increasing</dd>
+        <dt>SpO2</dt><dd>97% on room air</dd>
+        <dt>GCS</dt><dd>15</dd>
+      </dl>
+    </div>
+    <div class="card-inner">
+      <h3>Clinical Changes</h3>
+      <ul>
+        <li>Nausea increasing — patient has now vomited once</li>
+        <li>Headache worsening</li>
+        <li>Diaphoresis more pronounced</li>
+        <li>No ptosis, swallowing intact, speech normal</li>
+        <li>No visible bleeding or bruising from other sites</li>
+        <li>Distal circulation in right foot remains intact</li>
+      </ul>
+    </div>
+    <div class="card-inner">
+      <h3>EOC Clinician Update</h3>
+      <p>Contact EOC Clinician with updated clinical picture. Report:</p>
+      <ul>
+        <li>Trending tachycardia (92 to 104)</li>
+        <li>Now vomiting</li>
+        <li>PIB applied, limb splinted, patient immobilised</li>
+        <li>Preparing for transport to Port Lincoln Hospital, ETA 30 minutes</li>
+        <li>Request: early notification to receiving facility, confirmation of transport destination</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- BP 6 -->
+  <div class="bp">
+    <span class="bp-label">Break Point 6</span><span class="bp-type">Decision-Making</span>
+    <h3>Reassessment &amp; Escalation Decision</h3>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"Compare your first and second obs — what's the trend telling you?"</li>
+      <li>"Has this patient improved, stayed the same, or deteriorated?"</li>
+      <li>"What are you telling the EOC Clinician right now?"</li>
+      <li>"Do you need MedSTAR? Why or why not?"</li>
+      <li>"What are you preparing for during transport?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Trending tachycardia and new vomiting = clinical deterioration — this patient is envenomated</li>
+      <li>Slight BP drop combined with rising HR suggests early compensatory response</li>
+      <li>Port Lincoln Hospital is 30 minutes away and has antivenom — this is the right destination</li>
+      <li>MedSTAR is 90 minutes away — road transport to Port Lincoln is faster for this patient</li>
+      <li>During transport: prepare for further deterioration, including possible cardiac arrest. Have airway/suction ready. Turn patient lateral if vomiting continues</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Trending is everything — a single set of obs means little; the direction of change tells you if the patient is getting better or worse</li>
+      <li>Vomiting after a snake bite is a systemic symptom — it means venom is circulating</li>
+      <li>Always weigh transport time vs retrieval time — in this case, road to Port Lincoln is the fastest path to antivenom</li>
+      <li>Early hospital notification allows the ED to prepare antivenom, VDK, bloods, and resuscitation equipment</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, you are constantly reassessing. You might only get two sets of obs before you need to move. But those two sets tell you a story: if the numbers are moving the wrong way, you move faster. You don't wait for the patient to arrest to decide this is serious.</p>
+  </div>
+</section>
+
+<!-- EXTRICATION & TRANSPORT -->
+<section class="fade-in">
+  <div class="card">
+    <h2>Extrication &amp; Transport</h2>
+    <p>The patient is on the back verandah (elevated, 3 steps down to ground level). The ambulance is parked approximately 15 m from the base of the steps.</p>
+
+    <div class="card-inner">
+      <h3>Extrication Plan</h3>
+      <ol>
+        <li><strong>Green carry chair to the stretcher</strong> — the patient must NOT walk
+          <ul>
+            <li>Position the carry chair next to the patient on the verandah</li>
+            <li>Carefully assist Greg from the deck chair into the carry chair, supporting the splinted right leg</li>
+            <li>One crew member manages the carry chair; the other supports and protects the bandaged/splinted limb</li>
+            <li>Carry down the steps — controlled, steady, communicate</li>
+          </ul>
+        </li>
+        <li><strong>Stretcher with vacuum mattress prepared at ground level</strong>
+          <ul>
+            <li>Vacuum mattress is already laid out flat on the stretcher, valve closed, beads distributed</li>
+            <li>Transfer Greg from carry chair onto the stretcher/vacuum mattress</li>
+            <li>Minimise movement — guide and support, do not rush</li>
+          </ul>
+        </li>
+        <li><strong>Vacuum mattress application</strong>
+          <ul>
+            <li>Position Greg supine on the mattress</li>
+            <li>Mould the mattress around the patient — head, shoulders, torso, limbs</li>
+            <li>Ensure the bandaged/splinted right leg is well-supported but accessible for circulation checks</li>
+            <li>Elevate the head end approximately 20–30 degrees</li>
+            <li>Open valve and extract air with the vacuum pump until the mattress is rigid</li>
+            <li>Close the valve to maintain vacuum</li>
+            <li>Apply retaining straps</li>
+            <li>Confirm patient is secure, comfortable, and the limb is accessible</li>
+          </ul>
+        </li>
+        <li><strong>Load into ambulance and depart</strong>
+          <ul>
+            <li>Load stretcher into ambulance</li>
+            <li>Clinician travels in rear with the patient</li>
+            <li>Continue Corpuls3 monitoring, keep suction and airway equipment within reach</li>
+            <li>Have vomit bag/kidney dish ready</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+    <div class="card-inner">
+      <h3>Transport — En Route to Port Lincoln Hospital</h3>
+      <ul>
+        <li><strong>Destination:</strong> Port Lincoln Hospital ED (~30 minutes)</li>
+        <li><strong>Driving:</strong> Smooth, steady — avoid sudden braking or acceleration</li>
+        <li><strong>Monitoring:</strong> Continuous Corpuls3, repeat full obs every 5–10 minutes</li>
+        <li><strong>Watch for:</strong> Worsening tachycardia, hypotension, respiratory depression, altered consciousness, coagulopathy (bleeding from gums, IV sites, or bite site through bandage)</li>
+        <li><strong>Airway:</strong> Position for drainage if vomiting continues — slight left lateral tilt if possible within vacuum mattress, suction ready</li>
+        <li><strong>If cardiac arrest occurs:</strong> Commence CPR per protocol — early cardiovascular collapse is the primary lethal mechanism</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- BP 7 -->
+  <div class="bp">
+    <span class="bp-label">Break Point 7</span><span class="bp-type">Practical Skill / Decision-Making</span>
+    <h3>Extrication &amp; Transport Planning</h3>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"Talk me through how you get Greg from the verandah to the ambulance without him taking a single step."</li>
+      <li>"Why the carry chair and not just walking him down the steps?"</li>
+      <li>"Walk through the vacuum mattress application — what angle for the head?"</li>
+      <li>"What are you preparing for in the back of the ambulance during the 30-minute transport?"</li>
+      <li>"At what point during transport would you upgrade your concern?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>The carry chair eliminates all walking — this is non-negotiable for snake bite. Any muscle contraction in the legs accelerates lymphatic spread of venom</li>
+      <li>The vacuum mattress provides whole-body immobilisation AND allows head elevation to 20–30 degrees as per protocol</li>
+      <li>During transport: airway management and suction are the priority preparations — if this patient's paralysis progresses, airway and breathing will fail first</li>
+      <li>Upgrade concern if: HR greater than 120, systolic BP less than 100, any signs of paralysis (ptosis, difficulty swallowing), altered consciousness, or active bleeding</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>The carry chair is your best tool for minimising patient exertion — especially from elevated surfaces like verandahs, steps, or upper floors</li>
+      <li>Vacuum mattress with head elevation is specifically mentioned in CPP-008-AO — this is not optional, it is the protocol</li>
+      <li>30 minutes in the back of an ambulance with a deteriorating snake bite patient is a long time — you need a plan for the worst case</li>
+      <li>Smooth driving reduces patient movement and anxiety — communicate with your driver</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, the extrication is where crews often lose discipline. The patient says "I can walk" — you say "We need you completely still." The wife offers to help him down the stairs — you politely take over. Every step that patient takes is venom moving through their system. The carry chair, the vacuum mattress, the smooth transport — this is the care.</p>
+  </div>
+</section>
+
+<!-- HANDOVER -->
+<section class="fade-in">
+  <div class="card">
+    <h2>Handover — ISBAR</h2>
+    <p>You arrive at Port Lincoln Hospital ED. The team has been pre-notified and is expecting you.</p>
+    <div class="card-inner">
+      <h3>ISBAR Handover</h3>
+      <p><strong>I — Identification</strong></p>
+      <p>"This is [your name], Volunteer AO crew from [station]. This is Greg Thompson, 52-year-old male."</p>
+
+      <p><strong>S — Situation</strong></p>
+      <p>"Greg has a suspected brown snake bite to his right lower leg, approximately 75 minutes ago. He is symptomatic with vomiting, headache, and progressive tachycardia."</p>
+
+      <p><strong>B — Background</strong></p>
+      <p>"He was clearing brush on a rural property at Wangary when he was bitten. He saw a brown snake approximately 1.5 metres long. He walked about 100 metres back to his house before we arrived. His wife washed the bite site with water before our arrival. Past history of hypertension, takes Perindopril 5 mg daily. No allergies."</p>
+
+      <p><strong>A — Assessment</strong></p>
+      <p>"On our arrival his HR was 92 and he had a headache and mild nausea. We applied a pressure immobilisation bandage to the full right leg, splinted the limb, and immobilised him in a vacuum mattress with head elevated 20 degrees. On reassessment his HR had increased to 104, BP dropped slightly to 130/78, and he vomited once. Current obs: HR 108, BP 126/76, RR 20, SpO2 97% on room air, GCS 15. No ptosis, swallowing intact, no bleeding from other sites. Distal circulation intact throughout."</p>
+
+      <p><strong>R — Recommendation</strong></p>
+      <p>"He will need venom detection testing — noting the bite was washed. Bloods for coagulation and renal function. Observation for progressive envenomation. Possible antivenom. We have not removed the pressure bandage — the bite site is marked on the outside of the bandage. EOC Clinician was consulted and is aware."</p>
+    </div>
+  </div>
+
+  <!-- BP 8 -->
+  <div class="bp">
+    <span class="bp-label">Break Point 8</span><span class="bp-type">Practical Skill</span>
+    <h3>ISBAR Handover</h3>
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>"Clinician — deliver the full ISBAR handover out loud, as if you're standing in the ED."</li>
+      <li>"What specific information does the ED need for a snake bite patient?"</li>
+      <li>"What do you mention about the bite site being washed?"</li>
+      <li>"What is your recommendation to the receiving team?"</li>
+    </ul>
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>ISBAR is structured and ensures nothing is missed — particularly time of bite, snake description, distance walked, and first aid applied</li>
+      <li>Mentioning the washed bite is critical — it tells the ED that VDK swab may be unreliable and they may need to rely on clinical presentation and bloods</li>
+      <li>Trending observations (HR 92, 104, 108) are more valuable than single numbers — include the trend</li>
+      <li>Clearly state the bandage has NOT been removed and that the bite site is marked — hospital will manage bandage removal under controlled conditions</li>
+    </ul>
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>A good ISBAR takes 60–90 seconds and gives the receiving team everything they need</li>
+      <li>Practise it out loud — not in your head. The handover is a clinical skill like any other</li>
+      <li>For snake bite, the critical handover elements are: snake type, time of bite, patient exertion after bite, first aid applied, symptom progression, obs trends</li>
+      <li>Do NOT remove the PIB at handover — that is a hospital decision</li>
+    </ul>
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, the ED may be busy when you arrive. A clear, structured ISBAR delivered calmly gets your patient prioritised correctly. If you mumble through it or forget the timeline, critical information is lost. Write key points on your glove or a note card during transport if it helps.</p>
+  </div>
+</section>
+
+<!-- DEBRIEF -->
+<section class="fade-in">
+  <div class="card">
+    <h2>Debrief (10–15 minutes)</h2>
+
+    <div class="card-inner">
+      <h3>Reflective Questions</h3>
+      <ol>
+        <li>What were your initial priorities when you read the MDT — and did they change after you arrived on scene?</li>
+        <li>How confident did you feel applying the pressure immobilisation bandage? What would you do differently next time?</li>
+        <li>At what point did you recognise this patient was deteriorating, and what triggered that recognition?</li>
+        <li>How did you manage the bystander situation — the wife washing the bite, the anxiety — while staying focused on treatment?</li>
+        <li>Walk through your extrication plan. Was there a moment where the patient could have been allowed to exert themselves? How did you prevent that?</li>
+        <li>How did you divide tasks between clinician and driver? Was communication clear throughout?</li>
+        <li>If this patient had arrested in the back of the ambulance during transport, what would you have done?</li>
+      </ol>
+    </div>
+
+    <div class="card-inner">
+      <h3>Take-Home Messages</h3>
+      <ol>
+        <li><strong>All Australian native snake bites are potentially lethal</strong> — a well-appearing patient can arrest without warning</li>
+        <li><strong>The pressure immobilisation bandage is your primary treatment</strong> — firm, full limb, distal to proximal, and do not remove it</li>
+        <li><strong>Minimal patient exertion is non-negotiable</strong> — no walking, no standing, no helping. Use the carry chair</li>
+        <li><strong>Do not wash the bite site</strong> — venom detection requires trace venom on the skin. If it has been washed, document it and move on</li>
+        <li><strong>Trending observations detect deterioration early</strong> — baseline obs, then reassess, then compare. The direction of change is your early warning</li>
+        <li><strong>Early EOC Clinician contact and hospital notification</strong> — puts the system on notice and ensures antivenom is ready on arrival</li>
+        <li><strong>Prepare for the worst during transport</strong> — airway, suction, and a plan for cardiac arrest should always be in your mind for snake bite</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- OPTIONAL SCENARIO VARIATIONS -->
+<section class="fade-in">
+  <div class="card">
+    <h2>Optional Scenario Variations</h2>
+    <p>Use these to extend the session, challenge experienced crews, or revisit on a different training night.</p>
+
+    <div class="var-card">
+      <h3>Variation 1 — Bite to the Torso</h3>
+      <p>Greg was bitten on the left flank while bending over. A pressure immobilisation bandage cannot be applied to the torso.</p>
+      <p><strong>Management change:</strong> Cover the bite area with a simple dressing only. Focus on whole-body immobilisation (vacuum mattress), minimal exertion, and rapid transport. Same escalation pathway.</p>
+      <p><strong>Teaching focus:</strong> Not all bites can be bandaged — know the protocol for non-limb bites.</p>
+    </div>
+
+    <div class="var-card">
+      <h3>Variation 2 — Patient Found in Paddock</h3>
+      <p>Greg is 200 m from the house, lying in long grass near the water tank. He called his wife on his mobile. He has not walked since the bite.</p>
+      <p><strong>Management change:</strong> Extrication over rough ground — may need to carry equipment to the patient. Apply PIB in the field, then stretcher carry back to the ambulance. More physically demanding for the crew.</p>
+      <p><strong>Teaching focus:</strong> It is better for the patient to stay still and for you to go to them, than for the patient to walk to you.</p>
+    </div>
+
+    <div class="var-card">
+      <h3>Variation 3 — Rapid Cardiovascular Collapse</h3>
+      <p>During transport, Greg becomes drowsy, HR spikes to 130, BP drops to 88/50. He then loses consciousness and becomes pulseless.</p>
+      <p><strong>Management change:</strong> Cardiac arrest management. Crew must extract from vacuum mattress rapidly, commence CPR, apply AED/Corpuls3 defib pads, manage airway and ventilation, and continue transport under CPR.</p>
+      <p><strong>Teaching focus:</strong> This is the lethal pathway for snake envenomation. Early cardiovascular collapse. Be ready for it.</p>
+    </div>
+
+    <div class="var-card">
+      <h3>Variation 4 — Child Bitten in the Garden</h3>
+      <p>8-year-old bitten on the right hand while playing near a woodpile. Parents unsure of snake type but describe it as brown. Child is crying, frightened, hand is swollen.</p>
+      <p><strong>Management change:</strong> Same protocol applies. PIB to the full right arm (fingers to axilla). Reassurance is critical. Use age-appropriate communication. Paediatric obs and monitoring. Consider early MedSTAR notification for paediatric envenomation.</p>
+      <p><strong>Teaching focus:</strong> Paediatric snake bite — same protocol, smaller patient, higher risk due to lower body mass relative to venom dose.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  <p>DSY Training — Envenomation AO Walk-Through Scenario<br>
+  Protocol: CPP-008-AO | Version: March 2026<br>
+  For training purposes only. Always refer to current SAAS protocols.</p>
+</div>
+
+<script>
+// Progress Bar
+const progressBar=document.getElementById('progressBar');
+window.addEventListener('scroll',function(){
+  var h=document.documentElement;
+  var pct=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;
+  progressBar.style.width=Math.min(pct,100)+'%';
+},{passive:true});
+
+// Toggle/Accordion
+function toggleSection(id){
+  var el=document.getElementById(id);
+  var icon=document.getElementById(id.replace('Content','Icon'));
+  el.classList.toggle('open');
+  if(icon) icon.textContent=el.classList.contains('open')?'\u2212':'+';
+}
+
+// Fade-in on Scroll
+var faders=document.querySelectorAll('.fade-in');
+var obsOpts={root:null,threshold:0.12,rootMargin:'0px 0px -40px 0px'};
+var fadeObs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');fadeObs.unobserve(e.target);}});
+},obsOpts);
+faders.forEach(function(f){fadeObs.observe(f);});
+</script>
+
+</body>
+</html>
