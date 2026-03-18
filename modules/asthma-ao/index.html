@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asthma — AO | Walk-Through Scenario | DSY Training</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:18px;scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0C2818;color:#E8F5EC;line-height:1.6;padding-top:80px}
+
+/* Sticky Header */
+.sticky-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:#0E3520;border-bottom:2px solid #1E7040;padding:10px 16px;display:flex;align-items:center;gap:14px}
+.sticky-header img{border-radius:8px}
+.header-title{flex:1;font-size:1.05rem;font-weight:700;color:#E8F5EC}
+.progress-track{position:absolute;bottom:0;left:0;right:0;height:3px;background:#091E12}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#2BA458,#38CC6E);transition:width .15s ease}
+
+/* Container */
+.container{max-width:820px;margin:0 auto;padding:0 16px 60px}
+
+/* Hero */
+.hero{text-align:center;padding:36px 16px 28px}
+.hero h1{font-size:1.8rem;font-weight:800;color:#38CC6E;margin-bottom:6px}
+.hero .sub{font-size:1.1rem;color:#B8D8C6;margin-bottom:14px}
+.hero .badge{display:inline-block;background:#103D24;border:1px solid #1E7040;border-radius:20px;padding:6px 18px;font-size:.82rem;color:#B8D8C6}
+
+/* Card */
+.card{background:#103D24;border:1px solid #1E7040;border-radius:12px;padding:24px;margin-bottom:20px}
+.card h2{font-size:1.25rem;font-weight:700;color:#38CC6E;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #1E7040}
+.card h3{font-size:1.1rem;font-weight:600;color:#E8F5EC;margin:18px 0 8px}
+.card h4{font-size:1rem;font-weight:600;color:#B8D8C6;margin:14px 0 6px}
+.card p,.bp-section p{margin-bottom:10px;color:#B8D8C6;font-size:1rem}
+.card ul,.card ol{margin:8px 0 12px 22px}
+.card li,.bp-section li{margin-bottom:6px;color:#B8D8C6;font-size:1rem}
+.card ol li{margin-bottom:8px}
+
+/* Checklist */
+.cl{list-style:none;margin-left:0!important;padding:0}
+.cl li{position:relative;padding-left:28px;margin-bottom:8px}
+.cl li::before{content:'\2610';position:absolute;left:0;color:#2BA458;font-size:1.1rem}
+
+/* Grid */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+
+/* Tables */
+.otbl{width:100%;border-collapse:collapse;margin:12px 0}
+.otbl th,.otbl td{padding:8px 10px;text-align:left;border-bottom:1px solid #1E7040;font-size:1rem}
+.otbl th{color:#38CC6E;font-weight:600;background:#0A2816}
+.otbl td{color:#E8F5EC}
+.abn{color:#FACC15!important;font-weight:600}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0}
+
+/* Scenario Box */
+.sbox{background:#0A2816;border-left:4px solid #2BA458;padding:14px 18px;border-radius:0 8px 8px 0;margin:12px 0}
+.sbox .lbl{font-size:.78rem;font-weight:700;color:#2BA458;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+
+/* MDT Box */
+.mdt{background:#081810;border:1px solid #1E7040;border-radius:8px;padding:18px;font-family:'Courier New',monospace;margin:12px 0}
+.mdt .mh{color:#38CC6E;font-weight:700;margin-bottom:8px;font-size:.88rem}
+.mdt p{margin-bottom:4px;font-size:.92rem;color:#B8D8C6}
+
+/* Highlight Box */
+.hlbox{background:#2A2A0A;border:1px solid #FACC15;border-radius:8px;padding:14px 18px;margin:14px 0}
+.hlbox .ht{color:#FACC15;font-weight:700;margin-bottom:6px}
+
+/* Critical Box */
+.crbox{background:#2A0A0A;border:1px solid #EF4444;border-radius:8px;padding:14px 18px;margin:14px 0}
+.crbox .ct{color:#EF4444;font-weight:700;margin-bottom:6px}
+
+/* Break Points */
+.bp{background:#1A2E1C;border:2px solid #FACC15;border-radius:12px;padding:24px;margin:24px 0}
+.bp-hdr{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px}
+.bp-lbl{background:#FACC15;color:#0C2818;font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:4px;letter-spacing:.5px}
+.bp-ttl{font-size:1.12rem;font-weight:700;color:#E8F5EC;flex:1;min-width:140px}
+.bp-typ{font-size:.78rem;color:#0C2818;background:#2BA458;padding:2px 10px;border-radius:4px;font-weight:600}
+.bp-section{margin-bottom:14px}
+.bp-section h4{font-size:.88rem;font-weight:700;color:#38CC6E;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.bp-section ul{margin:0 0 0 20px}
+.bp-section p{font-style:italic}
+
+/* Toggle */
+.tgl-hdr{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:16px 20px;background:#144A2C;border:1px solid #1E7040;border-radius:10px;margin-bottom:4px;min-height:52px;-webkit-tap-highlight-color:transparent;user-select:none}
+.tgl-hdr:hover,.tgl-hdr:active{background:#186535}
+.tgl-hdr h2{font-size:1.15rem;font-weight:700;color:#38CC6E;margin:0;padding:0;border:none}
+.tgl-ico{font-size:1.5rem;color:#2BA458;transition:transform .3s ease;min-width:32px;text-align:center;line-height:1}
+.tgl-body{max-height:0;overflow:hidden;transition:max-height .5s ease;background:#103D24;border:1px solid #1E7040;border-top:none;border-radius:0 0 10px 10px}
+.tgl-body-inner{padding:0 20px}
+.tgl.open .tgl-body{max-height:8000px}
+.tgl.open .tgl-body-inner{padding:20px}
+.tgl.open .tgl-ico{transform:rotate(45deg)}
+
+/* Fade-in */
+.fi{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.fi.vis{opacity:1;transform:translateY(0)}
+
+/* Responsive */
+@media(max-width:600px){
+html{font-size:16px}
+body{padding-top:70px}
+.sticky-header{padding:8px 10px;gap:8px}
+.sticky-header img{width:44px!important;height:44px!important}
+.header-title{font-size:.9rem}
+.hero h1{font-size:1.45rem}
+.card,.bp{padding:16px}
+.bp-hdr{flex-direction:column;align-items:flex-start}
+.otbl th,.otbl td{padding:6px 7px;font-size:.9rem}
+}
+</style>
+</head>
+<body>
+
+<header class="sticky-header">
+<img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" alt="DSY Training Logo" width="56" height="56" style="object-fit:contain">
+<span class="header-title">Asthma — AO | Walk-Through Scenario</span>
+<div class="progress-track"><div class="progress-fill" id="pBar"></div></div>
+</header>
+
+<div class="container">
+
+<!-- HERO -->
+<section class="hero">
+<h1>Asthma — AO</h1>
+<p class="sub">Walk-Through Scenario — 2-Person Volunteer AO Crew</p>
+<span class="badge">SAAS Protocol: Asthma — AO &nbsp;|&nbsp; Regional / Rural Setting</span>
+</section>
+
+<!-- LEARNING OBJECTIVES -->
+<section class="card fi">
+<h2>Learning Objectives</h2>
+<ul class="cl">
+<li>Accurately classify asthma severity using clinical indicators and observations</li>
+<li>Administer Salbutamol MDI via spacer with correct technique and dose for severity</li>
+<li>Identify indications for Ipratropium Bromide and administer correctly</li>
+<li>Apply oxygen therapy targeting SpO2 94–98%</li>
+<li>Demonstrate structured reassessment and escalation decision-making</li>
+<li>Deliver a concise ISBAR handover to the receiving facility</li>
+</ul>
+</section>
+
+<!-- REQUIRED EQUIPMENT -->
+<section class="card fi">
+<h2>Required Equipment</h2>
+<div class="grid2">
+<div>
+<h4>Clinical</h4>
+<ul class="cl">
+<li>Ambulance Response Bag</li>
+<li>Corpuls3 monitor</li>
+<li>Stethoscope</li>
+<li>Salbutamol MDI (100 mcg/actuation)</li>
+<li>Ipratropium Bromide MDI (21 mcg/actuation)</li>
+<li>Spacer device (+ mask attachment)</li>
+<li>Oxygen (mask, nasal prongs, tubing)</li>
+</ul>
+</div>
+<div>
+<h4>Operational</h4>
+<ul class="cl">
+<li>Stretcher</li>
+<li>Green carry chair</li>
+<li>PPE (gloves, glasses)</li>
+<li>ePCR tablet / paperwork</li>
+<li>Blanket</li>
+<li>Torch (night scenario)</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- SESSION OVERVIEW -->
+<section class="card fi">
+<h2>Session Overview</h2>
+<p>This walk-through is designed for a 2-person Volunteer AO crew working through a realistic acute asthma presentation. The scenario includes 8 mandatory break points for discussion, skills practice, and clinical decision-making.</p>
+<h4>Estimated Duration</h4>
+<ul>
+<li>Pre-Brief: approximately 10 minutes</li>
+<li>Scenario Walk-Through: approximately 40–50 minutes</li>
+<li>Debrief: approximately 10–15 minutes</li>
+</ul>
+<h4>Resource Context</h4>
+<ul>
+<li>Nearest paramedic backup: 50 minutes</li>
+<li>Nearest country hospital: 30 minutes</li>
+<li>MedSTAR (air): 90 minutes</li>
+<li>EOC Clinician: available by phone</li>
+</ul>
+</section>
+
+<!-- PRE-BRIEF (Toggle) -->
+<div class="tgl" id="t-pre">
+<div class="tgl-hdr" onclick="tg('t-pre')">
+<h2>Pre-Brief</h2>
+<span class="tgl-ico">+</span>
+</div>
+<div class="tgl-body"><div class="tgl-body-inner">
+<p><strong>Time:</strong> approximately 10 minutes</p>
+
+<h3>Protocol Overview — Asthma (AO)</h3>
+<h4>Severity Classification</h4>
+<div class="tbl-wrap">
+<table class="otbl">
+<thead><tr><th>Feature</th><th>Mild</th><th>Moderate</th><th>Severe</th><th>Life-Threatening</th></tr></thead>
+<tbody>
+<tr><td>Speech</td><td>Sentences</td><td>Phrases</td><td>Words only</td><td>Unable to speak</td></tr>
+<tr><td>SpO2</td><td>&ge;94%</td><td>90–94%</td><td>&lt;90%</td><td>&lt;90%</td></tr>
+<tr><td>Accessory muscles</td><td>Nil / minimal</td><td>Some use</td><td>Marked use</td><td>Exhaustion</td></tr>
+<tr><td>Wheeze</td><td>End-expiratory</td><td>Expiratory</td><td>Insp. + exp.</td><td>Silent chest</td></tr>
+<tr><td>Mental state</td><td>Normal</td><td>Anxious</td><td>Agitated</td><td>Drowsy / confused</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Treatment Summary (AO Scope)</h4>
+<ul>
+<li>Position upright</li>
+<li>Oxygen if SpO2 &lt;94% — target 94–98%</li>
+<li><strong>Salbutamol MDI via spacer:</strong>
+<ul>
+<li>Mild / Moderate: 6 puffs — repeat every 20 minutes</li>
+<li>Severe / Life-threatening: 12 puffs — repeat every 20 minutes</li>
+</ul></li>
+<li><strong>Ipratropium Bromide MDI via spacer</strong> (severe / life-threatening only): 8 puffs</li>
+<li>Contact EOC Clinician for severe / life-threatening or inadequate response</li>
+<li>Monitor continuously, reassess after each treatment round</li>
+<li>Transport — do not delay</li>
+</ul>
+
+<h4>Key Reminders</h4>
+<ul>
+<li>A silent chest in an asthmatic is life-threatening — not improving</li>
+<li>Tachycardia is expected (from both the asthma and from Salbutamol)</li>
+<li>Patients who have already used significant reliever at home may be sicker than they appear</li>
+<li>Keep the patient upright — positioning is a treatment</li>
+<li>Document time and doses for handover</li>
+</ul>
+
+<h4>Crew Role Allocation</h4>
+<ul>
+<li><strong>Clinician (AO1):</strong> Patient contact, history, clinical assessment, medication administration, clinical decisions</li>
+<li><strong>Driver (AO2):</strong> Corpuls3 setup, observations (including manual RR and BP), documentation, equipment preparation, EOC communication</li>
+</ul>
+</div></div>
+</div>
+
+<!-- DISPATCH & EN ROUTE (Toggle) -->
+<div class="tgl" id="t-disp">
+<div class="tgl-hdr" onclick="tg('t-disp')">
+<h2>Dispatch and En Route</h2>
+<span class="tgl-ico">+</span>
+</div>
+<div class="tgl-body"><div class="tgl-body-inner">
+
+<div class="sbox">
+<div class="lbl">Scenario Context</div>
+<p>Thursday, 0215 hours. You and your crew partner are paged to a breathing difficulty at a rural property. Cool, dry night. You respond from home — estimated 12 minutes to scene.</p>
+</div>
+
+<div class="mdt">
+<div class="mh">MDT DISPLAY</div>
+<p><strong>Priority:</strong> 2</p>
+<p><strong>Case Type:</strong> Breathing Problems</p>
+<p><strong>Age/Sex:</strong> 45F</p>
+<p><strong>Chief Complaint:</strong> Difficulty breathing — "can't get her breath"</p>
+<p><strong>Caller:</strong> Husband (on scene)</p>
+<p><strong>Hx:</strong> Known asthmatic. Has been using Ventolin without relief.</p>
+<p><strong>Location:</strong> Rural homestead, sealed road access</p>
+<p><strong>Additional:</strong> Patient is awake, sitting up. No other concerns.</p>
+</div>
+
+<h4>En Route Considerations</h4>
+<ul>
+<li>Review MDT — known asthmatic who has already used reliever without adequate relief</li>
+<li>Discuss Asthma — AO protocol: severity classification drives dosing</li>
+<li>Confirm crew roles (clinician / driver)</li>
+<li>Ensure spacer, Salbutamol MDI, Ipratropium MDI, and oxygen are easily accessible in the Response Bag</li>
+<li>Consider: this patient has already self-treated — she may be more unwell than the MDT suggests</li>
+<li>Backup context: paramedic 50 minutes away; hospital 30 minutes from scene</li>
+</ul>
+</div></div>
+</div>
+
+<!-- BREAK POINT 1 -->
+<div class="bp fi">
+<div class="bp-hdr">
+<span class="bp-lbl">BREAK POINT</span>
+<span class="bp-ttl">En-Route Planning</span>
+<span class="bp-typ">Discussion</span>
+</div>
+<div class="bp-section">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"Read the MDT aloud. What stands out to you?"</li>
+<li>"What are you expecting on arrival? What is the worst-case scenario?"</li>
+<li>"What kit do you need first through the door?"</li>
+<li>"Who is doing what when we arrive?"</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Known asthmatic who has used reliever without relief — could be moderate to severe</li>
+<li>0215 hours — nocturnal exacerbations are common and can be severe</li>
+<li>Response Bag with spacer, MDIs, O2, Corpuls3 — all going in first</li>
+<li>Role allocation agreed before arrival: clinician takes patient, driver sets up monitoring</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Key Teaching Points</h4>
+<ul>
+<li>The MDT tells you she has already self-treated — you are dealing with a partially treated, possibly failing, presentation</li>
+<li>Nocturnal asthma is a marker of poor control</li>
+<li>Planning crew roles before arrival saves critical time on scene</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Real-Job Translation</h4>
+<p>On a real job at 2 AM, the drive to scene is your only planning window. Use it. Talk through the protocol, check your kit mentally, and agree on roles before you pull up.</p>
+</div>
+</div>
+
+<!-- ON ARRIVAL -->
+<section class="card fi">
+<h2>On Arrival — Scene Management</h2>
+<div class="sbox">
+<div class="lbl">Scene Description</div>
+<p>You arrive at a well-maintained rural homestead. Porch light on. Husband meets you at the front door, clearly worried. He says: "She woke up about half an hour ago fighting for breath. She's used her puffer heaps but it's not working." You can hear an audible wheeze from the hallway. The bedroom is approximately 15 metres from where you can park the ambulance.</p>
+</div>
+<h4>Scene Safety</h4>
+<ul class="cl">
+<li>Scene safe — domestic residence, no hazards identified</li>
+<li>Access clear to bedroom</li>
+<li>Note distance to ambulance for extrication planning</li>
+<li>One bystander (husband) — available to assist</li>
+</ul>
+</section>
+
+<!-- BREAK POINT 2 -->
+<div class="bp fi">
+<div class="bp-hdr">
+<span class="bp-lbl">BREAK POINT</span>
+<span class="bp-ttl">Doorway / First Impression</span>
+<span class="bp-typ">Discussion</span>
+</div>
+<div class="bp-section">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"You're standing at the bedroom doorway. What can you see and hear?"</li>
+<li>"Based on your doorway assessment alone — how sick is this patient?"</li>
+<li>"What is your immediate priority?"</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Audible wheeze — significant bronchospasm</li>
+<li>Patient posture: sitting bolt upright on edge of bed, tripod position</li>
+<li>Visible accessory muscle use — sternocleidomastoid, intercostals</li>
+<li>Patient is awake and tracking your entry — GCS appears 15</li>
+<li>Appears at least moderate, possibly severe — prepare for 12 puffs Salbutamol</li>
+<li>Priority: introduce yourself, keep her upright, get oxygen and monitoring started</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Tripod position, audible wheeze, and accessory muscle use are immediate red flags for significant respiratory distress</li>
+<li>Asthma patients who are sitting forward and working hard must not be laid down</li>
+<li>Observe speech ability as you introduce yourself — can she respond in sentences, phrases, or single words?</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Real-Job Translation</h4>
+<p>Those first three seconds at the doorway tell you more than any number on the monitor. If the patient is tripoding and wheezing audibly from across the room, your internal alert level should already be elevated.</p>
+</div>
+</div>
+
+<!-- PATIENT CONTACT & PRIMARY SURVEY -->
+<section class="card fi">
+<h2>Patient Contact and Primary Survey</h2>
+<div class="sbox">
+<div class="lbl">Patient Presentation</div>
+<p><strong>Karen Mitchell, 45 years old.</strong> Sitting bolt upright on edge of bed, leaning forward on arms (tripod position). Audible expiratory wheeze. Speaking in short phrases between breaths. Pale, mildly diaphoretic. Alert and oriented.</p>
+</div>
+<p>When you ask "What's happened tonight, Karen?" she responds in broken phrases:</p>
+<p style="color:#FACC15;font-style:italic">"Woke up... couldn't breathe... used my puffer... heaps of times... not helping..."</p>
+
+<h3>Primary Survey — ABCDE</h3>
+<table class="otbl">
+<tbody>
+<tr><td><strong>A — Airway</strong></td><td>Patent. Speaking. No stridor.</td></tr>
+<tr><td><strong>B — Breathing</strong></td><td>Bilateral expiratory wheeze (some inspiratory component). Increased WOB. Accessory muscle use (SCM, intercostals). Reduced air entry bilaterally.</td></tr>
+<tr><td><strong>C — Circulation</strong></td><td>Pale, mildly diaphoretic. Radial pulse present, fast, regular.</td></tr>
+<tr><td><strong>D — Disability</strong></td><td>GCS 15 (E4 V5 M6). Alert, oriented. Anxious and distressed.</td></tr>
+<tr><td><strong>E — Exposure</strong></td><td>No rash. No peripheral oedema. Wearing nightclothes.</td></tr>
+</tbody>
+</table>
+
+<h3>History (Patient and Husband)</h3>
+<h4>Presenting Complaint</h4>
+<ul>
+<li>Woke at approximately 0145 with severe shortness of breath</li>
+<li>Increasing chest tightness and wheeze over last 30 minutes</li>
+<li>Used own Ventolin MDI — approximately 8 puffs directly (no spacer) without adequate relief</li>
+<li>Has had a mild upper respiratory tract infection for 3 days</li>
+<li>Yesterday afternoon: spent several hours cleaning an old, dusty shed</li>
+<li>No chest pain, no fever, no productive cough</li>
+</ul>
+<h4>Past Medical History</h4>
+<ul>
+<li>Asthma — diagnosed age 12; two similar ED presentations this year</li>
+<li>Mild eczema</li>
+<li>No previous ICU admission for asthma</li>
+</ul>
+<h4>Medications</h4>
+<ul>
+<li>Seretide 250/25 (preventer) — <strong>ran out 2 weeks ago, has not replaced it</strong></li>
+<li>Ventolin 100 mcg MDI (reliever)</li>
+</ul>
+<h4>Allergies</h4>
+<ul>
+<li>Penicillin (causes rash)</li>
+</ul>
+</section>
+
+<!-- BREAK POINT 3 -->
+<div class="bp fi">
+<div class="bp-hdr">
+<span class="bp-lbl">BREAK POINT</span>
+<span class="bp-ttl">Initial Observations and Corpuls3 Setup</span>
+<span class="bp-typ">Practical Skill</span>
+</div>
+<div class="bp-section">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"Driver — set up the Corpuls3. What are you attaching and in what order?"</li>
+<li>"What observation is your highest priority in this patient?"</li>
+<li>"Read out the numbers. What is abnormal?"</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Corpuls3 Setup Sequence</h4>
+<ul>
+<li>SpO2 probe on finger — priority one for any respiratory patient</li>
+<li>3-lead ECG — monitoring for tachycardia, arrhythmia</li>
+<li>NIBP cuff — baseline blood pressure</li>
+<li>Manual respiratory rate: count for 30 seconds, multiply by 2</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Initial Observations</h4>
+<table class="otbl">
+<tbody>
+<tr><td>HR</td><td class="abn">118 bpm (tachycardic)</td></tr>
+<tr><td>RR</td><td class="abn">28 /min (tachypnoeic)</td></tr>
+<tr><td>SpO2</td><td class="abn">91% room air</td></tr>
+<tr><td>BP</td><td>140 / 88 mmHg</td></tr>
+<tr><td>Temp</td><td>36.8&deg;C</td></tr>
+<tr><td>GCS</td><td>15</td></tr>
+</tbody>
+</table>
+</div>
+<div class="bp-section">
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>SpO2 91% on room air — below 94%, oxygen therapy is indicated</li>
+<li>Tachycardia is consistent with respiratory distress and sympathetic drive</li>
+<li>RR 28 — significantly elevated, confirms increased work of breathing</li>
+<li>BP mildly elevated — likely stress response, not a primary concern</li>
+<li>These numbers combined with phrase-length speech and accessory muscle use guide severity grading</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Key Teaching Points</h4>
+<ul>
+<li>In respiratory patients, SpO2 is your first probe on — it drives your oxygen decision</li>
+<li>Always manually count respiratory rate — the Corpuls3 may not accurately capture it in a moving, distressed patient</li>
+<li>Observations confirm what your doorway assessment already told you — put the numbers together with the clinical picture</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Real-Job Translation</h4>
+<p>Get the SpO2 probe on within the first minute. You need that number to make your oxygen decision. Do not wait for a full set of observations before starting treatment — in a sick asthmatic, the clinician can be treating while the driver is still setting up monitoring.</p>
+</div>
+</div>
+
+<!-- BREAK POINT 4 -->
+<div class="bp fi">
+<div class="bp-hdr">
+<span class="bp-lbl">BREAK POINT</span>
+<span class="bp-ttl">Screening Tools, Protocol and Working Diagnosis</span>
+<span class="bp-typ">Decision-Making</span>
+</div>
+<div class="bp-section">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"Based on the clinical picture and observations — what severity category does Karen fall into?"</li>
+<li>"Which protocol are you working from?"</li>
+<li>"What treatment dose does that severity dictate?"</li>
+<li>"Are there any red flags that would push this towards life-threatening?"</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li><strong>Working diagnosis:</strong> Acute asthma exacerbation</li>
+<li><strong>Triggers identified:</strong> Dust exposure + URTI + preventer non-compliance</li>
+<li><strong>Severity classification: SEVERE</strong></li>
+<li>Speaking in phrases (borderline words at worst) — severe</li>
+<li>SpO2 91% — below 94% — severe range</li>
+<li>Marked accessory muscle use — severe</li>
+<li>RR 28 — elevated</li>
+<li>Already used significant reliever without relief — high concern</li>
+<li><strong>Protocol:</strong> Asthma — AO</li>
+<li><strong>Dosing:</strong> Salbutamol 12 puffs + Ipratropium Bromide 8 puffs via spacer</li>
+<li>Not life-threatening: alert, speaking (phrases), no silent chest, no cyanosis, no exhaustion</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Severity classification directly determines your medication dose — getting it right matters</li>
+<li>A patient who has already used 8 puffs of reliever at home without relief should be treated as at least moderate, likely severe</li>
+<li>Multiple triggers stacking (dust + URTI + no preventer) increases the likelihood of a significant exacerbation</li>
+<li>The absence of life-threatening features is reassuring but severe can deteriorate rapidly</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Real-Job Translation</h4>
+<p>Do not anchor on a single feature. Look at the whole picture: speech, SpO2, work of breathing, how much reliever they have already used, and how they look. If it looks severe, treat it as severe. You can de-escalate if they improve — you cannot undo under-treatment.</p>
+</div>
+</div>
+
+<!-- CLINICAL DECISION POINT -->
+<section class="card fi">
+<h2>Clinical Decision Point</h2>
+<div class="hlbox">
+<div class="ht">Decision Required</div>
+<ul>
+<li><strong>Severity:</strong> Severe acute asthma</li>
+<li><strong>Treatment:</strong> Salbutamol 12 puffs + Ipratropium Bromide 8 puffs via spacer</li>
+<li><strong>Oxygen:</strong> Yes — SpO2 &lt;94%, target 94–98%</li>
+<li><strong>EOC Clinician:</strong> Contact for severe presentation and to confirm transport plan</li>
+<li><strong>Transport:</strong> Country hospital (30 minutes) — do not delay for additional treatment rounds if patient remains severe</li>
+</ul>
+</div>
+</section>
+
+<!-- TREATMENT PHASE (Toggle) -->
+<div class="tgl" id="t-tx">
+<div class="tgl-hdr" onclick="tg('t-tx')">
+<h2>Treatment Phase — AO Protocol</h2>
+<span class="tgl-ico">+</span>
+</div>
+<div class="tgl-body"><div class="tgl-body-inner">
+
+<h3>Step 1 — Positioning</h3>
+<ul class="cl">
+<li>Keep Karen sitting upright — do not lay her down at any point</li>
+<li>Support with pillows behind back if needed</li>
+<li>Reassure calmly: "We're going to help you breathe easier."</li>
+</ul>
+
+<h3>Step 2 — Oxygen Therapy</h3>
+<ul class="cl">
+<li>SpO2 91% — oxygen is indicated</li>
+<li>Apply Hudson mask at 8 L/min initially</li>
+<li>Target SpO2 94–98%</li>
+<li>Reassess SpO2 continuously on Corpuls3</li>
+<li>During spacer use: temporarily remove oxygen mask, replace between medication rounds</li>
+</ul>
+
+<h3>Step 3 — Salbutamol MDI via Spacer (12 Puffs)</h3>
+<div class="hlbox">
+<div class="ht">Core Practical Skill — MDI via Spacer Technique</div>
+<p>This is the primary clinical skill for this scenario. Walk through each step physically.</p>
+</div>
+<ol>
+<li><strong>Check medication:</strong> Confirm it is Salbutamol 100 mcg/actuation MDI. Read the label. Check expiry date. Confirm adequate doses remaining. Confirm it is NOT a preventer inhaler or Ipratropium.</li>
+<li><strong>Assemble spacer:</strong> Attach spacer device. If the patient cannot seal her lips effectively due to distress, attach the mask fitting to the spacer.</li>
+<li><strong>Shake MDI:</strong> Shake vigorously for approximately 5 seconds. Remove cap.</li>
+<li><strong>Insert MDI into spacer:</strong> Ensure firm, correct fit into the back port of the spacer.</li>
+<li><strong>Position for delivery:</strong> Patient places lips around the spacer mouthpiece and seals firmly. If using mask attachment: hold firmly over nose and mouth ensuring a good seal against the face.</li>
+<li><strong>Actuate ONE puff</strong> into the spacer chamber.</li>
+<li><strong>Patient breathes:</strong> 4–6 normal tidal breaths through the spacer. If the patient is able, a single slow deep breath held for 10 seconds is ideal — but in a distressed patient, tidal breathing is acceptable and effective.</li>
+<li><strong>Wait approximately 30 seconds.</strong></li>
+<li><strong>Shake the MDI again</strong> — this must happen between every single puff.</li>
+<li><strong>Repeat steps 6–9</strong> for each subsequent puff until all 12 puffs have been delivered.</li>
+<li><strong>Document:</strong> Record time started, time completed, and total puffs given.</li>
+<li><strong>Replace oxygen mask</strong> immediately after completing the Salbutamol round.</li>
+</ol>
+
+<div class="crbox">
+<div class="ct">Medication Safety — Critical Checks</div>
+<ul>
+<li><strong>One puff at a time</strong> into the spacer — never actuate multiple puffs simultaneously</li>
+<li><strong>Shake between EVERY puff</strong> — the propellant and drug separate in the canister between actuations</li>
+<li><strong>Confirm the correct drug</strong> — read the label; Salbutamol is typically in a blue inhaler, but always check the name</li>
+<li><strong>Count puffs aloud</strong> or use fingers — it is easy to lose count over 12 puffs</li>
+<li><strong>Monitor for expected side effects:</strong> hand tremor, increased tachycardia — these are expected pharmacological effects and are not a reason to withhold treatment</li>
+</ul>
+</div>
+
+<h3>Step 4 — Ipratropium Bromide MDI via Spacer (8 Puffs)</h3>
+<ul class="cl">
+<li>Indicated for SEVERE and LIFE-THREATENING asthma presentations</li>
+<li>Confirm correct drug: Ipratropium Bromide 21 mcg/actuation — read the label, typically a different colour MDI to Salbutamol</li>
+<li>Check expiry date</li>
+<li>Same spacer technique as Salbutamol — one puff at a time, shake between each, 4–6 breaths per puff</li>
+<li>Deliver 8 puffs total</li>
+<li>Can be administered immediately after completing the Salbutamol round</li>
+<li>Common side effect: dry mouth</li>
+<li>Document time and total puffs given</li>
+</ul>
+
+<h3>Step 5 — Ongoing Monitoring</h3>
+<ul class="cl">
+<li>Replace oxygen mask after medication rounds</li>
+<li>Continuous SpO2 monitoring via Corpuls3</li>
+<li>Repeat full observations at minimum 5-minute intervals</li>
+<li>Formal reassessment at 20 minutes post-treatment</li>
+<li>Specifically note changes in: speech length, work of breathing, wheeze character, SpO2 trend</li>
+<li>Document all observations and any changes</li>
+</ul>
+
+<h3>Step 6 — EOC Clinician Contact</h3>
+<ul class="cl">
+<li>Contact EOC Clinician for this severe presentation</li>
+<li>Advise: patient details, severity classification, treatment given, current response</li>
+<li>Discuss transport destination and any additional treatment guidance</li>
+<li>Follow any additional EOC Clinician instructions</li>
+<li>Driver makes this call while clinician continues patient care</li>
+</ul>
+
+</div></div>
+</div>
+
+<!-- BREAK POINT 5 -->
+<div class="bp fi">
+<div class="bp-hdr">
+<span class="bp-lbl">BREAK POINT</span>
+<span class="bp-ttl">Treatment Initiation and Medication Safety</span>
+<span class="bp-typ">Practical Skill</span>
+</div>
+<div class="bp-section">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"Walk me through exactly how you are going to administer the Salbutamol — show me the technique step by step."</li>
+<li>"How many puffs? Why that number?"</li>
+<li>"How are you going to keep count over 12 puffs?"</li>
+<li>"What are you physically checking before you give the Ipratropium?"</li>
+<li>"What side effects should you expect and how will you respond to them?"</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>12 puffs Salbutamol — severe classification dictates this dose</li>
+<li>One puff at a time, shake between each, 4–6 breaths per puff through the spacer</li>
+<li>Count aloud or use fingers to track — losing count means potential under- or over-dosing</li>
+<li>Physically read the Ipratropium label before administering — confirm it is the correct drug, not a second Salbutamol or a preventer</li>
+<li>8 puffs Ipratropium — same technique</li>
+<li>Expect increased tremor and tachycardia from Salbutamol — this is a normal pharmacological effect and is not a reason to stop treatment</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Spacer technique directly affects drug delivery — without a spacer, a distressed patient inhaling directly from an MDI receives significantly less medication to the lower airways</li>
+<li>Shaking between every puff is not optional — the propellant and drug separate between actuations</li>
+<li>With 12 puffs, develop a reliable counting habit — aloud counting, finger tracking, or have your partner count</li>
+<li>Always physically read the drug label — at 2 AM in dim light, wrong-drug errors happen</li>
+<li>Salbutamol-induced tachycardia on top of asthma-induced tachycardia can push HR above 130 bpm; document it but do not withhold the medication</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Real-Job Translation</h4>
+<p>This is the skill that makes the difference on an asthma job. Practise it until it is automatic: shake, puff, breathe, wait, shake, puff, breathe, wait. Twelve times. Every shortcut — not shaking, multiple puffs at once, poor seal — means less drug reaching the airways where it is needed.</p>
+</div>
+</div>
+
+<!-- REASSESSMENT & ESCALATION -->
+<section class="card fi">
+<h2>Reassessment and Escalation</h2>
+<div class="sbox">
+<div class="lbl">20-Minute Reassessment</div>
+<p>Twenty minutes after completing Salbutamol and Ipratropium administration, you formally reassess Karen.</p>
+</div>
+
+<h3>Post-Treatment Observations</h3>
+<table class="otbl">
+<thead><tr><th>Parameter</th><th>Initial</th><th>20 min Post-Rx</th></tr></thead>
+<tbody>
+<tr><td>HR</td><td class="abn">118 bpm</td><td class="abn">106 bpm</td></tr>
+<tr><td>RR</td><td class="abn">28 /min</td><td>22 /min</td></tr>
+<tr><td>SpO2</td><td class="abn">91% (air)</td><td>95% (on O2)</td></tr>
+<tr><td>BP</td><td>140/88</td><td>132/82</td></tr>
+<tr><td>Speech</td><td>Phrases</td><td>Short sentences</td></tr>
+<tr><td>WOB</td><td>Marked accessory use</td><td>Mild accessory use</td></tr>
+<tr><td>Wheeze</td><td>Loud, bilateral</td><td>Present but reduced</td></tr>
+</tbody>
+</table>
+<p><strong>Additional findings:</strong> Mild hand tremor (Salbutamol effect). Patient reports feeling "better but not right yet." Dry mouth (Ipratropium effect).</p>
+
+<h3>Reassessment Summary</h3>
+<ul>
+<li>Karen is <strong>improving</strong> — speech, SpO2, WOB, and RR are all trending in the right direction</li>
+<li>Still has residual wheeze and mild increased work of breathing</li>
+<li>Not yet back to baseline — improving from severe towards moderate</li>
+</ul>
+
+<h3>Escalation Decision</h3>
+<ul>
+<li>EOC Clinician already contacted — update with reassessment findings</li>
+<li>Repeat Salbutamol 6 puffs via spacer (now reclassified as moderate) — can administer en route</li>
+<li>Continue oxygen therapy</li>
+<li>Transport to country hospital (30 minutes) — do not delay further</li>
+<li>Paramedic backup (50 minutes) — not faster than self-transport; proceed as planned</li>
+</ul>
+</section>
+
+<!-- BREAK POINT 6 -->
+<div class="bp fi">
+<div class="bp-hdr">
+<span class="bp-lbl">BREAK POINT</span>
+<span class="bp-ttl">Reassessment and Escalation Decision</span>
+<span class="bp-typ">Decision-Making</span>
+</div>
+<div class="bp-section">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"Compare your numbers. What has changed? Is she better, worse, or the same?"</li>
+<li>"Has her severity classification changed? What dose does that mean now?"</li>
+<li>"What is your plan — stay on scene and treat, or load and go?"</li>
+<li>"Would waiting for a paramedic change anything here?"</li>
+<li>"What would you do differently if she had NOT improved?"</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Improving: SpO2 up (91 to 95), RR down (28 to 22), speech improving (phrases to short sentences), WOB reducing</li>
+<li>Severity shifting from severe towards moderate — repeat dose adjusts to 6 puffs</li>
+<li>Still not at baseline — requires ongoing monitoring and further treatment</li>
+<li>Transport now: hospital is 30 minutes; paramedic is 50 minutes — self-transport is faster</li>
+<li>Can administer repeat Salbutamol en route</li>
+<li>If NOT improving: repeat 12 puffs Salbutamol + 8 puffs Ipratropium, contact EOC Clinician urgently, consider paramedic meet en route, transport immediately</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Reassessment is not just repeating numbers — compare trends and look at the whole patient</li>
+<li>Improving does not mean resolved — continue treatment and monitoring</li>
+<li>In a rural setting, the transport decision comes down to simple maths: what gets this patient to definitive care fastest?</li>
+<li>Always have a deterioration plan — "What if she gets worse on the road?"</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Real-Job Translation</h4>
+<p>The reassessment is where you prove you are not treating blindly. Compare your numbers, look at the patient, make a decision. The question is always: "Is staying here going to make this patient better than the hospital can?" If the answer is no — load and go.</p>
+</div>
+</div>
+
+<!-- EXTRICATION & TRANSPORT -->
+<section class="card fi">
+<h2>Extrication and Transport</h2>
+<h3>Extrication Plan</h3>
+<ul class="cl">
+<li>Green carry chair from bedroom to ambulance (approximately 15 metres)</li>
+<li>Keep Karen as upright as possible in the carry chair</li>
+<li>Switch to nasal prongs during transfer (easier to manage than mask on carry chair)</li>
+<li>Have spacer and Salbutamol MDI accessible for the stretcher</li>
+<li>Husband can assist by carrying bags or opening doors</li>
+</ul>
+<h3>Stretcher Setup</h3>
+<ul class="cl">
+<li>Stretcher elevated to fully upright / seated position</li>
+<li>Pillow behind back for comfort</li>
+<li>Switch back to Hudson mask if SpO2 requires it</li>
+<li>Corpuls3 reconnected and monitoring continuously</li>
+<li>Spacer, Salbutamol MDI, and Ipratropium MDI within arm's reach</li>
+<li>Blanket for warmth — cool night, patient in nightclothes</li>
+<li>Suction assembled and accessible</li>
+</ul>
+<h3>Transport</h3>
+<ul class="cl">
+<li>Destination: nearest country hospital ED (30 minutes)</li>
+<li>Clinician in rear with patient — continue monitoring and reassessment</li>
+<li>Repeat Salbutamol 6 puffs via spacer en route (20 minutes since last dose)</li>
+<li>Early notification to receiving hospital via EOC or direct</li>
+<li>Smooth driving — avoid sudden braking or turns</li>
+</ul>
+
+<h3>Pre-Arrival Observations</h3>
+<table class="otbl">
+<thead><tr><th>Parameter</th><th>Initial</th><th>20 min</th><th>Pre-Arrival</th></tr></thead>
+<tbody>
+<tr><td>HR</td><td class="abn">118</td><td class="abn">106</td><td>98</td></tr>
+<tr><td>RR</td><td class="abn">28</td><td>22</td><td>20</td></tr>
+<tr><td>SpO2</td><td class="abn">91% (air)</td><td>95% (O2)</td><td>96% (O2)</td></tr>
+<tr><td>BP</td><td>140/88</td><td>132/82</td><td>128/80</td></tr>
+<tr><td>Speech</td><td>Phrases</td><td>Short sentences</td><td>Sentences</td></tr>
+<tr><td>Wheeze</td><td>Loud bilateral</td><td>Moderate</td><td>Mild</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- BREAK POINT 7 -->
+<div class="bp fi">
+<div class="bp-hdr">
+<span class="bp-lbl">BREAK POINT</span>
+<span class="bp-ttl">Extrication and Transport Planning</span>
+<span class="bp-typ">Discussion</span>
+</div>
+<div class="bp-section">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"How are you getting Karen from the bedroom to the ambulance?"</li>
+<li>"What position on the stretcher and why?"</li>
+<li>"What do you need within reach during transport?"</li>
+<li>"What is your plan if she deteriorates in the back of the ambulance?"</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Green carry chair — minimises patient exertion and maintains upright positioning</li>
+<li>Stretcher fully upright — asthma patients must not be laid flat; the diaphragm works more efficiently when upright</li>
+<li>Spacer + MDIs, oxygen, suction, Corpuls3 — all within reach</li>
+<li>Deterioration plan: repeat Salbutamol 12 puffs + Ipratropium 8 puffs, contact EOC Clinician urgently, consider stopping vehicle if significant deterioration, request paramedic meet en route</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Key Teaching Points</h4>
+<ul>
+<li>The carry chair minimises cardiac and respiratory demand — do not let the patient walk if she is still working to breathe</li>
+<li>Upright positioning is a treatment in asthma, not just comfort</li>
+<li>Kit positioning in the ambulance matters — if she deteriorates, you need medication in your hand immediately, not buried in a bag</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Real-Job Translation</h4>
+<p>Think about the worst thing that could happen during a 30-minute transport and have your response plan ready before you leave the driveway. Suction accessible, medication at hand, Corpuls3 alarming. You are 30 minutes from help — be ready.</p>
+</div>
+</div>
+
+<!-- HANDOVER -->
+<section class="card fi">
+<h2>Handover</h2>
+<div class="sbox">
+<div class="lbl">Handover Setting</div>
+<p>You arrive at the country hospital ED at 0325. One nurse meets you at the ambulance bay. Karen is sitting upright on the stretcher with mild residual wheeze, SpO2 96% on oxygen, speaking in full sentences.</p>
+</div>
+
+<h3>ISBAR Handover</h3>
+<table class="otbl">
+<tbody>
+<tr><td style="width:60px"><strong>I</strong></td><td>"I'm [name], Ambulance Officer from [station]. This is Karen Mitchell, 45 years old."</td></tr>
+<tr><td><strong>S</strong></td><td>"Karen called us at 0215 with an acute asthma exacerbation. She was unable to get relief from her own Ventolin at home."</td></tr>
+<tr><td><strong>B</strong></td><td>"Known asthmatic since age 12. Two ED presentations this year. Her preventer — Seretide — ran out two weeks ago and has not been replaced. She has had a URTI for three days and was cleaning a dusty shed yesterday. Allergic to Penicillin — causes rash."</td></tr>
+<tr><td><strong>A</strong></td><td>"On arrival she was classified as severe: speaking in phrases, SpO2 91% on air, RR 28, HR 118, bilateral wheeze with marked accessory muscle use. She has responded well to treatment — now speaking sentences, SpO2 96% on oxygen, HR 98, RR 20, mild residual wheeze."</td></tr>
+<tr><td><strong>R</strong></td><td>"She has improved but is not at baseline. Still requires supplemental O2 to maintain SpO2 above 94%. I'd recommend ongoing monitoring, repeat bronchodilators as needed, and review regarding preventer medication."</td></tr>
+</tbody>
+</table>
+<h4>Treatment Summary for Handover</h4>
+<ul>
+<li>Oxygen via Hudson mask — commenced 0225</li>
+<li>Salbutamol 12 puffs via spacer — 0228</li>
+<li>Ipratropium Bromide 8 puffs via spacer — 0240</li>
+<li>Salbutamol 6 puffs via spacer (repeat, en route) — 0300</li>
+<li>Current obs: HR 98, RR 20, SpO2 96% (O2), BP 128/80, GCS 15</li>
+</ul>
+</section>
+
+<!-- BREAK POINT 8 -->
+<div class="bp fi">
+<div class="bp-hdr">
+<span class="bp-lbl">BREAK POINT</span>
+<span class="bp-ttl">ISBAR Handover</span>
+<span class="bp-typ">Practical Skill</span>
+</div>
+<div class="bp-section">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"Deliver your ISBAR to me now as if I am the receiving nurse. Go."</li>
+<li>"Did you include the treatment given and the patient's response?"</li>
+<li>"Did you mention the allergy?"</li>
+<li>"What is your recommendation to the receiving team?"</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Structured, concise ISBAR covering all elements without unnecessary detail</li>
+<li>Includes severity classification on arrival AND current status — shows the trajectory</li>
+<li>Includes all medications given with times and doses</li>
+<li>Penicillin allergy stated clearly and early</li>
+<li>Recommendation: ongoing monitoring, further bronchodilators as needed, preventer review</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Key Teaching Points</h4>
+<ul>
+<li>A good handover tells a story: how the patient was, what you did, how they responded, and what they still need</li>
+<li>Include observation trends — "SpO2 was 91, now 96 on oxygen" — not just the current number</li>
+<li>Time and doses of medications are critical for the hospital — they need to know when the next dose is due</li>
+<li>State allergies clearly and early in the handover</li>
+</ul>
+</div>
+<div class="bp-section">
+<h4>Real-Job Translation</h4>
+<p>Practise ISBAR until it is second nature. At 3 AM, tired, in a busy ED — you need to deliver a clear, complete handover without having to think about the structure. It should flow automatically. The better your handover, the better Karen's ongoing care.</p>
+</div>
+</div>
+
+<!-- DEBRIEF -->
+<section class="card fi">
+<h2>Debrief</h2>
+<p><strong>Time:</strong> 10–15 minutes</p>
+
+<h3>Reflective Questions</h3>
+<ol>
+<li>How did you determine Karen's asthma severity? Which clinical features carried the most weight in your classification?</li>
+<li>Walk through your spacer technique. Was there anything you found awkward or would refine with practice?</li>
+<li>At what point did you contact the EOC Clinician? What information did you provide them?</li>
+<li>How did you decide between staying on scene for another treatment round versus loading and going?</li>
+<li>What would you have done if Karen had deteriorated after the first round — SpO2 dropping, wheeze disappearing, becoming drowsy?</li>
+<li>How did crew roles and communication work throughout? Was the handoff between clinician and driver tasks clear?</li>
+<li>Is there anything you would do differently if this job ran again tomorrow night?</li>
+</ol>
+
+<h3>Take-Home Messages</h3>
+<ul>
+<li><strong>Severity classification drives dosing.</strong> Get it right from the start. Reassess and reclassify as the patient changes.</li>
+<li><strong>Spacer technique is a clinical skill.</strong> Shake between every puff, one at a time, good seal, count aloud. Practise it until it is automatic.</li>
+<li><strong>A patient who has already used their reliever without effect is telling you something.</strong> They have partially treated, failing asthma. Respect that information.</li>
+<li><strong>Positioning is a treatment.</strong> Upright reduces work of breathing. Never lay a wheezing patient flat.</li>
+<li><strong>Reassess, compare, decide.</strong> Trend your observations. Better, worse, or the same? That answer drives your next action.</li>
+<li><strong>Plan for deterioration before it happens.</strong> On a 30-minute rural transport, you are the only clinician. Know your next move before you need it.</li>
+<li><strong>ISBAR is a practised skill, not a read template.</strong> Practise it until it flows. Your handover is the bridge between your care and theirs.</li>
+</ul>
+</section>
+
+<!-- SCENARIO VARIATIONS -->
+<section class="card fi">
+<h2>Optional Scenario Variations</h2>
+
+<h3>Variation 1 — Paediatric Presentation</h3>
+<p>Change the patient to an 8-year-old child with known asthma, nocturnal exacerbation. Parents are anxious. Consider: paediatric spacer technique (mask attachment on spacer is likely required), communication with both the child and the parents, and the additional stress of managing a paediatric respiratory emergency in a rural setting.</p>
+
+<h3>Variation 2 — Life-Threatening Deterioration</h3>
+<p>After the first round of Salbutamol, Karen's wheeze disappears (silent chest), SpO2 drops to 86%, and she becomes drowsy and stops speaking. This is life-threatening asthma. Discuss: immediate repeat Salbutamol 12 puffs + Ipratropium 8 puffs, urgent EOC Clinician contact, request paramedic meet en route, immediate transport, preparation for potential respiratory arrest.</p>
+
+<h3>Variation 3 — Remote Property, Extended Transport</h3>
+<p>Relocate the scenario to a remote farm — 55 minutes from hospital, 80 minutes from paramedic backup. The transport decision becomes more critical. Discuss: multiple treatment rounds on scene versus early transport, MedSTAR activation criteria, and managing a severely unwell patient for an extended period with limited resources.</p>
+
+<h3>Variation 4 — First Presentation Wheeze</h3>
+<p>Karen has no known asthma history. This is her first ever wheeze episode. Consider: differential diagnoses (cardiac wheeze/APO, anaphylaxis, inhaled foreign body), the importance of thorough history, and the decision to treat bronchospasm empirically. Salbutamol via spacer remains appropriate for symptomatic bronchospasm regardless of the underlying cause.</p>
+</section>
+
+</div>
+
+<script>
+window.addEventListener('scroll',function(){
+var s=window.scrollY,d=document.documentElement.scrollHeight-window.innerHeight;
+document.getElementById('pBar').style.width=(s/d*100)+'%';
+});
+function tg(id){document.getElementById(id).classList.toggle('open')}
+var fi=document.querySelectorAll('.fi');
+var obs=new IntersectionObserver(function(e){e.forEach(function(n){if(n.isIntersecting)n.target.classList.add('vis')})},{threshold:0.08});
+fi.forEach(function(el){obs.observe(el)});
+</script>
+</body>
+</html>
