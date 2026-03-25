@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Femoral Traction & C-Spine — Walk-Through Scenario | DSY Training</title>
+<style>
+:root{--bg:#0d1a0d;--card:#003300;--card-border:#004d00;--accent:#00cc66;--accent-dim:#009944;--text:#e8e8e8;--text-dim:#a0afa0;--bp-accent:#ffa726;--bp-bg:#1a1400;--read-bg:#001a33;--read-border:#1565c0;--alert-bg:#fff3e0;--alert-text:#4e342e;--alert-red-bg:#fce4ec;--alert-red-text:#b71c1c;--radius:8px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:18px;scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding-top:80px}
+header.sticky{position:fixed;top:0;left:0;right:0;z-index:100;background:#001a00;border-bottom:1px solid var(--card-border);padding:10px 16px 0}
+.hdr-inner{display:flex;align-items:center;gap:12px;max-width:900px;margin:0 auto;padding-bottom:8px}
+.hdr-inner img{border-radius:8px;flex-shrink:0}
+.hdr-title{font-size:1.1rem;font-weight:700;color:var(--accent);line-height:1.25}
+.hdr-sub{font-size:.78rem;color:var(--text-dim);font-weight:400}
+.progress-track{height:4px;background:#001a00;margin:0 -16px}
+.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent-dim),var(--accent));transition:width .15s}
+main{max-width:900px;margin:0 auto;padding:16px}
+section{margin-bottom:28px}
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+h2{font-size:1.25rem;color:var(--accent);border-bottom:2px solid var(--accent-dim);padding-bottom:6px;margin-bottom:14px}
+h3{font-size:1.1rem;color:#66ffaa;margin:16px 0 8px}
+h4{font-size:1rem;color:var(--bp-accent);margin:12px 0 6px}
+p,li{font-size:1rem}
+ul,ol{padding-left:1.4rem;margin-bottom:10px}
+li{margin-bottom:4px}
+strong{color:#a5d6a7}
+.tag{display:inline-block;font-size:.78rem;font-weight:700;border-radius:4px;padding:2px 8px;margin-right:6px;vertical-align:middle}
+.tag-proto{background:#004d00;color:#66ffaa}
+.tag-time{background:#1a1a00;color:var(--bp-accent)}
+.tag-scope{background:#1a0022;color:#ce93d8}
+/* MDT */
+.mdt{background:#0a0a14;border:1px solid #334;border-radius:var(--radius);padding:16px;font-family:'Courier New',monospace;font-size:.92rem;line-height:1.5;color:#8f8}
+.mdt .mdt-lbl{color:#888;font-size:.78rem}
+/* Read Aloud */
+.read-aloud{background:var(--read-bg);border-left:4px solid var(--read-border);border-radius:var(--radius);padding:16px;margin:12px 0;font-style:italic;color:#bbdefb}
+.read-aloud::before{content:'FACILITATOR — READ ALOUD';display:block;font-style:normal;font-weight:700;font-size:.78rem;color:var(--read-border);margin-bottom:6px;letter-spacing:.5px}
+/* Break Points */
+.bp{background:var(--bp-bg);border:1px solid #4e3600;border-left:5px solid var(--bp-accent);border-radius:var(--radius);padding:20px;margin:20px 0}
+.bp-label{font-size:1.05rem;font-weight:700;color:var(--bp-accent);margin-bottom:2px}
+.bp-type{font-size:.82rem;color:#ffcc80;margin-bottom:12px}
+.bp h4{color:var(--bp-accent);margin-top:14px;margin-bottom:6px}
+.bp ul{list-style:disc}
+.bp li{color:#ffe0b2}
+/* Alerts */
+.alert{border-radius:var(--radius);padding:14px 16px;margin:12px 0;font-size:1rem;line-height:1.5}
+.alert strong{display:block;margin-bottom:2px}
+.alert-amber{background:var(--alert-bg);color:var(--alert-text);border-left:4px solid #ff9800}
+.alert-amber strong{color:#e65100}
+.alert-red{background:var(--alert-red-bg);color:var(--alert-red-text);border-left:4px solid #e53935}
+.alert-red strong{color:#b71c1c}
+.alert-blue{background:#e3f2fd;color:#0d47a1;border-left:4px solid #1976d2}
+.alert-blue strong{color:#0d47a1}
+/* Checklist */
+.checklist{list-style:none;padding-left:0}
+.checklist li{position:relative;padding:10px 12px 10px 38px;margin-bottom:6px;background:rgba(0,77,0,.3);border-radius:6px;font-size:1rem;min-height:44px;display:flex;align-items:center;cursor:pointer;-webkit-user-select:none;user-select:none}
+.checklist li::before{content:'';position:absolute;left:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;border:2px solid var(--accent-dim);border-radius:4px;transition:background .2s,border-color .2s}
+.checklist li.checked::before{background:var(--accent);border-color:var(--accent)}
+.checklist li.checked::after{content:'';position:absolute;left:14px;top:50%;transform:translateY(-60%) rotate(45deg);width:6px;height:11px;border:solid #003300;border-width:0 2.5px 2.5px 0}
+/* Steps */
+.step{counter-increment:step-counter;position:relative;padding:14px 14px 14px 48px;margin-bottom:10px;background:rgba(0,77,0,.25);border-radius:6px;border-left:3px solid var(--accent-dim)}
+.step::before{content:counter(step-counter);position:absolute;left:10px;top:14px;width:28px;height:28px;background:var(--accent-dim);color:#001a00;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem}
+.steps-container{counter-reset:step-counter}
+/* Toggles */
+.toggle{margin-bottom:12px;border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden}
+.toggle-btn{display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px 16px;background:var(--card);color:var(--accent);font-size:1rem;font-weight:600;border:none;cursor:pointer;text-align:left;min-height:48px;font-family:inherit;transition:background .2s}
+.toggle-btn:hover,.toggle-btn:focus{background:#004d00;outline:2px solid var(--accent);outline-offset:-2px}
+.toggle-icon{font-size:1.3rem;transition:transform .25s;flex-shrink:0;margin-left:8px}
+.toggle.open .toggle-icon{transform:rotate(45deg)}
+.toggle-content{max-height:0;overflow:hidden;transition:max-height .35s ease;background:#002200}
+.toggle.open .toggle-content{max-height:6000px}
+.toggle-inner{padding:16px}
+/* Fade in */
+.fade-in{opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+/* Obs Table */
+.obs-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.95rem}
+.obs-table th{text-align:left;padding:8px 10px;background:#004d00;color:var(--accent);border-bottom:2px solid var(--accent-dim);font-weight:600}
+.obs-table td{padding:8px 10px;border-bottom:1px solid #004d00}
+.obs-table .val{font-weight:700;color:#a5d6a7}
+.obs-table .improved{color:#00e676}
+/* Crew Roles */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.role-card{background:rgba(0,77,0,.35);border-radius:6px;padding:12px;border:1px solid var(--card-border)}
+.role-card strong{display:block;color:var(--accent);margin-bottom:4px;font-size:.95rem}
+@media(max-width:600px){.role-grid{grid-template-columns:1fr}.hdr-title{font-size:.95rem}}
+/* Variation cards */
+.var-card{background:rgba(0,50,0,.5);border:1px solid var(--card-border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.var-card strong{color:var(--bp-accent);display:block;margin-bottom:4px;font-size:1.02rem}
+/* Footer */
+footer{text-align:center;padding:28px 16px;color:var(--text-dim);font-size:.78rem;border-top:1px solid var(--card-border);margin-top:32px}
+</style>
+</head>
+<body>
+<header class="sticky">
+<div class="hdr-inner">
+<img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" alt="DSY Training Logo" width="52" height="52" style="object-fit:contain;">
+<div><div class="hdr-title">Femoral Traction & C-Spine Immobilisation</div><div class="hdr-sub">Walk-Through Scenario &mdash; Volunteer AO</div></div>
+</div>
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+</header>
+
+<main>
+
+<!-- ==================== TITLE & CONTEXT ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Scenario Context</h2>
+<p>A 75-year-old female has been struck by a golf cart at the <strong>Coffin Bay Golf Club</strong>. She has sustained a suspected mid-shaft femur fracture and possible cervical spine injury. Two Volunteer AO crews are responding.</p>
+<div style="margin-top:12px">
+<span class="tag tag-proto">CPPRO-028 STS Gen 2</span>
+<span class="tag tag-proto">CPPRO-021 C-Spine</span>
+<span class="tag tag-proto">Pain Mx &mdash; AO</span>
+<span class="tag tag-time">~90&ndash;120 min session</span>
+</div>
+<div class="alert alert-amber" style="margin-top:14px">
+<strong>Resourcing:</strong>
+Primary crew (AO1 + AO2) with a second crew (AO3 + AO4) as backup. Paramedic backup 45 minutes away if requested. Nearest hospital: Port Lincoln Hospital (~30 min transport).
+</div>
+</div>
+</section>
+
+<!-- ==================== LEARNING OBJECTIVES ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Learning Objectives</h2>
+<ol>
+<li>Identify indications and contraindications for the Slishman Traction Splint Gen 2 (STS Gen 2)</li>
+<li>Correctly apply the STS Gen 2 to a simulated patient with a mid-shaft femur fracture</li>
+<li>Apply a modified towel roll within a vacuum mattress for cervical spine immobilisation</li>
+<li>Manage pain within AO scope of practice using Methoxyflurane and Paracetamol</li>
+<li>Coordinate a four-person team for multi-trauma patient assessment, treatment, and extrication</li>
+<li>Deliver a structured ISBAR handover including traction documentation and C-spine status</li>
+</ol>
+</div>
+</section>
+
+<!-- ==================== REQUIRED EQUIPMENT ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Required Equipment</h2>
+<ul class="checklist" id="equipList">
+<li>STS Gen 2 traction splint (complete with pressure wrap and carry bag)</li>
+<li>Vacuum mattress with pump</li>
+<li>Towels &times; 2 (for modified towel roll)</li>
+<li>Transpore tape</li>
+<li>Combine dressings</li>
+<li>&lsquo;Cervical Spine NOT Cleared&rsquo; stickers</li>
+<li>Corpuls3 monitor (or training unit)</li>
+<li>Ambulance Response Bag (Red/Blue Kit)</li>
+<li>Stretcher</li>
+<li>Shears</li>
+<li>Methoxyflurane (Penthrox) inhaler &mdash; training device or demo</li>
+<li>Paracetamol 500 mg tablets (demo)</li>
+<li>Triangular bandages &times; 2</li>
+<li>PPE (gloves, eye protection)</li>
+<li>Blanket or space blanket</li>
+<li>ePCR tablet or paperwork</li>
+</ul>
+</div>
+</section>
+
+<!-- ==================== SESSION STRUCTURE OVERVIEW ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Session Structure Overview</h2>
+<table class="obs-table">
+<tr><th>Phase</th><th>Time</th></tr>
+<tr><td>Pre-Brief</td><td class="val">~10 min</td></tr>
+<tr><td>Scenario Walk-Through (8 break points)</td><td class="val">~60&ndash;80 min</td></tr>
+<tr><td>Debrief</td><td class="val">~15 min</td></tr>
+<tr><td style="font-weight:700">Total</td><td class="val">~90&ndash;120 min</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ==================== PRE-BRIEF ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Pre-Brief (~10 minutes)</h2>
+<div class="toggle">
+<button class="toggle-btn" aria-expanded="false">Facilitator Setup Notes <span class="toggle-icon">+</span></button>
+<div class="toggle-content"><div class="toggle-inner">
+<h3>Setting the Scene</h3>
+<ul>
+<li>This is a walk-through scenario &mdash; we stop at marked break points for discussion and hands-on practice.</li>
+<li>The scenario is designed to feel like a real job. Treat it as one.</li>
+<li>There are no trick questions. We are here to build confidence with equipment and decision-making.</li>
+</ul>
+<h3>Role Assignments</h3>
+<div class="role-grid">
+<div class="role-card"><strong>AO1 &mdash; Clinician (Primary Crew)</strong>Patient contact, primary survey, history, clinical decisions, medication administration, leads STS Gen 2 application.</div>
+<div class="role-card"><strong>AO2 &mdash; Driver (Primary Crew)</strong>Corpuls3 setup, observations, documentation (ePCR), EOC communication, equipment management.</div>
+<div class="role-card"><strong>AO3 &mdash; Second Crew</strong>Manual C-spine stabilisation, assists with manual traction, assists with patient handling.</div>
+<div class="role-card"><strong>AO4 &mdash; Second Crew</strong>Brings vacuum mattress, prepares equipment, assists with extrication and transport.</div>
+</div>
+<h3>Key Focus Areas</h3>
+<ul>
+<li>STS Gen 2 application sequence and traction locking</li>
+<li>Modified towel roll within vacuum mattress</li>
+<li>Distal perfusion assessment &mdash; before and after traction</li>
+<li>Team coordination with four AOs on scene</li>
+<li>Pain management within AO scope</li>
+</ul>
+</div></div>
+</div>
+</div>
+</section>
+
+<!-- ==================== DISPATCH & EN ROUTE ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Dispatch &amp; En Route Phase</h2>
+<p>Your crew is dispatched. The following information appears on the MDT:</p>
+<div class="mdt">
+<div class="mdt-lbl">MDT DISPATCH</div>
+<strong>PRIORITY: P2</strong><br>
+CASE: CB-2026-0341<br>
+LOCATION: Coffin Bay Golf Club, Coffin Bay SA 5607<br>
+COMPLAINT: 75F struck by golf cart<br>
+STATUS: Conscious, breathing<br>
+INFO: Pain right leg, unable to move. Bystanders on scene.<br>
+INFORMANT: Club manager<br>
+ACCESS: Main car park &mdash; staff will direct to patient location on course<br>
+HAZARDS: Nil reported<br>
+NOTE: Second crew dispatched &mdash; ETA approx 5 min after primary crew
+</div>
+
+<!-- BREAK POINT 1 -->
+<div class="bp">
+<div class="bp-label">Break Point 1 &mdash; En-Route Planning</div>
+<div class="bp-type">Type: Discussion</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>What do we know from the MDT? What don&rsquo;t we know?</li>
+<li>What injuries should we anticipate from this mechanism in a 75-year-old?</li>
+<li>The patient is 200 m from the car park. What equipment do we take? We can&rsquo;t easily come back.</li>
+<li>Should we request paramedic backup now, before we arrive on scene?</li>
+<li>What are our initial crew roles?</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Golf cart impact to an elderly patient &mdash; high index of suspicion for lower limb fractures, pelvic injury, spinal injury, head injury.</li>
+<li>Elderly patients are more vulnerable &mdash; osteoporosis means fractures from seemingly moderate mechanisms.</li>
+<li>Equipment: Response bag, Corpuls3, STS Gen 2, analgesia, stretcher. Second crew to bring vacuum mattress.</li>
+<li>Request paramedic backup early &mdash; 45 minutes is a long wait. IV analgesia may be needed.</li>
+<li>AO1 leads patient care, AO2 handles Corpuls3 and EOC comms.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>En-route planning saves time on scene &mdash; decide what you need before you arrive.</li>
+<li>Equipment logistics matter in outdoor/rural settings &mdash; 200 m is a long way to go back for a forgotten item.</li>
+<li>Early paramedic request for significant trauma &mdash; the clock starts now, not when you realise you need them.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<ul>
+<li>On a real job you are processing all of this while driving. Build the habit now.</li>
+<li>Coordinate with the second crew via radio &mdash; &ldquo;Can you bring the vacuum mattress?&rdquo;</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- ==================== ON ARRIVAL ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>On Arrival &mdash; Scene Management</h2>
+<div class="read-aloud">
+You arrive at Coffin Bay Golf Club car park. A staff member in a high-vis vest waves you down: &ldquo;She&rsquo;s out on the 9th fairway &mdash; about 200 metres that way. I can take you on the path in our buggy if you need.&rdquo; You can see a small group of people in the distance on the course.
+</div>
+
+<!-- BREAK POINT 2 -->
+<div class="bp">
+<div class="bp-label">Break Point 2 &mdash; Doorway / First Impression</div>
+<div class="bp-type">Type: Discussion</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>What are your immediate scene safety considerations?</li>
+<li>How are you getting your equipment to the patient?</li>
+<li>What can you observe from a distance?</li>
+<li>Who might be in that crowd and what do you need from them?</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Scene appears safe &mdash; open golf course, no ongoing vehicle hazard. The golf cart is stationary.</li>
+<li>Accept the club buggy or walk &mdash; depends on equipment volume.</li>
+<li>From a distance: patient supine, not moving, small crowd gathered.</li>
+<li>Crowd includes bystanders and possibly the golf cart driver &mdash; check if the driver is also injured or distressed.</li>
+<li>Ask club staff to clear non-essential bystanders and keep other golfers away.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Scene safety is dynamic &mdash; reassess continuously.</li>
+<li>Use available resources: club staff, their buggy, their knowledge of the area.</li>
+<li>First impressions guide your urgency &mdash; patient position, crowd behaviour, and noise all tell a story.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<ul>
+<li>Rural jobs often have access challenges &mdash; paddocks, farm tracks, long driveways, outdoor locations.</li>
+<li>You cannot always park next to the patient. Plan for it.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- ==================== PATIENT CONTACT & PRIMARY SURVEY ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Patient Contact &amp; Primary Survey</h2>
+<div class="read-aloud">
+You reach the patient. Margaret is lying on her back on the grass, conscious and clearly distressed. She is holding her right thigh and crying. An older woman is kneeling beside her, holding her hand. Margaret&rsquo;s right leg is visibly shortened and rotated outward compared to the left. There is obvious swelling at mid-thigh. She is wearing a polo shirt, shorts, and golf shoes.<br><br>
+A golf cart is parked about 5 metres away. A man &mdash; the driver &mdash; is sitting on a nearby bench looking pale and shaken.<br><br>
+Margaret says through tears: &ldquo;My leg&hellip; it hurts so much. I can&rsquo;t move it. My neck is sore too. Please help me.&rdquo;
+</div>
+
+<h3>Crew Tasks</h3>
+<ul>
+<li><strong>AO1 (Clinician):</strong> Introduces self, begins primary survey, obtains history.</li>
+<li><strong>AO2 (Driver):</strong> Sets up Corpuls3, attaches leads, begins observations. Contacts EOC.</li>
+</ul>
+
+<h3>Primary Survey Findings</h3>
+<table class="obs-table">
+<tr><th>Assessment</th><th>Finding</th></tr>
+<tr><td>A &mdash; Airway</td><td class="val">Patent. Speaking in sentences. No stridor.</td></tr>
+<tr><td>B &mdash; Breathing</td><td class="val">RR 22. Bilateral air entry. SpO2 96% RA.</td></tr>
+<tr><td>C &mdash; Circulation</td><td class="val">HR 108 (radial pulse present, slightly weak). Skin pale, cool peripheries. CRT 3 sec.</td></tr>
+<tr><td>D &mdash; Disability</td><td class="val">GCS 15 (E4 V5 M6). Pupils PEARL. BSL 6.8 mmol/L.</td></tr>
+<tr><td>E &mdash; Exposure</td><td class="val">Deformity right mid-thigh. Shortening ~4 cm. External rotation. Swelling. Cervical spine tenderness on gentle palpation. Mild grazes right forearm and right hip.</td></tr>
+</table>
+
+<h3>Corpuls3 Observations (AO2)</h3>
+<table class="obs-table">
+<tr><th>Parameter</th><th>Value</th></tr>
+<tr><td>Heart Rate</td><td class="val">108 bpm &mdash; Sinus Tachycardia (3-lead ECG)</td></tr>
+<tr><td>NIBP</td><td class="val">102/58 mmHg</td></tr>
+<tr><td>SpO2</td><td class="val">96% (room air)</td></tr>
+<tr><td>RR (manual)</td><td class="val">22</td></tr>
+<tr><td>Temp</td><td class="val">36.4&deg;C</td></tr>
+<tr><td>Pain Score</td><td class="val">8/10</td></tr>
+</table>
+
+<h3>AMPLE History (AO1 obtains)</h3>
+<table class="obs-table">
+<tr><th></th><th>Detail</th></tr>
+<tr><td><strong>A</strong>llergies</td><td>NKDA</td></tr>
+<tr><td><strong>M</strong>edications</td><td>Amlodipine 5 mg daily, Glucosamine 1500 mg, Calcium + Vitamin D</td></tr>
+<tr><td><strong>P</strong>ast Hx</td><td>Hypertension, Osteoarthritis (knees), Osteoporosis, Type 2 DM (diet controlled)</td></tr>
+<tr><td><strong>L</strong>ast Intake</td><td>Lunch at clubhouse ~1 hr ago (sandwich and tea)</td></tr>
+<tr><td><strong>E</strong>vents</td><td>Walking across 9th fairway. Golf cart lost control on slope, struck her from behind. Cart wheel ran over right thigh. Fell forward. Immediate right thigh pain. Neck became sore after landing.</td></tr>
+</table>
+
+<!-- BREAK POINT 3 -->
+<div class="bp">
+<div class="bp-label">Break Point 3 &mdash; Initial Observations &amp; Corpuls3 Setup</div>
+<div class="bp-type">Type: Discussion / Practical Skill</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>Talk me through the primary survey findings &mdash; what concerns you most?</li>
+<li>What do the observations tell you about this patient&rsquo;s current state?</li>
+<li>Is this patient time-critical? Why or why not?</li>
+<li>What additional assessments do you need before making a plan?</li>
+<li>AO2 &mdash; walk me through your Corpuls3 setup and where you&rsquo;re documenting.</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Tachycardia + mild hypotension in a 75-year-old is concerning for haemorrhage. Femoral fractures can cause up to 2 L blood loss.</li>
+<li>In elderly patients, &ldquo;normal&rdquo; BP may actually represent hypotension &mdash; they often run higher at baseline.</li>
+<li>Elevated RR likely a combination of pain and early compensatory shock.</li>
+<li>GCS 15 is reassuring but needs ongoing monitoring.</li>
+<li>Need to assess distal perfusion of the right foot &mdash; pedal pulse, CRT, sensation.</li>
+<li>Cervical spine tenderness plus significant mechanism plus distracting injury = cannot clinically clear the C-spine.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>First observations set the baseline &mdash; every subsequent set is compared to these.</li>
+<li>Set Corpuls3 to repeat NIBP every 5 minutes. Trend monitoring catches deterioration early.</li>
+<li>A painful distracting injury (femur fracture) means the patient cannot reliably report neck symptoms &mdash; default to immobilisation.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<ul>
+<li>If the patient is tachycardic and mildly hypotensive, they need close monitoring and timely transport.</li>
+<li>Get repeat observations early and often &mdash; the trend tells you more than any single reading.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- ==================== CLINICAL DECISION POINT ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Clinical Decision Point</h2>
+<h3>Working Diagnosis</h3>
+<ol>
+<li>Suspected mid-shaft fracture, right femur</li>
+<li>Possible cervical spine injury (mechanism + cervical tenderness + distracting injury)</li>
+</ol>
+
+<h3>Applicable Protocols</h3>
+<ul>
+<li><span class="tag tag-proto">CPPRO-028</span> Femoral Traction Splint &mdash; STS Gen 2</li>
+<li><span class="tag tag-proto">CPPRO-021</span> Cervical Spine Immobilisation &mdash; Modified towel roll within vacuum mattress</li>
+<li><span class="tag tag-proto">CPP-018-AO</span> Spinal Injury &mdash; Ambulance Officer</li>
+<li><span class="tag tag-proto">Pain Mx AO</span> Methoxyflurane + Paracetamol</li>
+</ul>
+
+<div class="alert alert-red">
+<strong>Contraindications Check &mdash; STS Gen 2:</strong>
+NOT indicated for: neck of femur (NOF) fracture, avulsion with bone separation. This patient has mid-shaft deformity with shortening and rotation &mdash; consistent with diaphyseal fracture. STS Gen 2 is indicated.
+</div>
+
+<div class="alert alert-blue">
+<strong>C-Spine Decision:</strong>
+Cannot clinically clear. Significant mechanism (struck by vehicle) + cervical tenderness + distracting injury (femur fracture). Immobilisation required. Plan: modified towel roll within vacuum mattress. No semi-rigid collar required in this scenario.
+</div>
+
+<!-- BREAK POINT 4 -->
+<div class="bp">
+<div class="bp-label">Break Point 4 &mdash; Screening Tools, Protocols &amp; Working Diagnosis</div>
+<div class="bp-type">Type: Decision-Making</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>What is your working diagnosis?</li>
+<li>Which protocols apply and why?</li>
+<li>Is the STS Gen 2 indicated? What contraindications have you ruled out?</li>
+<li>Can we clear the C-spine? Walk me through your reasoning.</li>
+<li>Why vacuum mattress rather than just a towel roll on the stretcher?</li>
+<li>What analgesia options are available within your scope?</li>
+<li>Should we call the EOC Clinician? What are we asking for?</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Mid-shaft femur &rarr; STS Gen 2 is indicated. It is NOT a NOF (pain and deformity are mid-thigh, not groin/hip).</li>
+<li>C-spine cannot be cleared &mdash; three factors: mechanism, tenderness, distracting injury.</li>
+<li>Vacuum mattress immobilises the entire spine &mdash; indicated for significant mechanism with suspected spinal injury.</li>
+<li>Modified towel roll inside the vacuum mattress provides C-spine immobilisation without needing a semi-rigid collar.</li>
+<li>Analgesia: Methoxyflurane first (rapid onset), then Paracetamol PO (longer duration, slower onset).</li>
+<li>EOC Clinician: Notify of significant trauma, confirm plan, request paramedic backup for IV analgesia.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>STS Gen 2 contraindications: NOF fracture, avulsion with bone separation. Know the difference between NOF and mid-shaft.</li>
+<li>Modified towel roll in vacuum mattress: saline bags are NOT used &mdash; the mattress provides lateral support instead.</li>
+<li>Vacuum mattress is the gold standard for suspected spinal cord injury during transport.</li>
+<li>Always check medication contraindications before administration, even when under pressure.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<ul>
+<li>Your working diagnosis drives your treatment plan &mdash; get it right.</li>
+<li>Know your protocols before you need them. On scene is not the time to read them for the first time.</li>
+<li>Early EOC notification for significant trauma ensures backup is moving.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- ==================== TREATMENT PHASE ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Treatment Phase</h2>
+
+<!-- Protocol Reference Toggles -->
+<div class="toggle">
+<button class="toggle-btn" aria-expanded="false">Protocol Reference: STS Gen 2 &mdash; CPPRO-028 <span class="toggle-icon">+</span></button>
+<div class="toggle-content"><div class="toggle-inner">
+<h4>Indications</h4>
+<p>Suspected or obvious fracture of the femur diaphysis (mid-shaft). The diaphysis starts below the lesser trochanter and ends above the medial and lateral epicondyle.</p>
+<h4>Contraindications</h4>
+<ul>
+<li>Neck of femur (NOF) fracture</li>
+<li>Avulsion with bone separation</li>
+</ul>
+<h4>Precautions</h4>
+<ul>
+<li>Suspected pelvic fracture &rarr; apply Pelvic Sling before traction device.</li>
+<li>Regularly check traction is maintained &mdash; force can reduce by 58% within 30 minutes.</li>
+<li>Consider padding the ischial (groin) strap &mdash; pressure on skin increases once traction applied.</li>
+<li>Paediatrics: excessive traction may damage growth plates.</li>
+</ul>
+<h4>Traction Targets</h4>
+<ul>
+<li>Leg lengthens (equal to uninjured leg)</li>
+<li>Improved patient comfort</li>
+<li>Adequate distal perfusion (pedal pulse, CRT)</li>
+<li>Neurological integrity maintained</li>
+</ul>
+</div></div>
+</div>
+
+<div class="toggle">
+<button class="toggle-btn" aria-expanded="false">Protocol Reference: C-Spine Immobilisation &mdash; CPPRO-021 <span class="toggle-icon">+</span></button>
+<div class="toggle-content"><div class="toggle-inner">
+<h4>Modified Towel Roll Within Vacuum Mattress</h4>
+<ul>
+<li>Saline bags are NOT required when using the vacuum mattress.</li>
+<li>Option A: Modified towel roll (remove saline bags) with folded towels on both sides of the head, mattress moulded around them.</li>
+<li>Option B: Place folded towels on both sides of the patient&rsquo;s head and form the vacuum mattress around them.</li>
+<li>A folded towel (~2 cm) under the patient&rsquo;s head maintains the natural alignment of the spine.</li>
+</ul>
+<h4>&lsquo;Cervical Spine NOT Cleared&rsquo; Sticker</h4>
+<ul>
+<li>Apply in a prominent position as early as possible.</li>
+<li>Avoid adhering directly to the patient&rsquo;s skin.</li>
+<li>This sticker alerts all people involved in care to maintain spinal precautions during handling.</li>
+</ul>
+<h4>Semi-Rigid Collar Contraindications (for reference)</h4>
+<ul>
+<li>Compromised airway</li>
+<li>Spinal deformities</li>
+<li>Concerns about raised intra-cranial pressure</li>
+</ul>
+</div></div>
+</div>
+
+<div class="toggle">
+<button class="toggle-btn" aria-expanded="false">Protocol Reference: Pain Management &mdash; AO Scope <span class="toggle-icon">+</span></button>
+<div class="toggle-content"><div class="toggle-inner">
+<h4>Methoxyflurane (Penthrox)</h4>
+<ul>
+<li>3 mL into inhaler device. Patient self-administers by inhaling through mouthpiece.</li>
+<li>Diluter hole open = lower concentration (start here for elderly patients).</li>
+<li>Diluter hole covered = stronger effect.</li>
+<li>Maximum: 6 mL (2 bottles) per session. Duration: approximately 12&ndash;15 minutes per bottle.</li>
+<li>Contraindications: renal impairment, hepatic disease, malignant hyperthermia susceptibility, concurrent nephrotoxic medications.</li>
+<li>Caution in elderly: monitor level of consciousness for excessive sedation.</li>
+</ul>
+<h4>Paracetamol (Oral)</h4>
+<ul>
+<li>&gt;50 kg: 1 g PO. &le;50 kg: 500 mg PO.</li>
+<li>Maximum 4 g in 24 hours. Ask when the patient last took Paracetamol.</li>
+<li>Contraindications: liver disease, known allergy.</li>
+<li>Onset: 30&ndash;60 minutes (not immediate relief).</li>
+</ul>
+<h4>Non-Pharmacological</h4>
+<ul>
+<li>Splinting and traction provide significant mechanical pain relief.</li>
+<li>Positional comfort, reassurance, temperature management.</li>
+</ul>
+</div></div>
+</div>
+
+<hr style="border-color:#004d00;margin:20px 0">
+
+<!-- TREATMENT STEP 1 -->
+<h3>Step 1 &mdash; Initial Stabilisation &amp; Analgesia</h3>
+<ul>
+<li><strong>AO1:</strong> Reassure Margaret. &ldquo;Margaret, we&rsquo;re going to look after you. Try to keep your head and neck still for me.&rdquo;</li>
+<li><strong>AO2:</strong> Contact EOC Clinician &mdash; notify of significant trauma, confirm plan, request paramedic backup.</li>
+<li><strong>AO1:</strong> Prepare and administer Methoxyflurane.</li>
+</ul>
+
+<h4>Methoxyflurane Administration</h4>
+<div class="steps-container">
+<div class="step">Contraindication check: &ldquo;Margaret, do you have any kidney or liver problems? Any family history of bad reactions to anaesthetics?&rdquo; &mdash; No to all.</div>
+<div class="step">Open Methoxyflurane bottle. Pour 3 mL into inhaler chamber.</div>
+<div class="step">Coach patient: &ldquo;Breathe in through this mouthpiece when you need pain relief. You control it &mdash; breathe in as you need to.&rdquo;</div>
+<div class="step">Start with diluter hole OPEN (lower concentration for elderly patient).</div>
+<div class="step">Document time of administration on ePCR.</div>
+<div class="step">Monitor level of consciousness &mdash; watch for excessive drowsiness.</div>
+</div>
+
+<h4>Paracetamol Administration</h4>
+<div class="steps-container">
+<div class="step">Check: &ldquo;Margaret, when did you last take Paracetamol?&rdquo; &mdash; None today. No liver disease. NKDA.</div>
+<div class="step">Estimated weight ~58 kg (&gt;50 kg) &rarr; dose: 1 g (two 500 mg tablets).</div>
+<div class="step">Administer with a small sip of water. Document time and dose.</div>
+</div>
+
+<hr style="border-color:#004d00;margin:20px 0">
+
+<!-- SECOND CREW ARRIVES -->
+<h3>Second Crew Arrives</h3>
+<div class="read-aloud">
+AO3 and AO4 arrive with the vacuum mattress and additional equipment. They approach and ask: &ldquo;What have you got?&rdquo;
+</div>
+<p><strong>AO1 briefs arriving crew:</strong></p>
+<ul>
+<li>&ldquo;75-year-old Margaret, struck by a golf cart.&rdquo;</li>
+<li>&ldquo;Suspected mid-shaft femur fracture right &mdash; obvious deformity, shortening, rotation.&rdquo;</li>
+<li>&ldquo;Possible C-spine injury &mdash; neck tenderness, significant mechanism, distracting injury.&rdquo;</li>
+<li>&ldquo;Currently receiving Methoxyflurane. Plan: STS Gen 2, modified towel roll, vacuum mattress.&rdquo;</li>
+<li>&ldquo;AO3 &mdash; can you take manual C-spine stabilisation? AO4 &mdash; can you prepare the vacuum mattress alongside the patient?&rdquo;</li>
+</ul>
+
+<hr style="border-color:#004d00;margin:20px 0">
+
+<!-- TREATMENT STEP 2 -->
+<h3>Step 2 &mdash; Distal Perfusion Assessment (Before Traction)</h3>
+<p>AO1 assesses the right foot before any traction is applied:</p>
+<ul class="checklist" id="perfList">
+<li>Pedal pulse: Present but weak</li>
+<li>Capillary refill: 3 seconds</li>
+<li>Sensation: Intact (light touch all toes)</li>
+<li>Skin colour: Pale</li>
+<li>Skin temperature: Cool</li>
+</ul>
+<div class="alert alert-amber">
+<strong>Important:</strong> Mark the pedal pulse location with a pen for future reference. Document all pre-traction perfusion findings on the ePCR.
+</div>
+
+<hr style="border-color:#004d00;margin:20px 0">
+
+<!-- TREATMENT STEP 3 — STS Gen 2 Application -->
+<h3>Step 3 &mdash; STS Gen 2 Application</h3>
+
+<!-- BREAK POINT 5 -->
+<div class="bp">
+<div class="bp-label">Break Point 5 &mdash; Treatment Initiation &amp; Medication Safety</div>
+<div class="bp-type">Type: Practical Skill / Discussion</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>Before we touch the splint &mdash; what needs to happen first?</li>
+<li>Walk me through the STS Gen 2 contraindications one more time.</li>
+<li>What analgesia have we given, when, and what are we monitoring?</li>
+<li>AO3 &mdash; demonstrate manual C-spine stabilisation.</li>
+<li>Now let&rsquo;s walk through the STS Gen 2 step by step. Who does what?</li>
+</ul>
+</div>
+
+<h4>Crew Roles During STS Gen 2 Application</h4>
+<div class="role-grid">
+<div class="role-card"><strong>AO1 &mdash; Clinician</strong>Leads application. Applies black ankle strap, red groin strap, pulls traction cord, locks, applies pressure wrap.</div>
+<div class="role-card"><strong>AO2 &mdash; Driver</strong>Assists with equipment. Monitors patient observations. Documents times.</div>
+<div class="role-card"><strong>AO3</strong>Maintains manual C-spine stabilisation at the head throughout.</div>
+<div class="role-card"><strong>AO4</strong>Applies manual traction to the injured leg until mechanical traction is locked. Then prepares vacuum mattress.</div>
+</div>
+
+<h4>STS Gen 2 &mdash; Step-by-Step Application (CPPRO-028)</h4>
+<div class="steps-container">
+<div class="step"><strong>Hand hygiene and gloves</strong> &mdash; all clinicians involved.</div>
+<div class="step"><strong>Expose the injured limb</strong> &mdash; skin to splint. Use shears if needed. Place a towel over the groin for dignity. Consider temperature control.</div>
+<div class="step"><strong>AO4 begins manual traction.</strong> Apply gentle longitudinal traction from the ankle. Pull slowly &mdash; muscle spasm needs time to relax (this takes minutes, not seconds). Maintain traction until mechanical traction is locked.</div>
+<div class="step"><strong>Extend the telescopic pole.</strong> Pull the silver middle tube from the black outer tube until the spring button engages. Choose length based on patient&rsquo;s leg.</div>
+<div class="step"><strong>Apply the BLACK ankle strap FIRST.</strong>
+<ul>
+<li>Neoprene flush against the skin.</li>
+<li>Pole on the OUTER side of the strap.</li>
+<li>Place the longer side of the strap UNDER the ankle.</li>
+<li>Wrap around the limb firmly.</li>
+</ul></div>
+<div class="step"><strong>Apply the RED groin (ischial) strap.</strong>
+<ul>
+<li>Neoprene buckle cover flush against the skin.</li>
+<li>Pole on the OUTER side of the ischial strap.</li>
+<li>Carefully slide the long end under the patient&rsquo;s leg.</li>
+<li>Tighten the clasp firmly against the anterior thigh.</li>
+<li>Take care not to impinge genitalia.</li>
+</ul></div>
+<div class="step"><strong>Pad the red groin strap</strong> with a combine dressing. Traction will exert pressure on the skin of the groin.</div>
+<div class="step"><strong>Pull the traction cord</strong> via the RED TOGGLE located at hip level. Pull the toggle <strong>towards the patient&rsquo;s head</strong>. Pull slowly until the desired effect is achieved:
+<ul class="checklist" id="tractionCheck">
+<li>Leg lengthens (equal to uninjured leg)</li>
+<li>Improved patient comfort</li>
+<li>Bone realignment</li>
+</ul></div>
+<div class="step"><strong>Lock the traction.</strong> While maintaining tension, pull the cord <strong>towards the patient&rsquo;s foot</strong>. Place the cord into the <strong>V-NOTCH</strong> at the top of the red inner tube.</div>
+<div class="step"><strong>Secure excess cord</strong> by wrapping it once around each <strong>cleat wing</strong>.</div>
+<div class="step"><strong>AO4 releases manual traction.</strong> Mechanical traction is now locked and maintained by the device.</div>
+<div class="step"><strong>Apply the Slishman Pressure Wrap:</strong>
+<ul>
+<li>Lasso one foot loosely in the loop.</li>
+<li>Wrap the tail around the other foot so both feet sit adjacent (prevents rotation).</li>
+<li>Velcro secures as you wrap &mdash; continue until no excess tail.</li>
+</ul></div>
+<div class="step"><strong>Reassess distal perfusion immediately:</strong>
+<ul class="checklist" id="postTractionCheck">
+<li>Pedal pulse</li>
+<li>Capillary refill time</li>
+<li>Sensation (light touch)</li>
+<li>Patient comfort and pain score</li>
+</ul></div>
+<div class="step"><strong>Document:</strong> Time traction applied. Pre- and post-traction perfusion findings. Any changes (e.g., improved pulse, reduced pain, leg length corrected).</div>
+</div>
+
+<div class="alert alert-red">
+<strong>Caution:</strong> Traction force can reduce by 58% within 30 minutes, with the fastest decline in the first 5 minutes. Check traction regularly during transport. Relock if loosened.
+</div>
+
+<div style="margin-top:12px">
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Analgesia before splinting reduces distress and allows better application.</li>
+<li>Manual traction applied slowly &mdash; forcing against spasm causes more pain and potential injury.</li>
+<li>Black strap first, red strap second &mdash; always follow this order.</li>
+<li>Neoprene against skin, pole on outer side &mdash; consistent for both straps.</li>
+<li>Pull red toggle toward HEAD to apply traction. Pull cord toward FOOT to lock in V-notch.</li>
+<li>Pressure wrap prevents rotation of the injured leg during transport.</li>
+<li>Distal perfusion checks before AND after &mdash; document the change.</li>
+</ul>
+
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Application sequence: Ankle &rarr; Groin &rarr; Pad &rarr; Traction &rarr; Lock &rarr; Cleat &rarr; Wrap &rarr; Check.</li>
+<li>Traction provides significant pain relief, haemorrhage control, and prevents further neurovascular damage.</li>
+<li>An incorrectly applied device can cause harm &mdash; take time to get it right.</li>
+<li>In an unconscious patient, use the uninjured leg as a guide for traction length.</li>
+</ul>
+
+<h4>Real-Job Translation</h4>
+<ul>
+<li>Practice with the actual STS Gen 2 until the sequence is automatic.</li>
+<li>In a real job, this is done on the ground, potentially in the dark, under pressure.</li>
+<li>Manual traction by AO4 is essential &mdash; this is very difficult with only two people.</li>
+<li>Check traction after every patient movement.</li>
+</ul>
+</div>
+
+<hr style="border-color:#004d00;margin:20px 0">
+
+<!-- TREATMENT STEP 4 — Vacuum Mattress & Towel Roll -->
+<h3>Step 4 &mdash; Vacuum Mattress &amp; Modified Towel Roll</h3>
+<p>While AO1 applied the STS Gen 2, AO4 has prepared the vacuum mattress alongside the patient (deflated, flat on the ground).</p>
+
+<h4>Patient Transfer onto Vacuum Mattress</h4>
+<div class="steps-container">
+<div class="step"><strong>AO1 gives a coordination call.</strong> All four AOs know their position and task before any movement begins.</div>
+<div class="step"><strong>Positions:</strong>
+<ul>
+<li>AO3: At head &mdash; maintains manual C-spine stabilisation throughout.</li>
+<li>AO1: At the right leg &mdash; supports and controls the injured leg with STS Gen 2 in situ.</li>
+<li>AO2 + AO4: At trunk and hips.</li>
+</ul></div>
+<div class="step"><strong>On a coordinated count</strong>, carefully lift the patient as a unit and place onto the vacuum mattress. Maintain spinal alignment at all times. AO3 gives the command: &ldquo;Ready&hellip; steady&hellip; lift.&rdquo;</div>
+</div>
+
+<h4>Modified Towel Roll Application (Within Vacuum Mattress)</h4>
+<div class="steps-container">
+<div class="step">Place a <strong>folded towel (~2 cm)</strong> under the patient&rsquo;s head to maintain neutral spinal alignment.</div>
+<div class="step">Place <strong>folded towels on both sides</strong> of the patient&rsquo;s head, snug against the ears/temples.</div>
+<div class="step"><strong>Mould the vacuum mattress</strong> around the patient&rsquo;s entire body, including around the towels at the head and around the STS Gen 2.</div>
+<div class="step">AO3 adjusts hand position as needed to allow the mattress to be formed around the head and neck, then carefully withdraws hands once the mattress is supporting the head.</div>
+<div class="step"><strong>Deflate the vacuum mattress</strong> using the pump until rigid. Ensure firm support around the head, neck, trunk, pelvis, and legs.</div>
+<div class="step">Secure the vacuum mattress straps across the patient (chest, hips, legs).</div>
+<div class="step"><strong>Apply &lsquo;Cervical Spine NOT Cleared&rsquo; sticker</strong> in a prominent position. Avoid adhering directly to the patient&rsquo;s skin &mdash; place on clothing or the vacuum mattress itself.</div>
+</div>
+
+<div class="alert alert-amber">
+<strong>Important:</strong> Within the vacuum mattress, saline bags are NOT used for the towel roll. The moulded mattress provides lateral head support. Use folded towels only.
+</div>
+</div>
+</section>
+
+<!-- ==================== REASSESSMENT & ESCALATION ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Reassessment &amp; Escalation</h2>
+<h3>Post-Treatment Observations</h3>
+<table class="obs-table">
+<tr><th>Parameter</th><th>Initial</th><th>Post-Treatment</th></tr>
+<tr><td>Heart Rate</td><td>108 bpm</td><td class="improved">92 bpm</td></tr>
+<tr><td>NIBP</td><td>102/58</td><td class="improved">110/65</td></tr>
+<tr><td>RR</td><td>22</td><td class="improved">18</td></tr>
+<tr><td>SpO2</td><td>96%</td><td class="improved">97%</td></tr>
+<tr><td>GCS</td><td>15</td><td class="val">15</td></tr>
+<tr><td>Pain</td><td>8/10</td><td class="improved">5/10</td></tr>
+<tr><td>Pedal Pulse (R)</td><td>Weak</td><td class="improved">Stronger, palpable</td></tr>
+<tr><td>CRT (R foot)</td><td>3 sec</td><td class="improved">2 sec</td></tr>
+<tr><td>Sensation (R)</td><td>Intact</td><td class="val">Intact</td></tr>
+</table>
+
+<!-- BREAK POINT 6 -->
+<div class="bp">
+<div class="bp-label">Break Point 6 &mdash; Reassessment &amp; Escalation Decision</div>
+<div class="bp-type">Type: Decision-Making</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>Compare the initial and post-treatment observations. What has changed?</li>
+<li>Has Margaret improved, stayed the same, or deteriorated?</li>
+<li>Is pain management adequate at 5/10? What else can we do within our scope?</li>
+<li>Do we still need paramedic backup? What for?</li>
+<li>What would make you escalate further right now?</li>
+<li>When should we get moving?</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Observations improving: HR down, BP up, RR down &mdash; positive trend.</li>
+<li>Pain reduced from 8/10 to 5/10 &mdash; traction and analgesia are working.</li>
+<li>Distal perfusion improved &mdash; traction is achieving alignment and reducing vascular compromise.</li>
+<li>Methoxyflurane will wear off (12&ndash;15 min) &mdash; need a plan for transport analgesia. Paracetamol is working but slow onset.</li>
+<li>Paramedic backup still warranted for IV analgesia during transport, but do not delay transport waiting.</li>
+<li>Consider paramedic rendezvous en route.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Trend is more important than any single observation &mdash; look for the direction of change.</li>
+<li>Improved distal perfusion post-traction confirms the splint is achieving its purpose.</li>
+<li>Escalation triggers: increasing tachycardia, dropping BP, altered GCS, worsening pain despite treatment, loss of distal perfusion.</li>
+<li>Do not delay transport to wait for paramedic &mdash; time to definitive care matters in elderly trauma patients.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<ul>
+<li>Regular reassessment catches deterioration early &mdash; set yourself a rhythm.</li>
+<li>Paramedic rendezvous en route is a practical rural option &mdash; meet on the main road.</li>
+<li>Balance on-scene treatment time against transport time. Move when the patient is stabilised.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- ==================== EXTRICATION & TRANSPORT ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Extrication &amp; Transport</h2>
+<h3>Extrication Plan</h3>
+<ol>
+<li>Transfer vacuum mattress (with patient, STS Gen 2 in situ) onto stretcher.</li>
+<li>Secure vacuum mattress to stretcher with straps.</li>
+<li>Transport ~200 m across fairway to ambulance (use club buggy to assist if available).</li>
+<li>Load into ambulance.</li>
+<li>AO1 rides in back with patient. AO2 drives.</li>
+<li>Second crew (AO3 + AO4) follows in their vehicle or returns to station.</li>
+</ol>
+
+<div class="alert alert-amber">
+<strong>After every movement:</strong> Check STS Gen 2 traction is maintained. Check distal perfusion. Check vacuum mattress integrity and C-spine immobilisation. Document any changes.
+</div>
+
+<h3>Transport Plan</h3>
+<table class="obs-table">
+<tr><th>Detail</th><th></th></tr>
+<tr><td>Destination</td><td class="val">Port Lincoln Hospital ED</td></tr>
+<tr><td>Estimated Transport Time</td><td class="val">~30 minutes</td></tr>
+<tr><td>Transport Priority</td><td class="val">Urgent (lights and sirens if patient deteriorates)</td></tr>
+<tr><td>En Route Monitoring</td><td>Corpuls3 continuous (HR, SpO2, ECG). NIBP every 5 min. Pain score. GCS. Distal perfusion checks every 10 min. Traction check every 5 min.</td></tr>
+<tr><td>Paramedic Rendezvous</td><td>Consider meeting en route if available &mdash; coordinate via EOC.</td></tr>
+</table>
+
+<!-- BREAK POINT 7 -->
+<div class="bp">
+<div class="bp-label">Break Point 7 &mdash; Extrication &amp; Transport Planning</div>
+<div class="bp-type">Type: Discussion / Decision-Making</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>How are we getting Margaret from the fairway to the ambulance?</li>
+<li>Who does what during the transfer to stretcher?</li>
+<li>What do we check after the stretcher transfer?</li>
+<li>What monitoring are we doing en route and how often?</li>
+<li>What would change your transport priority to time-critical?</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Four AOs available to carry the stretcher across the fairway. Use the club buggy to assist if terrain is rough.</li>
+<li>After transferring to stretcher: traction check, distal perfusion check, vacuum mattress integrity, C-spine immobilisation secure.</li>
+<li>En route: continuous Corpuls3 monitoring, regular manual checks (traction, perfusion), pain reassessment.</li>
+<li>Time-critical triggers: rising HR, falling BP, altered GCS, loss of distal pulse, uncontrolled pain.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Every movement is a risk for losing traction or displacing immobilisation &mdash; check everything after transfer.</li>
+<li>Traction loses up to 58% of force in 30 minutes &mdash; check regularly.</li>
+<li>Plan the extrication before you start moving &mdash; one person gives the commands.</li>
+<li>Rural transport times are significant &mdash; the patient needs to be stable before departure.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<ul>
+<li>In a real job, this is where things often go wrong &mdash; rough ground, equipment shifting, traction loosening.</li>
+<li>Practice the full transfer sequence: ground &rarr; vacuum mattress &rarr; stretcher &rarr; ambulance.</li>
+<li>Clear communication during extrication is non-negotiable. One voice, one count.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- ==================== HANDOVER ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Handover &mdash; ISBAR</h2>
+
+<!-- BREAK POINT 8 -->
+<div class="bp">
+<div class="bp-label">Break Point 8 &mdash; ISBAR Handover</div>
+<div class="bp-type">Type: Practical Skill</div>
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>AO1 &mdash; deliver your ISBAR handover as if you are handing over at Port Lincoln Hospital ED.</li>
+<li>What are the critical pieces of information the receiving team needs?</li>
+<li>What documentation needs to accompany the patient?</li>
+</ul>
+</div>
+
+<h3>ISBAR Handover (AO1 Delivers)</h3>
+
+<h4>I &mdash; Identify</h4>
+<p>&ldquo;I&rsquo;m [Name], Ambulance Officer from [Station]. This is Margaret Thompson, 75 years old.&rdquo;</p>
+
+<h4>S &mdash; Situation</h4>
+<p>&ldquo;Margaret was struck by a golf cart at Coffin Bay Golf Club approximately two hours ago. She has a suspected mid-shaft fracture of the right femur and a possible cervical spine injury. Cervical spine is NOT cleared.&rdquo;</p>
+
+<h4>B &mdash; Background</h4>
+<p>&ldquo;She was walking across the fairway when a golf cart lost control on a slope and struck her from behind. The cart wheel ran over her right thigh. She has a history of hypertension, osteoarthritis, osteoporosis, and diet-controlled Type 2 diabetes. Medications: Amlodipine 5 mg daily, Glucosamine, Calcium and Vitamin D. No known allergies. She had lunch about one hour before the incident.&rdquo;</p>
+
+<h4>A &mdash; Assessment</h4>
+<p>&ldquo;On arrival: GCS 15, HR 108, BP 102 over 58, RR 22, SpO2 96%, pain 8 out of 10. Obvious mid-thigh deformity, shortening, and external rotation right leg. Cervical tenderness without neurological deficit. Post-treatment: HR 92, BP 110 over 65, RR 18, SpO2 97%, pain 5 out of 10. Distal perfusion improved &mdash; pedal pulse now palpable, CRT 2 seconds, sensation intact.&rdquo;</p>
+
+<h4>R &mdash; Recommendation</h4>
+<p>&ldquo;She has an STS Gen 2 traction splint in situ, applied at [time]. Immobilised in a vacuum mattress with modified towel rolls for C-spine. Cervical spine is NOT cleared. She received Methoxyflurane 3 mL inhaled at [time] and Paracetamol 1 g oral at [time]. She will require imaging of the right femur and cervical spine, ongoing pain management, and likely orthopaedic review. Here is the ePCR.&rdquo;</p>
+
+<div class="alert alert-red">
+<strong>Critical Handover Flags:</strong>
+<ul style="margin:6px 0 0 18px">
+<li>&lsquo;Cervical Spine NOT Cleared&rsquo; &mdash; sticker visible, stated verbally.</li>
+<li>Traction splint time of application &mdash; record and state.</li>
+<li>Medication times and doses &mdash; record and state.</li>
+<li>Pre- and post-traction perfusion changes &mdash; documented on ePCR.</li>
+</ul>
+</div>
+
+<h4>Key Teaching Points</h4>
+<ul>
+<li>ISBAR is structured and concise &mdash; do not ramble. Practise until it is automatic.</li>
+<li>The receiving team needs to know about the traction splint &mdash; they will manage removal.</li>
+<li>&lsquo;Cervical Spine NOT Cleared&rsquo; is a critical safety flag &mdash; ensure it is heard and seen.</li>
+<li>Time documentation matters: when was traction applied, when were medications given.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<ul>
+<li>A clear handover is the final link in the care chain. A poor handover can undo good work.</li>
+<li>Hand over the documentation with the patient &mdash; ePCR complete before arrival.</li>
+</ul>
+</div>
+</section>
+
+<!-- ==================== DEBRIEF ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Debrief (10&ndash;15 minutes)</h2>
+<h3>Reflective Questions</h3>
+<ol>
+<li>How did our en-route planning affect what happened on scene?</li>
+<li>What was the most challenging part of this scenario and why?</li>
+<li>How well did the team coordinate when the second crew arrived? What would we change?</li>
+<li>Were there any points where you felt uncertain about what to do next?</li>
+<li>How did the STS Gen 2 application go? What would you do differently next time?</li>
+<li>Did we manage Margaret&rsquo;s pain effectively within our scope? Could we have done more?</li>
+<li>How confident are you with the modified towel roll technique inside the vacuum mattress?</li>
+</ol>
+
+<h3>Take-Home Messages</h3>
+<ol>
+<li><strong>Femoral shaft fractures are high-risk injuries.</strong> Up to 2 L blood loss is possible, even from seemingly moderate mechanisms in elderly patients with osteoporosis.</li>
+<li><strong>STS Gen 2 follows a specific sequence.</strong> Ankle strap &rarr; Groin strap &rarr; Pad &rarr; Traction &rarr; V-notch lock &rarr; Cleat wings &rarr; Pressure wrap &rarr; Perfusion check.</li>
+<li><strong>Traction provides real clinical benefit.</strong> Pain relief, haemorrhage control, perfusion improvement, and prevention of further neurovascular damage.</li>
+<li><strong>C-spine cannot be cleared</strong> when there is a significant mechanism, cervical tenderness, OR a distracting injury. Default to immobilisation.</li>
+<li><strong>Modified towel roll in the vacuum mattress does not use saline bags.</strong> The moulded mattress provides lateral head support. Folded towels only.</li>
+<li><strong>Coordinate your team early.</strong> Brief arriving crews clearly, assign roles, and communicate throughout every patient movement.</li>
+<li><strong>Document traction time, perfusion changes, and medication times.</strong> This information is critical for hospital handover and ongoing patient care.</li>
+</ol>
+</div>
+</section>
+
+<!-- ==================== SCENARIO VARIATIONS ==================== -->
+<section class="fade-in">
+<div class="card">
+<h2>Optional Scenario Variations</h2>
+
+<div class="var-card">
+<strong>Variation 1 &mdash; Open (Compound) Fracture</strong>
+Same mechanism, but bone is visible through a wound in the thigh. Requires wound irrigation with at least 1 L sodium chloride 0.9% before traction. Cover with a damp combine dressing. After traction, the bone may retract back into the thigh &mdash; document this and hand over clearly. Re-cover with a fresh damp combine and crepe bandage. High infection risk.
+</div>
+
+<div class="var-card">
+<strong>Variation 2 &mdash; Patient Deterioration En Route</strong>
+During transport, Margaret becomes confused (GCS 13). HR increases to 122, BP drops to 85/50. Signs of significant haemorrhagic shock. Escalation: call EOC Clinician, upgrade to time-critical transport, request urgent paramedic rendezvous. Reassess traction. Consider positioning (elevate legs if vacuum mattress allows). Pre-alert Port Lincoln Hospital.
+</div>
+
+<div class="var-card">
+<strong>Variation 3 &mdash; Bilateral Femur Fractures</strong>
+Both legs are injured. Two STS Gen 2 devices required (one per leg). Significantly higher blood loss risk. Use thigh deformity, pain score, perfusion, and neurovascular function as traction guides for each leg independently. More complex extrication &mdash; requires careful coordination.
+</div>
+
+<div class="var-card">
+<strong>Variation 4 &mdash; Isolated C-Spine Concern (No Femur Fracture)</strong>
+Margaret has neck pain and upper limb tingling after being knocked down, but no femur fracture. Focus shifts entirely to C-spine assessment, immobilisation decisions, and vacuum mattress application. Discuss when a semi-rigid collar IS indicated and the contraindications (compromised airway, spinal deformities, raised ICP concerns).
+</div>
+</div>
+</section>
+
+</main>
+
+<footer>
+<p>DSY Training &mdash; Walk-Through Scenario</p>
+<p>Source Protocols: CPPRO-028 v2.0 | CPPRO-021 v1.2 | Pain Management AO</p>
+<p>For training purposes only. Always refer to current SAAS protocols.</p>
+</footer>
+
+<script>
+// Progress bar
+const pb=document.getElementById('progressBar');
+window.addEventListener('scroll',()=>{const st=document.documentElement.scrollTop,sh=document.documentElement.scrollHeight-window.innerHeight;pb.style.width=Math.min((st/sh)*100,100)+'%';},{passive:true});
+
+// Fade-in on scroll
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fade-in').forEach(el=>io.observe(el));
+
+// Toggle sections
+document.querySelectorAll('.toggle-btn').forEach(btn=>{
+btn.addEventListener('click',()=>{
+const t=btn.parentElement;
+const open=t.classList.toggle('open');
+btn.setAttribute('aria-expanded',open);
+});
+});
+
+// Checklist taps
+document.querySelectorAll('.checklist li').forEach(li=>{
+li.addEventListener('click',()=>li.classList.toggle('checked'));
+});
+</script>
+</body>
+</html>
