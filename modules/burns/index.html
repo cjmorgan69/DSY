@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Burns (Facial) — AO Walk-Through Scenario</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:18px;scroll-behavior:smooth}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f4f7f4;color:#1a1a1a;line-height:1.6;padding-top:90px}
+
+  /* ── Sticky Header ── */
+  .sticky-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:linear-gradient(135deg,#003300 0%,#004d00 100%);padding:10px 20px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 12px rgba(0,0,0,.4)}
+  .sticky-header img{width:60px;height:60px;object-fit:contain;border-radius:8px;flex-shrink:0}
+  .header-title{color:#fff;font-size:1.05rem;font-weight:700;flex:1;line-height:1.3}
+  .header-title span{display:block;font-size:.75rem;font-weight:400;color:#a5d6a7;margin-top:2px}
+  .progress-wrap{position:absolute;bottom:0;left:0;right:0;height:4px;background:rgba(255,255,255,.15)}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#4CAF50,#81C784);transition:width .25s ease-out;border-radius:0 2px 2px 0}
+
+  /* ── Main Container ── */
+  main{max-width:860px;margin:0 auto;padding:0 16px 60px}
+
+  /* ── Hero Section ── */
+  .hero{background:linear-gradient(135deg,#003300,#00600a);color:#fff;border-radius:16px;padding:32px 24px;margin:16px 0 24px;text-align:center}
+  .hero h1{font-size:1.55rem;font-weight:800;margin-bottom:8px;line-height:1.25}
+  .hero .proto-tag{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 14px;font-size:.78rem;color:#c8e6c9;margin-bottom:12px}
+  .hero p{font-size:.95rem;color:#c8e6c9;max-width:640px;margin:0 auto;line-height:1.5}
+
+  /* ── Section Cards ── */
+  .card{background:#fff;border-radius:14px;padding:24px 20px;margin-bottom:20px;border-left:5px solid #2d8a2d;box-shadow:0 2px 8px rgba(0,51,0,.08)}
+  .card h2{font-size:1.15rem;font-weight:700;color:#003300;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #e8f5e9}
+  .card h3{font-size:1rem;font-weight:700;color:#004d00;margin:16px 0 8px}
+  .card h4{font-size:.95rem;font-weight:600;color:#1a5c1a;margin:12px 0 6px}
+  .card p,.card li{font-size:1rem;line-height:1.65;color:#2a2a2a}
+
+  /* ── Break Point Cards ── */
+  .bp-card{background:linear-gradient(135deg,#003300 0%,#004a00 100%);border-radius:14px;padding:0;margin-bottom:24px;border:2px solid #2d8a2d;overflow:hidden;box-shadow:0 4px 16px rgba(0,51,0,.15)}
+  .bp-header{padding:18px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.1)}
+  .bp-number{background:#4CAF50;color:#fff;font-weight:800;font-size:.85rem;min-width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .bp-label{color:#fff;font-size:1.05rem;font-weight:700;flex:1}
+  .bp-type{background:rgba(255,255,255,.12);color:#a5d6a7;font-size:.72rem;padding:3px 10px;border-radius:12px;font-weight:600;text-transform:uppercase;white-space:nowrap}
+  .bp-body{padding:20px}
+  .bp-body h4{color:#81C784;font-size:.92rem;font-weight:700;margin:14px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+  .bp-body h4:first-child{margin-top:0}
+  .bp-body p,.bp-body li{color:#e0e0e0;font-size:.95rem;line-height:1.6}
+  .bp-body ul,.bp-body ol{padding-left:20px;margin:6px 0 12px}
+  .bp-body li{margin-bottom:5px}
+
+  /* ── Checklists ── */
+  ul.check{list-style:none;padding-left:0;margin:8px 0}
+  ul.check li{position:relative;padding-left:28px;margin-bottom:8px;font-size:1rem}
+  ul.check li::before{content:'☐';position:absolute;left:0;top:0;font-size:1.05rem;color:#2d8a2d}
+  .bp-body ul.check li::before{color:#81C784}
+
+  /* ── Caution / Alert Boxes ── */
+  .alert{background:#fff3e0;border-left:4px solid #ff9800;border-radius:8px;padding:14px 16px;margin:12px 0;font-size:1rem;color:#4e342e}
+  .alert-red{background:#fce4ec;border-left:4px solid #e53935;color:#b71c1c}
+  .alert-blue{background:#e3f2fd;border-left:4px solid #1976d2;color:#0d47a1}
+  .alert strong{display:block;margin-bottom:4px}
+
+  /* ── Alert text inside break point bodies (specificity fix) ── */
+  .bp-body .alert       { color:#4e342e; }
+  .bp-body .alert li,
+  .bp-body .alert p      { color:#4e342e; }
+  .bp-body .alert-red    { color:#b71c1c; }
+  .bp-body .alert-red li,
+  .bp-body .alert-red p  { color:#b71c1c; }
+  .bp-body .alert-blue   { color:#0d47a1; }
+  .bp-body .alert-blue li,
+  .bp-body .alert-blue p { color:#0d47a1; }
+  .bp-body .alert strong,
+  .bp-body .alert-red strong,
+  .bp-body .alert-blue strong { color:inherit; }
+
+  /* ── Toggle/Accordion ── */
+  .toggle-wrap{margin:10px 0}
+  .toggle-btn{width:100%;text-align:left;background:#e8f5e9;border:1px solid #c8e6c9;border-radius:10px;padding:14px 44px 14px 16px;font-size:.95rem;font-weight:600;color:#003300;cursor:pointer;position:relative;min-height:44px;transition:background .2s}
+  .toggle-btn:hover,.toggle-btn:active{background:#c8e6c9}
+  .toggle-btn::after{content:'▸';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:1.1rem;transition:transform .25s}
+  .toggle-btn.active::after{transform:translateY(-50%) rotate(90deg)}
+  .toggle-content{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 16px}
+  .toggle-content.open{padding:14px 16px;max-height:3000px}
+  .toggle-content p,.toggle-content li{font-size:.95rem}
+  .bp-body .toggle-btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:#c8e6c9}
+  .bp-body .toggle-btn:hover{background:rgba(255,255,255,.14)}
+  .bp-body .toggle-btn::after{color:#81C784}
+  .bp-body .toggle-content{color:#e0e0e0}
+
+  /* ── Skills Table ── */
+  .skill-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.9rem}
+  .skill-table th{background:#003300;color:#fff;text-align:left;padding:10px 12px;font-weight:600}
+  .skill-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top;color:#e0e0e0}
+  .skill-table tr:last-child td{border-bottom:none}
+
+  /* ── MDT Box ── */
+  .mdt-box{background:#111;border:2px solid #333;border-radius:10px;padding:16px;font-family:'Courier New',monospace;font-size:.82rem;color:#00ff41;line-height:1.7;margin:12px 0}
+  .mdt-box .mdt-header{color:#ff0;font-weight:700;margin-bottom:6px;font-size:.85rem;border-bottom:1px solid #333;padding-bottom:6px}
+
+  /* ── Obs Table ── */
+  .obs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:12px 0}
+  .obs-item{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px;text-align:center}
+  .obs-item .obs-label{font-size:.7rem;color:#81C784;text-transform:uppercase;font-weight:600;letter-spacing:.5px}
+  .obs-item .obs-value{font-size:1.1rem;color:#fff;font-weight:700;margin-top:2px}
+  .card .obs-item{background:#e8f5e9;border-color:#c8e6c9}
+  .card .obs-item .obs-label{color:#2d8a2d}
+  .card .obs-item .obs-value{color:#003300}
+
+  /* ── Variation Cards ── */
+  .var-card{background:#f1f8e9;border:1px solid #c5e1a5;border-radius:10px;padding:16px;margin:10px 0}
+  .var-card h4{color:#33691e;margin-bottom:6px}
+
+  /* ── Debrief ── */
+  .debrief-q{background:#e8f5e9;border-radius:8px;padding:12px 16px;margin:8px 0;font-size:.95rem;font-weight:500;color:#003300;border-left:3px solid #4CAF50}
+  .thm{background:#003300;color:#fff;border-radius:8px;padding:12px 16px;margin:8px 0;font-size:.95rem;font-weight:500}
+
+  /* ── Crew Role Badges ── */
+  .role{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;margin-right:4px;vertical-align:middle}
+  .role-ao1{background:#1b5e20;color:#fff}
+  .role-ao2{background:#0d47a1;color:#fff}
+
+  /* ── Fade-in Animation ── */
+  .fade-section{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+  .fade-section.visible{opacity:1;transform:translateY(0)}
+
+  /* ── Footer ── */
+  .footer{text-align:center;padding:24px 16px;color:#999;font-size:.72rem}
+
+  /* ── Responsive ── */
+  @media(max-width:480px){
+    html{font-size:16px}
+    .sticky-header{padding:8px 12px;gap:10px}
+    .sticky-header img{width:46px;height:46px}
+    .header-title{font-size:.92rem}
+    .hero{padding:24px 16px}
+    .hero h1{font-size:1.3rem}
+    .card,.bp-body{padding:18px 14px}
+    .obs-grid{grid-template-columns:repeat(2,1fr)}
+    .bp-header{flex-wrap:wrap}
+    .bp-type{margin-top:4px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════ -->
+<!-- STICKY HEADER                           -->
+<!-- ════════════════════════════════════════ -->
+<header class="sticky-header">
+  <img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" alt="DSY Training Logo" width="120" height="120">
+  <div class="header-title">
+    Burns (Facial) — AO Walk-Through Scenario
+    <span>CPP-006-AO &nbsp;|&nbsp; Volunteer AO Crew</span>
+  </div>
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+</header>
+
+<main>
+
+<!-- ════════════════════════════════════════ -->
+<!-- HERO — TITLE & CONTEXT                  -->
+<!-- ════════════════════════════════════════ -->
+<section class="hero">
+  <div class="proto-tag">CPP-006-AO — Burns (AO)</div>
+  <h1>Facial Burns — Fire Pit Incident with Accelerant</h1>
+  <p>A 42-year-old male has sustained facial burns after diesel ignited while being poured onto a backyard fire pit. Bystanders have commenced first aid. Your Volunteer AO crew is responding.</p>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- LEARNING OBJECTIVES                     -->
+<!-- ════════════════════════════════════════ -->
+<section class="card fade-section">
+  <h2>Learning Objectives</h2>
+  <p>By the end of this session, crew members will be able to:</p>
+  <ul class="check">
+    <li>Apply CPP-006-AO Burns protocol to a facial burn patient</li>
+    <li>Recognise signs that increase suspicion of airway burn and explain why ongoing monitoring is critical</li>
+    <li>Complete burn cooling in accordance with the 20-minute protocol, accounting for cooling already provided by bystanders</li>
+    <li>Correctly apply a cling film burn dressing to the face using a non-circumferential technique</li>
+    <li>Administer Paracetamol and Methoxyflurane within AO scope for burns pain management (CPP-013-AO)</li>
+    <li>Identify when to request clinical support for a Paramedic crew and communicate via EOC Clinician</li>
+    <li>Monitor for hypothermia during cooling and manage environmental conditions</li>
+    <li>Deliver an accurate ISBAR handover including burn mechanism, TBSA estimate, and airway status</li>
+  </ul>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- REQUIRED EQUIPMENT                      -->
+<!-- ════════════════════════════════════════ -->
+<section class="card fade-section">
+  <h2>Required Equipment</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">
+    <div>
+      <h4>Assessment &amp; Monitoring</h4>
+      <ul class="check">
+        <li>Corpuls3 monitor (SpO2, ECG, NIBP, Temp)</li>
+        <li>Pen torch</li>
+        <li>BSL meter</li>
+        <li>Thermometer (if not using Corpuls3)</li>
+        <li>ePCR tablet or paperwork</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Burns Management</h4>
+      <ul class="check">
+        <li>Cling film (polyvinyl chloride film)</li>
+        <li>Burnaid hydrogel dressings (face mask + rectangle) — backup</li>
+        <li>Saline 0.9% (for irrigation if needed)</li>
+        <li>Universal dressings</li>
+        <li>Blanket (hypothermia prevention)</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Pain Management</h4>
+      <ul class="check">
+        <li>Paracetamol 500mg tablets (x2 = 1g dose)</li>
+        <li>Methoxyflurane (Penthrox) inhaler + bottle (3ml)</li>
+        <li>Second Penthrox bottle (standby)</li>
+        <li>Cup of water (for oral medications)</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Airway &amp; Oxygen</h4>
+      <ul class="check">
+        <li>Inhalo oxygen cylinder + delivery devices</li>
+        <li>Non-rebreather mask</li>
+        <li>Suction unit</li>
+        <li>Oropharyngeal airways (set)</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Extrication &amp; Transport</h4>
+      <ul class="check">
+        <li>Stretcher</li>
+        <li>Carry chair</li>
+        <li>Additional blankets</li>
+      </ul>
+    </div>
+    <div>
+      <h4>PPE</h4>
+      <ul class="check">
+        <li>Gloves (multiple pairs)</li>
+        <li>Safety glasses</li>
+        <li>P2 mask (if debris/smoke)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- SESSION STRUCTURE OVERVIEW              -->
+<!-- ════════════════════════════════════════ -->
+<section class="card fade-section">
+  <h2>Session Structure Overview</h2>
+  <table class="skill-table" style="color:#1a1a1a">
+    <tr style="background:#003300;color:#fff"><th style="width:35%">Phase</th><th>Approx. Time</th></tr>
+    <tr><td>Pre-Brief</td><td>10 minutes</td></tr>
+    <tr><td>Scenario Walk-Through (8 break points)</td><td>40–50 minutes</td></tr>
+    <tr><td>Debrief</td><td>10–15 minutes</td></tr>
+    <tr style="font-weight:700;background:#e8f5e9"><td>Total Session</td><td>60–75 minutes</td></tr>
+  </table>
+  <h3>Crew Role Allocation</h3>
+  <ul class="check">
+    <li><span class="role role-ao1">AO1 — Clinician</span> Patient contact, primary survey, airway monitoring, medication administration, clinical decisions</li>
+    <li><span class="role role-ao2">AO2 — Driver</span> Corpuls3 setup, observations, documentation, equipment, EOC Clinician communication</li>
+  </ul>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- PRE-BRIEF                               -->
+<!-- ════════════════════════════════════════ -->
+<section class="card fade-section">
+  <h2>Pre-Brief (≈10 minutes)</h2>
+  <p>Set the scene for the crew before the scenario begins.</p>
+  <h3>Context</h3>
+  <ul class="check">
+    <li>Weekday evening, approximately 18:45 hours — still light but cooling down</li>
+    <li>Rural property on the outskirts of town</li>
+    <li>Patient was lighting a backyard fire pit using diesel as an accelerant</li>
+    <li>The diesel ignited suddenly as it was being poured — flash burn to the face</li>
+    <li>Friends on scene have commenced cooling with running tap water — approximately 15 minutes completed before your arrival</li>
+    <li>Nearest Paramedic crew is 45 minutes away if requested</li>
+    <li>Nearest country hospital is approximately 25 minutes transport</li>
+  </ul>
+  <h3>Facilitator Note</h3>
+  <p>Remind the crew: this patient has <strong>singed facial hair</strong> (eyebrows and beard) but <strong>currently shows no signs of airway compromise</strong>. The key learning is recognising red flags and maintaining vigilance — airway oedema can develop progressively over hours. The crew should treat this as a significant burn requiring EOC Clinician consultation.</p>
+  <div class="alert">
+    <strong>Protocol Principle (CPP-006-AO):</strong> Burns are best treated by removal of the heat source and effective cooling by irrigation to minimise tissue damage and pain, and then additional analgesia to achieve pain control. If there is a suspected airway burn, airway management and urgent transport take precedence over burn cooling.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- BREAK POINT 1 — EN ROUTE PLANNING       -->
+<!-- ════════════════════════════════════════ -->
+<section class="bp-card fade-section">
+  <div class="bp-header">
+    <div class="bp-number">1</div>
+    <div class="bp-label">En-Route Planning</div>
+    <div class="bp-type">Discussion</div>
+  </div>
+  <div class="bp-body">
+    <h4>MDT Information</h4>
+    <div class="mdt-box">
+      <div class="mdt-header">▶ CASE 2026-0323-1847 &nbsp;│&nbsp; P2 URGENT</div>
+      TYPE: Burns — Facial<br>
+      LOCATION: 14 Banksia Court, [Rural Town] SA 5607<br>
+      PATIENT: 42yo male<br>
+      DETAILS: Facial burns from fire pit incident with accelerant (diesel). Pt conscious and breathing. Burns first aid commenced — water cooling in progress approx 15 mins. Friends on scene assisting.<br>
+      CALLER: Friend on scene<br>
+      CALLBACK: 0412 XXX XXX<br>
+      HAZARDS: Fire pit — status unknown. Accelerant (diesel) on scene.<br>
+      RESPONDING: [Station] — AO Crew<br>
+      BACKUP: Nearest Paramedic — 45 mins if requested<br>
+      HOSPITAL: [Country] Hospital — approx 25 mins
+    </div>
+
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>What does the MDT tell us about this job? What are the key concerns?</li>
+      <li>What hazards should you be thinking about en route?</li>
+      <li>Who is doing what when we arrive? Confirm roles.</li>
+      <li>What protocol are we working under?</li>
+      <li>The patient has had 15 minutes of cooling — what does that mean for us?</li>
+    </ul>
+
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Facial burns with accelerant — high-risk mechanism, must assess for airway involvement</li>
+      <li>Cooling has been commenced but protocol requires 20 minutes total — we need to continue cooling for at least 5 more minutes</li>
+      <li>Scene hazards: fire pit may still be burning, diesel container may be nearby</li>
+      <li>Protocol is CPP-006-AO Burns, with pain management per CPP-013-AO</li>
+      <li>This is a significant burn (facial involvement) — will need EOC Clinician consultation</li>
+    </ul>
+
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>The MDT gives you time to plan — use it. Confirm roles, identify hazards, think ahead.</li>
+      <li>Facial burns automatically raise the question of airway burn — prepare for that assessment on arrival</li>
+      <li>20 minutes of cooling is the protocol target — bystander cooling counts, but confirm timing</li>
+      <li>Know your backup situation: Paramedic crew is 45 minutes away. Factor that into your decision-making timeline.</li>
+    </ul>
+
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, you have a few minutes in the truck to brief each other. Use that time. Know who is going to the patient, who is getting the Corpuls3, and what protocol you are working under before you pull up. On a burns job, also be thinking about what dressing supplies you will need and grab them early.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- BREAK POINT 2 — DOORWAY / FIRST IMPRESSION -->
+<!-- ════════════════════════════════════════ -->
+<section class="bp-card fade-section">
+  <div class="bp-header">
+    <div class="bp-number">2</div>
+    <div class="bp-label">Doorway / First Impression</div>
+    <div class="bp-type">Discussion</div>
+  </div>
+  <div class="bp-body">
+    <h4>Scene Description</h4>
+    <p>You arrive at a rural property. A gravel driveway leads to the backyard. You can see a fire pit still smouldering approximately 8 metres from the house. A 20-litre diesel container sits on the ground near the fire pit — cap off. Two friends are standing near a garden tap on the side of the house. One is holding a hose, directing water over the face of a man seated in a plastic chair. The patient is upright, eyes closed, and appears to be in significant pain. You can see redness and blistering on his face. His eyebrows and the front of his beard appear singed. He is alert and talking to his friends, though his voice sounds normal.</p>
+
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>What is your first impression from the doorway?</li>
+      <li>Is the scene safe to approach? What hazards do you see?</li>
+      <li>What is encouraging about what you see?</li>
+      <li>What is your immediate concern despite the good signs?</li>
+    </ul>
+
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li><strong>Safety first:</strong> Fire pit is smouldering (not actively flaming) — low risk but maintain distance. Diesel container open nearby — keep away from ignition sources</li>
+      <li><strong>Encouraging:</strong> Patient is upright, alert, talking — airway patent right now. Bystanders have done excellent first aid with water cooling</li>
+      <li><strong>Concern:</strong> Facial burns with singed facial hair = red flag for potential airway burn per CPP-006-AO. Must formally assess airway even though patient is currently talking</li>
+      <li>Patient is outdoors in cooling evening — hypothermia risk during continued cooling</li>
+    </ul>
+
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Scene safety is not a tick-box exercise — on this job, there is an open diesel container near a smouldering fire. That gets moved or flagged before you commit to the scene.</li>
+      <li>Singed facial hair (eyebrows, nasal hair, eyelashes/brows) is a specific red flag listed in the protocol for suspected airway burn. Even if the patient seems fine right now, that finding drives your ongoing monitoring plan.</li>
+      <li>Acknowledge good bystander first aid — it makes a difference to outcomes and builds trust with the patient.</li>
+    </ul>
+
+    <h4>Real-Job Translation</h4>
+    <p>The first 10 seconds on scene tell you a lot. You are looking for: is the patient up or down? Are they talking or silent? Is the scene safe? Is anyone else injured? On a burns job you are also looking for the mechanism — where was the fire, what was the fuel, how far was the patient from the ignition point. All of that information goes into your handover later.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- BREAK POINT 3 — INITIAL OBS & CORPULS3  -->
+<!-- ════════════════════════════════════════ -->
+<section class="bp-card fade-section">
+  <div class="bp-header">
+    <div class="bp-number">3</div>
+    <div class="bp-label">Initial Observations &amp; Corpuls3 Setup</div>
+    <div class="bp-type">Practical Skill</div>
+  </div>
+  <div class="bp-body">
+    <h4>Facilitator Direction</h4>
+    <p><span class="role role-ao1">AO1</span> makes patient contact. Introduce yourself, acknowledge the patient's pain, and begin your primary survey. Confirm mechanism and bystander first aid timing.</p>
+    <p><span class="role role-ao2">AO2</span> sets up the Corpuls3 and obtains a baseline set of observations. Also obtain a manual respiratory rate and pulse check. Check blood sugar level.</p>
+
+    <h4>Patient Presentation</h4>
+    <p>The patient — 42-year-old male — is seated, alert, and distressed with pain. He describes pouring diesel onto the fire pit when it suddenly ignited, producing a flash of heat and flame to his face. He turned away quickly but felt intense burning. His friends immediately brought him to the garden tap and started running water. He estimates they have been cooling for about 15 minutes.</p>
+
+    <h4>Initial Observations</h4>
+    <div class="obs-grid">
+      <div class="obs-item"><div class="obs-label">GCS</div><div class="obs-value">15</div></div>
+      <div class="obs-item"><div class="obs-label">HR</div><div class="obs-value">108</div></div>
+      <div class="obs-item"><div class="obs-label">BP</div><div class="obs-value">148/92</div></div>
+      <div class="obs-item"><div class="obs-label">RR</div><div class="obs-value">20</div></div>
+      <div class="obs-item"><div class="obs-label">SpO2</div><div class="obs-value">97%</div></div>
+      <div class="obs-item"><div class="obs-label">Temp</div><div class="obs-value">36.3°C</div></div>
+      <div class="obs-item"><div class="obs-label">BSL</div><div class="obs-value">6.4</div></div>
+      <div class="obs-item"><div class="obs-label">Pain</div><div class="obs-value">8/10</div></div>
+      <div class="obs-item"><div class="obs-label">ECG</div><div class="obs-value">Sinus Tachy</div></div>
+    </div>
+    <p style="margin-top:8px;font-size:.85rem;color:#a5d6a7">Tachycardia and elevated BP are consistent with pain and stress response. Temperature is at the lower end of normal — early indicator to watch during continued cooling.</p>
+
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>Talk me through your primary survey findings.</li>
+      <li>What do these observations tell you?</li>
+      <li>Is there anything in the obs that concerns you right now?</li>
+      <li>Why is temperature important on this job?</li>
+      <li><span class="role role-ao2">AO2</span> — Walk through your Corpuls3 setup. What are you connecting and why?</li>
+    </ul>
+
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Primary survey: catastrophic haemorrhage — nil. Airway — patent, voice clear, no stridor or wheeze. Breathing — adequate, RR 20, SpO2 97%. Circulation — tachycardic (pain-driven), BP elevated. Disability — GCS 15, alert and orientated.</li>
+      <li>Tachycardia and hypertension are pain/stress-related — expected in this context</li>
+      <li>Temperature 36.3°C — already at lower end of normal after 15 mins cooling. Must monitor closely as we continue cooling for 5 more minutes. Hypothermia prevention is explicitly required by the protocol.</li>
+      <li>Corpuls3 provides continuous SpO2, ECG, and NIBP trending — essential for detecting deterioration. Manual RR and pulse confirm accuracy.</li>
+    </ul>
+
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>The Corpuls3 is your early warning system. Get it on early, trend the data, and use it to support clinical decisions.</li>
+      <li>A normal SpO2 does not rule out airway burn — airway oedema develops over time. SpO2 can remain normal until the airway is significantly compromised.</li>
+      <li>Temperature monitoring is often overlooked on burns jobs. The protocol specifically warns against hypothermia during cooling — especially in evening conditions outdoors.</li>
+    </ul>
+
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, your driver should be getting the Corpuls3 on while the clinician talks to the patient. You do not need to wait for observations before starting your clinical assessment — both happen at the same time. The obs give you a number. Your hands, eyes, and ears give you the clinical picture. Use both.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- BREAK POINT 4 — SCREENING & DIAGNOSIS   -->
+<!-- ════════════════════════════════════════ -->
+<section class="bp-card fade-section">
+  <div class="bp-header">
+    <div class="bp-number">4</div>
+    <div class="bp-label">Screening Tools, Protocols &amp; Working Diagnosis</div>
+    <div class="bp-type">Decision-Making</div>
+  </div>
+  <div class="bp-body">
+    <h4>Clinical Assessment</h4>
+    <p><span class="role role-ao1">AO1</span> completes a focused burn and airway assessment.</p>
+
+    <h4>Burns Assessment Findings</h4>
+    <ul>
+      <li><strong>Mechanism:</strong> Flash burn — diesel accelerant igniting on fire pit. Brief exposure (patient turned away). No prolonged contact burn.</li>
+      <li><strong>Location:</strong> Burns to forehead, bilateral cheeks, nose, and upper lip. Singed eyebrows and anterior beard.</li>
+      <li><strong>Depth:</strong> Superficial to superficial partial thickness — erythema with some early blistering, blanches on pressure, painful to touch</li>
+      <li><strong>Estimated TBSA:</strong> Approximately 3% (partial face involvement — Rule of Nines: head = 9%, face alone ~4.5%, partial involvement ~3%)</li>
+      <li><strong>Hands/other areas:</strong> Nil — only facial involvement</li>
+    </ul>
+
+    <h4>Airway Assessment Findings</h4>
+    <ul>
+      <li>Singed eyebrows and beard — <strong>YES</strong> (red flag per protocol)</li>
+      <li>Singed nasal hairs — NO</li>
+      <li>Soot around nose or mouth — NO</li>
+      <li>Hoarseness or difficulty speaking — NO (voice clear and normal)</li>
+      <li>Wheeze — NO</li>
+      <li>Stridor — NO</li>
+      <li>Shortness of breath — NO (RR 20, SpO2 97%)</li>
+      <li>Altered conscious state — NO (GCS 15)</li>
+    </ul>
+
+    <div class="alert">
+      <strong>Protocol Guidance (CPP-006-AO):</strong> Signs increasing suspicion of airway burn include facial burns, singed nasal hairs or eyelashes/brows, and/or soot around nose or mouth. Monitor for hoarseness, difficulty speaking, wheeze, stridor, shortness of breath or altered conscious state.
+    </div>
+
+    <h4>Working Diagnosis</h4>
+    <p><strong>Superficial partial thickness facial burn (~3% TBSA) secondary to flash burn from diesel accelerant. No current airway compromise — however, facial burns with singed facial hair require ongoing airway monitoring. This is a significant burn requiring EOC Clinician consultation.</strong></p>
+
+    <div class="toggle-wrap">
+      <button class="toggle-btn" onclick="toggleContent(this)">Protocol Detail — Airway Burns Decision Pathway</button>
+      <div class="toggle-content">
+        <p>Per CPP-006-AO, <strong>if there is a suspected airway burn</strong>, the protocol is clear:</p>
+        <ul>
+          <li>Airway management and urgent transport <strong>take precedence</strong> over burn cooling</li>
+          <li>Request clinical support</li>
+          <li>Consult EOC Clinician for advice</li>
+          <li>Provide urgent transport and notify receiving facility</li>
+        </ul>
+        <p>In this scenario, the patient currently has <strong>no signs of airway compromise</strong> despite the facial burn location. The singed eyebrows/beard are a risk indicator, not a confirmed airway burn. The correct approach is: continue burn management per protocol, maintain close airway monitoring, and escalate immediately if any signs develop.</p>
+      </div>
+    </div>
+
+    <div class="toggle-wrap">
+      <button class="toggle-btn" onclick="toggleContent(this)">Knowledge — Why Airway Burns Can Be Delayed</button>
+      <div class="toggle-content">
+        <p>Thermal injury to the upper airway causes progressive oedema (swelling) that may take <strong>minutes to hours</strong> to develop. A patient who is initially talking clearly can deteriorate to complete airway obstruction. This is why the protocol emphasises ongoing monitoring even when initial assessment is reassuring. Facial burns, singed facial hair, and mechanism involving flash/flame or enclosed spaces all increase the index of suspicion.</p>
+        <p>For Volunteer AO crews, the key action is: <strong>recognise the risk, monitor continuously, and escalate early</strong>. You do not need to wait for the airway to obstruct before calling for help.</p>
+      </div>
+    </div>
+
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>What is your working diagnosis?</li>
+      <li>Is this patient's airway safe right now? Will it stay safe?</li>
+      <li>What specific signs are you going to monitor for?</li>
+      <li>Does this count as a "significant burn" under the protocol?</li>
+      <li>What are the implications of that classification?</li>
+    </ul>
+
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Facial burn with singed hair = significant burn requiring EOC consultation</li>
+      <li>Airway is patent now but at risk — must monitor for hoarseness, stridor, wheeze, dyspnoea, altered GCS</li>
+      <li>If any airway signs develop: stop everything, manage airway, and transport urgently</li>
+      <li>TBSA estimation helps communicate severity — ~3% is relatively small in area but facial involvement makes it significant</li>
+      <li>This is not a "wait and see" situation — proactive monitoring and early escalation are required</li>
+    </ul>
+
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>The TBSA percentage does not tell the whole story. A 3% burn sounds small, but location matters — facial burns are always classified as significant.</li>
+      <li>Singed facial hair is a red flag, not a diagnosis. Your job is to recognise the flag and act on it — monitor the airway and be ready to escalate.</li>
+      <li>A clear voice and normal SpO2 right now does not mean the airway is guaranteed to stay clear. Plan for deterioration.</li>
+    </ul>
+
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, this is the point where you should be forming your plan: finish cooling, manage pain, dress the burn, consult EOC, and transport. You should also be thinking ahead — if this patient's airway deteriorates en route, what is your backup plan? Where is the nearest Paramedic crew? What can you do with your AO skill set? Think two steps ahead.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- BREAK POINT 5 — TREATMENT INITIATION    -->
+<!-- ════════════════════════════════════════ -->
+<section class="bp-card fade-section">
+  <div class="bp-header">
+    <div class="bp-number">5</div>
+    <div class="bp-label">Treatment Initiation &amp; Medication Safety</div>
+    <div class="bp-type">Practical Skill</div>
+  </div>
+  <div class="bp-body">
+    <h4>Treatment Plan Overview</h4>
+    <p>Treatment follows CPP-006-AO in this order:</p>
+    <ol>
+      <li>Complete burn cooling (additional 5 minutes with running water to achieve 20-minute total)</li>
+      <li>Administer analgesia — Paracetamol 1g PO + Methoxyflurane (Penthrox) inhaler</li>
+      <li>Apply cling film burn dressing once cooling is complete</li>
+      <li>Manage environmental conditions — prevent hypothermia</li>
+      <li>Consult EOC Clinician (significant burn — facial involvement)</li>
+    </ol>
+
+    <!-- ── Step 1: Cooling ── -->
+    <h4>Step 1 — Complete Burn Cooling</h4>
+    <ul>
+      <li>Confirm timing with bystanders: "How long has the water been running on the burn?"</li>
+      <li>Continue running tap water over the burned area for a minimum additional 5 minutes (to achieve 20-minute total per protocol)</li>
+      <li>Water should be cool running water — not ice, not freezing</li>
+      <li>Monitor temperature during cooling — patient is already 36.3°C</li>
+      <li>Wrap a blanket around the patient's torso and lower body to manage heat loss while cooling the face</li>
+    </ul>
+    <div class="alert">
+      <strong>Hypothermia Risk:</strong> The protocol explicitly states: "Manage environmental conditions to ensure patients do not become hypothermic during cooling or irrigation." It is evening, the patient is outdoors, and has been wet for 15+ minutes. Blankets and sheltering from wind are essential.
+    </div>
+
+    <!-- ── Step 2: Pain Management ── -->
+    <h4>Step 2 — Pain Management (CPP-013-AO)</h4>
+    <p><span class="role role-ao1">AO1</span> administers analgesia. <span class="role role-ao2">AO2</span> documents timing and doses.</p>
+
+    <div class="toggle-wrap">
+      <button class="toggle-btn" onclick="toggleContent(this)">Practical Skill — Paracetamol Administration</button>
+      <div class="toggle-content">
+        <table class="skill-table">
+          <tr><th style="width:35%">Step</th><th>Detail</th></tr>
+          <tr><td>Confirm indication</td><td>Pain score 8/10, burns pain — analgesia indicated</td></tr>
+          <tr><td>Check contraindications</td><td>Ask: allergies to Paracetamol? Any Paracetamol in the last 4 hours? Liver disease? Weight less than 50 kg?</td></tr>
+          <tr><td>Dose</td><td>1g (2 x 500mg tablets) — oral</td></tr>
+          <tr><td>Administration</td><td>Give with a cup of water. Patient can swallow — no oral/airway involvement. Confirm patient has swallowed both tablets.</td></tr>
+          <tr><td>Document</td><td>Record time, dose, route on ePCR</td></tr>
+          <tr><td>Expected onset</td><td>30–60 minutes for full effect. Will be working during transport.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="toggle-wrap">
+      <button class="toggle-btn" onclick="toggleContent(this)">Practical Skill — Methoxyflurane (Penthrox) Administration</button>
+      <div class="toggle-content">
+        <table class="skill-table">
+          <tr><th style="width:35%">Step</th><th>Detail</th></tr>
+          <tr><td>Confirm indication</td><td>Moderate to severe pain (8/10) — inhaled analgesic indicated for rapid onset</td></tr>
+          <tr><td>Check contraindications</td><td>Ask: allergies? Kidney or liver problems? Any family history of malignant hyperthermia? Previous reaction to Penthrox?</td></tr>
+          <tr><td>Prepare inhaler</td><td>Remove Penthrox inhaler from packaging. Pour one 3ml bottle of Methoxyflurane into the inhaler well. Attach the activated carbon (AC) chamber to the exhale port.</td></tr>
+          <tr><td>Patient instruction</td><td>"This is a pain-relieving inhaler. Breathe in slowly and deeply through the mouthpiece. When you breathe out, breathe out through the same mouthpiece — the carbon filter will catch the exhaled gas."</td></tr>
+          <tr><td>Administration</td><td>Patient self-administers. The inhaler must be held by the patient — this is an inbuilt safety mechanism (if they become too sedated, they drop it and stop inhaling).</td></tr>
+          <tr><td>Onset</td><td>Rapid — typically 6–8 breaths for initial analgesia</td></tr>
+          <tr><td>Duration</td><td>One bottle provides approximately 25–30 minutes of intermittent use</td></tr>
+          <tr><td>Maximum dose</td><td>6ml total (2 bottles) per single treatment</td></tr>
+          <tr><td>Monitor for</td><td>Excessive sedation, dizziness, light-headedness. Ensure patient remains alert and self-administering.</td></tr>
+          <tr><td>Document</td><td>Record time started, number of bottles used, response on ePCR</td></tr>
+        </table>
+        <div class="alert" style="margin-top:10px">
+          <strong>Outdoor Setting Advantage:</strong> Methoxyflurane should be used in well-ventilated areas. This outdoor setting is ideal. In the ambulance during transport, ensure rear ventilation is adequate.
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-red">
+      <strong>Escalation Point — Further Analgesia:</strong> If pain remains uncontrolled after Paracetamol + Methoxyflurane (2 bottles maximum), the AO crew must request clinical support via EOC Clinician for a Paramedic crew to attend. The Paramedic can administer IV/IM analgesia. Nearest Paramedic is 45 minutes away — consider a rendezvous point en route to hospital if additional analgesia is needed.
+    </div>
+
+    <!-- ── Step 3: Cling Film Dressing ── -->
+    <h4>Step 3 — Burn Dressing (Cling Film)</h4>
+    <p>Once cooling is complete (20-minute total achieved), apply a cling film dressing to the cooled burn area.</p>
+
+    <div class="toggle-wrap">
+      <button class="toggle-btn" onclick="toggleContent(this)">Practical Skill — Cling Film Burn Dressing (Facial Application)</button>
+      <div class="toggle-content">
+        <table class="skill-table">
+          <tr><th style="width:35%">Step</th><th>Detail</th></tr>
+          <tr><td>1. Ensure safety</td><td>Ensure appropriate PPE is worn — clean gloves</td></tr>
+          <tr><td>2. Prepare cling film</td><td>Discard first 5–10 cm of cling film from the roll (the exposed edge is not sterile — the roll underneath is essentially sterile)</td></tr>
+          <tr><td>3. Apply to burn</td><td>Lay <strong>sheets</strong> of cling film over the cooled burn area. For facial burns: lay flat sheets across the burned areas of the face. <strong>Do NOT wrap circumferentially around the head or neck.</strong></td></tr>
+          <tr><td>4. Layering</td><td>Apply in overlapping layers as needed to cover the full burn area. Cling film is transparent — allows ongoing visual inspection without removing the dressing.</td></tr>
+          <tr><td>5. Secure</td><td>For facial burns, cling film generally adheres to itself and moist skin. No circumferential bandaging around the head is required.</td></tr>
+          <tr><td>6. Continue cooling</td><td>Per protocol: continue cooling over the burn cover as needed. If the patient reports increased pain, gently irrigate cool water over the cling film.</td></tr>
+        </table>
+        <div class="alert" style="margin-top:10px">
+          <strong>Why Cling Film?</strong> Polyvinyl chloride film (cling film) is ideal for burns dressing. It is pliable, non-adherent, impermeable, acts as a barrier, minimises exposure to infection, and is transparent for ongoing inspection of the burn without removing the dressing.
+        </div>
+        <div class="alert alert-red" style="margin-top:6px">
+          <strong>Critical Rule — Facial Application:</strong> Never apply cling film circumferentially around the face or head. Lay flat sheets only. Ensure nostrils and mouth remain completely clear and unobstructed at all times.
+        </div>
+      </div>
+    </div>
+
+    <div class="toggle-wrap">
+      <button class="toggle-btn" onclick="toggleContent(this)">Alternative — Hydrogel (Burnaid) Dressing</button>
+      <div class="toggle-content">
+        <p>Hydrogel (Burnaid) dressings are carried on SAAS vehicles in two sizes: face mask and large rectangle. However, per CPP-006-AO and clinical skills guidance:</p>
+        <ul>
+          <li>Hydrogel should <strong>only be considered in situations where cooling by other means is unavailable</strong></li>
+          <li>In this scenario, running water was available and used effectively — hydrogel is <strong>not indicated</strong></li>
+          <li>If hydrogel had been used: maximum application time is 20 minutes (10 minutes for neonates)</li>
+          <li>Hydrogel dressings <strong>must be removed</strong> once cooling is completed before applying cling film</li>
+          <li><strong>Do not use hydrogel on chemical burns</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── Step 4: EOC Consultation ── -->
+    <h4>Step 4 — EOC Clinician Consultation</h4>
+    <p><span class="role role-ao2">AO2</span> contacts EOC Clinician to consult on this significant burn.</p>
+    <ul>
+      <li>Facial burns = significant burn per protocol — consultation is required</li>
+      <li>Provide: patient age, mechanism, burn location and estimated TBSA, depth, airway status, current treatment, observations</li>
+      <li>Request guidance on: transport destination, need for Paramedic rendezvous, any additional treatment advice</li>
+      <li>If near Adelaide metro area, EOC Clinician may advise direct transport to burns unit (RAH for adults, WCH for paediatrics)</li>
+      <li>In a rural setting, EOC may arrange MedSTAR retrieval or advise transport to nearest ED with onward transfer</li>
+    </ul>
+
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>Walk me through your treatment plan in the order you would do it.</li>
+      <li>How much more cooling does this patient need? How did you work that out?</li>
+      <li>What checks do you need to do before giving Paracetamol? Before Penthrox?</li>
+      <li>Demonstrate how you would set up and explain the Penthrox inhaler to the patient.</li>
+      <li>Show me how you would apply cling film to a facial burn. What is the critical safety rule?</li>
+      <li>Why are you consulting EOC Clinician on this job?</li>
+      <li>At what point would you request a Paramedic crew?</li>
+    </ul>
+
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Cooling first (complete the 20 minutes), analgesia early (give during cooling), dress after cooling is complete</li>
+      <li>Paracetamol and Penthrox together provide multimodal pain relief within AO scope</li>
+      <li>Paracetamol takes 30–60 mins for full effect — give it early so it is working during transport</li>
+      <li>Penthrox provides rapid-onset analgesia while waiting for Paracetamol to take effect</li>
+      <li>Cling film is non-circumferential on the face — laid in flat sheets, never wrapped around the head</li>
+      <li>EOC consultation is mandatory for significant burns — facial involvement meets this threshold</li>
+      <li>Request Paramedic if pain is uncontrolled after Paracetamol + Penthrox (max 2 bottles)</li>
+    </ul>
+
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Sequence matters: complete cooling, analgesia, dress, consult, transport. But do not delay analgesia while waiting for cooling to finish — give Paracetamol and Penthrox early during cooling.</li>
+      <li>Cling film on the face is laid in flat sheets — never circumferential. Keep the airway clear. This is the most commonly asked question about facial burn dressing.</li>
+      <li>Two analgesics are better than one — Paracetamol + Penthrox gives both sustained and rapid-onset relief. This is within AO scope and should be used.</li>
+      <li>If pain is still uncontrolled, you have escalation options — but the Paramedic is 45 minutes away. Factor that into your transport decision. A rendezvous en route may be more efficient than waiting on scene.</li>
+    </ul>
+
+    <h4>Real-Job Translation</h4>
+    <p>On a real job, pain management is one of the things patients remember most. A burns patient in severe pain needs you to act confidently and quickly. Have your medications checked, drawn, and ready. Give Paracetamol first (it takes longer to work), then set up Penthrox for immediate relief. Talk the patient through what you are doing — "This is a pain-relieving inhaler, it will start working within a few breaths." Be calm, be competent, and communicate.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- BREAK POINT 6 — REASSESSMENT & ESCALATION -->
+<!-- ════════════════════════════════════════ -->
+<section class="bp-card fade-section">
+  <div class="bp-header">
+    <div class="bp-number">6</div>
+    <div class="bp-label">Reassessment &amp; Escalation Decision</div>
+    <div class="bp-type">Decision-Making</div>
+  </div>
+  <div class="bp-body">
+    <h4>Facilitator Direction</h4>
+    <p>Five minutes have passed since treatment commenced. Cooling is complete (20-minute total achieved). Cling film has been applied. The patient has taken Paracetamol and has been using Penthrox intermittently. <span class="role role-ao2">AO2</span> obtains a repeat set of observations.</p>
+
+    <h4>Reassessment Observations</h4>
+    <div class="obs-grid">
+      <div class="obs-item"><div class="obs-label">GCS</div><div class="obs-value">15</div></div>
+      <div class="obs-item"><div class="obs-label">HR</div><div class="obs-value">94</div></div>
+      <div class="obs-item"><div class="obs-label">BP</div><div class="obs-value">138/86</div></div>
+      <div class="obs-item"><div class="obs-label">RR</div><div class="obs-value">18</div></div>
+      <div class="obs-item"><div class="obs-label">SpO2</div><div class="obs-value">98%</div></div>
+      <div class="obs-item"><div class="obs-label">Temp</div><div class="obs-value">36.1°C</div></div>
+      <div class="obs-item"><div class="obs-label">Pain</div><div class="obs-value">5/10</div></div>
+      <div class="obs-item"><div class="obs-label">Voice</div><div class="obs-value">Clear</div></div>
+    </div>
+    <p style="margin-top:8px;font-size:.85rem;color:#a5d6a7">Heart rate and blood pressure improving (pain better controlled). Temperature has dropped slightly — stop cooling, dry patient, wrap warmly. Pain reduced from 8 to 5 — analgesia working. Voice remains clear — no signs of airway oedema at this stage.</p>
+
+    <h4>Airway Reassessment</h4>
+    <ul>
+      <li>Voice: clear, no hoarseness</li>
+      <li>Stridor: absent</li>
+      <li>Wheeze: absent</li>
+      <li>Dyspnoea: nil — RR 18, SpO2 98%</li>
+      <li>Conscious state: GCS 15, alert, orientated</li>
+      <li><strong>Current airway status: patent, no compromise</strong></li>
+    </ul>
+
+    <h4>Escalation Decision Points</h4>
+
+    <div class="toggle-wrap">
+      <button class="toggle-btn" onclick="toggleContent(this)">Decision — Do We Need a Paramedic Crew?</button>
+      <div class="toggle-content">
+        <p>Consider requesting Paramedic clinical support if:</p>
+        <ul>
+          <li>Pain remains uncontrolled after Paracetamol + Methoxyflurane (2 bottles maximum)</li>
+          <li>Any signs of airway compromise develop (hoarseness, stridor, wheeze, dyspnoea, altered GCS)</li>
+          <li>Patient deteriorates in any parameter</li>
+        </ul>
+        <p><strong>In this scenario:</strong> Pain has improved from 8/10 to 5/10 with current analgesia. Airway remains patent. Patient is stable. A Paramedic rendezvous is <strong>not currently required</strong> — but the crew should discuss this with EOC Clinician and be prepared to request one if the situation changes during transport.</p>
+        <p>If a Paramedic is requested, consider: do they come to us, or do we meet them en route to hospital? A rendezvous en route avoids delay in transport. Coordinate via EOC.</p>
+      </div>
+    </div>
+
+    <div class="toggle-wrap">
+      <button class="toggle-btn" onclick="toggleContent(this)">Decision — Hypothermia Management</button>
+      <div class="toggle-content">
+        <p>Temperature has dropped from 36.3°C to 36.1°C. This is still within normal range but trending down after 20+ minutes of water cooling in the evening air.</p>
+        <ul>
+          <li>Cooling is now <strong>complete</strong> — stop active cooling</li>
+          <li>Dry the patient gently (pat dry — do not rub burned areas)</li>
+          <li>Wrap patient in dry blankets — torso, limbs, around shoulders</li>
+          <li>Move patient to the ambulance to control environmental temperature</li>
+          <li>Continue temperature monitoring during transport</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>Compare the first and second set of observations. What has changed and why?</li>
+      <li>Is the pain management working? How do you know?</li>
+      <li>Have any new airway signs developed?</li>
+      <li>Do you need a Paramedic crew at this point? What would change your mind?</li>
+      <li>What is your plan for the temperature trend?</li>
+    </ul>
+
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Observations trending in the right direction — HR down, BP down, pain improved, SpO2 maintained</li>
+      <li>Airway remains clear — but must continue monitoring. This does not mean the risk has passed.</li>
+      <li>Pain reduced to 5/10 — manageable with current analgesia. First bottle of Penthrox can continue during transport. Second bottle available if needed.</li>
+      <li>Temperature dropping — time to stop cooling, warm the patient, and move to the ambulance</li>
+      <li>Paramedic not immediately required but remains an option — communicate status to EOC</li>
+    </ul>
+
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Reassessment is not optional — it tells you whether your treatment is working and whether the patient is stable or deteriorating.</li>
+      <li>A reducing pain score is a good sign, but the job is not over. Analgesia can wear off, and airway oedema can still develop.</li>
+      <li>Temperature management on burns jobs is a practical challenge — especially outdoors. Once cooling is done, warming the patient becomes the priority.</li>
+      <li>Your escalation threshold should be low, not high. If in doubt, call EOC and request support. It is easier to stand down a Paramedic crew than to wish you had called one earlier.</li>
+    </ul>
+
+    <h4>Real-Job Translation</h4>
+    <p>Reassessment is where you prove your treatment is working. Get a second set of obs, compare them to the first, and document the trend. If the numbers are better and the patient reports less pain, you are on the right track. If not, change your plan. This is not a linear process — you assess, treat, reassess, adjust. Every time.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- BREAK POINT 7 — EXTRICATION & TRANSPORT -->
+<!-- ════════════════════════════════════════ -->
+<section class="bp-card fade-section">
+  <div class="bp-header">
+    <div class="bp-number">7</div>
+    <div class="bp-label">Extrication &amp; Transport Planning</div>
+    <div class="bp-type">Decision-Making</div>
+  </div>
+  <div class="bp-body">
+    <h4>Extrication</h4>
+    <ul>
+      <li>Patient is ambulant — seated in a chair in the backyard</li>
+      <li>Assist patient to stand and walk to the ambulance, or use carry chair if unsteady</li>
+      <li>Ensure patient is wrapped in blankets before moving through the cool evening air</li>
+      <li>Patient to be positioned <strong>seated upright</strong> on the stretcher — this assists with any potential airway oedema management and is more comfortable for facial burns</li>
+      <li>Secure Penthrox inhaler so patient can continue self-administering during transport</li>
+      <li>Ensure Corpuls3 is reconnected and monitoring continuously during transport</li>
+    </ul>
+
+    <h4>Transport Decision</h4>
+
+    <div class="toggle-wrap">
+      <button class="toggle-btn" onclick="toggleContent(this)">Decision — Transport Destination</button>
+      <div class="toggle-content">
+        <p>Per CPP-006-AO, the crew should consult EOC Clinician regarding transport destination for significant burns:</p>
+        <ul>
+          <li><strong>If near Adelaide metro:</strong> Consider direct transport to a burns unit — Royal Adelaide Hospital (adult) or Women's and Children's Hospital (paediatrics)</li>
+          <li><strong>If regional/rural (this scenario):</strong> Transport to nearest appropriate ED (country hospital — approx 25 minutes). EOC Clinician and receiving facility can arrange onward transfer to RAH Burns Unit if required (via MedSTAR retrieval or road transfer).</li>
+        </ul>
+        <p><strong>For this scenario:</strong> Transport to the nearest country hospital (25 mins). Notify receiving facility of incoming burns patient. EOC Clinician to coordinate onward management.</p>
+      </div>
+    </div>
+
+    <h4>In-Transport Monitoring Plan</h4>
+    <ul>
+      <li>Continuous SpO2 and ECG via Corpuls3</li>
+      <li>NIBP every 5 minutes during transport</li>
+      <li>Verbal airway checks every 2–3 minutes: ask the patient to speak — listen for any change in voice quality</li>
+      <li>Pain score reassessment every 5 minutes</li>
+      <li>Temperature check at midpoint of transport</li>
+      <li>Visual inspection of burn through cling film — look for changes</li>
+      <li>Penthrox management — is the patient still self-administering? Is a second bottle needed?</li>
+    </ul>
+
+    <div class="alert alert-red">
+      <strong>If Airway Deterioration Occurs During Transport:</strong>
+      <ul style="margin-top:6px">
+        <li>Position patient upright</li>
+        <li>Apply high-flow oxygen via non-rebreather mask (15L/min)</li>
+        <li>Prepare suction</li>
+        <li>Contact EOC Clinician immediately — request urgent Paramedic rendezvous or diversion to nearest facility</li>
+        <li>Airway management and transport take precedence over all other treatment</li>
+        <li>Consider: is the current destination still appropriate, or should you divert?</li>
+      </ul>
+    </div>
+
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>How are you going to move this patient to the ambulance?</li>
+      <li>What position are you transporting in and why?</li>
+      <li>What is your transport destination and why?</li>
+      <li>What is your monitoring plan during the 25-minute transport?</li>
+      <li>What is your contingency if the airway deteriorates en route?</li>
+    </ul>
+
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>Patient is ambulant — assist to walk, carry chair if needed. Minimise exertion.</li>
+      <li>Seated upright position for transport — facilitates airway drainage and is more comfortable</li>
+      <li>Nearest country hospital is 25 minutes — appropriate for initial assessment and stabilisation. Burns unit transfer can be arranged from there.</li>
+      <li>Continuous monitoring is essential — particularly verbal airway checks. A change in voice quality is an early sign of developing oedema.</li>
+      <li>Have a contingency plan for airway deterioration: oxygen, suction, EOC call, possible diversion</li>
+    </ul>
+
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>Transport position matters. Seated upright is preferred for facial burns — it reduces oedema formation and keeps the airway in a favourable position.</li>
+      <li>The 25-minute transport window is your highest-risk period for airway deterioration. Keep talking to the patient — if their voice changes, you need to know immediately.</li>
+      <li>Pre-notify the receiving hospital. A burns patient arriving unannounced creates delays. A phone call ahead allows the ED to prepare.</li>
+      <li>Your contingency plan does not need to be complex. It needs to exist. "If the airway goes, I will do X, Y, Z." Have that plan before you start driving.</li>
+    </ul>
+
+    <h4>Real-Job Translation</h4>
+    <p>The transport phase is where many crews relax — the hard work feels done. On a facial burns job, the transport phase is actually when you need to stay the most alert. Airway oedema develops over time, and you are now 25 minutes away from definitive help. Talk to your patient continuously. Ask them to count to ten out loud every few minutes. If the voice changes, act immediately.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- BREAK POINT 8 — ISBAR HANDOVER          -->
+<!-- ════════════════════════════════════════ -->
+<section class="bp-card fade-section">
+  <div class="bp-header">
+    <div class="bp-number">8</div>
+    <div class="bp-label">ISBAR Handover</div>
+    <div class="bp-type">Practical Skill</div>
+  </div>
+  <div class="bp-body">
+    <h4>Facilitator Direction</h4>
+    <p>The crew has arrived at the country hospital. <span class="role role-ao1">AO1</span> delivers an ISBAR handover to the receiving ED clinician. <span class="role role-ao2">AO2</span> provides the latest set of observations and manages the Corpuls3 transfer.</p>
+
+    <h4>Sample ISBAR Handover</h4>
+    <table class="skill-table">
+      <tr><th style="width:22%">Component</th><th>Content</th></tr>
+      <tr>
+        <td><strong>I</strong> — Identify</td>
+        <td>"I'm [Name], Ambulance Officer from [Station]. This is our patient — I'll hand over to you now."</td>
+      </tr>
+      <tr>
+        <td><strong>S</strong> — Situation</td>
+        <td>"We have a 42-year-old male with facial burns sustained approximately 45 minutes ago. He was pouring diesel onto a backyard fire pit when it ignited, causing a flash burn to his face."</td>
+      </tr>
+      <tr>
+        <td><strong>B</strong> — Background</td>
+        <td>"No significant past medical history. No regular medications. No known allergies. The burns involve the forehead, bilateral cheeks, nose, and upper lip — estimated 3% TBSA, superficial to superficial partial thickness. His eyebrows and beard are singed. He has had 20 minutes total cooling with running water — 15 minutes by bystanders, 5 minutes by us."</td>
+      </tr>
+      <tr>
+        <td><strong>A</strong> — Assessment</td>
+        <td>"Current observations: GCS 15, heart rate 94 sinus rhythm, BP 138/86, respiratory rate 18, SpO2 98% on room air, temperature 36.1. Pain currently 5 out of 10, down from 8 on arrival. Airway is currently patent — no hoarseness, stridor, or wheeze. However, he has facial burns with singed facial hair, so ongoing airway monitoring is required."</td>
+      </tr>
+      <tr>
+        <td><strong>R</strong> — Recommendation</td>
+        <td>"We have applied cling film dressing to the facial burns. He has received Paracetamol 1 gram oral and Methoxyflurane via inhaler for pain management. We have consulted EOC Clinician who is aware. We recommend ongoing airway monitoring given the facial burn mechanism and continued pain management. He may need referral to RAH Burns Unit — EOC can assist with retrieval coordination."</td>
+      </tr>
+    </table>
+
+    <h4>Facilitator Prompts</h4>
+    <ul>
+      <li>Deliver your ISBAR handover as you would on a real job.</li>
+      <li>What is the single most important thing the receiving clinician needs to know about this patient?</li>
+      <li>What would you do differently if the patient had developed hoarseness during transport?</li>
+      <li>Is there anything you would add or change in that handover?</li>
+    </ul>
+
+    <h4>Expected AO Reasoning</h4>
+    <ul>
+      <li>The ISBAR should be structured, concise, and prioritise the key clinical risk — airway status</li>
+      <li>The most important information: facial burns with singed facial hair, currently no airway compromise but requires ongoing monitoring for delayed oedema</li>
+      <li>Include mechanism (diesel accelerant, flash burn), burn details (location, TBSA, depth), treatment given, and observations trend</li>
+      <li>If hoarseness had developed: this becomes a time-critical airway handover — lead with "this patient has a deteriorating airway" and request immediate senior clinician assessment</li>
+    </ul>
+
+    <h4>Key Teaching Points</h4>
+    <ul>
+      <li>A good handover saves time and prevents errors. The receiving team should not have to ask you for basic information — give it to them in a logical order.</li>
+      <li>For burns handovers, the receiving team needs to know: mechanism, time of burn, cooling duration, burn location and TBSA estimate, depth, airway status, and treatment given.</li>
+      <li>Lead with the risk. For this patient, the risk is potential delayed airway compromise. Make sure that message is clear — do not bury it in the middle of your handover.</li>
+      <li>Practice ISBAR until it is automatic. On a real job, you will be tired, stressed, and distracted. If the structure is drilled, it comes out right even under pressure.</li>
+    </ul>
+
+    <h4>Real-Job Translation</h4>
+    <p>Handover is the last clinical act of the job and one of the most important. A clear, structured ISBAR ensures continuity of care. The receiving team will base their initial management plan on what you tell them. If you forget to mention the singed facial hair, they may not assess for airway burn risk as urgently. Your words directly affect the patient's ongoing care.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- DEBRIEF                                 -->
+<!-- ════════════════════════════════════════ -->
+<section class="card fade-section">
+  <h2>Debrief (10–15 minutes)</h2>
+
+  <h3>Reflective Questions</h3>
+  <div class="debrief-q">1. What went well in the way you managed this patient? What would you do the same way on a real job?</div>
+  <div class="debrief-q">2. The patient had singed facial hair but no current airway compromise. How did that finding change your management plan compared to a burn on, say, the forearm?</div>
+  <div class="debrief-q">3. Bystanders had already started cooling. How did you confirm the timing, and how did it affect your cooling plan?</div>
+  <div class="debrief-q">4. Walk me through your pain management sequence. Why did you give both Paracetamol and Penthrox, and in what order?</div>
+  <div class="debrief-q">5. At what point would you have requested a Paramedic crew? What specific triggers would change your escalation decision?</div>
+  <div class="debrief-q">6. How did you manage the hypothermia risk? What practical steps did you take?</div>
+  <div class="debrief-q">7. During the 25-minute transport, what was your monitoring plan for this patient's airway? How often, and what were you specifically looking for?</div>
+
+  <h3>Take-Home Messages</h3>
+  <div class="thm">1. Facial burns are always significant — regardless of TBSA. They require EOC Clinician consultation, close airway monitoring, and a low threshold for escalation.</div>
+  <div class="thm">2. Singed facial hair is a red flag, not a diagnosis. It increases your suspicion of potential airway burn — act on that suspicion with monitoring and early escalation, do not wait for signs to develop.</div>
+  <div class="thm">3. Cooling is 20 minutes with running water. Bystander cooling counts — confirm timing and complete the remainder. Once done, stop cooling and actively warm the patient.</div>
+  <div class="thm">4. Cling film on the face is laid in flat sheets — never circumferential. Keep nostrils and mouth clear. It is transparent, non-adherent, and allows ongoing inspection.</div>
+  <div class="thm">5. Pain management within AO scope is Paracetamol plus Methoxyflurane. Give them both, give them early, and reassess. If pain is still uncontrolled, escalate via EOC for Paramedic support — do not delay.</div>
+  <div class="thm">6. Hypothermia is a real risk on burns jobs — especially with prolonged outdoor cooling in the evening. Manage environmental conditions actively: blankets, shelter, ambulance heating.</div>
+  <div class="thm">7. The transport phase is not the relaxation phase. For facial burns, the highest risk of airway deterioration may occur during transport. Talk to your patient continuously and listen for voice changes.</div>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- SCENARIO VARIATIONS                     -->
+<!-- ════════════════════════════════════════ -->
+<section class="card fade-section">
+  <h2>Optional Scenario Variations</h2>
+
+  <div class="var-card">
+    <h4>Variation 1 — Developing Airway Compromise</h4>
+    <p>Ten minutes into transport, the patient's voice becomes hoarse and he reports a "tight" feeling in his throat. SpO2 drops to 94%. What changes in your management? This variation tests the crew's ability to switch from routine transport to time-critical airway management: upright positioning, high-flow oxygen, EOC Clinician contact, request for Paramedic rendezvous or diversion, and pre-notification of receiving facility.</p>
+  </div>
+
+  <div class="var-card">
+    <h4>Variation 2 — Paediatric Patient (8-year-old)</h4>
+    <p>The patient is an 8-year-old child who was standing near the fire pit when the diesel ignited. The child has burns to the face and both hands. A parent is present and distressed. This variation tests: paediatric TBSA estimation (Rule of Nines differs for children), communication with a frightened child, parent management, modified medication dosing, and the need for transport to Women's and Children's Hospital (paediatric burns unit).</p>
+  </div>
+
+  <div class="var-card">
+    <h4>Variation 3 — Extensive Burns with Pain Uncontrolled</h4>
+    <p>The same 42-year-old, but the flash burn also affected his chest and both forearms (estimated 22% TBSA). His pain score remains 9/10 after Paracetamol and two bottles of Penthrox. He is agitated and distressed. This variation tests: escalation for Paramedic support (IV/IM analgesia), larger TBSA management, fluid resuscitation awareness, and coordination of a rendezvous en route to hospital. The Paramedic crew is 45 minutes away — where do you meet?</p>
+  </div>
+
+  <div class="var-card">
+    <h4>Variation 4 — Remote Property, No Running Water</h4>
+    <p>Same mechanism, but the property is remote with no running water supply (tank is empty). The only cooling available is a limited supply of bottled water and your on-board saline. This variation tests: decision to use Burnaid hydrogel dressings when running water is unavailable, correct application of the hydrogel face mask, timing limits (20 minutes maximum), and the importance of removing hydrogel before applying cling film.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════ -->
+<!-- PROTOCOL REFERENCE                      -->
+<!-- ════════════════════════════════════════ -->
+<section class="card fade-section">
+  <h2>Protocol Reference</h2>
+  <ul class="check">
+    <li><strong>CPP-006-AO</strong> — Burns (AO)</li>
+    <li><strong>CPP-013-AO</strong> — Pain Management (AO) — Paracetamol PO + Methoxyflurane</li>
+    <li><strong>Clinical Skills Guide</strong> — Burn Dressing (Cling Film)</li>
+    <li><strong>Clinical Skills Guide</strong> — Burn Dressing (Hydrogel / Burnaid)</li>
+    <li><strong>Clinical Skills Guide</strong> — Oxygen Administration</li>
+  </ul>
+</section>
+
+<div class="footer">
+  DSY Training &nbsp;|&nbsp; Burns (Facial) — AO Walk-Through Scenario &nbsp;|&nbsp; CPP-006-AO<br>
+  For training purposes only. Always refer to current SAAS protocols for clinical practice.
+</div>
+
+</main>
+
+<!-- ════════════════════════════════════════ -->
+<!-- JAVASCRIPT                              -->
+<!-- ════════════════════════════════════════ -->
+<script>
+// ── Progress Bar ──
+const progressBar = document.getElementById('progressBar');
+function updateProgress() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = Math.min(progress, 100) + '%';
+}
+window.addEventListener('scroll', updateProgress, { passive: true });
+
+// ── Fade-in on Scroll ──
+const fadeElements = document.querySelectorAll('.fade-section');
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+fadeElements.forEach(el => fadeObserver.observe(el));
+
+// ── Toggle/Accordion ──
+function toggleContent(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen = content.classList.contains('open');
+  btn.classList.toggle('active', !isOpen);
+  content.classList.toggle('open', !isOpen);
+}
+</script>
+
+</body>
+</html>
