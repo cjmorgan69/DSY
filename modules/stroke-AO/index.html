@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroke — AO | Walk-Through Scenario</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{font-size:18px;scroll-behavior:smooth}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;background:#f5f5f5;color:#333;line-height:1.6}
+
+        /* STICKY HEADER */
+        .header{position:sticky;top:0;background:#003300;color:#fff;padding:1rem;display:flex;align-items:center;gap:1rem;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+        .header img{width:80px;height:80px;object-fit:contain;flex-shrink:0}
+        .header-content{flex:1}
+        .header h1{font-size:1.4rem;font-weight:600;margin:0;line-height:1.3}
+        .header p{font-size:.85rem;opacity:.9;margin:.25rem 0 0}
+        .progress-bar{position:absolute;bottom:0;left:0;height:4px;background:#7cb342;width:0%;transition:width .3s ease}
+
+        /* CONTAINER */
+        .container{max-width:900px;margin:0 auto;padding:2rem 1.25rem 4rem}
+
+        /* SECTIONS */
+        section{background:#fff;border-radius:8px;padding:2rem;margin-bottom:2rem;box-shadow:0 1px 4px rgba(0,0,0,.08);opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+        section.visible{opacity:1;transform:translateY(0)}
+
+        h2{color:#003300;font-size:1.45rem;margin-bottom:1rem;border-bottom:3px solid #7cb342;padding-bottom:.5rem}
+        h3{color:#003300;font-size:1.15rem;margin-top:1.5rem;margin-bottom:.75rem}
+        h4{color:#444;font-size:1rem;margin-top:1rem;margin-bottom:.5rem;font-weight:600}
+        p{font-size:1rem;margin-bottom:1rem;color:#444}
+        ul,ol{margin-left:1.5rem;margin-bottom:1rem}
+        li{font-size:1rem;margin-bottom:.5rem;color:#444}
+        strong{color:#003300;font-weight:600}
+
+        /* ALERT BOXES */
+        .alert{border-left:4px solid;padding:1rem;border-radius:8px;margin:1.5rem 0;font-size:1rem}
+        .alert-yellow{background:#fff3e0;border-color:#ffa500;color:#333}
+        .alert-red{background:#fce4ec;border-color:#d32f2f;color:#c62828}
+        .alert-blue{background:#e3f2fd;border-color:#1976d2;color:#0d47a1}
+        .alert strong{display:block;margin-bottom:.5rem;color:inherit}
+
+        /* CARDS */
+        .card{background:#f9f9f9;border:1px solid #e0e0e0;border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+        .card-dark{background:#003300;color:#e0e0e0;border:none}
+        .card-dark strong{color:#7cb342}
+        .card-dark p{color:#ddd}
+        .card-title{font-size:1.1rem;font-weight:600;margin-bottom:.75rem}
+
+        /* MDT CARD */
+        .mdt-card{background:#1a1a2e;color:#00ff88;border:2px solid #00ff88;border-radius:8px;padding:1.5rem;margin:1.5rem 0;font-family:'Courier New',monospace}
+        .mdt-card .mdt-header{font-weight:700;font-size:1.1rem;border-bottom:1px solid #00ff88;padding-bottom:.5rem;margin-bottom:.75rem}
+        .mdt-card p{color:#00ff88;margin-bottom:.4rem;font-size:.95rem}
+
+        /* TOGGLE / ACCORDION */
+        .toggle-section{margin:1.5rem 0}
+        .toggle-button{background:#003300;color:#fff;border:none;padding:1rem;width:100%;text-align:left;font-size:1rem;font-weight:600;cursor:pointer;border-radius:8px;display:flex;justify-content:space-between;align-items:center;min-height:44px;transition:background .3s ease}
+        .toggle-button:hover{background:#005500}
+        .toggle-button::after{content:'▼';font-size:.8rem;transition:transform .3s ease}
+        .toggle-button.active{border-radius:8px 8px 0 0}
+        .toggle-button.active::after{transform:rotate(180deg)}
+        .toggle-content{background:#f9f9f9;border:1px solid #e0e0e0;border-top:none;padding:0 1.5rem;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease;border-radius:0 0 8px 8px}
+        .toggle-content.active{padding:1.5rem;max-height:3000px}
+
+        /* BREAK POINT BOXES */
+        .bp-box{background:#f0f7f0;border-left:5px solid #7cb342;padding:1.5rem;margin:2rem 0;border-radius:8px}
+        .bp-title{color:#003300;font-size:1.2rem;font-weight:700;margin-bottom:.75rem}
+        .bp-type{display:inline-block;background:#7cb342;color:#fff;padding:.25rem .75rem;border-radius:4px;font-size:.85rem;font-weight:600;margin-bottom:1rem}
+        .bp-type-red{background:#d32f2f}
+        .bp-type-blue{background:#1976d2}
+        .bp-body{font-size:1rem}
+        .bp-body h4{color:#003300;margin-top:1rem;margin-bottom:.5rem}
+        .bp-body ul{margin-left:1.5rem;margin-bottom:1rem}
+        .bp-body li{margin-bottom:.5rem}
+        .bp-body .alert-blue{color:#0d47a1}
+        .bp-body .alert-red{color:#c62828}
+        .bp-body .alert-yellow{color:#333}
+
+        /* CHECKLIST */
+        .checklist{list-style:none;margin-left:0}
+        .checklist li{padding-left:2rem;position:relative;margin-bottom:.75rem;font-size:1rem}
+        .checklist li::before{content:'☐';position:absolute;left:0;color:#7cb342;font-size:1.2rem;font-weight:bold}
+
+        /* ROSIER TABLE */
+        .rosier-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:1rem}
+        .rosier-table th{background:#003300;color:#fff;padding:.75rem;text-align:left;font-weight:600}
+        .rosier-table td{padding:.75rem;border-bottom:1px solid #e0e0e0}
+        .rosier-table tr:nth-child(even){background:#f9f9f9}
+        .rosier-table .score-neg{color:#d32f2f;font-weight:700}
+        .rosier-table .score-pos{color:#2e7d32;font-weight:700}
+        .rosier-total{background:#e8f5e9;font-weight:700}
+
+        /* TIMELINE */
+        .timeline{border-left:3px solid #7cb342;padding-left:1.5rem;margin:1.5rem 0}
+        .timeline-item{margin-bottom:1.5rem;position:relative}
+        .timeline-item::before{content:'';position:absolute;left:-1.75rem;top:.4rem;width:12px;height:12px;background:#7cb342;border-radius:50%}
+        .timeline-item strong{color:#003300;display:block;margin-bottom:.25rem}
+
+        /* DEBRIEF */
+        .debrief-q{background:#f0f7f0;padding:1.5rem;border-radius:8px;margin:1.5rem 0}
+        .debrief-q h4{color:#003300;margin-top:0}
+        .debrief-q ol{margin-left:1.5rem}
+        .debrief-q li{margin-bottom:.75rem}
+
+        /* TAKE-HOME */
+        .takeaway{background:#fff3e0;border-left:4px solid #ffa500;padding:1rem;margin:1rem 0;border-radius:8px;font-size:1rem}
+        .takeaway strong{color:#e65100}
+
+        /* VARIATION CARDS */
+        .var-card{background:#fff;border:2px solid #7cb342;border-radius:8px;padding:1.5rem;margin:1rem 0}
+        .var-card .var-title{color:#003300;font-weight:700;font-size:1.05rem;margin-bottom:.5rem}
+
+        /* FOOTER */
+        footer{text-align:center;padding:2rem 1.5rem;color:#666;font-size:.85rem}
+
+        /* RESPONSIVE */
+        @media(max-width:768px){
+            .header{flex-direction:row;gap:.75rem;padding:.75rem}
+            .header img{width:60px;height:60px}
+            .header h1{font-size:1.15rem}
+            section{padding:1.25rem}
+            h2{font-size:1.25rem}
+            .rosier-table{font-size:.9rem}
+            .rosier-table td,.rosier-table th{padding:.5rem}
+        }
+    </style>
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<div class="header">
+    <img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" alt="DSY Training Logo" width="120" height="120" style="object-fit:contain;">
+    <div class="header-content">
+        <h1>Stroke — AO Walk-Through Scenario</h1>
+        <p>CPP-016-AO | ROSIER Assessment &amp; Time-Critical Transport</p>
+    </div>
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="container">
+
+<!-- ============================================ -->
+<!-- TITLE & CONTEXT -->
+<!-- ============================================ -->
+<section>
+    <h2>Title &amp; Context</h2>
+    <p><strong>Scenario:</strong> 78-year-old male — acute onset facial droop, right-sided weakness, and speech difficulty while having morning tea. Wife witnessed onset approximately 45 minutes ago.</p>
+    <p><strong>Protocol:</strong> CPP-016-AO Stroke — AO (SAAS)</p>
+    <p><strong>Setting:</strong> Residential property, Coffin Bay, Lower Eyre Peninsula. Mid-morning. Nearest STS facility is Port Lincoln Hospital (approximately 35 minutes transport).</p>
+    <p><strong>Crew:</strong> 2-person Volunteer AO crew</p>
+
+    <div class="alert alert-red">
+        <strong>Time-Critical Principle:</strong>
+        This scenario is built around the thrombolysis eligibility window. Every minute on scene matters. Rapid ROSIER assessment, BGL exclusion, EOC consultation, and direct transport to Port Lincoln Hospital STS are the priorities. "Time is brain."
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- LEARNING OBJECTIVES -->
+<!-- ============================================ -->
+<section>
+    <h2>Learning Objectives</h2>
+    <ul>
+        <li>Recognise clinical features of acute stroke and differentiate from stroke mimics</li>
+        <li>Perform a ROSIER assessment accurately and interpret the score</li>
+        <li>Measure BGL to exclude hypoglycaemia as a stroke mimic</li>
+        <li>Apply CPP-016-AO thrombolysis eligibility criteria correctly</li>
+        <li>Consult EOC Clinician for authorisation to transport to CSU/STS</li>
+        <li>Obtain required patient identification and contact details per protocol</li>
+        <li>Notify Port Lincoln Hospital STS stroke coordinator using ISBAR</li>
+        <li>Manage a time-critical, low-intervention patient requiring rapid extrication and transport</li>
+    </ul>
+</section>
+
+<!-- ============================================ -->
+<!-- REQUIRED EQUIPMENT -->
+<!-- ============================================ -->
+<section>
+    <h2>Required Equipment</h2>
+    <ul class="checklist">
+        <li>Ambulance Response Bag</li>
+        <li>Corpuls3 monitor (HR, SpO2, NIBP, Temp)</li>
+        <li>BGL meter, lancets, test strips</li>
+        <li>Oxygen therapy equipment (Hudson mask, nasal prongs)</li>
+        <li>Stretcher</li>
+        <li>Pillow / blankets for positioning</li>
+        <li>ePCR tablet or paperwork</li>
+        <li>Mobile phone (for STS stroke coordinator notification)</li>
+        <li>ROSIER assessment reference card (printed or on device)</li>
+        <li>PPE (gloves, hand hygiene)</li>
+    </ul>
+</section>
+
+<!-- ============================================ -->
+<!-- SESSION STRUCTURE OVERVIEW -->
+<!-- ============================================ -->
+<section>
+    <h2>Session Structure Overview</h2>
+    <div class="timeline">
+        <div class="timeline-item"><strong>Pre-Brief (10 minutes)</strong> Context, objectives, equipment check</div>
+        <div class="timeline-item"><strong>Dispatch &amp; En Route</strong> MDT review, en-route planning</div>
+        <div class="timeline-item"><strong>On Arrival — Scene Management</strong> Scene safety, first impression</div>
+        <div class="timeline-item"><strong>Patient Contact &amp; Primary Survey</strong> Observations, history, BGL</div>
+        <div class="timeline-item"><strong>Clinical Decision Point</strong> ROSIER assessment, thrombolysis eligibility</div>
+        <div class="timeline-item"><strong>Treatment Phase</strong> Basic care, positioning, EOC consult</div>
+        <div class="timeline-item"><strong>Reassessment &amp; Escalation</strong> Repeat obs, clinical support request</div>
+        <div class="timeline-item"><strong>Extrication &amp; Transport</strong> Time-critical move to ambulance</div>
+        <div class="timeline-item"><strong>Handover</strong> ISBAR to Port Lincoln Hospital STS</div>
+        <div class="timeline-item"><strong>Debrief (10–15 minutes)</strong> Reflective questions, take-home messages</div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PRE-BRIEF -->
+<!-- ============================================ -->
+<section>
+    <h2>Pre-Brief</h2>
+    <p>Gather the crew. Set the scene. This is a time-critical stroke job on a weekday morning in Coffin Bay. You have a short window to assess, decide, and move.</p>
+
+    <h3>Key Points to Cover</h3>
+    <ul>
+        <li>This scenario focuses on the ROSIER assessment — the SAAS-preferred stroke screening tool</li>
+        <li>Thrombolysis eligibility depends on four criteria being met simultaneously</li>
+        <li>Port Lincoln Hospital is the nearest Stroke Thrombolysis Service (STS) — approximately 35 minutes transport</li>
+        <li>There are no AO-level medications for stroke — this is a recognition, decision, and transport job</li>
+        <li>The single most important thing you can do for this patient is get the assessment right and move quickly</li>
+    </ul>
+
+    <div class="alert alert-yellow">
+        <strong>Facilitator Note:</strong>
+        Ensure a printed ROSIER assessment card is available. If your crew has not used ROSIER before, walk through the scoring system before starting the scenario.
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- DISPATCH & EN ROUTE -->
+<!-- ============================================ -->
+<section>
+    <h2>Dispatch &amp; En Route Phase</h2>
+
+    <div class="mdt-card">
+        <div class="mdt-header">MDT DISPATCH — PRIORITY 2</div>
+        <p><strong>Case:</strong> 78M — Possible Stroke</p>
+        <p><strong>Location:</strong> 14 Oyster Drive, Coffin Bay SA 5607</p>
+        <p><strong>Caller:</strong> Wife (Margaret) — on scene, distressed</p>
+        <p><strong>Info:</strong> Husband dropped his cup, face looks droopy on one side, can't speak properly. Started approx 45 mins ago during morning tea. Conscious and breathing. No fall. No seizure.</p>
+        <p><strong>Access:</strong> Front door unlocked. Single-storey house. No dogs.</p>
+        <p><strong>PMHx per caller:</strong> High blood pressure, heart tablets, sugar diabetes</p>
+    </div>
+
+    <!-- BREAK POINT 1 -->
+    <div class="bp-box">
+        <div class="bp-title">Break Point 1 — En-Route Planning</div>
+        <span class="bp-type">Discussion</span>
+        <div class="bp-body">
+            <h4>Facilitator Prompts</h4>
+            <ul>
+                <li>What does this MDT information tell you about the likely presentation?</li>
+                <li>What protocol should you be thinking about before you arrive?</li>
+                <li>What is the significance of the 45-minute timeframe?</li>
+                <li>What is your nearest stroke-capable facility and how far away is it?</li>
+                <li>What roles are you assigning en route?</li>
+            </ul>
+
+            <h4>Expected AO Reasoning</h4>
+            <ul>
+                <li>Presentation is consistent with acute stroke — facial droop, speech difficulty, acute onset</li>
+                <li>CPP-016-AO Stroke is the primary protocol</li>
+                <li>45 minutes onset means we are well inside the 4-hour thrombolysis window</li>
+                <li>Port Lincoln Hospital has an STS — approximately 35 minutes from Coffin Bay</li>
+                <li>Total time from onset to STS arrival could be under 2 hours if we move efficiently</li>
+                <li>Need to think about BGL check early (hypoglycaemia can mimic stroke)</li>
+            </ul>
+
+            <h4>Crew Role Assignment</h4>
+            <ul>
+                <li><strong>Clinician (AO1):</strong> Patient contact, history from wife, primary survey, ROSIER assessment, clinical decisions, EOC consultation</li>
+                <li><strong>Driver (AO2):</strong> Corpuls3 setup, BGL, observations, documentation, equipment, stretcher positioning</li>
+            </ul>
+
+            <h4>Key Teaching Points</h4>
+            <ul>
+                <li>Start thinking thrombolysis eligibility from the moment you read the MDT</li>
+                <li>Symptom onset time is critical — you need to confirm and document this precisely on scene</li>
+                <li>The clock is already running. Plan your scene time to be as short as possible</li>
+            </ul>
+
+            <div class="alert alert-blue">
+                <strong>Real-Job Translation:</strong>
+                On a real job, you would be mentally rehearsing the ROSIER criteria, thinking about stretcher access to the house, and confirming the quickest route to Port Lincoln Hospital. You want to be ready to assess and move, not figure out the protocol on scene.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- ON ARRIVAL — SCENE MANAGEMENT -->
+<!-- ============================================ -->
+<section>
+    <h2>On Arrival — Scene Management</h2>
+    <p>You arrive at a well-maintained single-storey weatherboard home in a quiet street. Margaret is standing at the open front door, visibly anxious, waving you in. The driveway is clear. No hazards visible.</p>
+
+    <h3>Scene Size-Up</h3>
+    <ul class="checklist">
+        <li>Scene safety confirmed — no hazards, no mechanism for trauma</li>
+        <li>Single patient</li>
+        <li>One bystander (wife Margaret) — she is your key historian</li>
+        <li>Access is straightforward — front door, level entry, wide hallway to kitchen</li>
+        <li>Consider stretcher positioning early — can you get it to the front door?</li>
+    </ul>
+
+    <!-- BREAK POINT 2 -->
+    <div class="bp-box">
+        <div class="bp-title">Break Point 2 — Doorway / First Impression</div>
+        <span class="bp-type bp-type-blue">Decision-Making</span>
+        <div class="bp-body">
+            <h4>What You See</h4>
+            <p>Frank (78M) is sitting in a wooden kitchen chair at the table. He is conscious, eyes open, looking at you. There is a broken teacup and spilled tea on the floor to his right. His face appears asymmetrical — the left side of his mouth is drooping. His right arm is resting on the table but appears to slide off when unsupported. He attempts to greet you but his words are slurred and difficult to understand.</p>
+
+            <h4>Facilitator Prompts</h4>
+            <ul>
+                <li>What is your immediate clinical impression from the doorway?</li>
+                <li>Is this patient time-critical? Why?</li>
+                <li>What are the first three things you want to do?</li>
+                <li>Where does Driver (AO2) position the stretcher?</li>
+            </ul>
+
+            <h4>Expected AO Reasoning</h4>
+            <ul>
+                <li>Clinical impression: acute stroke — facial asymmetry, arm weakness, speech disturbance</li>
+                <li>Patient is conscious, breathing, seated — not immediately life-threatening but absolutely time-critical</li>
+                <li>First priorities: BGL, ROSIER assessment, confirm onset time with Margaret</li>
+                <li>Stretcher should be brought to the front door now — we want to be ready to move as soon as the assessment is complete</li>
+            </ul>
+
+            <div class="alert alert-blue">
+                <strong>Real-Job Translation:</strong>
+                Your doorway impression tells you almost everything here. Facial droop, arm weakness, slurred speech, broken cup on the floor — this is stroke until proven otherwise. The question is not "what is wrong" but "is this patient eligible for thrombolysis and how fast can I get them to Port Lincoln?"
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- PATIENT CONTACT & PRIMARY SURVEY -->
+<!-- ============================================ -->
+<section>
+    <h2>Patient Contact &amp; Primary Survey</h2>
+
+    <h3>Clinician (AO1) — Patient Assessment &amp; History</h3>
+    <p>Introduce yourself to Frank. Speak clearly and calmly. He can hear you and is trying to respond but his speech is significantly impaired.</p>
+
+    <h4>Primary Survey</h4>
+    <ul class="checklist">
+        <li><strong>D</strong> — No danger</li>
+        <li><strong>R</strong> — Responsive to voice, eyes open spontaneously, follows commands with left hand</li>
+        <li><strong>S</strong> — No request for assistance needed at this stage</li>
+        <li><strong>A</strong> — Airway clear, no drooling, no vomiting</li>
+        <li><strong>B</strong> — Breathing unlaboured, RR 18, SpO2 96% room air</li>
+        <li><strong>C</strong> — Radial pulse present, irregularly irregular (AF), skin warm and dry</li>
+        <li><strong>D</strong> — GCS 14 (E4 V4 M6), pupils equal and reactive, BGL required</li>
+    </ul>
+
+    <h4>History from Margaret (Wife)</h4>
+    <p>Margaret provides the following while AO2 sets up the Corpuls3:</p>
+    <ul>
+        <li><strong>Onset:</strong> "We were having morning tea about 45 minutes ago. He went to pick up his cup and just dropped it. Then I noticed his face looked funny — droopy on one side. He tried to tell me something but I couldn't understand him."</li>
+        <li><strong>Progression:</strong> Symptoms have not changed since onset — not improving, not worsening</li>
+        <li><strong>Pre-morbid function:</strong> Fully independent. Drives, walks to the shops, manages his own medications, mows the lawn</li>
+        <li><strong>PMHx:</strong> Hypertension, Atrial Fibrillation, Type 2 Diabetes</li>
+        <li><strong>Medications:</strong> Warfarin, Metoprolol, Metformin, Perindopril</li>
+        <li><strong>Allergies:</strong> Nil known</li>
+        <li><strong>No seizure, no loss of consciousness, no fall, no head injury</strong></li>
+    </ul>
+
+    <h3>Driver (AO2) — Corpuls3 &amp; Observations</h3>
+
+    <!-- BREAK POINT 3 -->
+    <div class="bp-box">
+        <div class="bp-title">Break Point 3 — Initial Observations &amp; Corpuls3 Setup</div>
+        <span class="bp-type">Practical Skill</span>
+        <div class="bp-body">
+            <h4>Facilitator Prompts</h4>
+            <ul>
+                <li>AO2: Talk through your Corpuls3 setup — what are you monitoring and why?</li>
+                <li>What is the first observation you want beyond the Corpuls3?</li>
+                <li>Why is BGL critical in a suspected stroke patient?</li>
+            </ul>
+
+            <h4>Observations Obtained</h4>
+            <table class="rosier-table">
+                <tr><th>Parameter</th><th>Value</th><th>Note</th></tr>
+                <tr><td>Heart Rate</td><td>82 bpm</td><td>Irregularly irregular (AF)</td></tr>
+                <tr><td>Blood Pressure</td><td>172/94 mmHg</td><td>Elevated — expected in acute stroke</td></tr>
+                <tr><td>Respiratory Rate</td><td>18 /min</td><td>Manual count</td></tr>
+                <tr><td>SpO2</td><td>96% RA</td><td>No supplemental O2 required</td></tr>
+                <tr><td>Temperature</td><td>36.4°C</td><td>Normal</td></tr>
+                <tr><td>GCS</td><td>14 (E4 V4 M6)</td><td>Speech confused/dysarthric</td></tr>
+                <tr><td>BGL</td><td>6.2 mmol/L</td><td>Normal — hypoglycaemia excluded</td></tr>
+            </table>
+
+            <h4>Key Teaching Points</h4>
+            <ul>
+                <li><strong>BGL is mandatory</strong> per CPP-016-AO — hypoglycaemia (BGL &lt;3.5) can perfectly mimic stroke and must be excluded first</li>
+                <li><strong>Do NOT treat the elevated BP</strong> — hypertension is a protective response in acute stroke; lowering it can worsen the infarct</li>
+                <li><strong>AF is a known risk factor for stroke</strong> — the irregular rhythm combined with Warfarin use tells you this patient is at high risk for cardioembolic stroke</li>
+                <li><strong>SpO2 96%</strong> — no supplemental oxygen needed (target SpO2 ≥94%)</li>
+            </ul>
+
+            <div class="alert alert-red">
+                <strong>Critical Rule:</strong>
+                If BGL was &lt;3.5 mmol/L, you would treat hypoglycaemia per CPP-009-AO BEFORE proceeding with the ROSIER assessment. Correcting BGL may resolve all "stroke" symptoms.
+            </div>
+
+            <div class="alert alert-blue">
+                <strong>Real-Job Translation:</strong>
+                The Corpuls3 and BGL should be happening simultaneously while AO1 gets the history from Margaret. Parallel tasking is what keeps scene time short. AO2 does not wait for AO1 to finish talking — you work at the same time.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- CLINICAL DECISION POINT — ROSIER -->
+<!-- ============================================ -->
+<section>
+    <h2>Clinical Decision Point — ROSIER Assessment</h2>
+
+    <!-- BREAK POINT 4 -->
+    <div class="bp-box">
+        <div class="bp-title">Break Point 4 — Screening Tools, Protocols &amp; Working Diagnosis</div>
+        <span class="bp-type bp-type-red">Practical Skill / Decision-Making</span>
+        <div class="bp-body">
+            <h4>Facilitator Prompts</h4>
+            <ul>
+                <li>What screening tool does CPP-016-AO require you to use?</li>
+                <li>Walk me through each component of the ROSIER scale for this patient</li>
+                <li>What score makes a patient "positive" for stroke?</li>
+                <li>What are the four criteria for thrombolysis eligibility?</li>
+            </ul>
+
+            <h4>ROSIER Scale — Practical Application</h4>
+            <p>The ROSIER (Recognition of Stroke in the Emergency Room) scale is scored as follows. Apply each item to this patient:</p>
+
+            <table class="rosier-table">
+                <tr><th>ROSIER Item</th><th>Finding</th><th>Score</th></tr>
+                <tr><td>Loss of consciousness or syncope?</td><td>No — patient was conscious throughout</td><td class="score-neg">0</td></tr>
+                <tr><td>Seizure activity?</td><td>No — Margaret confirms no seizure</td><td class="score-neg">0</td></tr>
+                <tr><td>NEW ACUTE asymmetric facial weakness?</td><td>Yes — left-sided mouth droop</td><td class="score-pos">+1</td></tr>
+                <tr><td>NEW ACUTE asymmetric arm weakness?</td><td>Yes — right arm slides off table, cannot grip</td><td class="score-pos">+1</td></tr>
+                <tr><td>NEW ACUTE asymmetric leg weakness?</td><td>Yes — mild right leg weakness noted</td><td class="score-pos">+1</td></tr>
+                <tr><td>NEW ACUTE speech disturbance?</td><td>Yes — marked dysarthria, words slurred</td><td class="score-pos">+1</td></tr>
+                <tr><td>NEW ACUTE visual field defect?</td><td>Unable to reliably assess</td><td class="score-neg">0</td></tr>
+                <tr class="rosier-total"><td><strong>TOTAL ROSIER SCORE</strong></td><td></td><td class="score-pos"><strong>+4</strong></td></tr>
+            </table>
+
+            <div class="alert alert-yellow">
+                <strong>ROSIER Interpretation:</strong>
+                A total score &gt; 0 suggests stroke is likely. Frank's score of +4 is a strong positive. Combined with acute onset and no loss of consciousness or seizure activity, this presentation is highly consistent with acute stroke.
+            </div>
+
+            <h4>Thrombolysis Eligibility Checklist (CPP-016-AO)</h4>
+            <p>All four criteria must be met simultaneously:</p>
+            <ul class="checklist">
+                <li><strong>Positive ROSIER score</strong> — Yes, score +4</li>
+                <li><strong>Independent pre-morbid functioning</strong> — Yes, Margaret confirms fully independent</li>
+                <li><strong>&lt;4 hours from symptom onset to CSU/STS arrival</strong> — Yes, onset ~45 mins ago + ~15 mins on scene + ~35 mins transport = ~95 mins total (well under 4 hours)</li>
+                <li><strong>&lt;60 minutes travel time to CSU/STS</strong> — Yes, Port Lincoln Hospital STS is ~35 minutes</li>
+            </ul>
+
+            <div class="alert alert-red">
+                <strong>Decision:</strong>
+                All four criteria are met. This patient is eligible for thrombolysis consideration. The next step per CPP-016-AO is to <strong>consult EOC Clinician for authorisation</strong> to transport directly to Port Lincoln Hospital STS.
+            </div>
+
+            <h4>Key Teaching Points</h4>
+            <ul>
+                <li>ROSIER is the SAAS-preferred tool — not FAST. Know it and be able to apply it on scene</li>
+                <li>The negative scoring items (LOC, seizure) are important — they reduce the score and may point to non-stroke causes</li>
+                <li>"NEW ACUTE" means these are new symptoms, not pre-existing deficits from a previous stroke</li>
+                <li>Pre-morbid independence is a clinical judgement — ask the family directly: "Was he fully independent before today?"</li>
+                <li>You must calculate the time from onset to expected arrival at STS, not just time on scene</li>
+            </ul>
+
+            <div class="alert alert-blue">
+                <strong>Real-Job Translation:</strong>
+                This is where the scenario lives or dies. Getting the ROSIER right and identifying thrombolysis eligibility is the highest-value clinical decision you will make on this job. Everything after this is execution — moving the patient efficiently to Port Lincoln.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- TREATMENT PHASE -->
+<!-- ============================================ -->
+<section>
+    <h2>Treatment Phase — AO Protocol</h2>
+
+    <!-- BREAK POINT 5 -->
+    <div class="bp-box">
+        <div class="bp-title">Break Point 5 — Treatment Initiation &amp; Medication Safety</div>
+        <span class="bp-type">Practical Skill / Discussion</span>
+        <div class="bp-body">
+            <h4>Facilitator Prompts</h4>
+            <ul>
+                <li>What treatment does this patient need from us right now?</li>
+                <li>What medications can you give for stroke at AO level?</li>
+                <li>What must you NOT give this patient?</li>
+                <li>How do you consult the EOC Clinician for this case?</li>
+                <li>What information does the protocol require you to obtain and confirm?</li>
+            </ul>
+
+            <h4>Basic Care &amp; Life Support (per CPP-016-AO)</h4>
+            <ul class="checklist">
+                <li>BGL measured — 6.2 mmol/L — hypoglycaemia excluded</li>
+                <li>ROSIER completed — score +4 — positive</li>
+                <li>Airway maintained — patient managing own airway, no suction required</li>
+                <li>Position patient comfortably — 30° head elevation if tolerated</li>
+                <li>Protect affected (right) limbs — support arm, ensure leg is secure</li>
+                <li>Keep patient nil by mouth — aspiration risk with dysarthria</li>
+                <li>Maintain normothermia — blanket if needed</li>
+                <li>Reassure patient and Margaret — explain what you are doing</li>
+            </ul>
+
+            <div class="alert alert-red">
+                <strong>Do NOT Administer:</strong>
+                <ul style="margin-top:0.5rem;margin-bottom:0">
+                    <li><strong>Aspirin</strong> — contraindicated until CT scan at hospital excludes haemorrhagic stroke. Even though Frank takes Warfarin for AF, stroke type is unknown pre-hospital</li>
+                    <li><strong>GTN</strong> — do not lower blood pressure in acute stroke</li>
+                    <li><strong>Oral fluids or medications</strong> — nil by mouth (aspiration risk)</li>
+                    <li><strong>Supplemental oxygen</strong> — SpO2 96% (only if &lt;94%)</li>
+                </ul>
+            </div>
+
+            <h4>EOC Clinician Consultation — Skill Practice</h4>
+            <p>Per CPP-016-AO: Consult EOC Clinician for authorisation to transport patient directly to Port Lincoln Hospital STS for consideration for thrombolysis.</p>
+
+            <p><strong>Structure your call:</strong></p>
+            <ul>
+                <li>"This is [name], Volunteer AO, Coffin Bay. I have a 78-year-old male with acute onset stroke symptoms approximately 50 minutes ago."</li>
+                <li>"ROSIER score is positive at +4 — facial weakness, arm and leg weakness, speech disturbance."</li>
+                <li>"BGL 6.2, no hypoglycaemia. Patient was independently functioning pre-morbid."</li>
+                <li>"Port Lincoln Hospital STS is approximately 35 minutes transport. Estimated arrival at STS well within 4 hours of onset."</li>
+                <li>"Requesting authorisation to transport directly to Port Lincoln Hospital STS for thrombolysis consideration."</li>
+                <li>"PMHx includes AF on Warfarin — hospital will need to consider this."</li>
+            </ul>
+
+            <h4>Required Information to Obtain (CPP-016-AO)</h4>
+            <p>When transporting an eligible patient to CSU/STS, you must obtain and confirm:</p>
+            <ul class="checklist">
+                <li><strong>Patient identification details</strong> — full name, DOB, address, Medicare number if available</li>
+                <li><strong>Telephone contact of substitute decision maker, close relative, or carer</strong> — Margaret's mobile number</li>
+            </ul>
+
+            <div class="alert alert-yellow">
+                <strong>Practical Tip:</strong>
+                Ask Margaret to gather Frank's medication list, any hospital letters, and her mobile phone. She may want to follow in her own car or travel with you — discuss this now, not at the door.
+            </div>
+
+            <h4>Key Teaching Points</h4>
+            <ul>
+                <li>AO scope for stroke is recognition, decision-making, and transport — not medication</li>
+                <li>The biggest risk is giving aspirin to a patient who may have a haemorrhagic stroke — CT scan is required first</li>
+                <li>EOC Clinician consultation is a protocol requirement, not optional, for thrombolysis-eligible transport</li>
+                <li>Collecting patient ID and family contact details is a specific protocol requirement — do it on scene, not en route</li>
+            </ul>
+
+            <div class="alert alert-blue">
+                <strong>Real-Job Translation:</strong>
+                This is a low-intervention, high-decision job. You are not giving medications or performing procedures. Your value is in getting the assessment right, making the correct transport decision, and communicating effectively with EOC and the receiving hospital. That is the clinical skill here.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- REASSESSMENT & ESCALATION -->
+<!-- ============================================ -->
+<section>
+    <h2>Reassessment &amp; Escalation</h2>
+
+    <!-- BREAK POINT 6 -->
+    <div class="bp-box">
+        <div class="bp-title">Break Point 6 — Reassessment &amp; Escalation Decision</div>
+        <span class="bp-type bp-type-blue">Decision-Making</span>
+        <div class="bp-body">
+            <h4>Facilitator Prompts</h4>
+            <ul>
+                <li>What are you reassessing and how often?</li>
+                <li>What changes would concern you?</li>
+                <li>When does CPP-016-AO say you should request clinical support?</li>
+                <li>Should you request clinical support for this job?</li>
+            </ul>
+
+            <h4>Reassessment Findings (5 minutes after initial obs)</h4>
+            <table class="rosier-table">
+                <tr><th>Parameter</th><th>Initial</th><th>Reassess</th></tr>
+                <tr><td>HR</td><td>82 (irreg)</td><td>78 (irreg)</td></tr>
+                <tr><td>BP</td><td>172/94</td><td>168/92</td></tr>
+                <tr><td>RR</td><td>18</td><td>16</td></tr>
+                <tr><td>SpO2</td><td>96% RA</td><td>97% RA</td></tr>
+                <tr><td>GCS</td><td>14</td><td>14</td></tr>
+                <tr><td>ROSIER deficits</td><td>Face, arm, leg, speech</td><td>Unchanged</td></tr>
+            </table>
+
+            <h4>Clinical Support Trigger (CPP-016-AO)</h4>
+            <p>Per protocol: <strong>"Request clinical support if patient unstable or transport time &gt;20 mins."</strong></p>
+            <ul>
+                <li>Patient is currently stable — observations unchanged, GCS maintained</li>
+                <li>Transport time to Port Lincoln Hospital is approximately 35 minutes — this exceeds 20 minutes</li>
+                <li>Therefore: <strong>clinical support should be requested</strong> even though the patient appears stable</li>
+            </ul>
+
+            <div class="alert alert-yellow">
+                <strong>Important:</strong>
+                Clinical support does not necessarily mean waiting for backup. It may mean a paramedic intercept en route, phone advice from EOC Clinician during transport, or a paramedic meeting you at Port Lincoln Hospital. Discuss with EOC what is available and appropriate — do not delay transport waiting for backup.
+            </div>
+
+            <h4>Deterioration Red Flags</h4>
+            <ul>
+                <li>Decreasing GCS — may indicate evolving stroke or raised intracranial pressure</li>
+                <li>Vomiting — aspiration risk, lateral positioning required</li>
+                <li>Seizure activity — changes ROSIER score, manage airway</li>
+                <li>Loss of airway or respiratory compromise</li>
+                <li>Rapid rise in blood pressure (e.g., &gt;220 systolic)</li>
+            </ul>
+
+            <div class="alert alert-blue">
+                <strong>Real-Job Translation:</strong>
+                On a rural job with 35 minutes of road ahead, you need to know what you are watching for. Frank is stable now, but stroke can evolve. Reassess every 5 minutes en route. If GCS drops or he vomits, you need to manage the airway and call EOC immediately.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- EXTRICATION & TRANSPORT -->
+<!-- ============================================ -->
+<section>
+    <h2>Extrication &amp; Transport</h2>
+
+    <!-- BREAK POINT 7 -->
+    <div class="bp-box">
+        <div class="bp-title">Break Point 7 — Extrication &amp; Transport Planning</div>
+        <span class="bp-type">Practical Skill</span>
+        <div class="bp-body">
+            <h4>Facilitator Prompts</h4>
+            <ul>
+                <li>How are you moving Frank from the kitchen chair to the ambulance?</li>
+                <li>What is your priority during the move?</li>
+                <li>Who is making the stroke coordinator notification?</li>
+                <li>What is Margaret doing?</li>
+            </ul>
+
+            <h4>Extrication Plan</h4>
+            <ul class="checklist">
+                <li>Carry chair from kitchen to front door — Frank has right-sided weakness, support affected side</li>
+                <li>Transfer from carry chair to stretcher at front door</li>
+                <li>Position on stretcher with 30° head elevation</li>
+                <li>Secure affected right arm — pad and protect</li>
+                <li>Corpuls3 monitoring continues — leads accessible, not tangled</li>
+                <li>Blanket for warmth and dignity</li>
+                <li>Load into ambulance — confirm stretcher locked</li>
+            </ul>
+
+            <h4>Transport Priorities</h4>
+            <ul>
+                <li><strong>Depart scene promptly</strong> — every minute counts toward the thrombolysis window</li>
+                <li><strong>Smooth, efficient driving</strong> — avoid sudden braking or acceleration (patient comfort, prevent vomiting)</li>
+                <li><strong>Continuous monitoring en route</strong> — Corpuls3, GCS, ROSIER deficits every 5 minutes</li>
+                <li><strong>Margaret:</strong> Arrange to follow in her car or travel in the front of the ambulance — she will be needed at hospital for consent and history</li>
+            </ul>
+
+            <h4>STS Stroke Coordinator Notification (CPP-016-AO)</h4>
+            <p>Per protocol: Notify the CSU/STS stroke coordinator via mobile phone using the mnemonic ISBAR. This is ideally done en route by the attending AO (AO1) or can be done by AO2 if AO1 is providing patient care.</p>
+
+            <div class="alert alert-yellow">
+                <strong>Protocol Requirement:</strong>
+                If the stroke coordinator phone is unanswered, or where local procedure directs, request GRN notification to the stroke coordinator at Port Lincoln Hospital Emergency Department.
+            </div>
+
+            <div class="alert alert-blue">
+                <strong>Real-Job Translation:</strong>
+                The carry chair is your best friend here. Frank cannot walk reliably with right-sided weakness. Keep the move controlled and calm. Rushing the extrication and dropping the patient is worse than taking an extra 60 seconds to do it safely. Margaret needs to know how to get to Port Lincoln Hospital and that she should bring Frank's medication list.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- ISBAR HANDOVER -->
+<!-- ============================================ -->
+<section>
+    <h2>Handover — ISBAR to Port Lincoln Hospital STS</h2>
+
+    <!-- BREAK POINT 8 -->
+    <div class="bp-box">
+        <div class="bp-title">Break Point 8 — ISBAR Handover</div>
+        <span class="bp-type bp-type-red">Practical Skill</span>
+        <div class="bp-body">
+            <h4>Facilitator Prompts</h4>
+            <ul>
+                <li>Deliver your ISBAR handover — first to the stroke coordinator by phone, then face-to-face at the ED</li>
+                <li>What specific information does CPP-016-AO require you to confirm during the notification?</li>
+                <li>What is the single most important piece of information the stroke team needs?</li>
+            </ul>
+
+            <h4>ISBAR Handover — Phone Notification to Stroke Coordinator</h4>
+            <div class="card card-dark">
+                <p><strong>I — Identify:</strong> "This is [name], Volunteer Ambulance Officer with SA Ambulance, calling from ambulance en route to Port Lincoln Hospital."</p>
+                <p><strong>S — Situation:</strong> "I am transporting a 78-year-old male, Frank [surname], with a suspected acute stroke. Symptom onset was witnessed by his wife at approximately [exact time] — currently approximately [X] minutes ago."</p>
+                <p><strong>B — Background:</strong> "Past history of Atrial Fibrillation on Warfarin, Hypertension, Type 2 Diabetes. Previously fully independent — lives at home with wife, manages all ADLs independently."</p>
+                <p><strong>A — Assessment:</strong> "ROSIER score is positive at +4 — new acute facial weakness, right arm weakness, right leg weakness, and speech disturbance. BGL 6.2 — hypoglycaemia excluded. GCS 14. Observations: HR 78 irregular, BP 168/92, RR 16, SpO2 97% room air. No seizure activity, no loss of consciousness."</p>
+                <p><strong>R — Recommendation:</strong> "This patient meets all four thrombolysis eligibility criteria per SAAS protocol. EOC Clinician has authorised direct transport to your STS. ETA approximately [X] minutes. Wife Margaret is following and will be available for consent — her mobile is [number]. Requesting stroke team activation on arrival."</p>
+            </div>
+
+            <h4>Protocol-Required Confirmations</h4>
+            <ul class="checklist">
+                <li>Positive ROSIER score confirmed</li>
+                <li>Independent pre-morbid functioning confirmed</li>
+                <li>Symptom onset within thrombolysis window confirmed</li>
+                <li>ETA provided</li>
+                <li>Patient identification details provided</li>
+                <li>Substitute decision maker / relative contact details provided</li>
+            </ul>
+
+            <h4>Key Teaching Points</h4>
+            <ul>
+                <li>The stroke coordinator needs the <strong>exact time of symptom onset</strong> above all else — this determines whether thrombolysis can proceed</li>
+                <li>Mentioning Warfarin is critical — it may affect the thrombolysis decision at hospital (increased bleeding risk)</li>
+                <li>Your ISBAR should take less than 90 seconds — practise it until it is concise and automatic</li>
+                <li>If the stroke coordinator does not answer, request GRN notification to Port Lincoln ED</li>
+                <li>You will deliver a second, face-to-face ISBAR on arrival at the ED — it should match your phone notification</li>
+            </ul>
+
+            <div class="alert alert-blue">
+                <strong>Real-Job Translation:</strong>
+                The phone call to the stroke coordinator is the moment where your assessment translates into hospital action. A clear, structured ISBAR means the stroke team is assembled and the CT scanner is ready when you arrive. A vague or disorganised call means delays. Practise this out loud — every crew member should be able to deliver it.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- KNOWLEDGE: ROSIER REFERENCE -->
+<!-- ============================================ -->
+<section>
+    <h2>Reference — ROSIER Scale</h2>
+    <div class="toggle-section">
+        <button class="toggle-button" onclick="toggleSection(this)">ROSIER Scale — Scoring Reference</button>
+        <div class="toggle-content">
+            <p>The ROSIER (Recognition of Stroke in the Emergency Room) scale is the SA state-wide stroke clinical network's preferred stroke recognition tool.</p>
+            <table class="rosier-table">
+                <tr><th>Item</th><th>Yes</th><th>No</th></tr>
+                <tr><td>Loss of consciousness or syncope</td><td class="score-neg">-1</td><td>0</td></tr>
+                <tr><td>Seizure activity</td><td class="score-neg">-1</td><td>0</td></tr>
+                <tr><td>NEW ACUTE asymmetric facial weakness</td><td class="score-pos">+1</td><td>0</td></tr>
+                <tr><td>NEW ACUTE asymmetric arm weakness</td><td class="score-pos">+1</td><td>0</td></tr>
+                <tr><td>NEW ACUTE asymmetric leg weakness</td><td class="score-pos">+1</td><td>0</td></tr>
+                <tr><td>NEW ACUTE speech disturbance</td><td class="score-pos">+1</td><td>0</td></tr>
+                <tr><td>NEW ACUTE visual field defect</td><td class="score-pos">+1</td><td>0</td></tr>
+            </table>
+            <p><strong>Score range:</strong> -2 to +5</p>
+            <p><strong>Interpretation:</strong> Total score &gt; 0 suggests stroke is likely.</p>
+            <p><strong>Key points:</strong></p>
+            <ul>
+                <li>Seizure and LOC score negatively — they may suggest non-stroke causes (e.g., epilepsy, vasovagal)</li>
+                <li>"NEW ACUTE" means the deficits are new — not residual from a previous event</li>
+                <li>ROSIER is used alongside a thorough history and clinical assessment, not as a standalone tool</li>
+                <li>BGL must be measured to exclude hypoglycaemia before interpreting the ROSIER score</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="toggle-section">
+        <button class="toggle-button" onclick="toggleSection(this)">Thrombolysis Eligibility Criteria (CPP-016-AO)</button>
+        <div class="toggle-content">
+            <h4>Eligible for Thrombolysis — All Four Must Be Met:</h4>
+            <ol>
+                <li><strong>Positive ROSIER score</strong> (total &gt; 0)</li>
+                <li><strong>Independent pre-morbid functioning</strong></li>
+                <li><strong>&lt;4 hours</strong> from symptom onset to CSU/STS arrival</li>
+                <li><strong>&lt;60 minutes</strong> travel time to CSU/STS</li>
+            </ol>
+            <h4>Action When Eligible:</h4>
+            <ul>
+                <li>Consult EOC Clinician for authorisation to transport directly to CSU/STS</li>
+                <li>Request clinical support if patient unstable or transport time &gt;20 mins</li>
+                <li>Obtain patient ID and family/carer contact details</li>
+                <li>Notify stroke coordinator via mobile phone using ISBAR</li>
+            </ul>
+            <h4>Not Eligible for Thrombolysis If:</h4>
+            <ul>
+                <li>Negative ROSIER score (≤ 0); or</li>
+                <li>≥ 4 hours since symptom onset; or</li>
+                <li>Diminished pre-morbid independent living</li>
+            </ul>
+            <p>If not eligible: transport to closest CSU/STS, or closest hospital if travel time is excessive, or consult EOC Clinician for advice.</p>
+
+            <h4>SA Stroke Thrombolysis Services</h4>
+            <ul>
+                <li><strong>CSUs:</strong> Royal Adelaide Hospital (24hr), Flinders Medical Centre (0800–2000), Lyell McEwin Hospital (0800–2000)</li>
+                <li><strong>STS:</strong> Mount Gambier, Naracoorte (0800–1700 Mon–Wed &amp; Fri), Port Augusta, <strong>Port Lincoln</strong>, Port Pirie, Riverland General (Berri), Wallaroo (0830–1530 Mon–Fri), Whyalla</li>
+            </ul>
+
+            <div class="alert alert-yellow">
+                <strong>Note:</strong>
+                Some STS facilities have limited operating hours. Port Lincoln Hospital STS does not have published restricted hours in the current protocol, but always confirm availability via EOC or direct contact if attending outside business hours.
+            </div>
+        </div>
+    </div>
+
+    <div class="toggle-section">
+        <button class="toggle-button" onclick="toggleSection(this)">Stroke Mimics — Differential Diagnosis</button>
+        <div class="toggle-content">
+            <p>Not every presentation with neurological symptoms is a stroke. Common mimics to consider:</p>
+            <ul>
+                <li><strong>Hypoglycaemia</strong> — BGL &lt;3.5 mmol/L can cause focal neurological deficits identical to stroke. Always check BGL first (CPP-016-AO mandate)</li>
+                <li><strong>Seizure with post-ictal deficit (Todd's paresis)</strong> — unilateral weakness after a seizure that resolves over hours. ROSIER score reduces with seizure history (-1)</li>
+                <li><strong>Migraine with aura</strong> — can cause transient speech difficulty, visual changes, weakness. Usually younger patients with migraine history</li>
+                <li><strong>Syncope / presyncope</strong> — brief LOC with rapid recovery. ROSIER reduces with LOC (-1)</li>
+                <li><strong>Bell's palsy</strong> — isolated facial weakness (forehead affected in Bell's, spared in stroke). No arm/leg weakness, no speech disturbance</li>
+                <li><strong>Space-occupying lesion</strong> — tumour causing progressive symptoms over days/weeks, not acute onset</li>
+            </ul>
+            <p>BGL measurement and the ROSIER scale's negative scoring items (LOC, seizure) are built into the protocol specifically to help differentiate stroke from mimics.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- DEBRIEF -->
+<!-- ============================================ -->
+<section>
+    <h2>Debrief (10–15 minutes)</h2>
+    <p>Gather the crew. Debrief on the scenario while it is fresh. Use these questions to guide the discussion.</p>
+
+    <div class="debrief-q">
+        <h4>Reflective Questions</h4>
+        <ol>
+            <li>What was your first clinical impression from the doorway, and how did it guide your approach?</li>
+            <li>Why is BGL measurement mandatory before interpreting stroke symptoms?</li>
+            <li>Walk through the ROSIER score for this patient — could you do it from memory on the next job?</li>
+            <li>What are the four thrombolysis eligibility criteria, and how did you confirm each one?</li>
+            <li>Why is aspirin contraindicated pre-hospital in suspected stroke?</li>
+            <li>How confident did you feel making the stroke coordinator phone call? What would make it smoother?</li>
+            <li>If Frank's symptoms had started 5 hours ago instead of 45 minutes, how would your management change?</li>
+        </ol>
+    </div>
+
+    <h3>Take-Home Messages</h3>
+
+    <div class="takeaway">
+        <strong>1. Time is brain.</strong> Every minute of delay in a thrombolysis-eligible stroke reduces the chance of a good outcome. Your scene time should be as short as safely possible.
+    </div>
+
+    <div class="takeaway">
+        <strong>2. ROSIER is your tool — know it cold.</strong> The ROSIER scale is the SAAS-required stroke screening tool. Practise it until you can apply it without looking at a reference card.
+    </div>
+
+    <div class="takeaway">
+        <strong>3. BGL first, always.</strong> Hypoglycaemia is the most common and most treatable stroke mimic. A 10-second finger prick can change the entire management plan.
+    </div>
+
+    <div class="takeaway">
+        <strong>4. No aspirin for stroke.</strong> Unlike chest pain, aspirin is contraindicated pre-hospital in stroke until a CT scan excludes haemorrhagic stroke. Giving aspirin to a bleeding brain is catastrophic.
+    </div>
+
+    <div class="takeaway">
+        <strong>5. Your clinical value is in the decision, not the procedure.</strong> Stroke is a low-intervention, high-decision job. Getting the ROSIER right, identifying eligibility, consulting EOC, and notifying the stroke coordinator is the skill.
+    </div>
+
+    <div class="takeaway">
+        <strong>6. Collect the details on scene.</strong> Patient ID, family contact number, medication list — the protocol specifically requires these. Do it before you leave the house, not in the ambulance.
+    </div>
+
+    <div class="takeaway">
+        <strong>7. Port Lincoln Hospital is your STS.</strong> Know your local stroke-capable facility, know the travel time, and know how to contact the stroke coordinator. This should be automatic, not something you look up on scene.
+    </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SCENARIO VARIATIONS -->
+<!-- ============================================ -->
+<section>
+    <h2>Optional Scenario Variations</h2>
+
+    <div class="var-card">
+        <div class="var-title">Variation 1 — Unknown Onset Time (Wake-Up Stroke)</div>
+        <p>Margaret woke at 0630 and found Frank on the bathroom floor with right-sided weakness and speech difficulty. He was normal when he went to bed at 2200 the night before. Onset time is unknown.</p>
+        <p><strong>Key change:</strong> Cannot confirm &lt;4 hours from onset. Patient is <strong>not eligible for thrombolysis</strong> per CPP-016-AO. Transport to closest hospital or consult EOC for advice. Still assess with ROSIER and provide basic care.</p>
+    </div>
+
+    <div class="var-card">
+        <div class="var-title">Variation 2 — BGL 2.8 mmol/L (Hypoglycaemia Mimic)</div>
+        <p>Same presentation, but BGL returns 2.8 mmol/L. Frank takes Metformin and missed dinner last night.</p>
+        <p><strong>Key change:</strong> Treat hypoglycaemia per CPP-009-AO before proceeding with ROSIER. If symptoms resolve with BGL correction, this was a stroke mimic, not a stroke. If symptoms persist despite normal BGL, proceed with ROSIER assessment.</p>
+    </div>
+
+    <div class="var-card">
+        <div class="var-title">Variation 3 — Deterioration En Route</div>
+        <p>Ten minutes into transport, Frank vomits and his GCS drops to 10 (E3 V2 M5). SpO2 drops to 91%.</p>
+        <p><strong>Key change:</strong> Manage airway (lateral position, suction), apply oxygen to target SpO2 ≥94%, contact EOC Clinician immediately, continue transport. This patient is now unstable — clinical support is critical. Update stroke coordinator with new clinical status.</p>
+    </div>
+
+    <div class="var-card">
+        <div class="var-title">Variation 4 — After-Hours Presentation (2200hrs)</div>
+        <p>Same patient, same symptoms, but it is 2200hrs. Port Lincoln Hospital STS availability after hours is uncertain.</p>
+        <p><strong>Key change:</strong> Consult EOC Clinician to confirm STS availability at Port Lincoln at this time. If STS is not available after hours, EOC may direct transport to closest ED with telemedicine stroke assessment capability, or arrange MedSTAR consultation. The protocol still applies — follow the eligibility criteria and let EOC guide the transport decision.</p>
+    </div>
+</section>
+
+</div><!-- end container -->
+
+<footer>
+    <p>DSY Training | Stroke — AO Walk-Through Scenario</p>
+    <p>Based on SAAS CPP-016-AO Stroke — AO (exported 15.01.2026)</p>
+    <p>For training purposes only. Always refer to current SAAS protocols for clinical practice.</p>
+</footer>
+
+<script>
+    // PROGRESS BAR
+    window.addEventListener('scroll', function () {
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        var progress = (scrollTop / docHeight) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+    });
+
+    // FADE IN ON SCROLL
+    function revealSections() {
+        var sections = document.querySelectorAll('section');
+        var windowHeight = window.innerHeight;
+        sections.forEach(function (section) {
+            var sectionTop = section.getBoundingClientRect().top;
+            if (sectionTop < windowHeight - 60) {
+                section.classList.add('visible');
+            }
+        });
+    }
+    window.addEventListener('scroll', revealSections);
+    window.addEventListener('load', revealSections);
+
+    // TOGGLE SECTIONS
+    function toggleSection(button) {
+        var content = button.nextElementSibling;
+        button.classList.toggle('active');
+        content.classList.toggle('active');
+    }
+</script>
+
+</body>
+</html>
