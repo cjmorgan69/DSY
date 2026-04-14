@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Care Plan Interview — Type 2 Diabetes</title>
+<style>
+:root{
+  --primary:#3182CE;--primary-dark:#2B6CB0;--primary-deeper:#1E4E8C;
+  --accent:#4299E1;--accent-light:#EBF8FF;
+  --surface:#F7FAFC;--card:#FFFFFF;--border:#E2E8F0;
+  --text-dark:#1A202C;--text-body:#4A5568;--text-light:#718096;
+  --green:#38A169;--green-lt:#F0FFF4;--green-bd:#C6F6D5;
+  --amber:#DD6B20;--amber-lt:#FFFAF0;--amber-bd:#FEEBC8;
+  --red:#E53E3E;--red-lt:#FFF5F5;--red-bd:#FED7D7;
+  --blue-lt:#EBF8FF;--blue-bd:#BEE3F8;
+  --radius:12px;--radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:0 4px 6px rgba(0,0,0,.07);
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',Roboto,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:18px;scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--font);background:var(--surface);color:var(--text-body);line-height:1.65}
+
+/* === HEADER === */
+.site-header{position:sticky;top:0;z-index:100;background:var(--primary);color:#fff;padding:14px 20px 0;box-shadow:var(--shadow-md)}
+.header-inner{max-width:900px;margin:0 auto;text-align:center}
+.header-inner h1{font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:2px}
+.header-inner p{font-size:.78rem;opacity:.85;margin-bottom:10px}
+.progress-track{height:4px;background:rgba(255,255,255,.2);border-radius:2px}
+.progress-fill{height:100%;width:0%;background:#63B3ED;border-radius:2px;transition:width .3s ease}
+
+/* === LAYOUT === */
+main{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+section{margin-bottom:36px}
+.section-title{font-size:1.3rem;font-weight:700;color:var(--text-dark);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.section-title .icon{font-size:1.4rem}
+
+/* === CARDS === */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;box-shadow:var(--shadow)}
+.card-header{font-size:1.05rem;font-weight:700;color:var(--text-dark);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card-header .badge{font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
+.badge-blue{background:var(--accent-light);color:var(--primary)}
+.badge-green{background:var(--green-lt);color:var(--green)}
+.badge-amber{background:var(--amber-lt);color:var(--amber)}
+.badge-red{background:var(--red-lt);color:var(--red)}
+
+/* === OBJECTIVES === */
+.obj-list{list-style:none;counter-reset:obj}
+.obj-list li{counter-increment:obj;padding:10px 0 10px 42px;position:relative;border-bottom:1px solid var(--border)}
+.obj-list li:last-child{border-bottom:none}
+.obj-list li::before{content:counter(obj);position:absolute;left:0;top:10px;width:28px;height:28px;background:var(--accent-light);color:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700}
+
+/* === ACCORDION === */
+.accordion{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;background:var(--card)}
+.accordion-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--card);border:none;cursor:pointer;font-family:var(--font);font-size:1rem;font-weight:600;color:var(--text-dark);text-align:left;min-height:44px;transition:background .2s}
+.accordion-btn:hover{background:var(--accent-light)}
+.accordion-btn .arrow{transition:transform .3s;font-size:.9rem;color:var(--text-light)}
+.accordion-btn.active .arrow{transform:rotate(180deg)}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height .4s ease;padding:0 20px}
+.accordion-body.open{padding:0 20px 20px}
+.accordion-body ul,.accordion-body ol{padding-left:20px;margin-top:8px}
+.accordion-body li{margin-bottom:6px}
+
+/* === PATIENT PROFILE === */
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.profile-grid{grid-template-columns:1fr}}
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.profile-card h4{font-size:.9rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.profile-card p,.profile-card li{font-size:.95rem}
+.profile-card ul{list-style:none;padding:0}
+.profile-card ul li{padding:4px 0;border-bottom:1px solid var(--border)}
+.profile-card ul li:last-child{border-bottom:none}
+
+/* === PATHOLOGY RESULTS === */
+.path-table{width:100%;border-collapse:collapse;font-size:.95rem}
+.path-table th{text-align:left;padding:8px 12px;background:var(--accent-light);color:var(--primary-dark);font-weight:600;border-bottom:2px solid var(--blue-bd)}
+.path-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
+.path-table .status{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.st-green{background:var(--green)}.st-amber{background:var(--amber)}.st-red{background:var(--red)}
+
+/* === INTERVIEW STEPS === */
+.step-counter{text-align:center;padding:12px;background:var(--accent-light);border-radius:var(--radius);margin-bottom:20px;font-size:.9rem;color:var(--primary-dark);font-weight:600}
+.interview-step{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px;overflow:hidden;box-shadow:var(--shadow)}
+.step-head{display:flex;align-items:center;gap:12px;padding:20px;border-bottom:1px solid var(--border)}
+.step-num{width:36px;height:36px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0}
+.step-head h3{font-size:1.05rem;font-weight:700;color:var(--text-dark)}
+.step-context{padding:16px 20px;font-size:.95rem;color:var(--text-body);background:var(--surface);border-bottom:1px solid var(--border)}
+.reveal-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 20px;background:var(--accent-light);border:none;cursor:pointer;font-family:var(--font);font-size:.95rem;font-weight:600;color:var(--primary);min-height:48px;transition:background .2s}
+.reveal-btn:hover{background:var(--blue-bd)}
+.reveal-btn .chevron{transition:transform .3s}
+.reveal-btn.opened .chevron{transform:rotate(180deg)}
+.reveal-body{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.reveal-inner{padding:20px}
+.reveal-block{margin-bottom:16px;padding:14px 16px;border-radius:var(--radius-sm);font-size:.95rem}
+.reveal-block:last-child{margin-bottom:0}
+.reveal-block h4{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.rb-suggest{background:var(--blue-lt);border-left:4px solid var(--accent)}
+.rb-suggest h4{color:var(--primary-dark)}
+.rb-patient{background:#FAF5FF;border-left:4px solid #9F7AEA}
+.rb-patient h4{color:#6B46C1}
+.rb-teach{background:var(--green-lt);border-left:4px solid var(--green)}
+.rb-teach h4{color:#276749}
+.rb-document{background:var(--amber-lt);border-left:4px solid var(--amber)}
+.rb-document h4{color:#9C4221}
+.rb-flag{background:var(--red-lt);border-left:4px solid var(--red)}
+.rb-flag h4{color:#9B2C2C}
+.reveal-block ul{padding-left:18px;margin-top:4px}
+.reveal-block li{margin-bottom:4px}
+
+/* === REFERRAL ACTIVITY === */
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+@media(max-width:500px){.ref-grid{grid-template-columns:1fr}}
+.ref-option{display:flex;align-items:center;gap:10px;padding:12px 14px;border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;min-height:48px;background:var(--card)}
+.ref-option:hover{border-color:var(--accent)}
+.ref-option.selected{border-color:var(--primary);background:var(--accent-light)}
+.ref-option.correct{border-color:var(--green);background:var(--green-lt)}
+.ref-option.incorrect{border-color:var(--red);background:var(--red-lt)}
+.ref-option.missed{border-color:var(--amber);background:var(--amber-lt)}
+.ref-check{width:22px;height:22px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.8rem}
+.ref-option.selected .ref-check{background:var(--primary);border-color:var(--primary);color:#fff}
+.ref-option.correct .ref-check{background:var(--green);border-color:var(--green);color:#fff}
+.ref-option.incorrect .ref-check{background:var(--red);border-color:var(--red);color:#fff}
+.ref-label{font-size:.95rem;font-weight:500}
+.ref-feedback{margin-top:12px;padding:16px;border-radius:var(--radius-sm);font-size:.95rem;display:none}
+.ref-feedback.show{display:block}
+
+/* === QUIZ === */
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;box-shadow:var(--shadow)}
+.quiz-q h4{font-size:1rem;font-weight:700;color:var(--text-dark);margin-bottom:14px}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.quiz-opt{display:flex;align-items:center;gap:10px;padding:12px 14px;border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;min-height:48px}
+.quiz-opt:hover{border-color:var(--accent);background:var(--accent-light)}
+.quiz-opt.chosen{border-color:var(--primary);background:var(--accent-light)}
+.quiz-opt.right{border-color:var(--green);background:var(--green-lt)}
+.quiz-opt.wrong{border-color:var(--red);background:var(--red-lt)}
+.quiz-opt.show-correct{border-color:var(--green);background:var(--green-lt)}
+.q-radio{width:20px;height:20px;border:2px solid var(--text-light);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.quiz-opt.chosen .q-radio{border-color:var(--primary)}
+.quiz-opt.right .q-radio{border-color:var(--green);background:var(--green)}
+.quiz-opt.wrong .q-radio{border-color:var(--red);background:var(--red)}
+.quiz-opt.show-correct .q-radio{border-color:var(--green);background:var(--green)}
+.q-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff;opacity:0;transition:opacity .2s}
+.quiz-opt.right .q-radio::after,.quiz-opt.wrong .q-radio::after,.quiz-opt.show-correct .q-radio::after{opacity:1}
+.q-label{font-size:.95rem}
+.quiz-fb{padding:14px 16px;border-radius:var(--radius-sm);font-size:.92rem;margin-top:8px;display:none}
+.quiz-fb.show{display:block}
+.quiz-check-btn{padding:12px 28px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font);font-size:.95rem;font-weight:600;min-height:48px;transition:background .2s}
+.quiz-check-btn:hover{background:var(--primary-dark)}
+.quiz-check-btn:disabled{background:var(--text-light);cursor:not-allowed}
+.quiz-score{text-align:center;padding:20px;background:var(--accent-light);border-radius:var(--radius);margin-top:16px;font-size:1.1rem;font-weight:700;color:var(--primary-dark);display:none}
+.quiz-score.show{display:block}
+
+/* === CHECKLIST === */
+.checklist{list-style:none}
+.checklist li{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:.95rem}
+.checklist li:last-child{border-bottom:none}
+.cl-box{width:22px;height:22px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .2s;min-width:22px}
+.cl-box.checked{background:var(--green);border-color:var(--green);color:#fff}
+
+/* === INFO BOXES === */
+.info-box{padding:16px 18px;border-radius:var(--radius-sm);margin-bottom:14px;font-size:.93rem}
+.info-blue{background:var(--blue-lt);border-left:4px solid var(--accent);color:var(--primary-dark)}
+.info-green{background:var(--green-lt);border-left:4px solid var(--green);color:#276749}
+.info-amber{background:var(--amber-lt);border-left:4px solid var(--amber);color:#9C4221}
+
+/* === FOOTER === */
+footer{background:var(--primary-dark);color:#fff;padding:28px 20px;text-align:center;font-size:.82rem;line-height:1.7}
+footer a{color:#90CDF4;text-decoration:underline}
+
+/* === ANIMATIONS === */
+.fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* === UTILITIES === */
+.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}
+.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}
+.text-sm{font-size:.85rem}.text-xs{font-size:.78rem}
+.text-muted{color:var(--text-light)}.text-bold{font-weight:700}
+.text-center{text-align:center}
+strong{color:var(--text-dark)}
+
+/* === RESPONSIVE === */
+@media(max-width:600px){
+  html{font-size:16px}
+  .card{padding:18px}
+  .reveal-inner{padding:16px}
+  .step-head{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<header class="site-header">
+  <div class="header-inner">
+    <h1>Care Plan Interview — Type 2 Diabetes</h1>
+    <p>GP Clinic Practice Module</p>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</header>
+
+<main>
+
+<!-- ==================== INTRO ==================== -->
+<section class="fade-in" id="intro">
+  <div class="card">
+    <div class="card-header">Welcome to the Module</div>
+    <p>This module walks you through a <strong>GP Chronic Condition Management Plan (GPCCMP)</strong> care plan interview for a patient with Type 2 Diabetes.</p>
+    <p class="mt-12">You will work through a simulated patient scenario — step by step — practising the structured interview, clinical reasoning, and documentation skills that practice nurses use every day.</p>
+    <div class="info-box info-blue mt-16">
+      <strong>Setting:</strong> General practice clinic. Scheduled 45-minute care plan appointment. You are the practice nurse preparing the GPCCMP for the GP to review and finalise.
+    </div>
+  </div>
+</section>
+
+<!-- ==================== OBJECTIVES ==================== -->
+<section class="fade-in" id="objectives">
+  <div class="section-title"><span class="icon">&#127919;</span> Learning Objectives</div>
+  <div class="card">
+    <ol class="obj-list">
+      <li>Understand the <strong>GPCCMP framework</strong> and the practice nurse's role in care plan preparation</li>
+      <li>Conduct a <strong>structured care plan interview</strong> for a patient with Type 2 Diabetes</li>
+      <li>Review and interpret key <strong>clinical indicators</strong> — HbA1c, eGFR, Urine ACR, lipids</li>
+      <li>Screen for <strong>diabetes-related complications</strong> — feet, eyes, kidneys, cardiovascular risk</li>
+      <li>Identify appropriate <strong>allied health referrals</strong> and prioritise within the Medicare allocation</li>
+      <li>Document findings and recommendations for the <strong>GP to review and finalise</strong></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ==================== GPCCMP KNOWLEDGE ==================== -->
+<section class="fade-in" id="gpccmp-info">
+  <div class="section-title"><span class="icon">&#128218;</span> Understanding GPCCMPs</div>
+
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">
+      What is a GPCCMP? <span class="arrow">&#9660;</span>
+    </button>
+    <div class="accordion-body">
+      <p>From <strong>1 July 2025</strong>, the GP Chronic Condition Management Plan (GPCCMP) replaced the previous GP Management Plan (GPMP) and Team Care Arrangements (TCA) as a single, streamlined plan.</p>
+      <ul>
+        <li><strong>Eligibility:</strong> Patient has at least one chronic condition present (or likely) for 6+ months, or a terminal condition</li>
+        <li><strong>No specific condition list</strong> — it is the GP's clinical judgement</li>
+        <li><strong>Preparation:</strong> Once per 12 months (if necessary)</li>
+        <li><strong>Reviews:</strong> Every 3 months</li>
+        <li><strong>MBS Items:</strong> 965 (prepare, face-to-face), 967 (review, face-to-face)</li>
+        <li><strong>Fee:</strong> $156.55 for preparation or review</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">
+      The Practice Nurse's Role <span class="arrow">&#9660;</span>
+    </button>
+    <div class="accordion-body">
+      <p>Practice nurses can <strong>assist the GP</strong> in preparing or reviewing a GPCCMP. This typically means:</p>
+      <ul>
+        <li>Conducting the structured care plan interview with the patient</li>
+        <li>Reviewing recent pathology results and screening status</li>
+        <li>Assessing current symptoms, medication adherence, and lifestyle</li>
+        <li>Identifying complication risks and screening gaps</li>
+        <li>Recommending allied health referrals for GP consideration</li>
+        <li>Documenting findings so the GP can review and finalise the plan</li>
+      </ul>
+      <div class="info-box info-amber mt-12">
+        <strong>Scope note:</strong> The GP makes the final clinical decisions, signs the plan, and writes referrals. Your role is to gather comprehensive, structured information to support that process.
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">
+      Allied Health Under a GPCCMP <span class="arrow">&#9660;</span>
+    </button>
+    <div class="accordion-body">
+      <p>Patients with a GPCCMP can access Medicare-subsidised allied health services:</p>
+      <ul>
+        <li><strong>Up to 5 individual visits</strong> per calendar year (10 for Aboriginal and Torres Strait Islander patients)</li>
+        <li>Services can be one type or a mix — e.g. 2 podiatry + 2 dietitian + 1 diabetes educator</li>
+        <li><strong>T2DM patients</strong> can also access up to <strong>8 group sessions</strong> per year (diabetes education, dietetics, exercise physiology) — these are additional to the 5 individual visits</li>
+        <li>GP refers directly via letter (no more EPC referral form)</li>
+        <li>Referrals valid for <strong>18 months</strong></li>
+        <li>Providers available: podiatrist, dietitian, diabetes educator, exercise physiologist, physiotherapist, psychologist, occupational therapist, and others</li>
+      </ul>
+      <div class="info-box info-green mt-12">
+        <strong>Key point:</strong> With only 5 individual visits per year, prioritisation matters. Group sessions for T2DM patients are a valuable way to extend the reach of allied health support.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PATIENT PROFILE ==================== -->
+<section class="fade-in" id="patient">
+  <div class="section-title"><span class="icon">&#128105;</span> Meet Your Patient</div>
+
+  <div class="card" style="border-left:4px solid var(--primary)">
+    <div class="card-header">Margaret Thompson <span class="badge badge-blue">Care Plan Review</span></div>
+    <p><strong>64-year-old woman</strong> attending for her annual care plan review. She was diagnosed with <strong>Type 2 Diabetes 8 years ago</strong>. She has been coming to this practice for 12 years and you know her reasonably well.</p>
+  </div>
+
+  <div class="profile-grid">
+    <div class="profile-card">
+      <h4>Demographics</h4>
+      <ul>
+        <li><strong>Age:</strong> 64</li>
+        <li><strong>Lives:</strong> Alone, small rural town</li>
+        <li><strong>Transport:</strong> Drives herself</li>
+        <li><strong>Support:</strong> Daughter lives 40 min away</li>
+        <li><strong>Occupation:</strong> Retired (school admin)</li>
+        <li><strong>BMI:</strong> 31 (obese class I)</li>
+      </ul>
+    </div>
+    <div class="profile-card">
+      <h4>Medical History</h4>
+      <ul>
+        <li>Type 2 Diabetes (8 years)</li>
+        <li>Hypertension</li>
+        <li>Hypercholesterolaemia</li>
+        <li>Osteoarthritis — both knees</li>
+        <li>Ex-smoker (quit 5 years ago)</li>
+      </ul>
+    </div>
+    <div class="profile-card">
+      <h4>Current Medications</h4>
+      <ul>
+        <li>Metformin 1000 mg BD</li>
+        <li>Gliclazide MR 60 mg daily</li>
+        <li>Perindopril 5 mg daily</li>
+        <li>Atorvastatin 20 mg nocte</li>
+        <li>Paracetamol PRN (knees)</li>
+      </ul>
+    </div>
+    <div class="profile-card">
+      <h4>Screening Status</h4>
+      <ul>
+        <li><strong>Last eye review:</strong> 14 months ago</li>
+        <li><strong>Last podiatry:</strong> 2+ years ago</li>
+        <li><strong>Diabetes educator:</strong> >1 year ago</li>
+        <li><strong>Dietitian:</strong> Never seen</li>
+        <li><strong>Exercise physiology:</strong> Never seen</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Pathology Results -->
+  <div class="card mt-16">
+    <div class="card-header">Recent Pathology Results <span class="badge badge-amber">Review Required</span></div>
+    <p class="mb-12 text-sm text-muted">Blood taken 5 days ago. Compare to previous results from 12 months ago.</p>
+    <div style="overflow-x:auto">
+    <table class="path-table">
+      <thead>
+        <tr><th>Test</th><th>Current</th><th>Previous (12m ago)</th><th>Target/Reference</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>HbA1c</strong></td><td>8.2%</td><td>7.6%</td><td>&lt;7.0%</td><td><span class="status st-red"></span>Above &amp; worsening</td></tr>
+        <tr><td><strong>Fasting BGL</strong></td><td>9.4 mmol/L</td><td>8.1 mmol/L</td><td>4.0–7.0</td><td><span class="status st-red"></span>Elevated</td></tr>
+        <tr><td><strong>eGFR</strong></td><td>68 mL/min</td><td>72 mL/min</td><td>&gt;60 (CKD stage 2)</td><td><span class="status st-amber"></span>Mildly reduced</td></tr>
+        <tr><td><strong>Creatinine</strong></td><td>88 µmol/L</td><td>82 µmol/L</td><td>45–90</td><td><span class="status st-green"></span>Within range</td></tr>
+        <tr><td><strong>Urine ACR</strong></td><td>4.2 mg/mmol</td><td>2.8 mg/mmol</td><td>&lt;3.0</td><td><span class="status st-red"></span>Now abnormal</td></tr>
+        <tr><td><strong>Total Cholesterol</strong></td><td>5.8 mmol/L</td><td>5.2 mmol/L</td><td>&lt;4.0 (diabetic)</td><td><span class="status st-red"></span>Elevated</td></tr>
+        <tr><td><strong>LDL</strong></td><td>3.2 mmol/L</td><td>2.8 mmol/L</td><td>&lt;2.0 (diabetic)</td><td><span class="status st-red"></span>Above target</td></tr>
+        <tr><td><strong>HDL</strong></td><td>1.1 mmol/L</td><td>1.2 mmol/L</td><td>&gt;1.0</td><td><span class="status st-amber"></span>Borderline</td></tr>
+        <tr><td><strong>Triglycerides</strong></td><td>2.4 mmol/L</td><td>2.0 mmol/L</td><td>&lt;2.0</td><td><span class="status st-amber"></span>Elevated</td></tr>
+        <tr><td><strong>BP (last visit)</strong></td><td>142/88 mmHg</td><td>138/84 mmHg</td><td>&lt;140/90</td><td><span class="status st-amber"></span>Borderline</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="info-box info-amber mt-16">
+      <strong>Overall picture:</strong> Multiple indicators are trending in the wrong direction. HbA1c worsening, early kidney changes (rising ACR), lipids above target. This patient needs a thorough review and proactive care planning.
+    </div>
+  </div>
+</section>
+
+<!-- ==================== INTERVIEW WALKTHROUGH ==================== -->
+<section class="fade-in" id="interview">
+  <div class="section-title"><span class="icon">&#128172;</span> The Care Plan Interview</div>
+  <p class="mb-12">Work through each step below. Think about what you would ask or do, then click to reveal the suggested approach and Margaret's response.</p>
+  <div class="step-counter" id="stepCounter">Steps explored: 0 / 10</div>
+
+  <!-- STEP 1 -->
+  <div class="interview-step">
+    <div class="step-head"><span class="step-num">1</span><h3>Opening &amp; Building Rapport</h3></div>
+    <div class="step-context">Margaret arrives on time. She's carrying her handbag and a water bottle. She sits down and says, "Here I am again — annual check-up time!" She seems relaxed but slightly apprehensive.</div>
+    <button class="reveal-btn" onclick="toggleReveal(this)">What would you say? <span class="chevron">&#9660;</span></button>
+    <div class="reveal-body"><div class="reveal-inner">
+      <div class="reveal-block rb-suggest"><h4>Suggested Approach</h4>
+        <ul>
+          <li>Greet Margaret warmly — she's a familiar patient, use that rapport</li>
+          <li>Explain the purpose of today's appointment: "We're going to go through your diabetes care plan together — check how things are going, look at your recent blood results, and make sure we've got the right support in place for you."</li>
+          <li>Set expectations for time: "It'll take about 30–40 minutes. The GP will then review everything and finalise the plan."</li>
+          <li>Ask if she has any particular concerns she wants to discuss today</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-patient"><h4>Margaret Says</h4>
+        <p>"That sounds good. I have to be honest, I've been a bit slack with things lately. But I'm here, so that's something, isn't it?"</p>
+      </div>
+      <div class="reveal-block rb-teach"><h4>Key Point</h4>
+        <p>Acknowledge her honesty without judgement. A care plan interview works best as a <strong>collaborative conversation</strong>, not an interrogation. She's already signalling that her self-management has slipped — that's useful information delivered early because she feels safe enough to say it.</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="interview-step">
+    <div class="step-head"><span class="step-num">2</span><h3>General Wellbeing Check</h3></div>
+    <div class="step-context">Before diving into the diabetes-specific questions, you want to get a sense of how Margaret is going overall. This helps frame the rest of the interview.</div>
+    <button class="reveal-btn" onclick="toggleReveal(this)">What would you explore? <span class="chevron">&#9660;</span></button>
+    <div class="reveal-body"><div class="reveal-inner">
+      <div class="reveal-block rb-suggest"><h4>Suggested Questions</h4>
+        <ul>
+          <li>"How have you been feeling generally over the past few months?"</li>
+          <li>"How's your energy levels? Sleep?"</li>
+          <li>"Any new aches or pains, or anything that's been worrying you?"</li>
+          <li>"How are things at home? Getting out and about okay?"</li>
+          <li>"How's your mood been?"</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-patient"><h4>Margaret Says</h4>
+        <p>"Look, I've been alright. A bit tired, maybe more than usual. My knees are slowing me down — I used to walk around the block but I've stopped doing that. I've put on a few kilos. My daughter worries about me being on my own but I manage fine. I just don't cook proper meals as much when it's just me."</p>
+      </div>
+      <div class="reveal-block rb-teach"><h4>Key Point</h4>
+        <p>Several important themes here: <strong>fatigue</strong> (could be poor glycaemic control), <strong>reduced mobility</strong> (OA knees limiting exercise), <strong>weight gain</strong>, <strong>poor diet</strong> (living alone), and <strong>social isolation</strong>. These are all modifiable factors that will inform the care plan. Note them all.</p>
+      </div>
+      <div class="reveal-block rb-document"><h4>Document</h4>
+        <p>Increased fatigue. Reduced mobility due to OA knees — ceased daily walks. Weight gain reported. Living alone — reduced motivation to prepare meals. Mood appears stable. Daughter nearby but not daily contact.</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="interview-step">
+    <div class="step-head"><span class="step-num">3</span><h3>Reviewing Blood Sugar Control</h3></div>
+    <div class="step-context">Time to review Margaret's HbA1c and blood glucose results with her. Her HbA1c has risen from 7.6% to 8.2% — above target and worsening. This is a key conversation.</div>
+    <button class="reveal-btn" onclick="toggleReveal(this)">How would you approach this? <span class="chevron">&#9660;</span></button>
+    <div class="reveal-body"><div class="reveal-inner">
+      <div class="reveal-block rb-suggest"><h4>Suggested Approach</h4>
+        <ul>
+          <li>Share the result in plain language: "Your HbA1c — that's the 3-month average blood sugar reading — has gone up from 7.6 to 8.2. We'd ideally like it under 7."</li>
+          <li>Ask about home monitoring: "Are you checking your blood sugars at home? What sort of readings are you getting?"</li>
+          <li>Explore what might have changed: "What do you think might have contributed to it going up?"</li>
+          <li>Ask about symptoms: any increased thirst, urination, blurred vision?</li>
+          <li>Avoid blame — focus on understanding and problem-solving together</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-patient"><h4>Margaret Says</h4>
+        <p>"Oh, that's gone up, has it? I haven't been checking at home much — I ran out of strips a while back and never got more. I know my eating hasn't been great. Lots of toast and biscuits. I do feel thirstier than I used to, now you mention it. I thought it was just the warm weather."</p>
+      </div>
+      <div class="reveal-block rb-flag"><h4>Red Flag</h4>
+        <p><strong>Increased thirst (polydipsia)</strong> is a classic symptom of hyperglycaemia. Combined with worsening HbA1c and reduced self-monitoring, this patient's diabetes control has deteriorated significantly. Flag for GP review — <strong>medication adjustment likely needed</strong>.</p>
+      </div>
+      <div class="reveal-block rb-document"><h4>Document</h4>
+        <p>HbA1c 8.2% (up from 7.6%). Not doing home BGL monitoring — ran out of strips. Reports increased thirst. Diet has deteriorated — high carbohydrate intake (toast, biscuits). For GP review re: medication optimisation and BGL monitor supplies.</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="interview-step">
+    <div class="step-head"><span class="step-num">4</span><h3>Medication Review &amp; Adherence</h3></div>
+    <div class="step-context">You need to understand how Margaret is taking her medications, whether she understands them, and if she's experiencing any side effects.</div>
+    <button class="reveal-btn" onclick="toggleReveal(this)">What would you ask? <span class="chevron">&#9660;</span></button>
+    <div class="reveal-body"><div class="reveal-inner">
+      <div class="reveal-block rb-suggest"><h4>Suggested Questions</h4>
+        <ul>
+          <li>"Can you talk me through the medications you take each day?"</li>
+          <li>"Do you ever miss doses? What usually causes that?"</li>
+          <li>"Any side effects — stomach upsets, dizziness, anything like that?"</li>
+          <li>"Do you know what each medication is for?"</li>
+          <li>"Do you use a Webster pack or pill organiser?"</li>
+          <li>"Have you had any hypos — shaky, sweaty, feeling faint?"</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-patient"><h4>Margaret Says</h4>
+        <p>"I take them in the morning — the diabetes ones and the blood pressure one. The cholesterol one at night. I'm pretty good with that, I use a little pill box my daughter got me. Sometimes I forget the night one. No real side effects that I notice. I had a funny turn a couple of months ago — went a bit shaky and sweaty before lunch. Had a glass of juice and felt better. Only happened once."</p>
+      </div>
+      <div class="reveal-block rb-flag"><h4>Flag for GP</h4>
+        <p>The "funny turn" sounds like it may have been a <strong>hypoglycaemic episode</strong> — Gliclazide (sulfonylurea) can cause hypos, especially if meals are irregular. Margaret lives alone, which increases the risk if a severe hypo occurs. Flag for GP: review Gliclazide in context of irregular eating patterns and solo living.</p>
+      </div>
+      <div class="reveal-block rb-document"><h4>Document</h4>
+        <p>Reports good adherence to morning medications. Occasional missed evening Atorvastatin dose. Uses pill organiser. One possible hypoglycaemic episode ~2 months ago — tremor, diaphoresis, resolved with juice. Lives alone — hypo risk. For GP review: Gliclazide appropriateness, consider hypo education.</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="interview-step">
+    <div class="step-head"><span class="step-num">5</span><h3>Complication Screening — Feet</h3></div>
+    <div class="step-context">Margaret hasn't seen a podiatrist in over 2 years. Diabetic foot disease is a major complication. You need to ask about symptoms and flag the screening gap.</div>
+    <button class="reveal-btn" onclick="toggleReveal(this)">What would you assess? <span class="chevron">&#9660;</span></button>
+    <div class="reveal-body"><div class="reveal-inner">
+      <div class="reveal-block rb-suggest"><h4>Suggested Questions &amp; Assessment</h4>
+        <ul>
+          <li>"Have you noticed any numbness, tingling, or pins and needles in your feet?"</li>
+          <li>"Any sores, cuts, or blisters that have been slow to heal?"</li>
+          <li>"Do you check your feet regularly?"</li>
+          <li>"What sort of footwear do you usually wear?"</li>
+          <li>"When did you last see a podiatrist?"</li>
+          <li>If within your scope and practice protocols — visual inspection of feet for skin integrity, colour, deformity, calluses, nail condition</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-patient"><h4>Margaret Says</h4>
+        <p>"My feet are alright, I think. Actually, I do get a bit of tingling at night sometimes — like pins and needles in my toes. I don't really look at them, to be honest. I wear slip-on shoes mostly. I haven't been to the podiatrist in ages — I meant to book but never got around to it."</p>
+      </div>
+      <div class="reveal-block rb-flag"><h4>Red Flags</h4>
+        <ul>
+          <li><strong>Tingling/pins and needles</strong> — possible early <strong>peripheral neuropathy</strong></li>
+          <li><strong>Not checking feet</strong> — risk of undetected injury</li>
+          <li><strong>Slip-on shoes</strong> — may not provide adequate protection</li>
+          <li><strong>2+ years since podiatry</strong> — overdue for annual diabetic foot assessment</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-document"><h4>Document</h4>
+        <p>Reports intermittent tingling/paraesthesia in toes — nocturnal. Not performing self-foot checks. Wears slip-on shoes. Last podiatry >2 years ago. Recommend: urgent podiatry referral, foot care education, visual foot check today if able.</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="interview-step">
+    <div class="step-head"><span class="step-num">6</span><h3>Complication Screening — Eyes</h3></div>
+    <div class="step-context">Margaret's last eye review was 14 months ago. Annual diabetic retinopathy screening is recommended.</div>
+    <button class="reveal-btn" onclick="toggleReveal(this)">What would you ask? <span class="chevron">&#9660;</span></button>
+    <div class="reveal-body"><div class="reveal-inner">
+      <div class="reveal-block rb-suggest"><h4>Suggested Questions</h4>
+        <ul>
+          <li>"When did you last have your eyes checked by the optometrist?"</li>
+          <li>"Any changes to your vision — blurring, floaters, difficulty reading?"</li>
+          <li>"Did the optometrist mention anything at your last visit?"</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-patient"><h4>Margaret Says</h4>
+        <p>"I went about a year ago, maybe a bit more. Everything was fine then. My reading glasses are okay. I haven't noticed anything different with my eyes."</p>
+      </div>
+      <div class="reveal-block rb-teach"><h4>Key Point</h4>
+        <p>Even though Margaret reports no symptoms, <strong>diabetic retinopathy is often asymptomatic</strong> in the early stages. With worsening glycaemic control, the risk increases. She's overdue for her annual screen — needs a referral back to the optometrist.</p>
+      </div>
+      <div class="reveal-block rb-document"><h4>Document</h4>
+        <p>Last optometry review ~14 months ago — reported normal. No current visual symptoms. Overdue for annual diabetic retinal screening. Recommend: optometrist referral.</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="interview-step">
+    <div class="step-head"><span class="step-num">7</span><h3>Kidneys &amp; Cardiovascular Risk</h3></div>
+    <div class="step-context">Margaret's eGFR has dropped from 72 to 68 and her Urine ACR has crossed into the abnormal range (4.2 mg/mmol). Her lipids are also above target. This is an important clinical conversation.</div>
+    <button class="reveal-btn" onclick="toggleReveal(this)">How would you explain this? <span class="chevron">&#9660;</span></button>
+    <div class="reveal-body"><div class="reveal-inner">
+      <div class="reveal-block rb-suggest"><h4>Suggested Approach</h4>
+        <ul>
+          <li>Explain kidney function in plain language: "Your kidney blood tests are showing some early changes. There's a small amount of protein leaking into your urine that wasn't there before — that can be an early sign that the diabetes is starting to affect your kidneys."</li>
+          <li>Reassure but be honest: "It's early, and there are things we can do about it. That's why we check every year."</li>
+          <li>Discuss cardiovascular risk: "Your cholesterol numbers have also gone up. With diabetes, we like to keep these lower than normal because of the extra risk to your heart."</li>
+          <li>Ask: "Any swelling in your ankles? Shortness of breath? Chest pain?"</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-patient"><h4>Margaret Says</h4>
+        <p>"My kidneys? That's a bit scary. Is it serious? I don't have any swelling or anything like that. No chest pain. I do get a bit puffed going up stairs but I put that down to being unfit."</p>
+      </div>
+      <div class="reveal-block rb-teach"><h4>Key Points</h4>
+        <ul>
+          <li><strong>Urine ACR 4.2 mg/mmol</strong> (normal &lt;3.0) — this is early <strong>albuminuria</strong>, a marker of diabetic nephropathy. Still early and potentially reversible with good BP and BGL control.</li>
+          <li><strong>eGFR 68</strong> — CKD stage 2. Not yet requiring specialist referral (that's at eGFR &lt;30), but trend is important.</li>
+          <li><strong>LDL 3.2 mmol/L</strong> — well above the target of &lt;2.0 for a diabetic patient. Atorvastatin dose may need reviewing.</li>
+          <li>Perindopril (ACE inhibitor) is <strong>renoprotective</strong> — important to maintain.</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-document"><h4>Document</h4>
+        <p>Discussed kidney results — early albuminuria noted (ACR 4.2, was 2.8). eGFR declining (68, was 72). No oedema, no chest pain. SOB on exertion — ?deconditioning vs review. LDL 3.2 (target &lt;2.0). For GP review: repeat ACR to confirm, Atorvastatin dose review, BP target review, Perindopril to continue.</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="interview-step">
+    <div class="step-head"><span class="step-num">8</span><h3>Lifestyle Assessment</h3></div>
+    <div class="step-context">You need to explore Margaret's diet, physical activity, smoking status, and alcohol intake. These are modifiable risk factors and form a core part of the care plan.</div>
+    <button class="reveal-btn" onclick="toggleReveal(this)">What would you explore? <span class="chevron">&#9660;</span></button>
+    <div class="reveal-body"><div class="reveal-inner">
+      <div class="reveal-block rb-suggest"><h4>Suggested Questions</h4>
+        <ul>
+          <li><strong>Diet:</strong> "Can you walk me through a typical day of eating?" / "Who does the cooking and shopping?"</li>
+          <li><strong>Activity:</strong> "What does a typical day look like physically?" / "You mentioned your knees have stopped you walking — are there other things you can do?"</li>
+          <li><strong>Smoking:</strong> "You quit smoking 5 years ago — well done. Any temptation to go back?"</li>
+          <li><strong>Alcohol:</strong> "How much would you drink in a typical week?"</li>
+          <li><strong>Hydration:</strong> "What do you mainly drink during the day?"</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-patient"><h4>Margaret Says</h4>
+        <p><strong>Diet:</strong> "I have toast for breakfast. Might have a sandwich or crackers and cheese for lunch. Dinner is whatever's easy — sometimes just eggs on toast again, or a frozen meal. I snack on biscuits with my tea. I know it's terrible."</p>
+        <p class="mt-8"><strong>Activity:</strong> "Not much, honestly. I potter around the house and garden. I used to walk but my knees hurt too much now. I'd like to do something but I don't know what I can do with bad knees."</p>
+        <p class="mt-8"><strong>Smoking:</strong> "No, I'm done with that. Don't miss it at all."</p>
+        <p class="mt-8"><strong>Alcohol:</strong> "I'll have a couple of glasses of wine on the weekend if my friend comes over. Maybe two or three."</p>
+      </div>
+      <div class="reveal-block rb-teach"><h4>Key Points</h4>
+        <ul>
+          <li><strong>Diet</strong> is high in refined carbohydrates and low in vegetables, protein, and fibre. This directly impacts BGL control. She would benefit significantly from a <strong>dietitian referral</strong>.</li>
+          <li><strong>Activity</strong> is very limited. OA knees are a real barrier. An <strong>exercise physiologist</strong> could design a program around her limitations (e.g., chair exercises, swimming, resistance bands).</li>
+          <li><strong>Smoking cessation</strong> — maintained. Positive reinforcement.</li>
+          <li><strong>Alcohol</strong> — 2–3 standard drinks, weekends only. Within guidelines but worth monitoring. Alcohol can affect BGL.</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-document"><h4>Document</h4>
+        <p>Diet: high refined carbohydrate, low vegetable/protein intake. Cooks minimally — lives alone. Activity: minimal, limited by OA knees — ceased walking. Willing to explore alternatives. Ex-smoker 5 years — no relapse risk. Alcohol: 2–3 std drinks/week (social). Recommend: dietitian referral, exercise physiologist referral.</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- STEP 9 -->
+  <div class="interview-step">
+    <div class="step-head"><span class="step-num">9</span><h3>Mental Health &amp; Wellbeing</h3></div>
+    <div class="step-context">Diabetes distress and depression are common in people managing chronic conditions. Living alone in a small town adds another layer. A brief check here is important.</div>
+    <button class="reveal-btn" onclick="toggleReveal(this)">How would you approach this? <span class="chevron">&#9660;</span></button>
+    <div class="reveal-body"><div class="reveal-inner">
+      <div class="reveal-block rb-suggest"><h4>Suggested Approach</h4>
+        <ul>
+          <li>"Managing diabetes is a lot of work. How do you feel about it all?"</li>
+          <li>"Do you ever feel overwhelmed or fed up with it?"</li>
+          <li>"How's your sleep?"</li>
+          <li>"Do you get out socially? See friends or family regularly?"</li>
+          <li>If indicated, consider a screening tool (e.g., K10, PHQ-2) per your practice protocol</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-patient"><h4>Margaret Says</h4>
+        <p>"I have my moments. Some days I think, 'What's the point?' — especially when the numbers keep going up no matter what I do. But I'm not depressed or anything. I see my friend Helen most weeks. My daughter calls every day. I sleep okay — up to the loo once or twice at night, but that's just age, isn't it?"</p>
+      </div>
+      <div class="reveal-block rb-teach"><h4>Key Points</h4>
+        <ul>
+          <li>"What's the point?" — this is <strong>diabetes distress</strong>, not necessarily clinical depression, but worth monitoring</li>
+          <li>Nocturia (up 1-2x/night) — could be related to hyperglycaemia (osmotic diuresis) rather than "just age"</li>
+          <li>She does have social connections — positive protective factor</li>
+          <li>Consider recommending a mental health review at the next visit if distress continues</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-document"><h4>Document</h4>
+        <p>Reports occasional diabetes distress ("what's the point") but denies persistent low mood. Social connections maintained. Sleep adequate but nocturia 1–2x/night — ? related to hyperglycaemia. Monitor mental health at review. Consider K10 screening at next visit.</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- STEP 10 -->
+  <div class="interview-step">
+    <div class="step-head"><span class="step-num">10</span><h3>Referrals, Goals &amp; Wrapping Up</h3></div>
+    <div class="step-context">You've gathered comprehensive information. Now it's time to discuss what support Margaret can access, set some goals together, and explain what happens next with the care plan.</div>
+    <button class="reveal-btn" onclick="toggleReveal(this)">How would you wrap up the interview? <span class="chevron">&#9660;</span></button>
+    <div class="reveal-body"><div class="reveal-inner">
+      <div class="reveal-block rb-suggest"><h4>Suggested Approach</h4>
+        <ul>
+          <li>Summarise what you've discussed: "We've covered a lot today. Let me summarise the main things."</li>
+          <li>Explain the allied health referral process: "As part of your care plan, the GP can refer you to some specialists who are partly covered by Medicare — up to 5 visits a year. Plus, because you have diabetes, you can also access group sessions for things like exercise and diet."</li>
+          <li>Discuss which referrals you'd recommend (for GP to finalise)</li>
+          <li>Ask Margaret about her own goals: "What would you most like to get on top of?"</li>
+          <li>Explain next steps: "I'll write all this up for Dr [GP]. They'll review it, finalise the plan, and write the referrals. You'll get a copy of the plan."</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-patient"><h4>Margaret Says</h4>
+        <p>"Honestly, I'd like to get my sugars back under control. And I'd really like to be able to do some kind of exercise — I miss being active. I didn't know I could see all those people through Medicare. That's good to know."</p>
+      </div>
+      <div class="reveal-block rb-teach"><h4>Key Points</h4>
+        <ul>
+          <li>Let the patient identify their own goals — they're more likely to engage</li>
+          <li>Margaret's goals align with clinical priorities — this is a good sign</li>
+          <li>Many patients don't know about allied health entitlements under the GPCCMP. Education about what's available is part of your role</li>
+          <li>Frame referrals as support, not criticism — "These people can help you with the things we've talked about"</li>
+        </ul>
+      </div>
+      <div class="reveal-block rb-document"><h4>Document</h4>
+        <p>Patient goals: improve blood sugar control, return to physical activity. Discussed allied health referral options. For GP: finalise GPCCMP, write referrals, review medications. Plan copy to patient.</p>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ==================== REFERRAL ACTIVITY ==================== -->
+<section class="fade-in" id="referrals">
+  <div class="section-title"><span class="icon">&#9989;</span> Interactive Activity: Allied Health Referrals</div>
+  <div class="card">
+    <div class="card-header">Which allied health providers should Margaret be referred to?</div>
+    <p class="mb-12">Based on everything you've learned about Margaret, select the providers you would recommend. Remember: she can access <strong>5 individual visits</strong> per calendar year, plus <strong>up to 8 T2DM group sessions</strong>.</p>
+
+    <div class="ref-grid" id="refGrid">
+      <div class="ref-option" data-correct="true" onclick="toggleRef(this)"><span class="ref-check"></span><span class="ref-label">Podiatrist</span></div>
+      <div class="ref-option" data-correct="true" onclick="toggleRef(this)"><span class="ref-check"></span><span class="ref-label">Dietitian</span></div>
+      <div class="ref-option" data-correct="true" onclick="toggleRef(this)"><span class="ref-check"></span><span class="ref-label">Diabetes Educator</span></div>
+      <div class="ref-option" data-correct="true" onclick="toggleRef(this)"><span class="ref-check"></span><span class="ref-label">Exercise Physiologist</span></div>
+      <div class="ref-option" data-correct="true" onclick="toggleRef(this)"><span class="ref-check"></span><span class="ref-label">Optometrist</span></div>
+      <div class="ref-option" data-correct="false" onclick="toggleRef(this)"><span class="ref-check"></span><span class="ref-label">Audiologist</span></div>
+      <div class="ref-option" data-correct="false" onclick="toggleRef(this)"><span class="ref-check"></span><span class="ref-label">Speech Pathologist</span></div>
+      <div class="ref-option" data-correct="false" onclick="toggleRef(this)"><span class="ref-check"></span><span class="ref-label">Chiropractor</span></div>
+      <div class="ref-option" data-correct="maybe" onclick="toggleRef(this)"><span class="ref-check"></span><span class="ref-label">Physiotherapist</span></div>
+      <div class="ref-option" data-correct="maybe" onclick="toggleRef(this)"><span class="ref-check"></span><span class="ref-label">Psychologist</span></div>
+    </div>
+
+    <button class="quiz-check-btn" onclick="checkReferrals()">Check My Selections</button>
+
+    <div class="ref-feedback" id="refFeedback"></div>
+  </div>
+</section>
+
+<!-- ==================== KNOWLEDGE REFERENCE ==================== -->
+<section class="fade-in" id="reference">
+  <div class="section-title"><span class="icon">&#128214;</span> Quick Reference</div>
+
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">HbA1c Targets &amp; Interpretation <span class="arrow">&#9660;</span></button>
+    <div class="accordion-body">
+      <ul>
+        <li><strong>&lt;7.0%</strong> — General target for most adults with T2DM</li>
+        <li><strong>6.0–6.5%</strong> — May be appropriate for younger patients or those early in disease</li>
+        <li><strong>7.0–8.0%</strong> — May be acceptable for older adults, those with comorbidities, or high hypo risk</li>
+        <li><strong>&gt;8.0%</strong> — Suboptimal. Medication review and intensified support indicated</li>
+      </ul>
+      <p class="mt-8"><strong>Note:</strong> Targets are individualised by the GP. Always check the patient's specific target in their records.</p>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">Diabetes Complication Screening Schedule <span class="arrow">&#9660;</span></button>
+    <div class="accordion-body">
+      <ul>
+        <li><strong>HbA1c:</strong> Every 3–6 months</li>
+        <li><strong>Kidney function (eGFR, ACR):</strong> At least annually</li>
+        <li><strong>Lipid profile:</strong> Annually</li>
+        <li><strong>Eye examination:</strong> At diagnosis then every 1–2 years (optometrist/ophthalmologist)</li>
+        <li><strong>Foot assessment:</strong> At least annually (podiatrist or trained clinician)</li>
+        <li><strong>Blood pressure:</strong> Every visit</li>
+        <li><strong>BMI/Weight:</strong> Every visit</li>
+        <li><strong>Mental health/diabetes distress:</strong> Opportunistic screening, annually at minimum</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">CKD Staging Quick Guide <span class="arrow">&#9660;</span></button>
+    <div class="accordion-body">
+      <ul>
+        <li><strong>Stage 1:</strong> eGFR &gt;90 with other evidence of kidney damage (e.g., albuminuria)</li>
+        <li><strong>Stage 2:</strong> eGFR 60–89 (mild reduction)</li>
+        <li><strong>Stage 3a:</strong> eGFR 45–59 (mild–moderate)</li>
+        <li><strong>Stage 3b:</strong> eGFR 30–44 (moderate–severe)</li>
+        <li><strong>Stage 4:</strong> eGFR 15–29 (severe) — nephrologist referral</li>
+        <li><strong>Stage 5:</strong> eGFR &lt;15 (kidney failure)</li>
+      </ul>
+      <p class="mt-8"><strong>Margaret (eGFR 68):</strong> Stage 2. Monitor trend. ACE inhibitor (Perindopril) is renoprotective and should be continued. Good BP and BGL control can slow progression.</p>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">Red Flags — When to Alert the GP Urgently <span class="arrow">&#9660;</span></button>
+    <div class="accordion-body">
+      <ul>
+        <li>New foot ulcer, wound, or signs of infection</li>
+        <li>Sudden vision changes (flashes, floaters, loss of vision)</li>
+        <li>Recurrent hypoglycaemic episodes</li>
+        <li>BGL consistently &gt;15 mmol/L or symptoms of DKA/HHS (vomiting, confusion, extreme thirst)</li>
+        <li>New chest pain, SOB at rest, or significant oedema</li>
+        <li>Rapidly declining eGFR (&gt;5 mL/min/year drop)</li>
+        <li>Significant mental health concerns (suicidal ideation, self-harm)</li>
+        <li>Signs of new or worsening peripheral neuropathy</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== QUIZ ==================== -->
+<section class="fade-in" id="quiz">
+  <div class="section-title"><span class="icon">&#128221;</span> Knowledge Check</div>
+
+  <!-- Q1 -->
+  <div class="quiz-q" data-answer="1">
+    <h4>1. Margaret's HbA1c is 8.2%. What does this tell you?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">It's slightly above target but acceptable for her age</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">It's above target and has worsened since her last test — her diabetes control has deteriorated</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">It's within the normal range for a Type 2 diabetic</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">It indicates she needs to start insulin immediately</span></div>
+    </div>
+    <button class="quiz-check-btn" onclick="checkQuiz(this)">Check Answer</button>
+    <div class="quiz-fb"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="quiz-q" data-answer="1">
+    <h4>2. Margaret's Urine ACR is 4.2 mg/mmol (was 2.8). What does this indicate?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">Normal kidney function — no action needed</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">Early albuminuria — an early sign of diabetic kidney disease that needs monitoring and good BP/BGL control</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">She has a urinary tract infection</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">End-stage renal failure requiring urgent referral</span></div>
+    </div>
+    <button class="quiz-check-btn" onclick="checkQuiz(this)">Check Answer</button>
+    <div class="quiz-fb"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="quiz-q" data-answer="1">
+    <h4>3. How many individual Medicare-subsidised allied health visits can Margaret access per calendar year under her GPCCMP?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">3 visits</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">5 visits (plus up to 8 additional T2DM group sessions)</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">10 visits</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">Unlimited visits</span></div>
+    </div>
+    <button class="quiz-check-btn" onclick="checkQuiz(this)">Check Answer</button>
+    <div class="quiz-fb"></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="quiz-q" data-answer="2">
+    <h4>4. Margaret reports a "funny turn" with shakiness and sweating that resolved after juice. Which medication is the most likely cause?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">Metformin</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">Perindopril</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">Gliclazide (sulfonylurea) — can cause hypoglycaemia</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">Atorvastatin</span></div>
+    </div>
+    <button class="quiz-check-btn" onclick="checkQuiz(this)">Check Answer</button>
+    <div class="quiz-fb"></div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="quiz-q" data-answer="0">
+    <h4>5. What replaced the GPMP and TCA from 1 July 2025?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">The GP Chronic Condition Management Plan (GPCCMP)</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">The Enhanced Primary Care Plan (EPC)</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">The Chronic Disease Management Framework (CDMF)</span></div>
+      <div class="quiz-opt" onclick="selectOpt(this)"><span class="q-radio"></span><span class="q-label">The Medicare Chronic Care Plan (MCCP)</span></div>
+    </div>
+    <button class="quiz-check-btn" onclick="checkQuiz(this)">Check Answer</button>
+    <div class="quiz-fb"></div>
+  </div>
+
+  <div class="quiz-score" id="quizScore"></div>
+</section>
+
+<!-- ==================== CHECKLIST ==================== -->
+<section class="fade-in" id="checklist">
+  <div class="section-title"><span class="icon">&#128203;</span> T2DM Care Plan Interview Checklist</div>
+  <div class="card">
+    <p class="mb-12">Use this as a reference during real care plan interviews. Click to check off items as you go.</p>
+    <ul class="checklist">
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Open the conversation — explain purpose, set expectations, ask about concerns</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>General wellbeing — energy, sleep, mood, social situation</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Review HbA1c — explain result, compare to previous, explore reasons for change</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Home BGL monitoring — frequency, equipment, understanding of results</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Medication review — adherence, understanding, side effects, hypo history</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Feet — symptoms (tingling, numbness, pain), self-checks, podiatry status, visual inspection</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Eyes — last optometrist visit, any visual changes, retinal screen due?</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Kidneys — review eGFR and ACR, explain results in plain language</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Cardiovascular risk — BP, lipids, review targets, symptoms</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Diet — typical intake, barriers, cooking/shopping capacity</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Physical activity — current level, barriers, willingness to change</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Smoking and alcohol — current status, quantity</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Mental health — diabetes distress, mood, sleep, social connections</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Allied health referrals — identify needs, explain entitlements, prioritise</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Patient goals — what matters to them, barriers, action plan</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Explain next steps — GP review, plan finalisation, referral letters, plan copy</span></li>
+      <li><span class="cl-box" onclick="toggleCheck(this)"></span><span>Document everything — structured notes for GP to review and finalise GPCCMP</span></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <p><strong>GP Care Plan Interview — Type 2 Diabetes</strong></p>
+  <p>Developed for practice nurse education. Content informed by current Australian guidelines and the MBS framework effective 1 July 2025.</p>
+  <p class="mt-8">References: Services Australia — <a href="https://www.servicesaustralia.gov.au" target="_blank">MBS Chronic Condition Items</a> &nbsp;|&nbsp;
+  Diabetes Australia — <a href="https://www.diabetesaustralia.com.au" target="_blank">Clinical Guidelines</a> &nbsp;|&nbsp;
+  RACGP — <a href="https://www.racgp.org.au" target="_blank">Management of T2DM</a></p>
+  <p class="mt-8" style="opacity:.7">For educational purposes only. Always follow your practice protocols and current clinical guidelines.</p>
+</footer>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+// === PROGRESS BAR ===
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  const p=h>0?(window.scrollY/h)*100:0;
+  document.getElementById('progressFill').style.width=Math.min(p,100)+'%';
+});
+
+// === FADE IN ON SCROLL ===
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})
+},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+
+// === ACCORDION ===
+function toggleAccordion(btn){
+  const body=btn.nextElementSibling;
+  const isOpen=body.classList.contains('open');
+  // close all in same section
+  btn.closest('section').querySelectorAll('.accordion-body').forEach(b=>{b.style.maxHeight=null;b.classList.remove('open')});
+  btn.closest('section').querySelectorAll('.accordion-btn').forEach(b=>b.classList.remove('active'));
+  if(!isOpen){
+    btn.classList.add('active');
+    body.classList.add('open');
+    body.style.maxHeight=body.scrollHeight+'px';
+  }
+}
+
+// === INTERVIEW REVEAL ===
+let stepsExplored=new Set();
+function toggleReveal(btn){
+  const body=btn.nextElementSibling;
+  const isOpen=body.style.maxHeight;
+  if(isOpen){
+    body.style.maxHeight=null;
+    btn.classList.remove('opened');
+  }else{
+    body.style.maxHeight=body.scrollHeight+'px';
+    btn.classList.add('opened');
+    // track step
+    const step=btn.closest('.interview-step');
+    const steps=[...document.querySelectorAll('.interview-step')];
+    const idx=steps.indexOf(step);
+    stepsExplored.add(idx);
+    document.getElementById('stepCounter').textContent='Steps explored: '+stepsExplored.size+' / '+steps.length;
+  }
+}
+
+// === REFERRAL ACTIVITY ===
+let refChecked=false;
+function toggleRef(el){
+  if(refChecked)return;
+  el.classList.toggle('selected');
+  const check=el.querySelector('.ref-check');
+  check.textContent=el.classList.contains('selected')?'✓':'';
+}
+function checkReferrals(){
+  if(refChecked)return;
+  refChecked=true;
+  const opts=document.querySelectorAll('#refGrid .ref-option');
+  let correct=0,total=0;
+  opts.forEach(o=>{
+    const isCorrect=o.dataset.correct==='true';
+    const isMaybe=o.dataset.correct==='maybe';
+    const selected=o.classList.contains('selected');
+    o.classList.remove('selected');
+    if(isCorrect){
+      total++;
+      if(selected){o.classList.add('correct');o.querySelector('.ref-check').textContent='✓';correct++}
+      else{o.classList.add('missed');o.querySelector('.ref-check').textContent='!'}
+    }else if(isMaybe){
+      if(selected){o.classList.add('correct');o.querySelector('.ref-check').textContent='~'}
+    }else{
+      if(selected){o.classList.add('incorrect');o.querySelector('.ref-check').textContent='✗'}
+    }
+  });
+  const fb=document.getElementById('refFeedback');
+  fb.classList.add('show');
+  let html='<strong>Results: '+correct+'/'+total+' priority referrals identified.</strong><br><br>';
+  html+='<strong style="color:var(--green)">Priority referrals (5 individual visits):</strong><br>';
+  html+='<strong>Podiatrist</strong> — overdue &gt;2 years, symptoms of neuropathy<br>';
+  html+='<strong>Dietitian</strong> — poor diet, high carb intake, lives alone<br>';
+  html+='<strong>Diabetes Educator</strong> — worsening HbA1c, not monitoring BGLs, needs education refresh<br>';
+  html+='<strong>Exercise Physiologist</strong> — inactive, OA limiting mobility, needs adapted program<br>';
+  html+='<strong>Optometrist</strong> — overdue for annual diabetic retinal screen<br><br>';
+  html+='<strong style="color:var(--amber)">Consider also:</strong><br>';
+  html+='<strong>Physiotherapist</strong> — could help with OA knee management (but exercise physiologist may cover this)<br>';
+  html+='<strong>Psychologist</strong> — not urgently indicated but monitor diabetes distress<br><br>';
+  html+='<strong>Tip:</strong> That\'s 5 priority referrals — the full individual allocation for the year. Remember Margaret can also access up to <strong>8 T2DM group sessions</strong> (dietetics, exercise physiology, diabetes education) which don\'t count toward the 5 individual visits. This is a smart way to maximise her support.';
+  fb.innerHTML=html;
+  fb.style.background='var(--blue-lt)';
+  fb.style.borderRadius='var(--radius-sm)';
+  fb.style.padding='18px';
+}
+
+// === QUIZ ===
+let quizAnswered=0;
+const totalQuiz=5;
+let quizCorrect=0;
+const feedbacks=[
+  ["Incorrect. While her age may influence the GP's individual target, 8.2% is above the general target and has worsened from 7.6% — this is a clear deterioration.","Correct. HbA1c 8.2% is above the general target of <7% and has risen from 7.6% — her diabetes control has worsened over the past 12 months.","Incorrect. The general target for T2DM is <7%. At 8.2%, she is well above this.","Incorrect. While medication changes are likely needed, the decision to start insulin rests with the GP based on the full clinical picture."],
+  ["Incorrect. An ACR of 4.2 is above the normal range (<3.0) and has risen from 2.8 — this is not normal.","Correct. A Urine ACR of 4.2 mg/mmol (above normal <3.0, and rising) indicates early albuminuria — a sign of early diabetic kidney disease. Good BP and BGL control can slow progression.","Incorrect. While UTI can cause protein in urine, the rising ACR trend in a diabetic patient is most consistent with early diabetic nephropathy.","Incorrect. An eGFR of 68 with early albuminuria is CKD Stage 2 — not end-stage. Monitor and manage."],
+  ["Incorrect. The standard allocation is 5 individual visits per calendar year.","Correct. Patients can access up to 5 individual allied health visits per year. T2DM patients can also access up to 8 additional group sessions for diabetes education, dietetics, and exercise physiology.","Incorrect. 10 visits per year applies to Aboriginal and Torres Strait Islander patients.","Incorrect. Medicare-subsidised visits are capped, not unlimited."],
+  ["Incorrect. Metformin very rarely causes hypoglycaemia on its own.","Incorrect. Perindopril is an ACE inhibitor for blood pressure — it doesn't typically cause hypoglycaemia.","Correct. Gliclazide is a sulfonylurea that stimulates insulin release and can cause hypoglycaemia, especially if meals are missed or irregular. This is an important safety concern for Margaret who lives alone.","Incorrect. Atorvastatin is a statin for cholesterol — it doesn't cause hypoglycaemia."],
+  ["Correct. The GP Chronic Condition Management Plan (GPCCMP) replaced both the GPMP and TCA from 1 July 2025 as a single, streamlined chronic condition management framework.","Incorrect. The EPC (Enhanced Primary Care) was an even earlier system that was replaced by GPMP/TCA, which has now been replaced by GPCCMP.","Incorrect. While the changes are part of the CDM framework, the specific plan is called the GPCCMP.","Incorrect. This is not the correct name for the new plan."]
+];
+
+function selectOpt(opt){
+  const q=opt.closest('.quiz-q');
+  if(q.dataset.done)return;
+  q.querySelectorAll('.quiz-opt').forEach(o=>o.classList.remove('chosen'));
+  opt.classList.add('chosen');
+}
+
+function checkQuiz(btn){
+  const q=btn.closest('.quiz-q');
+  if(q.dataset.done)return;
+  const opts=[...q.querySelectorAll('.quiz-opt')];
+  const chosen=opts.findIndex(o=>o.classList.contains('chosen'));
+  if(chosen===-1)return;
+  q.dataset.done='true';
+  const correctIdx=parseInt(q.dataset.answer);
+  const qIdx=[...document.querySelectorAll('.quiz-q')].indexOf(q);
+  const isRight=chosen===correctIdx;
+  if(isRight){quizCorrect++;opts[chosen].classList.add('right')}
+  else{opts[chosen].classList.add('wrong');opts[correctIdx].classList.add('show-correct')}
+  opts.forEach(o=>o.classList.remove('chosen'));
+  const fb=q.querySelector('.quiz-fb');
+  fb.textContent=feedbacks[qIdx][chosen];
+  fb.style.background=isRight?'var(--green-lt)':'var(--red-lt)';
+  fb.style.borderLeft=isRight?'4px solid var(--green)':'4px solid var(--red)';
+  fb.classList.add('show');
+  btn.disabled=true;
+  quizAnswered++;
+  if(quizAnswered===totalQuiz){
+    const sc=document.getElementById('quizScore');
+    sc.textContent='Quiz Complete: '+quizCorrect+' / '+totalQuiz+' correct';
+    sc.classList.add('show');
+  }
+}
+
+// === CHECKLIST ===
+function toggleCheck(el){
+  el.classList.toggle('checked');
+  el.textContent=el.classList.contains('checked')?'✓':'';
+}
+</script>
+</body>
+</html>
