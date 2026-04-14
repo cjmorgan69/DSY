@@ -1,1 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GP Clinic Modules — DSY Training</title>
+<meta name="description" content="General practice education for chronic disease management. Aligned with SA Health frameworks, RACGP guidelines, and evidence-based care.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--dsy-darkest:#001a4d;--dsy-dark:#003366;--dsy-mid:#004d99;--dsy-accent:#1565c0;--dsy-bright:#2196f3;--dsy-light:#e3f2fd;--dsy-bg:#f5f8fd;--blue-dark:#003366}
+html{font-size:18px}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--dsy-bg);color:#1a2e3a;line-height:1.6}
+a{text-decoration:none;color:inherit}
 
+header{background:var(--blue-dark);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.2)}
+.header-inner{max-width:1100px;margin:0 auto;padding:0.8rem 1.5rem;display:flex;align-items:center;gap:1rem}
+.header-logo img{display:block;border-radius:50%}
+.header-back{display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:rgba(255,255,255,0.7);transition:color 0.2s}
+.header-back:hover{color:#fff}
+.header-back svg{width:16px;height:16px;fill:currentColor}
+.header-title{flex:1;text-align:center}
+.header-title h1{font-size:1.15rem;font-weight:700;letter-spacing:-0.3px}
+.header-title span{font-size:0.7rem;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px}
+
+.page-intro{max-width:1100px;margin:0 auto;padding:2rem 1.5rem 1rem}
+.page-intro h2{font-size:1.6rem;font-weight:800;color:var(--blue-dark);margin-bottom:0.4rem}
+.page-intro p{font-size:0.95rem;color:#555;max-width:720px}
+
+.scope-bar{max-width:1100px;margin:0.5rem auto 1.5rem;padding:0 1.5rem}
+.scope-bar-inner{background:var(--dsy-light);border-left:4px solid var(--dsy-accent);border-radius:0 10px 10px 0;padding:0.8rem 1.2rem;font-size:0.82rem;color:#1565c0}
+.scope-bar-inner strong{font-weight:700}
+
+.modules-grid{max-width:1100px;margin:0 auto 2rem;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+
+.module-card{background:#fff;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,0.06);padding:1.8rem;transition:transform 0.25s ease,box-shadow 0.25s ease;border-left:5px solid var(--dsy-accent);display:flex;flex-direction:column}
+.module-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,0.1)}
+.module-card.dev{opacity:0.65;border-left-color:#bdbdbd}
+.module-card.dev:hover{transform:none;box-shadow:0 2px 16px rgba(0,0,0,0.06)}
+.module-card .badge{display:inline-block;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;padding:3px 10px;border-radius:20px;background:var(--dsy-bright);color:#fff;margin-bottom:0.8rem;width:fit-content}
+.module-card .badge.soon{background:#bdbdbd}
+.module-card h3{font-size:1.15rem;font-weight:700;color:var(--blue-dark);margin-bottom:0.3rem}
+.module-card .protocol-ref{font-size:0.72rem;color:#888;margin-bottom:0.6rem;font-weight:500}
+.module-card p{font-size:0.88rem;color:#555;flex:1;margin-bottom:1rem}
+.module-card .card-meta{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem}
+.module-card .meta-tag{font-size:0.68rem;background:#f0f0f0;color:#555;padding:3px 8px;border-radius:6px}
+.module-link{display:inline-block;background:var(--dsy-accent);color:#fff;padding:0.6rem 1.4rem;border-radius:9px;font-size:0.85rem;font-weight:600;transition:background 0.2s}
+.module-link:hover{background:#1565c0}
+
+.section-label{max-width:1100px;margin:2rem auto 0.8rem;padding:0 1.5rem;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--dsy-accent)}
+.section-label.dev-label{color:#999}
+
+footer{background:var(--dsy-darkest);color:rgba(255,255,255,0.5);text-align:center;padding:2rem 1.5rem;font-size:0.75rem;margin-top:2rem}
+footer a{color:var(--dsy-bright)}
+footer p+p{margin-top:0.3rem}
+
+@media(max-width:680px){.modules-grid{grid-template-columns:1fr}.header-logo{display:none}}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="header-inner">
+ <div class="header-logo"><img src="https://cdn.simtheory.ai/image/upload/v1771236807/nanobanana_generated_2567_1771236807_3_osxywy.png" width="52" height="52" alt="DSY Training Logo"></div>
+ <a href="../" class="header-back"><svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>All Modules</a>
+ <div class="header-title">
+ <span>GP Clinic</span>
+ <h1>GP Clinic Modules</h1>
+ </div>
+ <div style="width:52px"></div>
+ </div>
+</header>
+
+<div class="page-intro">
+ <h2>General Practice Chronic Disease Management</h2>
+ <p>Clinical education for general practice teams managing chronic conditions. Aligned with SA Health frameworks, RACGP guidelines, evidence-based care, and preventive health strategies.</p>
+</div>
+
+<div class="scope-bar">
+ <div class="scope-bar-inner">
+ <strong>Target Audience:</strong> GPs, practice nurses, nurse practitioners, and allied health professionals working in primary care settings. Content aligned with RACGP Red Book, SA Health directives, and chronic disease management best practice.
+ </div>
+</div>
+
+<div class="section-label">Live Modules &mdash; 3 Available</div>
+
+<div class="modules-grid">
+
+ <div class="module-card">
+ <span class="badge">Live</span>
+ <h3>Diabetes Management</h3>
+ <div class="protocol-ref">RACGP Guidelines &bull; GP Clinic Module</div>
+ <p>Comprehensive diabetes management in primary care. Covers initial assessment, HbA1c monitoring, medication selection, cardiovascular risk assessment, complication screening, and patient education strategies.</p>
+ <div class="card-meta">
+ <span class="meta-tag">Type 2 Diabetes</span>
+ <span class="meta-tag">HbA1c Targets</span>
+ <span class="meta-tag">Medication Review</span>
+ <span class="meta-tag">Complication Screening</span>
+ </div>
+ <a href="../modules/diabetes/" class="module-link">Open Module &rarr;</a>
+ </div>
+ 
+<div class="module-card">
+ <span class="badge">Live</span>
+ <h3>Hypertension Management</h3>
+ <div class="protocol-ref">SA Health Hypertension Pathway &bull; GP Clinic Module</div>
+ <p>Blood pressure management and cardiovascular risk reduction in general practice. Covers risk stratification, lifestyle interventions, medication selection, monitoring protocols, and management of resistant hypertension.</p>
+ <div class="card-meta">
+ <span class="meta-tag">BP Targets</span>
+ <span class="meta-tag">Cardiovascular Risk</span>
+ <span class="meta-tag">Medication Classes</span>
+ <span class="meta-tag">Lifestyle Modification</span>
+ </div>
+<a href="../modules/hypertension/" class="module-link">Open Module &rarr;</a>
+</div>
+ 
+ <div class="module-card">
+ <span class="badge">Live</span>
+ <h3>COPD Management</h3>
+ <div class="protocol-ref">GOLD Guidelines &bull; GP Clinic Module</div>
+ <p>Chronic obstructive pulmonary disease management in primary care. Covers spirometry interpretation, GOLD classification, inhaler technique, exacerbation management, pulmonary rehabilitation referral, and smoking cessation support.</p>
+ <div class="card-meta">
+ <span class="meta-tag">Spirometry</span>
+ <span class="meta-tag">GOLD Classification</span>
+ <span class="meta-tag">Inhaler Technique</span>
+ <span class="meta-tag">Exacerbation Management</span>
+ </div>
+ <a href="../modules/copd/index" class="module-link">Open Module &rarr;</a>
+ </div>
+
+ <div class="module-card">
+ <span class="badge">Live</span>
+ <h3>Heart Disease Prevention</h3>
+ <div class="protocol-ref">Absolute Cardiovascular Risk &bull; GP Clinic Module</div>
+ <p>Cardiovascular disease prevention and management in general practice. Covers absolute risk assessment, lipid management, antiplatelet therapy, lifestyle counselling, and secondary prevention strategies for established disease.</p>
+ <div class="card-meta">
+ <span class="meta-tag">Absolute Risk</span>
+ <span class="meta-tag">Lipid Management</span>
+ <span class="meta-tag">Antiplatelet Therapy</span>
+ 
+ </div>
+ <a href="../modules/heart-disease/index" class="module-link">Open Module &rarr;</a>
+ </div>
+
+
+</div>
+
+<div class="section-label dev-label">In Development &mdash; 4 Planned</div>
+
+<div class="modules-grid">
+
+ <div class="module-card dev">
+ <span class="badge soon">In Development</span>
+ <h3>Asthma Management</h3>
+ <div class="protocol-ref">GP Clinic Module</div>
+ <p>Asthma diagnosis, severity assessment, inhaler selection, action plans, and management of acute exacerbations in primary care.</p>
+ </div>
+
+ <div class="module-card dev">
+ <span class="badge soon">In Development</span>
+ <h3>Mental Health in Primary Care</h3>
+ <div class="protocol-ref">GP Clinic Module</div>
+ <p>Depression and anxiety screening, psychosocial assessment, medication management, referral pathways, and suicide risk assessment.</p>
+ </div>
+
+ <div class="module-card dev">
+ <span class="badge soon">In Development</span>
+ <h3>Chronic Pain Management</h3>
+ <div class="protocol-ref">GP Clinic Module</div>
+ <p>Biopsychosocial pain assessment, medication options, non-pharmacological interventions, and specialist referral criteria.</p>
+ </div>
+
+ <div class="module-card dev">
+ <span class="badge soon">In Development</span>
+ <h3>Preventive Health Screening</h3>
+ <div class="protocol-ref">GP Clinic Module</div>
+ <p>Cancer screening programs, cardiovascular risk assessment, immunisation schedules, and health promotion in primary care.</p>
+ </div>
+
+</div>
+
+<footer>
+ <p>&copy; 2025 DSY Training &mdash; <a href="../">Back to Hub</a></p>
+ <p>For educational purposes. Always follow current clinical guidelines and local protocols.</p>
+</footer>
+
+</body>
+</html>
