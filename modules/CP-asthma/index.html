@@ -1,0 +1,2394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GP Clinic Care Plan Module: Asthma Review</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 18px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+            background-color: #F7FAFC;
+            color: #1A202C;
+            line-height: 1.6;
+        }
+
+        /* Sticky Header */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            border-bottom: 2px solid #E2E8F0;
+            padding: 16px 20px;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2B6CB0;
+            text-align: center;
+            flex: 1;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 150px;
+            height: 6px;
+            background-color: #E2E8F0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #3182CE;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Section Styling */
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+        .section:nth-child(6) { animation-delay: 0.6s; }
+        .section:nth-child(7) { animation-delay: 0.7s; }
+        .section:nth-child(8) { animation-delay: 0.8s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2B6CB0;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2B6CB0;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #EBF8FF;
+            padding-bottom: 12px;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1A202C;
+            margin-bottom: 12px;
+            margin-top: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            color: #4A5568;
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: linear-gradient(135deg, #EBF8FF 0%, #FFFFFF 100%);
+            border-left: 4px solid #3182CE;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .welcome-card h3 {
+            color: #2B6CB0;
+            margin-top: 0;
+        }
+
+        .learning-objectives {
+            background: #F7FAFC;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .learning-objectives ol {
+            margin-left: 20px;
+            color: #4A5568;
+        }
+
+        .learning-objectives li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        /* Accordion */
+        .accordion-item {
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background: #F7FAFC;
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #2B6CB0;
+            user-select: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .accordion-header:hover {
+            background-color: #EBF8FF;
+        }
+
+        .accordion-header.active {
+            background-color: #EBF8FF;
+        }
+
+        .chevron {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-header.active .chevron {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: white;
+        }
+
+        .accordion-content.active {
+            max-height: 2000px;
+        }
+
+        .accordion-content-inner {
+            padding: 20px;
+            color: #4A5568;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .accordion-content-inner p {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .accordion-content-inner ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .accordion-content-inner li {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        /* Patient Profile */
+        .patient-card {
+            background: linear-gradient(135deg, #EBF8FF 0%, #FFFFFF 100%);
+            border-left: 4px solid #3182CE;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .patient-card h3 {
+            color: #2B6CB0;
+            margin-top: 0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .grid-item {
+            background: #F7FAFC;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 3px solid #3182CE;
+        }
+
+        .grid-item-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #718096;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .grid-item-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1A202C;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        th {
+            background-color: #EBF8FF;
+            color: #2B6CB0;
+            font-weight: 700;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #3182CE;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #E2E8F0;
+            color: #4A5568;
+        }
+
+        tr:hover {
+            background-color: #F7FAFC;
+        }
+
+        .status-green {
+            color: #38A169;
+            font-weight: 600;
+        }
+
+        .status-amber {
+            color: #DD6B20;
+            font-weight: 600;
+        }
+
+        .status-red {
+            color: #E53E3E;
+            font-weight: 600;
+        }
+
+        /* Interview Steps */
+        .step-container {
+            background: #F7FAFC;
+            border-left: 4px solid #3182CE;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2B6CB0;
+        }
+
+        .step-number {
+            background: #3182CE;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .step-content {
+            margin-bottom: 16px;
+        }
+
+        .step-content h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1A202C;
+            margin-bottom: 8px;
+            margin-top: 12px;
+        }
+
+        .step-content p {
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .reveal-button {
+            background: #3182CE;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .reveal-button:hover {
+            background: #2B6CB0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+        }
+
+        .reveal-button.revealed {
+            background: #4299E1;
+        }
+
+        .reveal-block {
+            margin-top: 12px;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .reveal-block.active {
+            max-height: 2000px;
+            opacity: 1;
+        }
+
+        .rb-suggest {
+            background: #EBF8FF;
+            border-left-color: #3182CE;
+            color: #1A202C;
+        }
+
+        .rb-patient {
+            background: #F3E8FF;
+            border-left-color: #9333EA;
+            color: #1A202C;
+        }
+
+        .rb-teach {
+            background: #F0FFF4;
+            border-left-color: #38A169;
+            color: #1A202C;
+        }
+
+        .rb-document {
+            background: #FFFAF0;
+            border-left-color: #DD6B20;
+            color: #1A202C;
+        }
+
+        .rb-flag {
+            background: #FFF5F5;
+            border-left-color: #E53E3E;
+            color: #1A202C;
+        }
+
+        .reveal-block strong {
+            color: #1A202C;
+            font-weight: 700;
+        }
+
+        .reveal-block ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        .reveal-block li {
+            margin-bottom: 6px;
+            font-size: 16px;
+        }
+
+        .step-counter {
+            background: #EBF8FF;
+            color: #2B6CB0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        /* Interactive Elements */
+        .interactive-section {
+            background: #F7FAFC;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .referral-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .referral-card {
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            user-select: none;
+        }
+
+        .referral-card:hover {
+            border-color: #3182CE;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.2);
+        }
+
+        .referral-card.selected {
+            border-color: #3182CE;
+            background: #EBF8FF;
+        }
+
+        .referral-card.correct {
+            border-color: #38A169;
+            background: #F0FFF4;
+        }
+
+        .referral-card.incorrect {
+            border-color: #E53E3E;
+            background: #FFF5F5;
+        }
+
+        .referral-card.missed {
+            border-color: #DD6B20;
+            background: #FFFAF0;
+        }
+
+        .referral-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .referral-name {
+            font-weight: 600;
+            color: #1A202C;
+            font-size: 16px;
+        }
+
+        .referral-feedback {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            background: #F7FAFC;
+            border-left: 4px solid #3182CE;
+        }
+
+        .quiz-question {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1A202C;
+            margin-bottom: 16px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            color: #4A5568;
+        }
+
+        .quiz-option:hover {
+            border-color: #3182CE;
+            background: #EBF8FF;
+        }
+
+        .quiz-option.selected {
+            border-color: #3182CE;
+            background: #EBF8FF;
+        }
+
+        .quiz-option.correct {
+            border-color: #38A169;
+            background: #F0FFF4;
+            color: #38A169;
+            font-weight: 600;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #E53E3E;
+            background: #FFF5F5;
+            color: #E53E3E;
+            font-weight: 600;
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .quiz-feedback {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #4A5568;
+        }
+
+        .quiz-feedback.correct {
+            background: #F0FFF4;
+            color: #38A169;
+            border-left: 4px solid #38A169;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #FFF5F5;
+            color: #E53E3E;
+            border-left: 4px solid #E53E3E;
+        }
+
+        .quiz-submit {
+            background: #3182CE;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+        }
+
+        .quiz-submit:hover:not(:disabled) {
+            background: #2B6CB0;
+            transform: translateY(-2px);
+        }
+
+        .quiz-submit:disabled {
+            background: #A0AEC0;
+            cursor: not-allowed;
+        }
+
+        .quiz-score {
+            background: #EBF8FF;
+            border: 2px solid #3182CE;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .quiz-score-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: #2B6CB0;
+        }
+
+        .quiz-score-text {
+            font-size: 18px;
+            color: #4A5568;
+            margin-top: 8px;
+        }
+
+        .checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .checklist-item {
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+        }
+
+        .checklist-item:hover {
+            border-color: #3182CE;
+            background: #EBF8FF;
+        }
+
+        .checklist-item.checked {
+            border-color: #38A169;
+            background: #F0FFF4;
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #E2E8F0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            color: white;
+        }
+
+        .checklist-item.checked .checklist-checkbox {
+            background: #38A169;
+            border-color: #38A169;
+        }
+
+        .checklist-text {
+            font-size: 16px;
+            color: #4A5568;
+            flex: 1;
+        }
+
+        .checklist-item.checked .checklist-text {
+            color: #38A169;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            background: #2B6CB0;
+            color: white;
+            padding: 32px 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        footer h3 {
+            color: white;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        footer p {
+            color: #E2E8F0;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        footer a {
+            color: #4299E1;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .disclaimer {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #4299E1;
+            padding: 16px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            html {
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+
+            .section {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .referral-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .header-title {
+                font-size: 18px;
+            }
+
+            .progress-bar {
+                width: 100%;
+            }
+
+            .step-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .reveal-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sticky Header -->
+    <div class="sticky-header">
+        <div class="header-content">
+            <div style="flex: 1;">
+                <div class="header-title">Asthma Care Plan Review</div>
+                <div class="header-subtitle">GP Clinic Practice Module</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Section 1: Welcome & Introduction -->
+        <div class="section">
+            <h1>Asthma Care Plan Review</h1>
+            <div class="welcome-card">
+                <h3>Welcome to Your Practice Module</h3>
+                <p>You're about to conduct a structured 45-minute asthma care plan review appointment with a patient in your general practice clinic. Your role is to gather comprehensive information about their asthma control, medication use, and lifestyle factors—then document findings clearly for the GP to review and finalise the care plan.</p>
+                <p><strong>Setting:</strong> General practice clinic (urban or rural Australia) | <strong>Appointment:</strong> Scheduled 45-minute care plan review | <strong>Your role:</strong> Practice nurse conducting structured interview</p>
+                
+                <div class="learning-objectives">
+                    <h4>Learning Objectives</h4>
+                    <ol>
+                        <li>Conduct a structured asthma review interview aligned to GPCCMP framework (effective 1 July 2025)</li>
+                        <li>Assess asthma control using validated tools (ACQ-5, ACT) and identify symptom patterns</li>
+                        <li>Review medication adherence, inhaler technique, and trigger identification</li>
+                        <li>Screen for asthma complications and comorbidities (allergic rhinitis, GORD, anxiety)</li>
+                        <li>Identify gaps in preventive care (spirometry, asthma action plan, written plan)</li>
+                        <li>Recommend appropriate allied health referrals (respiratory physiotherapist, psychologist) and document for GP finalisation</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Knowledge Foundation -->
+        <div class="section">
+            <h2>Knowledge Foundation</h2>
+            
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>What is a GPCCMP?</span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <p><strong>GPCCMP = GP Chronic Condition Management Plan</strong></p>
+                        <p>Effective 1 July 2025, the GPCCMP replaces the old GPMP (229, 721) and TCA (230, 723).</p>
+                        <h4>Key Features:</h4>
+                        <ul>
+                            <li><strong>Eligibility:</strong> Patient has at least one chronic condition present (or likely) for 6+ months, or terminal condition. No specific condition list—GP's clinical judgement.</li>
+                            <li><strong>MBS Items:</strong> 965 (prepare face-to-face), 967 (review face-to-face), 92029 (prepare video), 92030 (review video)</li>
+                            <li><strong>Fee:</strong> $156.55 per preparation or review</li>
+                            <li><strong>Frequency:</strong> Preparation once per 12 months (if necessary); reviews every 3 months</li>
+                            <li><strong>Your role:</strong> Conduct structured interview, gather information, document findings for GP to review and finalise</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>The Practice Nurse's Role in Asthma Review</span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <h4>What You Do:</h4>
+                        <ul>
+                            <li>Conduct a structured, patient-centred interview (45 minutes)</li>
+                            <li>Assess asthma control, symptoms, and triggers</li>
+                            <li>Review medications, adherence, and inhaler technique</li>
+                            <li>Screen for complications (exacerbations, hospitalisations, comorbidities)</li>
+                            <li>Explore lifestyle factors (smoking, exercise, allergen exposure)</li>
+                            <li>Assess mental health and psychosocial barriers</li>
+                            <li>Identify gaps in preventive care (spirometry, asthma action plan)</li>
+                            <li>Recommend allied health referrals (for GP to finalise)</li>
+                            <li>Document findings in structured format for GP review</li>
+                        </ul>
+                        <h4>Scope Boundaries:</h4>
+                        <ul>
+                            <li>You gather information and make recommendations</li>
+                            <li>GP makes final clinical decisions, signs the plan, and writes referrals</li>
+                            <li>If you identify red flags (severe exacerbation, acute distress), alert GP immediately</li>
+                            <li>Do not diagnose or change medications without GP approval</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Allied Health Under a GPCCMP</span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <h4>Individual Visits Entitlements:</h4>
+                        <ul>
+                            <li>Up to 5 per calendar year (10 for Aboriginal and Torres Strait Islander patients)</li>
+                            <li>Referral validity: 18 months from first session</li>
+                            <li>Referral process: Direct GP letter (no EPC form required from 1 July 2025)</li>
+                        </ul>
+                        <h4>Available Allied Health Providers for Asthma:</h4>
+                        <ul>
+                            <li><strong>Respiratory Physiotherapist:</strong> Breathing exercises, inhaler technique, airway clearance</li>
+                            <li><strong>Psychologist:</strong> Asthma-related anxiety, depression, coping strategies</li>
+                            <li><strong>Dietitian:</strong> Nutritional support, weight management, food triggers</li>
+                            <li><strong>Exercise Physiologist:</strong> Safe exercise prescription, fitness improvement</li>
+                            <li><strong>Occupational Therapist:</strong> Environmental modifications, activity pacing</li>
+                            <li>Physiotherapist, speech pathologist, audiologist, chiropractor, osteopath, Aboriginal health practitioner (if clinically indicated)</li>
+                        </ul>
+                        <h4>Maximising Medicare Allocation:</h4>
+                        <p>With 5 individual visits per year, prioritise referrals based on patient's greatest needs: e.g., respiratory physio for technique, psychologist for anxiety, dietitian for weight/triggers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Patient Profile & Scenario Setup -->
+        <div class="section">
+            <h2>Patient Profile & Clinical Data</h2>
+            
+            <div class="patient-card">
+                <h3>Meet Your Patient: Sarah Mitchell</h3>
+                <p>Sarah is a 42-year-old woman presenting for her annual asthma care plan review. She was diagnosed with asthma 8 years ago and has been relatively stable on maintenance therapy. However, recent months have seen increased symptoms, and her GP wants a comprehensive review to optimise control and identify any gaps in management.</p>
+            </div>
+
+            <h3>Demographics & Living Situation</h3>
+            <div class="grid-2">
+                <div class="grid-item">
+                    <div class="grid-item-label">Age & Gender</div>
+                    <div class="grid-item-value">42 years, Female</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-label">Living Situation</div>
+                    <div class="grid-item-value">Lives with partner, 2 school-age children</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-label">Occupation</div>
+                    <div class="grid-item-value">Primary school teacher (high stress, exposure to viruses)</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-label">BMI</div>
+                    <div class="grid-item-value">28.5 kg/m² (overweight)</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-label">Smoking Status</div>
+                    <div class="grid-item-value">Never smoked; partner smokes (passive exposure)</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-label">Support & Barriers</div>
+                    <div class="grid-item-value">Supportive partner; time constraints due to work/family</div>
+                </div>
+            </div>
+
+            <h3>Medical History & Current Medications</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Condition / Medication</th>
+                            <th>Details</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Asthma</strong></td>
+                            <td>Diagnosed 8 years ago; mild-to-moderate persistent</td>
+                            <td><span class="status-amber">Needs review</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Allergic Rhinitis</strong></td>
+                            <td>Seasonal (spring/summer); triggered by pollen</td>
+                            <td><span class="status-amber">Ongoing</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gastro-oesophageal Reflux Disease (GORD)</strong></td>
+                            <td>Occasional symptoms; managed with lifestyle</td>
+                            <td><span class="status-green">Stable</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Maintenance Inhaler</strong></td>
+                            <td>Fluticasone/Salmeterol 125/25 mcg, 2 puffs BD</td>
+                            <td><span class="status-amber">Adherence concerns</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reliever Inhaler</strong></td>
+                            <td>Salbutamol 100 mcg, PRN</td>
+                            <td><span class="status-amber">Increased use</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Antihistamine</strong></td>
+                            <td>Cetirizine 10 mg daily (for rhinitis)</td>
+                            <td><span class="status-green">Compliant</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Omeprazole</strong></td>
+                            <td>20 mg daily (for GORD)</td>
+                            <td><span class="status-green">Compliant</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Recent Pathology & Screening Status</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Test</th>
+                            <th>Result</th>
+                            <th>Previous (12 months ago)</th>
+                            <th>Target / Normal Range</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Spirometry (FEV1)</strong></td>
+                            <td>78% predicted</td>
+                            <td>85% predicted</td>
+                            <td>&gt;80% predicted (normal)</td>
+                            <td><span class="status-amber">Declining</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Spirometry (FEV1/FVC)</strong></td>
+                            <td>0.72</td>
+                            <td>0.75</td>
+                            <td>&gt;0.70 (normal)</td>
+                            <td><span class="status-green">Normal</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Peak Flow (morning)</strong></td>
+                            <td>380 L/min</td>
+                            <td>420 L/min</td>
+                            <td>400–500 L/min (predicted for age/height)</td>
+                            <td><span class="status-amber">Below predicted</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Asthma Control Test (ACT)</strong></td>
+                            <td>18/25</td>
+                            <td>22/25</td>
+                            <td>≥20 (well controlled)</td>
+                            <td><span class="status-amber">Not well controlled</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Full Blood Count</strong></td>
+                            <td>Normal</td>
+                            <td>Normal</td>
+                            <td>Normal ranges</td>
+                            <td><span class="status-green">Normal</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Asthma Action Plan</strong></td>
+                            <td>Outdated (3 years old)</td>
+                            <td>N/A</td>
+                            <td>Current, written plan</td>
+                            <td><span class="status-red">Missing</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Key Clinical Observations</h3>
+            <div class="grid-2">
+                <div class="grid-item">
+                    <div class="grid-item-label">Vital Signs (Today)</div>
+                    <div class="grid-item-value">BP 128/82, HR 78, RR 16, O₂ sat 98% RA</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-label">Recent Exacerbations</div>
+                    <div class="grid-item-value">2 in past 12 months (winter colds)</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-label">Hospitalisations</div>
+                    <div class="grid-item-value">None in past 5 years</div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-item-label">Red Flags</div>
+                    <div class="grid-item-value">Declining lung function, poor control, adherence issues</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: The Care Plan Interview (10 Structured Steps) -->
+        <div class="section">
+            <h2>The Asthma Care Plan Interview: 10 Structured Steps</h2>
+            <p>Follow these steps to conduct a comprehensive, patient-centred asthma review. Each step includes context, suggested approach, patient response, and key clinical points.</p>
+
+            <!-- Step 1 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div>
+                        <div class="step-title">Step 1: Opening & Building Rapport</div>
+                        <div style="font-size: 14px; color: #718096; margin-top: 4px;">Setting the tone, explaining the appointment, addressing concerns</div>
+                    </div>
+                    <div class="step-number">1</div>
+                </div>
+
+                <div class="step-content">
+                    <h4>Context</h4>
+                    <p>Sarah arrives for her scheduled appointment. She's familiar with the practice but may feel anxious about her recent symptoms. Your first task is to build trust, explain what you'll be doing, and set expectations for the 45-minute interview.</p>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>What would you say?</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Opening:</strong>
+                        <p>"Hi Sarah, thanks for coming in today. I'm going to spend some time with you reviewing how your asthma has been going. We'll talk about your symptoms, your medications, and any triggers you've noticed. I'll also check your inhaler technique and ask about your overall wellbeing. After we're done, I'll write up my notes for Dr [GP name] to review and finalise your care plan. Does that sound okay? Do you have any concerns or questions before we start?"</p>
+                        <strong>What to Listen For:</strong>
+                        <ul>
+                            <li>Patient's understanding of asthma and their condition</li>
+                            <li>Anxiety or concerns about symptoms</li>
+                            <li>Readiness to engage in the review</li>
+                            <li>Any immediate issues they want to raise</li>
+                        </ul>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Patient Response</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-patient">
+                        <p>"Thanks. I'm a bit worried actually. I've been getting more wheezy lately, especially at work. I thought my asthma was under control, but it doesn't feel like it. I'm using my blue inhaler more often than I used to. And I'm not sure I'm using my other inhaler correctly—I've been using it for years, so I just assumed I was doing it right."</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Key Clinical Point</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-teach">
+                        <strong>Clinical Reasoning:</strong>
+                        <p>Sarah has identified two important issues: (1) increased symptoms and reliever use (suggesting loss of control), and (2) uncertainty about inhaler technique. These are common problems in asthma management. Reassure her that this is exactly what the review is for, and that many people need technique checks. This sets a collaborative tone and validates her concerns.</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Documentation Note</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-document">
+                        <strong>Record in Structured Notes:</strong>
+                        <ul>
+                            <li>Patient's chief concern: "Increased wheeze at work, increased reliever use"</li>
+                            <li>Patient's understanding: "Thought asthma was controlled; now concerned"</li>
+                            <li>Readiness to engage: "Yes, wants to understand technique"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-counter">Steps explored: 1 / 10</div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div>
+                        <div class="step-title">Step 2: General Wellbeing Check</div>
+                        <div style="font-size: 14px; color: #718096; margin-top: 4px;">Holistic health, mood, stress, sleep, quality of life</div>
+                    </div>
+                    <div class="step-number">2</div>
+                </div>
+
+                <div class="step-content">
+                    <h4>Context</h4>
+                    <p>Before diving into asthma-specific questions, assess Sarah's overall wellbeing. Stress, poor sleep, and mood disorders can worsen asthma control. As a teacher, she may be under significant pressure, especially during term time.</p>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>What would you ask?</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Questions:</strong>
+                        <ul>
+                            <li>"How have you been feeling in general—mood, energy, stress levels?"</li>
+                            <li>"How's work been? Any particular stressors?"</li>
+                            <li>"How's your sleep? Are you waking up at night?"</li>
+                            <li>"How is your asthma affecting your daily life—work, exercise, family activities?"</li>
+                            <li>"Have you noticed any patterns—does your asthma get worse at certain times or with certain activities?"</li>
+                        </ul>
+                        <strong>Assessment Techniques:</strong>
+                        <ul>
+                            <li>Observe body language and tone (signs of anxiety or distress)</li>
+                            <li>Listen for mentions of sleep disruption, fatigue, or mood changes</li>
+                            <li>Explore work-related triggers (classroom dust, chalk, stress)</li>
+                        </ul>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Patient Response</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-patient">
+                        <p>"Work has been really busy—it's term time, and we've had a lot of illness going around the school. I've had a couple of colds myself. I'm sleeping okay, but I do wake up sometimes feeling a bit wheezy. My partner says I'm more stressed than usual. The asthma is definitely affecting things—I can't run with the kids like I used to, and I get tired more easily. I'm also a bit frustrated because I feel like I should have this under control by now."</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Key Clinical Point</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-teach">
+                        <strong>Clinical Reasoning:</strong>
+                        <p>Sarah has identified several important factors: (1) work-related triggers (viral exposure, stress), (2) nocturnal symptoms (waking wheezy—sign of poor control), (3) stress and frustration (psychological factors), and (4) reduced activity tolerance (quality of life impact). These are all relevant to asthma management and should be addressed in the care plan. Nocturnal symptoms are a red flag for inadequate control.</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Documentation Note</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-document">
+                        <strong>Record:</strong>
+                        <ul>
+                            <li>Mood: Stressed, frustrated; no depression screening needed at this stage but monitor</li>
+                            <li>Sleep: Waking with wheeze (nocturnal symptoms—sign of poor control)</li>
+                            <li>Work triggers: Viral exposure, classroom environment, stress</li>
+                            <li>Quality of life: Reduced exercise tolerance, impact on family activities</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-counter">Steps explored: 2 / 10</div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div>
+                        <div class="step-title">Step 3: Asthma Control Assessment</div>
+                        <div style="font-size: 14px; color: #718096; margin-top: 4px;">Symptoms, triggers, exacerbations, control status</div>
+                    </div>
+                    <div class="step-number">3</div>
+                </div>
+
+                <div class="step-content">
+                    <h4>Context</h4>
+                    <p>Now assess Sarah's asthma control in detail. Use validated tools (ACT, ACQ-5) and explore symptom patterns, triggers, and exacerbation history. Her recent ACT score of 18/25 suggests suboptimal control—this needs to be explored and addressed.</p>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>What would you ask?</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Questions & Assessment:</strong>
+                        <ul>
+                            <li>"Over the past 4 weeks, how many days have you had asthma symptoms (wheeze, cough, shortness of breath)?"</li>
+                            <li>"How many nights per week do you wake up with asthma symptoms?"</li>
+                            <li>"How often do you use your blue reliever inhaler? Is it more than twice a week?"</li>
+                            <li>"What triggers your asthma? (e.g., exercise, cold air, allergens, stress, infections)"</li>
+                            <li>"Have you had any asthma attacks or exacerbations in the past year? How many?"</li>
+                            <li>"Have you ever been to hospital or ED for asthma?"</li>
+                            <li>"Do you have an asthma action plan? Do you know what to do if your symptoms get worse?"</li>
+                        </ul>
+                        <strong>Validated Tool:</strong>
+                        <ul>
+                            <li>Administer <strong>Asthma Control Test (ACT)</strong> if not done recently (score ≥20 = well controlled)</li>
+                            <li>Or use <strong>Asthma Control Questionnaire (ACQ-5)</strong> (score &lt;1.5 = well controlled)</li>
+                        </ul>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Patient Response</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-patient">
+                        <p>"I'd say I have symptoms maybe 3 or 4 days a week—mostly when I'm at work or after exercise. I wake up wheezy maybe twice a week. I'm using my blue inhaler probably 4 or 5 times a week, sometimes more. My triggers are definitely exercise, cold air, and when I've had a cold. I had two bad episodes last winter where I felt really tight and had to take a lot of puffs. I didn't go to hospital, but I was pretty worried. I do have an asthma action plan somewhere, but it's old—I think it's from when I was first diagnosed. I'm not really sure what to do if things get worse."</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Key Clinical Point</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-teach">
+                        <strong>Clinical Reasoning:</strong>
+                        <p>Sarah's asthma is <strong>NOT well controlled</strong>. Red flags include: (1) symptoms 3–4 days/week, (2) nocturnal symptoms twice/week, (3) reliever use 4–5 times/week (well above the "twice a week" threshold for well-controlled asthma), (4) exercise-induced symptoms, (5) two exacerbations in past year, and (6) outdated action plan. According to the 2025 Australian Asthma Handbook, this patient needs step-up therapy and a current written action plan. This is a key finding to communicate to the GP.</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Documentation Note</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-document">
+                        <strong>Record:</strong>
+                        <ul>
+                            <li>Asthma control status: <strong>NOT well controlled</strong></li>
+                            <li>Symptom frequency: 3–4 days/week</li>
+                            <li>Nocturnal symptoms: 2 nights/week</li>
+                            <li>Reliever use: 4–5 times/week (excessive)</li>
+                            <li>Triggers: Exercise, cold air, viral infections, work stress</li>
+                            <li>Exacerbations: 2 in past 12 months (winter)</li>
+                            <li>Action plan: Outdated (3 years); needs update</li>
+                            <li><strong>Recommendation for GP:</strong> Consider step-up therapy (e.g., increase ICS dose or add LTRA); provide current written action plan</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-counter">Steps explored: 3 / 10</div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div>
+                        <div class="step-title">Step 4: Medication Review & Adherence</div>
+                        <div style="font-size: 14px; color: #718096; margin-top: 4px;">Current medications, adherence, technique, side effects</div>
+                    </div>
+                    <div class="step-number">4</div>
+                </div>
+
+                <div class="step-content">
+                    <h4>Context</h4>
+                    <p>Review Sarah's current medications in detail. Poor adherence and incorrect inhaler technique are common reasons for apparent treatment failure. This is a critical step for identifying modifiable factors.</p>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>What would you ask?</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Questions:</strong>
+                        <ul>
+                            <li>"Tell me about your maintenance inhaler (the one you use every day). How often do you use it?"</li>
+                            <li>"Do you use it exactly as prescribed, or do you sometimes skip doses?"</li>
+                            <li>"What time of day do you use it? Do you have a routine?"</li>
+                            <li>"Have you noticed any side effects—thrush, hoarseness, cough?"</li>
+                            <li>"Can you show me how you use your inhaler? Let's check your technique together."</li>
+                            <li>"Are there any barriers to using your inhaler regularly—cost, forgetting, not feeling like you need it?"</li>
+                        </ul>
+                        <strong>Inhaler Technique Assessment:</strong>
+                        <ul>
+                            <li>Ask patient to demonstrate their technique with a placebo or their own inhaler</li>
+                            <li>Check for common errors: not shaking, not breathing out first, not holding breath, poor coordination</li>
+                            <li>Assess whether they rinse mouth after use (to prevent thrush)</li>
+                        </ul>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Patient Response</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-patient">
+                        <p>"I'm supposed to use it twice a day, but honestly, I probably only use it once a day, sometimes less. When I'm feeling okay, I think 'why do I need it?' and I skip it. I don't have a routine—I just use it when I remember. I haven't noticed side effects. Let me show you how I use it... [demonstrates]. I think I'm doing it right, but I'm not sure. I don't always rinse my mouth after. I haven't had thrush or anything, so I thought it was okay."</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Key Clinical Point</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-teach">
+                        <strong>Clinical Reasoning:</strong>
+                        <p>Sarah has identified a major adherence problem: she's using her maintenance inhaler (ICS/LABA) only once daily instead of twice, and skipping doses when she feels well. This is a common misconception—patients often think they only need maintenance therapy when symptomatic. This is a KEY MODIFIABLE FACTOR that likely explains her poor control. Additionally, she's not rinsing her mouth, which increases thrush risk. Her technique may also have errors that reduce drug delivery. This needs to be addressed with education and a clear explanation of why maintenance therapy is essential even when feeling well.</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Documentation Note</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-document">
+                        <strong>Record:</strong>
+                        <ul>
+                            <li>Maintenance inhaler: Fluticasone/Salmeterol 125/25, prescribed BD</li>
+                            <li>Actual use: Once daily or less (poor adherence)</li>
+                            <li>Reason for non-adherence: "Feels well, thinks doesn't need it"</li>
+                            <li>Technique: Demonstrated; appears reasonable but needs reinforcement</li>
+                            <li>Mouth rinsing: Not done consistently</li>
+                            <li>Side effects: None reported</li>
+                            <li><strong>Key finding:</strong> Poor adherence is likely major contributor to poor control</li>
+                            <li><strong>Recommendation for GP:</strong> Patient education on importance of maintenance therapy; consider referral to respiratory physiotherapist for technique check and adherence support</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-counter">Steps explored: 4 / 10</div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div>
+                        <div class="step-title">Step 5: Complication Screening #1 – Exacerbation Risk & Severity</div>
+                        <div style="font-size: 14px; color: #718096; margin-top: 4px;">History of severe exacerbations, hospitalisations, near-fatal attacks</div>
+                    </div>
+                    <div class="step-number">5</div>
+                </div>
+
+                <div class="step-content">
+                    <h4>Context</h4>
+                    <p>Assess Sarah's risk of severe exacerbations. Patients with a history of severe attacks, hospitalisations, or near-fatal asthma are at higher risk and need closer monitoring and more aggressive management.</p>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>What would you ask?</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Questions:</strong>
+                        <ul>
+                            <li>"Have you ever had a really severe asthma attack—where you couldn't catch your breath or felt very frightened?"</li>
+                            <li>"Have you ever been to hospital or the emergency department for asthma?"</li>
+                            <li>"Have you ever needed oral steroids (prednisone) for asthma?"</li>
+                            <li>"Have you ever been intubated or admitted to ICU for asthma?"</li>
+                            <li>"What was the worst attack you've had? What happened?"</li>
+                            <li>"Do you have any warning signs that an attack is coming?"</li>
+                        </ul>
+                        <strong>Risk Stratification:</strong>
+                        <ul>
+                            <li>History of ICU admission, intubation, or near-fatal asthma = HIGH RISK</li>
+                            <li>≥2 exacerbations requiring oral steroids in past year = HIGH RISK</li>
+                            <li>≥1 hospitalisation in past year = MODERATE-HIGH RISK</li>
+                        </ul>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Patient Response</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-patient">
+                        <p>"I've had two bad episodes in the past year, especially in winter. I felt really tight and wheezy, and I was using my blue inhaler a lot. I didn't go to hospital, but I was worried I might need to. I haven't had oral steroids or anything like that. I've never been to hospital for asthma. The worst attack I remember was years ago when I was first diagnosed—I was really scared and couldn't breathe properly. I know when an attack is coming because I get a tight feeling in my chest and I start coughing more."</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Key Clinical Point</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-teach">
+                        <strong>Clinical Reasoning:</strong>
+                        <p>Sarah has had 2 exacerbations in the past year but has not required hospitalisation or oral steroids. This puts her at MODERATE risk. However, the fact that she's having frequent exacerbations (2 in 12 months) despite being on maintenance therapy suggests her current regimen is inadequate. She has good awareness of warning signs (chest tightness, increased cough), which is positive. The goal is to prevent future exacerbations through better control and a clear action plan.</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Documentation Note</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-document">
+                        <strong>Record:</strong>
+                        <ul>
+                            <li>Exacerbations in past 12 months: 2 (winter)</li>
+                            <li>Hospitalisations: None</li>
+                            <li>Oral steroids: None in past year</li>
+                            <li>ICU/intubation: Never</li>
+                            <li>Risk stratification: MODERATE (2 exacerbations/year)</li>
+                            <li>Warning signs: Chest tightness, increased cough</li>
+                            <li><strong>Recommendation for GP:</strong> Step-up therapy; ensure current action plan; consider referral to respiratory physio for education and monitoring</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-counter">Steps explored: 5 / 10</div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div>
+                        <div class="step-title">Step 6: Complication Screening #2 – Comorbidities & Triggers</div>
+                        <div style="font-size: 14px; color: #718096; margin-top: 4px;">Allergic rhinitis, GORD, anxiety, obesity, smoking exposure</div>
+                    </div>
+                    <div class="step-number">6</div>
+                </div>
+
+                <div class="step-content">
+                    <h4>Context</h4>
+                    <p>Assess comorbidities that can worsen asthma control. Sarah already has allergic rhinitis and GORD documented, but we need to explore their impact and identify any other contributing factors.</p>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>What would you ask?</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Questions:</strong>
+                        <ul>
+                            <li>"How is your hay fever or allergies? Are they well controlled?"</li>
+                            <li>"Do you have heartburn or reflux? Does it affect your asthma?"</li>
+                            <li>"Do you have anxiety or worry about your asthma? Does stress make it worse?"</li>
+                            <li>"Are you exposed to smoke at home or work?"</li>
+                            <li>"Do you have pets? Any allergies to animals?"</li>
+                            <li>"What about dust, mould, or damp in your home?"</li>
+                            <li>"Do you exercise regularly? What type?"</li>
+                        </ul>
+                        <strong>Assessment Focus:</strong>
+                        <ul>
+                            <li>Allergic rhinitis: Often coexists with asthma; poor control worsens asthma</li>
+                            <li>GORD: Reflux can trigger asthma, especially at night</li>
+                            <li>Anxiety: Can worsen symptoms and reduce adherence</li>
+                            <li>Environmental triggers: Smoke, allergens, occupational exposures</li>
+                            <li>Weight: Obesity can worsen asthma control</li>
+                        </ul>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Patient Response</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-patient">
+                        <p>"My hay fever is pretty bad in spring and summer. I take antihistamines, but I still get sneezy and stuffy. I think it makes my asthma worse during those months. My reflux is usually okay, but I do get heartburn sometimes, especially at night. I've noticed that when I have reflux, my asthma feels worse the next day. I'm a bit anxious about my asthma—I worry about having an attack at work where I can't get help quickly. My partner smokes, and I've asked him to smoke outside, but he sometimes smokes in the house. We have a cat, but I've had her for years and don't think I'm allergic. I try to exercise, but I get wheezy when I run, so I've been doing less. I know I've put on weight—I'm heavier than I'd like to be."</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Key Clinical Point</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-teach">
+                        <strong>Clinical Reasoning:</strong>
+                        <p>Sarah has identified several modifiable comorbidities and triggers: (1) uncontrolled allergic rhinitis (worsens asthma seasonally), (2) GORD with nocturnal symptoms (triggers asthma), (3) anxiety about asthma (can worsen symptoms and reduce adherence), (4) passive smoking exposure (major trigger), (5) exercise-induced symptoms (limiting activity), and (6) overweight status (BMI 28.5—obesity worsens asthma). These are all addressable factors that should be included in the care plan. The anxiety is particularly important—she may benefit from psychological support or education to reduce fear and improve self-management.</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Documentation Note</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-document">
+                        <strong>Record:</strong>
+                        <ul>
+                            <li>Allergic rhinitis: Seasonal (spring/summer), suboptimal control, worsens asthma</li>
+                            <li>GORD: Nocturnal symptoms, triggers asthma</li>
+                            <li>Anxiety: Worried about asthma attacks at work; may benefit from support</li>
+                            <li>Environmental triggers: Passive smoking (partner), cat (long-standing, no allergy)</li>
+                            <li>Exercise: Limited due to wheeze (exercise-induced bronchoconstriction)</li>
+                            <li>Weight: BMI 28.5 (overweight); patient aware, willing to address</li>
+                            <li><strong>Recommendations for GP:</strong> Optimise rhinitis control; review GORD management; consider psychology referral for anxiety; smoking cessation counselling for partner; weight management support; exercise physiology referral for safe exercise prescription</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-counter">Steps explored: 6 / 10</div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div>
+                        <div class="step-title">Step 7: Lung Function & Preventive Screening</div>
+                        <div style="font-size: 14px; color: #718096; margin-top: 4px;">Spirometry, peak flow, asthma action plan, immunisations</div>
+                    </div>
+                    <div class="step-number">7</div>
+                </div>
+
+                <div class="step-content">
+                    <h4>Context</h4>
+                    <p>Review Sarah's spirometry results and assess whether preventive measures are in place. Her declining FEV1 (78% vs 85% previously) is concerning and needs investigation.</p>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>What would you ask?</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Questions & Assessment:</strong>
+                        <ul>
+                            <li>"Have you had spirometry done recently? Do you know your results?"</li>
+                            <li>"Do you check your peak flow at home? How often?"</li>
+                            <li>"Do you have an asthma action plan? When was it last updated?"</li>
+                            <li>"Do you know what to do if your symptoms get worse?"</li>
+                            <li>"Have you had your flu vaccine this year? Pneumococcal vaccine?"</li>
+                        </ul>
+                        <strong>Interpretation of Spirometry:</strong>
+                        <ul>
+                            <li>FEV1 78% predicted (down from 85%)—declining, concerning</li>
+                            <li>FEV1/FVC 0.72—normal, suggests asthma (not COPD)</li>
+                            <li>Peak flow 380 L/min (below predicted 400–500)—suboptimal</li>
+                            <li>Interpretation: Asthma with suboptimal control; possible fixed airway obstruction if not reversible</li>
+                        </ul>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Patient Response</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-patient">
+                        <p>"I had spirometry done last year, and the doctor said my numbers were okay. I don't check my peak flow at home—I didn't know I should. I have an asthma action plan somewhere, but like I said, it's really old. I'm not sure what to do if things get worse—I guess I'd just use my blue inhaler more and call the doctor if it didn't help. I had my flu vaccine last year, but I'm not sure about pneumococcal. I should probably get that done."</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Key Clinical Point</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-teach">
+                        <strong>Clinical Reasoning:</strong>
+                        <p>Sarah's spirometry shows a concerning decline in FEV1 (78% vs 85% last year). This could indicate: (1) worsening asthma control, (2) development of fixed airway obstruction, or (3) poor technique during testing. This needs to be repeated and investigated. She doesn't monitor peak flow at home, which would help her track control. Her action plan is outdated and she doesn't know what to do in an exacerbation—this is a safety gap. She's not up-to-date with preventive vaccines. All of these are addressable.</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Documentation Note</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-document">
+                        <strong>Record:</strong>
+                        <ul>
+                            <li>Spirometry: FEV1 78% predicted (declining from 85%); FEV1/FVC 0.72 (normal)</li>
+                            <li>Peak flow: 380 L/min (below predicted); not monitored at home</li>
+                            <li>Asthma action plan: Outdated (3 years); needs urgent update</li>
+                            <li>Patient knowledge: Doesn't know what to do in exacerbation (safety gap)</li>
+                            <li>Vaccinations: Flu vaccine up-to-date; pneumococcal status unknown</li>
+                            <li><strong>Red flag:</strong> Declining FEV1—needs investigation; possible fixed obstruction or poor control</li>
+                            <li><strong>Recommendations for GP:</strong> Repeat spirometry; provide written action plan; patient education on peak flow monitoring; ensure pneumococcal vaccine; consider respiratory physio referral for education and monitoring</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-counter">Steps explored: 7 / 10</div>
+            </div>
+
+            <!-- Step 8 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div>
+                        <div class="step-title">Step 8: Lifestyle Assessment</div>
+                        <div style="font-size: 14px; color: #718096; margin-top: 4px;">Diet, exercise, smoking, alcohol, environmental control</div>
+                    </div>
+                    <div class="step-number">8</div>
+                </div>
+
+                <div class="step-content">
+                    <h4>Context</h4>
+                    <p>Explore lifestyle factors that can impact asthma control. Sarah has already mentioned weight, exercise limitations, and smoking exposure. Dig deeper to identify opportunities for improvement.</p>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>What would you ask?</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Questions:</strong>
+                        <ul>
+                            <li>"What does a typical day of eating look like for you?"</li>
+                            <li>"Are there any foods that seem to trigger your asthma?"</li>
+                            <li>"How much exercise do you do? What type?"</li>
+                            <li>"Would you like to exercise more? What's stopping you?"</li>
+                            <li>"Do you drink alcohol? How much per week?"</li>
+                            <li>"What about your home environment—is it clean, dry, well-ventilated?"</li>
+                            <li>"Do you have any hobbies or activities that might expose you to triggers (e.g., gardening, painting)?"</li>
+                        </ul>
+                        <strong>Assessment Focus:</strong>
+                        <ul>
+                            <li>Weight management: BMI 28.5; weight loss can improve asthma control</li>
+                            <li>Exercise: Currently limited; safe exercise prescription needed</li>
+                            <li>Environmental control: Reduce allergens, smoke, damp, dust</li>
+                            <li>Nutrition: Anti-inflammatory diet may help</li>
+                        </ul>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Patient Response</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-patient">
+                        <p>"I eat pretty normally—breakfast, lunch, dinner. I don't think any foods trigger my asthma. I used to run regularly, but I've cut back because I get wheezy. I'd like to get back to exercising, but I'm worried about triggering an attack. I don't drink much—maybe a glass of wine on weekends. My home is clean, but it's a bit dusty because of the cat. I've been thinking about losing weight—I know it would help my asthma and my overall health. I'm just not sure where to start. I don't have any hobbies that involve chemicals or dust."</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Key Clinical Point</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-teach">
+                        <strong>Clinical Reasoning:</strong>
+                        <p>Sarah has identified exercise-induced bronchoconstriction (EIB) as a barrier to activity. This is treatable—she can use her reliever inhaler 15 minutes before exercise, or her maintenance therapy can be optimised. She's motivated to lose weight and exercise but needs support and a safe plan. Weight loss of even 5–10% can improve asthma control. Environmental control (reducing dust from cat) is also important. She's a good candidate for exercise physiology and dietitian referrals.</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Documentation Note</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-document">
+                        <strong>Record:</strong>
+                        <ul>
+                            <li>Diet: Balanced; no food triggers identified</li>
+                            <li>Exercise: Limited due to EIB; motivated to increase</li>
+                            <li>Weight: BMI 28.5; patient motivated to lose weight</li>
+                            <li>Smoking: Non-smoker; passive exposure at home (partner)</li>
+                            <li>Alcohol: Minimal (occasional wine)</li>
+                            <li>Environmental: Dusty home (cat); can be improved</li>
+                            <li><strong>Recommendations for GP:</strong> Exercise physiology referral for safe exercise prescription and EIB management; dietitian referral for weight management; environmental control advice (reduce dust, improve ventilation)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-counter">Steps explored: 8 / 10</div>
+            </div>
+
+            <!-- Step 9 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div>
+                        <div class="step-title">Step 9: Mental Health & Psychosocial Wellbeing</div>
+                        <div style="font-size: 14px; color: #718096; margin-top: 4px;">Anxiety, depression, coping, support, asthma-related distress</div>
+                    </div>
+                    <div class="step-number">9</div>
+                </div>
+
+                <div class="step-content">
+                    <h4>Context</h4>
+                    <p>Assess Sarah's mental health and psychological wellbeing. Anxiety about asthma can worsen symptoms and reduce adherence. Depression can reduce motivation for self-management.</p>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>What would you ask?</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Questions:</strong>
+                        <ul>
+                            <li>"How are you feeling emotionally? Any anxiety or worry?"</li>
+                            <li>"Do you feel anxious about your asthma? What worries you most?"</li>
+                            <li>"Have you felt down or depressed lately?"</li>
+                            <li>"How is your asthma affecting your mood or quality of life?"</li>
+                            <li>"Do you have good support from family and friends?"</li>
+                            <li>"Have you ever talked to a counsellor or psychologist about your asthma?"</li>
+                        </ul>
+                        <strong>Screening Tools (if indicated):</strong>
+                        <ul>
+                            <li>PHQ-9 (depression screening)</li>
+                            <li>GAD-7 (anxiety screening)</li>
+                            <li>Asthma-related anxiety scale</li>
+                        </ul>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Patient Response</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-patient">
+                        <p>"I do feel anxious about my asthma, especially at work. I worry about having an attack and not being able to get help. I've had moments where I feel a bit tight and I panic, which makes it worse. I'm not depressed, but I am frustrated and a bit down about not being able to do the things I used to do. My partner is supportive, and my family is understanding. I've never talked to a psychologist about it, but I think it might help. I feel like I'm not in control of my asthma, and that's stressful."</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Key Clinical Point</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-teach">
+                        <strong>Clinical Reasoning:</strong>
+                        <p>Sarah has asthma-related anxiety, particularly fear of attacks at work. She recognises that anxiety worsens her symptoms (panic → tightness → more panic). She's not clinically depressed, but she's frustrated and has reduced quality of life. She has good family support, which is protective. She would likely benefit from psychological support to address anxiety and improve coping strategies. This could include cognitive-behavioural therapy (CBT) or asthma-specific counselling. Improving asthma control (through better adherence and step-up therapy) will also help reduce anxiety.</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Documentation Note</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-document">
+                        <strong>Record:</strong>
+                        <ul>
+                            <li>Mood: Not depressed; frustrated about asthma limitations</li>
+                            <li>Anxiety: Asthma-related anxiety, particularly at work; panic-induced symptoms</li>
+                            <li>Quality of life: Reduced due to asthma; affecting exercise and activities</li>
+                            <li>Support: Good family support; partner supportive</li>
+                            <li>Coping: Recognises anxiety worsens symptoms; open to psychological support</li>
+                            <li><strong>Recommendation for GP:</strong> Psychology referral for asthma-related anxiety and coping strategies; may benefit from CBT or asthma-specific counselling</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-counter">Steps explored: 9 / 10</div>
+            </div>
+
+            <!-- Step 10 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div>
+                        <div class="step-title">Step 10: Referrals, Goals & Wrapping Up</div>
+                        <div style="font-size: 14px; color: #718096; margin-top: 4px;">Summarise findings, recommend referrals, set goals, document for GP</div>
+                    </div>
+                    <div class="step-number">10</div>
+                </div>
+
+                <div class="step-content">
+                    <h4>Context</h4>
+                    <p>Conclude the interview by summarising key findings, recommending allied health referrals, and setting goals with Sarah. Document everything clearly for the GP to review and finalise the care plan.</p>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>What would you say?</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Closing:</strong>
+                        <p>"Sarah, thank you for sharing all of this information with me. I can see that your asthma hasn't been as well controlled as you'd like, and we've identified some things that can help. Here's what I'm hearing: your maintenance inhaler isn't being used as prescribed, which is a big factor. You're also dealing with allergies, reflux, and anxiety, which all affect asthma. And you'd like to exercise more and lose weight, which would really help. I'm going to write all of this up for Dr [GP name] to review. I'd like to recommend a few things: (1) a respiratory physiotherapist to help with your inhaler technique and give you strategies to manage your asthma better, (2) a psychologist to help with the anxiety and give you coping tools, and (3) an exercise physiologist to help you exercise safely. We can also think about a dietitian if you'd like support with weight management. Dr [GP name] will review all of this and decide what's best for you. Do you have any questions? What's one goal you'd like to work on first?"</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Patient Response</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-patient">
+                        <p>"That makes sense. I think the biggest thing for me is getting my asthma under control so I can exercise again and not worry so much. I'm definitely interested in seeing a physiotherapist to check my technique and a psychologist to help with the anxiety. I'm not sure about the dietitian yet, but maybe. I want to try to use my inhaler properly and regularly first, and see if that helps. When will I hear from the doctor?"</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Key Clinical Point</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-teach">
+                        <strong>Clinical Reasoning:</strong>
+                        <p>Sarah has identified her priorities: asthma control, exercise, and anxiety management. She's engaged and motivated. She's agreed to respiratory physio and psychology referrals, and is open to dietitian support. She understands that improving inhaler adherence is a key first step. This is a good outcome—she's collaborative and realistic. The GP will review all findings and finalise the care plan, including medication adjustments, referrals, and a written action plan.</p>
+                    </div>
+
+                    <button class="reveal-button" onclick="toggleReveal(this)">
+                        <span>Documentation Note</span>
+                        <span style="font-size: 12px;">▼</span>
+                    </button>
+                    <div class="reveal-block rb-document">
+                        <strong>Summary for GP Review:</strong>
+                        <ul>
+                            <li><strong>Key Findings:</strong> Asthma not well controlled (ACT 18/25); poor adherence to maintenance therapy; 2 exacerbations in past year; declining FEV1; nocturnal symptoms; exercise-induced symptoms; asthma-related anxiety</li>
+                            <li><strong>Modifiable Factors:</strong> Poor adherence (using maintenance inhaler once daily instead of twice); suboptimal allergic rhinitis control; GORD; anxiety; overweight (BMI 28.5); passive smoking exposure; exercise limitation</li>
+                            <li><strong>Patient Goals:</strong> Improve asthma control, exercise safely, manage anxiety</li>
+                            <li><strong>Recommended Referrals:</strong> (1) Respiratory physiotherapist (inhaler technique, education, monitoring), (2) Psychologist (asthma-related anxiety, coping strategies), (3) Exercise physiologist (safe exercise prescription, EIB management), (4) Dietitian (weight management—optional, patient to decide)</li>
+                            <li><strong>Recommendations for GP:</strong> (1) Review and step-up asthma therapy (consider increasing ICS dose or adding LTRA), (2) Provide written asthma action plan, (3) Repeat spirometry to investigate declining FEV1, (4) Optimise allergic rhinitis and GORD management, (5) Smoking cessation counselling for partner, (6) Ensure pneumococcal vaccine, (7) Finalise care plan and referrals</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-counter">Steps explored: 10 / 10</div>
+            </div>
+        </div>
+
+        <!-- Section 5: Interactive Activity - Referral Selection -->
+        <div class="section">
+            <h2>Interactive Activity: Referral Selection</h2>
+            <p>Based on Sarah's assessment, which allied health providers would you recommend? Select the providers you think are most appropriate for her care plan. Then click "Check My Selections" to see the feedback.</p>
+
+            <div class="referral-grid" id="referralGrid">
+                <div class="referral-card" data-correct="true" onclick="toggleReferral(this)">
+                    <div class="referral-icon">🫁</div>
+                    <div class="referral-name">Respiratory Physiotherapist</div>
+                </div>
+                <div class="referral-card" data-correct="true" onclick="toggleReferral(this)">
+                    <div class="referral-icon">🧠</div>
+                    <div class="referral-name">Psychologist</div>
+                </div>
+                <div class="referral-card" data-correct="true" onclick="toggleReferral(this)">
+                    <div class="referral-icon">🏃</div>
+                    <div class="referral-name">Exercise Physiologist</div>
+                </div>
+                <div class="referral-card" data-correct="maybe" onclick="toggleReferral(this)">
+                    <div class="referral-icon">🥗</div>
+                    <div class="referral-name">Dietitian</div>
+                </div>
+                <div class="referral-card" data-correct="false" onclick="toggleReferral(this)">
+                    <div class="referral-icon">👂</div>
+                    <div class="referral-name">Audiologist</div>
+                </div>
+                <div class="referral-card" data-correct="false" onclick="toggleReferral(this)">
+                    <div class="referral-icon">🦴</div>
+                    <div class="referral-name">Chiropractor</div>
+                </div>
+                <div class="referral-card" data-correct="maybe" onclick="toggleReferral(this)">
+                    <div class="referral-icon">🧘</div>
+                    <div class="referral-name">Physiotherapist</div>
+                </div>
+                <div class="referral-card" data-correct="false" onclick="toggleReferral(this)">
+                    <div class="referral-icon">👁️</div>
+                    <div class="referral-name">Occupational Therapist</div>
+                </div>
+            </div>
+
+            <button class="reveal-button" onclick="checkReferrals()" style="width: 100%; justify-content: center; margin-top: 20px;">
+                Check My Selections
+            </button>
+
+            <div id="referralFeedback" style="display: none; margin-top: 20px;">
+                <div class="referral-feedback">
+                    <h3 style="margin-top: 0;">Feedback</h3>
+                    <div id="feedbackContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Quiz -->
+        <div class="section">
+            <h2>Knowledge Check: Quiz</h2>
+            <p>Test your understanding of asthma care plan management. Answer the following questions and receive immediate feedback.</p>
+
+            <div id="quizContainer"></div>
+
+            <div id="quizScore" style="display: none; margin-top: 20px;">
+                <div class="quiz-score">
+                    <div class="quiz-score-number" id="scoreNumber">0</div>
+                    <div class="quiz-score-text">Quiz Complete</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 7: Checklist -->
+        <div class="section">
+            <h2>Asthma Care Plan Interview Checklist</h2>
+            <p>Use this checklist to ensure you've covered all key components of the asthma care plan interview. Click items to mark them as complete.</p>
+
+            <div class="checklist" id="checklist"></div>
+        </div>
+
+        <!-- Section 8: Quick Reference -->
+        <div class="section">
+            <h2>Quick Reference</h2>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Asthma Control Classification</span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Control Level</th>
+                                    <th>ACT Score</th>
+                                    <th>Symptoms</th>
+                                    <th>Reliever Use</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Well Controlled</strong></td>
+                                    <td>≥20</td>
+                                    <td>≤2 days/week</td>
+                                    <td>≤2 days/week</td>
+                                    <td>Maintain current therapy</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Partly Controlled</strong></td>
+                                    <td>16–19</td>
+                                    <td>3–4 days/week</td>
+                                    <td>3–4 days/week</td>
+                                    <td>Step up therapy</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Not Controlled</strong></td>
+                                    <td>&lt;16</td>
+                                    <td>≥5 days/week</td>
+                                    <td>≥5 days/week</td>
+                                    <td>Step up therapy urgently</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Red Flags & Escalation Triggers</span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <h4>Alert GP Immediately If:</h4>
+                        <ul>
+                            <li>Severe dyspnoea or chest tightness at rest</li>
+                            <li>Inability to speak full sentences</li>
+                            <li>Cyanosis or altered consciousness</li>
+                            <li>Peak flow &lt;50% of personal best</li>
+                            <li>No improvement with reliever inhaler</li>
+                            <li>Recurrent exacerbations (≥2 in 12 months)</li>
+                            <li>Declining lung function on spirometry</li>
+                            <li>Severe anxiety or panic related to asthma</li>
+                            <li>Non-adherence with high-risk features</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Asthma Action Plan Template</span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <h4>Green Zone (Well Controlled)</h4>
+                        <ul>
+                            <li>No symptoms or symptoms ≤2 days/week</li>
+                            <li>Use maintenance inhaler as prescribed (e.g., 2 puffs BD)</li>
+                            <li>Use reliever as needed (≤2 days/week)</li>
+                        </ul>
+                        <h4>Yellow Zone (Caution)</h4>
+                        <ul>
+                            <li>Increased symptoms, cough, wheeze, or shortness of breath</li>
+                            <li>Waking at night with asthma</li>
+                            <li>Using reliever &gt;2 days/week</li>
+                            <li>Peak flow 50–80% of personal best</li>
+                            <li><strong>Action:</strong> Increase maintenance therapy; use reliever every 4–6 hours; contact GP if no improvement in 24 hours</li>
+                        </ul>
+                        <h4>Red Zone (Medical Emergency)</h4>
+                        <ul>
+                            <li>Severe shortness of breath at rest</li>
+                            <li>Cannot speak full sentences</li>
+                            <li>Severe chest tightness or pain</li>
+                            <li>Peak flow &lt;50% of personal best</li>
+                            <li>No improvement with reliever inhaler</li>
+                            <li><strong>Action:</strong> Call 000 (ambulance); use reliever every 5–15 minutes while waiting</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Inhaler Technique Checklist</span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <h4>Metered Dose Inhaler (MDI) with Spacer</h4>
+                        <ol>
+                            <li>Shake the inhaler well for 10 seconds</li>
+                            <li>Attach spacer to inhaler</li>
+                            <li>Breathe out fully (away from spacer)</li>
+                            <li>Place spacer mouthpiece in mouth (seal lips around it)</li>
+                            <li>Press inhaler once to release one puff into spacer</li>
+                            <li>Breathe in and out slowly and deeply 5–6 times (or until mist disappears)</li>
+                            <li>Wait 30–60 seconds between puffs</li>
+                            <li>Repeat steps 1–7 for second puff (if prescribed)</li>
+                            <li>Rinse mouth with water after use (especially with ICS)</li>
+                        </ol>
+                        <h4>Common Errors to Correct</h4>
+                        <ul>
+                            <li>Not shaking the inhaler</li>
+                            <li>Not breathing out first</li>
+                            <li>Breathing in too quickly</li>
+                            <li>Not holding breath or breathing out immediately</li>
+                            <li>Not waiting between puffs</li>
+                            <li>Not rinsing mouth after ICS use</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>GPCCMP Referral Process (from 1 July 2025)</span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-content-inner">
+                        <h4>Key Changes</h4>
+                        <ul>
+                            <li><strong>No EPC form required:</strong> Direct GP letter to allied health provider</li>
+                            <li><strong>Referral validity:</strong> 18 months from first session</li>
+                            <li><strong>Individual visits:</strong> Up to 5 per calendar year (10 for Aboriginal and Torres Strait Islander patients)</li>
+                            <li><strong>Group sessions:</strong> Up to 8 additional per year (T2DM only)</li>
+                        </ul>
+                        <h4>Referral Letter Should Include</h4>
+                        <ul>
+                            <li>Patient name, DOB, Medicare number</li>
+                            <li>Diagnosis and clinical indication for referral</li>
+                            <li>Relevant pathology or investigation results</li>
+                            <li>Current medications</li>
+                            <li>Specific goals or areas to address</li>
+                            <li>Any precautions or contraindications</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <h3>Asthma Care Plan Review Module</h3>
+        <p><strong>Setting:</strong> General Practice Clinic | <strong>Framework:</strong> GPCCMP (effective 1 July 2025)</p>
+        <p><strong>References:</strong></p>
+        <ul style="list-style: none; padding: 0; margin: 10px 0;">
+            <li>• Australian Asthma Handbook 2025 (National Asthma Council Australia)</li>
+            <li>• RACGP Guidelines: Asthma Management in General Practice</li>
+            <li>• Services Australia: GPCCMP MBS Items (965, 967, 92029, 92030)</li>
+            <li>• Australian Asthma Society: Asthma Action Plans</li>
+        </ul>
+        <div class="disclaimer">
+            <strong>Disclaimer:</strong> This module is for educational purposes only. It is designed to support practice nurses in conducting asthma care plan interviews in general practice settings. Always follow your practice protocols, current clinical guidelines, and seek GP guidance for clinical decision-making. This module does not replace professional clinical judgment or supervision.
+        </div>
+    </footer>
+
+    <script>
+        // Accordion Toggle
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const isActive = header.classList.contains('active');
+            
+            // Close all accordions in the same section
+            const section = header.closest('.section');
+            if (section) {
+                section.querySelectorAll('.accordion-header').forEach(h => {
+                    h.classList.remove('active');
+                    h.nextElementSibling.classList.remove('active');
+                });
+            }
+            
+            // Open clicked accordion
+            if (!isActive) {
+                header.classList.add('active');
+                content.classList.add('active');
+            }
+        }
+
+        // Reveal Block Toggle
+        function toggleReveal(button) {
+            const block = button.nextElementSibling;
+            const isActive = block.classList.contains('active');
+            
+            if (!isActive) {
+                block.classList.add('active');
+                button.classList.add('revealed');
+            } else {
+                block.classList.remove('active');
+                button.classList.remove('revealed');
+            }
+        }
+
+        // Progress Bar
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.querySelector('.progress-fill').style.width = scrollPercent + '%';
+        });
+
+        // Referral Selection
+        function toggleReferral(card) {
+            card.classList.toggle('selected');
+        }
+
+        function checkReferrals() {
+            const cards = document.querySelectorAll('.referral-card');
+            let correct = 0;
+            let total = 0;
+            let feedback = '';
+
+            cards.forEach(card => {
+                const isSelected = card.classList.contains('selected');
+                const correctValue = card.getAttribute('data-correct');
+                
+                if (correctValue === 'true') {
+                    total++;
+                    if (isSelected) {
+                        correct++;
+                        card.classList.add('correct');
+                        card.classList.remove('selected', 'incorrect', 'missed');
+                    } else {
+                        card.classList.add('missed');
+                    }
+                } else if (correctValue === 'maybe') {
+                    if (isSelected) {
+                        card.classList.add('correct');
+                        card.classList.remove('selected', 'incorrect');
+                    } else {
+                        card.classList.remove('selected', 'incorrect', 'correct');
+                    }
+                } else {
+                    if (isSelected) {
+                        card.classList.add('incorrect');
+                        card.classList.remove('selected', 'correct');
+                    } else {
+                        card.classList.remove('selected', 'incorrect', 'correct');
+                    }
+                }
+            });
+
+            feedback = `
+                <h4>Your Score: ${correct}/${total} Priority Referrals Identified</h4>
+                <h4>Priority Referrals (Strongly Recommended):</h4>
+                <ul>
+                    <li><strong>Respiratory Physiotherapist:</strong> Essential for inhaler technique check, breathing exercises, education on asthma management, and monitoring. Sarah's poor adherence and technique are key barriers to control.</li>
+                    <li><strong>Psychologist:</strong> Important for asthma-related anxiety and panic. Sarah has fear of attacks and anxiety-induced symptoms. Psychological support will improve coping and reduce symptom escalation.</li>
+                    <li><strong>Exercise Physiologist:</strong> Critical for safe exercise prescription. Sarah has exercise-induced bronchoconstriction and has reduced activity. Exercise physio can help her exercise safely and improve fitness.</li>
+                </ul>
+                <h4>Optional Referrals (Consider Based on Patient Preference):</h4>
+                <ul>
+                    <li><strong>Dietitian:</strong> Helpful for weight management (BMI 28.5). Weight loss can improve asthma control. Sarah is motivated but wants to prioritise other referrals first—can be added later.</li>
+                    <li><strong>Physiotherapist:</strong> May be helpful for posture and breathing mechanics, but respiratory physio is more specific for asthma.</li>
+                </ul>
+                <h4>Not Indicated:</h4>
+                <ul>
+                    <li><strong>Audiologist:</strong> No hearing concerns identified.</li>
+                    <li><strong>Chiropractor:</strong> No musculoskeletal issues; not evidence-based for asthma.</li>
+                    <li><strong>Occupational Therapist:</strong> No functional limitations requiring OT intervention at this stage.</li>
+                </ul>
+                <h4>Maximising Medicare Allocation:</h4>
+                <p>Sarah has 5 individual visits per calendar year. Prioritise: (1) Respiratory physio (2–3 visits for technique and education), (2) Psychologist (2 visits for anxiety management), (3) Exercise physio (1–2 visits for safe exercise prescription). This uses 5–7 visits. Dietitian can be added if she wants weight management support later in the year.</p>
+            `;
+
+            document.getElementById('feedbackContent').innerHTML = feedback;
+            document.getElementById('referralFeedback').style.display = 'block';
+        }
+
+        // Quiz
+        const quizData = [
+            {
+                question: "Sarah's ACT score is 18/25. What does this indicate?",
+                options: [
+                    "Well-controlled asthma (≥20 = well controlled)",
+                    "Not well-controlled asthma (<20 = not well controlled)",
+                    "Excellent control, no changes needed",
+                    "Mild symptoms only"
+                ],
+                correct: 1,
+                explanation: "An ACT score of 18/25 is below the threshold of 20, indicating asthma is NOT well controlled. Sarah needs step-up therapy and closer monitoring."
+            },
+            {
+                question: "Sarah uses her maintenance inhaler (ICS/LABA) only once daily instead of twice. What is the likely impact?",
+                options: [
+                    "No impact; once daily is sufficient",
+                    "Reduced drug delivery and suboptimal control",
+                    "Increased side effects",
+                    "Better adherence"
+                ],
+                correct: 1,
+                explanation: "Using maintenance therapy less frequently than prescribed reduces drug delivery to the airways and leads to suboptimal control. This is a key modifiable factor in Sarah's case."
+            },
+            {
+                question: "Sarah has 2 exacerbations in the past 12 months. What risk category does this place her in?",
+                options: [
+                    "Low risk",
+                    "Moderate risk",
+                    "High risk (requires ICU admission)",
+                    "No risk"
+                ],
+                correct: 1,
+                explanation: "Two exacerbations in 12 months places Sarah in the MODERATE risk category. High risk would include ICU admission, intubation, or ≥2 exacerbations requiring oral steroids."
+            },
+            {
+                question: "Sarah's FEV1 has declined from 85% to 78% predicted. What should be done?",
+                options: [
+                    "Ignore it; normal variation",
+                    "Repeat spirometry to investigate; possible fixed obstruction or poor control",
+                    "Immediately refer to respiratory specialist",
+                    "Increase reliever inhaler use"
+                ],
+                correct: 1,
+                explanation: "A decline in FEV1 is concerning and warrants investigation. Repeat spirometry is needed to determine if this reflects worsening asthma control, fixed airway obstruction, or poor technique."
+            },
+            {
+                question: "Which of the following is NOT an appropriate allied health referral for Sarah?",
+                options: [
+                    "Respiratory physiotherapist",
+                    "Psychologist",
+                    "Audiologist",
+                    "Exercise physiologist"
+                ],
+                correct: 2,
+                explanation: "Audiologist is not indicated for Sarah. She has no hearing concerns. Respiratory physio, psychologist, and exercise physio are all appropriate for her asthma management."
+            }
+        ];
+
+        function initQuiz() {
+            const container = document.getElementById('quizContainer');
+            quizData.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-question';
+                questionDiv.innerHTML = `
+                    <div class="quiz-question-text">Q${index + 1}: ${q.question}</div>
+                    <div class="quiz-options">
+                        ${q.options.map((option, optIndex) => `
+                            <button class="quiz-option" onclick="selectOption(this, ${index}, ${optIndex})" data-question="${index}" data-option="${optIndex}">
+                                ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <button class="quiz-submit" onclick="submitAnswer(${index})" data-question="${index}" disabled>Submit Answer</button>
+                    <div class="quiz-feedback" id="feedback-${index}" style="display: none;"></div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectOption(button, questionIndex, optionIndex) {
+            const question = button.closest('.quiz-question');
+            question.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            button.classList.add('selected');
+            question.querySelector(`[data-question="${questionIndex}"]`).disabled = false;
+        }
+
+        function submitAnswer(questionIndex) {
+            const question = document.querySelectorAll('.quiz-question')[questionIndex];
+            const selected = question.querySelector('.quiz-option.selected');
+            const submitBtn = question.querySelector(`[data-question="${questionIndex}"]`);
+            const feedbackDiv = document.getElementById(`feedback-${questionIndex}`);
+            
+            if (!selected) return;
+
+            const selectedIndex = Array.from(question.querySelectorAll('.quiz-option')).indexOf(selected);
+            const isCorrect = selectedIndex === quizData[questionIndex].correct;
+
+            question.querySelectorAll('.quiz-option').forEach((opt, idx) => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.disabled = true;
+                if (idx === quizData[questionIndex].correct) {
+                    opt.classList.add('correct');
+                } else if (idx === selectedIndex && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            feedbackDiv.innerHTML = `
+                <strong>${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</strong><br>
+                ${quizData[questionIndex].explanation}
+            `;
+            feedbackDiv.classList.add(isCorrect ? 'correct' : 'incorrect');
+            feedbackDiv.style.display = 'block';
+            submitBtn.disabled = true;
+
+            // Check if all questions answered
+            const allAnswered = Array.from(document.querySelectorAll('.quiz-submit')).every(btn => btn.disabled);
+            if (allAnswered) {
+                const correct = Array.from(document.querySelectorAll('.quiz-feedback.correct')).length;
+                document.getElementById('scoreNumber').textContent = `${correct} / ${quizData.length}`;
+                document.getElementById('quizScore').style.display = 'block';
+            }
+        }
+
+        // Checklist
+        const checklistItems = [
+            "Opened conversation—explained purpose, set expectations, asked about concerns",
+            "Assessed general wellbeing—mood, stress, sleep, quality of life",
+            "Reviewed asthma control—symptoms, triggers, exacerbations, ACT/ACQ score",
+            "Checked medication adherence—maintenance and reliever use, barriers",
+            "Assessed inhaler technique—demonstrated and provided feedback",
+            "Screened for exacerbation risk—history of severe attacks, hospitalisations",
+            "Identified comorbidities—allergic rhinitis, GORD, anxiety, obesity",
+            "Reviewed environmental triggers—smoking, allergens, occupational exposures",
+            "Assessed lung function—spirometry, peak flow, trends",
+            "Reviewed asthma action plan—current, written, patient understands",
+            "Explored lifestyle factors—diet, exercise, weight, smoking",
+            "Assessed mental health—anxiety, depression, coping, support",
+            "Identified modifiable factors—adherence, technique, triggers, comorbidities",
+            "Recommended allied health referrals—respiratory physio, psychologist, exercise physio, dietitian",
+            "Set goals with patient—priorities, motivation, follow-up plan",
+            "Documented findings—structured notes for GP review and care plan finalisation"
+        ];
+
+        function initChecklist() {
+            const container = document.getElementById('checklist');
+            checklistItems.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'checklist-item';
+                itemDiv.onclick = function() {
+                    this.classList.toggle('checked');
+                };
+                itemDiv.innerHTML = `
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">${item}</div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initQuiz();
+            initChecklist();
+        });
+    </script>
+</body>
+</html>
