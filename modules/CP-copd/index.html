@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COPD Care Plan Review - GP Clinic Practice Module</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 18px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+            background-color: #F7FAFC;
+            color: #1A202C;
+            line-height: 1.6;
+        }
+
+        /* STICKY HEADER */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            border-bottom: 2px solid #E2E8F0;
+            padding: 16px 20px;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2B6CB0;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: #718096;
+            margin-top: 4px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 6px;
+            background-color: #E2E8F0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #3182CE;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* SECTIONS */
+        section {
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        section:nth-child(1) { animation-delay: 0.1s; }
+        section:nth-child(2) { animation-delay: 0.2s; }
+        section:nth-child(3) { animation-delay: 0.3s; }
+        section:nth-child(4) { animation-delay: 0.4s; }
+        section:nth-child(5) { animation-delay: 0.5s; }
+        section:nth-child(6) { animation-delay: 0.6s; }
+        section:nth-child(7) { animation-delay: 0.7s; }
+        section:nth-child(8) { animation-delay: 0.8s; }
+
+        /* WELCOME CARD */
+        .welcome-card {
+            background: white;
+            border-left: 4px solid #3182CE;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .welcome-card h2 {
+            color: #2B6CB0;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .welcome-card p {
+            color: #4A5568;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
+        .learning-objectives {
+            background-color: #EBF8FF;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .learning-objectives h3 {
+            color: #2B6CB0;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .learning-objectives ol {
+            margin-left: 20px;
+            color: #4A5568;
+        }
+
+        .learning-objectives li {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        /* HEADINGS */
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            color: #2B6CB0;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #2B6CB0;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2B6CB0;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        h4 {
+            font-size: 18px;
+            color: #1A202C;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        /* ACCORDION */
+        .accordion-section {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .accordion-header {
+            padding: 20px 24px;
+            background-color: #F7FAFC;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .accordion-header:hover {
+            background-color: #EBF8FF;
+        }
+
+        .accordion-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .accordion-chevron {
+            font-size: 20px;
+            color: #3182CE;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-section.open .accordion-chevron {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-section.open .accordion-content {
+            max-height: 2000px;
+        }
+
+        .accordion-body {
+            padding: 24px;
+            color: #4A5568;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .accordion-body p {
+            margin-bottom: 12px;
+        }
+
+        .accordion-body ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .accordion-body li {
+            margin-bottom: 8px;
+        }
+
+        /* PATIENT PROFILE CARD */
+        .patient-card {
+            background: white;
+            border-left: 4px solid #3182CE;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .patient-card h3 {
+            color: #2B6CB0;
+            margin-bottom: 16px;
+        }
+
+        .patient-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background-color: #EBF8FF;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 18px;
+            color: #1A202C;
+            font-weight: 600;
+        }
+
+        /* PATHOLOGY TABLE */
+        .pathology-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .pathology-table thead {
+            background-color: #2B6CB0;
+            color: white;
+        }
+
+        .pathology-table th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .pathology-table td {
+            padding: 16px;
+            border-bottom: 1px solid #E2E8F0;
+            font-size: 16px;
+        }
+
+        .pathology-table tbody tr:hover {
+            background-color: #F7FAFC;
+        }
+
+        .status-green {
+            background-color: #F0FFF4;
+            color: #22543D;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .status-amber {
+            background-color: #FFFAF0;
+            color: #7C2D12;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .status-red {
+            background-color: #FFF5F5;
+            color: #742A2A;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* INTERVIEW STEPS */
+        .step-container {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .step-number {
+            background-color: #3182CE;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 20px;
+            color: #2B6CB0;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .step-context {
+            background-color: #EBF8FF;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border-left: 4px solid #3182CE;
+        }
+
+        .step-context p {
+            margin: 0;
+            color: #4A5568;
+            font-size: 16px;
+        }
+
+        /* REVEAL BUTTONS */
+        .reveal-button {
+            background-color: #3182CE;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reveal-button:hover {
+            background-color: #2B6CB0;
+        }
+
+        .reveal-button.revealed {
+            background-color: #718096;
+        }
+
+        .reveal-chevron {
+            font-size: 14px;
+            transition: transform 0.3s ease;
+        }
+
+        .reveal-button.revealed .reveal-chevron {
+            transform: rotate(180deg);
+        }
+
+        /* REVEAL BLOCKS */
+        .reveal-block {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-bottom: 16px;
+        }
+
+        .reveal-block.show {
+            max-height: 2000px;
+        }
+
+        .rb-suggest {
+            background-color: #EBF8FF;
+            border-left: 4px solid #3182CE;
+            padding: 16px;
+            border-radius: 8px;
+            color: #2C5282;
+        }
+
+        .rb-patient {
+            background-color: #FAF5FF;
+            border-left: 4px solid #9F7AEA;
+            padding: 16px;
+            border-radius: 8px;
+            color: #553399;
+        }
+
+        .rb-teach {
+            background-color: #F0FFF4;
+            border-left: 4px solid #38A169;
+            padding: 16px;
+            border-radius: 8px;
+            color: #22543D;
+        }
+
+        .rb-document {
+            background-color: #FFFAF0;
+            border-left: 4px solid #DD6B20;
+            padding: 16px;
+            border-radius: 8px;
+            color: #7C2D12;
+        }
+
+        .rb-flag {
+            background-color: #FFF5F5;
+            border-left: 4px solid #E53E3E;
+            padding: 16px;
+            border-radius: 8px;
+            color: #742A2A;
+        }
+
+        .rb-suggest h4, .rb-patient h4, .rb-teach h4, .rb-document h4, .rb-flag h4 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .rb-suggest p, .rb-patient p, .rb-teach p, .rb-document p, .rb-flag p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .rb-suggest ul, .rb-patient ul, .rb-teach ul, .rb-document ul, .rb-flag ul {
+            margin: 8px 0 0 20px;
+            padding: 0;
+        }
+
+        .rb-suggest li, .rb-patient li, .rb-teach li, .rb-document li, .rb-flag li {
+            margin-bottom: 6px;
+            font-size: 16px;
+        }
+
+        /* STEP COUNTER */
+        .step-counter {
+            background-color: #EBF8FF;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #2B6CB0;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* INTERACTIVE ACTIVITY */
+        .activity-container {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .activity-title {
+            font-size: 22px;
+            color: #2B6CB0;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* REFERRAL GRID */
+        .referral-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .referral-card {
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .referral-card:hover {
+            border-color: #3182CE;
+            box-shadow: 0 2px 8px rgba(49, 130, 206, 0.15);
+        }
+
+        .referral-card.selected {
+            border-color: #3182CE;
+            background-color: #EBF8FF;
+        }
+
+        .referral-card.correct {
+            border-color: #38A169;
+            background-color: #F0FFF4;
+        }
+
+        .referral-card.incorrect {
+            border-color: #E53E3E;
+            background-color: #FFF5F5;
+        }
+
+        .referral-card.missed {
+            border-color: #DD6B20;
+            background-color: #FFFAF0;
+        }
+
+        .referral-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .referral-name {
+            font-weight: 600;
+            color: #1A202C;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .referral-feedback {
+            font-size: 24px;
+            margin-top: 8px;
+        }
+
+        .check-button {
+            background-color: #38A169;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        .check-button:hover {
+            background-color: #2F855A;
+        }
+
+        .check-button:disabled {
+            background-color: #CBD5E0;
+            cursor: not-allowed;
+        }
+
+        /* QUIZ */
+        .quiz-question {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .quiz-question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1A202C;
+            margin-bottom: 16px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            font-size: 16px;
+            color: #4A5568;
+        }
+
+        .quiz-option:hover {
+            border-color: #3182CE;
+            background-color: #EBF8FF;
+        }
+
+        .quiz-option.selected {
+            border-color: #3182CE;
+            background-color: #EBF8FF;
+        }
+
+        .quiz-option.correct {
+            border-color: #38A169;
+            background-color: #F0FFF4;
+            color: #22543D;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #E53E3E;
+            background-color: #FFF5F5;
+            color: #742A2A;
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .quiz-feedback {
+            background-color: #EBF8FF;
+            border-left: 4px solid #3182CE;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            color: #2C5282;
+            font-size: 16px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .submit-button {
+            background-color: #3182CE;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 12px;
+            transition: background-color 0.2s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #2B6CB0;
+        }
+
+        .submit-button:disabled {
+            background-color: #CBD5E0;
+            cursor: not-allowed;
+        }
+
+        /* CHECKLIST */
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            border-bottom: 1px solid #E2E8F0;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .checklist-item:hover {
+            background-color: #F7FAFC;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #3182CE;
+            border-radius: 4px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .checklist-item.checked .checklist-checkbox {
+            background-color: #3182CE;
+            color: white;
+        }
+
+        .checklist-text {
+            font-size: 16px;
+            color: #4A5568;
+            flex: 1;
+        }
+
+        .checklist-item.checked .checklist-text {
+            color: #718096;
+            text-decoration: line-through;
+        }
+
+        /* FOOTER */
+        footer {
+            background-color: #2B6CB0;
+            color: white;
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .footer-section {
+            margin-bottom: 24px;
+        }
+
+        .footer-section h4 {
+            color: #EBF8FF;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .footer-section li {
+            margin-bottom: 6px;
+            font-size: 16px;
+            color: #EBF8FF;
+        }
+
+        .disclaimer {
+            background-color: #1A365D;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 24px;
+            font-size: 14px;
+            color: #EBF8FF;
+            border-left: 4px solid #4299E1;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            html {
+                font-size: 16px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            h3 {
+                font-size: 18px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .progress-bar {
+                width: 100%;
+            }
+
+            .patient-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .referral-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+
+            .pathology-table {
+                font-size: 14px;
+            }
+
+            .pathology-table th,
+            .pathology-table td {
+                padding: 12px 8px;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- STICKY HEADER -->
+    <div class="sticky-header">
+        <div class="header-content">
+            <div>
+                <div class="header-title">COPD Care Plan Review</div>
+                <div class="header-subtitle">GP Clinic Practice Module</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <!-- SECTION 1: WELCOME & INTRO -->
+        <section>
+            <h1>COPD Care Plan Review</h1>
+            <p class="subtitle">GP Clinic Practice Module</p>
+
+            <div class="welcome-card">
+                <h2>Welcome to Your COPD Care Plan Review Module</h2>
+                <p><strong>Setting:</strong> General practice clinic, scheduled 45-minute care plan review appointment</p>
+                <p><strong>Your Role:</strong> As a practice nurse, you'll conduct a structured interview with a patient with established COPD. You'll review their respiratory status, medication adherence, exacerbation history, screening status, and identify gaps in care. Your findings will be documented for the GP to review and finalise the GPCCMP.</p>
+
+                <div class="learning-objectives">
+                    <h3>Learning Objectives</h3>
+                    <ol>
+                        <li>Conduct a systematic COPD assessment including spirometry review, symptom severity, and exacerbation history</li>
+                        <li>Identify and screen for common COPD complications (cardiovascular disease, osteoporosis, depression, anxiety)</li>
+                        <li>Assess medication adherence and inhaler technique</li>
+                        <li>Evaluate lifestyle factors (smoking, physical activity, nutrition) and self-management capacity</li>
+                        <li>Recommend appropriate allied health referrals (pulmonary rehabilitation, physiotherapy, psychology) within GPCCMP entitlements</li>
+                        <li>Document findings in structured format for GP review and GPCCMP finalisation</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: KNOWLEDGE FOUNDATION -->
+        <section>
+            <h2>Knowledge Foundation</h2>
+
+            <div class="accordion-section">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3>What is a GPCCMP?</h3>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <p><strong>GPCCMP = GP Chronic Condition Management Plan</strong></p>
+                        <p>Effective 1 July 2025, the GPCCMP replaces the previous GPMP (GP Management Plan) and TCA (Team Care Arrangement).</p>
+                        <h4>Key Features:</h4>
+                        <ul>
+                            <li><strong>Eligibility:</strong> Patient has at least one chronic condition present (or likely) for 6+ months, or terminal condition</li>
+                            <li><strong>Preparation:</strong> Once per 12 months (if necessary) — MBS item 965 (face-to-face) or 92029 (video)</li>
+                            <li><strong>Review:</strong> Every 3 months — MBS item 967 (face-to-face) or 92030 (video)</li>
+                            <li><strong>Fee:</strong> $156.55 per preparation or review (paid to practice)</li>
+                            <li><strong>GP's Role:</strong> Reviews nurse's findings, makes clinical decisions, signs plan, writes referrals</li>
+                        </ul>
+                        <p><strong>Note:</strong> COPD is a chronic condition eligible for GPCCMP. No specific condition list exists — GP's clinical judgement applies.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-section">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3>The Practice Nurse's Role in COPD Care Plan Review</h3>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <h4>What You Do:</h4>
+                        <ul>
+                            <li>Conduct structured interview with patient (45 minutes)</li>
+                            <li>Review spirometry results and confirm COPD diagnosis (FEV1/FVC &lt; 0.7)</li>
+                            <li>Assess respiratory symptoms using validated tools (COPD Assessment Test — CAT)</li>
+                            <li>Review exacerbation history (frequency, triggers, management)</li>
+                            <li>Screen for complications (cardiovascular disease, osteoporosis, depression, anxiety)</li>
+                            <li>Assess medication adherence and inhaler technique</li>
+                            <li>Evaluate lifestyle factors (smoking, physical activity, nutrition)</li>
+                            <li>Identify screening gaps (vaccinations, bone health, mental health)</li>
+                            <li>Recommend allied health referrals (for GP to finalise)</li>
+                            <li>Document findings in structured format for GP review</li>
+                        </ul>
+
+                        <h4>Scope Boundaries:</h4>
+                        <ul>
+                            <li>You gather information and make recommendations</li>
+                            <li>GP makes final clinical decisions and signs the plan</li>
+                            <li>GP writes all referral letters to allied health providers</li>
+                            <li>Escalate red flags (severe dyspnoea, hypoxia, acute exacerbation) to GP immediately</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-section">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3>Allied Health Under a GPCCMP</h3>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <h4>Individual Visits Entitlements:</h4>
+                        <ul>
+                            <li>Up to 5 individual visits per calendar year</li>
+                            <li>Up to 10 individual visits per calendar year for Aboriginal and Torres Strait Islander patients</li>
+                            <li>Referral validity: 18 months from first session</li>
+                        </ul>
+
+                        <h4>Available Allied Health Providers:</h4>
+                        <ul>
+                            <li><strong>For COPD specifically:</strong> Physiotherapist (pulmonary rehabilitation, exercise), Psychologist (anxiety, depression), Occupational Therapist (activities of daily living, energy conservation)</li>
+                            <li><strong>General:</strong> Podiatrist, dietitian, diabetes educator, exercise physiologist, speech pathologist, audiologist, chiropractor, osteopath, Aboriginal health practitioner</li>
+                        </ul>
+
+                        <h4>Referral Process:</h4>
+                        <ul>
+                            <li>GP writes direct letter to allied health provider (no EPC form required from 1 July 2025)</li>
+                            <li>Patient takes letter to provider</li>
+                            <li>Provider claims Medicare rebate directly</li>
+                        </ul>
+
+                        <h4>Maximising Entitlements:</h4>
+                        <ul>
+                            <li>Prioritise referrals based on patient's identified needs and goals</li>
+                            <li>Consider phased approach (e.g., physiotherapy first, psychology if anxiety emerges)</li>
+                            <li>Document clinical reasoning for each referral in care plan</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: PATIENT PROFILE -->
+        <section>
+            <h2>Patient Profile & Clinical Data</h2>
+
+            <div class="patient-card">
+                <h3>Meet Your Patient: Robert "Bob" Thompson</h3>
+                <p><strong>Appointment Type:</strong> GPCCMP Review (3-monthly)</p>
+
+                <div class="patient-info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Age</div>
+                        <div class="info-value">68 years</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Gender</div>
+                        <div class="info-value">Male</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Living Situation</div>
+                        <div class="info-value">Lives with wife, suburban Adelaide</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Occupation</div>
+                        <div class="info-value">Retired carpenter (ex-smoker)</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">BMI</div>
+                        <div class="info-value">26.5 (overweight)</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">COPD Duration</div>
+                        <div class="info-value">5 years (diagnosed)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="patient-card">
+                <h3>Medical History & Current Medications</h3>
+
+                <h4>Chronic Conditions:</h4>
+                <ul>
+                    <li>COPD (GOLD Group B — moderate airflow obstruction)</li>
+                    <li>Hypertension (controlled on amlodipine 5mg daily)</li>
+                    <li>Type 2 Diabetes (controlled on metformin 1000mg BD)</li>
+                    <li>Anxiety (mild, not currently treated)</li>
+                </ul>
+
+                <h4>Current COPD Medications:</h4>
+                <ul>
+                    <li>Tiotropium 18mcg inhaled once daily (long-acting muscarinic antagonist)</li>
+                    <li>Salbutamol 100mcg inhaled as needed (short-acting beta-2 agonist)</li>
+                    <li>No inhaled corticosteroid (ICS) — patient has &lt;2 exacerbations/year, low eosinophil count)</li>
+                </ul>
+
+                <h4>Screening Status:</h4>
+                <ul>
+                    <li>Influenza vaccine: Last given 12 months ago (due for annual)</li>
+                    <li>Pneumococcal vaccine: Received PPSV23 (23-valent) 3 years ago; PNEUMOVAX 23 status unclear</li>
+                    <li>COVID-19 vaccine: Up to date (last dose 6 months ago)</li>
+                    <li>Bone health screening: Never assessed (risk factors: age, male, COPD, sedentary)</li>
+                    <li>Cardiovascular risk: Last assessed 2 years ago (BP 138/82, no recent lipid panel)</li>
+                </ul>
+            </div>
+
+            <h3>Recent Pathology & Observations</h3>
+            <table class="pathology-table">
+                <thead>
+                    <tr>
+                        <th>Test</th>
+                        <th>Result</th>
+                        <th>Previous (3 months ago)</th>
+                        <th>Target / Normal Range</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>FEV1 (Spirometry)</strong></td>
+                        <td>58% predicted</td>
+                        <td>60% predicted</td>
+                        <td>&gt;80% = normal</td>
+                        <td><span class="status-amber">Stable decline</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>FEV1/FVC Ratio</strong></td>
+                        <td>0.62</td>
+                        <td>0.63</td>
+                        <td>&gt;0.7 = normal</td>
+                        <td><span class="status-amber">Confirms COPD</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Oxygen Saturation (SpO2)</strong></td>
+                        <td>96% on room air</td>
+                        <td>97% on room air</td>
+                        <td>95–100%</td>
+                        <td><span class="status-green">Normal</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Blood Eosinophils</strong></td>
+                        <td>85 cells/μL</td>
+                        <td>90 cells/μL</td>
+                        <td>&lt;100 cells/μL</td>
+                        <td><span class="status-green">Low (no ICS indicated)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>HbA1c (Diabetes)</strong></td>
+                        <td>6.8%</td>
+                        <td>6.9%</td>
+                        <td>&lt;7% (target)</td>
+                        <td><span class="status-green">Well controlled</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>eGFR (Kidney Function)</strong></td>
+                        <td>72 mL/min/1.73m²</td>
+                        <td>74 mL/min/1.73m²</td>
+                        <td>&gt;60 = normal</td>
+                        <td><span class="status-green">Normal (CKD Stage 2)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Blood Pressure</strong></td>
+                        <td>136/80 mmHg</td>
+                        <td>138/82 mmHg</td>
+                        <td>&lt;140/90 (target)</td>
+                        <td><span class="status-green">Controlled</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="patient-card">
+                <h3>Exacerbation History (Past 12 Months)</h3>
+                <ul>
+                    <li><strong>Frequency:</strong> 1 exacerbation (mild-moderate)</li>
+                    <li><strong>Trigger:</strong> Upper respiratory tract infection (winter)</li>
+                    <li><strong>Management:</strong> Treated in primary care with oral corticosteroids and antibiotics; no hospitalisation</li>
+                    <li><strong>Recovery:</strong> Returned to baseline within 2 weeks</li>
+                    <li><strong>Action Plan:</strong> Patient has written COPD action plan; reports understanding of when to seek help</li>
+                </ul>
+            </div>
+
+            <div class="patient-card" style="border-left-color: #DD6B20;">
+                <h3 style="color: #DD6B20;">Key Clinical Concerns & Red Flags</h3>
+                <ul>
+                    <li><strong>Declining FEV1:</strong> 60% → 58% over 3 months (slow decline, but trend to monitor)</li>
+                    <li><strong>Sedentary lifestyle:</strong> Retired, reports "not much activity" due to breathlessness on exertion</li>
+                    <li><strong>Anxiety:</strong> Mild anxiety about exacerbations; not formally assessed or treated</li>
+                    <li><strong>Bone health:</strong> Never screened; risk factors present (age, male, COPD, sedentary, possible corticosteroid use history)</li>
+                    <li><strong>Vaccination gaps:</strong> Pneumococcal vaccine status unclear; influenza vaccine due</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 4: THE CARE PLAN INTERVIEW (10 STEPS) -->
+        <section>
+            <h2>The COPD Care Plan Review Interview</h2>
+            <p style="color: #4A5568; margin-bottom: 20px;">You have 45 minutes. Work through these 10 structured steps to gather comprehensive information, identify risks, and recommend appropriate support.</p>
+
+            <div class="step-counter">
+                <span id="stepCounter">Steps explored: 0 / 10</span>
+            </div>
+
+            <!-- STEP 1 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Opening & Building Rapport</h3>
+                </div>
+
+                <div class="step-context">
+                    <p><strong>Context:</strong> You're starting the appointment. Bob is familiar with the practice but may be anxious about his declining lung function. Set a collaborative tone, explain the purpose of the review, and establish what he hopes to achieve.</p>
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you say? <span class="reveal-chevron">▼</span>
+                </button>
+
+                <div class="reveal-block">
+                    <div class="rb-suggest">
+                        <h4>Suggested Approach</h4>
+                        <p><strong>Opening statement:</strong></p>
+                        <ul>
+                            <li>"Hi Bob, good to see you today. We're doing your regular COPD care plan review — this is a chance to check in on how you're managing your breathing, your medications, and any concerns you might have. We'll also look at your recent test results and talk about what support might help you. How have you been getting on since we last saw you?"</li>
+                        </ul>
+                        <p><strong>Listen for:</strong></p>
+                        <ul>
+                            <li>Overall sense of wellbeing and control</li>
+                            <li>Any new symptoms or concerns</li>
+                            <li>Barriers to self-management (cost, motivation, understanding)</li>
+                            <li>Emotional state (anxiety, frustration, acceptance)</li>
+                        </ul>
+                    </div>
+
+                    <div class="rb-patient">
+                        <h4>Patient Response</h4>
+                        <p>"Yeah, I'm alright. A bit worried though — my wife says I'm not as active as I used to be. I get puffed out just walking to the shops. I know my last test showed my breathing got a bit worse. I'm worried it's going to keep getting worse."</p>
+                    </div>
+
+                    <div class="rb-teach">
+                        <h4>Key Point</h4>
+                        <p>Bob is expressing <strong>anxiety about disease progression</strong> and <strong>functional decline</strong>. This is common in COPD and often linked to inactivity (deconditioning worsens breathlessness). Note his concern — it's a cue to explore anxiety formally later and discuss pulmonary rehabilitation as a potential intervention.</p>
+                    </div>
+
+                    <div class="rb-document">
+                        <h4>Documentation Note</h4>
+                        <p><strong>Record:</strong> "Patient reports declining activity tolerance, concerned about disease progression. Wife notes reduced activity. Expresses anxiety about worsening lung function."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">General Wellbeing Check</h3>
+                </div>
+
+                <div class="step-context">
+                    <p><strong>Context:</strong> Before diving into COPD-specific symptoms, assess Bob's overall health, mood, energy, sleep, and any other concerns. This sets the stage for identifying comorbidities and mental health issues.</p>
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you ask? <span class="reveal-chevron">▼</span>
+                </button>
+
+                <div class="reveal-block">
+                    <div class="rb-suggest">
+                        <h4>Suggested Approach</h4>
+                        <p><strong>Questions to ask:</strong></p>
+                        <ul>
+                            <li>"How's your energy been? Are you sleeping okay?"</li>
+                            <li>"Any new aches, pains, or health concerns since we last met?"</li>
+                            <li>"How's your mood? Any stress or worry that's been on your mind?"</li>
+                            <li>"Are you managing your diabetes and blood pressure okay?"</li>
+                        </ul>
+                        <p><strong>What to listen for:</strong></p>
+                        <ul>
+                            <li>Sleep disturbance (common in COPD due to nocturnal hypoxia, anxiety, or sleep apnoea)</li>
+                            <li>Fatigue (may indicate poor disease control, depression, or comorbidity)</li>
+                            <li>Mood changes (depression, anxiety)</li>
+                            <li>Medication side effects or adherence issues</li>
+                        </ul>
+                    </div>
+
+                    <div class="rb-patient">
+                        <h4>Patient Response</h4>
+                        <p>"Sleep's been okay, though I wake up sometimes feeling a bit short of breath. Energy's not great — I get tired easily. Mood's fine, I think. Just frustrated I can't do the things I used to. My diabetes is fine, I take my tablets every day."</p>
+                    </div>
+
+                    <div class="rb-teach">
+                        <h4>Key Point</h4>
+                        <p>Bob reports <strong>nocturnal dyspnoea</strong> (waking short of breath) — this warrants further assessment. Could indicate: (1) inadequate disease control, (2) sleep apnoea, (3) nocturnal hypoxia, or (4) anxiety. His fatigue and frustration may reflect both physical deconditioning and low mood. Diabetes adherence is good — note this as a strength.</p>
+                    </div>
+
+                    <div class="rb-document">
+                        <h4>Documentation Note</h4>
+                        <p><strong>Record:</strong> "Sleep generally okay but reports nocturnal dyspnoea (wakes short of breath). Fatigue and reduced energy. Mood stable but frustrated by functional decline. Diabetes adherence good. No new health concerns reported."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">COPD-Specific Symptom Assessment</h3>
+                </div>
+
+                <div class="step-context">
+                    <p><strong>Context:</strong> Assess current respiratory symptoms, disease severity, and functional impact. Use the COPD Assessment Test (CAT) or similar validated tool to quantify symptom burden. Review spirometry results and compare to previous.</p>
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you explore? <span class="reveal-chevron">▼</span>
+                </button>
+
+                <div class="reveal-block">
+                    <div class="rb-suggest">
+                        <h4>Suggested Approach</h4>
+                        <p><strong>Key questions:</strong></p>
+                        <ul>
+                            <li>"Tell me about your cough — is it worse than usual? Any sputum?"</li>
+                            <li>"How's your breathing day-to-day? Can you walk up stairs, or do you get short of breath?"</li>
+                            <li>"Do you have a written action plan for when your breathing gets worse?"</li>
+                            <li>"Have you had any chest infections or exacerbations since we last met?"</li>
+                        </ul>
+                        <p><strong>Administer COPD Assessment Test (CAT):</strong> 8-item questionnaire (0–40 scale). Score ≥10 indicates significant symptoms.</p>
+                        <p><strong>Review spirometry:</strong> Compare FEV1 to previous results. Decline &gt;5% may indicate worsening disease or need for treatment adjustment.</p>
+                    </div>
+
+                    <div class="rb-patient">
+                        <h4>Patient Response</h4>
+                        <p>"Cough's pretty much the same — bit of phlegm in the morning. Breathing's the main thing. I can walk maybe 100 metres before I get puffed out. Stairs are hard. I have the action plan, yeah. No infections since last time, but I'm worried about winter coming up."</p>
+                        <p><strong>CAT Score: 16/40</strong> (indicates moderate symptom burden)</p>
+                    </div>
+
+                    <div class="rb-teach">
+                        <h4>Key Point</h4>
+                        <p>Bob's <strong>FEV1 has declined from 60% to 58%</strong> — a small but measurable decline. His CAT score of 16 indicates <strong>moderate symptoms</strong> affecting daily life. His functional limitation (100m walk before dyspnoea) is significant and suggests he would benefit from <strong>pulmonary rehabilitation</strong> to improve exercise capacity and confidence. His concern about winter is appropriate — exacerbations are more common in cold months.</p>
+                    </div>
+
+                    <div class="rb-document">
+                        <h4>Documentation Note</h4>
+                        <p><strong>Record:</strong> "CAT score 16/40 (moderate symptoms). Morning cough with phlegm, unchanged. Significant dyspnoea on exertion (100m walk tolerance). FEV1 58% predicted (down from 60% 3 months ago). No recent exacerbations. Concerned about winter. Action plan in place and understood."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Medication Review & Adherence</h3>
+                </div>
+
+                <div class="step-context">
+                    <p><strong>Context:</strong> Review current COPD medications, assess adherence, check inhaler technique, and identify any side effects or barriers to compliance. This is critical — poor technique or non-adherence significantly impacts outcomes.</p>
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you check? <span class="reveal-chevron">▼</span>
+                </button>
+
+                <div class="reveal-block">
+                    <div class="rb-suggest">
+                        <h4>Suggested Approach</h4>
+                        <p><strong>Questions to ask:</strong></p>
+                        <ul>
+                            <li>"Tell me how you use your inhalers. Can you show me your technique?"</li>
+                            <li>"Do you use your tiotropium every day, even when you feel well?"</li>
+                            <li>"How often do you need your blue reliever inhaler?"</li>
+                            <li>"Any side effects from your medications?"</li>
+                            <li>"Any difficulty affording or accessing your medications?"</li>
+                        </ul>
+                        <p><strong>Assess inhaler technique:</strong> Watch patient demonstrate. Common errors: not shaking MDI, not holding breath, poor seal on spacer.</p>
+                        <p><strong>Assess adherence:</strong> Ask about frequency of use, barriers (cost, forgetfulness, side effects).</p>
+                    </div>
+
+                    <div class="rb-patient">
+                        <h4>Patient Response</h4>
+                        <p>"I use the tiotropium every morning — it's part of my routine. The blue one I use maybe 2–3 times a week. Let me show you..." [Demonstrates inhaler technique — adequate but not perfect; doesn't hold breath long enough after inhalation]. "No side effects. I get them on my PBS script, so cost is fine."</p>
+                    </div>
+
+                    <div class="rb-teach">
+                        <h4>Key Point</h4>
+                        <p>Bob's <strong>adherence to maintenance therapy is good</strong> (daily tiotropium). His <strong>reliever use is moderate</strong> (2–3 times/week) — suggests his current maintenance therapy is reasonably effective, though there's room for improvement. His <strong>inhaler technique needs refinement</strong> — not holding breath long enough reduces drug deposition. This is a teaching opportunity. His use of reliever &gt;2 days/week could indicate need for ICS, but his low eosinophil count argues against this per GOLD 2025 guidelines.</p>
+                    </div>
+
+                    <div class="rb-document">
+                        <h4>Documentation Note</h4>
+                        <p><strong>Record:</strong> "Good adherence to tiotropium (daily). Reliever use 2–3 times/week. Inhaler technique adequate but suboptimal (breath-hold duration &lt;10 seconds). No side effects. PBS access adequate. Counselled on technique improvement."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <h3 class="step-title">Complication Screening #1: Cardiovascular & Metabolic</h3>
+                </div>
+
+                <div class="step-context">
+                    <p><strong>Context:</strong> COPD patients have high cardiovascular risk. Screen for hypertension, coronary artery disease, heart failure, and metabolic complications. Review recent BP, lipids, and glucose control.</p>
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you assess? <span class="reveal-chevron">▼</span>
+                </button>
+
+                <div class="reveal-block">
+                    <div class="rb-suggest">
+                        <h4>Suggested Approach</h4>
+                        <p><strong>Questions to ask:</strong></p>
+                        <ul>
+                            <li>"Any chest pain or pressure, especially with exertion?"</li>
+                            <li>"Any swelling in your legs or ankles?"</li>
+                            <li>"Any palpitations or irregular heartbeats?"</li>
+                            <li>"How's your blood pressure been at home, if you check it?"</li>
+                        </ul>
+                        <p><strong>Observations:</strong></p>
+                        <ul>
+                            <li>Measure BP today (target &lt;140/90)</li>
+                            <li>Review recent lipid panel (if available)</li>
+                            <li>Assess for peripheral oedema, signs of heart failure</li>
+                        </ul>
+                        <p><strong>Note:</strong> Bob's BP is 136/80 (controlled). Last lipid panel was 2 years ago — may need updating.</p>
+                    </div>
+
+                    <div class="rb-patient">
+                        <h4>Patient Response</h4>
+                        <p>"No chest pain. No swelling. Heart feels fine. I don't check my BP at home, but the doctor said it was okay last time. I take my amlodipine every day."</p>
+                        <p><strong>Today's BP: 135/79 mmHg</strong> (well controlled)</p>
+                    </div>
+
+                    <div class="rb-teach">
+                        <h4>Key Point</h4>
+                        <p>Bob's <strong>cardiovascular assessment is reassuring</strong> — no symptoms of angina, heart failure, or arrhythmia. BP is well controlled on amlodipine. However, his <strong>last lipid panel was 2 years ago</strong> — given his age, diabetes, and COPD (all cardiovascular risk factors), a recent lipid panel would be prudent to guide statin therapy if needed. This is a screening gap to flag for the GP.</p>
+                    </div>
+
+                    <div class="rb-document">
+                        <h4>Documentation Note</h4>
+                        <p><strong>Record:</strong> "No symptoms of angina, heart failure, or arrhythmia. BP 135/79 (controlled on amlodipine). No peripheral oedema. Last lipid panel 2 years ago — recommend update. Cardiovascular risk factors: age, diabetes, COPD, sedentary lifestyle."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 6 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <h3 class="step-title">Complication Screening #2: Bone Health & Osteoporosis</h3>
+                </div>
+
+                <div class="step-context">
+                    <p><strong>Context:</strong> COPD patients have increased osteoporosis risk due to: (1) systemic inflammation, (2) reduced physical activity, (3) possible prior corticosteroid use, (4) male gender and age. Screen for bone health and fracture risk.</p>
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you explore? <span class="reveal-chevron">▼</span>
+                </button>
+
+                <div class="reveal-block">
+                    <div class="rb-suggest">
+                        <h4>Suggested Approach</h4>
+                        <p><strong>Questions to ask:</strong></p>
+                        <ul>
+                            <li>"Have you ever had a bone density scan (DEXA scan)?"</li>
+                            <li>"Any history of fractures or falls?"</li>
+                            <li>"How much calcium and vitamin D do you get in your diet?"</li>
+                            <li>"Any back pain or height loss?"</li>
+                        </ul>
+                        <p><strong>Risk assessment:</strong> Bob has multiple risk factors: age 68, male, COPD, sedentary, possible prior corticosteroid use (check history).</p>
+                        <p><strong>Recommendation:</strong> Consider DEXA scan referral if not done recently.</p>
+                    </div>
+
+                    <div class="rb-patient">
+                        <h4>Patient Response</h4>
+                        <p>"Never had a bone scan. No fractures. I don't really think about my diet much — probably not enough calcium. No back pain. I'm the same height I've always been, I think."</p>
+                    </div>
+
+                    <div class="rb-teach">
+                        <h4>Key Point</h4>
+                        <p>Bob has <strong>never been screened for bone health</strong> — this is a significant gap. His risk factors (age, male, COPD, sedentary) warrant a DEXA scan. His dietary calcium intake is likely inadequate. This is an opportunity to: (1) recommend DEXA scan, (2) counsel on calcium/vitamin D intake, (3) encourage weight-bearing exercise (which also helps COPD). Osteoporosis screening and management should be part of his comprehensive COPD care plan.</p>
+                    </div>
+
+                    <div class="rb-document">
+                        <h4>Documentation Note</h4>
+                        <p><strong>Record:</strong> "Never had DEXA scan. No fracture history. Dietary calcium intake likely inadequate. No back pain or height loss. Risk factors for osteoporosis: age, male, COPD, sedentary. Recommend DEXA scan and calcium/vitamin D supplementation. Counsel on weight-bearing exercise."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 7 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">7</div>
+                    <h3 class="step-title">Complication Screening #3: Mental Health & Anxiety</h3>
+                </div>
+
+                <div class="step-context">
+                    <p><strong>Context:</strong> Depression and anxiety are common in COPD and significantly impact outcomes. Bob has already expressed anxiety about disease progression. Formally assess mood and anxiety using validated tools.</p>
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you ask? <span class="reveal-chevron">▼</span>
+                </button>
+
+                <div class="reveal-block">
+                    <div class="rb-suggest">
+                        <h4>Suggested Approach</h4>
+                        <p><strong>Questions to ask:</strong></p>
+                        <ul>
+                            <li>"Over the past 2 weeks, have you felt down, depressed, or hopeless?"</li>
+                            <li>"Have you lost interest in things you normally enjoy?"</li>
+                            <li>"Do you worry a lot about your breathing or health?"</li>
+                            <li>"Does anxiety affect your daily activities?"</li>
+                        </ul>
+                        <p><strong>Use validated screening tool:</strong> PHQ-9 (depression) or GAD-7 (anxiety) — quick, evidence-based.</p>
+                        <p><strong>Listen for:</strong> Anxiety about exacerbations, fear of breathlessness, avoidance of activity due to anxiety.</p>
+                    </div>
+
+                    <div class="rb-patient">
+                        <h4>Patient Response</h4>
+                        <p>"I'm not depressed, but yeah, I do worry about my breathing. I worry that if I go out and get short of breath, I won't be able to get home. So sometimes I just stay home instead. My wife says I'm more anxious than I used to be."</p>
+                        <p><strong>GAD-7 Score: 11/21</strong> (mild-to-moderate anxiety)</p>
+                    </div>
+
+                    <div class="rb-teach">
+                        <h4>Key Point</h4>
+                        <p>Bob has <strong>mild-to-moderate anxiety</strong> (GAD-7 = 11) related to his COPD. His anxiety is <strong>functionally limiting</strong> — he's avoiding activities due to fear of breathlessness. This is a classic pattern: anxiety → avoidance → deconditioning → worse breathlessness → more anxiety (vicious cycle). <strong>Pulmonary rehabilitation</strong> (which includes exercise and education) and <strong>psychology/CBT</strong> are evidence-based treatments for COPD-related anxiety. This is a strong indication for referral.</p>
+                    </div>
+
+                    <div class="rb-document">
+                        <h4>Documentation Note</h4>
+                        <p><strong>Record:</strong> "GAD-7 score 11/21 (mild-to-moderate anxiety). Anxiety related to COPD and breathlessness. Avoidance of activities due to fear of exacerbation. Wife reports increased anxiety. No depression (PHQ-9 not administered as patient denies depressive symptoms). Recommend psychology referral for anxiety management and pulmonary rehabilitation."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 8 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">8</div>
+                    <h3 class="step-title">Lifestyle Assessment: Smoking, Activity, Nutrition</h3>
+                </div>
+
+                <div class="step-context">
+                    <p><strong>Context:</strong> Lifestyle factors significantly impact COPD outcomes. Assess smoking status (relapse risk), physical activity (deconditioning), nutrition (weight management), and self-management capacity.</p>
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you explore? <span class="reveal-chevron">▼</span>
+                </button>
+
+                <div class="reveal-block">
+                    <div class="rb-suggest">
+                        <h4>Suggested Approach</h4>
+                        <p><strong>Smoking:</strong></p>
+                        <ul>
+                            <li>"Are you still not smoking? How long has it been?"</li>
+                            <li>"Any temptation or stress that makes you want to smoke?"</li>
+                            <li>"Do you live with anyone who smokes?" (secondhand smoke exposure)</li>
+                        </ul>
+                        <p><strong>Physical Activity:</strong></p>
+                        <ul>
+                            <li>"What activities do you do in a typical week?"</li>
+                            <li>"How much walking or exercise do you manage?"</li>
+                            <li>"What stops you from being more active?" (breathlessness, anxiety, motivation)</li>
+                        </ul>
+                        <p><strong>Nutrition:</strong></p>
+                        <ul>
+                            <li>"How's your appetite?"</li>
+                            <li>"Any difficulty eating or swallowing?"</li>
+                            <li>"Are you maintaining a healthy weight?"</li>
+                        </ul>
+                    </div>
+
+                    <div class="rb-patient">
+                        <h4>Patient Response</h4>
+                        <p>"Quit smoking 10 years ago — best thing I did. No temptation now. Wife doesn't smoke either. As for activity, I don't do much. Walk to the shops maybe once a week, but that's about it. I get too puffed out. I know I should do more. Appetite's okay, weight's stable."</p>
+                    </div>
+
+                    <div class="rb-teach">
+                        <h4>Key Point</h4>
+                        <p>Bob's <strong>smoking cessation is excellent</strong> (10 years quit) — a major strength. However, his <strong>physical activity is very low</strong> — this is a key modifiable risk factor. His inactivity is driven by <strong>breathlessness and anxiety</strong> (as identified earlier). <strong>Pulmonary rehabilitation</strong> is the gold-standard intervention: it combines supervised exercise, education, and psychological support to break the deconditioning cycle. His weight is stable (BMI 26.5) — acceptable. Nutrition appears adequate.</p>
+                    </div>
+
+                    <div class="rb-document">
+                        <h4>Documentation Note</h4>
+                        <p><strong>Record:</strong> "Ex-smoker, quit 10 years ago, no relapse risk. No secondhand smoke exposure. Physical activity very low (minimal walking, &lt;1 hour/week). Inactivity driven by breathlessness and anxiety. Weight stable (BMI 26.5). Appetite and nutrition adequate. Strong candidate for pulmonary rehabilitation."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 9 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">9</div>
+                    <h3 class="step-title">Vaccination & Preventive Health</h3>
+                </div>
+
+                <div class="step-context">
+                    <p><strong>Context:</strong> Vaccinations are critical for COPD patients to prevent exacerbations. Review influenza, pneumococcal, and COVID-19 vaccination status. Identify gaps and plan updates.</p>
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you check? <span class="reveal-chevron">▼</span>
+                </button>
+
+                <div class="reveal-block">
+                    <div class="rb-suggest">
+                        <h4>Suggested Approach</h4>
+                        <p><strong>Questions to ask:</strong></p>
+                        <ul>
+                            <li>"When did you last have your flu vaccine?"</li>
+                            <li>"Have you had pneumococcal vaccines? Do you know which ones?"</li>
+                            <li>"Are you up to date with COVID-19 vaccines?"</li>
+                        </ul>
+                        <p><strong>Current recommendations for COPD patients:</strong></p>
+                        <ul>
+                            <li><strong>Influenza:</strong> Annual (due April–May in Australia)</li>
+                            <li><strong>Pneumococcal:</strong> PPSV23 (23-valent) + newer vaccines (PCV13, PCV15, PCV20) — consult current guidelines</li>
+                            <li><strong>COVID-19:</strong> As per current recommendations (typically annual booster)</li>
+                        </ul>
+                    </div>
+
+                    <div class="rb-patient">
+                        <h4>Patient Response</h4>
+                        <p>"Flu vaccine last year. Pneumococcal... I think I had one a few years ago, but I'm not sure which one. COVID vaccine is up to date."</p>
+                    </div>
+
+                    <div class="rb-teach">
+                        <h4>Key Point</h4>
+                        <p>Bob's <strong>influenza vaccine is due</strong> (last given 12 months ago; annual vaccination recommended). His <strong>pneumococcal vaccine status is unclear</strong> — he received PPSV23 3 years ago, but newer pneumococcal vaccines (PCV13, PCV15, PCV20) may be indicated depending on current guidelines and his age. This is a screening gap to clarify and address. COVID-19 status is current. Vaccination is a key preventive strategy to reduce exacerbation risk.</p>
+                    </div>
+
+                    <div class="rb-document">
+                        <h4>Documentation Note</h4>
+                        <p><strong>Record:</strong> "Influenza vaccine due (last given 12 months ago). Pneumococcal vaccine status unclear (PPSV23 given 3 years ago; newer vaccines may be indicated). COVID-19 up to date. Recommend: (1) influenza vaccine today or soon, (2) clarify pneumococcal vaccine status and update per current guidelines."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 10 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">10</div>
+                    <h3 class="step-title">Referrals, Goals & Wrapping Up</h3>
+                </div>
+
+                <div class="step-context">
+                    <p><strong>Context:</strong> Synthesise your findings. Identify priority referrals based on Bob's needs. Agree on goals. Document recommendations for GP to review and finalise. Ensure Bob understands the plan and feels supported.</p>
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you recommend? <span class="reveal-chevron">▼</span>
+                </button>
+
+                <div class="reveal-block">
+                    <div class="rb-suggest">
+                        <h4>Suggested Approach</h4>
+                        <p><strong>Summarise findings:</strong> "Bob, let me recap what we've talked about today..."</p>
+                        <ul>
+                            <li>COPD is stable but FEV1 declining slowly</li>
+                            <li>Symptoms moderate (CAT 16); functional limitation significant</li>
+                            <li>Anxiety about breathlessness is limiting activity</li>
+                            <li>Bone health never screened</li>
+                            <li>Vaccinations need updating</li>
+                        </ul>
+                        <p><strong>Propose referrals:</strong> "I'd like to recommend a few things to help you..."</p>
+                        <ul>
+                            <li><strong>Pulmonary rehabilitation:</strong> Supervised exercise + education to improve fitness and confidence</li>
+                            <li><strong>Psychology:</strong> Help with anxiety management and building confidence</li>
+                            <li><strong>DEXA scan:</strong> Check bone health (GP will arrange)</li>
+                        </ul>
+                        <p><strong>Agree on goals:</strong> "What would you like to achieve over the next 3 months?"</p>
+                        <p><strong>Wrap up:</strong> "The GP will review everything we've discussed and write referral letters. You'll take those to the providers. Any questions?"</p>
+                    </div>
+
+                    <div class="rb-patient">
+                        <h4>Patient Response</h4>
+                        <p>"That makes sense. I'd like to be able to walk further without getting so puffed out. And I'd like to feel less worried about my breathing. Pulmonary rehab sounds good — will it really help? How long does it take?"</p>
+                    </div>
+
+                    <div class="rb-teach">
+                        <h4>Key Point</h4>
+                        <p>Bob is <strong>receptive to referrals</strong> and has clear, functional goals. <strong>Pulmonary rehabilitation is evidence-based</strong> for COPD and improves exercise capacity, symptoms, and quality of life. Typical programs are 8–12 weeks, 2–3 sessions/week. Combined with psychology for anxiety, this is a strong, integrated approach. Document your recommendations clearly for the GP to action.</p>
+                    </div>
+
+                    <div class="rb-document">
+                        <h4>Documentation Note</h4>
+                        <p><strong>Record:</strong> "Patient receptive to referrals. Goals: improve exercise tolerance, reduce anxiety about breathlessness. Recommended: (1) Pulmonary rehabilitation (8–12 weeks), (2) Psychology for anxiety management, (3) DEXA scan for bone health screening, (4) Influenza vaccine today, (5) Clarify pneumococcal vaccine status. Patient education provided on pulmonary rehab benefits. GP to review and finalise referrals."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-counter" style="margin-top: 20px;">
+                <span id="stepCounter2">Steps explored: 0 / 10</span>
+            </div>
+        </section>
+
+        <!-- SECTION 5: INTERACTIVE ACTIVITY -->
+        <section>
+            <h2>Interactive Activity: Referral Selection</h2>
+
+            <div class="activity-container">
+                <div class="activity-title">Which Allied Health Referrals Would You Recommend for Bob?</div>
+                <p style="color: #4A5568; margin-bottom: 20px;">Based on your assessment, select the referrals you think Bob needs. Click each provider to select or deselect. Then click "Check My Selections" to see feedback.</p>
+
+                <div class="referral-grid">
+                    <div class="referral-card" data-correct="true" onclick="toggleReferral(this)">
+                        <div class="referral-icon">🏃</div>
+                        <div class="referral-name">Physiotherapist (Pulmonary Rehab)</div>
+                        <div class="referral-feedback" style="display: none;">✓</div>
+                    </div>
+                    <div class="referral-card" data-correct="true" onclick="toggleReferral(this)">
+                        <div class="referral-icon">🧠</div>
+                        <div class="referral-name">Psychologist (Anxiety)</div>
+                        <div class="referral-feedback" style="display: none;">✓</div>
+                    </div>
+                    <div class="referral-card" data-correct="maybe" onclick="toggleReferral(this)">
+                        <div class="referral-icon">🥗</div>
+                        <div class="referral-name">Dietitian</div>
+                        <div class="referral-feedback" style="display: none;">?</div>
+                    </div>
+                    <div class="referral-card" data-correct="false" onclick="toggleReferral(this)">
+                        <div class="referral-icon">🦷</div>
+                        <div class="referral-name">Podiatrist</div>
+                        <div class="referral-feedback" style="display: none;">✗</div>
+                    </div>
+                    <div class="referral-card" data-correct="false" onclick="toggleReferral(this)">
+                        <div class="referral-icon">👂</div>
+                        <div class="referral-name">Audiologist</div>
+                        <div class="referral-feedback" style="display: none;">✗</div>
+                    </div>
+                    <div class="referral-card" data-correct="maybe" onclick="toggleReferral(this)">
+                        <div class="referral-icon">🏥</div>
+                        <div class="referral-name">Occupational Therapist</div>
+                        <div class="referral-feedback" style="display: none;">?</div>
+                    </div>
+                    <div class="referral-card" data-correct="false" onclick="toggleReferral(this)">
+                        <div class="referral-icon">🦴</div>
+                        <div class="referral-name">Chiropractor</div>
+                        <div class="referral-feedback" style="display: none;">✗</div>
+                    </div>
+                    <div class="referral-card" data-correct="false" onclick="toggleReferral(this)">
+                        <div class="referral-icon">🎤</div>
+                        <div class="referral-name">Speech Pathologist</div>
+                        <div class="referral-feedback" style="display: none;">✗</div>
+                    </div>
+                </div>
+
+                <button class="check-button" onclick="checkReferrals()">Check My Selections</button>
+
+                <div id="referralFeedback" style="display: none; margin-top: 20px;">
+                    <div class="rb-teach" id="feedbackContent"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: QUICK REFERENCE -->
+        <section>
+            <h2>Quick Reference</h2>
+
+            <div class="accordion-section">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3>COPD Severity Classification (GOLD 2025)</h3>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <table class="pathology-table">
+                            <thead>
+                                <tr>
+                                    <th>GOLD Group</th>
+                                    <th>FEV1 % Predicted</th>
+                                    <th>Exacerbations/Year</th>
+                                    <th>Symptoms (CAT)</th>
+                                    <th>Typical Treatment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>A</strong></td>
+                                    <td>≥80%</td>
+                                    <td>0–1</td>
+                                    <td>&lt;10</td>
+                                    <td>SABA or SAMA</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>B</strong></td>
+                                    <td>50–79%</td>
+                                    <td>0–1</td>
+                                    <td>≥10</td>
+                                    <td>LABA or LAMA (or both)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>C</strong></td>
+                                    <td>≥80%</td>
+                                    <td>≥2</td>
+                                    <td>&lt;10</td>
+                                    <td>LABA or LAMA (or both)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>D</strong></td>
+                                    <td>50–79%</td>
+                                    <td>≥2</td>
+                                    <td>≥10</td>
+                                    <td>LABA + LAMA ± ICS</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 12px; font-size: 16px; color: #4A5568;"><strong>Bob's Classification:</strong> GOLD Group B (FEV1 58%, 0–1 exacerbations, CAT 16). Current therapy (LAMA alone) is appropriate; ICS not indicated due to low eosinophils and low exacerbation frequency.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-section">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3>Red Flags & Escalation Triggers</h3>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <p><strong>Alert GP immediately if:</strong></p>
+                        <ul>
+                            <li>SpO2 &lt;90% on room air (hypoxia)</li>
+                            <li>Severe dyspnoea at rest or with minimal exertion</li>
+                            <li>Signs of acute exacerbation (increased cough, sputum, dyspnoea)</li>
+                            <li>Chest pain or signs of heart failure (oedema, orthopnoea)</li>
+                            <li>Severe anxiety or depression with suicidal ideation</li>
+                            <li>Suspected pneumonia (fever, purulent sputum, focal crackles)</li>
+                            <li>Haemoptysis (coughing blood)</li>
+                        </ul>
+                        <p style="margin-top: 12px;"><strong>Bob's status:</strong> No red flags identified. Stable COPD with manageable anxiety.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-section">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3>Complication Screening Schedule</h3>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <table class="pathology-table">
+                            <thead>
+                                <tr>
+                                    <th>Complication</th>
+                                    <th>Screening Tool</th>
+                                    <th>Frequency</th>
+                                    <th>Action if Positive</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Cardiovascular Disease</strong></td>
+                                    <td>BP, lipids, ECG</td>
+                                    <td>Annual or per risk</td>
+                                    <td>Manage BP, lipids; consider cardiology referral</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Osteoporosis</strong></td>
+                                    <td>DEXA scan</td>
+                                    <td>Once if risk factors; repeat per result</td>
+                                    <td>Calcium/vitamin D; consider bisphosphonate</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Depression</strong></td>
+                                    <td>PHQ-9</td>
+                                    <td>Annual or if symptoms</td>
+                                    <td>Psychology referral; consider antidepressant</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Anxiety</strong></td>
+                                    <td>GAD-7</td>
+                                    <td>Annual or if symptoms</td>
+                                    <td>Psychology referral; pulmonary rehab; consider anxiolytic</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Sleep Apnoea</strong></td>
+                                    <td>Sleep study if symptoms</td>
+                                    <td>If nocturnal dyspnoea, snoring, daytime somnolence</td>
+                                    <td>Sleep medicine referral; CPAP if indicated</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-section">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3>Inhaler Technique Checklist</h3>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <p><strong>For Metered-Dose Inhaler (MDI) with Spacer:</strong></p>
+                        <ul>
+                            <li>Shake inhaler vigorously (10 shakes)</li>
+                            <li>Attach spacer to MDI</li>
+                            <li>Breathe out fully (away from spacer)</li>
+                            <li>Place spacer mouthpiece in mouth or use face mask</li>
+                            <li>Press MDI to release one dose into spacer</li>
+                            <li>Breathe in and out slowly and deeply 5–6 times (or until spacer stops whistling)</li>
+                            <li>Wait 30–60 seconds before next dose (if multiple doses)</li>
+                        </ul>
+                        <p style="margin-top: 12px;"><strong>Common errors:</strong> Not shaking, not holding breath, breathing too fast, not waiting between doses.</p>
+                        <p><strong>Bob's technique:</strong> Adequate but needs to hold breath longer (≥10 seconds) to maximise drug deposition.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: CHECKLIST -->
+        <section>
+            <h2>COPD Care Plan Review Checklist</h2>
+            <p style="color: #4A5568; margin-bottom: 20px;">Use this checklist during your interview to ensure you've covered all key areas. Click items to mark them as complete.</p>
+
+            <div class="activity-container">
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Introduce appointment, explain purpose, set expectations</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Assess general wellbeing, mood, energy, sleep</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Review COPD symptoms (cough, dyspnoea, sputum)</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Administer COPD Assessment Test (CAT) or similar</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Review spirometry results (FEV1, FEV1/FVC ratio)</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Assess exacerbation history (frequency, triggers, management)</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Review current COPD medications and adherence</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Assess inhaler technique (observe patient demonstrate)</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Screen for cardiovascular complications (BP, symptoms, lipids)</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Screen for bone health (DEXA status, fracture risk)</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Screen for depression (PHQ-9 or similar)</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Screen for anxiety (GAD-7 or similar)</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Assess smoking status and secondhand smoke exposure</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Assess physical activity and exercise capacity</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Assess nutrition and weight management</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Review vaccination status (influenza, pneumococcal, COVID-19)</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Identify patient's goals and priorities</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Recommend allied health referrals (pulmonary rehab, psychology, etc.)</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Document findings in structured format for GP review</div>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <div class="checklist-text">Summarise plan with patient, confirm understanding, answer questions</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: FOOTER -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-title">COPD Care Plan Review Module</div>
+                <p style="color: #EBF8FF; margin-bottom: 20px;">GP Clinic Practice Module | General Practice Setting</p>
+
+                <div class="footer-section">
+                    <h4>References & Guidelines</h4>
+                    <ul>
+                        <li>COPD-X Australian and New Zealand Guidelines (Lung Foundation Australia, Thoracic Society of Australia and New Zealand)</li>
+                        <li>GOLD 2025 Global Strategy for the Diagnosis, Management, and Prevention of COPD</li>
+                        <li>RACGP Guidelines for COPD Management in Primary Care</li>
+                        <li>Australian Commission on Safety and Quality in Health Care — COPD Clinical Care Standard (2024)</li>
+                        <li>Services Australia — GPCCMP (GP Chronic Condition Management Plan) — Effective 1 July 2025</li>
+                        <li>COPD Assessment Test (CAT) — validated symptom assessment tool</li>
+                        <li>GAD-7 (Generalised Anxiety Disorder-7) — validated anxiety screening tool</li>
+                        <li>PHQ-9 (Patient Health Questionnaire-9) — validated depression screening tool</li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Key Organisations</h4>
+                    <ul>
+                        <li>Lung Foundation Australia (lungfoundation.com.au)</li>
+                        <li>RACGP (Royal Australian College of General Practitioners)</li>
+                        <li>Thoracic Society of Australia and New Zealand</li>
+                        <li>Australian Commission on Safety and Quality in Health Care</li>
+                    </ul>
+                </div>
+
+                <div class="disclaimer">
+                    <strong>Disclaimer:</strong> This module is for educational purposes only. It is designed to support practice nurses in conducting COPD care plan reviews in general practice settings. Always follow your practice protocols, current clinical guidelines, and seek GP supervision for clinical decisions. This module does not replace professional clinical judgment or formal training. Patient care should be individualised based on clinical assessment and evidence-based guidelines.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // PROGRESS BAR
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('progressFill').style.width = scrollPercent + '%';
+        });
+
+        // ACCORDION
+        function toggleAccordion(header) {
+            const section = header.parentElement;
+            const isOpen = section.classList.contains('open');
+
+            // Close all other accordions in the same parent
+            const parent = section.parentElement;
+            const allSections = parent.querySelectorAll('.accordion-section');
+            allSections.forEach(s => s.classList.remove('open'));
+
+            // Toggle current
+            if (!isOpen) {
+                section.classList.add('open');
+            }
+        }
+
+        // REVEAL BLOCKS
+        function toggleReveal(button) {
+            const block = button.nextElementSibling;
+            const isRevealed = block.classList.contains('show');
+
+            if (!isRevealed) {
+                block.classList.add('show');
+                button.classList.add('revealed');
+                updateStepCounter();
+            }
+        }
+
+        // STEP COUNTER
+        function updateStepCounter() {
+            const revealedBlocks = document.querySelectorAll('.reveal-block.show').length;
+            const totalSteps = 10;
+            document.getElementById('stepCounter').textContent = `Steps explored: ${revealedBlocks} / ${totalSteps}`;
+            document.getElementById('stepCounter2').textContent = `Steps explored: ${revealedBlocks} / ${totalSteps}`;
+        }
+
+        // REFERRAL SELECTION
+        function toggleReferral(card) {
+            card.classList.toggle('selected');
+        }
+
+        function checkReferrals() {
+            const cards = document.querySelectorAll('.referral-card');
+            let correct = 0;
+            let total = 0;
+
+            cards.forEach(card => {
+                const isSelected = card.classList.contains('selected');
+                const correctValue = card.getAttribute('data-correct');
+                const feedback = card.querySelector('.referral-feedback');
+
+                if (correctValue === 'true') {
+                    if (isSelected) {
+                        card.classList.add('correct');
+                        card.classList.remove('selected', 'incorrect', 'missed');
+                        feedback.textContent = '✓';
+                        feedback.style.display = 'block';
+                        correct++;
+                    } else {
+                        card.classList.add('missed');
+                        card.classList.remove('selected', 'correct', 'incorrect');
+                        feedback.textContent = '!';
+                        feedback.style.display = 'block';
+                    }
+                    total++;
+                } else if (correctValue === 'maybe') {
+                    if (isSelected) {
+                        card.classList.add('correct');
+                        card.classList.remove('selected', 'incorrect', 'missed');
+                        feedback.textContent = '✓';
+                        feedback.style.display = 'block';
+                        correct++;
+                    } else {
+                        card.classList.remove('selected', 'correct', 'incorrect', 'missed');
+                        feedback.style.display = 'none';
+                    }
+                } else {
+                    if (isSelected) {
+                        card.classList.add('incorrect');
+                        card.classList.remove('selected', 'correct', 'missed');
+                        feedback.textContent = '✗';
+                        feedback.style.display = 'block';
+                    } else {
+                        card.classList.remove('selected', 'correct', 'incorrect', 'missed');
+                        feedback.style.display = 'none';
+                    }
+                }
+            });
+
+            const feedbackDiv = document.getElementById('referralFeedback');
+            const feedbackContent = document.getElementById('feedbackContent');
+
+            let html = `<h4>Your Score: ${correct} / ${total} Priority Referrals Identified</h4>`;
+            html += `<p><strong>Priority Referrals (Strongly Indicated):</strong></p>`;
+            html += `<ul>
+                <li><strong>Physiotherapist (Pulmonary Rehabilitation):</strong> Bob has moderate COPD symptoms, significant functional limitation (100m walk tolerance), and anxiety about breathlessness. Pulmonary rehab is evidence-based and combines supervised exercise, education, and psychological support. This addresses his deconditioning, anxiety, and functional goals.</li>
+                <li><strong>Psychologist (Anxiety Management):</strong> Bob has mild-to-moderate anxiety (GAD-7 = 11) related to COPD, with functional avoidance of activities. Psychology/CBT can help break the anxiety-avoidance-deconditioning cycle and improve quality of life.</li>
+            </ul>`;
+            html += `<p><strong>Optional Referrals (Consider):</strong></p>`;
+            html += `<ul>
+                <li><strong>Dietitian:</strong> Bob's nutrition is currently adequate, but a dietitian could provide tailored advice on maintaining healthy weight, energy-dense foods for COPD, and optimising nutrition for exercise tolerance. Lower priority than pulmonary rehab and psychology.</li>
+                <li><strong>Occupational Therapist:</strong> Could help with energy conservation techniques, activities of daily living, and home modifications. Useful if functional decline progresses, but not urgent at this stage.</li>
+            </ul>`;
+            html += `<p><strong>Not Indicated:</strong></p>`;
+            html += `<ul>
+                <li><strong>Podiatrist, Audiologist, Chiropractor, Speech Pathologist:</strong> No specific indications for Bob at this time. Podiatrist would be relevant if he had diabetes-related foot complications (he doesn't). Audiologist if hearing loss (not assessed). Chiropractor and speech pathologist not indicated for COPD management.</li>
+            </ul>`;
+            html += `<p><strong>Maximising Medicare Entitlements:</strong> Bob is entitled to up to 5 individual allied health visits per calendar year. Prioritise: (1) Pulmonary rehabilitation (typically 8–12 weeks, 2–3 sessions/week = 16–36 visits, but may be covered under group sessions or separate program), (2) Psychology (4–5 sessions for anxiety management). Coordinate with GP to ensure referrals are sequenced and patient capacity is considered.</p>`;
+
+            feedbackContent.innerHTML = html;
+            feedbackDiv.style.display = 'block';
+        }
+
+        // CHECKLIST
+        function toggleChecklistItem(item) {
+            item.classList.toggle('checked');
+        }
+
+        // Initialize
+        updateStepCounter();
+    </script>
+</body>
+</html>
