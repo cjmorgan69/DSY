@@ -1,0 +1,2105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GP Clinic Care Plan Module: Prostate Cancer Review</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 18px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+            background-color: #F7FAFC;
+            color: #1A202C;
+            line-height: 1.6;
+        }
+
+        /* Sticky Header */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, #3182CE 0%, #2B6CB0 100%);
+            color: white;
+            padding: 16px 24px;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            min-width: 200px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #4299E1;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Sections */
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+        .section:nth-child(6) { animation-delay: 0.6s; }
+        .section:nth-child(7) { animation-delay: 0.7s; }
+        .section:nth-child(8) { animation-delay: 0.8s; }
+
+        /* Headings */
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1A202C;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2B6CB0;
+            margin-bottom: 16px;
+            border-bottom: 3px solid #EBF8FF;
+            padding-bottom: 12px;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1A202C;
+            margin-top: 20px;
+            margin-bottom: 12px;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: linear-gradient(135deg, #EBF8FF 0%, #F0F9FF 100%);
+            border-left: 4px solid #3182CE;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-card p {
+            color: #4A5568;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        /* Learning Objectives */
+        .objectives {
+            background: #F0FFF4;
+            border-left: 4px solid #38A169;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .objectives h3 {
+            color: #38A169;
+            margin-top: 0;
+        }
+
+        .objectives ol {
+            margin-left: 20px;
+            color: #4A5568;
+        }
+
+        .objectives li {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        /* Accordion */
+        .accordion-item {
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background-color: #F7FAFC;
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #2B6CB0;
+            transition: background-color 0.2s ease;
+            user-select: none;
+            min-height: 44px;
+        }
+
+        .accordion-header:hover {
+            background-color: #EBF8FF;
+        }
+
+        .accordion-header.active {
+            background-color: #EBF8FF;
+        }
+
+        .accordion-chevron {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            font-size: 18px;
+        }
+
+        .accordion-header.active .accordion-chevron {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background-color: white;
+        }
+
+        .accordion-content.active {
+            max-height: 2000px;
+        }
+
+        .accordion-body {
+            padding: 16px;
+            color: #4A5568;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .accordion-body p {
+            margin-bottom: 12px;
+        }
+
+        .accordion-body ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .accordion-body li {
+            margin-bottom: 8px;
+        }
+
+        /* Patient Profile */
+        .patient-card {
+            background: linear-gradient(135deg, #EBF8FF 0%, #F0F9FF 100%);
+            border-left: 4px solid #3182CE;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .patient-card h3 {
+            color: #2B6CB0;
+            margin-top: 0;
+        }
+
+        .patient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .patient-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .patient-item-label {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .patient-item-value {
+            font-size: 18px;
+            color: #1A202C;
+            font-weight: 600;
+        }
+
+        /* Pathology Table */
+        .pathology-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            font-size: 16px;
+        }
+
+        .pathology-table th {
+            background-color: #EBF8FF;
+            color: #2B6CB0;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #3182CE;
+        }
+
+        .pathology-table td {
+            padding: 12px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .pathology-table tr:hover {
+            background-color: #F7FAFC;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-green {
+            background-color: #F0FFF4;
+            color: #22543D;
+            border: 1px solid #38A169;
+        }
+
+        .status-amber {
+            background-color: #FFFAF0;
+            color: #7C2D12;
+            border: 1px solid #DD6B20;
+        }
+
+        .status-red {
+            background-color: #FFF5F5;
+            color: #742A2A;
+            border: 1px solid #E53E3E;
+        }
+
+        /* Interview Steps */
+        .step-container {
+            background: white;
+            border-left: 4px solid #3182CE;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #3182CE 0%, #2B6CB0 100%);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1A202C;
+        }
+
+        .step-context {
+            background-color: #F7FAFC;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            color: #4A5568;
+            font-size: 16px;
+            border-left: 3px solid #718096;
+        }
+
+        .reveal-button {
+            background: linear-gradient(135deg, #3182CE 0%, #2B6CB0 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            min-height: 44px;
+        }
+
+        .reveal-button:hover {
+            background: linear-gradient(135deg, #2B6CB0 0%, #1E4E8A 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+        }
+
+        .reveal-button.active {
+            background: linear-gradient(135deg, #2B6CB0 0%, #1E4E8A 100%);
+        }
+
+        .reveal-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-top: 12px;
+        }
+
+        .reveal-content.active {
+            max-height: 3000px;
+        }
+
+        .reveal-block {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .rb-suggest {
+            background-color: #EBF8FF;
+            border-left: 4px solid #3182CE;
+            color: #1A202C;
+        }
+
+        .rb-patient {
+            background-color: #F3E8FF;
+            border-left: 4px solid #9333EA;
+            color: #1A202C;
+        }
+
+        .rb-teach {
+            background-color: #F0FFF4;
+            border-left: 4px solid #38A169;
+            color: #1A202C;
+        }
+
+        .rb-document {
+            background-color: #FFFAF0;
+            border-left: 4px solid #DD6B20;
+            color: #1A202C;
+        }
+
+        .rb-flag {
+            background-color: #FFF5F5;
+            border-left: 4px solid #E53E3E;
+            color: #1A202C;
+        }
+
+        .reveal-block strong {
+            color: #1A202C;
+            font-weight: 700;
+        }
+
+        .reveal-block ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        .reveal-block li {
+            margin-bottom: 6px;
+        }
+
+        .step-counter {
+            background-color: #EBF8FF;
+            border: 1px solid #3182CE;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #2B6CB0;
+            font-weight: 600;
+            margin-top: 16px;
+            font-size: 16px;
+        }
+
+        /* Interactive Elements */
+        .interactive-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .referral-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .referral-card {
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .referral-card:hover {
+            border-color: #3182CE;
+            background-color: #EBF8FF;
+        }
+
+        .referral-card.selected {
+            border-color: #38A169;
+            background-color: #F0FFF4;
+        }
+
+        .referral-card.incorrect {
+            border-color: #E53E3E;
+            background-color: #FFF5F5;
+        }
+
+        .referral-card-title {
+            font-weight: 600;
+            color: #1A202C;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .referral-card-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .referral-feedback {
+            background-color: #F0FFF4;
+            border-left: 4px solid #38A169;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .referral-feedback.active {
+            display: block;
+        }
+
+        .quiz-question {
+            background-color: #F7FAFC;
+            border-left: 4px solid #3182CE;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question h4 {
+            color: #2B6CB0;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #E2E8F0;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .quiz-option:hover {
+            border-color: #3182CE;
+            background-color: #EBF8FF;
+        }
+
+        .quiz-option.selected {
+            border-color: #3182CE;
+            background-color: #EBF8FF;
+        }
+
+        .quiz-option.correct {
+            border-color: #38A169;
+            background-color: #F0FFF4;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #E53E3E;
+            background-color: #FFF5F5;
+        }
+
+        .quiz-feedback {
+            background-color: #F0FFF4;
+            border-left: 4px solid #38A169;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            display: none;
+            font-size: 16px;
+        }
+
+        .quiz-feedback.active {
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background-color: #FFF5F5;
+            border-left-color: #E53E3E;
+        }
+
+        .quiz-submit {
+            background: linear-gradient(135deg, #3182CE 0%, #2B6CB0 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 12px;
+            transition: all 0.3s ease;
+            min-height: 44px;
+        }
+
+        .quiz-submit:hover:not(:disabled) {
+            background: linear-gradient(135deg, #2B6CB0 0%, #1E4E8A 100%);
+            transform: translateY(-2px);
+        }
+
+        .quiz-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist-item {
+            background: white;
+            border: 1px solid #E2E8F0;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .checklist-item:hover {
+            background-color: #F7FAFC;
+            border-color: #3182CE;
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #E2E8F0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item.checked .checklist-checkbox {
+            background-color: #38A169;
+            border-color: #38A169;
+            color: white;
+        }
+
+        .checklist-item.checked {
+            background-color: #F0FFF4;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1A202C;
+            color: white;
+            padding: 24px;
+            text-align: center;
+            margin-top: 40px;
+            border-radius: 12px;
+        }
+
+        .footer h3 {
+            color: white;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .footer p {
+            font-size: 14px;
+            color: #CBD5E0;
+            margin-bottom: 8px;
+        }
+
+        .footer-disclaimer {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 14px;
+            border-left: 3px solid #4299E1;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            html {
+                font-size: 16px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .progress-bar {
+                min-width: 100%;
+            }
+
+            .patient-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .referral-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pathology-table {
+                font-size: 14px;
+            }
+
+            .pathology-table th,
+            .pathology-table td {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 16px;
+            }
+
+            .section {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sticky Header -->
+    <div class="sticky-header">
+        <div class="header-content">
+            <div>
+                <div class="header-title">Prostate Cancer Care Plan Review</div>
+                <div class="header-subtitle">GP Clinic Practice Module</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Section 1: Welcome & Introduction -->
+        <div class="section">
+            <h1>Prostate Cancer Care Plan Review</h1>
+            <div class="welcome-card">
+                <p><strong>Setting:</strong> General practice clinic, scheduled 45-minute care plan review appointment</p>
+                <p><strong>Your role:</strong> Practice nurse conducting structured interview with patient who has been diagnosed with prostate cancer and is under active surveillance or post-treatment follow-up</p>
+                <p><strong>Appointment type:</strong> GPCCMP review (MBS item 967 — face-to-face review, $156.55)</p>
+                <p><strong>GP's role:</strong> Reviews your findings, finalises care plan, writes referrals to allied health services</p>
+            </div>
+
+            <div class="objectives">
+                <h3>Learning Objectives</h3>
+                <ol>
+                    <li>Conduct a structured prostate cancer care plan review aligned with GPCCMP framework and 2025 Australian guidelines</li>
+                    <li>Assess current disease status, treatment side effects, and psychological wellbeing</li>
+                    <li>Screen for complications and comorbidities relevant to prostate cancer survivors</li>
+                    <li>Identify appropriate allied health referrals (physiotherapy, psychology, sexual health support)</li>
+                    <li>Document findings clearly for GP review and plan finalisation</li>
+                    <li>Support shared decision-making around ongoing surveillance, treatment options, and quality of life</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Section 2: Knowledge Foundation -->
+        <div class="section">
+            <h2>Knowledge Foundation</h2>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>What is a GPCCMP?</span>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <p><strong>GPCCMP = GP Chronic Condition Management Plan</strong></p>
+                        <p>Effective from 1 July 2025, the GPCCMP replaces the old GPMP (GP Management Plan) and TCA (Team Care Arrangement).</p>
+                        <h4>Key Features:</h4>
+                        <ul>
+                            <li><strong>Eligibility:</strong> Patient has a chronic or terminal condition present (or likely) for 6+ months. Prostate cancer qualifies.</li>
+                            <li><strong>Preparation:</strong> Once per 12 months (if necessary) — MBS item 965, $156.55</li>
+                            <li><strong>Review:</strong> Every 3 months — MBS item 967, $156.55</li>
+                            <li><strong>Allied health entitlements:</strong> Up to 5 individual visits per calendar year (10 for Aboriginal and Torres Strait Islander patients)</li>
+                            <li><strong>Referral process:</strong> Direct GP letter to allied health provider (no EPC form required from 1 July 2025)</li>
+                            <li><strong>Referral validity:</strong> 18 months from first session</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>The Practice Nurse's Role in Prostate Cancer Care</span>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <h4>What You Do:</h4>
+                        <ul>
+                            <li>Conduct structured care plan interview with patient</li>
+                            <li>Review recent pathology results (PSA, other relevant tests)</li>
+                            <li>Assess current symptoms, treatment side effects, and functional status</li>
+                            <li>Screen for complications (erectile dysfunction, urinary symptoms, bowel changes)</li>
+                            <li>Assess psychological wellbeing and cancer-related distress</li>
+                            <li>Identify lifestyle factors and barriers to self-management</li>
+                            <li>Recommend allied health referrals (for GP to finalise)</li>
+                            <li>Document findings in structured format for GP review</li>
+                        </ul>
+                        <h4>Scope Boundaries:</h4>
+                        <ul>
+                            <li>You do NOT make final clinical decisions — the GP does</li>
+                            <li>You do NOT diagnose or change treatment — that's the GP/urologist's role</li>
+                            <li>You DO gather comprehensive information and flag concerns for GP review</li>
+                            <li>You DO support shared decision-making and patient education</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Allied Health Under a GPCCMP</span>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <h4>Entitlements:</h4>
+                        <ul>
+                            <li><strong>Individual visits:</strong> Up to 5 per calendar year (10 for Aboriginal and Torres Strait Islander patients)</li>
+                            <li><strong>Group sessions:</strong> Not applicable for prostate cancer (group sessions are T2DM-specific)</li>
+                            <li><strong>Referral validity:</strong> 18 months from first session</li>
+                        </ul>
+                        <h4>Available Providers for Prostate Cancer Survivors:</h4>
+                        <ul>
+                            <li><strong>Physiotherapist:</strong> Pelvic floor rehabilitation, continence support, exercise programs</li>
+                            <li><strong>Psychologist:</strong> Cancer-related distress, anxiety, depression, sexual health counselling</li>
+                            <li><strong>Occupational therapist:</strong> Functional assessment, activity modification, return-to-work support</li>
+                            <li><strong>Exercise physiologist:</strong> Tailored exercise programs to improve fitness and quality of life</li>
+                            <li><strong>Dietitian:</strong> Nutritional support, weight management, prostate-healthy diet</li>
+                            <li><strong>Speech pathologist:</strong> If swallowing or communication issues arise</li>
+                        </ul>
+                        <h4>Referral Process:</h4>
+                        <p>GP writes direct referral letter to allied health provider. Patient takes letter to provider. No EPC form required.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Patient Profile -->
+        <div class="section">
+            <h2>Patient Profile & Scenario</h2>
+
+            <div class="patient-card">
+                <h3>Michael Chen</h3>
+                <p><strong>Appointment type:</strong> GPCCMP Review (6-month follow-up post-diagnosis)</p>
+            </div>
+
+            <h3>Demographics</h3>
+            <div class="patient-grid">
+                <div class="patient-item">
+                    <div class="patient-item-label">Age</div>
+                    <div class="patient-item-value">62 years</div>
+                </div>
+                <div class="patient-item">
+                    <div class="patient-item-label">Gender</div>
+                    <div class="patient-item-value">Male</div>
+                </div>
+                <div class="patient-item">
+                    <div class="patient-item-label">Living Situation</div>
+                    <div class="patient-item-value">Married, 2 adult children</div>
+                </div>
+                <div class="patient-item">
+                    <div class="patient-item-label">Occupation</div>
+                    <div class="patient-item-value">Accountant (office-based)</div>
+                </div>
+                <div class="patient-item">
+                    <div class="patient-item-label">BMI</div>
+                    <div class="patient-item-value">27.3 (overweight)</div>
+                </div>
+                <div class="patient-item">
+                    <div class="patient-item-label">Support</div>
+                    <div class="patient-item-value">Wife supportive; some anxiety</div>
+                </div>
+            </div>
+
+            <h3>Medical History</h3>
+            <div class="patient-grid">
+                <div class="patient-item">
+                    <div class="patient-item-label">Primary Diagnosis</div>
+                    <div class="patient-item-value">Prostate cancer (T1c, Gleason 6, PSA 5.2)</div>
+                </div>
+                <div class="patient-item">
+                    <div class="patient-item-label">Stage</div>
+                    <div class="patient-item-value">Localised, low-risk</div>
+                </div>
+                <div class="patient-item">
+                    <div class="patient-item-label">Management</div>
+                    <div class="patient-item-value">Active surveillance (diagnosed 6 months ago)</div>
+                </div>
+                <div class="patient-item">
+                    <div class="patient-item-label">Comorbidities</div>
+                    <div class="patient-item-value">Hypertension, mild hypercholesterolaemia</div>
+                </div>
+                <div class="patient-item">
+                    <div class="patient-item-label">Current Medications</div>
+                    <div class="patient-item-value">Amlodipine 5mg daily, Atorvastatin 20mg daily</div>
+                </div>
+                <div class="patient-item">
+                    <div class="patient-item-label">Last Urologist Review</div>
+                    <div class="patient-item-value">3 months ago (stable)</div>
+                </div>
+            </div>
+
+            <h3>Recent Pathology Results</h3>
+            <table class="pathology-table">
+                <thead>
+                    <tr>
+                        <th>Test</th>
+                        <th>Current Result</th>
+                        <th>Previous (3 months)</th>
+                        <th>Target/Normal Range</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>PSA (ng/mL)</strong></td>
+                        <td>5.4</td>
+                        <td>5.2</td>
+                        <td>&lt;4.0 (general); &lt;10 (active surveillance)</td>
+                        <td><span class="status-badge status-amber">Slight rise</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Free PSA %</strong></td>
+                        <td>28%</td>
+                        <td>29%</td>
+                        <td>&gt;25% (lower risk)</td>
+                        <td><span class="status-badge status-green">Acceptable</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total Cholesterol (mmol/L)</strong></td>
+                        <td>4.8</td>
+                        <td>5.1</td>
+                        <td>&lt;5.5</td>
+                        <td><span class="status-badge status-green">On target</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>HDL (mmol/L)</strong></td>
+                        <td>1.2</td>
+                        <td>1.1</td>
+                        <td>&gt;1.0</td>
+                        <td><span class="status-badge status-green">Good</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>LDL (mmol/L)</strong></td>
+                        <td>2.8</td>
+                        <td>3.0</td>
+                        <td>&lt;3.5</td>
+                        <td><span class="status-badge status-green">On target</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>BP (mmHg)</strong></td>
+                        <td>138/84</td>
+                        <td>142/86</td>
+                        <td>&lt;140/90</td>
+                        <td><span class="status-badge status-green">Improving</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Key Clinical Notes</h3>
+            <div class="step-context">
+                <strong>Diagnosis context:</strong> PSA screening at age 60 revealed elevated PSA (5.2 ng/mL). Multiparametric MRI (PI-RADS 2) and transperineal biopsy confirmed Gleason 6 (ISUP Grade 1) prostate cancer. Patient and urologist agreed on active surveillance given low-risk features. Patient has been anxious about diagnosis but wife is supportive. No prior treatment. Urologist review at 3 months was reassuring (PSA stable, no imaging changes).
+            </div>
+        </div>
+
+        <!-- Section 4: The Care Plan Interview (10 Steps) -->
+        <div class="section">
+            <h2>The Care Plan Interview: 10 Structured Steps</h2>
+
+            <!-- Step 1 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Opening & Building Rapport</div>
+                </div>
+
+                <div class="step-context">
+                    <strong>What's happening:</strong> You're setting the tone for the appointment, explaining the purpose of the care plan review, and establishing trust. This is especially important for cancer patients who may be anxious or have concerns they haven't shared.
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you say?
+                    <span style="font-size: 18px;">▼</span>
+                </button>
+
+                <div class="reveal-content">
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Approach:</strong>
+                        <ul>
+                            <li>Greet warmly and use patient's preferred name</li>
+                            <li>Acknowledge the diagnosis: "I know you were diagnosed with prostate cancer 6 months ago. How have you been managing?"</li>
+                            <li>Explain the appointment: "Today I want to check in on how you're doing physically and emotionally, review your recent test results, and make sure we have a plan that works for you."</li>
+                            <li>Set expectations: "This will take about 45 minutes. I'll ask you some questions, and then Dr [GP name] will review everything and finalise your care plan."</li>
+                            <li>Invite questions: "Is there anything you'd like to talk about today?"</li>
+                        </ul>
+                    </div>
+
+                    <div class="reveal-block rb-patient">
+                        <strong>Patient Response:</strong>
+                        <p>"Thanks. Yeah, it's been a bit of a shock, to be honest. I've been trying not to worry too much, but I do think about it. My wife has been great, but I'm not sure what happens next. The urologist said everything looks stable, but I want to make sure I'm doing everything right."</p>
+                    </div>
+
+                    <div class="reveal-block rb-teach">
+                        <strong>Key Point:</strong>
+                        <p>Cancer diagnosis triggers anxiety and uncertainty. Acknowledging this and providing structure reassures the patient. Active surveillance is a valid, evidence-based approach for low-risk prostate cancer, but patients need clear communication about what to expect.</p>
+                    </div>
+
+                    <div class="reveal-block rb-document">
+                        <strong>Documentation Note:</strong>
+                        <p>Record: Patient's emotional state (anxious but coping), wife's support, understanding of diagnosis and management plan, any specific concerns raised.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">General Wellbeing Check</div>
+                </div>
+
+                <div class="step-context">
+                    <strong>What's happening:</strong> You're assessing overall health, energy, sleep, and any new symptoms that might indicate disease progression or treatment side effects.
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you ask?
+                    <span style="font-size: 18px;">▼</span>
+                </button>
+
+                <div class="reveal-content">
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Approach:</strong>
+                        <ul>
+                            <li>"How's your energy been? Any fatigue or tiredness?"</li>
+                            <li>"How's your sleep? Any changes?"</li>
+                            <li>"Any new aches, pains, or symptoms you've noticed?"</li>
+                            <li>"How's your appetite?"</li>
+                            <li>"Any weight changes?"</li>
+                            <li>Listen for: Unexplained weight loss, bone pain, fatigue (could suggest progression)</li>
+                        </ul>
+                    </div>
+
+                    <div class="reveal-block rb-patient">
+                        <strong>Patient Response:</strong>
+                        <p>"Energy's been okay, actually. I'm sleeping reasonably well, though I do wake up a couple of times a night to go to the toilet. That's been happening for a while, though — not new. No pain or anything. Weight's about the same. I've been trying to eat healthier since the diagnosis."</p>
+                    </div>
+
+                    <div class="reveal-block rb-teach">
+                        <strong>Key Point:</strong>
+                        <p>Nocturia (waking to urinate) is common in prostate cancer patients and can be related to the cancer itself, BPH, or age. In this case, it's not new, so it's likely baseline. No red flags for metastatic disease (no bone pain, weight loss, or fatigue). Patient is taking positive steps (diet).</p>
+                    </div>
+
+                    <div class="reveal-block rb-document">
+                        <strong>Documentation Note:</strong>
+                        <p>Record: Energy level (good), sleep (fair, with nocturia x2/night — not new), appetite (good), weight (stable), no new symptoms.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Prostate Cancer-Specific Assessment</div>
+                </div>
+
+                <div class="step-context">
+                    <strong>What's happening:</strong> You're assessing disease-specific symptoms, understanding the patient's current management (active surveillance), and exploring any concerns about progression or treatment options.
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you explore?
+                    <span style="font-size: 18px;">▼</span>
+                </button>
+
+                <div class="reveal-content">
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Approach:</strong>
+                        <ul>
+                            <li>"Tell me about your understanding of your cancer diagnosis. What did the urologist tell you?"</li>
+                            <li>"You're on active surveillance — do you understand what that means?"</li>
+                            <li>"How do you feel about the plan to monitor rather than treat right now?"</li>
+                            <li>"Any concerns about the cancer progressing?"</li>
+                            <li>"Have you had any urinary symptoms — difficulty passing urine, weak stream, urgency?"</li>
+                            <li>"Any bowel symptoms — diarrhoea, constipation, blood in stool?"</li>
+                            <li>"Any blood in urine or semen?"</li>
+                            <li>Review PSA trend: "Your PSA was 5.2 six months ago and is now 5.4. That's a very slight rise, which is normal variation. The urologist is happy with this."</li>
+                        </ul>
+                    </div>
+
+                    <div class="reveal-block rb-patient">
+                        <strong>Patient Response:</strong>
+                        <p>"The urologist explained it's a slow-growing cancer and that watching it is safer than surgery or radiation at this stage. I get that, but sometimes I worry — what if it's growing and we miss it? I've been reading things online, and some people say you should treat it straight away. No urinary symptoms, though. Everything's normal down there. No blood or anything. I just want to make sure we're not missing something."</p>
+                    </div>
+
+                    <div class="reveal-block rb-teach">
+                        <strong>Key Point:</strong>
+                        <p>Active surveillance is evidence-based for low-risk prostate cancer (Gleason ≤6, PSA &lt;10, clinical stage T1-T2a). It reduces overtreatment and treatment side effects while maintaining cure rates. However, patient anxiety about "missing" progression is common. Reassurance based on PSA trend, imaging, and urologist review is important. Online information can increase anxiety — address this.</p>
+                    </div>
+
+                    <div class="reveal-block rb-document">
+                        <strong>Documentation Note:</strong>
+                        <p>Record: Patient understands active surveillance, some anxiety about progression, no urinary/bowel/sexual symptoms, PSA trend stable (slight rise within normal variation), urologist review reassuring.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Medication Review & Adherence</div>
+                </div>
+
+                <div class="step-context">
+                    <strong>What's happening:</strong> You're checking that the patient is taking medications as prescribed and assessing for side effects. For prostate cancer patients on active surveillance, this focuses on comorbidity management (BP, cholesterol).
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you ask?
+                    <span style="font-size: 18px;">▼</span>
+                </button>
+
+                <div class="reveal-content">
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Approach:</strong>
+                        <ul>
+                            <li>"Let's go through your medications. You're on amlodipine for blood pressure and atorvastatin for cholesterol. Are you taking these regularly?"</li>
+                            <li>"Any side effects from the amlodipine — headaches, swelling in the ankles, dizziness?"</li>
+                            <li>"Any muscle aches or pains from the atorvastatin?"</li>
+                            <li>"Are you taking any supplements or herbal products?"</li>
+                            <li>"Any over-the-counter medications?"</li>
+                            <li>Check BP at home if patient monitors: "How's your blood pressure been at home?"</li>
+                        </ul>
+                    </div>
+
+                    <div class="reveal-block rb-patient">
+                        <strong>Patient Response:</strong>
+                        <p>"Yeah, I take them both every morning. No side effects that I can tell. BP's been pretty good — I've been checking it at home, and it's usually around 135-140 over 80-85. I'm not taking anything else. I did think about taking some supplements — I saw something about saw palmetto for prostate health — but I didn't want to interfere with anything, so I asked the urologist first. He said it wasn't necessary."</p>
+                    </div>
+
+                    <div class="reveal-block rb-teach">
+                        <strong>Key Point:</strong>
+                        <p>Good adherence and no side effects. Patient is appropriately cautious about supplements. Saw palmetto has limited evidence for prostate cancer prevention/management and is not recommended. BP control is good (target &lt;140/90 for this patient). Cardiovascular risk management is important in prostate cancer survivors.</p>
+                    </div>
+
+                    <div class="reveal-block rb-document">
+                        <strong>Documentation Note:</strong>
+                        <p>Record: Amlodipine 5mg daily (adherent, no side effects), Atorvastatin 20mg daily (adherent, no side effects), home BP monitoring (135-140/80-85), no supplements or OTC medications.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Complication Screening #1: Urinary & Bowel Function</div>
+                </div>
+
+                <div class="step-context">
+                    <strong>What's happening:</strong> You're screening for urinary incontinence, urgency, frequency, and bowel symptoms that may be related to prostate cancer or its treatment. These are common concerns for prostate cancer survivors.
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you ask?
+                    <span style="font-size: 18px;">▼</span>
+                </button>
+
+                <div class="reveal-content">
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Approach:</strong>
+                        <ul>
+                            <li>"Let's talk about urinary symptoms. Do you have any leakage or incontinence?"</li>
+                            <li>"How often are you passing urine during the day? Any urgency?"</li>
+                            <li>"At night — you mentioned waking to pass urine. How many times? Is that affecting your sleep?"</li>
+                            <li>"Any difficulty starting the stream or weak stream?"</li>
+                            <li>"Any bowel symptoms — constipation, diarrhoea, urgency, incontinence?"</li>
+                            <li>"Any blood in urine or stool?"</li>
+                            <li>If on active surveillance: "These symptoms can sometimes be related to the prostate cancer itself or to BPH. We'll monitor them."</li>
+                        </ul>
+                    </div>
+
+                    <div class="reveal-block rb-patient">
+                        <strong>Patient Response:</strong>
+                        <p>"No leakage. I pass urine maybe 7-8 times during the day, which seems normal. At night, I wake up twice, usually between midnight and 6am. It's not really affecting my sleep — I fall back asleep pretty easily. No difficulty starting or weak stream. Bowels are fine — regular, no issues."</p>
+                    </div>
+
+                    <div class="reveal-block rb-teach">
+                        <strong>Key Point:</strong>
+                        <p>Nocturia x2 is common in men this age and may be related to age, BPH, or prostate cancer. Daytime frequency (7-8 times) is normal. No incontinence, no bowel symptoms. No red flags. If symptoms worsen, pelvic floor physiotherapy can help. Urinary symptoms should be monitored as part of active surveillance.</p>
+                    </div>
+
+                    <div class="reveal-block rb-document">
+                        <strong>Documentation Note:</strong>
+                        <p>Record: Daytime frequency 7-8 times/day (normal), nocturia x2/night (not new, not affecting sleep), no incontinence, no difficulty with stream, no bowel symptoms.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Complication Screening #2: Sexual & Erectile Function</div>
+                </div>
+
+                <div class="step-context">
+                    <strong>What's happening:</strong> You're assessing sexual function and erectile dysfunction, which are important quality-of-life issues for prostate cancer patients. This requires sensitivity and normalisation.
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you ask?
+                    <span style="font-size: 18px;">▼</span>
+                </button>
+
+                <div class="reveal-content">
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Approach:</strong>
+                        <ul>
+                            <li>Normalise: "Many men with prostate cancer have concerns about sexual function. It's important to talk about this."</li>
+                            <li>"How's your sexual function been? Any changes since the diagnosis?"</li>
+                            <li>"Are you able to get and maintain erections?"</li>
+                            <li>"Any changes in libido or interest in sex?"</li>
+                            <li>"Any pain or discomfort during sex?"</li>
+                            <li>"How is your partner coping with the diagnosis? Has it affected your relationship?"</li>
+                            <li>If ED present: "This is common and treatable. We can discuss options with the GP."</li>
+                        </ul>
+                    </div>
+
+                    <div class="reveal-block rb-patient">
+                        <strong>Patient Response:</strong>
+                        <p>"Um, yeah, that's been a bit of a concern, actually. I haven't had any problems with erections, but I've noticed my libido isn't quite what it was. I think it's more anxiety about the cancer than anything physical. My wife and I have talked about it — she's been very understanding. We're still intimate, just maybe not as often. I'm hoping it'll improve once I feel less anxious about the diagnosis."</p>
+                    </div>
+
+                    <div class="reveal-block rb-teach">
+                        <strong>Key Point:</strong>
+                        <p>Reduced libido is common after cancer diagnosis and is often psychological (anxiety, fear) rather than physical. Patient has good relationship communication and partner support — protective factors. No erectile dysfunction. Reassurance and psychological support may help. If ED develops, PDE5 inhibitors (sildenafil) are options. Consider psychology referral if anxiety persists.</p>
+                    </div>
+
+                    <div class="reveal-block rb-document">
+                        <strong>Documentation Note:</strong>
+                        <p>Record: Erectile function intact, reduced libido (likely anxiety-related), good partner communication and support, no pain with intercourse, patient hopeful about improvement with reduced anxiety.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">7</div>
+                    <div class="step-title">Organ System Assessment: Cardiovascular & Metabolic</div>
+                </div>
+
+                <div class="step-context">
+                    <strong>What's happening:</strong> You're assessing cardiovascular health and metabolic factors. Prostate cancer survivors have increased cardiovascular risk, especially if on hormone therapy (not applicable here, but important context). You're also reviewing comorbidities.
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you assess?
+                    <span style="font-size: 18px;">▼</span>
+                </button>
+
+                <div class="reveal-content">
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Approach:</strong>
+                        <ul>
+                            <li>Review BP: "Your BP has been improving — 138/84 today, down from 142/86 last time."</li>
+                            <li>"Any chest pain, shortness of breath, or palpitations?"</li>
+                            <li>"Any leg swelling or calf pain?"</li>
+                            <li>Review lipids: "Your cholesterol is well-controlled on atorvastatin."</li>
+                            <li>"Any family history of heart disease?"</li>
+                            <li>Assess exercise: "How much physical activity are you doing?"</li>
+                            <li>Assess diet: "Tell me about your diet — any changes since the diagnosis?"</li>
+                        </ul>
+                    </div>
+
+                    <div class="reveal-block rb-patient">
+                        <strong>Patient Response:</strong>
+                        <p>"No chest pain or anything like that. I've been trying to exercise more — I go for a walk most days, maybe 30 minutes. I'm not doing heavy exercise, but I feel good. Diet-wise, I've cut back on red meat and processed foods. My wife's been helping me cook healthier meals. No family history of heart disease that I know of."</p>
+                    </div>
+
+                    <div class="reveal-block rb-teach">
+                        <strong>Key Point:</strong>
+                        <p>Good cardiovascular risk profile. BP improving, lipids on target, no cardiac symptoms. Exercise (30 min walking most days) is excellent and aligns with prostate cancer survivorship guidelines (150 min moderate activity/week). Diet changes are positive. No red flags. Encourage continued exercise and healthy diet.</p>
+                    </div>
+
+                    <div class="reveal-block rb-document">
+                        <strong>Documentation Note:</strong>
+                        <p>Record: BP 138/84 (improving), no cardiac symptoms, exercise 30 min walking most days, diet improved (reduced red meat/processed foods), lipids on target, no family history of CVD.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 8 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">8</div>
+                    <div class="step-title">Lifestyle Assessment: Diet, Activity, Smoking, Alcohol</div>
+                </div>
+
+                <div class="step-context">
+                    <strong>What's happening:</strong> You're assessing modifiable lifestyle factors that can influence prostate cancer outcomes and overall health. Exercise and diet are particularly important.
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you explore?
+                    <span style="font-size: 18px;">▼</span>
+                </button>
+
+                <div class="reveal-content">
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Approach:</strong>
+                        <ul>
+                            <li><strong>Exercise:</strong> "What type of exercise are you doing? How often? Any barriers?"</li>
+                            <li><strong>Diet:</strong> "Tell me about a typical day of eating. Any specific dietary changes since diagnosis?"</li>
+                            <li><strong>Smoking:</strong> "Do you smoke or have you ever smoked?"</li>
+                            <li><strong>Alcohol:</strong> "How much alcohol do you drink per week?"</li>
+                            <li><strong>Weight:</strong> "How do you feel about your weight? Any goals?"</li>
+                            <li>Encourage: "Exercise and a healthy diet can help with energy, mood, and overall health during cancer treatment and recovery."</li>
+                        </ul>
+                    </div>
+
+                    <div class="reveal-block rb-patient">
+                        <strong>Patient Response:</strong>
+                        <p>"I walk most days — it's easy because I can do it from home. I'd like to do more, maybe some strength training, but I'm not sure where to start. Diet's pretty good now — lots of vegetables, fish, whole grains. I used to eat more red meat, but I've cut back. I don't smoke — never have. Alcohol, maybe a couple of beers on the weekend. Weight-wise, I'd like to lose a few kilos, but it's not urgent. I'm more focused on feeling good and staying healthy."</li>
+                    </div>
+
+                    <div class="reveal-block rb-teach">
+                        <strong>Key Point:</strong>
+                        <p>Excellent lifestyle habits. Walking is good; strength training would add benefit (improves bone health, muscle, mood). Diet is prostate-healthy (vegetables, fish, whole grains, reduced red meat). No smoking, minimal alcohol. Weight loss of 5-10% would be beneficial but not urgent. Patient is motivated by health rather than weight — positive mindset. Consider exercise physiologist referral to develop structured strength training program.</p>
+                    </div>
+
+                    <div class="reveal-block rb-document">
+                        <strong>Documentation Note:</strong>
+                        <p>Record: Exercise — walking 30 min most days, interested in strength training; Diet — improved (vegetables, fish, whole grains, reduced red meat); Smoking — never; Alcohol — 2 beers/weekend; Weight — BMI 27.3, interested in modest loss; Motivation — high.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 9 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">9</div>
+                    <div class="step-title">Mental Health & Psychological Wellbeing</div>
+                </div>
+
+                <div class="step-context">
+                    <strong>What's happening:</strong> You're assessing cancer-related distress, anxiety, depression, and coping. This is crucial for prostate cancer patients, who often experience significant psychological impact.
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you ask?
+                    <span style="font-size: 18px;">▼</span>
+                </button>
+
+                <div class="reveal-content">
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Approach:</strong>
+                        <ul>
+                            <li>"How have you been coping emotionally since the diagnosis?"</li>
+                            <li>"Any anxiety or worry about the cancer?"</li>
+                            <li>"Any low mood or depression?"</li>
+                            <li>"How's your sleep? Any nightmares or intrusive thoughts?"</li>
+                            <li>"Do you have support — family, friends, support groups?"</li>
+                            <li>"Have you thought about talking to a counsellor or psychologist?"</li>
+                            <li>Screen for depression: "Do you feel hopeful about the future?"</li>
+                            <li>Screen for anxiety: "Do you worry a lot about the cancer coming back?"</li>
+                        </ul>
+                    </div>
+
+                    <div class="reveal-block rb-patient">
+                        <strong>Patient Response:</strong>
+                        <p>"Emotionally, it's been a bit of a rollercoaster. When I first got the diagnosis, I was pretty scared — I thought 'cancer' meant I was going to die. But the urologist explained it's low-risk and slow-growing, and that helped. I still have moments where I worry — especially before appointments or when I think about the PSA result. My wife's been amazing, and I've talked to a couple of friends who've had cancer. I feel hopeful, but there's definitely some anxiety. I haven't seen a psychologist, but I'm open to it if it would help."</li>
+                    </div>
+
+                    <div class="reveal-block rb-teach">
+                        <strong>Key Point:</strong>
+                        <p>Cancer-related anxiety is normal and understandable. Patient has good insight, strong support system, and hopeful outlook — protective factors. Anxiety is manageable but present. Psychology referral would be beneficial for anxiety management, coping strategies, and reassurance. Prostate cancer support groups (online or in-person) can also help. No signs of major depression.</p>
+                    </div>
+
+                    <div class="reveal-block rb-document">
+                        <strong>Documentation Note:</strong>
+                        <p>Record: Emotional response — initial fear, now more hopeful; Anxiety — present but manageable, especially around appointments; Coping — good (wife support, friends, positive reframing); Sleep — fair; Support — strong family and social support; Openness to psychology — yes. Recommend psychology referral for anxiety management.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 10 -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number">10</div>
+                    <div class="step-title">Referrals, Goals & Wrapping Up</div>
+                </div>
+
+                <div class="step-context">
+                    <strong>What's happening:</strong> You're synthesising all the information, identifying appropriate allied health referrals, setting goals with the patient, and preparing the summary for the GP to review and finalise.
+                </div>
+
+                <button class="reveal-button" onclick="toggleReveal(this)">
+                    What would you discuss?
+                    <span style="font-size: 18px;">▼</span>
+                </button>
+
+                <div class="reveal-content">
+                    <div class="reveal-block rb-suggest">
+                        <strong>Suggested Approach:</strong>
+                        <ul>
+                            <li>"Let's talk about what might help you over the next few months."</li>
+                            <li>"Based on what you've told me, I think a psychologist could help with anxiety management. Would that be helpful?"</li>
+                            <li>"An exercise physiologist could help you develop a strength training program. Interested?"</li>
+                            <li>"What are your main goals for the next 3 months?"</li>
+                            <li>"Any questions or concerns we haven't covered?"</li>
+                            <li>"I'll summarise everything and give it to Dr [GP name]. He'll review it and finalise your care plan. We'll also arrange any referrals he thinks are appropriate."</li>
+                            <li>"When's your next urologist appointment?"</li>
+                        </ul>
+                    </div>
+
+                    <div class="reveal-block rb-patient">
+                        <strong>Patient Response:</strong>
+                        <p>"Yeah, I think talking to a psychologist would be good. I want to get better at managing the anxiety. And I'm definitely interested in learning how to do strength training properly — I don't want to hurt myself. My goals are to feel more confident about my health, lose a few kilos, and get stronger. My next urologist appointment is in 3 months."</p>
+                    </div>
+
+                    <div class="reveal-block rb-teach">
+                        <strong>Key Point:</strong>
+                        <p>Patient is engaged and motivated. Recommended referrals: (1) Psychologist for anxiety management and cancer-related distress (priority); (2) Exercise physiologist for structured strength training program (high priority). Both are within GPCCMP entitlements (5 individual visits/year). Goals are realistic and health-focused. Urologist follow-up is appropriate (3-monthly for active surveillance).</p>
+                    </div>
+
+                    <div class="reveal-block rb-document">
+                        <strong>Documentation Note:</strong>
+                        <p>Record: Recommended referrals — (1) Psychologist (anxiety management, cancer-related distress); (2) Exercise physiologist (strength training program). Patient goals — manage anxiety, lose 5-10 kg, develop strength training, feel more confident. Next urologist appointment — 3 months. Care plan summary prepared for GP review and finalisation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-counter">
+                Steps explored: <span id="step-count">0</span> / 10
+            </div>
+        </div>
+
+        <!-- Section 5: Interactive Activity - Referral Selection -->
+        <div class="section">
+            <h2>Interactive Activity: Referral Selection</h2>
+            <p>Based on Michael's assessment, select the allied health providers you would recommend for referral. Consider his needs, goals, and GPCCMP entitlements (5 individual visits per calendar year).</p>
+
+            <div class="referral-grid">
+                <div class="referral-card" data-correct="true" onclick="toggleReferral(this)">
+                    <div class="referral-card-icon">🧠</div>
+                    <div class="referral-card-title">Psychologist</div>
+                    <div style="font-size: 14px; color: #718096;">Anxiety management</div>
+                </div>
+
+                <div class="referral-card" data-correct="true" onclick="toggleReferral(this)">
+                    <div class="referral-card-icon">💪</div>
+                    <div class="referral-card-title">Exercise Physiologist</div>
+                    <div style="font-size: 14px; color: #718096;">Strength training</div>
+                </div>
+
+                <div class="referral-card" data-correct="maybe" onclick="toggleReferral(this)">
+                    <div class="referral-card-icon">🏃</div>
+                    <div class="referral-card-title">Physiotherapist</div>
+                    <div style="font-size: 14px; color: #718096;">Pelvic floor (if needed)</div>
+                </div>
+
+                <div class="referral-card" data-correct="false" onclick="toggleReferral(this)">
+                    <div class="referral-card-icon">🍎</div>
+                    <div class="referral-card-title">Dietitian</div>
+                    <div style="font-size: 14px; color: #718096;">Nutrition counselling</div>
+                </div>
+
+                <div class="referral-card" data-correct="false" onclick="toggleReferral(this)">
+                    <div class="referral-card-icon">👨‍⚕️</div>
+                    <div class="referral-card-title">Occupational Therapist</div>
+                    <div style="font-size: 14px; color: #718096;">Functional assessment</div>
+                </div>
+
+                <div class="referral-card" data-correct="false" onclick="toggleReferral(this)">
+                    <div class="referral-card-icon">🗣️</div>
+                    <div class="referral-card-title">Speech Pathologist</div>
+                    <div style="font-size: 14px; color: #718096;">Communication support</div>
+                </div>
+            </div>
+
+            <button class="reveal-button" style="margin-top: 20px;" onclick="checkReferrals()">
+                Check My Selections
+            </button>
+
+            <div class="referral-feedback" id="referral-feedback">
+                <h4>Feedback</h4>
+                <div id="feedback-content"></div>
+            </div>
+        </div>
+
+        <!-- Section 6: Quiz -->
+        <div class="section">
+            <h2>Knowledge Check: Quiz</h2>
+            <p>Test your understanding of prostate cancer care planning and GPCCMP principles.</p>
+
+            <div class="quiz-question">
+                <h4>Question 1: Active Surveillance Criteria</h4>
+                <p>Michael has Gleason 6 (ISUP Grade 1), PSA 5.4 ng/mL, and clinical stage T1c. Which of the following best describes why active surveillance is appropriate?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectQuizOption(this, 1, 'correct')">
+                        A) Low-risk features (Gleason ≤6, PSA &lt;10, T1-T2a) with good long-term outcomes and reduced overtreatment risk
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 1, 'incorrect')">
+                        B) All prostate cancers should be monitored rather than treated
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 1, 'incorrect')">
+                        C) PSA is unreliable, so treatment is unnecessary
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 1, 'incorrect')">
+                        D) Active surveillance is only for men over 70
+                    </div>
+                </div>
+                <div class="quiz-feedback" id="quiz-feedback-1"></div>
+                <button class="quiz-submit" id="quiz-submit-1" onclick="submitQuiz(1)">Submit Answer</button>
+            </div>
+
+            <div class="quiz-question">
+                <h4>Question 2: GPCCMP Entitlements</h4>
+                <p>How many individual allied health visits is Michael entitled to under his GPCCMP per calendar year?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectQuizOption(this, 2, 'incorrect')">
+                        A) 3 visits
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 2, 'correct')">
+                        B) 5 visits
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 2, 'incorrect')">
+                        C) 8 visits
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 2, 'incorrect')">
+                        D) Unlimited
+                    </div>
+                </div>
+                <div class="quiz-feedback" id="quiz-feedback-2"></div>
+                <button class="quiz-submit" id="quiz-submit-2" onclick="submitQuiz(2)">Submit Answer</button>
+            </div>
+
+            <div class="quiz-question">
+                <h4>Question 3: Cancer-Related Anxiety</h4>
+                <p>Michael has expressed anxiety about cancer progression. Which of the following is the most appropriate response?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectQuizOption(this, 3, 'incorrect')">
+                        A) Tell him not to worry — his cancer is low-risk
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 3, 'correct')">
+                        B) Acknowledge his anxiety as normal, provide reassurance based on PSA trend and urologist review, and offer psychology referral for anxiety management
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 3, 'incorrect')">
+                        C) Recommend he avoid thinking about the cancer
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 3, 'incorrect')">
+                        D) Suggest he start treatment immediately to reduce anxiety
+                    </div>
+                </div>
+                <div class="quiz-feedback" id="quiz-feedback-3"></div>
+                <button class="quiz-submit" id="quiz-submit-3" onclick="submitQuiz(3)">Submit Answer</button>
+            </div>
+
+            <div class="quiz-question">
+                <h4>Question 4: Lifestyle Factors in Prostate Cancer Survivorship</h4>
+                <p>Which of the following lifestyle factors is most strongly associated with improved outcomes in prostate cancer survivors?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectQuizOption(this, 4, 'incorrect')">
+                        A) Avoiding all physical activity to conserve energy
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 4, 'correct')">
+                        B) Regular physical activity (150 min/week moderate intensity) and healthy diet
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 4, 'incorrect')">
+                        C) High-dose vitamin supplements
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 4, 'incorrect')">
+                        D) Strict calorie restriction
+                    </div>
+                </div>
+                <div class="quiz-feedback" id="quiz-feedback-4"></div>
+                <button class="quiz-submit" id="quiz-submit-4" onclick="submitQuiz(4)">Submit Answer</button>
+            </div>
+
+            <div class="quiz-question">
+                <h4>Question 5: PSA Monitoring in Active Surveillance</h4>
+                <p>Michael's PSA has risen slightly from 5.2 to 5.4 ng/mL over 6 months. What is the most appropriate action?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectQuizOption(this, 5, 'incorrect')">
+                        A) Recommend immediate surgery
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 5, 'correct')">
+                        C) Continue active surveillance with regular PSA monitoring; this small rise is within normal variation
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 5, 'incorrect')">
+                        D) Stop all monitoring — the cancer is progressing
+                    </div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, 5, 'incorrect')">
+                        B) Repeat PSA immediately and refer for biopsy
+                    </div>
+                </div>
+                <div class="quiz-feedback" id="quiz-feedback-5"></div>
+                <button class="quiz-submit" id="quiz-submit-5" onclick="submitQuiz(5)">Submit Answer</button>
+            </div>
+
+            <div id="quiz-score" style="display: none; margin-top: 20px; padding: 16px; background-color: #F0FFF4; border-left: 4px solid #38A169; border-radius: 8px;">
+                <h4 style="color: #38A169; margin-top: 0;">Quiz Complete!</h4>
+                <p id="score-text"></p>
+            </div>
+        </div>
+
+        <!-- Section 7: Checklist -->
+        <div class="section">
+            <h2>Care Plan Interview Checklist</h2>
+            <p>Use this checklist to ensure you've covered all key components of the prostate cancer care plan review. Click to mark items as complete.</p>
+
+            <ul class="checklist">
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Opening — explained appointment purpose, set expectations, invited questions</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>General wellbeing — assessed energy, sleep, appetite, weight, new symptoms</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Disease-specific assessment — reviewed diagnosis, management plan, patient understanding, concerns</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>PSA trend — reviewed current result and comparison to previous, discussed significance</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Medication review — checked adherence, assessed for side effects</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Urinary symptoms — assessed frequency, nocturia, incontinence, difficulty with stream</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Bowel symptoms — assessed for constipation, diarrhoea, urgency, blood</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Sexual function — assessed erectile function, libido, relationship impact (sensitively)</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Cardiovascular assessment — reviewed BP, lipids, cardiac symptoms, exercise</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Lifestyle — assessed diet, exercise, smoking, alcohol, weight management</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Mental health — assessed anxiety, depression, coping, support, openness to psychology</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Allied health referrals — identified appropriate providers (psychology, exercise physiology)</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Goals — discussed patient goals for next 3 months</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Urologist follow-up — confirmed next appointment timing</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Documentation — recorded all findings in structured format for GP review</span>
+                </li>
+                <li class="checklist-item" onclick="toggleChecklist(this)">
+                    <div class="checklist-checkbox">✓</div>
+                    <span>Summary — explained next steps (GP review, care plan finalisation, referral letters)</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Section 8: Quick Reference -->
+        <div class="section">
+            <h2>Quick Reference: Prostate Cancer Care Planning</h2>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Active Surveillance Monitoring Protocol</span>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <h4>For Low-Risk Prostate Cancer (Gleason ≤6, PSA &lt;10, T1-T2a):</h4>
+                        <ul>
+                            <li><strong>PSA testing:</strong> Every 3-6 months initially, then every 6-12 months if stable</li>
+                            <li><strong>Digital rectal examination:</strong> Periodically (not routine in primary care)</li>
+                            <li><strong>Repeat biopsy:</strong> At 12 months (at clinician's discretion), then only if PSA changes or clinical concern</li>
+                            <li><strong>Repeat MRI:</strong> May be offered at 12-24 months or if clinically indicated</li>
+                            <li><strong>Triggers for treatment:</strong> Pathological progression on biopsy, patient preference, or clinical concern</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Red Flags & Escalation Triggers</span>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <h4>Alert GP Urgently If:</h4>
+                        <ul>
+                            <li><strong>Rapid PSA rise:</strong> PSA doubling time &lt;3 years (may indicate progression)</li>
+                            <li><strong>Bone pain:</strong> Could indicate metastatic disease</li>
+                            <li><strong>Unexplained weight loss:</strong> May suggest disease progression</li>
+                            <li><strong>Severe urinary retention:</strong> May require catheterisation</li>
+                            <li><strong>Haematuria or haemospermia:</strong> Needs investigation</li>
+                            <li><strong>Severe psychological distress:</strong> Risk of self-harm or non-adherence</li>
+                            <li><strong>Acute urinary symptoms:</strong> May indicate infection or obstruction</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Prostate Cancer Survivorship: Key Domains</span>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <h4>Physical Health:</h4>
+                        <ul>
+                            <li>Disease monitoring (PSA, imaging, biopsy as per protocol)</li>
+                            <li>Treatment side effects (urinary, bowel, sexual)</li>
+                            <li>Comorbidity management (BP, lipids, diabetes)</li>
+                            <li>Exercise and physical activity (150 min/week moderate intensity)</li>
+                            <li>Nutrition and weight management</li>
+                        </ul>
+                        <h4>Psychological Health:</h4>
+                        <ul>
+                            <li>Cancer-related anxiety and fear of recurrence</li>
+                            <li>Depression and mood disturbance</li>
+                            <li>Coping strategies and resilience</li>
+                            <li>Support systems (family, friends, support groups)</li>
+                        </ul>
+                        <h4>Sexual & Intimate Health:</h4>
+                        <ul>
+                            <li>Erectile function and sexual satisfaction</li>
+                            <li>Libido and interest in sex</li>
+                            <li>Relationship communication and intimacy</li>
+                            <li>Access to sexual health support (psychology, urology)</li>
+                        </ul>
+                        <h4>Social & Functional:</h4>
+                        <ul>
+                            <li>Return to work and daily activities</li>
+                            <li>Social engagement and relationships</li>
+                            <li>Practical support and resources</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Allied Health Referral Indications</span>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <h4>Psychologist:</h4>
+                        <ul>
+                            <li>Cancer-related anxiety or fear of recurrence</li>
+                            <li>Depression or mood disturbance</li>
+                            <li>Sexual dysfunction (psychological component)</li>
+                            <li>Coping difficulties or adjustment issues</li>
+                        </ul>
+                        <h4>Exercise Physiologist:</h4>
+                        <ul>
+                            <li>Desire for structured exercise program</li>
+                            <li>Strength training for bone health and muscle</li>
+                            <li>Cardiovascular fitness improvement</li>
+                            <li>Weight management support</li>
+                        </ul>
+                        <h4>Physiotherapist:</h4>
+                        <ul>
+                            <li>Pelvic floor dysfunction or incontinence</li>
+                            <li>Urinary symptoms affecting quality of life</li>
+                            <li>Post-treatment rehabilitation</li>
+                        </ul>
+                        <h4>Dietitian:</h4>
+                        <ul>
+                            <li>Weight management (loss or gain)</li>
+                            <li>Nutritional support for energy and health</li>
+                            <li>Prostate-healthy diet education</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Key Resources & Support Services</span>
+                    <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <h4>Australian Resources:</h4>
+                        <ul>
+                            <li><strong>Prostate Cancer Foundation of Australia (PCFA):</strong> www.prostate.org.au — Information, support, clinical guidelines</li>
+                            <li><strong>Cancer Council:</strong> www.cancer.org.au — Booklets, support services, 13 11 20 helpline</li>
+                            <li><strong>RACGP Red Book:</strong> Guidelines for preventive activities in general practice</li>
+                            <li><strong>Services Australia:</strong> GPCCMP information and MBS items</li>
+                        </ul>
+                        <h4>Support Groups:</h4>
+                        <ul>
+                            <li>Prostate cancer support groups (online and in-person)</li>
+                            <li>Cancer support organisations (state-based)</li>
+                            <li>Men's health organisations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <h3>Prostate Cancer Care Plan Module</h3>
+            <p><strong>Setting:</strong> General practice clinic, 45-minute GPCCMP review appointment</p>
+            <p><strong>Clinical Framework:</strong> GPCCMP (effective 1 July 2025), 2025 Australian Guidelines for Early Detection of Prostate Cancer, RACGP Red Book (10th Edition)</p>
+            <p><strong>References:</strong></p>
+            <ul style="text-align: left; display: inline-block; margin: 12px 0;">
+                <li>Prostate Cancer Foundation of Australia & Cancer Council Australia. 2025 Guidelines for the Early Detection of Prostate Cancer in Australia (Draft, pending NHMRC approval)</li>
+                <li>RACGP. Guidelines for Preventive Activities in General Practice (Red Book, 10th Edition, 2024)</li>
+                <li>Dunn J, Green A, Ralph N, Newton RU. Prostate cancer survivorship essentials framework: guidelines for practitioners. BJU Int. 2021;128(3):329-339.</li>
+                <li>Cancer Council Australia. Understanding Prostate Cancer (2024)</li>
+                <li>Services Australia. GP Chronic Condition Management Plan (GPCCMP) — MBS items 965, 967, 92029, 92030</li>
+            </ul>
+            <div class="footer-disclaimer">
+                <strong>Disclaimer:</strong> This module is for educational purposes only. Always follow your practice protocols and current clinical guidelines. The GP makes final clinical decisions and is responsible for care plan finalisation and referral authorisation. For the most current guidelines, refer to RACGP, PCFA, and Services Australia resources.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Accordion functionality
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const chevron = header.querySelector('.accordion-chevron');
+            
+            // Close other accordions in the same section
+            const parent = header.closest('.section');
+            if (parent) {
+                parent.querySelectorAll('.accordion-content.active').forEach(el => {
+                    if (el !== content) {
+                        el.classList.remove('active');
+                        el.previousElementSibling.classList.remove('active');
+                    }
+                });
+            }
+            
+            content.classList.toggle('active');
+            header.classList.toggle('active');
+        }
+
+        // Reveal functionality
+        function toggleReveal(button) {
+            const content = button.nextElementSibling;
+            button.classList.toggle('active');
+            content.classList.toggle('active');
+            
+            // Update step counter
+            updateStepCounter();
+        }
+
+        // Step counter
+        function updateStepCounter() {
+            const steps = document.querySelectorAll('.step-container');
+            let count = 0;
+            steps.forEach(step => {
+                if (step.querySelector('.reveal-content.active')) {
+                    count++;
+                }
+            });
+            document.getElementById('step-count').textContent = count;
+        }
+
+        // Referral selection
+        function toggleReferral(card) {
+            card.classList.toggle('selected');
+        }
+
+        function checkReferrals() {
+            const cards = document.querySelectorAll('.referral-card');
+            let correct = 0;
+            let total = 0;
+            let feedback = '';
+
+            cards.forEach(card => {
+                const isSelected = card.classList.contains('selected');
+                const correctness = card.getAttribute('data-correct');
+
+                if (correctness === 'true') {
+                    if (isSelected) {
+                        correct++;
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.add('incorrect');
+                    }
+                    total++;
+                } else if (correctness === 'maybe') {
+                    if (isSelected) {
+                        correct += 0.5;
+                    }
+                } else {
+                    if (isSelected) {
+                        card.classList.add('incorrect');
+                    }
+                }
+            });
+
+            feedback += `<p><strong>Priority Referrals (Select These):</strong></p>`;
+            feedback += `<ul>`;
+            feedback += `<li><strong>Psychologist:</strong> Michael has expressed anxiety about cancer progression and reduced libido related to anxiety. Psychology referral for anxiety management, coping strategies, and reassurance is a priority.</li>`;
+            feedback += `<li><strong>Exercise Physiologist:</strong> Michael is interested in strength training and would benefit from a structured program. This supports cardiovascular health, bone density, mood, and weight management.</li>`;
+            feedback += `</ul>`;
+
+            feedback += `<p><strong>Optional Referrals (Consider):</strong></p>`;
+            feedback += `<ul>`;
+            feedback += `<li><strong>Physiotherapist:</strong> Not currently indicated (no urinary incontinence or pelvic floor dysfunction), but could be considered if symptoms develop.</li>`;
+            feedback += `</ul>`;
+
+            feedback += `<p><strong>Not Indicated:</strong></p>`;
+            feedback += `<ul>`;
+            feedback += `<li><strong>Dietitian:</strong> Michael has already made good dietary changes and doesn't need formal nutrition counselling at this stage.</li>`;
+            feedback += `<li><strong>Occupational Therapist:</strong> No functional limitations or activity restrictions.</li>`;
+            feedback += `<li><strong>Speech Pathologist:</strong> No communication or swallowing issues.</li>`;
+            feedback += `</ul>`;
+
+            feedback += `<p><strong>Medicare Allocation:</strong> Michael can have up to 5 individual visits per calendar year. Recommend 2-3 psychology sessions and 2-3 exercise physiology sessions to start, with review after 3 months.</p>`;
+
+            document.getElementById('feedback-content').innerHTML = feedback;
+            document.getElementById('referral-feedback').classList.add('active');
+        }
+
+        // Quiz functionality
+        function selectQuizOption(option, questionNum, correctness) {
+            const question = option.closest('.quiz-question');
+            const options = question.querySelectorAll('.quiz-option');
+            
+            options.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            option.classList.add('selected');
+        }
+
+        function submitQuiz(questionNum) {
+            const question = document.querySelector(`#quiz-feedback-${questionNum}`).closest('.quiz-question');
+            const selected = question.querySelector('.quiz-option.selected');
+            const submit = document.getElementById(`quiz-submit-${questionNum}`);
+            
+            if (!selected) {
+                alert('Please select an answer');
+                return;
+            }
+
+            const feedback = document.getElementById(`quiz-feedback-${questionNum}`);
+            let feedbackText = '';
+            let isCorrect = false;
+
+            if (questionNum === 1) {
+                if (selected.textContent.includes('Low-risk features')) {
+                    isCorrect = true;
+                    feedbackText = '<strong style="color: #38A169;">Correct!</strong> Active surveillance is evidence-based for low-risk prostate cancer (Gleason ≤6, PSA <10, T1-T2a). It reduces overtreatment and side effects while maintaining cure rates.';
+                } else {
+                    feedbackText = '<strong style="color: #E53E3E;">Incorrect.</strong> The correct answer is A. Active surveillance is appropriate for low-risk features. Not all prostate cancers are monitored, PSA is reliable, and active surveillance is used across age groups.';
+                }
+            } else if (questionNum === 2) {
+                if (selected.textContent.includes('5 visits')) {
+                    isCorrect = true;
+                    feedbackText = '<strong style="color: #38A169;">Correct!</strong> GPCCMP entitlements are 5 individual visits per calendar year (10 for Aboriginal and Torres Strait Islander patients). Group sessions are T2DM-specific.';
+                } else {
+                    feedbackText = '<strong style="color: #E53E3E;">Incorrect.</strong> The correct answer is B. GPCCMP provides 5 individual visits per calendar year.';
+                }
+            } else if (questionNum === 3) {
+                if (selected.textContent.includes('Acknowledge his anxiety')) {
+                    isCorrect = true;
+                    feedbackText = '<strong style="color: #38A169;">Correct!</strong> Cancer-related anxiety is normal. The best approach is to acknowledge it, provide reassurance based on objective findings (PSA trend, urologist review), and offer psychology referral for anxiety management and coping strategies.';
+                } else {
+                    feedbackText = '<strong style="color: #E53E3E;">Incorrect.</strong> The correct answer is B. Simply telling him not to worry dismisses his concerns. Avoidance increases anxiety. Immediate treatment is not indicated for low-risk cancer.';
+                }
+            } else if (questionNum === 4) {
+                if (selected.textContent.includes('Regular physical activity')) {
+                    isCorrect = true;
+                    feedbackText = '<strong style="color: #38A169;">Correct!</strong> Regular physical activity (150 min/week moderate intensity) and healthy diet are strongly associated with improved outcomes in prostate cancer survivors, including better cardiovascular health, bone density, mood, and quality of life.';
+                } else {
+                    feedbackText = '<strong style="color: #E53E3E;">Incorrect.</strong> The correct answer is B. Exercise and diet are evidence-based. Avoiding activity reduces fitness. High-dose supplements lack evidence. Strict calorie restriction is not recommended.';
+                }
+            } else if (questionNum === 5) {
+                if (selected.textContent.includes('Continue active surveillance')) {
+                    isCorrect = true;
+                    feedbackText = '<strong style="color: #38A169;">Correct!</strong> A rise from 5.2 to 5.4 ng/mL over 6 months is within normal variation. Continue active surveillance with regular PSA monitoring. Triggers for treatment include pathological progression on biopsy or patient preference.';
+                } else {
+                    feedbackText = '<strong style="color: #E53E3E;">Incorrect.</strong> The correct answer is C. A small PSA rise is normal variation. Immediate surgery or biopsy is not indicated. Stopping monitoring is inappropriate.';
+                }
+            }
+
+            feedback.classList.add('active');
+            if (isCorrect) {
+                feedback.classList.remove('incorrect');
+            } else {
+                feedback.classList.add('incorrect');
+            }
+            feedback.innerHTML = feedbackText;
+            submit.disabled = true;
+        }
+
+        // Checklist functionality
+        function toggleChecklist(item) {
+            item.classList.toggle('checked');
+        }
+
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.querySelector('.progress-fill').style.width = scrollPercent + '%';
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStepCounter();
+        });
+    </script>
+</body>
+</html>
