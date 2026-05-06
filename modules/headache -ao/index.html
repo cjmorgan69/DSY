@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Headache — AO | Walk-Through Scenario</title>
+<style>
+:root{
+--primary:#003300;--primary-dark:#001a00;--primary-light:#004d00;
+--primary-lighter:#006600;--accent:#00cc66;--accent-dim:#00994d;
+--accent-light:#b2f0d1;--bg:#f0f2ed;--card:#ffffff;
+--text:#1a1a1a;--text-mid:#333;--text-light:#555;
+--bp-bg:#f4fff8;--bp-border:#00cc66;
+--alert-bg:#fff3e0;--alert-border:#ff9800;
+--alert-red-bg:#fce4ec;--alert-red-border:#e53935;
+--alert-blue-bg:#e3f2fd;--alert-blue-border:#1565c0;
+--radius:10px;--shadow:0 2px 12px rgba(0,0,0,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:18px;scroll-behavior:smooth;}
+body{font-family:'Segoe UI',Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;padding-top:80px;}
+
+/* ---- HEADER ---- */
+.site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--primary);display:flex;align-items:center;padding:8px 16px;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.site-header img{width:56px;height:56px;object-fit:contain;border-radius:6px;flex-shrink:0;}
+.site-header .h-title{color:#fff;font-size:1.05rem;font-weight:700;flex:1;}
+.progress-track{position:fixed;top:72px;left:0;right:0;height:4px;background:rgba(255,255,255,.15);z-index:1001;}
+.progress-bar{height:100%;width:0%;background:var(--accent);transition:width .25s ease;}
+
+/* ---- LAYOUT ---- */
+main{max-width:800px;margin:0 auto;padding:20px 16px 60px;}
+section{margin-bottom:28px;}
+
+/* ---- CARDS ---- */
+.card{background:var(--card);border-radius:var(--radius);padding:24px 20px;box-shadow:var(--shadow);margin-bottom:20px;}
+.card h2{color:var(--primary);font-size:1.25rem;margin-bottom:14px;border-bottom:2px solid var(--accent);padding-bottom:8px;}
+.card h3{color:var(--primary-light);font-size:1.08rem;margin:16px 0 8px;}
+
+/* ---- HERO ---- */
+.hero-card{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;}
+.hero-card h1{font-size:1.55rem;margin-bottom:6px;}
+.hero-card .subtitle{font-size:1rem;opacity:.88;margin-bottom:14px;}
+.hero-card .meta{font-size:.82rem;opacity:.7;line-height:1.5;}
+
+/* ---- CHECKLISTS ---- */
+ul.check{list-style:none;padding-left:0;}
+ul.check li{position:relative;padding:6px 0 6px 30px;font-size:1rem;}
+ul.check li::before{content:"✔";position:absolute;left:0;top:6px;color:var(--accent);font-weight:700;font-size:.95rem;}
+ol.steps{padding-left:20px;}
+ol.steps li{padding:5px 0;font-size:1rem;}
+
+/* ---- TOGGLE/ACCORDION ---- */
+.toggle-btn{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);padding:16px 20px;font-size:1.05rem;font-weight:600;cursor:pointer;min-height:52px;text-align:left;font-family:inherit;margin-bottom:4px;transition:background .2s;}
+.toggle-btn:hover,.toggle-btn:focus{background:var(--primary-light);outline:2px solid var(--accent);outline-offset:2px;}
+.toggle-btn .arrow{transition:transform .3s;font-size:1.1rem;}
+.toggle-btn.open .arrow{transform:rotate(180deg);}
+.toggle-body{max-height:0;overflow:hidden;transition:max-height .4s ease;background:var(--card);border-radius:0 0 var(--radius) var(--radius);box-shadow:var(--shadow);}
+.toggle-body.open{max-height:5000px;}
+.toggle-inner{padding:20px;}
+
+/* ---- BREAK POINTS ---- */
+.bp{border-left:5px solid var(--bp-border);background:var(--bp-bg);border-radius:0 var(--radius) var(--radius) 0;padding:20px;margin:20px 0;box-shadow:var(--shadow);}
+.bp-label{display:inline-block;background:var(--primary);color:#fff;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 12px;border-radius:20px;margin-bottom:10px;}
+.bp-type{font-size:.82rem;color:var(--accent-dim);font-weight:600;margin-bottom:8px;}
+.bp h3{color:var(--primary);font-size:1.08rem;margin-bottom:8px;}
+.bp-body{font-size:1rem;line-height:1.6;}
+.bp-body h4{color:var(--primary-light);margin:14px 0 6px;font-size:1rem;}
+.bp-body ul{padding-left:20px;margin:4px 0 10px;}
+.bp-body li{padding:3px 0;}
+
+/* ---- ALERTS ---- */
+.alert{border-left:4px solid var(--alert-border);background:var(--alert-bg);padding:14px 16px;border-radius:var(--radius);margin:14px 0;font-size:1rem;}
+.alert strong{display:block;margin-bottom:4px;}
+.alert-red{border-color:var(--alert-red-border);background:var(--alert-red-bg);color:#b71c1c;}
+.alert-blue{border-color:var(--alert-blue-border);background:var(--alert-blue-bg);color:#0d47a1;}
+.bp-body .alert-blue{color:#0d47a1;}
+
+/* ---- MDT PANEL ---- */
+.mdt{background:#111;color:#33ff33;font-family:'Courier New',monospace;padding:18px;border-radius:var(--radius);font-size:.92rem;line-height:1.7;margin:14px 0;white-space:pre-line;border:1px solid #333;}
+
+/* ---- TABLES ---- */
+.rosier-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.95rem;}
+.rosier-table th,.rosier-table td{padding:10px 12px;text-align:left;border-bottom:1px solid #ddd;}
+.rosier-table th{background:var(--primary);color:#fff;font-weight:600;}
+.rosier-table tr:nth-child(even){background:#f8f8f8;}
+.rosier-table .score{font-weight:700;text-align:center;}
+
+/* ---- DEBRIEF ---- */
+.debrief-q{background:#f8faf5;padding:12px 16px;border-left:3px solid var(--accent);margin:8px 0;border-radius:0 var(--radius) var(--radius) 0;font-size:1rem;}
+.takeaway{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eee;font-size:1rem;}
+.takeaway-num{background:var(--primary);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;flex-shrink:0;}
+
+/* ---- VARIATIONS ---- */
+.var-card{background:#fff;border:1px solid #ddd;border-radius:var(--radius);padding:16px;margin:10px 0;}
+.var-card h4{color:var(--primary);margin-bottom:6px;font-size:1.02rem;}
+
+/* ---- FADE IN ---- */
+.fade-section{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+.fade-section.visible{opacity:1;transform:translateY(0);}
+
+/* ---- RESPONSIVE ---- */
+@media(max-width:600px){
+html{font-size:17px;}
+.site-header{padding:6px 10px;}
+.site-header .h-title{font-size:.95rem;}
+.card{padding:18px 14px;}
+main{padding:16px 10px 50px;}
+.mdt{font-size:.82rem;padding:14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<header class="site-header">
+<img src="https://cdn.simtheory.ai/image/upload/v1772335546/u0301032439_IMG_5042_gz6puq.jpg" alt="DSY Training Logo" width="120" height="120">
+<span class="h-title">Headache — AO Walk-Through Scenario</span>
+</header>
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+
+<main>
+
+<!-- HERO / TITLE & CONTEXT -->
+<section>
+<div class="card hero-card">
+<h1>Headache — AO</h1>
+<div class="subtitle">Walk-Through Scenario for Volunteer Ambulance Officers</div>
+<div class="meta">
+Source Protocol: SAAS Headache — AO &amp; CPP-016-AO Stroke — AO<br>
+Setting: Coffin Bay, Lower Eyre Peninsula<br>
+Crew: 2-person Volunteer AO crew<br>
+Duration: 50–65 minutes
+</div>
+</div>
+</section>
+
+<!-- LEARNING OBJECTIVES -->
+<section class="fade-section">
+<div class="card">
+<h2>Learning Objectives</h2>
+<ul class="check">
+<li>Conduct a structured headache history using OPQRST and identify red flag features</li>
+<li>Perform a ROSIER assessment and correctly interpret the result in the context of a red flag headache</li>
+<li>Differentiate between primary headache and presentations requiring urgent investigation</li>
+<li>Administer Paracetamol PO safely with appropriate checks and documentation</li>
+<li>Demonstrate timely escalation to the EOC Clinician and appropriate transport planning to Port Lincoln Hospital</li>
+<li>Deliver an accurate ISBAR handover for a red flag headache presentation</li>
+</ul>
+</div>
+</section>
+
+<!-- REQUIRED EQUIPMENT -->
+<section class="fade-section">
+<div class="card">
+<h2>Required Equipment</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+<div>
+<h3>Clinical</h3>
+<ul class="check">
+<li>Ambulance Response Bag</li>
+<li>Corpuls3 monitor</li>
+<li>Blood glucose meter + strips</li>
+<li>Pen torch</li>
+<li>Stethoscope / BP cuff (manual backup)</li>
+<li>Paracetamol 500mg tablets</li>
+<li>Ondansetron ODT 4mg</li>
+<li>Disposable cup + water</li>
+</ul>
+</div>
+<div>
+<h3>Operational</h3>
+<ul class="check">
+<li>Stretcher</li>
+<li>Blanket / sheet</li>
+<li>PPE (gloves, hand sanitiser)</li>
+<li>ePCR tablet or paperwork</li>
+<li>Mobile phone (EOC / hospital notification)</li>
+<li>ROSIER assessment card (printed or digital)</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+
+<!-- SESSION STRUCTURE OVERVIEW (TOGGLE) -->
+<section>
+<button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">
+Session Structure Overview <span class="arrow">&#9660;</span>
+</button>
+<div class="toggle-body">
+<div class="toggle-inner">
+<h3>Timeline</h3>
+<ol class="steps">
+<li><strong>Pre-Brief</strong> — 10 minutes. Clinical context, protocol review, crew role assignment.</li>
+<li><strong>Scenario Walk-Through</strong> — 30–40 minutes. Progressive scenario with 8 integrated break points for discussion, skills practice, and decision-making.</li>
+<li><strong>Debrief</strong> — 10–15 minutes. Reflective questions, take-home messages, real-job translation.</li>
+</ol>
+<h3>Crew Roles</h3>
+<ul class="check">
+<li><strong>Clinician (AO1)</strong> — Patient contact, primary survey, history, ROSIER assessment, medication administration, clinical decisions, ISBAR handover</li>
+<li><strong>Driver (AO2)</strong> — Scene safety, Corpuls3 setup and monitoring, vital signs recording, equipment, EOC communication, documentation, vehicle and stretcher</li>
+</ul>
+<h3>Available Resources</h3>
+<ul class="check">
+<li>Nearest hospital: Port Lincoln Hospital (Stroke Thrombolysis Service) — approximately 35–40 minutes by road</li>
+<li>Paramedic backup: Port Lincoln — approximately 45 minutes</li>
+<li>MedSTAR retrieval: approximately 90 minutes</li>
+<li>EOC Clinician: available by phone</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- PRE-BRIEF (TOGGLE) -->
+<section>
+<button class="toggle-btn" onclick="toggleSection(this)" aria-expanded="false">
+Pre-Brief (approximately 10 minutes) <span class="arrow">&#9660;</span>
+</button>
+<div class="toggle-body">
+<div class="toggle-inner">
+<h3>Clinical Context</h3>
+<p>Headache is one of the most common presentations in pre-hospital care. Most are benign — tension-type or migraine. The critical skill for AOs is identifying the small number of presentations that are <strong>time-critical and potentially life-threatening</strong>.</p>
+<p>These "red flag" headaches include subarachnoid haemorrhage (SAH), meningitis, stroke, and raised intracranial pressure. Missing a red flag headache can be fatal. The Headache — AO protocol gives you a structured approach to assessment and escalation.</p>
+
+<h3>Key Protocol Points — Headache AO</h3>
+<ul class="check">
+<li>Thorough headache history using OPQRST</li>
+<li>Screen for red flag features (see below)</li>
+<li>Measure BGL — exclude hypoglycaemia as a cause</li>
+<li>Perform ROSIER assessment if any neurological symptoms or signs</li>
+<li>Pain management: Paracetamol 1g PO (if not contraindicated)</li>
+<li>Nausea management: Ondansetron ODT if indicated</li>
+<li>Escalate to EOC Clinician for all red flag presentations</li>
+<li>Transport to appropriate facility — consider stroke pathway per CPP-016-AO</li>
+</ul>
+
+<h3>Red Flag Headache Features</h3>
+<div class="alert alert-red">
+<strong>Red Flags — Any of these warrant escalation:</strong>
+<ul style="margin-top:6px;padding-left:18px;">
+<li>Sudden onset, severe — "thunderclap" headache</li>
+<li>"Worst headache of my life"</li>
+<li>New neurological deficit (facial droop, limb weakness, speech disturbance, visual loss)</li>
+<li>Altered consciousness or confusion</li>
+<li>Fever with neck stiffness (meningism)</li>
+<li>Recent significant head trauma</li>
+<li>New-type headache in patient over 50 years</li>
+<li>Progressive worsening over days/weeks</li>
+<li>Headache worse with coughing, straining, or bending</li>
+<li>Seizure associated with headache</li>
+</ul>
+</div>
+
+<h3>ROSIER Scale (Recognition of Stroke in the Emergency Room)</h3>
+<table class="rosier-table">
+<thead><tr><th>Feature</th><th class="score">Score</th></tr></thead>
+<tbody>
+<tr><td>Loss of consciousness or syncope</td><td class="score">-1</td></tr>
+<tr><td>Seizure activity</td><td class="score">-1</td></tr>
+<tr><td>New acute onset: Asymmetric facial weakness</td><td class="score">+1</td></tr>
+<tr><td>New acute onset: Asymmetric arm weakness</td><td class="score">+1</td></tr>
+<tr><td>New acute onset: Asymmetric leg weakness</td><td class="score">+1</td></tr>
+<tr><td>New acute onset: Speech disturbance</td><td class="score">+1</td></tr>
+<tr><td>New acute onset: Visual field defect</td><td class="score">+1</td></tr>
+</tbody>
+</table>
+<p><strong>Score of 1 or more = stroke possible.</strong> Score of 0 or less = stroke less likely, but does <em>not</em> exclude serious pathology.</p>
+
+<h3>Tonight's Scenario</h3>
+<p>You will attend a 62-year-old male tourist at the Coffin Bay Caravan Park with a sudden onset severe headache. Work through your assessment, identify the clinical picture, and make transport and escalation decisions appropriate to your scope and location.</p>
+<p>Assign crew roles now — <strong>Clinician (AO1)</strong> and <strong>Driver (AO2)</strong>.</p>
+</div>
+</div>
+</section>
+
+<!-- ============================================ -->
+<!-- SCENARIO WALKTHROUGH BEGINS                  -->
+<!-- ============================================ -->
+
+<!-- DISPATCH & EN ROUTE -->
+<section class="fade-section">
+<div class="card">
+<h2>Dispatch and En Route</h2>
+<p>Your pagers activate at 14:23. You respond from Coffin Bay Station. Driver (AO2) reads the MDT information aloud as you proceed to the vehicle.</p>
+
+<div class="mdt">PRIORITY 2
+CASE: 4872       TIME: 14:23
+
+LOCATION: Coffin Bay Caravan Park
+  Site 47 — The Esplanade, Coffin Bay
+
+NATURE: HEADACHE — SEVERE
+  62yo Male — sudden onset severe headache
+  Approximately 45 mins ago
+  Patient conscious and breathing
+  Wife on scene — states "worst headache ever"
+  No trauma reported
+
+ACCESS: Main entrance, left at amenities block
+         Site 47 near waterfront loop
+
+NEAREST BACKUP:
+  Port Lincoln 231 (Para) — est. 45 min
+  Port Lincoln Hospital — est. 35 min</div>
+
+<!-- BREAK POINT 1 -->
+<div class="bp">
+<span class="bp-label">Break Point</span>
+<div class="bp-type">Discussion / Decision-Making</div>
+<h3>En-Route Planning</h3>
+<div class="bp-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"What information on the MDT stands out to you?"</li>
+<li>"What are you already thinking about based on this dispatch?"</li>
+<li>"What equipment do you want ready when you arrive?"</li>
+<li>"Discuss your crew roles for this job."</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>62-year-old male with sudden onset severe headache — red flag age group and onset pattern</li>
+<li>"Worst headache ever" reported by wife — classic SAH descriptor</li>
+<li>No trauma reported — rules out obvious head injury, but need to confirm on scene</li>
+<li>Need to consider: subarachnoid haemorrhage, stroke, meningitis, hypertensive emergency</li>
+<li>Prepare response bag, Corpuls3, BGL kit, stretcher access considered</li>
+<li>Clinician (AO1) leads patient contact; Driver (AO2) sets up Corpuls3 and prepares for observations</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>"Worst headache of my life" in a patient over 50 is a red flag until proven otherwise</li>
+<li>Sudden onset = think vascular cause (SAH, stroke, dissection)</li>
+<li>Start forming your differential diagnosis en route — arrive with a plan, not just a response bag</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>On a real job, you have 5–10 minutes of drive time to mentally prepare. Use every minute. Know your crew roles, have your equipment plan, and brief each other before you step out of the vehicle.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ON ARRIVAL -->
+<section class="fade-section">
+<div class="card">
+<h2>On Arrival — Scene Management</h2>
+<p>You arrive at Coffin Bay Caravan Park at 14:31. Sandra, the patient's wife, meets you at the main entrance and walks you to Site 47. She is visibly anxious.</p>
+<p><em>"He just grabbed his head and cried out — I've never seen him like this. He won't let me turn the lights on. Please hurry."</em></p>
+<p>Site 47 is a powered caravan site. The patient, Graham, is seated in a canvas deck chair under the annex awning. He is leaning forward with his head in his hands. The sun is low but still bright.</p>
+
+<!-- BREAK POINT 2 -->
+<div class="bp">
+<span class="bp-label">Break Point</span>
+<div class="bp-type">Discussion</div>
+<h3>Doorway / First Impression</h3>
+<div class="bp-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"Stop at the edge of the annex. What is your first impression?"</li>
+<li>"Is the scene safe? Any hazards?"</li>
+<li>"What do you observe about the patient from here?"</li>
+<li>"What does his posture tell you?"</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Scene is safe — no hazards, no aggressive animals, stable ground</li>
+<li>Patient is conscious, breathing, maintaining own airway</li>
+<li>Posture: head in hands, leaning forward — suggests severe pain, possible photophobia</li>
+<li>Wife is distressed but coherent — good collateral history source</li>
+<li>Consider environmental factors: bright sun, noise — may need to manage stimuli</li>
+<li>No visible trauma, no blood, no mechanism for injury apparent</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>The doorway assessment takes 5 seconds but gives you critical information</li>
+<li>Patient posture and behaviour are clinical signs — a patient holding their head still, avoiding light, is telling you something</li>
+<li>Involve the bystander (Sandra) early — she has key history information</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>At a caravan park, you may have limited privacy and bystanders nearby. Control the environment early. If the patient is photophobic, move them into shade or inside the caravan before starting your assessment.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- PATIENT CONTACT & PRIMARY SURVEY -->
+<section class="fade-section">
+<div class="card">
+<h2>Patient Contact and Primary Survey</h2>
+<p><strong>Clinician (AO1)</strong> makes patient contact. Graham is distressed but oriented. He speaks in short sentences and keeps his eyes closed.</p>
+<p><em>"My head... it just hit me out of nowhere. Like someone smashed me with a bat. I feel sick. The light is killing me."</em></p>
+<p><strong>Driver (AO2)</strong> sets up the Corpuls3 and begins obtaining observations. Sandra is asked to provide medication and allergy information.</p>
+
+<h3>Patient Information (Revealed During Assessment)</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+<div>
+<h3>History (OPQRST)</h3>
+<ul class="check">
+<li><strong>Onset:</strong> Sudden — "like a switch flipped," approximately 45 minutes ago</li>
+<li><strong>Provocation:</strong> Was sitting reading — no exertion, no trauma</li>
+<li><strong>Quality:</strong> "Like being hit in the back of the head with a cricket bat"</li>
+<li><strong>Region:</strong> Occipital, radiating across whole head</li>
+<li><strong>Severity:</strong> 9/10 — "worst headache of my life"</li>
+<li><strong>Time:</strong> No previous similar headaches. Constant since onset. Not improving.</li>
+</ul>
+</div>
+<div>
+<h3>Background</h3>
+<ul class="check">
+<li><strong>PMHx:</strong> Hypertension, mild osteoarthritis</li>
+<li><strong>Medications:</strong> Perindopril 5mg daily, occasional Paracetamol</li>
+<li><strong>Allergies:</strong> Penicillin (rash)</li>
+<li><strong>Last meal:</strong> Lunch approximately 1 hour ago</li>
+<li><strong>Events:</strong> Sitting outside reading. No fall, no exertion, no preceding illness.</li>
+</ul>
+</div>
+</div>
+
+<h3>Associated Symptoms</h3>
+<ul class="check">
+<li>Nausea — present, no vomiting</li>
+<li>Photophobia — marked, keeping eyes shut</li>
+<li>Developing neck stiffness — noticed in last 15 minutes</li>
+<li>No limb weakness, no facial droop, no speech difficulty</li>
+<li>No seizure, no loss of consciousness</li>
+<li>No visual disturbance, no rash</li>
+</ul>
+
+<!-- BREAK POINT 3 -->
+<div class="bp">
+<span class="bp-label">Break Point</span>
+<div class="bp-type">Practical Skill</div>
+<h3>Initial Observations and Corpuls3 Setup</h3>
+<div class="bp-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"AO2 — talk through your Corpuls3 setup and what parameters you are capturing."</li>
+<li>"What observations are you expecting to see with this presentation?"</li>
+<li>"AO1 — perform a primary survey (ABCDE). Talk through your findings aloud."</li>
+</ul>
+
+<h4>Initial Observations (Corpuls3)</h4>
+<table class="rosier-table">
+<thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Heart Rate</td><td>88 bpm, regular</td></tr>
+<tr><td>Blood Pressure</td><td>178/102 mmHg</td></tr>
+<tr><td>Respiratory Rate</td><td>18 /min</td></tr>
+<tr><td>SpO2</td><td>98% (room air)</td></tr>
+<tr><td>Temperature</td><td>37.2°C</td></tr>
+<tr><td>BGL</td><td>6.8 mmol/L</td></tr>
+<tr><td>GCS</td><td>15 (E4 V5 M6)</td></tr>
+<tr><td>Pain Score</td><td>9/10</td></tr>
+<tr><td>Pupils</td><td>Equal, reactive — 3mm bilateral</td></tr>
+</tbody>
+</table>
+
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>Elevated BP (178/102) — may be reactive to pain, or may indicate hypertensive cause. Record and trend.</li>
+<li>BGL 6.8 — hypoglycaemia excluded as a cause.</li>
+<li>GCS 15 currently — document as baseline for trending.</li>
+<li>SpO2 98% RA — no supplemental oxygen required at this time.</li>
+<li>Primary survey: Airway clear, breathing adequate, circulation stable, disability (GCS 15, pupils PEARL), exposure — no rash, no trauma.</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>BGL measurement is part of the Headache — AO protocol. Always exclude hypoglycaemia early.</li>
+<li>Manual pulse check and respiratory rate count provide context the monitor alone does not — assess rhythm quality and respiratory effort.</li>
+<li>Record the time of each observation set. Trending is how you detect deterioration.</li>
+<li>An elevated BP in the context of a severe headache is a clinical sign, not just a number.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>At a caravan park, power may be available for the Corpuls3 if you are running a longer assessment. Consider the environment — if the patient is photophobic, reduce ambient light before shining a pen torch in their eyes. Work around the patient, not against them.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- CLINICAL DECISION POINT -->
+<section class="fade-section">
+<div class="card">
+<h2>Clinical Decision Point</h2>
+<p><strong>Clinician (AO1)</strong> has now completed the history and primary survey. The team has a full set of observations. The next step is to screen for stroke and identify the working diagnosis.</p>
+
+<!-- BREAK POINT 4 -->
+<div class="bp">
+<span class="bp-label">Break Point</span>
+<div class="bp-type">Decision-Making / Discussion</div>
+<h3>Screening Tools, Protocols and Working Diagnosis</h3>
+<div class="bp-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"Should you perform a ROSIER assessment on this patient? Why or why not?"</li>
+<li>"AO1 — walk through the ROSIER score for Graham."</li>
+<li>"What is your ROSIER result? What does it mean?"</li>
+<li>"Does a negative ROSIER mean this patient is safe to stay at the caravan park?"</li>
+<li>"How many red flag features has this patient demonstrated?"</li>
+<li>"What is your working diagnosis?"</li>
+</ul>
+
+<h4>ROSIER Assessment for This Patient</h4>
+<table class="rosier-table">
+<thead><tr><th>Feature</th><th class="score">Present?</th><th class="score">Score</th></tr></thead>
+<tbody>
+<tr><td>Loss of consciousness or syncope</td><td class="score">No</td><td class="score">0</td></tr>
+<tr><td>Seizure activity</td><td class="score">No</td><td class="score">0</td></tr>
+<tr><td>Asymmetric facial weakness</td><td class="score">No</td><td class="score">0</td></tr>
+<tr><td>Asymmetric arm weakness</td><td class="score">No</td><td class="score">0</td></tr>
+<tr><td>Asymmetric leg weakness</td><td class="score">No</td><td class="score">0</td></tr>
+<tr><td>Speech disturbance</td><td class="score">No</td><td class="score">0</td></tr>
+<tr><td>Visual field defect</td><td class="score">No</td><td class="score">0</td></tr>
+<tr><td colspan="2" style="font-weight:700;">Total ROSIER Score</td><td class="score" style="font-weight:700;">0</td></tr>
+</tbody>
+</table>
+<p><strong>ROSIER = 0</strong> — stroke is less likely based on this tool. The patient does <em>not</em> meet criteria for the stroke thrombolysis transport pathway (CPP-016-AO).</p>
+
+<div class="alert alert-red">
+<strong>Critical Teaching Point:</strong>
+A negative ROSIER score does NOT exclude a life-threatening cause of headache. ROSIER screens for stroke — it does not screen for subarachnoid haemorrhage. SAH frequently presents <em>without</em> focal neurological deficit. The red flag features in the history are what drive your clinical concern, not the ROSIER result alone.
+</div>
+
+<h4>Red Flags Identified in This Patient</h4>
+<ul>
+<li>Sudden onset, severe headache — thunderclap pattern</li>
+<li>"Worst headache of my life"</li>
+<li>New-type headache in a patient over 50</li>
+<li>Developing neck stiffness (meningism)</li>
+<li>Nausea and photophobia</li>
+<li>Elevated blood pressure</li>
+</ul>
+
+<h4>Expected Working Diagnosis</h4>
+<ul>
+<li><strong>Primary concern:</strong> Possible subarachnoid haemorrhage (SAH) — requires urgent CT imaging</li>
+<li><strong>Differentials to consider:</strong> Hypertensive emergency with headache, meningitis (though afebrile), migraine (no prior history, thunderclap onset atypical)</li>
+</ul>
+
+<h4>Key Teaching Points</h4>
+<ul>
+<li>ROSIER is one tool, not the whole answer. It tells you about stroke. The headache protocol asks you to assess broader red flags.</li>
+<li>A thunderclap headache is subarachnoid haemorrhage until proven otherwise by CT scan — that is not something you can do in the field.</li>
+<li>Do not be falsely reassured by a negative ROSIER. Your clinical concern based on the history is valid and must drive your actions.</li>
+<li>This patient needs to get to hospital for definitive investigation. Your job is to recognise, stabilise, and transport safely.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>On a real job, you may feel uncertain because the ROSIER is negative and the patient "looks okay." Trust the red flags. If the history says thunderclap, worst ever, new onset, with neck stiffness — that patient is going to hospital. Call it early.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- TREATMENT PHASE -->
+<section class="fade-section">
+<div class="card">
+<h2>Treatment Phase</h2>
+<p>Based on your assessment and working diagnosis, you initiate treatment within AO scope while preparing for transport and EOC Clinician consultation.</p>
+
+<!-- BREAK POINT 5 -->
+<div class="bp">
+<span class="bp-label">Break Point</span>
+<div class="bp-type">Practical Skill / Discussion</div>
+<h3>Treatment Initiation and Medication Safety</h3>
+<div class="bp-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"What treatment can you initiate within AO scope for this patient right now?"</li>
+<li>"AO1 — talk through and physically demonstrate the Paracetamol administration, including all safety checks."</li>
+<li>"Is there anything else you can give for the nausea?"</li>
+<li>"What non-pharmacological interventions are appropriate here?"</li>
+</ul>
+
+<h4>Skill Practice — Paracetamol PO Administration</h4>
+<p>Walk through the following steps aloud and demonstrate with equipment:</p>
+<ol class="steps">
+<li><strong>Confirm indication:</strong> Headache pain, severity 9/10. Paracetamol is appropriate first-line analgesia within AO scope.</li>
+<li><strong>Confirm dose:</strong> 1g (2 x 500mg tablets).</li>
+<li><strong>Five rights check:</strong>
+  <ul>
+    <li>Right patient — confirm name (Graham Thompson)</li>
+    <li>Right drug — read label: "Paracetamol 500mg"</li>
+    <li>Right dose — 1g (2 tablets)</li>
+    <li>Right route — oral (PO)</li>
+    <li>Right time — confirm when patient last took Paracetamol</li>
+  </ul>
+</li>
+<li><strong>Screen for contraindications:</strong>
+  <ul>
+    <li>Known hypersensitivity to Paracetamol? — No</li>
+    <li>Severe hepatic impairment? — No</li>
+    <li>Has patient taken Paracetamol in the last 4 hours? — Ask patient and wife. Graham confirms he has <em>not</em> taken any today.</li>
+    <li>Maximum 4g in 24 hours — dose is safe to administer.</li>
+  </ul>
+</li>
+<li><strong>Confirm with patient:</strong> "Graham, I'd like to give you some Paracetamol for the pain. Two tablets with a sip of water. Are you able to swallow safely?"</li>
+<li><strong>Administer:</strong> Hand tablets to patient with a small cup of water. Observe the patient swallowing.</li>
+<li><strong>Document:</strong> Time administered, drug, dose, route, indication, and any observations. Record on ePCR or case sheet.</li>
+<li><strong>Plan reassessment:</strong> Reassess pain in 15–20 minutes.</li>
+</ol>
+
+<div class="alert">
+<strong>Medication Safety Reminder:</strong>
+Always ask about recent Paracetamol intake. Patients with chronic pain conditions, such as Graham's osteoarthritis, may have already self-medicated before calling an ambulance. Exceeding 4g in 24 hours risks hepatotoxicity.
+</div>
+
+<h4>Ondansetron ODT for Nausea</h4>
+<p>If the patient reports significant nausea (Graham does), consider Ondansetron ODT 4mg:</p>
+<ol class="steps">
+<li>Confirm indication: nausea associated with headache.</li>
+<li>Check contraindications: known hypersensitivity, congenital long QT syndrome.</li>
+<li>Administer: Place orally disintegrating tablet on the tongue. Allow to dissolve. No water required.</li>
+<li>Document: Time, drug, dose, route.</li>
+</ol>
+
+<h4>Non-Pharmacological Interventions</h4>
+<ul class="check">
+<li>Reduce environmental stimuli — move into shaded area or inside the caravan if safe to do so</li>
+<li>Dim lighting / close blinds if moving inside</li>
+<li>Reduce noise — ask bystanders to give space</li>
+<li>Position of comfort — patient may prefer sitting upright or semi-reclined with head elevated</li>
+<li>Cool cloth to forehead if tolerated</li>
+<li>Calm, quiet communication — avoid loud or rapid speech</li>
+</ul>
+
+<h4>EOC Clinician Consultation</h4>
+<p><strong>Driver (AO2)</strong> contacts the EOC Clinician by phone to discuss:</p>
+<ul class="check">
+<li>Patient presentation: 62yo male, sudden onset thunderclap headache, worst ever, neck stiffness, nausea, photophobia</li>
+<li>Observations: HR 88, BP 178/102, GCS 15, BGL 6.8, SpO2 98% RA</li>
+<li>ROSIER score: 0 — no focal neurological deficit</li>
+<li>Red flags identified — concern for possible SAH</li>
+<li>Treatment administered: Paracetamol 1g PO, Ondansetron 4mg ODT</li>
+<li>Transport plan: Port Lincoln Hospital — approximately 35 minutes</li>
+<li>Request: guidance on any additional interventions, confirm transport destination</li>
+</ul>
+
+<div class="alert alert-blue">
+<strong>EOC Clinician Role:</strong>
+The EOC Clinician confirms your assessment is appropriate. They advise transport to Port Lincoln Hospital for urgent CT imaging. They recommend close monitoring of GCS and neurological status during transport. No additional medications authorised at this stage. They will pre-notify the hospital if requested.
+</div>
+
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Paracetamol will not significantly relieve the pain of a subarachnoid haemorrhage — but it is within your scope and demonstrates you have addressed analgesia.</li>
+<li>The real treatment for this patient is getting to a CT scanner. Everything you do on scene is stabilisation and preparation for transport.</li>
+<li>Non-pharmacological interventions matter. Reducing light, noise, and stimulation is genuine clinical care for this patient.</li>
+<li>Document your EOC Clinician consultation — time called, advice given, clinician name if provided.</li>
+</ul>
+
+<h4>Real-Job Translation</h4>
+<p>On a real job, you may feel pressure to "do more." For this patient, recognising the red flags, initiating what you can, and making the decision to transport promptly <em>is</em> doing the most important thing. Scene time matters — do not delay transport for marginal interventions.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- REASSESSMENT & ESCALATION -->
+<section class="fade-section">
+<div class="card">
+<h2>Reassessment and Escalation</h2>
+<p>Approximately 10 minutes after initial treatment, <strong>Driver (AO2)</strong> obtains a second set of observations while preparing for extrication.</p>
+
+<h3>Updated Observations</h3>
+<table class="rosier-table">
+<thead><tr><th>Parameter</th><th>Initial (14:35)</th><th>Repeat (14:45)</th></tr></thead>
+<tbody>
+<tr><td>Heart Rate</td><td>88 bpm</td><td>92 bpm</td></tr>
+<tr><td>Blood Pressure</td><td>178/102</td><td>182/106</td></tr>
+<tr><td>Respiratory Rate</td><td>18</td><td>20</td></tr>
+<tr><td>SpO2</td><td>98% RA</td><td>97% RA</td></tr>
+<tr><td>GCS</td><td>15</td><td><strong>14 (E4 V4 M6)</strong></td></tr>
+<tr><td>Pain</td><td>9/10</td><td>8/10</td></tr>
+<tr><td>Pupils</td><td>PEARL 3mm</td><td>PEARL 3mm</td></tr>
+</tbody>
+</table>
+
+<div class="alert alert-red">
+<strong>Deterioration Detected:</strong>
+GCS has dropped from 15 to 14. The patient is now <em>confused</em> — giving inappropriate answers to orientation questions (V4). BP has increased. Respiratory rate has risen. This is a declining trajectory.
+</div>
+
+<!-- BREAK POINT 6 -->
+<div class="bp">
+<span class="bp-label">Break Point</span>
+<div class="bp-type">Decision-Making</div>
+<h3>Reassessment and Escalation Decision</h3>
+<div class="bp-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"What has changed between your first and second set of observations?"</li>
+<li>"What does a GCS drop from 15 to 14 mean in this clinical context?"</li>
+<li>"Has your level of clinical concern changed? How?"</li>
+<li>"Do you need to re-contact the EOC Clinician?"</li>
+<li>"Has your transport urgency changed?"</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>GCS 15 to 14 represents a clinically significant change — the patient is deteriorating</li>
+<li>Confusion developing in a thunderclap headache patient increases suspicion for expanding SAH or re-bleed</li>
+<li>Rising BP may reflect increasing intracranial pressure (Cushing response)</li>
+<li>This is now time-critical — minimise remaining scene time</li>
+<li>Re-contact EOC Clinician to update on deterioration</li>
+<li>Consider requesting paramedic backup to intercept if available</li>
+<li>Do NOT delay transport waiting for backup — load and go</li>
+</ul>
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Trending observations is how you detect deterioration. A single set of observations is a snapshot — two sets give you a direction of travel.</li>
+<li>A GCS drop of 1 point may not sound dramatic, but <em>any</em> decline in consciousness in this context is significant and must be communicated.</li>
+<li>The combination of worsening GCS + rising BP + headache is a concerning triad that suggests rising intracranial pressure.</li>
+<li>Escalation is not a sign of failure — it is a core clinical skill. Update the EOC Clinician promptly.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>On a real job, you might second-guess yourself: "Is he just tired? Is the Paracetamol making him drowsy?" Trust the numbers. If GCS has dropped, document it, report it, and act on it. You would rather escalate and be wrong than not escalate and miss a deterioration.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- EXTRICATION & TRANSPORT -->
+<section class="fade-section">
+<div class="card">
+<h2>Extrication and Transport</h2>
+<p>The decision is made to load and transport to Port Lincoln Hospital. Sandra (wife) will follow in their car. She is given the hospital address and told to drive carefully.</p>
+
+<!-- BREAK POINT 7 -->
+<div class="bp">
+<span class="bp-label">Break Point</span>
+<div class="bp-type">Practical Skill / Discussion</div>
+<h3>Extrication and Transport Planning</h3>
+<div class="bp-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"How are you going to move Graham from the deck chair to the stretcher?"</li>
+<li>"What position should the patient be transported in?"</li>
+<li>"What are your monitoring priorities during transport?"</li>
+<li>"Who is in the back and who is driving?"</li>
+<li>"What is your transport code?"</li>
+</ul>
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li><strong>Extrication method:</strong> Stretcher brought to the patient (Site 47 is accessible). Assist Graham to stand and pivot onto the stretcher. If unsteady due to confusion, use a standing pivot with both AOs supporting — minimise exertion for the patient.</li>
+<li><strong>Position:</strong> Supine with head elevated approximately 30 degrees — reduces intracranial pressure while maintaining comfort.</li>
+<li><strong>In the back:</strong> Clinician (AO1) — continuous patient monitoring, GCS checks every 5 minutes, observe for vomiting (aspiration risk with declining consciousness).</li>
+<li><strong>Driver (AO2):</strong> Smooth, steady driving. Lights and sirens (Priority 1) given clinical deterioration.</li>
+<li><strong>Monitoring during transport:</strong> Continuous Corpuls3 (HR, SpO2, ECG), 5-minute GCS checks, watch for signs of further deterioration — vomiting, seizure, decreasing consciousness.</li>
+<li><strong>Prepare for worst case:</strong> Suction assembled and within reach. Recovery position plan if vomiting with decreased consciousness. BVM accessible.</li>
+</ul>
+
+<div class="alert">
+<strong>Airway Consideration:</strong>
+A patient with declining GCS and nausea is at risk of vomiting and aspiration. Have suction assembled, tested, and within arm's reach for the entire transport. Know your plan if GCS drops further — lateral position, suction, BVM ready.
+</div>
+
+<h4>Key Teaching Points</h4>
+<ul>
+<li>Head-up positioning (30 degrees) is a simple, evidence-based intervention for patients with suspected raised intracranial pressure.</li>
+<li>Smooth transport matters — avoid sudden braking, hard turns, and potholes where possible. Communicate with your driver.</li>
+<li>If the patient deteriorates to GCS less than or equal to 12, or loses airway patency, this becomes a critical patient. Update EOC immediately.</li>
+<li>Have your contingency plan before you leave the scene, not during a crisis at 110km/h on the Lincoln Highway.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>The drive from Coffin Bay to Port Lincoln Hospital is approximately 35 minutes. That is a long time alone in the back with a deteriorating patient. Prepare for the worst. Suction ready. BVM ready. Know your escalation triggers. Communicate with your driver through the partition.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- HANDOVER -->
+<section class="fade-section">
+<div class="card">
+<h2>Handover</h2>
+<p>You arrive at Port Lincoln Hospital Emergency Department at approximately 15:15. The ED has been pre-notified via the EOC Clinician. A nurse meets you at the ambulance bay.</p>
+
+<!-- BREAK POINT 8 -->
+<div class="bp">
+<span class="bp-label">Break Point</span>
+<div class="bp-type">Practical Skill</div>
+<h3>ISBAR Handover</h3>
+<div class="bp-body">
+<h4>Facilitator Prompts</h4>
+<ul>
+<li>"AO1 — deliver your ISBAR handover aloud as if the facilitator is the receiving nurse."</li>
+<li>"Make sure you communicate the deterioration and your clinical concern."</li>
+<li>"What specific request do you make of the receiving team?"</li>
+</ul>
+
+<h4>Model ISBAR Handover</h4>
+
+<p><strong>I — Identify</strong></p>
+<p>"Good afternoon, I'm [name], Ambulance Officer from Coffin Bay. This is Graham Thompson, 62 years old. His wife Sandra is following by car."</p>
+
+<p><strong>S — Situation</strong></p>
+<p>"Graham developed a sudden onset severe headache at approximately 13:40 today while sitting outside at the Coffin Bay Caravan Park. He describes it as the worst headache of his life — thunderclap onset with no preceding trauma or exertion. He has deteriorated during our care with a GCS drop from 15 to 14."</p>
+
+<p><strong>B — Background</strong></p>
+<p>"He has a history of hypertension managed with Perindopril 5mg daily and mild osteoarthritis. He is allergic to Penicillin — causes a rash. He has no history of previous severe headaches or migraine. On assessment, he had nausea, photophobia, and developing neck stiffness. ROSIER score was 0 — no focal neurological deficit."</p>
+
+<p><strong>A — Assessment</strong></p>
+<p>"Current observations: heart rate 92, BP 182/106, respiratory rate 20, SpO2 97% on room air, GCS 14 — he is confused. BGL was 6.8. Pupils equal and reactive. He has received Paracetamol 1 gram PO at 14:38 and Ondansetron 4mg ODT at 14:40. Pain reduced from 9 to 8 out of 10. GCS dropped from 15 to 14 during our care. BP has trended upward."</p>
+
+<p><strong>R — Recommendation</strong></p>
+<p>"We are concerned about possible subarachnoid haemorrhage given the thunderclap onset, worst-ever headache, neck stiffness, and now declining consciousness. We believe he needs urgent CT imaging. The EOC Clinician has been consulted and supports this transport. Sandra, his wife, should arrive within 10 minutes."</p>
+
+<h4>Expected AO Reasoning</h4>
+<ul>
+<li>ISBAR is structured and concise — deliver it in under 90 seconds</li>
+<li>Lead with the critical information: thunderclap headache, deteriorating GCS</li>
+<li>State your clinical concern clearly: "We are concerned about possible subarachnoid haemorrhage"</li>
+<li>Include trending data: "GCS dropped from 15 to 14", "BP has trended upward"</li>
+<li>Mention the EOC Clinician consultation — this adds weight to your assessment</li>
+<li>Include family information — Sandra is en route</li>
+</ul>
+
+<h4>Key Teaching Points</h4>
+<ul>
+<li>A good handover tells the receiving team <em>what you found</em>, <em>what you did</em>, and <em>what you are worried about</em>.</li>
+<li>Stating your working diagnosis ("possible SAH") is appropriate and expected. You are not diagnosing — you are communicating your clinical concern.</li>
+<li>Include the time of symptom onset. For a potential SAH, this is critical for the receiving team's decision-making.</li>
+<li>Trending observations in your handover (GCS 15 to 14, BP rising) communicates a trajectory, not just a snapshot.</li>
+</ul>
+<h4>Real-Job Translation</h4>
+<p>In a busy rural ED, you may be handing over to a nurse who then relays to the doctor. Make your handover clear enough that it survives being repeated. If in doubt, ask: "Can I speak with the doctor directly? I'm concerned about a declining patient."</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- DEBRIEF -->
+<section class="fade-section">
+<div class="card">
+<h2>Debrief (10–15 minutes)</h2>
+
+<h3>Reflective Questions</h3>
+<div class="debrief-q">1. At what point did you first suspect this was not a simple headache? What information triggered that concern?</div>
+<div class="debrief-q">2. The ROSIER score was negative. How did you manage the tension between a "negative" screening tool and your clinical suspicion?</div>
+<div class="debrief-q">3. What would you have done differently if Graham had been confused from the outset — GCS 13 on your arrival?</div>
+<div class="debrief-q">4. Was there anything that could have reduced your on-scene time? What was essential and what could have been done during transport?</div>
+<div class="debrief-q">5. How did your crew communication work? Were roles clear? Was there a moment where better communication would have changed the flow?</div>
+<div class="debrief-q">6. If Graham had vomited and his GCS dropped to 10 during transport, what would your immediate actions have been?</div>
+<div class="debrief-q">7. How confident do you feel delivering an ISBAR handover that includes a working diagnosis you cannot confirm with imaging? What supports that confidence?</div>
+
+<h3>Take-Home Messages</h3>
+<div class="takeaway"><span class="takeaway-num">1</span><span>A thunderclap headache — sudden onset, maximal severity within seconds — is subarachnoid haemorrhage until CT proves otherwise. This is a time-critical presentation.</span></div>
+<div class="takeaway"><span class="takeaway-num">2</span><span>A negative ROSIER score does not equal a safe patient. ROSIER screens for stroke. SAH, meningitis, and other life-threatening causes of headache can have a ROSIER score of zero.</span></div>
+<div class="takeaway"><span class="takeaway-num">3</span><span>Trending observations detects deterioration that a single snapshot misses. A GCS drop of even one point is clinically significant in this context and must be communicated.</span></div>
+<div class="takeaway"><span class="takeaway-num">4</span><span>Red flag headache features drive your escalation and transport decisions. Learn them, screen for them on every headache job, and act on them when present.</span></div>
+<div class="takeaway"><span class="takeaway-num">5</span><span>Your job is to recognise, stabilise within scope, and transport to definitive care. The CT scanner at the hospital is the treatment — getting the patient there promptly is the most important thing you do.</span></div>
+<div class="takeaway"><span class="takeaway-num">6</span><span>Non-pharmacological care is genuine clinical care. Reducing light, noise, and stimulation for a photophobic, nauseated patient is not soft — it is appropriate management.</span></div>
+<div class="takeaway"><span class="takeaway-num">7</span><span>Always have a deterioration plan before you leave the scene. Suction ready, BVM accessible, lateral position plan rehearsed. The back of an ambulance on the Lincoln Highway is not the place to think about this for the first time.</span></div>
+</div>
+</section>
+
+<!-- SCENARIO VARIATIONS -->
+<section class="fade-section">
+<div class="card">
+<h2>Optional Scenario Variations</h2>
+
+<div class="var-card">
+<h4>Variation 1 — Meningitis Presentation</h4>
+<p>Change the patient to a 28-year-old female backpacker at the caravan park. She has had a worsening headache over 6 hours with fever (38.9°C), neck stiffness, photophobia, and a developing non-blanching petechial rash on her trunk. Her travel companions report she has become increasingly confused in the last hour. GCS 13.</p>
+<p><strong>Focus:</strong> Meningitis red flags, sepsis screening, consideration of IM Ceftriaxone (EOC Clinician authorisation required), infection control precautions (mask the patient and crew), urgency of transport.</p>
+</div>
+
+<div class="var-card">
+<h4>Variation 2 — ROSIER-Positive Stroke</h4>
+<p>Same patient (Graham, 62yo), but on assessment he has a right-sided facial droop, right arm weakness (cannot hold arm up for 10 seconds), and slurred speech. Onset was 90 minutes ago. ROSIER score = +3. GCS 14.</p>
+<p><strong>Focus:</strong> Stroke thrombolysis pathway (CPP-016-AO), eligibility criteria, direct transport to Port Lincoln Hospital (STS within 60 minutes), stroke coordinator notification, time-critical documentation.</p>
+</div>
+
+<div class="var-card">
+<h4>Variation 3 — Post-Traumatic Headache</h4>
+<p>Change the scenario: Graham tripped over a guy rope 2 hours ago and hit his head on the caravan step. He initially felt fine but has developed a progressively worsening headache, now with nausea and one episode of vomiting. He is on Warfarin for atrial fibrillation.</p>
+<p><strong>Focus:</strong> Post-traumatic headache with anticoagulant use, risk of intracranial haemorrhage, C-spine considerations, GCS monitoring, urgency of transport for CT and INR check.</p>
+</div>
+
+<div class="var-card">
+<h4>Variation 4 — Rapid Deterioration During Transport</h4>
+<p>Use the original scenario but during transport Graham's GCS drops to 9 (E2 V3 M4). He vomits and is unable to protect his own airway. SpO2 drops to 91%.</p>
+<p><strong>Focus:</strong> Airway management in a deteriorating patient, lateral positioning, suction, BVM ventilation, immediate EOC Clinician update, crew communication through the partition, requesting paramedic intercept or MedSTAR advice, continuing transport vs. stopping.</p>
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- ============================================ -->
+<!-- JAVASCRIPT                                    -->
+<!-- ============================================ -->
+<script>
+// Progress bar
+window.addEventListener('scroll',function(){
+var h=document.documentElement,b=document.body;
+var st=h.scrollTop||b.scrollTop;
+var sh=h.scrollHeight||b.scrollHeight;
+var ch=h.clientHeight;
+var pct=(st/(sh-ch))*100;
+document.getElementById('progressBar').style.width=pct+'%';
+});
+
+// Toggle / accordion
+function toggleSection(btn){
+var body=btn.nextElementSibling;
+btn.classList.toggle('open');
+body.classList.toggle('open');
+btn.setAttribute('aria-expanded',body.classList.contains('open'));
+}
+
+// Fade in on scroll
+document.addEventListener('DOMContentLoaded',function(){
+var fades=document.querySelectorAll('.fade-section');
+if('IntersectionObserver' in window){
+var obs=new IntersectionObserver(function(entries){
+entries.forEach(function(e){
+if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}
+});
+},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+fades.forEach(function(f){obs.observe(f);});
+}else{
+fades.forEach(function(f){f.classList.add('visible');});
+}
+});
+</script>
+</body>
+</html>
