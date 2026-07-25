@@ -15,36 +15,27 @@
             --primary: #4f46e5;
             --primary-dark: #4338ca;
             --primary-light: #eef2ff;
-
             --background: #f8fafc;
             --surface: #ffffff;
             --text: #0f172a;
             --muted: #64748b;
             --border: #e2e8f0;
-
             --red: #dc2626;
             --red-light: #fef2f2;
-
             --yellow: #d97706;
             --yellow-light: #fffbeb;
-
             --green: #16a34a;
             --green-light: #f0fdf4;
-
             --blue: #0284c7;
             --blue-light: #e0f2fe;
-
             --shadow:
                 0 10px 25px -5px rgba(0, 0, 0, 0.05),
                 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-
             --radius: 16px;
         }
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
         html {
@@ -53,6 +44,7 @@
 
         body {
             min-height: 100vh;
+            margin: 0;
             padding-bottom: 3rem;
             color: var(--text);
             background:
@@ -79,7 +71,6 @@
         button {
             cursor: pointer;
             border: 0;
-            outline: 0;
             transition:
                 transform 0.2s ease,
                 background 0.2s ease,
@@ -107,7 +98,7 @@
             padding: 1.25rem 1.5rem;
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             box-shadow: var(--shadow);
             backdrop-filter: blur(12px);
         }
@@ -132,12 +123,12 @@
         }
 
         .brand h1 {
+            margin: 0;
             font-size: 1.35rem;
-            letter-spacing: -0.02em;
         }
 
         .brand p {
-            margin-top: 0.2rem;
+            margin: 0.2rem 0 0;
             color: var(--muted);
             font-size: 0.85rem;
         }
@@ -149,17 +140,25 @@
             gap: 0.75rem;
         }
 
-        .storage-badge {
+        .storage-badge,
+        .team-badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.35rem;
-            padding: 0.3rem 0.7rem;
-            color: var(--blue);
+            padding: 0.35rem 0.7rem;
             border-radius: 999px;
-            background: var(--blue-light);
             font-size: 0.75rem;
-            font-weight: 700;
+            font-weight: 800;
             white-space: nowrap;
+        }
+
+        .storage-badge {
+            color: var(--blue);
+            background: var(--blue-light);
+        }
+
+        .team-badge {
+            color: var(--primary-dark);
+            background: var(--primary-light);
         }
 
         .user-section {
@@ -176,11 +175,10 @@
             color: var(--muted);
             font-size: 0.82rem;
             font-weight: 700;
-            white-space: nowrap;
         }
 
         .user-section input {
-            width: 140px;
+            width: 145px;
             padding: 0.25rem;
             color: var(--primary-dark);
             border: 0;
@@ -189,29 +187,27 @@
             font-weight: 700;
         }
 
-        .view-switcher {
-            display: flex;
-            gap: 0.25rem;
-            padding: 0.3rem;
+        .connection-status {
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
             border: 1px solid var(--border);
-            border-radius: 12px;
-            background: var(--background);
-        }
-
-        .view-tab {
-            padding: 0.55rem 0.85rem;
+            border-radius: 10px;
             color: var(--muted);
-            border-radius: 8px;
-            background: transparent;
+            background: var(--surface);
             font-size: 0.82rem;
             font-weight: 700;
         }
 
-        .view-tab.active {
-            color: var(--primary-dark);
-            background: var(--surface);
-            box-shadow:
-                0 2px 6px rgba(0, 0, 0, 0.07);
+        .connection-status.connected {
+            color: var(--green);
+            border-color: #bbf7d0;
+            background: var(--green-light);
+        }
+
+        .connection-status.error {
+            color: var(--red);
+            border-color: #fecaca;
+            background: var(--red-light);
         }
 
         .card {
@@ -224,7 +220,7 @@
         }
 
         .card-title {
-            margin-bottom: 1.2rem;
+            margin: 0 0 1rem;
             font-size: 1.15rem;
         }
 
@@ -260,7 +256,8 @@
         }
 
         .field input,
-        .field select {
+        .field select,
+        .search-input {
             width: 100%;
             min-height: 46px;
             padding: 0.7rem 0.9rem;
@@ -272,7 +269,8 @@
         }
 
         .field input:focus,
-        .field select:focus {
+        .field select:focus,
+        .search-input:focus {
             border-color: var(--primary);
             background: var(--surface);
             box-shadow:
@@ -308,20 +306,42 @@
             background: var(--red-light);
         }
 
-        .action-bar {
+        .action-bar,
+        .calendar-actions,
+        .view-switcher {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
 
+        .view-switcher {
+            margin-bottom: 1.25rem;
+            padding: 0.3rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #f1f5f9;
+        }
+
+        .view-tab,
         .btn-primary,
         .btn-secondary,
-        .btn-danger,
-        .btn-small {
+        .btn-danger {
             min-height: 42px;
-            padding: 0.7rem 1rem;
+            padding: 0.65rem 1rem;
             border-radius: 10px;
-            font-weight: 700;
+            font-weight: 800;
+        }
+
+        .view-tab {
+            color: var(--muted);
+            background: transparent;
+        }
+
+        .view-tab.active {
+            color: var(--primary-dark);
+            background: white;
+            box-shadow:
+                0 2px 6px rgba(0, 0, 0, 0.08);
         }
 
         .btn-primary {
@@ -342,10 +362,6 @@
             background: var(--primary-light);
         }
 
-        .btn-secondary:hover:not(:disabled) {
-            background: #e0e7ff;
-        }
-
         .btn-danger {
             color: var(--red);
             border: 1px solid #fecaca;
@@ -355,7 +371,7 @@
         .btn-small {
             min-height: 34px;
             padding: 0.4rem 0.65rem;
-            font-size: 0.78rem;
+            font-size: 0.76rem;
         }
 
         .calendar-header {
@@ -368,13 +384,14 @@
         }
 
         .calendar-header h2 {
+            margin: 0;
             font-size: 1.35rem;
         }
 
-        .calendar-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
+        .calendar-header p {
+            margin: 0.25rem 0 0;
+            color: var(--muted);
+            font-size: 0.84rem;
         }
 
         .calendar-grid {
@@ -392,7 +409,7 @@
         }
 
         .day.open {
-            border-color: rgba(79, 70, 229, 0.35);
+            border-color: rgba(79, 70, 229, 0.4);
         }
 
         .day-heading {
@@ -433,36 +450,27 @@
         }
 
         .day-heading h3 {
+            margin: 0;
             font-size: 1.05rem;
         }
 
         .day-subtitle {
             color: var(--muted);
             font-size: 0.8rem;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .day-body {
-            display: grid;
-            grid-template-rows: 0fr;
-            background: var(--surface);
-            transition:
-                grid-template-rows 0.3s ease;
-        }
-
-        .day.open .day-body {
-            grid-template-rows: 1fr;
+            display: none;
             border-top: 1px solid var(--border);
         }
 
-        .day-body-inner {
-            overflow: hidden;
-            padding: 0 1.25rem;
+        .day.open .day-body {
+            display: block;
         }
 
-        .day.open .day-body-inner {
-            padding-top: 1rem;
-            padding-bottom: 1.25rem;
+        .day-body-inner {
+            padding: 1rem 1.25rem 1.25rem;
         }
 
         .timeline-row {
@@ -478,7 +486,6 @@
             text-align: right;
             font-size: 0.8rem;
             font-weight: 700;
-            font-variant-numeric: tabular-nums;
         }
 
         .timeline-node-container {
@@ -490,8 +497,7 @@
 
         .timeline-line {
             position: absolute;
-            top: 0;
-            bottom: 0;
+            inset-block: 0;
             width: 4px;
         }
 
@@ -589,42 +595,24 @@
             background: var(--green-light);
         }
 
-        .sheet-card {
+        .table-card {
             display: none;
         }
 
-        .sheet-card.active {
+        .table-card.active {
             display: block;
         }
 
-        .sheet-toolbar {
+        .table-toolbar {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             margin-bottom: 1rem;
         }
 
-        .sheet-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .sheet-search {
-            min-height: 42px;
-            width: 230px;
-            padding: 0.6rem 0.8rem;
-            border: 1px solid var(--border);
-            border-radius: 9px;
-            outline: 0;
-            background: var(--background);
-        }
-
-        .sheet-search:focus {
-            border-color: var(--primary);
-            background: var(--surface);
+        .search-input {
+            max-width: 260px;
         }
 
         .table-wrapper {
@@ -637,60 +625,27 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.84rem;
+        }
+
+        th,
+        td {
+            padding: 0.8rem;
             text-align: left;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
         }
 
         th {
-            padding: 0.8rem;
             color: var(--muted);
-            border-bottom: 1px solid var(--border);
             background: #f1f5f9;
             font-size: 0.72rem;
             text-transform: uppercase;
-            white-space: nowrap;
         }
 
-        td {
-            padding: 0.8rem;
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-        }
-
-        tbody tr:last-child td {
-            border-bottom: 0;
-        }
-
-        tbody tr:hover td {
-            background: #f8fafc;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns:
-                repeat(4, minmax(130px, 1fr));
-            gap: 0.75rem;
-            margin-top: 1rem;
-        }
-
-        .stat {
-            padding: 0.8rem;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: var(--background);
-        }
-
-        .stat-label {
+        .empty-state {
+            padding: 2rem;
             color: var(--muted);
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .stat-value {
-            margin-top: 0.2rem;
-            color: var(--primary-dark);
-            font-size: 1.15rem;
-            font-weight: 800;
+            text-align: center;
         }
 
         .modal-overlay {
@@ -704,7 +659,6 @@
             opacity: 0;
             pointer-events: none;
             background: rgba(15, 23, 42, 0.55);
-            backdrop-filter: blur(4px);
             transition: opacity 0.2s ease;
         }
 
@@ -714,29 +668,31 @@
         }
 
         .modal {
-            width: min(580px, 100%);
+            width: min(620px, 100%);
             max-height: 85vh;
             overflow: auto;
             padding: 1.4rem;
             border-radius: var(--radius);
             background: var(--surface);
-            box-shadow:
-                0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
+        .modal-header,
         .shift-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 0.75rem;
+        }
+
+        .modal-header {
+            margin-bottom: 1rem;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+        }
+
+        .shift-item {
             margin-bottom: 0.7rem;
             padding: 0.8rem;
             border: 1px solid var(--border);
@@ -755,17 +711,6 @@
             font-size: 0.76rem;
         }
 
-        .shift-actions {
-            display: flex;
-            gap: 0.4rem;
-        }
-
-        .empty-state {
-            padding: 2rem;
-            color: var(--muted);
-            text-align: center;
-        }
-
         .toast {
             position: fixed;
             left: 50%;
@@ -776,10 +721,6 @@
             color: white;
             border-radius: 999px;
             background: var(--text);
-            box-shadow:
-                0 10px 25px rgba(0, 0, 0, 0.2);
-            font-size: 0.86rem;
-            font-weight: 600;
             opacity: 0;
             pointer-events: none;
             transform:
@@ -806,45 +747,22 @@
                 grid-template-columns: 1fr;
             }
 
-            .stats {
-                grid-template-columns: 1fr 1fr;
-            }
-
             .header-controls {
                 width: 100%;
             }
 
             .user-section {
                 flex: 1;
-            }
-
-            .calendar-header {
-                align-items: stretch;
-                flex-direction: column;
             }
         }
 
         @media (max-width: 560px) {
-            header {
+            header,
+            .header-controls,
+            .calendar-header,
+            .shift-item {
                 align-items: stretch;
                 flex-direction: column;
-            }
-
-            .header-controls {
-                align-items: stretch;
-                flex-direction: column;
-            }
-
-            .view-switcher {
-                width: 100%;
-            }
-
-            .view-tab {
-                flex: 1;
-            }
-
-            .user-section {
-                justify-content: space-between;
             }
 
             .timeline-row {
@@ -861,26 +779,8 @@
                 flex-direction: column;
             }
 
-            .day-heading {
-                padding: 1rem;
-            }
-
-            .day-body-inner {
-                padding-right: 0.75rem;
-                padding-left: 0.75rem;
-            }
-
-            .shift-item {
-                align-items: stretch;
-                flex-direction: column;
-            }
-
-            .stats {
-                grid-template-columns: 1fr;
-            }
-
-            .sheet-search {
-                width: 100%;
+            .search-input {
+                max-width: none;
             }
         }
     </style>
@@ -894,36 +794,24 @@
 
                 <div>
                     <h1>Crew Shift Roster</h1>
-                    <p>
-                        Book shifts and export the weekly roster
+
+                    <p id="teamSubtitle">
+                        Loading team roster…
                     </p>
                 </div>
             </div>
 
             <div class="header-controls">
-                <div class="view-switcher">
-                    <button
-                        id="timelineTab"
-                        class="view-tab active"
-                        type="button"
-                    >
-                        Timeline
-                    </button>
+                <span
+                    id="teamBadge"
+                    class="team-badge"
+                ></span>
 
-                    <button
-                        id="sheetTab"
-                        class="view-tab"
-                        type="button"
-                    >
-                        Booking list
-                    </button>
-                </div>
+                <span class="storage-badge">
+                    Google Sheets
+                </span>
 
                 <div class="user-section">
-                    <span class="storage-badge">
-                        Google Sheets
-                    </span>
-
                     <label for="nameInput">
                         Name:
                     </label>
@@ -939,15 +827,23 @@
             </div>
         </header>
 
+        <div
+            id="connectionStatus"
+            class="connection-status"
+            aria-live="polite"
+        >
+            Connecting to the roster…
+        </div>
+
         <section class="card">
             <h2 class="card-title">
                 Book a shift
             </h2>
 
             <div class="notice">
-                This prototype saves bookings to Google Sheets. The roster CSV uses one name column and one
-                blank restriction column per day, with three crew rows
-                for every hour from 08:00 to 18:00.
+                Select a continuous shift of up to 24 hours.
+                Overnight shifts are supported. A maximum of three
+                volunteers can be allocated to each hourly period.
             </div>
 
             <div class="form-grid">
@@ -1010,6 +906,14 @@
                 </button>
 
                 <button
+                    id="refreshButton"
+                    class="btn-secondary"
+                    type="button"
+                >
+                    Refresh roster
+                </button>
+
+                <button
                     id="myBookingsButton"
                     class="btn-secondary"
                     type="button"
@@ -1018,19 +922,42 @@
                 </button>
 
                 <button
-                    id="downloadRosterButton"
+                    id="downloadListButton"
                     class="btn-secondary"
                     type="button"
                 >
-                    Download roster CSV
+                    Download CSV
                 </button>
             </div>
         </section>
+
+        <div class="view-switcher">
+            <button
+                id="timelineTab"
+                class="view-tab active"
+                type="button"
+            >
+                Timeline
+            </button>
+
+            <button
+                id="listTab"
+                class="view-tab"
+                type="button"
+            >
+                Booking list
+            </button>
+        </div>
 
         <section id="timelineSection">
             <div class="calendar-header">
                 <div>
                     <h2>Roster coverage</h2>
+
+                    <p>
+                        Green means two or more volunteers;
+                        yellow means one; red means none.
+                    </p>
                 </div>
 
                 <div class="calendar-actions">
@@ -1049,14 +976,6 @@
                     >
                         Collapse all
                     </button>
-
-                    <button
-                        id="todayButton"
-                        class="btn-secondary"
-                        type="button"
-                    >
-                        Today
-                    </button>
                 </div>
             </div>
 
@@ -1067,31 +986,15 @@
         </section>
 
         <section
-            id="sheetSection"
-            class="card sheet-card"
+            id="listSection"
+            class="card table-card"
         >
-            <div class="sheet-toolbar">
-                <div class="sheet-actions">
-                    <button
-                        id="downloadRosterButtonTwo"
-                        class="btn-primary"
-                        type="button"
-                    >
-                        Download roster CSV
-                    </button>
-
-                    <button
-                        id="downloadListButton"
-                        class="btn-secondary"
-                        type="button"
-                    >
-                        Download booking list CSV
-                    </button>
-                </div>
+            <div class="table-toolbar">
+                <strong>All active bookings</strong>
 
                 <input
-                    id="sheetSearchInput"
-                    class="sheet-search"
+                    id="searchInput"
+                    class="search-input"
                     type="search"
                     placeholder="Search bookings"
                 >
@@ -1102,70 +1005,15 @@
                     <thead>
                         <tr>
                             <th>Crew member</th>
-                            <th>Date</th>
                             <th>Start</th>
                             <th>Finish</th>
                             <th>Duration</th>
-                            <th>Actions</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
 
-                    <tbody id="sheetTableBody"></tbody>
+                    <tbody id="bookingTableBody"></tbody>
                 </table>
-            </div>
-
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-label">
-                        Shifts
-                    </div>
-
-                    <div
-                        id="totalShiftsStat"
-                        class="stat-value"
-                    >
-                        0
-                    </div>
-                </div>
-
-                <div class="stat">
-                    <div class="stat-label">
-                        Hours
-                    </div>
-
-                    <div
-                        id="totalHoursStat"
-                        class="stat-value"
-                    >
-                        0
-                    </div>
-                </div>
-
-                <div class="stat">
-                    <div class="stat-label">
-                        Crew
-                    </div>
-
-                    <div
-                        id="uniqueCrewStat"
-                        class="stat-value"
-                    >
-                        0
-                    </div>
-                </div>
-
-                <div class="stat">
-                    <div class="stat-label">
-                        Average shift
-                    </div>
-
-                    <div
-                        id="averageShiftStat"
-                        class="stat-value"
-                    >
-                        0 hrs
-                    </div>
-                </div>
             </div>
         </section>
     </div>
@@ -1206,34 +1054,31 @@
     ></div>
 
     <script>
+        /*
+         * Change this value for each geographic team page.
+         * It must match the team names used in the Sheet.
+         */
+        const TEAM_NAME = "Cummins";
+
+        /*
+         * This must be the deployed Apps Script Web App /exec URL.
+         */
+        const APPS_SCRIPT_URL =
+            "https://script.google.com/macros/s/AKfycbzP0q_oq6igSJb-1boRzNOtauee4_p3FJDVsLJViQMsu9l0cOoBjjzbamNTX3FfY_qa/exec";
+
         const MAX_CREW = 3;
         const HOURS_PER_DAY = 24;
         const MAX_SHIFT_HOURS = 24;
         const DAYS_TO_SHOW = 7;
 
-        const ROSTER_START_HOUR = 8;
-        const ROSTER_END_HOUR = 18;
-
         const USER_STORAGE_KEY =
-            "crew-roster-user-v3";
-
-        /*
-         * PASTE YOUR APPS SCRIPT DEPLOYMENT URL HERE
-         */
-        const APPS_SCRIPT_URL =
-            "https://script.google.com/macros/s/AKfycbzP0q_oq6igSJb-1boRzNOtauee4_p3FJDVsLJViQMsu9l0cOoBjjzbamNTX3FfY_qa/exec";
-
-        /*
-         * Set this to your team name.
-         * Options: "Cummins", "North", "South", "East", "West"
-         */
-        const TEAM_NAME = "Cummins";
+            `crew-roster-user-${TEAM_NAME.toLowerCase()}`;
 
         let currentUser =
             localStorage.getItem(USER_STORAGE_KEY) || "";
 
         let events = [];
-        let isLoadingFromSheet = false;
+        let isLoading = false;
         let toastTimer;
 
         const nameInput =
@@ -1254,26 +1099,32 @@
         const bookButton =
             document.getElementById("bookButton");
 
+        const refreshButton =
+            document.getElementById("refreshButton");
+
         const calendarElement =
             document.getElementById("calendarElement");
+
+        const connectionStatus =
+            document.getElementById("connectionStatus");
 
         const timelineSection =
             document.getElementById("timelineSection");
 
-        const sheetSection =
-            document.getElementById("sheetSection");
+        const listSection =
+            document.getElementById("listSection");
 
         const timelineTab =
             document.getElementById("timelineTab");
 
-        const sheetTab =
-            document.getElementById("sheetTab");
+        const listTab =
+            document.getElementById("listTab");
 
-        const sheetTableBody =
-            document.getElementById("sheetTableBody");
+        const bookingTableBody =
+            document.getElementById("bookingTableBody");
 
-        const sheetSearchInput =
-            document.getElementById("sheetSearchInput");
+        const searchInput =
+            document.getElementById("searchInput");
 
         const bookingsModal =
             document.getElementById("bookingsModal");
@@ -1287,10 +1138,16 @@
         initialise();
 
         function initialise() {
+            document.getElementById("teamBadge")
+                .textContent = TEAM_NAME;
+
+            document.getElementById("teamSubtitle")
+                .textContent =
+                    `${TEAM_NAME} volunteer roster`;
+
             nameInput.value = currentUser;
 
-            const today =
-                startOfDay(new Date());
+            const today = startOfDay(new Date());
 
             bookingDateInput.min =
                 formatDateKey(today);
@@ -1300,111 +1157,10 @@
 
             populateStartTimes();
             registerEventListeners();
-
-            /*
-             * Load bookings from Google Sheet
-             * instead of localStorage.
-             */
-            loadBookingsFromSheet();
-        }
-
-       function loadBookingsFromSheet() {
-    isLoadingFromSheet = true;
-
-    console.log("Loading bookings from:", APPS_SCRIPT_URL);
-    console.log("Team name:", TEAM_NAME);
-
-    fetch(APPS_SCRIPT_URL, {
-        method: "POST",
-        payload: JSON.stringify({
-            action: "getBookings",
-            team: TEAM_NAME
-        })
-    })
-    .then(response => {
-        console.log("Response status:", response.status);
-        return response.json();
-    })
-    .then(data => {
-        console.log("Response data:", data);
-
-        if (data && data.success) {
-            events = (data.bookings || []).map(booking => {
-                return {
-                    id: booking.id || "",
-                    user: booking.user || "",
-                    start: booking.start || "",
-                    end: booking.end || "",
-                    createdAt: booking.createdAt || ""
-                };
-            });
-
-            console.log("Loaded events:", events);
-
             renderCalendar();
             renderBookingTable();
             updateBookingSummary();
-        } else {
-            console.error("API error:", data);
-            showToast(
-                "Error loading bookings: " +
-                (data?.error || "Unknown error")
-            );
-        }
-
-        isLoadingFromSheet = false;
-    })
-    .catch(error => {
-        console.error(
-            "Failed to load bookings:",
-            error
-        );
-
-        showToast(
-            "Unable to connect to Google Sheet. " +
-            "Check the Apps Script URL."
-        );
-
-        isLoadingFromSheet = false;
-
-        /*
-         * Still render empty calendar so page doesn't break.
-         */
-        renderCalendar();
-        renderBookingTable();
-        updateBookingSummary();
-    });
-}
-
-        function cancelShiftOnSheet(eventId) {
-            fetch(APPS_SCRIPT_URL, {
-                method: "POST",
-                payload: JSON.stringify({
-                    action: "cancelBooking",
-                    bookingId: eventId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    loadBookingsFromSheet();
-                    showToast("Shift cancelled.");
-                } else {
-                    showToast(
-                        "Error: " + data.error
-                    );
-                }
-            })
-            .catch(error => {
-                console.error(
-                    "Failed to cancel booking:",
-                    error
-                );
-
-                showToast(
-                    "Unable to cancel on Google Sheet."
-                );
-            });
+            loadBookingsFromSheet();
         }
 
         function registerEventListeners() {
@@ -1434,6 +1190,11 @@
             bookButton.addEventListener(
                 "click",
                 bookSelectedShift
+            );
+
+            refreshButton.addEventListener(
+                "click",
+                loadBookingsFromSheet
             );
 
             document
@@ -1473,9 +1234,9 @@
                 () => switchView("timeline")
             );
 
-            sheetTab.addEventListener(
+            listTab.addEventListener(
                 "click",
-                () => switchView("sheet")
+                () => switchView("list")
             );
 
             document
@@ -1493,42 +1254,155 @@
                 );
 
             document
-                .getElementById("todayButton")
-                .addEventListener(
-                    "click",
-                    goToToday
-                );
-
-            document
-                .getElementById(
-                    "downloadRosterButton"
-                )
-                .addEventListener(
-                    "click",
-                    exportRosterCSV
-                );
-
-            document
-                .getElementById(
-                    "downloadRosterButtonTwo"
-                )
-                .addEventListener(
-                    "click",
-                    exportRosterCSV
-                );
-
-            document
-                .getElementById(
-                    "downloadListButton"
-                )
+                .getElementById("downloadListButton")
                 .addEventListener(
                     "click",
                     exportBookingListCSV
                 );
 
-            sheetSearchInput.addEventListener(
+            searchInput.addEventListener(
                 "input",
                 renderBookingTable
+            );
+        }
+
+        /*
+         * The body is sent as plain text deliberately.
+         * This keeps the request simple and avoids a browser
+         * CORS preflight against Google Apps Script.
+         */
+        async function callRosterApi(action, payload = {}) {
+            const response = await fetch(
+                APPS_SCRIPT_URL,
+                {
+                    method: "POST",
+                    redirect: "follow",
+                    headers: {
+                        "Content-Type":
+                            "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify({
+                        action,
+                        team: TEAM_NAME,
+                        ...payload
+                    })
+                }
+            );
+
+            const responseText =
+                await response.text();
+
+            let data;
+
+            try {
+                data = JSON.parse(responseText);
+            } catch (error) {
+                console.error(
+                    "Non-JSON server response:",
+                    responseText
+                );
+
+                throw new Error(
+                    "The Apps Script response was not valid JSON. " +
+                    "Check that the latest script version is deployed."
+                );
+            }
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error ||
+                    `Server returned HTTP ${response.status}.`
+                );
+            }
+
+            return data;
+        }
+
+        async function loadBookingsFromSheet() {
+            if (isLoading) {
+                return;
+            }
+
+            setLoading(true);
+
+            setConnectionStatus(
+                "Loading bookings from Google Sheets…",
+                ""
+            );
+
+            try {
+                const data =
+                    await callRosterApi(
+                        "getBookings"
+                    );
+
+                if (!data.success) {
+                    throw new Error(
+                        data.error ||
+                        "The roster could not be loaded."
+                    );
+                }
+
+                events = (data.bookings || [])
+                    .map(normaliseBooking)
+                    .filter(isValidBooking);
+
+                renderAll();
+
+                setConnectionStatus(
+                    `${events.length} active ` +
+                    `${events.length === 1
+                        ? "booking"
+                        : "bookings"} loaded for ` +
+                    `${TEAM_NAME}.`,
+                    "connected"
+                );
+            } catch (error) {
+                console.error(
+                    "Failed to load bookings:",
+                    error
+                );
+
+                setConnectionStatus(
+                    error.message,
+                    "error"
+                );
+
+                showToast(
+                    "Unable to load the shared roster."
+                );
+
+                renderAll();
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function normaliseBooking(booking) {
+            return {
+                id: String(booking.id || ""),
+                team:
+                    String(
+                        booking.team || TEAM_NAME
+                    ),
+                user: String(booking.user || ""),
+                start: String(booking.start || ""),
+                end: String(booking.end || ""),
+                createdAt:
+                    String(booking.createdAt || "")
+            };
+        }
+
+        function isValidBooking(booking) {
+            const start = new Date(booking.start);
+            const end = new Date(booking.end);
+
+            return Boolean(
+                booking.id &&
+                booking.user &&
+                !Number.isNaN(start.getTime()) &&
+                !Number.isNaN(end.getTime()) &&
+                end > start
             );
         }
 
@@ -1567,8 +1441,7 @@
                     document.createElement("option");
 
                 option.value = String(hour);
-                option.textContent =
-                    formatHour(hour);
+                option.textContent = formatHour(hour);
 
                 startTimeSelect.appendChild(option);
             }
@@ -1610,15 +1483,15 @@
                 duration <= MAX_SHIFT_HOURS;
                 duration++
             ) {
-                const absoluteFinishHour =
+                const absoluteFinish =
                     startHour + duration;
 
-                const displayedFinishHour =
-                    absoluteFinishHour % 24;
+                const finishHour =
+                    absoluteFinish % HOURS_PER_DAY;
 
                 const dayOffset =
                     Math.floor(
-                        absoluteFinishHour / 24
+                        absoluteFinish / HOURS_PER_DAY
                     );
 
                 const option =
@@ -1627,7 +1500,7 @@
                 option.value = String(duration);
 
                 option.textContent =
-                    `${formatHour(displayedFinishHour)}` +
+                    `${formatHour(finishHour)}` +
                     `${dayOffset > 0
                         ? " — next day"
                         : ""}` +
@@ -1695,6 +1568,7 @@
             }
 
             if (
+                !Number.isInteger(duration) ||
                 duration < 1 ||
                 duration > MAX_SHIFT_HOURS
             ) {
@@ -1772,7 +1646,18 @@
 
                 bookingSummary.textContent =
                     `${description}. Enter your name ` +
-                    `before confirming the shift.`;
+                    "before confirming the shift.";
+
+                return;
+            }
+
+            if (isLoading) {
+                bookingSummary.classList.add(
+                    "warning"
+                );
+
+                bookingSummary.textContent =
+                    "Please wait while the roster is loading.";
 
                 return;
             }
@@ -1780,7 +1665,7 @@
             bookingSummary.classList.add("valid");
 
             bookingSummary.textContent =
-                `Vacancy confirmed for ${currentUser}: ` +
+                `Vacancy available for ${currentUser}: ` +
                 `${description} ` +
                 `(${selection.duration} ` +
                 `${selection.duration === 1
@@ -1814,8 +1699,8 @@
                     return {
                         available: false,
                         message:
-                            "You already have a booking " +
-                            `during ${formatHourPeriod(hourStart)}.`
+                            "You already have a booking during " +
+                            `${formatHourPeriod(hourStart)}.`
                     };
                 }
 
@@ -1824,7 +1709,7 @@
                         available: false,
                         message:
                             `${formatHourPeriod(hourStart)} ` +
-                            "already has three crew members."
+                            `already has ${MAX_CREW} crew members.`
                     };
                 }
 
@@ -1837,7 +1722,7 @@
             };
         }
 
-        function bookSelectedShift() {
+        async function bookSelectedShift() {
             const selection =
                 readShiftSelection();
 
@@ -1881,39 +1766,102 @@
                     new Date().toISOString()
             };
 
-            /*
-             * Add to local array first for immediate UI update.
-             */
-            events.push(newEvent);
+            setLoading(true);
 
-            /*
-             * Save to Google Sheet.
-             */
-            saveBookingToSheet(newEvent);
+            setConnectionStatus(
+                "Saving booking…",
+                ""
+            );
 
-            renderCalendar();
-            renderBookingTable();
-
-            const dayKey =
-                formatDateKey(selection.startDate);
-
-            requestAnimationFrame(() => {
-                const target =
-                    document.querySelector(
-                        `.day[data-date="${dayKey}"]`
+            try {
+                const data =
+                    await callRosterApi(
+                        "addBooking",
+                        newEvent
                     );
 
-                if (target) {
-                    target.classList.add("open");
+                if (!data.success) {
+                    throw new Error(
+                        data.error ||
+                        "The booking was rejected."
+                    );
                 }
-            });
 
-            startTimeSelect.value = "";
-            populateFinishTimes();
-            updateBookingSummary();
+                showToast(
+                    "Your shift was booked successfully."
+                );
+
+                startTimeSelect.value = "";
+                populateFinishTimes();
+
+                await loadBookingsAfterSave();
+
+                const dayKey =
+                    formatDateKey(
+                        selection.startDate
+                    );
+
+                requestAnimationFrame(() => {
+                    const target =
+                        document.querySelector(
+                            `.day[data-date="${dayKey}"]`
+                        );
+
+                    if (target) {
+                        target.classList.add("open");
+
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start"
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error(
+                    "Failed to save booking:",
+                    error
+                );
+
+                setConnectionStatus(
+                    error.message,
+                    "error"
+                );
+
+                showToast(error.message);
+            } finally {
+                setLoading(false);
+                updateBookingSummary();
+            }
         }
 
-        function cancelShift(eventId) {
+        async function loadBookingsAfterSave() {
+            const data =
+                await callRosterApi(
+                    "getBookings"
+                );
+
+            if (!data.success) {
+                throw new Error(
+                    data.error ||
+                    "Booking saved, but the roster " +
+                    "could not be refreshed."
+                );
+            }
+
+            events = (data.bookings || [])
+                .map(normaliseBooking)
+                .filter(isValidBooking);
+
+            renderAll();
+
+            setConnectionStatus(
+                `${events.length} active bookings loaded ` +
+                `for ${TEAM_NAME}.`,
+                "connected"
+            );
+        }
+
+        async function cancelShift(eventId) {
             const event =
                 events.find(item => {
                     return item.id === eventId;
@@ -1938,23 +1886,44 @@
                 return;
             }
 
-            /*
-             * Remove from local array first.
-             */
-            events =
-                events.filter(item => {
-                    return item.id !== eventId;
-                });
+            setLoading(true);
 
-            /*
-             * Cancel on Google Sheet.
-             */
-            cancelShiftOnSheet(eventId);
+            try {
+                const data =
+                    await callRosterApi(
+                        "cancelBooking",
+                        {
+                            bookingId: eventId
+                        }
+                    );
 
-            renderCalendar();
-            renderBookingTable();
-            renderMyBookings();
-            updateBookingSummary();
+                if (!data.success) {
+                    throw new Error(
+                        data.error ||
+                        "The shift could not be cancelled."
+                    );
+                }
+
+                events =
+                    events.filter(item => {
+                        return item.id !== eventId;
+                    });
+
+                renderAll();
+                renderMyBookings();
+                updateBookingSummary();
+
+                showToast("Shift cancelled.");
+            } catch (error) {
+                console.error(
+                    "Failed to cancel shift:",
+                    error
+                );
+
+                showToast(error.message);
+            } finally {
+                setLoading(false);
+            }
         }
 
         function getBookingsForHour(hourStart) {
@@ -1973,6 +1942,20 @@
                     eventEnd > hourStart
                 );
             });
+        }
+
+        function renderAll() {
+            renderCalendar();
+            renderBookingTable();
+            updateBookingSummary();
+
+            if (
+                bookingsModal.classList.contains(
+                    "active"
+                )
+            ) {
+                renderMyBookings();
+            }
         }
 
         function renderCalendar() {
@@ -2091,7 +2074,7 @@
                 `${isSameDay(date, new Date())
                     ? "Today · "
                     : ""}` +
-                `${coveredHours}/24 hours covered`;
+                `${coveredHours}/24 target-covered`;
 
             heading.append(
                 titleGroup,
@@ -2157,14 +2140,10 @@
             if (crewCount === 1) {
                 state = "partial";
                 status = "One crew (1/3)";
-            }
-
-            if (crewCount === 2) {
+            } else if (crewCount === 2) {
                 state = "covered";
                 status = "Target met (2/3)";
-            }
-
-            if (crewCount >= 3) {
+            } else if (crewCount >= 3) {
                 state = "covered";
                 status = "Full (3/3)";
             }
@@ -2251,42 +2230,13 @@
             return row;
         }
 
-        function switchView(view) {
-            const showSheet =
-                view === "sheet";
-
-            timelineSection.classList.toggle(
-                "hidden",
-                showSheet
-            );
-
-            sheetSection.classList.toggle(
-                "active",
-                showSheet
-            );
-
-            timelineTab.classList.toggle(
-                "active",
-                !showSheet
-            );
-
-            sheetTab.classList.toggle(
-                "active",
-                showSheet
-            );
-
-            if (showSheet) {
-                renderBookingTable();
-            }
-        }
-
         function renderBookingTable() {
             const query =
-                sheetSearchInput.value
+                searchInput.value
                     .trim()
                     .toLocaleLowerCase();
 
-            const filteredEvents =
+            const filtered =
                 [...events]
                     .filter(event => {
                         if (!query) {
@@ -2310,29 +2260,24 @@
                         );
                     });
 
-            sheetTableBody.innerHTML = "";
+            bookingTableBody.innerHTML = "";
 
-            if (filteredEvents.length === 0) {
-                sheetTableBody.innerHTML = `
+            if (filtered.length === 0) {
+                bookingTableBody.innerHTML = `
                     <tr>
                         <td
-                            colspan="6"
-                            style="
-                                padding: 2rem;
-                                text-align: center;
-                                color: var(--muted);
-                            "
+                            colspan="5"
+                            class="empty-state"
                         >
-                            No bookings found.
+                            No active bookings found.
                         </td>
                     </tr>
                 `;
+
+                return;
             }
 
-            let totalHours = 0;
-            const uniqueCrew = new Set();
-
-            filteredEvents.forEach(event => {
+            filtered.forEach(event => {
                 const start =
                     new Date(event.start);
 
@@ -2341,12 +2286,6 @@
 
                 const duration =
                     (end - start) / 3600000;
-
-                totalHours += duration;
-
-                uniqueCrew.add(
-                    normaliseName(event.user)
-                );
 
                 const row =
                     document.createElement("tr");
@@ -2359,19 +2298,15 @@
                     </td>
 
                     <td>
-                        ${formatAustralianDate(start)}
+                        ${escapeHtml(
+                            formatDateTime(start)
+                        )}
                     </td>
 
                     <td>
-                        ${formatHour(start.getHours())}
-                    </td>
-
-                    <td>
-                        ${formatHour(end.getHours())}
-                        ${formatDateKey(start) !==
-                            formatDateKey(end)
-                            ? " next day"
-                            : ""}
+                        ${escapeHtml(
+                            formatDateTime(end)
+                        )}
                     </td>
 
                     <td>
@@ -2385,9 +2320,11 @@
                         <button
                             class="btn-danger btn-small"
                             type="button"
-                            data-cancel-id="${event.id}"
+                            data-cancel-id="${escapeHtml(
+                                event.id
+                            )}"
                         >
-                            Delete
+                            Cancel
                         </button>
                     </td>
                 `;
@@ -2401,33 +2338,8 @@
                         () => cancelShift(event.id)
                     );
 
-                sheetTableBody.appendChild(row);
+                bookingTableBody.appendChild(row);
             });
-
-            document
-                .getElementById("totalShiftsStat")
-                .textContent =
-                    filteredEvents.length;
-
-            document
-                .getElementById("totalHoursStat")
-                .textContent =
-                    `${totalHours} hrs`;
-
-            document
-                .getElementById("uniqueCrewStat")
-                .textContent =
-                    uniqueCrew.size;
-
-            document
-                .getElementById("averageShiftStat")
-                .textContent =
-                    filteredEvents.length > 0
-                        ? `${(
-                            totalHours /
-                            filteredEvents.length
-                        ).toFixed(1)} hrs`
-                        : "0 hrs";
         }
 
         function openBookingsModal() {
@@ -2507,44 +2419,19 @@
 
                 information.innerHTML = `
                     <div class="shift-time">
-                        ${formatDateTime(start)}
+                        ${escapeHtml(
+                            formatDateTime(start)
+                        )}
                         to
-                        ${formatDateTime(end)}
+                        ${escapeHtml(
+                            formatDateTime(end)
+                        )}
                     </div>
 
                     <div class="shift-detail">
-                        ${event.user}
+                        ${escapeHtml(TEAM_NAME)}
                     </div>
                 `;
-
-                const actions =
-                    document.createElement("div");
-
-                actions.className =
-                    "shift-actions";
-
-                const calendarButton =
-                    document.createElement("button");
-
-                calendarButton.className =
-                    "btn-secondary btn-small";
-
-                calendarButton.type = "button";
-                calendarButton.textContent =
-                    "Google Calendar";
-
-                calendarButton.addEventListener(
-                    "click",
-                    () => {
-                        window.open(
-                            generateGoogleCalendarUrl(
-                                event
-                            ),
-                            "_blank",
-                            "noopener"
-                        );
-                    }
-                );
 
                 const deleteButton =
                     document.createElement("button");
@@ -2561,301 +2448,62 @@
                     () => cancelShift(event.id)
                 );
 
-                actions.append(
-                    calendarButton,
-                    deleteButton
-                );
-
                 item.append(
                     information,
-                    actions
+                    deleteButton
                 );
 
                 myBookingsList.appendChild(item);
             });
         }
 
-        function exportRosterCSV() {
-            const rosterStart =
-                startOfDay(new Date());
+        function switchView(view) {
+            const showList =
+                view === "list";
 
-            const rosterDays = [];
-
-            for (
-                let offset = 0;
-                offset < DAYS_TO_SHOW;
-                offset++
-            ) {
-                rosterDays.push(
-                    addDays(rosterStart, offset)
-                );
-            }
-
-            const relevantEvents =
-                events.filter(event => {
-                    const eventStart =
-                        new Date(event.start);
-
-                    const eventEnd =
-                        new Date(event.end);
-
-                    const exportStart =
-                        new Date(rosterDays[0]);
-
-                    exportStart.setHours(
-                        ROSTER_START_HOUR,
-                        0,
-                        0,
-                        0
-                    );
-
-                    const exportEnd =
-                        new Date(
-                            rosterDays[
-                                rosterDays.length - 1
-                            ]
-                        );
-
-                    exportEnd.setHours(
-                        ROSTER_END_HOUR,
-                        0,
-                        0,
-                        0
-                    );
-
-                    return (
-                        eventStart < exportEnd &&
-                        eventEnd > exportStart
-                    );
-                });
-
-            const laneAssignments =
-                assignRosterLanes(
-                    relevantEvents
-                );
-
-            const rows = [];
-
-            const headingRow = ["Time"];
-
-            rosterDays.forEach(date => {
-                headingRow.push(
-                    formatRosterDayHeader(date)
-                );
-
-                headingRow.push(
-                    "Restriction"
-                );
-            });
-
-            rows.push(headingRow);
-
-            for (
-                let hour = ROSTER_START_HOUR;
-                hour < ROSTER_END_HOUR;
-                hour++
-            ) {
-                for (
-                    let lane = 0;
-                    lane < MAX_CREW;
-                    lane++
-                ) {
-                    const row = [
-                        lane === 0
-                            ? formatHour(hour)
-                            : ""
-                    ];
-
-                    rosterDays.forEach(date => {
-                        const hourStart =
-                            new Date(date);
-
-                        hourStart.setHours(
-                            hour,
-                            0,
-                            0,
-                            0
-                        );
-
-                        const hourEnd =
-                            addHours(hourStart, 1);
-
-                        const event =
-                            findBookingInLane(
-                                relevantEvents,
-                                laneAssignments,
-                                lane,
-                                hourStart,
-                                hourEnd
-                            );
-
-                        row.push(
-                            event
-                                ? event.user
-                                : ""
-                        );
-
-                        row.push("");
-                    });
-
-                    rows.push(row);
-                }
-            }
-
-            downloadCSV(
-                rows,
-                `Crew_Roster_` +
-                `${formatDateKey(rosterDays[0])}` +
-                `_to_` +
-                `${formatDateKey(
-                    rosterDays[
-                        rosterDays.length - 1
-                    ]
-                )}.csv`
+            timelineSection.classList.toggle(
+                "hidden",
+                showList
             );
 
-            showToast(
-                "Roster CSV downloaded."
+            listSection.classList.toggle(
+                "active",
+                showList
             );
+
+            timelineTab.classList.toggle(
+                "active",
+                !showList
+            );
+
+            listTab.classList.toggle(
+                "active",
+                showList
+            );
+
+            if (showList) {
+                renderBookingTable();
+            }
         }
 
-        function assignRosterLanes(
-            relevantEvents
-        ) {
-            const assignments =
-                new Map();
-
-            const sortedEvents =
-                [...relevantEvents]
-                    .filter(event => {
-                        const start =
-                            new Date(event.start);
-
-                        const end =
-                            new Date(event.end);
-
-                        return (
-                            !Number.isNaN(
-                                start.getTime()
-                            ) &&
-                            !Number.isNaN(
-                                end.getTime()
-                            ) &&
-                            end > start
-                        );
-                    })
-                    .sort((a, b) => {
-                        const startDifference =
-                            new Date(a.start) -
-                            new Date(b.start);
-
-                        if (startDifference !== 0) {
-                            return startDifference;
-                        }
-
-                        return (
-                            new Date(b.end) -
-                            new Date(a.end)
-                        );
-                    });
-
-            const activeLanes = [
-                [],
-                [],
-                []
-            ];
-
-            sortedEvents.forEach(event => {
-                const eventStart =
-                    new Date(event.start);
-
-                const eventEnd =
-                    new Date(event.end);
-
-                let selectedLane = -1;
-
-                for (
-                    let lane = 0;
-                    lane < MAX_CREW;
-                    lane++
-                ) {
-                    const overlaps =
-                        activeLanes[lane]
-                            .some(existing => {
-                                return (
-                                    existing.start <
-                                        eventEnd &&
-                                    existing.end >
-                                        eventStart
-                                );
-                            });
-
-                    if (!overlaps) {
-                        selectedLane = lane;
-                        break;
-                    }
-                }
-
-                if (selectedLane === -1) {
-                    console.warn(
-                        "Booking exceeds three roster positions:",
-                        event
+        function toggleAllDays(open) {
+            document
+                .querySelectorAll(".day")
+                .forEach(day => {
+                    day.classList.toggle(
+                        "open",
+                        open
                     );
-
-                    return;
-                }
-
-                assignments.set(
-                    event.id,
-                    selectedLane
-                );
-
-                activeLanes[selectedLane].push({
-                    start: eventStart,
-                    end: eventEnd
                 });
-            });
-
-            return assignments;
-        }
-
-        function findBookingInLane(
-            relevantEvents,
-            laneAssignments,
-            requestedLane,
-            hourStart,
-            hourEnd
-        ) {
-            return (
-                relevantEvents.find(event => {
-                    if (
-                        laneAssignments.get(event.id) !==
-                        requestedLane
-                    ) {
-                        return false;
-                    }
-
-                    const eventStart =
-                        new Date(event.start);
-
-                    const eventEnd =
-                        new Date(event.end);
-
-                    return (
-                        eventStart < hourEnd &&
-                        eventEnd > hourStart
-                    );
-                }) || null
-            );
         }
 
         function exportBookingListCSV() {
             const rows = [
                 [
+                    "Team",
                     "Crew Member",
-                    "Date",
-                    "Start Time",
-                    "Finish Time",
+                    "Start",
+                    "Finish",
                     "Duration Hours"
                 ]
             ];
@@ -2875,10 +2523,10 @@
                         new Date(event.end);
 
                     rows.push([
+                        TEAM_NAME,
                         event.user,
-                        formatAustralianDate(start),
-                        formatHour(start.getHours()),
-                        formatHour(end.getHours()),
+                        formatDateTime(start),
+                        formatDateTime(end),
                         String(
                             (end - start) / 3600000
                         )
@@ -2887,13 +2535,11 @@
 
             downloadCSV(
                 rows,
-                `Crew_Booking_List_` +
+                `${TEAM_NAME}_Crew_Bookings_` +
                 `${formatDateKey(new Date())}.csv`
             );
 
-            showToast(
-                "Booking list CSV downloaded."
-            );
+            showToast("Booking CSV downloaded.");
         }
 
         function downloadCSV(rows, filename) {
@@ -2934,104 +2580,39 @@
         }
 
         function csvEscape(value) {
-            const text =
-                String(value ?? "");
-
             return (
                 '"' +
-                text.replace(/"/g, '""') +
+                String(value ?? "")
+                    .replace(/"/g, '""') +
                 '"'
             );
         }
 
-        function formatRosterDayHeader(date) {
-            const weekday =
-                new Intl.DateTimeFormat(
-                    "en-AU",
-                    {
-                        weekday: "long"
-                    }
-                ).format(date);
+        function setLoading(loading) {
+            isLoading = loading;
+            refreshButton.disabled = loading;
 
-            return (
-                `${weekday} ` +
-                `${formatAustralianDate(date)}`
-            );
-        }
-
-        function toggleAllDays(open) {
-            document
-                .querySelectorAll(".day")
-                .forEach(day => {
-                    day.classList.toggle(
-                        "open",
-                        open
-                    );
-                });
-        }
-
-        function goToToday() {
-            switchView("timeline");
-
-            bookingDateInput.value =
-                formatDateKey(new Date());
-
-            updateBookingSummary();
-
-            const todayElement =
-                document.querySelector(
-                    `.day[data-date="` +
-                    `${formatDateKey(new Date())}` +
-                    `"]`
-                );
-
-            if (todayElement) {
-                todayElement.classList.add(
-                    "open"
-                );
-
-                todayElement.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
+            if (loading) {
+                bookButton.disabled = true;
+            } else {
+                updateBookingSummary();
             }
         }
 
-        function generateGoogleCalendarUrl(event) {
-            const start =
-                formatGoogleCalendarDate(
-                    new Date(event.start)
+        function setConnectionStatus(
+            message,
+            statusClass
+        ) {
+            connectionStatus.className =
+                "connection-status";
+
+            if (statusClass) {
+                connectionStatus.classList.add(
+                    statusClass
                 );
+            }
 
-            const end =
-                formatGoogleCalendarDate(
-                    new Date(event.end)
-                );
-
-            const title =
-                encodeURIComponent(
-                    `Crew shift: ${event.user}`
-                );
-
-            const details =
-                encodeURIComponent(
-                    `Crew roster shift for ${event.user}.`
-                );
-
-            return (
-                "https://calendar.google.com/" +
-                "calendar/render?action=TEMPLATE" +
-                `&text=${title}` +
-                `&dates=${start}/${end}` +
-                `&details=${details}`
-            );
-        }
-
-        function formatGoogleCalendarDate(date) {
-            return date
-                .toISOString()
-                .replace(/[-:]/g, "")
-                .replace(/\.\d{3}/, "");
+            connectionStatus.textContent = message;
         }
 
         function createId() {
@@ -3059,17 +2640,13 @@
 
         function startOfDay(date) {
             const result = new Date(date);
-
             result.setHours(0, 0, 0, 0);
-
             return result;
         }
 
         function startOfCurrentHour(date) {
             const result = new Date(date);
-
             result.setMinutes(0, 0, 0);
-
             return result;
         }
 
@@ -3138,17 +2715,6 @@
             );
         }
 
-        function formatAustralianDate(date) {
-            return new Intl.DateTimeFormat(
-                "en-AU",
-                {
-                    day: "numeric",
-                    month: "numeric",
-                    year: "numeric"
-                }
-            ).format(date);
-        }
-
         function formatDayHeading(date) {
             return new Intl.DateTimeFormat(
                 "en-AU",
@@ -3168,7 +2734,8 @@
                     {
                         weekday: "short",
                         day: "numeric",
-                        month: "short"
+                        month: "short",
+                        year: "numeric"
                     }
                 ).format(date);
 
@@ -3216,7 +2783,7 @@
 
             toastTimer = setTimeout(() => {
                 toast.classList.remove("show");
-            }, 2800);
+            }, 3000);
         }
     </script>
 </body>
