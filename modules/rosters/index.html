@@ -1957,30 +1957,33 @@
             section.dataset.date =
                 formatDateKey(date);
 
-            let coveredHours = 0;
+          let totalCrewHours = 0;
 
-            for (
-                let hour = 0;
-                hour < HOURS_PER_DAY;
-                hour++
-            ) {
-                const hourStart =
-                    new Date(date);
+for (
+    let hour = 0;
+    hour < HOURS_PER_DAY;
+    hour++
+) {
+    const hourStart =
+        new Date(date);
 
-                hourStart.setHours(
-                    hour,
-                    0,
-                    0,
-                    0
-                );
+    hourStart.setHours(
+        hour,
+        0,
+        0,
+        0
+    );
 
-                if (
-                    getBookingsForHour(hourStart)
-                        .length >= 2
-                ) {
-                    coveredHours++;
-                }
-            }
+    const bookings =
+        getBookingsForHour(hourStart);
+
+    totalCrewHours += bookings.length;
+}
+
+const targetCrewHours = 2 * HOURS_PER_DAY;
+const coveragePercent = Math.round(
+    (totalCrewHours / targetCrewHours) * 100
+);
 
             const heading =
                 document.createElement("div");
