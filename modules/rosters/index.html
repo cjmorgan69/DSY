@@ -1,6 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
 
-Crew Shift Roster
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover"
+    >
 
+    <title>Crew Shift Roster</title>
+
+    <style>
         :root {
             --primary: #4f46e5;
             --primary-dark: #4338ca;
@@ -773,150 +783,276 @@ Crew Shift Roster
                 max-width: none;
             }
         }
-    
+    </style>
+</head>
 
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <div class="brand-icon">🗓</div>
 
+                <div>
+                    <h1>Crew Shift Roster</h1>
 
-
-
-🗓
-
-Crew Shift Roster
-
+                    <p id="teamSubtitle">
                         Loading team roster…
-                    
+                    </p>
+                </div>
+            </div>
 
+            <div class="header-controls">
+                <span
+                    id="teamBadge"
+                    class="team-badge"
+                ></span>
 
+                
 
-
-
-
+                <div class="user-section">
+                    <label for="nameInput">
                         Name:
-                    
+                    </label>
 
+                    <input
+                        id="nameInput"
+                        type="text"
+                        maxlength="80"
+                        autocomplete="name"
+                        placeholder="Your name"
+                    >
+                </div>
+            </div>
+        </header>
 
-
-
-
+        <div
+            id="connectionStatus"
+            class="connection-status"
+            aria-live="polite"
+        >
             Connecting to the roster…
-        
+        </div>
 
-
+        <section class="card">
+            <h2 class="card-title">
                 Book a shift
-            
+            </h2>
 
+            <div class="notice">
                 Select a continuous shift of up to 24 hours.
                 Overnight shifts are supported. A maximum of three
                 volunteers can be allocated to each hourly period.
-            
+            </div>
 
-
-
+            <div class="form-grid">
+                <div class="field">
+                    <label for="bookingDateInput">
                         Start date
-                    
+                    </label>
 
+                    <input
+                        id="bookingDateInput"
+                        type="date"
+                    >
+                </div>
 
-
-
+                <div class="field">
+                    <label for="startTimeSelect">
                         Start time
-                    
+                    </label>
 
-
+                    <select id="startTimeSelect">
+                        <option value="">
                             Select start time
-                        
+                        </option>
+                    </select>
+                </div>
 
-
-
-
+                <div class="field">
+                    <label for="finishTimeSelect">
                         Finish time
-                    
+                    </label>
 
-
+                    <select
+                        id="finishTimeSelect"
+                        disabled
+                    >
+                        <option value="">
                             Select a start time first
-                        
+                        </option>
+                    </select>
+                </div>
+            </div>
 
-
-
-
+            <div
+                id="bookingSummary"
+                class="booking-summary"
+                aria-live="polite"
+            >
                 Enter your name and select a date, start time and
                 finish time.
-            
+            </div>
 
-
+            <div class="action-bar">
+                <button
+                    id="bookButton"
+                    class="btn-primary"
+                    type="button"
+                    disabled
+                >
                     Confirm shift
-                
+                </button>
 
+                 <button
+                    id="refreshButton"
+                    class="btn-secondary"
+                    type="button"
+                >
+                    Refresh roster
+                </button>
+
+                
+                <button
+                    id="myBookingsButton"
+                    class="btn-secondary"
+                    type="button"
+                >
                     My bookings
-                
+                </button>
 
+                <button
+                    id="downloadListButton"
+                    class="btn-secondary"
+                    type="button"
+                >
                     Download CSV
-                
+                </button>
+            </div>
+        </section>
 
-
-
-
+        <div class="view-switcher">
+            <button
+                id="timelineTab"
+                class="view-tab active"
+                type="button"
+            >
                 Timeline
-            
+            </button>
 
+            <button
+                id="listTab"
+                class="view-tab"
+                type="button"
+            >
                 Booking list
-            
+            </button>
+        </div>
 
+        <section id="timelineSection">
+            <div class="calendar-header">
+                <div>
+                    <h2>Roster coverage</h2>
 
-
-
-Roster coverage
-
+                    <p>
                         Green means two or more volunteers;
                         yellow means one; red means none.
-                    
+                    </p>
+                </div>
 
-
-
+                <div class="calendar-actions">
+                    <button
+                        id="expandAllButton"
+                        class="btn-secondary"
+                        type="button"
+                    >
                         Expand all
-                    
+                    </button>
 
+                    <button
+                        id="collapseAllButton"
+                        class="btn-secondary"
+                        type="button"
+                    >
                         Collapse all
-                    
+                    </button>
+                </div>
+            </div>
 
+            <main
+                id="calendarElement"
+                class="calendar-grid"
+            ></main>
+        </section>
 
+        <section
+            id="listSection"
+            class="card table-card"
+        >
+            <div class="table-toolbar">
+                <strong>All active bookings</strong>
 
+                <input
+                    id="searchInput"
+                    class="search-input"
+                    type="search"
+                    placeholder="Search bookings"
+                >
+            </div>
 
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Crew member</th>
+                            <th>Start</th>
+                            <th>Finish</th>
+                            <th>Duration</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
 
+                    <tbody id="bookingTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
 
-All active bookings
-
-
-
-
-
-
-Crew member
-Start
-Finish
-Duration
-Action
-
-
-
-
-
-
-
-
-
-
-
+    <div
+        id="bookingsModal"
+        class="modal-overlay"
+    >
+        <div
+            class="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="bookingsModalTitle"
+        >
+            <div class="modal-header">
+                <h3 id="bookingsModalTitle">
                     My upcoming bookings
-                
+                </h3>
 
+                <button
+                    id="closeModalButton"
+                    class="btn-secondary btn-small"
+                    type="button"
+                >
                     Close
-                
+                </button>
+            </div>
 
+            <div id="myBookingsList"></div>
+        </div>
+    </div>
 
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+    ></div>
 
-
-
-
+    <script>
         /*
          * Change this value for each geographic team page.
          * It must match the team names used in the Sheet.
@@ -961,6 +1097,9 @@ Action
 
         const bookButton =
             document.getElementById("bookButton");
+
+        const refreshButton =
+            document.getElementById("refreshButton");
 
         const calendarElement =
             document.getElementById("calendarElement");
@@ -1049,6 +1188,11 @@ Action
             bookButton.addEventListener(
                 "click",
                 bookSelectedShift
+            );
+
+            refreshButton.addEventListener(
+                "click",
+                loadBookingsAfterSave
             );
 
             document
@@ -2387,6 +2531,7 @@ Action
 
         function setLoading(loading) {
             isLoading = loading;
+            refreshButton.disabled = loading;
 
             if (loading) {
                 bookButton.disabled = true;
@@ -2581,5 +2726,7 @@ Action
                 toast.classList.remove("show");
             }, 3000);
         }
-    
+    </script>
+</body>
+</html>
 
