@@ -2438,50 +2438,60 @@
                 });
         }
 
-        function exportBookingListCSV() {
-            const rows = [
-                [
-                    "Team",
-                    "Crew Member",
-                    "Start",
-                    "Finish",
-                    "Duration Hours"
-                ]
-            ];
-
-            [...events]
-                .sort((a, b) => {
-                    return (
-                        new Date(a.start) -
-                        new Date(b.start)
-                    );
-                })
-                .forEach(event => {
-                    const start =
-                        new Date(event.start);
-
-                    const end =
-                        new Date(event.end);
-
-                    rows.push([
-                        TEAM_NAME,
-                        event.user,
-                        formatDateTime(start),
-                        formatDateTime(end),
-                        String(
-                            (end - start) / 3600000
-                        )
-                    ]);
-                });
-
-            downloadCSV(
-                rows,
-                `${TEAM_NAME}_Crew_Bookings_` +
-                `${formatDateKey(new Date())}.csv`
-            );
-
-            showToast("Booking CSV downloaded.");
+       function exportBookingListCSV() {
+    const today = startOfDay(new Date());
+    const days = [];
+    
+    // Build array of 7 days starting from today
+    for (let i = 0; i < DAYS_TO_SHOW; i++) {
+        days.push(addDays(today, i));
+    }
+    
+    // Build header row
+    const headerRow = ["Cummins"];
+    days.forEach(day => {
+        headerRow.push(formatDayHeading(day));
+        headerRow.push("Restriction");
+    });
+    
+    const rows = [headerRow];
+    
+    // Build data rows - one row per timeslot per crew member (max 3)
+    for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+        // For each hour, we need up to 3 rows (one per crew member slot)
+        const maxCrewThisHour = 3;
+        
+        for (let crewSlot = 0; crewSlot < maxCrewThisHour; crewSlot++) {
+            const dataRow = [];
+            
+            // Time column - only on first crew slot
+            if (crewSlot === 0) {
+                dataRow.push(formatHour(hour));
+            } else {
+                dataRow.push("");
+            }
+            
+            // For each day, get the crew member at this slot
+            days.forEach(day => {
+                const hourStart = new Date(day);
+                hourStart.setHours(hour, 0, 0, 0);
+                
+                const bookings = getBookingsForHour(hourStart);
+                const crewName = bookings[crewSlot] 
+                    ? bookings[crewSlot].user 
+                    : "";
+                
+                dataRow.push(crewName);
+                dataRow.push(""); // Restriction column (blank for manual entry)
+            });
+            
+            rows.push(dataRow);
         }
+    }
+    
+    downloadCSV(rows, `${TEAM_NAME}_Crew_Bookings_${formatDateKey(new Date())}.csv`);
+    showToast("Booking CSV downloaded.");
+}
 
         function downloadCSV(rows, filename) {
             const csv =
