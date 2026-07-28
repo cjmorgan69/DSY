@@ -1796,8 +1796,12 @@
 
             renderAll();
 
+            const now = new Date();
+            const activeBookings = events.filter(event => {
+            return new Date(event.end) > now;
+
             setConnectionStatus(
-                `${events.length} active bookings loaded ` +
+                `${activeBookings.length} active bookings loaded ` +
                 `for ${TEAM_NAME}.`,
                 "connected"
             );
