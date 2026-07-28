@@ -2,19 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, viewport-fit=cover"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Crew Shift Roster</title>
-
     <style>
         :root {
-            --primary: #22c55e;           /* bright green */
-            --primary-dark: #16a34a;      /* dark green */
-            --primary-light: #f0fdf4;     /* very light green */
+            --primary: #22c55e;
+            --primary-dark: #16a34a;
+            --primary-light: #f0fdf4;
             --background: #f8fafc;
             --surface: #ffffff;
             --text: #0f172a;
@@ -28,59 +22,32 @@
             --green-light: #f0fdf4;
             --blue: #0284c7;
             --blue-light: #e0f2fe;
-            --shadow:
-                0 10px 25px -5px rgba(0, 0, 0, 0.05),
-                0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
             --radius: 16px;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             min-height: 100vh;
             margin: 0;
             padding-bottom: 3rem;
             color: var(--text);
-            background:
-                radial-gradient(
-                    circle at top right,
-                    #e0e7ff,
-                    transparent 35rem
-                ),
-                var(--background);
-            font-family:
-                Inter,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
+            background: radial-gradient(circle at top right, #e0e7ff, transparent 35rem), var(--background);
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
-        button,
-        input,
-        select {
-            font: inherit;
-        }
+        button, input, select { font: inherit; }
 
         button {
             cursor: pointer;
             border: 0;
-            transition:
-                transform 0.2s ease,
-                background 0.2s ease,
-                opacity 0.2s ease;
+            transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
         }
 
-        button:disabled {
-            cursor: not-allowed;
-            opacity: 0.55;
-        }
+        button:disabled { cursor: not-allowed; opacity: 0.55; }
 
         .container {
             width: min(1100px, 100%);
@@ -103,11 +70,7 @@
             backdrop-filter: blur(12px);
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
+        .brand { display: flex; align-items: center; gap: 0.75rem; }
 
         .brand-icon {
             display: grid;
@@ -117,21 +80,13 @@
             color: white;
             border-radius: 12px;
             background: var(--primary);
-            box-shadow:
-                0 4px 12px rgba(79, 70, 229, 0.3);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
             font-size: 1.25rem;
         }
 
-        .brand h1 {
-            margin: 0;
-            font-size: 1.35rem;
-        }
+        .brand h1 { margin: 0; font-size: 1.35rem; }
 
-        .brand p {
-            margin: 0.2rem 0 0;
-            color: var(--muted);
-            font-size: 0.85rem;
-        }
+        .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.85rem; }
 
         .header-controls {
             display: flex;
@@ -140,7 +95,6 @@
             gap: 0.75rem;
         }
 
-        .storage-badge,
         .team-badge {
             display: inline-flex;
             align-items: center;
@@ -149,14 +103,6 @@
             font-size: 0.75rem;
             font-weight: 800;
             white-space: nowrap;
-        }
-
-        .storage-badge {
-            color: var(--blue);
-            background: var(--blue-light);
-        }
-
-        .team-badge {
             color: var(--primary-dark);
             background: var(--primary-light);
         }
@@ -171,11 +117,7 @@
             background: var(--surface);
         }
 
-        .user-section label {
-            color: var(--muted);
-            font-size: 0.82rem;
-            font-weight: 700;
-        }
+        .user-section label { color: var(--muted); font-size: 0.82rem; font-weight: 700; }
 
         .user-section input {
             width: 145px;
@@ -219,10 +161,7 @@
             box-shadow: var(--shadow);
         }
 
-        .card-title {
-            margin: 0 0 1rem;
-            font-size: 1.15rem;
-        }
+        .card-title { margin: 0 0 1rem; font-size: 1.15rem; }
 
         .notice {
             margin-bottom: 1.25rem;
@@ -237,27 +176,16 @@
 
         .form-grid {
             display: grid;
-            grid-template-columns:
-                repeat(3, minmax(180px, 1fr));
+            grid-template-columns: repeat(3, minmax(180px, 1fr));
             gap: 1rem;
             margin-bottom: 1rem;
         }
 
-        .field {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
+        .field { display: flex; flex-direction: column; gap: 0.4rem; }
 
-        .field label {
-            color: var(--muted);
-            font-size: 0.84rem;
-            font-weight: 700;
-        }
+        .field label { color: var(--muted); font-size: 0.84rem; font-weight: 700; }
 
-        .field input,
-        .field select,
-        .search-input {
+        .field input, .field select, .search-input {
             width: 100%;
             min-height: 46px;
             padding: 0.7rem 0.9rem;
@@ -268,13 +196,10 @@
             background: var(--background);
         }
 
-        .field input:focus,
-        .field select:focus,
-        .search-input:focus {
+        .field input:focus, .field select:focus, .search-input:focus {
             border-color: var(--primary);
             background: var(--surface);
-            box-shadow:
-                0 0 0 3px rgba(79, 70, 229, 0.14);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
         }
 
         .booking-summary {
@@ -306,9 +231,7 @@
             background: var(--red-light);
         }
 
-        .action-bar,
-        .calendar-actions,
-        .view-switcher {
+        .action-bar, .calendar-actions, .view-switcher {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
@@ -322,33 +245,25 @@
             background: #f1f5f9;
         }
 
-        .view-tab,
-        .btn-primary,
-        .btn-secondary,
-        .btn-danger {
+        .view-tab, .btn-primary, .btn-secondary, .btn-danger {
             min-height: 42px;
             padding: 0.65rem 1rem;
             border-radius: 10px;
             font-weight: 800;
         }
 
-        .view-tab {
-            color: var(--muted);
-            background: transparent;
-        }
+        .view-tab { color: var(--muted); background: transparent; }
 
         .view-tab.active {
             color: var(--primary-dark);
             background: white;
-            box-shadow:
-                0 2px 6px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
         }
 
         .btn-primary {
             color: white;
             background: var(--primary);
-            box-shadow:
-                0 4px 12px rgba(79, 70, 229, 0.24);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.24);
         }
 
         .btn-primary:hover:not(:disabled) {
@@ -383,22 +298,11 @@
             margin-bottom: 1.25rem;
         }
 
-        .calendar-header h2 {
-            margin: 0;
-            font-size: 1.35rem;
-        }
+        .calendar-header h2 { margin: 0; font-size: 1.35rem; }
 
-        .calendar-header p {
-            margin: 0.25rem 0 0;
-            color: var(--muted);
-            font-size: 0.84rem;
-        }
+        .calendar-header p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.84rem; }
 
-        .calendar-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
+        .calendar-grid { display: flex; flex-direction: column; gap: 1rem; }
 
         .day {
             overflow: hidden;
@@ -408,9 +312,7 @@
             box-shadow: var(--shadow);
         }
 
-        .day.open {
-            border-color: rgba(79, 70, 229, 0.4);
-        }
+        .day.open { border-color: rgba(79, 70, 229, 0.4); }
 
         .day-heading {
             display: flex;
@@ -422,15 +324,9 @@
             user-select: none;
         }
 
-        .day-heading:hover {
-            background: #f8fafc;
-        }
+        .day-heading:hover { background: #f8fafc; }
 
-        .day-title-group {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
+        .day-title-group { display: flex; align-items: center; gap: 0.75rem; }
 
         .day-toggle {
             display: grid;
@@ -449,29 +345,15 @@
             transform: rotate(180deg);
         }
 
-        .day-heading h3 {
-            margin: 0;
-            font-size: 1.05rem;
-        }
+        .day-heading h3 { margin: 0; font-size: 1.05rem; }
 
-        .day-subtitle {
-            color: var(--muted);
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
+        .day-subtitle { color: var(--muted); font-size: 0.8rem; font-weight: 700; }
 
-        .day-body {
-            display: none;
-            border-top: 1px solid var(--border);
-        }
+        .day-body { display: none; border-top: 1px solid var(--border); }
 
-        .day.open .day-body {
-            display: block;
-        }
+        .day.open .day-body { display: block; }
 
-        .day-body-inner {
-            padding: 1rem 1.25rem 1.25rem;
-        }
+        .day-body-inner { padding: 1rem 1.25rem 1.25rem; }
 
         .timeline-row {
             display: grid;
@@ -495,23 +377,11 @@
             align-self: stretch;
         }
 
-        .timeline-line {
-            position: absolute;
-            inset-block: 0;
-            width: 4px;
-        }
+        .timeline-line { position: absolute; inset-block: 0; width: 4px; }
 
-        .line-empty {
-            background: var(--red);
-        }
-
-        .line-partial {
-            background: var(--yellow);
-        }
-
-        .line-covered {
-            background: var(--green);
-        }
+        .line-empty { background: var(--red); }
+        .line-partial { background: var(--yellow); }
+        .line-covered { background: var(--green); }
 
         .timeline-node {
             position: relative;
@@ -520,24 +390,12 @@
             height: 14px;
             border: 3px solid;
             border-radius: 50%;
-            box-shadow:
-                0 0 0 3px var(--surface);
+            box-shadow: 0 0 0 3px var(--surface);
         }
 
-        .node-empty {
-            border-color: var(--red);
-            background: var(--red);
-        }
-
-        .node-partial {
-            border-color: var(--yellow);
-            background: var(--yellow);
-        }
-
-        .node-covered {
-            border-color: var(--green);
-            background: var(--green);
-        }
+        .node-empty { border-color: var(--red); background: var(--red); }
+        .node-partial { border-color: var(--yellow); background: var(--yellow); }
+        .node-covered { border-color: var(--green); background: var(--green); }
 
         .timeline-content {
             display: flex;
@@ -551,11 +409,7 @@
             background: var(--background);
         }
 
-        .crew-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.35rem;
-        }
+        .crew-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 
         .chip {
             padding: 0.24rem 0.55rem;
@@ -566,11 +420,7 @@
             font-weight: 700;
         }
 
-        .empty-chip {
-            color: var(--muted);
-            font-size: 0.8rem;
-            font-style: italic;
-        }
+        .empty-chip { color: var(--muted); font-size: 0.8rem; font-style: italic; }
 
         .status-badge {
             padding: 0.25rem 0.55rem;
@@ -580,28 +430,12 @@
             white-space: nowrap;
         }
 
-        .status-empty {
-            color: var(--red);
-            background: var(--red-light);
-        }
+        .status-empty { color: var(--red); background: var(--red-light); }
+        .status-partial { color: var(--yellow); background: var(--yellow-light); }
+        .status-covered { color: var(--green); background: var(--green-light); }
 
-        .status-partial {
-            color: var(--yellow);
-            background: var(--yellow-light);
-        }
-
-        .status-covered {
-            color: var(--green);
-            background: var(--green-light);
-        }
-
-        .table-card {
-            display: none;
-        }
-
-        .table-card.active {
-            display: block;
-        }
+        .table-card { display: none; }
+        .table-card.active { display: block; }
 
         .table-toolbar {
             display: flex;
@@ -611,9 +445,7 @@
             margin-bottom: 1rem;
         }
 
-        .search-input {
-            max-width: 260px;
-        }
+        .search-input { max-width: 260px; }
 
         .table-wrapper {
             overflow-x: auto;
@@ -621,14 +453,9 @@
             border-radius: 12px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.84rem;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
 
-        th,
-        td {
+        th, td {
             padding: 0.8rem;
             text-align: left;
             border-bottom: 1px solid var(--border);
@@ -642,11 +469,7 @@
             text-transform: uppercase;
         }
 
-        .empty-state {
-            padding: 2rem;
-            color: var(--muted);
-            text-align: center;
-        }
+        .empty-state { padding: 2rem; color: var(--muted); text-align: center; }
 
         .modal-overlay {
             position: fixed;
@@ -662,10 +485,7 @@
             transition: opacity 0.2s ease;
         }
 
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .modal {
             width: min(620px, 100%);
@@ -676,21 +496,15 @@
             background: var(--surface);
         }
 
-        .modal-header,
-        .shift-item {
+        .modal-header, .shift-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 0.75rem;
         }
 
-        .modal-header {
-            margin-bottom: 1rem;
-        }
-
-        .modal-header h3 {
-            margin: 0;
-        }
+        .modal-header { margin-bottom: 1rem; }
+        .modal-header h3 { margin: 0; }
 
         .shift-item {
             margin-bottom: 0.7rem;
@@ -700,16 +514,9 @@
             background: var(--background);
         }
 
-        .shift-time {
-            font-size: 0.86rem;
-            font-weight: 700;
-        }
+        .shift-time { font-size: 0.86rem; font-weight: 700; }
 
-        .shift-detail {
-            margin-top: 0.2rem;
-            color: var(--muted);
-            font-size: 0.76rem;
-        }
+        .shift-detail { margin-top: 0.2rem; color: var(--muted); font-size: 0.76rem; }
 
         .toast {
             position: fixed;
@@ -723,65 +530,29 @@
             background: var(--text);
             opacity: 0;
             pointer-events: none;
-            transform:
-                translateX(-50%)
-                translateY(80px);
-            transition:
-                transform 0.25s ease,
-                opacity 0.25s ease;
+            transform: translateX(-50%) translateY(80px);
+            transition: transform 0.25s ease, opacity 0.25s ease;
         }
 
-        .toast.show {
-            opacity: 1;
-            transform:
-                translateX(-50%)
-                translateY(0);
-        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         @media (max-width: 760px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .header-controls {
-                width: 100%;
-            }
-
-            .user-section {
-                flex: 1;
-            }
+            .form-grid { grid-template-columns: 1fr; }
+            .header-controls { width: 100%; }
+            .user-section { flex: 1; }
         }
 
         @media (max-width: 560px) {
-            header,
-            .header-controls,
-            .calendar-header,
-            .shift-item {
+            header, .header-controls, .calendar-header, .shift-item {
                 align-items: stretch;
                 flex-direction: column;
             }
-
-            .timeline-row {
-                grid-template-columns: 52px 22px 1fr;
-            }
-
-            .timeline-time {
-                padding-right: 0.25rem;
-                font-size: 0.7rem;
-            }
-
-            .timeline-content {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .search-input {
-                max-width: none;
-            }
+            .timeline-row { grid-template-columns: 52px 22px 1fr; }
+            .timeline-time { padding-right: 0.25rem; font-size: 0.7rem; }
+            .timeline-content { align-items: flex-start; flex-direction: column; }
+            .search-input { max-width: none; }
         }
     </style>
 </head>
@@ -791,212 +562,106 @@
         <header>
             <div class="brand">
                 <div class="brand-icon">🗓</div>
-
                 <div>
                     <h1>Crew Shift Roster</h1>
-
-                    <p id="teamSubtitle">
-                        Loading team roster…
-                    </p>
+                    <p id="teamSubtitle">Loading team roster…</p>
                 </div>
             </div>
 
             <div class="header-controls">
-                <span
-                    id="teamBadge"
-                    class="team-badge"
-                ></span>
-
-                
-
+                <span id="teamBadge" class="team-badge"></span>
                 <div class="user-section">
-                    <label for="nameInput">
-                        Name:
-                    </label>
-
-                    <input
-                        id="nameInput"
-                        type="text"
-                        maxlength="80"
-                        autocomplete="name"
-                        placeholder="Your name"
-                    >
+                    <label for="nameInput">Name:</label>
+                    <input id="nameInput" type="text" maxlength="80" autocomplete="name" placeholder="Your name">
                 </div>
             </div>
         </header>
 
-        <div
-            id="connectionStatus"
-            class="connection-status"
-            aria-live="polite"
-        >
+        <div id="connectionStatus" class="connection-status" aria-live="polite">
             Connecting to the roster…
         </div>
 
         <section class="card">
-            <h2 class="card-title">
-                Book a shift
-            </h2>
+            <h2 class="card-title">Book a shift</h2>
 
             <div class="notice">
                 Select a continuous shift of up to 24 hours.
-                A maximum of three volunteers can be allocated
-                 to each hourly period.
+                A maximum of three volunteers can be allocated to each hourly period.
             </div>
 
             <div class="form-grid">
                 <div class="field">
-                    <label for="bookingDateInput">
-                        Start date
-                    </label>
-
-                    <input
-                        id="bookingDateInput"
-                        type="date"
-                    >
+                    <label for="bookingDateInput">Start date</label>
+                    <input id="bookingDateInput" type="date">
                 </div>
 
                 <div class="field">
-                    <label for="startTimeSelect">
-                        Start time
-                    </label>
-
+                    <label for="startTimeSelect">Start time</label>
                     <select id="startTimeSelect">
-                        <option value="">
-                            Select start time
-                        </option>
+                        <option value="">Select start time</option>
                     </select>
                 </div>
 
                 <div class="field">
-                    <label for="finishTimeSelect">
-                        Finish time
-                    </label>
-
-                    <select
-                        id="finishTimeSelect"
-                        disabled
-                    >
-                        <option value="">
-                            Select a start time first
-                        </option>
+                    <label for="finishTimeSelect">Finish time</label>
+                    <select id="finishTimeSelect" disabled>
+                        <option value="">Select a start time first</option>
                     </select>
                 </div>
             </div>
 
-            <div
-                id="bookingSummary"
-                class="booking-summary"
-                aria-live="polite"
-            >
-                Enter your name and select a date, start time and
-                finish time.
+            <div id="bookingSummary" class="booking-summary" aria-live="polite">
+                Enter your name and select a date, start time and finish time.
             </div>
 
             <div class="action-bar">
-                <button
-                    id="bookButton"
-                    class="btn-primary"
-                    type="button"
-                    disabled
-                >
+                <button id="bookButton" class="btn-primary" type="button" disabled>
                     Confirm shift
                 </button>
 
-                 <button
-                    id="refreshButton"
-                    class="btn-secondary"
-                    type="button"
-                >
+                <button id="refreshButton" class="btn-secondary" type="button">
                     Refresh roster
                 </button>
 
-                
-                <button
-                    id="myBookingsButton"
-                    class="btn-secondary"
-                    type="button"
-                >
+                <button id="myBookingsButton" class="btn-secondary" type="button">
                     My bookings
                 </button>
 
-                <button
-                    id="downloadListButton"
-                    class="btn-secondary"
-                    type="button"
-                >
+                <button id="viewRosterButton" class="btn-secondary" type="button">
+                    📋 View Roster
+                </button>
+
+                <button id="downloadListButton" class="btn-secondary" type="button">
                     Download CSV
                 </button>
             </div>
         </section>
 
         <div class="view-switcher">
-            <button
-                id="timelineTab"
-                class="view-tab active"
-                type="button"
-            >
-                Timeline
-            </button>
-
-            <button
-                id="listTab"
-                class="view-tab"
-                type="button"
-            >
-                Booking list
-            </button>
+            <button id="timelineTab" class="view-tab active" type="button">Timeline</button>
+            <button id="listTab" class="view-tab" type="button">Booking list</button>
         </div>
 
         <section id="timelineSection">
             <div class="calendar-header">
                 <div>
                     <h2>Roster coverage</h2>
-
-                    <p>
-                        Green means two or more volunteers;
-                        yellow means one; red means none.
-                    </p>
+                    <p>Green means two or more volunteers; yellow means one; red means none.</p>
                 </div>
 
                 <div class="calendar-actions">
-                    <button
-                        id="expandAllButton"
-                        class="btn-secondary"
-                        type="button"
-                    >
-                        Expand all
-                    </button>
-
-                    <button
-                        id="collapseAllButton"
-                        class="btn-secondary"
-                        type="button"
-                    >
-                        Collapse all
-                    </button>
+                    <button id="expandAllButton" class="btn-secondary" type="button">Expand all</button>
+                    <button id="collapseAllButton" class="btn-secondary" type="button">Collapse all</button>
                 </div>
             </div>
 
-            <main
-                id="calendarElement"
-                class="calendar-grid"
-            ></main>
+            <main id="calendarElement" class="calendar-grid"></main>
         </section>
 
-        <section
-            id="listSection"
-            class="card table-card"
-        >
+        <section id="listSection" class="card table-card">
             <div class="table-toolbar">
                 <strong>All active bookings</strong>
-
-                <input
-                    id="searchInput"
-                    class="search-input"
-                    type="search"
-                    placeholder="Search bookings"
-                >
+                <input id="searchInput" class="search-input" type="search" placeholder="Search bookings">
             </div>
 
             <div class="table-wrapper">
@@ -1010,149 +675,67 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-
                     <tbody id="bookingTableBody"></tbody>
                 </table>
             </div>
         </section>
     </div>
 
-    <div
-        id="bookingsModal"
-        class="modal-overlay"
-    >
-        <div
-            class="modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="bookingsModalTitle"
-        >
+    <div id="bookingsModal" class="modal-overlay">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bookingsModalTitle">
             <div class="modal-header">
-                <h3 id="bookingsModalTitle">
-                    My upcoming bookings
-                </h3>
-
-                <button
-                    id="closeModalButton"
-                    class="btn-secondary btn-small"
-                    type="button"
-                >
-                    Close
-                </button>
+                <h3 id="bookingsModalTitle">My upcoming bookings</h3>
+                <button id="closeModalButton" class="btn-secondary btn-small" type="button">Close</button>
             </div>
-
             <div id="myBookingsList"></div>
         </div>
     </div>
 
-    <div
-        id="toast"
-        class="toast"
-        role="status"
-        aria-live="polite"
-    ></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <script>
-        /*
-         * Change this value for each geographic team page.
-         * It must match the team names used in the Sheet.
-         */
         const TEAM_NAME = "Cummins";
-
-        /*
-         * This must be the deployed Apps Script Web App /exec URL.
-         */
-        const APPS_SCRIPT_URL =
-            "https://script.google.com/macros/s/AKfycbygMS2I0_8toHLX-NEEOdFE5bt_DPP_74TKR4gkdvFA04CqdC77c4wlRZD2JcBOLejd/exec";
-
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygMS2I0_8toHLX-NEEOdFE5bt_DPP_74TKR4gkdvFA04CqdC77c4wlRZD2JcBOLejd/exec";
         const MAX_CREW = 3;
         const HOURS_PER_DAY = 24;
         const MAX_SHIFT_HOURS = 24;
         const DAYS_TO_SHOW = 9;
+        const USER_STORAGE_KEY = `crew-roster-user-${TEAM_NAME.toLowerCase()}`;
 
-        const USER_STORAGE_KEY =
-            `crew-roster-user-${TEAM_NAME.toLowerCase()}`;
-
-        let currentUser =
-            localStorage.getItem(USER_STORAGE_KEY) || "";
-
+        let currentUser = localStorage.getItem(USER_STORAGE_KEY) || "";
         let events = [];
         let isLoading = false;
         let toastTimer;
 
-        const nameInput =
-            document.getElementById("nameInput");
-
-        const bookingDateInput =
-            document.getElementById("bookingDateInput");
-
-        const startTimeSelect =
-            document.getElementById("startTimeSelect");
-
-        const finishTimeSelect =
-            document.getElementById("finishTimeSelect");
-
-        const bookingSummary =
-            document.getElementById("bookingSummary");
-
-        const bookButton =
-            document.getElementById("bookButton");
-
-        const refreshButton =
-            document.getElementById("refreshButton");
-
-        const calendarElement =
-            document.getElementById("calendarElement");
-
-        const connectionStatus =
-            document.getElementById("connectionStatus");
-
-        const timelineSection =
-            document.getElementById("timelineSection");
-
-        const listSection =
-            document.getElementById("listSection");
-
-        const timelineTab =
-            document.getElementById("timelineTab");
-
-        const listTab =
-            document.getElementById("listTab");
-
-        const bookingTableBody =
-            document.getElementById("bookingTableBody");
-
-        const searchInput =
-            document.getElementById("searchInput");
-
-        const bookingsModal =
-            document.getElementById("bookingsModal");
-
-        const myBookingsList =
-            document.getElementById("myBookingsList");
-
-        const toast =
-            document.getElementById("toast");
+        const nameInput = document.getElementById("nameInput");
+        const bookingDateInput = document.getElementById("bookingDateInput");
+        const startTimeSelect = document.getElementById("startTimeSelect");
+        const finishTimeSelect = document.getElementById("finishTimeSelect");
+        const bookingSummary = document.getElementById("bookingSummary");
+        const bookButton = document.getElementById("bookButton");
+        const refreshButton = document.getElementById("refreshButton");
+        const calendarElement = document.getElementById("calendarElement");
+        const connectionStatus = document.getElementById("connectionStatus");
+        const timelineSection = document.getElementById("timelineSection");
+        const listSection = document.getElementById("listSection");
+        const timelineTab = document.getElementById("timelineTab");
+        const listTab = document.getElementById("listTab");
+        const bookingTableBody = document.getElementById("bookingTableBody");
+        const searchInput = document.getElementById("searchInput");
+        const bookingsModal = document.getElementById("bookingsModal");
+        const myBookingsList = document.getElementById("myBookingsList");
+        const toast = document.getElementById("toast");
 
         initialise();
 
         function initialise() {
-            document.getElementById("teamBadge")
-                .textContent = TEAM_NAME;
-
-            document.getElementById("teamSubtitle")
-                .textContent =
-                    `${TEAM_NAME} volunteer roster`;
-
+            document.getElementById("teamBadge").textContent = TEAM_NAME;
+            document.getElementById("teamSubtitle").textContent = `${TEAM_NAME} volunteer roster`;
             nameInput.value = currentUser;
 
             const today = startOfDay(new Date());
-
-            bookingDateInput.min =
-                formatDateKey(today);
-
-            bookingDateInput.value =
-                formatDateKey(today);
+            bookingDateInput.min = formatDateKey(today);
+            bookingDateInput.value = formatDateKey(today);
 
             populateStartTimes();
             registerEventListeners();
@@ -1163,363 +746,148 @@
         }
 
         function registerEventListeners() {
-            nameInput.addEventListener(
-                "input",
-                handleNameChange
-            );
-
-            bookingDateInput.addEventListener(
-                "change",
-                updateBookingSummary
-            );
-
-            startTimeSelect.addEventListener(
-                "change",
-                () => {
-                    populateFinishTimes();
-                    updateBookingSummary();
-                }
-            );
-
-            finishTimeSelect.addEventListener(
-                "change",
-                updateBookingSummary
-            );
-
-            bookButton.addEventListener(
-                "click",
-                bookSelectedShift
-            );
-
-            refreshButton.addEventListener(
-                "click",
-                loadBookingsAfterSave
-            );
-
-            document
-                .getElementById("myBookingsButton")
-                .addEventListener(
-                    "click",
-                    openBookingsModal
-                );
-
-            document
-                .getElementById("closeModalButton")
-                .addEventListener(
-                    "click",
-                    closeBookingsModal
-                );
-
-            bookingsModal.addEventListener(
-                "click",
-                event => {
-                    if (event.target === bookingsModal) {
-                        closeBookingsModal();
-                    }
-                }
-            );
-
-            document.addEventListener(
-                "keydown",
-                event => {
-                    if (event.key === "Escape") {
-                        closeBookingsModal();
-                    }
-                }
-            );
-
-            timelineTab.addEventListener(
-                "click",
-                () => switchView("timeline")
-            );
-
-            listTab.addEventListener(
-                "click",
-                () => switchView("list")
-            );
-
-            document
-                .getElementById("expandAllButton")
-                .addEventListener(
-                    "click",
-                    () => toggleAllDays(true)
-                );
-
-            document
-                .getElementById("collapseAllButton")
-                .addEventListener(
-                    "click",
-                    () => toggleAllDays(false)
-                );
-
-            document
-                .getElementById("downloadListButton")
-                .addEventListener(
-                    "click",
-                    exportBookingListCSV
-                );
-
-            searchInput.addEventListener(
-                "input",
-                renderBookingTable
-            );
+            nameInput.addEventListener("input", handleNameChange);
+            bookingDateInput.addEventListener("change", updateBookingSummary);
+            startTimeSelect.addEventListener("change", () => {
+                populateFinishTimes();
+                updateBookingSummary();
+            });
+            finishTimeSelect.addEventListener("change", updateBookingSummary);
+            bookButton.addEventListener("click", bookSelectedShift);
+            refreshButton.addEventListener("click", loadBookingsAfterSave);
+            document.getElementById("myBookingsButton").addEventListener("click", openBookingsModal);
+            document.getElementById("viewRosterButton").addEventListener("click", openRosterView);
+            document.getElementById("closeModalButton").addEventListener("click", closeBookingsModal);
+            bookingsModal.addEventListener("click", event => {
+                if (event.target === bookingsModal) closeBookingsModal();
+            });
+            document.addEventListener("keydown", event => {
+                if (event.key === "Escape") closeBookingsModal();
+            });
+            timelineTab.addEventListener("click", () => switchView("timeline"));
+            listTab.addEventListener("click", () => switchView("list"));
+            document.getElementById("expandAllButton").addEventListener("click", () => toggleAllDays(true));
+            document.getElementById("collapseAllButton").addEventListener("click", () => toggleAllDays(false));
+            document.getElementById("downloadListButton").addEventListener("click", exportBookingListCSV);
+            searchInput.addEventListener("input", renderBookingTable);
         }
 
-        /*
-         * The body is sent as plain text deliberately.
-         * This keeps the request simple and avoids a browser
-         * CORS preflight against Google Apps Script.
-         */
-       function callRosterApi(action, payload = {}) {
-    return new Promise((resolve, reject) => {
-        const requestData = {
-            action,
-            team: TEAM_NAME,
-            ...payload
-        };
+        function callRosterApi(action, payload = {}) {
+            return new Promise((resolve, reject) => {
+                const requestData = { action, team: TEAM_NAME, ...payload };
+                const callbackName = "jsonpCallback_" + Date.now() + "_" + Math.random().toString(36).slice(2);
 
-        const callbackName = 
-            "jsonpCallback_" + 
-            Date.now() + 
-            "_" + 
-            Math.random().toString(36).slice(2);
+                window[callbackName] = function(data) {
+                    delete window[callbackName];
+                    document.body.removeChild(script);
+                    resolve(data);
+                };
 
-        window[callbackName] = function(data) {
-            delete window[callbackName];
-            document.body.removeChild(script);
-            resolve(data);
-        };
+                const script = document.createElement("script");
+                script.src = APPS_SCRIPT_URL + "?callback=" + encodeURIComponent(callbackName) + "&payload=" + encodeURIComponent(JSON.stringify(requestData));
 
-        const script = document.createElement("script");
-        script.src = 
-            APPS_SCRIPT_URL + 
-            "?callback=" + 
-            encodeURIComponent(callbackName) +
-            "&payload=" + 
-            encodeURIComponent(JSON.stringify(requestData));
+                script.onerror = function() {
+                    delete window[callbackName];
+                    document.body.removeChild(script);
+                    reject(new Error("Failed to load from Apps Script. Check the deployment URL."));
+                };
 
-        script.onerror = function() {
-            delete window[callbackName];
-            document.body.removeChild(script);
-            reject(new Error(
-                "Failed to load from Apps Script. " +
-                "Check the deployment URL."
-            ));
-        };
+                document.body.appendChild(script);
 
-        document.body.appendChild(script);
+                setTimeout(() => {
+                    if (window[callbackName]) {
+                        delete window[callbackName];
+                        document.body.removeChild(script);
+                        reject(new Error("Apps Script request timed out."));
+                    }
+                }, 10000);
+            });
+        }
 
-        setTimeout(() => {
-            if (window[callbackName]) {
-                delete window[callbackName];
-                document.body.removeChild(script);
-                reject(new Error(
-                    "Apps Script request timed out."
-                ));
-            }
-        }, 10000);
-    });
-}
         function normaliseBooking(booking) {
             return {
                 id: String(booking.id || ""),
-                team:
-                    String(
-                        booking.team || TEAM_NAME
-                    ),
+                team: String(booking.team || TEAM_NAME),
                 user: String(booking.user || ""),
                 start: String(booking.start || ""),
                 end: String(booking.end || ""),
-                createdAt:
-                    String(booking.createdAt || "")
+                createdAt: String(booking.createdAt || "")
             };
         }
 
         function isValidBooking(booking) {
             const start = new Date(booking.start);
             const end = new Date(booking.end);
-
-            return Boolean(
-                booking.id &&
-                booking.user &&
-                !Number.isNaN(start.getTime()) &&
-                !Number.isNaN(end.getTime()) &&
-                end > start
-            );
+            return Boolean(booking.id && booking.user && !Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime()) && end > start);
         }
 
         function handleNameChange() {
-            currentUser =
-                nameInput.value.trim();
-
-            localStorage.setItem(
-                USER_STORAGE_KEY,
-                currentUser
-            );
-
+            currentUser = nameInput.value.trim();
+            localStorage.setItem(USER_STORAGE_KEY, currentUser);
             updateBookingSummary();
             renderCalendar();
             renderBookingTable();
-
-            if (
-                bookingsModal.classList.contains(
-                    "active"
-                )
-            ) {
-                renderMyBookings();
-            }
+            if (bookingsModal.classList.contains("active")) renderMyBookings();
         }
 
         function populateStartTimes() {
-            startTimeSelect.innerHTML =
-                '<option value="">Select start time</option>';
-
-            for (
-                let hour = 0;
-                hour < HOURS_PER_DAY;
-                hour++
-            ) {
-                const option =
-                    document.createElement("option");
-
+            startTimeSelect.innerHTML = '<option value="">Select start time</option>';
+            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                const option = document.createElement("option");
                 option.value = String(hour);
                 option.textContent = formatHour(hour);
-
                 startTimeSelect.appendChild(option);
             }
         }
 
         function populateFinishTimes() {
             finishTimeSelect.innerHTML = "";
-
             if (startTimeSelect.value === "") {
                 finishTimeSelect.disabled = true;
-
-                finishTimeSelect.innerHTML = `
-                    <option value="">
-                        Select a start time first
-                    </option>
-                `;
-
+                finishTimeSelect.innerHTML = '<option value="">Select a start time first</option>';
                 return;
             }
 
             finishTimeSelect.disabled = false;
-
-            const placeholder =
-                document.createElement("option");
-
+            const placeholder = document.createElement("option");
             placeholder.value = "";
-            placeholder.textContent =
-                "Select finish time";
+            placeholder.textContent = "Select finish time";
+            finishTimeSelect.appendChild(placeholder);
 
-            finishTimeSelect.appendChild(
-                placeholder
-            );
-
-            const startHour =
-                Number(startTimeSelect.value);
-
-            for (
-                let duration = 1;
-                duration <= MAX_SHIFT_HOURS;
-                duration++
-            ) {
-                const absoluteFinish =
-                    startHour + duration;
-
-                const finishHour =
-                    absoluteFinish % HOURS_PER_DAY;
-
-                const dayOffset =
-                    Math.floor(
-                        absoluteFinish / HOURS_PER_DAY
-                    );
-
-                const option =
-                    document.createElement("option");
-
+            const startHour = Number(startTimeSelect.value);
+            for (let duration = 1; duration <= MAX_SHIFT_HOURS; duration++) {
+                const absoluteFinish = startHour + duration;
+                const finishHour = absoluteFinish % HOURS_PER_DAY;
+                const dayOffset = Math.floor(absoluteFinish / HOURS_PER_DAY);
+                const option = document.createElement("option");
                 option.value = String(duration);
-
-                option.textContent =
-                    `${formatHour(finishHour)}` +
-                    `${dayOffset > 0
-                        ? " — next day"
-                        : ""}` +
-                    ` (${duration} ` +
-                    `${duration === 1
-                        ? "hour"
-                        : "hours"})`;
-
-                finishTimeSelect.appendChild(
-                    option
-                );
+                option.textContent = `${formatHour(finishHour)}${dayOffset > 0 ? " — next day" : ""} (${duration} ${duration === 1 ? "hour" : "hours"})`;
+                finishTimeSelect.appendChild(option);
             }
         }
 
         function readShiftSelection() {
-            const dateValue =
-                bookingDateInput.value;
+            const dateValue = bookingDateInput.value;
+            const startValue = startTimeSelect.value;
+            const durationValue = finishTimeSelect.value;
 
-            const startValue =
-                startTimeSelect.value;
-
-            const durationValue =
-                finishTimeSelect.value;
-
-            if (
-                !dateValue ||
-                startValue === "" ||
-                durationValue === ""
-            ) {
-                return {
-                    complete: false,
-                    valid: false
-                };
+            if (!dateValue || startValue === "" || durationValue === "") {
+                return { complete: false, valid: false };
             }
 
-            const startDate =
-                parseDateKey(dateValue);
+            const startDate = parseDateKey(dateValue);
+            const startHour = Number(startValue);
+            const duration = Number(durationValue);
 
-            const startHour =
-                Number(startValue);
+            startDate.setHours(startHour, 0, 0, 0);
+            const endDate = addHours(startDate, duration);
 
-            const duration =
-                Number(durationValue);
-
-            startDate.setHours(
-                startHour,
-                0,
-                0,
-                0
-            );
-
-            const endDate =
-                addHours(startDate, duration);
-
-            if (
-                startDate <
-                startOfCurrentHour(new Date())
-            ) {
-                return {
-                    complete: true,
-                    valid: false,
-                    message:
-                        "The shift cannot start in the past."
-                };
+            if (startDate < startOfCurrentHour(new Date())) {
+                return { complete: true, valid: false, message: "The shift cannot start in the past." };
             }
 
-            if (
-                !Number.isInteger(duration) ||
-                duration < 1 ||
-                duration > MAX_SHIFT_HOURS
-            ) {
-                return {
-                    complete: true,
-                    valid: false,
-                    message:
-                        "The shift must be between 1 and 24 hours."
-                };
+            if (!Number.isInteger(duration) || duration < 1 || duration > MAX_SHIFT_HOURS) {
+                return { complete: true, valid: false, message: "The shift must be between 1 and 24 hours." };
             }
 
             return {
@@ -1528,171 +896,93 @@
                 startDate,
                 endDate,
                 duration,
-                isOvernight:
-                    formatDateKey(startDate) !==
-                    formatDateKey(endDate)
+                isOvernight: formatDateKey(startDate) !== formatDateKey(endDate)
             };
         }
 
         function updateBookingSummary() {
-            bookingSummary.className =
-                "booking-summary";
-
+            bookingSummary.className = "booking-summary";
             bookButton.disabled = true;
 
-            const selection =
-                readShiftSelection();
+            const selection = readShiftSelection();
 
             if (!selection.complete) {
-                bookingSummary.textContent =
-                    "Enter your name and select a date, " +
-                    "start time and finish time.";
-
+                bookingSummary.textContent = "Enter your name and select a date, start time and finish time.";
                 return;
             }
 
             if (!selection.valid) {
-                bookingSummary.classList.add(
-                    "invalid"
-                );
-
-                bookingSummary.textContent =
-                    selection.message;
-
+                bookingSummary.classList.add("invalid");
+                bookingSummary.textContent = selection.message;
                 return;
             }
 
-            const availability =
-                checkShiftAvailability(selection);
-
-            const description =
-                `${formatDateTime(selection.startDate)} ` +
-                `to ${formatDateTime(selection.endDate)}`;
+            const availability = checkShiftAvailability(selection);
+            const description = `${formatDateTime(selection.startDate)} to ${formatDateTime(selection.endDate)}`;
 
             if (!availability.available) {
-                bookingSummary.classList.add(
-                    "invalid"
-                );
-
-                bookingSummary.textContent =
-                    `${description}. ` +
-                    availability.message;
-
+                bookingSummary.classList.add("invalid");
+                bookingSummary.textContent = `${description}. ${availability.message}`;
                 return;
             }
 
             if (!currentUser) {
-                bookingSummary.classList.add(
-                    "warning"
-                );
-
-                bookingSummary.textContent =
-                    `${description}. Enter your name ` +
-                    "before confirming the shift.";
-
+                bookingSummary.classList.add("warning");
+                bookingSummary.textContent = `${description}. Enter your name before confirming the shift.`;
                 return;
             }
 
             if (isLoading) {
-                bookingSummary.classList.add(
-                    "warning"
-                );
-
-                bookingSummary.textContent =
-                    "Please wait while the roster is loading.";
-
+                bookingSummary.classList.add("warning");
+                bookingSummary.textContent = "Please wait while the roster is loading.";
                 return;
             }
 
             bookingSummary.classList.add("valid");
-
-            bookingSummary.textContent =
-                `Vacancy available for ${currentUser}: ` +
-                `${description} ` +
-                `(${selection.duration} ` +
-                `${selection.duration === 1
-                    ? "hour"
-                    : "hours"}).` +
-                `${selection.isOvernight
-                    ? " This is an overnight shift."
-                    : ""}`;
-
+            bookingSummary.textContent = `Vacancy available for ${currentUser}: ${description} (${selection.duration} ${selection.duration === 1 ? "hour" : "hours"}).${selection.isOvernight ? " This is an overnight shift." : ""}`;
             bookButton.disabled = false;
         }
 
         function checkShiftAvailability(selection) {
-            let hourStart =
-                new Date(selection.startDate);
+            let hourStart = new Date(selection.startDate);
 
             while (hourStart < selection.endDate) {
-                const bookings =
-                    getBookingsForHour(hourStart);
+                const bookings = getBookingsForHour(hourStart);
 
-                const alreadyBooked =
-                    currentUser &&
-                    bookings.some(event => {
-                        return (
-                            normaliseName(event.user) ===
-                            normaliseName(currentUser)
-                        );
-                    });
+                const alreadyBooked = currentUser && bookings.some(event => normaliseName(event.user) === normaliseName(currentUser));
 
                 if (alreadyBooked) {
-                    return {
-                        available: false,
-                        message:
-                            "You already have a booking during " +
-                            `${formatHourPeriod(hourStart)}.`
-                    };
+                    return { available: false, message: `You already have a booking during ${formatHourPeriod(hourStart)}.` };
                 }
 
                 if (bookings.length >= MAX_CREW) {
-                    return {
-                        available: false,
-                        message:
-                            `${formatHourPeriod(hourStart)} ` +
-                            `already has ${MAX_CREW} crew members.`
-                    };
+                    return { available: false, message: `${formatHourPeriod(hourStart)} already has ${MAX_CREW} crew members.` };
                 }
 
-                hourStart =
-                    addHours(hourStart, 1);
+                hourStart = addHours(hourStart, 1);
             }
 
-            return {
-                available: true
-            };
+            return { available: true };
         }
 
         async function bookSelectedShift() {
-            const selection =
-                readShiftSelection();
+            const selection = readShiftSelection();
 
             if (!currentUser) {
-                showToast(
-                    "Please enter your name first."
-                );
-
+                showToast("Please enter your name first.");
                 nameInput.focus();
                 return;
             }
 
-            if (
-                !selection.complete ||
-                !selection.valid
-            ) {
+            if (!selection.complete || !selection.valid) {
                 updateBookingSummary();
                 return;
             }
 
-            const availability =
-                checkShiftAvailability(selection);
+            const availability = checkShiftAvailability(selection);
 
             if (!availability.available) {
-                showToast(
-                    availability.message
-                );
-
+                showToast(availability.message);
                 updateBookingSummary();
                 return;
             }
@@ -1700,75 +990,37 @@
             const newEvent = {
                 id: createId(),
                 user: currentUser,
-                start:
-                    selection.startDate.toISOString(),
-                end:
-                    selection.endDate.toISOString(),
-                createdAt:
-                    new Date().toISOString()
+                start: selection.startDate.toISOString(),
+                end: selection.endDate.toISOString(),
+                createdAt: new Date().toISOString()
             };
 
             setLoading(true);
-
-            setConnectionStatus(
-                "Saving booking…",
-                ""
-            );
+            setConnectionStatus("Saving booking…", "");
 
             try {
-                const data =
-                    await callRosterApi(
-                        "addBooking",
-                        newEvent
-                    );
+                const data = await callRosterApi("addBooking", newEvent);
 
                 if (!data.success) {
-                    throw new Error(
-                        data.error ||
-                        "The booking was rejected."
-                    );
+                    throw new Error(data.error || "The booking was rejected.");
                 }
 
-                showToast(
-                    "Your shift was booked successfully."
-                );
-
+                showToast("Your shift was booked successfully.");
                 startTimeSelect.value = "";
                 populateFinishTimes();
-
                 await loadBookingsAfterSave();
 
-                const dayKey =
-                    formatDateKey(
-                        selection.startDate
-                    );
-
+                const dayKey = formatDateKey(selection.startDate);
                 requestAnimationFrame(() => {
-                    const target =
-                        document.querySelector(
-                            `.day[data-date="${dayKey}"]`
-                        );
-
+                    const target = document.querySelector(`.day[data-date="${dayKey}"]`);
                     if (target) {
                         target.classList.add("open");
-
-                        target.scrollIntoView({
-                            behavior: "smooth",
-                            block: "start"
-                        });
+                        target.scrollIntoView({ behavior: "smooth", block: "start" });
                     }
                 });
             } catch (error) {
-                console.error(
-                    "Failed to save booking:",
-                    error
-                );
-
-                setConnectionStatus(
-                    error.message,
-                    "error"
-                );
-
+                console.error("Failed to save booking:", error);
+                setConnectionStatus(error.message, "error");
                 showToast(error.message);
             } finally {
                 setLoading(false);
@@ -1777,96 +1029,46 @@
         }
 
         async function loadBookingsAfterSave() {
-            const data =
-                await callRosterApi(
-                    "getBookings"
-                );
+            const data = await callRosterApi("getBookings");
 
             if (!data.success) {
-                throw new Error(
-                    data.error ||
-                    "Booking saved, but the roster " +
-                    "could not be refreshed."
-                );
+                throw new Error(data.error || "Booking saved, but the roster could not be refreshed.");
             }
 
-            events = (data.bookings || [])
-                .map(normaliseBooking)
-                .filter(isValidBooking);
-
+            events = (data.bookings || []).map(normaliseBooking).filter(isValidBooking);
             renderAll();
 
             const now = new Date();
-            const activeBookings = events.filter(event => {
-            return new Date(event.end) > now;
-                });
+            const activeBookings = events.filter(event => new Date(event.end) > now);
 
-            setConnectionStatus(
-                `${activeBookings.length} active bookings loaded ` +
-                `for ${TEAM_NAME}.`,
-                "connected"
-            );
+            setConnectionStatus(`${activeBookings.length} active bookings loaded for ${TEAM_NAME}.`, "connected");
         }
 
         async function cancelShift(eventId) {
-            const event =
-                events.find(item => {
-                    return item.id === eventId;
-                });
+            const event = events.find(item => item.id === eventId);
 
-            if (!event) {
-                return;
-            }
+            if (!event) return;
 
-            const confirmed =
-                window.confirm(
-                    `Cancel ${event.user}'s shift from ` +
-                    `${formatDateTime(
-                        new Date(event.start)
-                    )} to ` +
-                    `${formatDateTime(
-                        new Date(event.end)
-                    )}?`
-                );
+            const confirmed = window.confirm(`Cancel ${event.user}'s shift from ${formatDateTime(new Date(event.start))} to ${formatDateTime(new Date(event.end))}?`);
 
-            if (!confirmed) {
-                return;
-            }
+            if (!confirmed) return;
 
             setLoading(true);
 
             try {
-                const data =
-                    await callRosterApi(
-                        "cancelBooking",
-                        {
-                            bookingId: eventId
-                        }
-                    );
+                const data = await callRosterApi("cancelBooking", { bookingId: eventId });
 
                 if (!data.success) {
-                    throw new Error(
-                        data.error ||
-                        "The shift could not be cancelled."
-                    );
+                    throw new Error(data.error || "The shift could not be cancelled.");
                 }
 
-                events =
-                    events.filter(item => {
-                        return item.id !== eventId;
-                    });
-
+                events = events.filter(item => item.id !== eventId);
                 renderAll();
                 renderMyBookings();
                 updateBookingSummary();
-
                 showToast("Shift cancelled.");
             } catch (error) {
-                console.error(
-                    "Failed to cancel shift:",
-                    error
-                );
-
+                console.error("Failed to cancel shift:", error);
                 showToast(error.message);
             } finally {
                 setLoading(false);
@@ -1874,20 +1076,11 @@
         }
 
         function getBookingsForHour(hourStart) {
-            const hourEnd =
-                addHours(hourStart, 1);
-
+            const hourEnd = addHours(hourStart, 1);
             return events.filter(event => {
-                const eventStart =
-                    new Date(event.start);
-
-                const eventEnd =
-                    new Date(event.end);
-
-                return (
-                    eventStart < hourEnd &&
-                    eventEnd > hourStart
-                );
+                const eventStart = new Date(event.start);
+                const eventEnd = new Date(event.end);
+                return eventStart < hourEnd && eventEnd > hourStart;
             });
         }
 
@@ -1895,170 +1088,74 @@
             renderCalendar();
             renderBookingTable();
             updateBookingSummary();
-
-            if (
-                bookingsModal.classList.contains(
-                    "active"
-                )
-            ) {
-                renderMyBookings();
-            }
+            if (bookingsModal.classList.contains("active")) renderMyBookings();
         }
 
         function renderCalendar() {
-            const openDates =
-                new Set(
-                    Array
-                        .from(
-                            document.querySelectorAll(
-                                ".day.open"
-                            )
-                        )
-                        .map(element => {
-                            return element.dataset.date;
-                        })
-                );
-
+            const openDates = new Set(Array.from(document.querySelectorAll(".day.open")).map(element => element.dataset.date));
             calendarElement.innerHTML = "";
 
-            const today =
-                startOfDay(new Date());
+            const today = startOfDay(new Date());
 
-            for (
-                let offset = 0;
-                offset < DAYS_TO_SHOW;
-                offset++
-            ) {
-                const date =
-                    addDays(today, offset);
+            for (let offset = 0; offset < DAYS_TO_SHOW; offset++) {
+                const date = addDays(today, offset);
+                const dateKey = formatDateKey(date);
+                const shouldOpen = openDates.size > 0 ? openDates.has(dateKey) : offset === 0;
 
-                const dateKey =
-                    formatDateKey(date);
-
-                const shouldOpen =
-                    openDates.size > 0
-                        ? openDates.has(dateKey)
-                        : offset === 0;
-
-                calendarElement.appendChild(
-                    createDayElement(
-                        date,
-                        shouldOpen
-                    )
-                );
+                calendarElement.appendChild(createDayElement(date, shouldOpen));
             }
         }
 
-        function createDayElement(
-            date,
-            shouldOpen
-        ) {
-            const section =
-                document.createElement("section");
+        function createDayElement(date, shouldOpen) {
+            const section = document.createElement("section");
+            section.className = `day${shouldOpen ? " open" : ""}`;
+            section.dataset.date = formatDateKey(date);
 
-            section.className =
-                `day${shouldOpen ? " open" : ""}`;
+            let totalCrewHours = 0;
 
-            section.dataset.date =
-                formatDateKey(date);
+            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                const hourStart = new Date(date);
+                hourStart.setHours(hour, 0, 0, 0);
+                const bookings = getBookingsForHour(hourStart);
+                totalCrewHours += bookings.length;
+            }
 
-          let totalCrewHours = 0;
+            const targetCrewHours = 2 * HOURS_PER_DAY;
+            const coveragePercent = Math.round((totalCrewHours / targetCrewHours) * 100);
 
-for (
-    let hour = 0;
-    hour < HOURS_PER_DAY;
-    hour++
-) {
-    const hourStart =
-        new Date(date);
-
-    hourStart.setHours(
-        hour,
-        0,
-        0,
-        0
-    );
-
-    const bookings =
-        getBookingsForHour(hourStart);
-
-    totalCrewHours += bookings.length;
-}
-
-const targetCrewHours = 2 * HOURS_PER_DAY;
-const coveragePercent = Math.round(
-    (totalCrewHours / targetCrewHours) * 100
-);
-
-            const heading =
-                document.createElement("div");
-
+            const heading = document.createElement("div");
             heading.className = "day-heading";
 
-            const titleGroup =
-                document.createElement("div");
+            const titleGroup = document.createElement("div");
+            titleGroup.className = "day-title-group";
 
-            titleGroup.className =
-                "day-title-group";
-
-            const toggle =
-                document.createElement("div");
-
+            const toggle = document.createElement("div");
             toggle.className = "day-toggle";
             toggle.textContent = "▼";
 
-            const title =
-                document.createElement("h3");
-
-            title.textContent =
-                formatDayHeading(date);
+            const title = document.createElement("h3");
+            title.textContent = formatDayHeading(date);
 
             titleGroup.append(toggle, title);
 
-            const subtitle =
-                document.createElement("span");
-
+            const subtitle = document.createElement("span");
             subtitle.className = "day-subtitle";
+            subtitle.textContent = `${isSameDay(date, new Date()) ? "Today · " : ""}${coveragePercent}% coverage`;
 
-            subtitle.textContent =
-                `${isSameDay(date, new Date())
-                    ? "Today · "
-                    : ""}` +
-                `${coveragePercent}% coverage` ;
+            heading.append(titleGroup, subtitle);
 
-            heading.append(
-                titleGroup,
-                subtitle
-            );
+            heading.addEventListener("click", () => {
+                section.classList.toggle("open");
+            });
 
-            heading.addEventListener(
-                "click",
-                () => {
-                    section.classList.toggle(
-                        "open"
-                    );
-                }
-            );
-
-            const body =
-                document.createElement("div");
-
+            const body = document.createElement("div");
             body.className = "day-body";
 
-            const inner =
-                document.createElement("div");
+            const inner = document.createElement("div");
+            inner.className = "day-body-inner";
 
-            inner.className =
-                "day-body-inner";
-
-            for (
-                let hour = 0;
-                hour < HOURS_PER_DAY;
-                hour++
-            ) {
-                inner.appendChild(
-                    createTimelineRow(date, hour)
-                );
+            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                inner.appendChild(createTimelineRow(date, hour));
             }
 
             body.appendChild(inner);
@@ -2068,21 +1165,11 @@ const coveragePercent = Math.round(
         }
 
         function createTimelineRow(date, hour) {
-            const hourStart =
-                new Date(date);
+            const hourStart = new Date(date);
+            hourStart.setHours(hour, 0, 0, 0);
 
-            hourStart.setHours(
-                hour,
-                0,
-                0,
-                0
-            );
-
-            const bookings =
-                getBookingsForHour(hourStart);
-
-            const crewCount =
-                bookings.length;
+            const bookings = getBookingsForHour(hourStart);
+            const crewCount = bookings.length;
 
             let state = "empty";
             let status = "Needs crew (0/2)";
@@ -2098,438 +1185,213 @@ const coveragePercent = Math.round(
                 status = "Full (3/3)";
             }
 
-            const row =
-                document.createElement("div");
-
+            const row = document.createElement("div");
             row.className = "timeline-row";
 
-            const time =
-                document.createElement("div");
-
+            const time = document.createElement("div");
             time.className = "timeline-time";
             time.textContent = formatHour(hour);
 
-            const nodeContainer =
-                document.createElement("div");
+            const nodeContainer = document.createElement("div");
+            nodeContainer.className = "timeline-node-container";
 
-            nodeContainer.className =
-                "timeline-node-container";
+            const line = document.createElement("div");
+            line.className = `timeline-line line-${state}`;
 
-            const line =
-                document.createElement("div");
-
-            line.className =
-                `timeline-line line-${state}`;
-
-            const node =
-                document.createElement("div");
-
-            node.className =
-                `timeline-node node-${state}`;
+            const node = document.createElement("div");
+            node.className = `timeline-node node-${state}`;
 
             nodeContainer.append(line, node);
 
-            const content =
-                document.createElement("div");
+            const content = document.createElement("div");
+            content.className = "timeline-content";
 
-            content.className =
-                "timeline-content";
-
-            const chips =
-                document.createElement("div");
-
+            const chips = document.createElement("div");
             chips.className = "crew-chips";
 
             if (bookings.length === 0) {
-                const empty =
-                    document.createElement("span");
-
+                const empty = document.createElement("span");
                 empty.className = "empty-chip";
-                empty.textContent =
-                    "No crew assigned";
-
+                empty.textContent = "No crew assigned";
                 chips.appendChild(empty);
             } else {
                 bookings.forEach(event => {
-                    const chip =
-                        document.createElement("span");
-
+                    const chip = document.createElement("span");
                     chip.className = "chip";
                     chip.textContent = event.user;
-
                     chips.appendChild(chip);
                 });
             }
 
-            const badge =
-                document.createElement("span");
-
-            badge.className =
-                `status-badge status-${state}`;
-
+            const badge = document.createElement("span");
+            badge.className = `status-badge status-${state}`;
             badge.textContent = status;
 
             content.append(chips, badge);
-
-            row.append(
-                time,
-                nodeContainer,
-                content
-            );
+            row.append(time, nodeContainer, content);
 
             return row;
         }
 
         function renderBookingTable() {
-            const query =
-                searchInput.value
-                    .trim()
-                    .toLocaleLowerCase();
+            const query = searchInput.value.trim().toLocaleLowerCase();
 
-            const filtered =
-                [...events]
-                    .filter(event => {
-                        if (!query) {
-                            return true;
-                        }
-
-                        const searchable =
-                            `${event.user} ` +
-                            `${formatDateTime(
-                                new Date(event.start)
-                            )}`;
-
-                        return searchable
-                            .toLocaleLowerCase()
-                            .includes(query);
-                    })
-                    .sort((a, b) => {
-                        return (
-                            new Date(a.start) -
-                            new Date(b.start)
-                        );
-                    });
+            const filtered = [...events]
+                .filter(event => {
+                    if (!query) return true;
+                    const searchable = `${event.user} ${formatDateTime(new Date(event.start))}`;
+                    return searchable.toLocaleLowerCase().includes(query);
+                })
+                .sort((a, b) => new Date(a.start) - new Date(b.start));
 
             bookingTableBody.innerHTML = "";
 
             if (filtered.length === 0) {
-                bookingTableBody.innerHTML = `
-                    <tr>
-                        <td
-                            colspan="5"
-                            class="empty-state"
-                        >
-                            No active bookings found.
-                        </td>
-                    </tr>
-                `;
-
+                bookingTableBody.innerHTML = '<tr><td colspan="5" class="empty-state">No active bookings found.</td></tr>';
                 return;
             }
 
             filtered.forEach(event => {
-                const start =
-                    new Date(event.start);
+                const start = new Date(event.start);
+                const end = new Date(event.end);
+                const duration = (end - start) / 3600000;
 
-                const end =
-                    new Date(event.end);
-
-                const duration =
-                    (end - start) / 3600000;
-
-                const row =
-                    document.createElement("tr");
+                const row = document.createElement("tr");
 
                 row.innerHTML = `
-                    <td>
-                        <strong>
-                            ${escapeHtml(event.user)}
-                        </strong>
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            formatDateTime(start)
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            formatDateTime(end)
-                        )}
-                    </td>
-
-                    <td>
-                        ${duration}
-                        ${duration === 1
-                            ? "hour"
-                            : "hours"}
-                    </td>
-
-                    <td>
-                        <button
-                            class="btn-danger btn-small"
-                            type="button"
-                            data-cancel-id="${escapeHtml(
-                                event.id
-                            )}"
-                        >
-                            Cancel
-                        </button>
-                    </td>
+                    <td><strong>${escapeHtml(event.user)}</strong></td>
+                    <td>${escapeHtml(formatDateTime(start))}</td>
+                    <td>${escapeHtml(formatDateTime(end))}</td>
+                    <td>${duration} ${duration === 1 ? "hour" : "hours"}</td>
+                    <td><button class="btn-danger btn-small" type="button" data-cancel-id="${escapeHtml(event.id)}">Cancel</button></td>
                 `;
 
-                row
-                    .querySelector(
-                        "[data-cancel-id]"
-                    )
-                    .addEventListener(
-                        "click",
-                        () => cancelShift(event.id)
-                    );
-
+                row.querySelector("[data-cancel-id]").addEventListener("click", () => cancelShift(event.id));
                 bookingTableBody.appendChild(row);
             });
         }
 
         function openBookingsModal() {
             renderMyBookings();
-
-            bookingsModal.classList.add(
-                "active"
-            );
+            bookingsModal.classList.add("active");
         }
 
         function closeBookingsModal() {
-            bookingsModal.classList.remove(
-                "active"
-            );
+            bookingsModal.classList.remove("active");
         }
 
         function renderMyBookings() {
             myBookingsList.innerHTML = "";
 
             if (!currentUser) {
-                myBookingsList.innerHTML = `
-                    <div class="empty-state">
-                        Enter your name to view your bookings.
-                    </div>
-                `;
-
+                myBookingsList.innerHTML = '<div class="empty-state">Enter your name to view your bookings.</div>';
                 return;
             }
 
             const now = new Date();
 
-            const userEvents =
-                events
-                    .filter(event => {
-                        return (
-                            normaliseName(
-                                event.user
-                            ) ===
-                                normaliseName(
-                                    currentUser
-                                ) &&
-                            new Date(event.end) > now
-                        );
-                    })
-                    .sort((a, b) => {
-                        return (
-                            new Date(a.start) -
-                            new Date(b.start)
-                        );
-                    });
+            const userEvents = events
+                .filter(event => normaliseName(event.user) === normaliseName(currentUser) && new Date(event.end) > now)
+                .sort((a, b) => new Date(a.start) - new Date(b.start));
 
             if (userEvents.length === 0) {
-                myBookingsList.innerHTML = `
-                    <div class="empty-state">
-                        No upcoming bookings found for
-                        ${escapeHtml(currentUser)}.
-                    </div>
-                `;
-
+                myBookingsList.innerHTML = `<div class="empty-state">No upcoming bookings found for ${escapeHtml(currentUser)}.</div>`;
                 return;
             }
 
             userEvents.forEach(event => {
-                const start =
-                    new Date(event.start);
+                const start = new Date(event.start);
+                const end = new Date(event.end);
 
-                const end =
-                    new Date(event.end);
-
-                const item =
-                    document.createElement("div");
-
+                const item = document.createElement("div");
                 item.className = "shift-item";
 
-                const information =
-                    document.createElement("div");
-
+                const information = document.createElement("div");
                 information.innerHTML = `
-                    <div class="shift-time">
-                        ${escapeHtml(
-                            formatDateTime(start)
-                        )}
-                        to
-                        ${escapeHtml(
-                            formatDateTime(end)
-                        )}
-                    </div>
-
-                    <div class="shift-detail">
-                        ${escapeHtml(TEAM_NAME)}
-                    </div>
+                    <div class="shift-time">${escapeHtml(formatDateTime(start))} to ${escapeHtml(formatDateTime(end))}</div>
+                    <div class="shift-detail">${escapeHtml(TEAM_NAME)}</div>
                 `;
 
-                const deleteButton =
-                    document.createElement("button");
-
-                deleteButton.className =
-                    "btn-danger btn-small";
-
+                const deleteButton = document.createElement("button");
+                deleteButton.className = "btn-danger btn-small";
                 deleteButton.type = "button";
-                deleteButton.textContent =
-                    "Cancel";
+                deleteButton.textContent = "Cancel";
+                deleteButton.addEventListener("click", () => cancelShift(event.id));
 
-                deleteButton.addEventListener(
-                    "click",
-                    () => cancelShift(event.id)
-                );
-
-                item.append(
-                    information,
-                    deleteButton
-                );
-
+                item.append(information, deleteButton);
                 myBookingsList.appendChild(item);
             });
         }
 
         function switchView(view) {
-            const showList =
-                view === "list";
+            const showList = view === "list";
 
-            timelineSection.classList.toggle(
-                "hidden",
-                showList
-            );
+            timelineSection.classList.toggle("hidden", showList);
+            listSection.classList.toggle("active", showList);
+            timelineTab.classList.toggle("active", !showList);
+            listTab.classList.toggle("active", showList);
 
-            listSection.classList.toggle(
-                "active",
-                showList
-            );
-
-            timelineTab.classList.toggle(
-                "active",
-                !showList
-            );
-
-            listTab.classList.toggle(
-                "active",
-                showList
-            );
-
-            if (showList) {
-                renderBookingTable();
-            }
+            if (showList) renderBookingTable();
         }
 
         function toggleAllDays(open) {
-            document
-                .querySelectorAll(".day")
-                .forEach(day => {
-                    day.classList.toggle(
-                        "open",
-                        open
-                    );
-                });
+            document.querySelectorAll(".day").forEach(day => {
+                day.classList.toggle("open", open);
+            });
         }
 
-       function exportBookingListCSV() {
-    const today = startOfDay(new Date());
-    const days = [];
-    
-    // Build array of 7 days starting from today
-    for (let i = 0; i < DAYS_TO_SHOW + 2; i++) {
-        days.push(addDays(today, i));
-    }
-    
-    // Build header row
-    const headerRow = ["Cummins"];
-    days.forEach(day => {
-        headerRow.push(formatDayHeading(day));
-        headerRow.push("Restriction");
-    });
-    
-    const rows = [headerRow];
-    
-    // Build data rows - one row per timeslot per crew member (max 3)
-    for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
-        // For each hour, we need up to 3 rows (one per crew member slot)
-        const maxCrewThisHour = 3;
-        
-        for (let crewSlot = 0; crewSlot < maxCrewThisHour; crewSlot++) {
-            const dataRow = [];
-            
-            // Time column - only on first crew slot
-            if (crewSlot === 0) {
-                dataRow.push(formatHour(hour));
-            } else {
-                dataRow.push("");
+        function exportBookingListCSV() {
+            const today = startOfDay(new Date());
+            const days = [];
+
+            for (let i = 0; i < DAYS_TO_SHOW + 2; i++) {
+                days.push(addDays(today, i));
             }
-            
-            // For each day, get the crew member at this slot
+
+            const headerRow = ["Cummins"];
             days.forEach(day => {
-                const hourStart = new Date(day);
-                hourStart.setHours(hour, 0, 0, 0);
-                
-                const bookings = getBookingsForHour(hourStart);
-                const crewName = bookings[crewSlot] 
-                    ? bookings[crewSlot].user 
-                    : "";
-                
-                dataRow.push(crewName);
-                dataRow.push(""); // Restriction column (blank for manual entry)
+                headerRow.push(formatDayHeading(day));
+                headerRow.push("Restriction");
             });
-            
-            rows.push(dataRow);
+
+            const rows = [headerRow];
+
+            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                for (let crewSlot = 0; crewSlot < 3; crewSlot++) {
+                    const dataRow = [];
+
+                    if (crewSlot === 0) {
+                        dataRow.push(formatHour(hour));
+                    } else {
+                        dataRow.push("");
+                    }
+
+                    days.forEach(day => {
+                        const hourStart = new Date(day);
+                        hourStart.setHours(hour, 0, 0, 0);
+
+                        const bookings = getBookingsForHour(hourStart);
+                        const crewName = bookings[crewSlot] ? bookings[crewSlot].user : "";
+
+                        dataRow.push(crewName);
+                        dataRow.push("");
+                    });
+
+                    rows.push(dataRow);
+                }
+            }
+
+            downloadCSV(rows, `${TEAM_NAME}_Crew_Bookings_${formatDateKey(new Date())}.csv`);
+            showToast("Booking CSV downloaded.");
         }
-    }
-    
-    downloadCSV(rows, `${TEAM_NAME}_Crew_Bookings_${formatDateKey(new Date())}.csv`);
-    showToast("Booking CSV downloaded.");
-}
 
         function downloadCSV(rows, filename) {
-            const csv =
-                rows
-                    .map(row => {
-                        return row
-                            .map(csvEscape)
-                            .join(",");
-                    })
-                    .join("\r\n");
-
-            const blob =
-                new Blob(
-                    ["\uFEFF" + csv],
-                    {
-                        type:
-                            "text/csv;charset=utf-8;"
-                    }
-                );
-
-            const url =
-                URL.createObjectURL(blob);
-
-            const link =
-                document.createElement("a");
-
+            const csv = rows.map(row => row.map(csvEscape).join(",")).join("\r\n");
+            const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
             link.href = url;
             link.download = filename;
-
             document.body.appendChild(link);
             link.click();
             link.remove();
@@ -2540,18 +1402,220 @@ const coveragePercent = Math.round(
         }
 
         function csvEscape(value) {
-            return (
-                '"' +
-                String(value ?? "")
-                    .replace(/"/g, '""') +
-                '"'
-            );
+            return '"' + String(value ?? "").replace(/"/g, '""') + '"';
+        }
+
+        function openRosterView() {
+            const rosterWindow = window.open("", "rosterView", "width=1400,height=900");
+
+            if (!rosterWindow) {
+                showToast("Please allow pop-ups to view the roster.");
+                return;
+            }
+
+            rosterWindow.document.write(buildRosterHTML());
+            rosterWindow.document.close();
+        }
+
+        function buildRosterHTML() {
+            const today = startOfDay(new Date());
+            const days = [];
+
+            for (let i = 0; i < DAYS_TO_SHOW; i++) {
+                days.push(addDays(today, i));
+            }
+
+            const startDate = formatDayHeading(days[0]);
+            const endDate = formatDayHeading(days[days.length - 1]);
+
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${TEAM_NAME} Crew Roster</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; padding: 2rem 1rem; color: #333; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .header { margin-bottom: 2rem; border-bottom: 3px solid #22c55e; padding-bottom: 1rem; }
+        .header h1 { font-size: 2rem; color: #16a34a; margin-bottom: 0.5rem; }
+        .header p { color: #666; font-size: 0.95rem; }
+        .controls { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 6px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .btn-primary { background: #22c55e; color: white; }
+        .btn-primary:hover { background: #16a34a; }
+        .btn-secondary { background: #e5e7eb; color: #333; }
+        .btn-secondary:hover { background: #d1d5db; }
+        .roster-wrapper { overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        thead { background: #f3f4f6; position: sticky; top: 0; }
+        th { padding: 0.75rem; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #d1d5db; white-space: nowrap; background: #f3f4f6; }
+        th.time-col { width: 60px; position: sticky; left: 0; z-index: 10; }
+        th.empty-header { width: 60px; }
+        td { padding: 0.4rem 0.75rem; border-bottom: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; height: 24px; }
+        td.time-col { font-weight: 700; background: #fafafa; position: sticky; left: 0; z-index: 5; width: 60px; }
+        td.crew-name { background: #f9fafb; font-weight: 500; color: #16a34a; min-width: 120px; }
+        td.crew-name:empty::after { content: "—"; color: #d1d5db; }
+        td.restriction { background: #fafafa; color: #9ca3af; font-size: 0.85rem; min-width: 35px; width: 35px; text-align: center; }
+        tbody tr:nth-child(6n+1), tbody tr:nth-child(6n+2), tbody tr:nth-child(6n+3) { background: #ffffff; }
+        tbody tr:nth-child(6n+4), tbody tr:nth-child(6n+5), tbody tr:nth-child(6n+6) { background: #f9fafb; }
+        tbody tr:nth-child(6n+4) { border-top: 3px solid #9ca3af; }
+        .day-header { background: #dbeafe; font-weight: 700; color: #0284c7; text-align: center; padding: 0.5rem 0.75rem !important; }
+        .crew-header { background: #dbeafe; font-weight: 600; color: #0284c7; text-align: center; font-size: 0.8rem; padding: 0.5rem 0.75rem !important; }
+        .restriction-header { background: #fef3c7; font-weight: 600; color: #92400e; text-align: center; font-size: 0.8rem; padding: 0.5rem 0.3rem !important; }
+        .info-box { background: #eff6ff; border-left: 4px solid #0284c7; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; font-size: 0.9rem; color: #1e40af; }
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; padding: 1rem; max-width: 100%; }
+            .controls { display: none; }
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; }
+            th, td { padding: 0.3rem 0.4rem; font-size: 0.85rem; }
+            .roster-wrapper { border: 1px solid #000; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗓 ${TEAM_NAME} Crew Roster</h1>
+            <p>Roster for ${startDate} - ${endDate}</p>
+        </div>
+
+        <div class="info-box">
+            <strong>ℹ️ Note:</strong> This roster shows crew assignments for each hour. Maximum ${MAX_CREW} crew members per hour slot. Restriction column is for manual notes.
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+            <button class="btn btn-secondary" onclick="window.close()">← Close</button>
+        </div>
+
+        <div class="roster-wrapper">
+            <table id="rosterTable">
+                <thead>
+                    <tr id="headerRow">
+                        <th class="time-col">Time</th>
+                    </tr>
+                </thead>
+                <tbody id="rosterBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const events = ${JSON.stringify(events)};
+        const HOURS_PER_DAY = ${HOURS_PER_DAY};
+        const MAX_CREW = ${MAX_CREW};
+        const DAYS_TO_SHOW = ${DAYS_TO_SHOW};
+
+        function addHours(date, hours) {
+            const result = new Date(date);
+            result.setHours(result.getHours() + hours);
+            return result;
+        }
+
+        function formatHour(hour) {
+            return String(hour).padStart(2, "0") + ":00";
+        }
+
+        function getBookingsForHour(hourStart) {
+            const hourEnd = addHours(hourStart, 1);
+            return events.filter(function(event) {
+                const eventStart = new Date(event.start);
+                const eventEnd = new Date(event.end);
+                return eventStart < hourEnd && eventEnd > hourStart;
+            });
+        }
+
+        function buildRoster() {
+            const days = [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            for (let i = 0; i < DAYS_TO_SHOW; i++) {
+                const day = new Date(today);
+                day.setDate(day.getDate() + i);
+                days.push(day);
+            }
+
+            const headerRow = document.getElementById("headerRow");
+
+            days.forEach(function(day) {
+                const dayHeader = document.createElement("th");
+                dayHeader.className = "day-header";
+                dayHeader.colSpan = 2;
+                dayHeader.textContent = new Intl.DateTimeFormat("en-AU", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short"
+                }).format(day);
+                headerRow.appendChild(dayHeader);
+            });
+
+            const subHeaderRow = document.createElement("tr");
+            const emptyHeader = document.createElement("th");
+            emptyHeader.className = "empty-header";
+            subHeaderRow.appendChild(emptyHeader);
+
+            days.forEach(function() {
+                const crewHeader = document.createElement("th");
+                crewHeader.className = "crew-header";
+                crewHeader.textContent = "Crew";
+                subHeaderRow.appendChild(crewHeader);
+
+                const restrictionHeader = document.createElement("th");
+                restrictionHeader.className = "restriction-header";
+                restrictionHeader.textContent = "R";
+                subHeaderRow.appendChild(restrictionHeader);
+            });
+
+            document.querySelector("thead").appendChild(subHeaderRow);
+
+            const rosterBody = document.getElementById("rosterBody");
+
+            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                for (let crewSlot = 0; crewSlot < MAX_CREW; crewSlot++) {
+                    const row = document.createElement("tr");
+                    const timeCell = document.createElement("td");
+                    timeCell.className = "time-col";
+                    if (crewSlot === 0) {
+                        timeCell.textContent = formatHour(hour);
+                    }
+                    row.appendChild(timeCell);
+
+                    days.forEach(function(day) {
+                        const hourStart = new Date(day);
+                        hourStart.setHours(hour, 0, 0, 0);
+
+                        const bookings = getBookingsForHour(hourStart);
+                        const crewName = bookings[crewSlot] ? bookings[crewSlot].user : "";
+
+                        const crewCell = document.createElement("td");
+                        crewCell.className = "crew-name";
+                        crewCell.textContent = crewName;
+                        row.appendChild(crewCell);
+
+                        const restrictionCell = document.createElement("td");
+                        restrictionCell.className = "restriction";
+                        row.appendChild(restrictionCell);
+                    });
+
+                    rosterBody.appendChild(row);
+                }
+            }
+        }
+
+        buildRoster();
+    <\/script>
+</body>
+</html>`;
         }
 
         function setLoading(loading) {
             isLoading = loading;
             refreshButton.disabled = loading;
-
             if (loading) {
                 bookButton.disabled = true;
             } else {
@@ -2559,43 +1623,23 @@ const coveragePercent = Math.round(
             }
         }
 
-        function setConnectionStatus(
-            message,
-            statusClass
-        ) {
-            connectionStatus.className =
-                "connection-status";
-
+        function setConnectionStatus(message, statusClass) {
+            connectionStatus.className = "connection-status";
             if (statusClass) {
-                connectionStatus.classList.add(
-                    statusClass
-                );
+                connectionStatus.classList.add(statusClass);
             }
-
             connectionStatus.textContent = message;
         }
 
         function createId() {
-            if (
-                window.crypto &&
-                typeof crypto.randomUUID ===
-                    "function"
-            ) {
+            if (window.crypto && typeof crypto.randomUUID === "function") {
                 return crypto.randomUUID();
             }
-
-            return (
-                Date.now().toString(36) +
-                Math.random()
-                    .toString(36)
-                    .slice(2)
-            );
+            return Date.now().toString(36) + Math.random().toString(36).slice(2);
         }
 
         function normaliseName(value) {
-            return String(value || "")
-                .trim()
-                .toLocaleLowerCase();
+            return String(value || "").trim().toLocaleLowerCase();
         }
 
         function startOfDay(date) {
@@ -2612,118 +1656,59 @@ const coveragePercent = Math.round(
 
         function addHours(date, hours) {
             const result = new Date(date);
-
-            result.setHours(
-                result.getHours() + hours
-            );
-
+            result.setHours(result.getHours() + hours);
             return result;
         }
 
         function addDays(date, days) {
             const result = new Date(date);
-
-            result.setDate(
-                result.getDate() + days
-            );
-
+            result.setDate(result.getDate() + days);
             return result;
         }
 
         function formatDateKey(date) {
-            const year =
-                date.getFullYear();
-
-            const month =
-                String(
-                    date.getMonth() + 1
-                ).padStart(2, "0");
-
-            const day =
-                String(
-                    date.getDate()
-                ).padStart(2, "0");
-
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
             return `${year}-${month}-${day}`;
         }
 
         function parseDateKey(value) {
-            const [
-                year,
-                month,
-                day
-            ] = value
-                .split("-")
-                .map(Number);
-
-            return new Date(
-                year,
-                month - 1,
-                day,
-                0,
-                0,
-                0,
-                0
-            );
+            const [year, month, day] = value.split("-").map(Number);
+            return new Date(year, month - 1, day, 0, 0, 0, 0);
         }
 
         function formatHour(hour) {
-            return (
-                String(hour)
-                    .padStart(2, "0") +
-                ":00"
-            );
+            return String(hour).padStart(2, "0") + ":00";
         }
 
         function formatDayHeading(date) {
-            return new Intl.DateTimeFormat(
-                "en-AU",
-                {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric"
-                }
-            ).format(date);
+            return new Intl.DateTimeFormat("en-AU", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }).format(date);
         }
 
         function formatDateTime(date) {
-            const datePart =
-                new Intl.DateTimeFormat(
-                    "en-AU",
-                    {
-                        weekday: "short",
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric"
-                    }
-                ).format(date);
+            const datePart = new Intl.DateTimeFormat("en-AU", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+                year: "numeric"
+            }).format(date);
 
-            return (
-                `${datePart} at ` +
-                `${formatHour(date.getHours())}`
-            );
+            return `${datePart} at ${formatHour(date.getHours())}`;
         }
 
         function formatHourPeriod(hourStart) {
-            const hourEnd =
-                addHours(hourStart, 1);
-
-            return (
-                `${formatDateTime(hourStart)}–` +
-                `${formatHour(hourEnd.getHours())}`
-            );
+            const hourEnd = addHours(hourStart, 1);
+            return `${formatDateTime(hourStart)}–${formatHour(hourEnd.getHours())}`;
         }
 
         function isSameDay(first, second) {
-            return (
-                first.getFullYear() ===
-                    second.getFullYear() &&
-                first.getMonth() ===
-                    second.getMonth() &&
-                first.getDate() ===
-                    second.getDate()
-            );
+            return first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth() && first.getDate() === second.getDate();
         }
 
         function escapeHtml(value) {
@@ -2737,10 +1722,8 @@ const coveragePercent = Math.round(
 
         function showToast(message) {
             clearTimeout(toastTimer);
-
             toast.textContent = message;
             toast.classList.add("show");
-
             toastTimer = setTimeout(() => {
                 toast.classList.remove("show");
             }, 3000);
@@ -2748,4 +1731,3 @@ const coveragePercent = Math.round(
     </script>
 </body>
 </html>
-
