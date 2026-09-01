@@ -1460,6 +1460,24 @@
     td.crew-name { background: #f9fafb; font-weight: 500; color: #16a34a; min-width: 120px; }
     td.crew-name:empty::after { content: "—"; color: #d1d5db; }
     td.restriction { background: #fafafa; color: #9ca3af; font-size: 0.85rem; min-width: 35px; width: 35px; text-align: center; }
+        /* Operating day: 08:00 through 17:00 inclusive */
+    tr.day-shift td {
+        background: #fff9db;
+    }
+
+    /* Night shift: 18:00 through 07:00 */
+    tr.night-shift td {
+        background: #eef4f8;
+    }
+
+    /* Keep the sticky Time column above the scrolling cells */
+    tr.day-shift td.time-col {
+        background: #fff3b0;
+    }
+
+    tr.night-shift td.time-col {
+        background: #e3edf4;
+    }
     tbody tr:nth-child(6n+1), tbody tr:nth-child(6n+2), tbody tr:nth-child(6n+3) { background: #ffffff; }
     tbody tr:nth-child(6n+4), tbody tr:nth-child(6n+5), tbody tr:nth-child(6n+6) { background: #f9fafb; }
     tbody tr:nth-child(6n+4) { border-top: 3px solid #9ca3af; }
