@@ -1740,18 +1740,32 @@
                         hourStart.setHours(absoluteHour, 0, 0, 0);
 
                         const bookings = getBookingsForHour(hourStart);
-                        const crewName = bookings[crewSlot]
-                            ? bookings[crewSlot].user
-                            : "";
+const crewCount = bookings.length;
+
+const crewName = bookings[crewSlot]
+    ? bookings[crewSlot].user
+    : "";
 
                         const crewCell = document.createElement("td");
                         crewCell.className = "crew-name";
                         crewCell.textContent = crewName;
                         row.appendChild(crewCell);
 
-                        const restrictionCell = document.createElement("td");
-                        restrictionCell.className = "restriction";
-                        row.appendChild(restrictionCell);
+                       const restrictionCell = document.createElement("td");
+restrictionCell.className = "restriction";
+
+let restriction = "";
+
+if (crewCount === 0 && crewSlot === 0) {
+    restriction = "NC";
+} else if (crewCount === 1 && crewSlot === 0) {
+    restriction = "D";
+} else if (crewCount >= 2 && bookings[crewSlot]) {
+    restriction = bookings[crewSlot].restriction || "";
+}
+
+restrictionCell.textContent = restriction;
+row.appendChild(restrictionCell);
                     });
 
                     rosterBody.appendChild(row);
