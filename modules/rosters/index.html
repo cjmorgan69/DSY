@@ -805,15 +805,16 @@
         }
 
         function normaliseBooking(booking) {
-            return {
-                id: String(booking.id || ""),
-                team: String(booking.team || TEAM_NAME),
-                user: String(booking.user || ""),
-                start: String(booking.start || ""),
-                end: String(booking.end || ""),
-                createdAt: String(booking.createdAt || "")
-            };
-        }
+    return {
+        id: String(booking.id || ""),
+        team: String(booking.team || TEAM_NAME),
+        user: String(booking.user || ""),
+        restriction: String(booking.restriction || "").trim().toUpperCase(),
+        start: String(booking.start || ""),
+        end: String(booking.end || ""),
+        createdAt: String(booking.createdAt || "")
+    };
+}
 
         function isValidBooking(booking) {
             const start = new Date(booking.start);
