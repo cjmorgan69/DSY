@@ -1417,10 +1417,233 @@
             rosterWindow.document.close();
         }
 
-                function buildRoster() {
+        function buildRosterHTML() {
+            const today = startOfDay(new Date());
+            const days = [];
+
+            for (let i = 0; i < DAYS_TO_SHOW; i++) {
+                days.push(addDays(today, i));
+            }
+
+            const startDate = formatDayHeading(days[0]);
+            const endDate = formatDayHeading(days[days.length - 1]);
+
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes, maximum-scale=5">
+    <title>${TEAM_NAME} Crew Roster</title>
+   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; padding: 2rem 1rem; color: #333; }
+    .container { max-width: 1400px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .header { margin-bottom: 2rem; border-bottom: 3px solid #22c55e; padding-bottom: 1rem; }
+    .header h1 { font-size: 2rem; color: #16a34a; margin-bottom: 0.5rem; }
+    .header p { color: #666; font-size: 0.95rem; }
+    .controls { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 6px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+    .btn-primary { background: #22c55e; color: white; }
+    .btn-primary:hover { background: #16a34a; }
+    .btn-secondary { background: #e5e7eb; color: #333; }
+    .btn-secondary:hover { background: #d1d5db; }
+    .roster-wrapper { overflow-x: auto; overflow-y: auto; max-height: 70vh; border: 1px solid #e5e7eb; border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    thead { background: #f3f4f6; position: sticky; top: 0; z-index: 20; }
+    tr#headerRow { position: sticky; top: 0; z-index: 21; background: #f3f4f6; }
+    tr#headerRow th { position: sticky; top: 0; z-index: 21; background: #f3f4f6; }
+    th { padding: 0.75rem; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #d1d5db; white-space: nowrap; background: #f3f4f6; }
+    th.time-col { width: 60px; position: sticky; left: 0; z-index: 10; }
+    th.empty-header { width: 60px; }
+    td { padding: 0.4rem 0.75rem; border-bottom: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; height: 24px; }
+    td.time-col { font-weight: 700; background: #fafafa; position: sticky; left: 0; z-index: 5; width: 60px; }
+    td.crew-name { background: #f9fafb; font-weight: 500; color: #16a34a; min-width: 120px; }
+    td.crew-name:empty::after { content: "—"; color: #d1d5db; }
+    td.restriction { background: #fafafa; color: #9ca3af; font-size: 0.85rem; min-width: 35px; width: 35px; text-align: center; }
+    tbody tr:nth-child(6n+1), tbody tr:nth-child(6n+2), tbody tr:nth-child(6n+3) { background: #ffffff; }
+    tbody tr:nth-child(6n+4), tbody tr:nth-child(6n+5), tbody tr:nth-child(6n+6) { background: #f9fafb; }
+    tbody tr:nth-child(6n+4) { border-top: 3px solid #9ca3af; }
+    .day-header { background: #dbeafe; font-weight: 700; color: #0284c7; text-align: center; padding: 0.5rem 0.75rem !important; }
+    .crew-header { background: #dbeafe; font-weight: 600; color: #0284c7; text-align: center; font-size: 0.8rem; padding: 0.5rem 0.75rem !important; }
+    .restriction-header { background: #fef3c7; font-weight: 600; color: #92400e; text-align: center; font-size: 0.8rem; padding: 0.5rem 0.3rem !important; }
+       .info-box {
+        background: #eff6ff;
+        border-left: 4px solid #0284c7;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        color: #1e40af;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            padding: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .container {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 6px;
+        }
+
+        .header {
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.6rem;
+        }
+
+        .header h1 {
+            font-size: 1.15rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .header p {
+            font-size: 0.75rem;
+        }
+
+        .controls {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            display: flex;
+            gap: 0.4rem;
+            margin: 0 -0.75rem 0.75rem;
+            padding: 0.5rem 0.75rem;
+            background: rgba(255, 255, 255, 0.96);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .controls .btn {
+            flex: 1 1 0;
+            min-height: 38px;
+            padding: 0.55rem 0.65rem;
+            font-size: 0.78rem;
+        }
+
+        .roster-wrapper {
+            width: 100%;
+            max-height: calc(100dvh - 145px);
+            overflow-x: auto;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            min-width: 1100px;
+            font-size: 0.8rem;
+        }
+
+        th {
+            padding: 0.55rem 0.45rem;
+        }
+
+        td {
+            height: 30px;
+            padding: 0.35rem 0.45rem;
+        }
+
+        td.crew-name {
+            min-width: 105px;
+        }
+
+        td.restriction {
+            width: 32px;
+            min-width: 32px;
+        }
+    }
+
+    @media print {
+        body {
+            background: white;
+            padding: 0;
+        }
+
+        .container {
+            box-shadow: none;
+            padding: 1rem;
+            max-width: 100%;
+        }
+
+        .controls {
+            display: none;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        th,
+        td {
+            padding: 0.3rem 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        .roster-wrapper {
+            border: 1px solid #000;
+            max-height: none;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗓 ${TEAM_NAME} Crew Roster</h1>
+            <p>Roster for ${startDate} - ${endDate}</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="window.print()">🖨️ Print</button>
+            <button class="btn btn-secondary" onclick="window.close()">Close</button>
+        </div>
+
+        <div class="roster-wrapper">
+            <table id="rosterTable">
+                <thead>
+                    <tr id="headerRow">
+                        <th class="time-col">Time</th>
+                    </tr>
+                </thead>
+                <tbody id="rosterBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const events = ${JSON.stringify(events)};
+        const HOURS_PER_DAY = ${HOURS_PER_DAY};
+        const MAX_CREW = ${MAX_CREW};
+        const DAYS_TO_SHOW = ${DAYS_TO_SHOW};
+
+        function addHours(date, hours) {
+            const result = new Date(date);
+            result.setHours(result.getHours() + hours);
+            return result;
+        }
+
+        function formatHour(hour) {
+            return String(hour).padStart(2, "0") + ":00";
+        }
+
+        function getBookingsForHour(hourStart) {
+            const hourEnd = addHours(hourStart, 1);
+
+            return events.filter(function(event) {
+                const eventStart = new Date(event.start);
+                const eventEnd = new Date(event.end);
+
+                return eventStart < hourEnd && eventEnd > hourStart;
+            });
+        }
+
+        function buildRoster() {
             const days = [];
             const today = new Date();
-
             today.setHours(0, 0, 0, 0);
 
             for (let i = 0; i < DAYS_TO_SHOW; i++) {
@@ -1429,16 +1652,10 @@
                 days.push(day);
             }
 
-            const thead = document.querySelector("#rosterTable thead");
             const headerRow = document.getElementById("headerRow");
-            const rosterBody = document.getElementById("rosterBody");
 
-            /*
-             * Build the top row containing the date headings.
-             */
             days.forEach(function(day) {
                 const dayHeader = document.createElement("th");
-
                 dayHeader.className = "day-header";
                 dayHeader.colSpan = 2;
                 dayHeader.textContent = new Intl.DateTimeFormat("en-AU", {
@@ -1446,40 +1663,34 @@
                     day: "numeric",
                     month: "short"
                 }).format(day);
-
                 headerRow.appendChild(dayHeader);
             });
 
-            /*
-             * Build the second header row containing Crew and R
-             * for every displayed date.
-             */
             const subHeaderRow = document.createElement("tr");
-
             const emptyHeader = document.createElement("th");
             emptyHeader.className = "empty-header";
-            emptyHeader.textContent = "";
             subHeaderRow.appendChild(emptyHeader);
 
-            days.forEach(function(day) {
+            days.forEach(function() {
                 const crewHeader = document.createElement("th");
-
                 crewHeader.className = "crew-header";
                 crewHeader.textContent = "Crew";
                 subHeaderRow.appendChild(crewHeader);
 
                 const restrictionHeader = document.createElement("th");
-
                 restrictionHeader.className = "restriction-header";
                 restrictionHeader.textContent = "R";
                 subHeaderRow.appendChild(restrictionHeader);
             });
 
-            thead.appendChild(subHeaderRow);
+            document.querySelector("thead").appendChild(subHeaderRow);
 
-            /*
-             * Each displayed roster day runs from 08:00 on that date
-             * through to 07:00 on the following calendar date.
+            const rosterBody = document.getElementById("rosterBody");
+
+                       /*
+             * Each roster column represents an operating day beginning
+             * at 08:00 on the displayed date and ending at 07:00
+             * on the following day.
              */
             for (let rosterHour = 0; rosterHour < HOURS_PER_DAY; rosterHour++) {
                 const absoluteHour = 8 + rosterHour;
@@ -1491,9 +1702,6 @@
                     const timeCell = document.createElement("td");
                     timeCell.className = "time-col";
 
-                    /*
-                     * Only show the time once for the three crew rows.
-                     */
                     if (crewSlot === 0) {
                         timeCell.textContent = formatHour(displayHour);
                     }
@@ -1502,12 +1710,9 @@
 
                     days.forEach(function(day) {
                         /*
-                         * JavaScript automatically moves hours 24–31
-                         * onto the following calendar date.
-                         *
-                         * For example:
-                         * Tuesday 08:00 + 24 hours = Wednesday 08:00
-                         * Tuesday 08:00 + 23 hours = Wednesday 07:00
+                         * Setting 08 + rosterHour allows JavaScript to
+                         * automatically move the final hours onto the
+                         * following calendar date.
                          */
                         const hourStart = new Date(day);
                         hourStart.setHours(absoluteHour, 0, 0, 0);
@@ -1524,16 +1729,19 @@
 
                         const restrictionCell = document.createElement("td");
                         restrictionCell.className = "restriction";
-                        restrictionCell.textContent = "";
                         row.appendChild(restrictionCell);
                     });
 
                     rosterBody.appendChild(row);
                 }
             }
-        }
 
         buildRoster();
+    <\/script>
+</body>
+</html>`;
+        }
+
         function setLoading(loading) {
             isLoading = loading;
             refreshButton.disabled = loading;
