@@ -1687,22 +1687,40 @@
 
             const rosterBody = document.getElementById("rosterBody");
 
-            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                       /*
+             * Each roster column represents an operating day beginning
+             * at 08:00 on the displayed date and ending at 07:00
+             * on the following day.
+             */
+            for (let rosterHour = 0; rosterHour < HOURS_PER_DAY; rosterHour++) {
+                const absoluteHour = 8 + rosterHour;
+                const displayHour = absoluteHour % HOURS_PER_DAY;
+
                 for (let crewSlot = 0; crewSlot < MAX_CREW; crewSlot++) {
                     const row = document.createElement("tr");
+
                     const timeCell = document.createElement("td");
                     timeCell.className = "time-col";
+
                     if (crewSlot === 0) {
-                        timeCell.textContent = formatHour(hour);
+                        timeCell.textContent = formatHour(displayHour);
                     }
+
                     row.appendChild(timeCell);
 
                     days.forEach(function(day) {
+                        /*
+                         * Setting 08 + rosterHour allows JavaScript to
+                         * automatically move the final hours onto the
+                         * following calendar date.
+                         */
                         const hourStart = new Date(day);
-                        hourStart.setHours(hour, 0, 0, 0);
+                        hourStart.setHours(absoluteHour, 0, 0, 0);
 
                         const bookings = getBookingsForHour(hourStart);
-                        const crewName = bookings[crewSlot] ? bookings[crewSlot].user : "";
+                        const crewName = bookings[crewSlot]
+                            ? bookings[crewSlot].user
+                            : "";
 
                         const crewCell = document.createElement("td");
                         crewCell.className = "crew-name";
@@ -1717,7 +1735,6 @@
                     rosterBody.appendChild(row);
                 }
             }
-        }
 
         buildRoster();
     <\/script>
