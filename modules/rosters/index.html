@@ -993,12 +993,13 @@
             }
 
             const newEvent = {
-                id: createId(),
-                user: currentUser,
-                start: selection.startDate.toISOString(),
-                end: selection.endDate.toISOString(),
-                createdAt: new Date().toISOString()
-            };
+    id: createId(),
+    user: currentUser,
+    restriction: restrictionSelect.value,
+    start: selection.startDate.toISOString(),
+    end: selection.endDate.toISOString(),
+    createdAt: new Date().toISOString()
+};
 
             setLoading(true);
             setConnectionStatus("Saving booking…", "");
