@@ -1466,15 +1466,127 @@
     .day-header { background: #dbeafe; font-weight: 700; color: #0284c7; text-align: center; padding: 0.5rem 0.75rem !important; }
     .crew-header { background: #dbeafe; font-weight: 600; color: #0284c7; text-align: center; font-size: 0.8rem; padding: 0.5rem 0.75rem !important; }
     .restriction-header { background: #fef3c7; font-weight: 600; color: #92400e; text-align: center; font-size: 0.8rem; padding: 0.5rem 0.3rem !important; }
-    .info-box { background: #eff6ff; border-left: 4px solid #0284c7; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; font-size: 0.9rem; color: #1e40af; }
+       .info-box {
+        background: #eff6ff;
+        border-left: 4px solid #0284c7;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        color: #1e40af;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            padding: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .container {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 6px;
+        }
+
+        .header {
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.6rem;
+        }
+
+        .header h1 {
+            font-size: 1.15rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .header p {
+            font-size: 0.75rem;
+        }
+
+        .controls {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            display: flex;
+            gap: 0.4rem;
+            margin: 0 -0.75rem 0.75rem;
+            padding: 0.5rem 0.75rem;
+            background: rgba(255, 255, 255, 0.96);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .controls .btn {
+            flex: 1 1 0;
+            min-height: 38px;
+            padding: 0.55rem 0.65rem;
+            font-size: 0.78rem;
+        }
+
+        .roster-wrapper {
+            width: 100%;
+            max-height: calc(100dvh - 145px);
+            overflow-x: auto;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            min-width: 1100px;
+            font-size: 0.8rem;
+        }
+
+        th {
+            padding: 0.55rem 0.45rem;
+        }
+
+        td {
+            height: 30px;
+            padding: 0.35rem 0.45rem;
+        }
+
+        td.crew-name {
+            min-width: 105px;
+        }
+
+        td.restriction {
+            width: 32px;
+            min-width: 32px;
+        }
+    }
+
     @media print {
-        body { background: white; padding: 0; }
-        .container { box-shadow: none; padding: 1rem; max-width: 100%; }
-        .controls { display: none; }
-        thead { display: table-header-group; }
-        tr { page-break-inside: avoid; }
-        th, td { padding: 0.3rem 0.4rem; font-size: 0.85rem; }
-        .roster-wrapper { border: 1px solid #000; max-height: none; }
+        body {
+            background: white;
+            padding: 0;
+        }
+
+        .container {
+            box-shadow: none;
+            padding: 1rem;
+            max-width: 100%;
+        }
+
+        .controls {
+            display: none;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        th,
+        td {
+            padding: 0.3rem 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        .roster-wrapper {
+            border: 1px solid #000;
+            max-height: none;
+        }
     }
 </style>
 </head>
@@ -1485,12 +1597,9 @@
             <p>Roster for ${startDate} - ${endDate}</p>
         </div>
 
-       
-        
-
         <div class="controls">
             <button class="btn btn-primary" onclick="window.print()">🖨️ Print</button>
-            <button class="btn btn-secondary" onclick="window.close()">← Close</button>
+            <button class="btn btn-secondary" onclick="window.close()">Close</button>
         </div>
 
         <div class="roster-wrapper">
@@ -1523,9 +1632,11 @@
 
         function getBookingsForHour(hourStart) {
             const hourEnd = addHours(hourStart, 1);
+
             return events.filter(function(event) {
                 const eventStart = new Date(event.start);
                 const eventEnd = new Date(event.end);
+
                 return eventStart < hourEnd && eventEnd > hourStart;
             });
         }
