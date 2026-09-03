@@ -765,6 +765,7 @@
         let isLoading = false;
         let toastTimer;
         let submittedRosterPeriod = null;
+        let lastCentralRosteringWarningKey = "";
 
         const nameInput = document.getElementById("nameInput");
         const bookingDateInput = document.getElementById("bookingDateInput");
@@ -838,30 +839,19 @@ function selectedShiftNeedsCentralRosteringNotice() {
         return false;
     }
 
-    const bookingDateInput = document.getElementById("bookingDateInput");
-    const startTimeSelect = document.getElementById("startTimeSelect");
-    const finishTimeSelect = document.getElementById("finishTimeSelect");
+    const selection = readShiftSelection();
 
-    const shiftStart = getDateTimeFromBookingInputs(
-        bookingDateInput.value,
-        startTimeSelect.value
-    );
-
-    const shiftEnd = getDateTimeFromBookingInputs(
-        bookingDateInput.value,
-        finishTimeSelect.value
-    );
-
-    if (!shiftStart || !shiftEnd || shiftEnd <= shiftStart) {
+    if (!selection.complete || !selection.valid) {
         return false;
     }
 
     const submittedStart = new Date(submittedRosterPeriod.start);
     const submittedEnd = new Date(submittedRosterPeriod.end);
 
-    // Warning is needed if any part of the selected shift overlaps
-    // the roster period that has already been sent as hard copy.
-    return shiftStart < submittedEnd && shiftEnd > submittedStart;
+    return (
+        selection.startDate < submittedEnd &&
+        selection.endDate > submittedStart
+    );
 }
 
 function updateCentralRosteringWarning() {
@@ -885,7 +875,37 @@ function updateCentralRosteringWarning() {
         warning.textContent = "";
     }
 }
+function showCentralRosteringPopupIfRequired() {
+    if (!selectedShiftNeedsCentralRosteringNotice()) {
+        lastCentralRosteringWarningKey = "";
+        return;
+    }
 
+    const selection = readShiftSelection();
+
+    if (!selection.complete || !selection.valid) {
+        return;
+    }
+
+    const warningKey =
+        `${selection.startDate.toISOString()}-${selection.endDate.toISOString()}`;
+
+    // Do not repeatedly show the same warning while the same
+    // shift selection remains selected.
+    if (warningKey === lastCentralRosteringWarningKey) {
+        return;
+    }
+
+    lastCentralRosteringWarningKey = warningKey;
+
+    window.alert(
+        "Central Rostering notification required.\n\n" +
+        "This shift falls within a roster period that has already been " +
+        "submitted to Central Rostering as a hard copy.\n\n" +
+        "You may still make the booking, but after confirming it you must " +
+        "phone Central Rostering to notify them of the change."
+    );
+}
 function formatRosterPeriodDateTime(dateValue) {
     return new Date(dateValue).toLocaleString("en-AU", {
         weekday: "short",
@@ -966,12 +986,24 @@ function confirmCentralRosteringNoticeIfRequired() {
 }
         function registerEventListeners() {
             nameInput.addEventListener("input", handleNameChange);
-            bookingDateInput.addEventListener("change", updateBookingSummary);
-            startTimeSelect.addEventListener("change", () => {
-                populateFinishTimes();
-                updateBookingSummary();
-            });
-            finishTimeSelect.addEventListener("change", updateBookingSummary);
+           bookingDateInput.addEventListener("change", () => {
+    updateBookingSummary();
+    updateCentralRosteringWarning();
+    showCentralRosteringPopupIfRequired();
+});
+
+startTimeSelect.addEventListener("change", () => {
+    populateFinishTimes();
+    updateBookingSummary();
+    updateCentralRosteringWarning();
+    showCentralRosteringPopupIfRequired();
+});
+
+finishTimeSelect.addEventListener("change", () => {
+    updateBookingSummary();
+    updateCentralRosteringWarning();
+    showCentralRosteringPopupIfRequired();
+});
             bookButton.addEventListener("click", bookSelectedShift);
             refreshButton.addEventListener("click", loadBookingsAfterSave);
             document.getElementById("myBookingsButton").addEventListener("click", openBookingsModal);
