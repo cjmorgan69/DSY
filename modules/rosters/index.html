@@ -554,6 +554,41 @@
             .timeline-content { align-items: flex-start; flex-direction: column; }
             .search-input { max-width: none; }
         }
+   .central-roster-warning {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #f59e0b;
+    border-left: 5px solid #d97706;
+    border-radius: 8px;
+    background: #fffbeb;
+    color: #78350f;
+    line-height: 1.45;
+}
+
+.roster-submission-manager {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.roster-submission-manager p {
+    margin: 0.3rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 760px) {
+    .roster-submission-manager {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
     </style>
 </head>
 
@@ -623,6 +658,19 @@
             <div id="bookingSummary" class="booking-summary" aria-live="polite">
                 Enter your name and select a date, start time and finish time.
             </div>
+
+            <div id="centralRosteringWarning" class="central-roster-warning" hidden role="alert"></div>
+
+<div class="roster-submission-manager">
+    <div>
+        <strong>Central Rostering hard-copy status</strong>
+        <p id="rosterSubmissionStatus">Checking submitted roster status…</p>
+    </div>
+
+    <button id="markRosterSentButton" class="btn-secondary" type="button">
+        Manager: Mark hard copy as sent
+    </button>
+</div>
 
             <div class="action-bar">
                 <button id="bookButton" class="btn-primary" type="button" disabled>
