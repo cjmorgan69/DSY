@@ -989,7 +989,9 @@ function confirmCentralRosteringNoticeIfRequired() {
             document.getElementById("collapseAllButton").addEventListener("click", () => toggleAllDays(false));
             document.getElementById("downloadListButton").addEventListener("click", exportBookingListCSV);
             searchInput.addEventListener("input", renderBookingTable);
-       markRosterSentButton.addEventListener("click", markRosterHardCopyAsSent);
+                  document
+                .getElementById("markRosterSentButton")
+                .addEventListener("click", markHardCopyRosterAsSent);
         }
 
         function callRosterApi(action, payload = {}) {
