@@ -764,6 +764,7 @@
         let events = [];
         let isLoading = false;
         let toastTimer;
+        let submittedRosterPeriod = null;
 
         const nameInput = document.getElementById("nameInput");
         const bookingDateInput = document.getElementById("bookingDateInput");
@@ -802,8 +803,167 @@
             renderBookingTable();
             updateBookingSummary();
             loadBookingsAfterSave();
+            loadRosterSubmissionStatus();
         }
 
+        function getDateTimeFromBookingInputs(dateValue, timeValue) {
+    if (!dateValue || timeValue === "") {
+        return null;
+    }
+
+    const dateParts = dateValue.split("-").map(Number);
+    const timeMatch = String(timeValue).match(/^(\d{1,2})/);
+
+    if (!timeMatch) {
+        return null;
+    }
+
+    const hour = Number(timeMatch[1]);
+
+    // JavaScript automatically handles values such as 24–30
+    // as hours on the next day, for overnight shifts.
+    return new Date(
+        dateParts[0],
+        dateParts[1] - 1,
+        dateParts[2],
+        hour,
+        0,
+        0,
+        0
+    );
+}
+
+function selectedShiftNeedsCentralRosteringNotice() {
+    if (!submittedRosterPeriod?.start || !submittedRosterPeriod?.end) {
+        return false;
+    }
+
+    const bookingDateInput = document.getElementById("bookingDateInput");
+    const startTimeSelect = document.getElementById("startTimeSelect");
+    const finishTimeSelect = document.getElementById("finishTimeSelect");
+
+    const shiftStart = getDateTimeFromBookingInputs(
+        bookingDateInput.value,
+        startTimeSelect.value
+    );
+
+    const shiftEnd = getDateTimeFromBookingInputs(
+        bookingDateInput.value,
+        finishTimeSelect.value
+    );
+
+    if (!shiftStart || !shiftEnd || shiftEnd <= shiftStart) {
+        return false;
+    }
+
+    const submittedStart = new Date(submittedRosterPeriod.start);
+    const submittedEnd = new Date(submittedRosterPeriod.end);
+
+    // Warning is needed if any part of the selected shift overlaps
+    // the roster period that has already been sent as hard copy.
+    return shiftStart < submittedEnd && shiftEnd > submittedStart;
+}
+
+function updateCentralRosteringWarning() {
+    const warning = document.getElementById("centralRosteringWarning");
+
+    if (!warning) {
+        return;
+    }
+
+    if (selectedShiftNeedsCentralRosteringNotice()) {
+        warning.hidden = false;
+        warning.innerHTML = `
+            <strong>Central Rostering notification required</strong><br>
+            This shift falls within a roster period that has already been
+            submitted to Central Rostering as a hard copy. After confirming
+            this booking, please contact Central Rostering by phone to advise
+            them of the change.
+        `;
+    } else {
+        warning.hidden = true;
+        warning.textContent = "";
+    }
+}
+
+function formatRosterPeriodDateTime(dateValue) {
+    return new Date(dateValue).toLocaleString("en-AU", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+    });
+}
+
+async function loadRosterSubmissionStatus() {
+    const result = await callRosterApi("getRosterSubmission");
+
+    submittedRosterPeriod = result?.rosterSubmission || null;
+
+    const status = document.getElementById("rosterSubmissionStatus");
+
+    if (!submittedRosterPeriod?.start || !submittedRosterPeriod?.end) {
+        status.textContent =
+            "No current hard-copy roster period has been marked as sent.";
+        updateCentralRosteringWarning();
+        return;
+    }
+
+    status.textContent =
+        `Warning active for shifts from ` +
+        `${formatRosterPeriodDateTime(submittedRosterPeriod.start)} ` +
+        `to ${formatRosterPeriodDateTime(submittedRosterPeriod.end)}.`;
+
+    updateCentralRosteringWarning();
+}
+
+async function markHardCopyRosterAsSent() {
+    const managerPassword = window.prompt(
+        "Enter the roster manager password to mark the hard copy as sent:"
+    );
+
+    if (!managerPassword) {
+        return;
+    }
+
+    const confirmed = window.confirm(
+        "Mark the upcoming Wednesday 08:00 to following Wednesday 08:00 " +
+        "roster period as sent to Central Rostering?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+        const result = await callRosterApi("markRosterSent", {
+            managerPassword: managerPassword
+        });
+
+        submittedRosterPeriod = result?.rosterSubmission || null;
+
+        alert("Hard-copy roster status has been updated.");
+        await loadRosterSubmissionStatus();
+    } catch (error) {
+        alert(error.message || "Unable to update the hard-copy roster status.");
+    }
+}
+
+function confirmCentralRosteringNoticeIfRequired() {
+    if (!selectedShiftNeedsCentralRosteringNotice()) {
+        return true;
+    }
+
+    return window.confirm(
+        "Central Rostering notification required.\n\n" +
+        "This booking changes a roster period already submitted as hard copy. " +
+        "After confirming the shift, you must phone Central Rostering to advise them.\n\n" +
+        "Continue with this booking?"
+    );
+}
         function registerEventListeners() {
             nameInput.addEventListener("input", handleNameChange);
             bookingDateInput.addEventListener("change", updateBookingSummary);
@@ -829,6 +989,7 @@
             document.getElementById("collapseAllButton").addEventListener("click", () => toggleAllDays(false));
             document.getElementById("downloadListButton").addEventListener("click", exportBookingListCSV);
             searchInput.addEventListener("input", renderBookingTable);
+       markRosterSentButton.addEventListener("click", markRosterHardCopyAsSent);
         }
 
         function callRosterApi(action, payload = {}) {
