@@ -1677,16 +1677,10 @@ finishTimeSelect.addEventListener("change", () => {
             rosterWindow.document.close();
         }
 
-        function buildRosterHTML() {
-            const today = startOfDay(new Date());
-            const days = [];
-
-            for (let i = 0; i < DAYS_TO_SHOW; i++) {
-                days.push(addDays(today, i));
-            }
-
-            const startDate = formatDayHeading(days[0]);
-            const endDate = formatDayHeading(days[days.length - 1]);
+       function buildRosterHTML() {
+    const today = startOfDay(new Date());
+    const initialStartDate = formatDateKey(today);
+    const initialEndDate = formatDateKey(addDays(today, 13));
 
             return `<!DOCTYPE html>
 <html lang="en">
@@ -1701,8 +1695,41 @@ finishTimeSelect.addEventListener("change", () => {
     .header { margin-bottom: 2rem; border-bottom: 3px solid #22c55e; padding-bottom: 1rem; }
     .header h1 { font-size: 2rem; color: #16a34a; margin-bottom: 0.5rem; }
     .header p { color: #666; font-size: 0.95rem; }
-    .controls { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
-    .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 6px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+    .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.date-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    color: #4b5563;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.date-field input {
+    min-height: 42px;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: #333;
+    background: white;
+}
+    .btn {
+    min-height: 42px;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
     .btn-primary { background: #22c55e; color: white; }
     .btn-primary:hover { background: #16a34a; }
     .btn-secondary { background: #e5e7eb; color: #333; }
@@ -1870,15 +1897,38 @@ finishTimeSelect.addEventListener("change", () => {
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🗓 ${TEAM_NAME} Crew Roster</h1>
-            <p>Roster for ${startDate} - ${endDate}</p>
-        </div>
+       <div class="header">
+    <h1>🗓 ${TEAM_NAME} Crew Roster</h1>
+    <p id="rosterRangeText"></p>
+</div>
 
-        <div class="controls">
-            <button class="btn btn-primary" onclick="window.print()">🖨️ Print</button>
-            <button class="btn btn-secondary" onclick="window.close()">Close</button>
-        </div>
+<div class="controls">
+    <label class="date-field">
+        From
+        <input id="rosterStartDate" type="date" value="${initialStartDate}">
+    </label>
+
+    <label class="date-field">
+        To
+        <input id="rosterEndDate" type="date" value="${initialEndDate}">
+    </label>
+
+    <button id="applyDatesButton" class="btn btn-primary" type="button">
+        Show roster
+    </button>
+
+    <button id="nextFortnightButton" class="btn btn-secondary" type="button">
+        Next 14 days
+    </button>
+
+    <button class="btn btn-secondary" type="button" onclick="window.print()">
+        🖨️ Print
+    </button>
+
+    <button class="btn btn-secondary" type="button" onclick="window.close()">
+        Close
+    </button>
+</div>
 
         <div class="roster-wrapper">
             <table id="rosterTable">
@@ -1893,146 +1943,245 @@ finishTimeSelect.addEventListener("change", () => {
     </div>
 
     <script>
-        const events = ${JSON.stringify(events)};
-        const HOURS_PER_DAY = ${HOURS_PER_DAY};
-        const MAX_CREW = ${MAX_CREW};
-        const DAYS_TO_SHOW = ${DAYS_TO_SHOW};
+       const events = ${JSON.stringify(events)};
+const HOURS_PER_DAY = ${HOURS_PER_DAY};
+const MAX_CREW = ${MAX_CREW};
 
-        function addHours(date, hours) {
-            const result = new Date(date);
-            result.setHours(result.getHours() + hours);
-            return result;
-        }
-
-        function formatHour(hour) {
-            return String(hour).padStart(2, "0") + ":00";
-        }
-
-        function getBookingsForHour(hourStart) {
-            const hourEnd = addHours(hourStart, 1);
-
-            return events.filter(function(event) {
-                const eventStart = new Date(event.start);
-                const eventEnd = new Date(event.end);
-
-                return eventStart < hourEnd && eventEnd > hourStart;
-            });
-        }
-
-        function buildRoster() {
-            const days = [];
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            for (let i = 0; i < DAYS_TO_SHOW; i++) {
-                const day = new Date(today);
-                day.setDate(day.getDate() + i);
-                days.push(day);
-            }
-
-            const headerRow = document.getElementById("headerRow");
-
-            days.forEach(function(day) {
-                const dayHeader = document.createElement("th");
-                dayHeader.className = "day-header";
-                dayHeader.colSpan = 2;
-                dayHeader.textContent = new Intl.DateTimeFormat("en-AU", {
-                    weekday: "short",
-                    day: "numeric",
-                    month: "short"
-                }).format(day);
-                headerRow.appendChild(dayHeader);
-            });
-
-            const subHeaderRow = document.createElement("tr");
-            const emptyHeader = document.createElement("th");
-            emptyHeader.className = "empty-header";
-            subHeaderRow.appendChild(emptyHeader);
-
-            days.forEach(function() {
-                const crewHeader = document.createElement("th");
-                crewHeader.className = "crew-header";
-                crewHeader.textContent = "Crew";
-                subHeaderRow.appendChild(crewHeader);
-
-                const restrictionHeader = document.createElement("th");
-                restrictionHeader.className = "restriction-header";
-                restrictionHeader.textContent = "R";
-                subHeaderRow.appendChild(restrictionHeader);
-            });
-
-            document.querySelector("thead").appendChild(subHeaderRow);
-
-            const rosterBody = document.getElementById("rosterBody");
-
-                       /*
-             * Each roster column represents an operating day beginning
-             * at 08:00 on the displayed date and ending at 07:00
-             * on the following day.
-             */
-            for (let rosterHour = 0; rosterHour < HOURS_PER_DAY; rosterHour++) {
-                const absoluteHour = 8 + rosterHour;
-                const displayHour = absoluteHour % HOURS_PER_DAY;
-
-                for (let crewSlot = 0; crewSlot < MAX_CREW; crewSlot++) {
-                    const row = document.createElement("tr");
-                    row.className = displayHour >= 8 && displayHour <= 17
-    ? "day-shift"
-    : "night-shift";
-
-                    const timeCell = document.createElement("td");
-                    timeCell.className = "time-col";
-
-                    if (crewSlot === 0) {
-                        timeCell.textContent = formatHour(displayHour);
-                    }
-
-                    row.appendChild(timeCell);
-
-                    days.forEach(function(day) {
-                        /*
-                         * Setting 08 + rosterHour allows JavaScript to
-                         * automatically move the final hours onto the
-                         * following calendar date.
-                         */
-                        const hourStart = new Date(day);
-                        hourStart.setHours(absoluteHour, 0, 0, 0);
-
-                        const bookings = getBookingsForHour(hourStart);
-const crewCount = bookings.length;
-
-const crewName = bookings[crewSlot]
-    ? bookings[crewSlot].user
-    : "";
-
-                        const crewCell = document.createElement("td");
-                        crewCell.className = "crew-name";
-                        crewCell.textContent = crewName;
-                        row.appendChild(crewCell);
-
-                       const restrictionCell = document.createElement("td");
-restrictionCell.className = "restriction";
-
-let restriction = "";
-
-if (crewCount === 0 && crewSlot === 0) {
-    restriction = "NC";
-} else if (crewCount === 1 && crewSlot === 0) {
-    restriction = "D";
-} else if (crewCount >= 2 && bookings[crewSlot]) {
-    restriction = bookings[crewSlot].restriction || "";
+function addHours(date, hours) {
+    const result = new Date(date);
+    result.setHours(result.getHours() + hours);
+    return result;
 }
 
-restrictionCell.textContent = restriction;
-row.appendChild(restrictionCell);
-                    });
+function addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
 
-                    rosterBody.appendChild(row);
-                }
-              }
+function formatHour(hour) {
+    return String(hour).padStart(2, "0") + ":00";
+}
+
+function formatDateForInput(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return year + "-" + month + "-" + day;
+}
+
+function parseDateInput(value) {
+    const parts = value.split("-").map(Number);
+
+    if (parts.length !== 3 || parts.some(Number.isNaN)) {
+        return null;
+    }
+
+    return new Date(parts[0], parts[1] - 1, parts[2], 0, 0, 0, 0);
+}
+
+function formatRosterRange(startDate, endDate) {
+    const formatter = new Intl.DateTimeFormat("en-AU", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    });
+
+    return "Roster for " + formatter.format(startDate) +
+        " to " + formatter.format(endDate);
+}
+
+function getBookingsForHour(hourStart) {
+    const hourEnd = addHours(hourStart, 1);
+
+    return events.filter(function(event) {
+        const eventStart = new Date(event.start);
+        const eventEnd = new Date(event.end);
+
+        return eventStart < hourEnd && eventEnd > hourStart;
+    });
+}
+
+function getSelectedDates() {
+    const startInput = document.getElementById("rosterStartDate");
+    const endInput = document.getElementById("rosterEndDate");
+
+    const startDate = parseDateInput(startInput.value);
+    const endDate = parseDateInput(endInput.value);
+
+    if (!startDate || !endDate) {
+        window.alert("Please select both a From and To date.");
+        return null;
+    }
+
+    if (endDate < startDate) {
+        window.alert("The To date must be the same as or later than the From date.");
+        return null;
+    }
+
+    return {
+        startDate: startDate,
+        endDate: endDate
+    };
+}
+
+function buildRoster(startDate, endDate) {
+    const days = [];
+    let currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+        days.push(new Date(currentDate));
+        currentDate = addDays(currentDate, 1);
+    }
+
+    const headerRow = document.getElementById("headerRow");
+    const rosterBody = document.getElementById("rosterBody");
+    const thead = document.querySelector("thead");
+
+    headerRow.innerHTML = "";
+    rosterBody.innerHTML = "";
+
+    const timeHeader = document.createElement("th");
+    timeHeader.className = "time-col";
+    timeHeader.textContent = "Time";
+    headerRow.appendChild(timeHeader);
+
+    const existingSubHeader = thead.querySelector(".sub-header-row");
+
+    if (existingSubHeader) {
+        existingSubHeader.remove();
+    }
+
+    days.forEach(function(day) {
+        const dayHeader = document.createElement("th");
+        dayHeader.className = "day-header";
+        dayHeader.colSpan = 2;
+        dayHeader.textContent = new Intl.DateTimeFormat("en-AU", {
+            weekday: "short",
+            day: "numeric",
+            month: "short"
+        }).format(day);
+
+        headerRow.appendChild(dayHeader);
+    });
+
+    const subHeaderRow = document.createElement("tr");
+    subHeaderRow.className = "sub-header-row";
+
+    const emptyHeader = document.createElement("th");
+    emptyHeader.className = "empty-header";
+    subHeaderRow.appendChild(emptyHeader);
+
+    days.forEach(function() {
+        const crewHeader = document.createElement("th");
+        crewHeader.className = "crew-header";
+        crewHeader.textContent = "Crew";
+        subHeaderRow.appendChild(crewHeader);
+
+        const restrictionHeader = document.createElement("th");
+        restrictionHeader.className = "restriction-header";
+        restrictionHeader.textContent = "R";
+        subHeaderRow.appendChild(restrictionHeader);
+    });
+
+    thead.appendChild(subHeaderRow);
+
+    for (let rosterHour = 0; rosterHour < HOURS_PER_DAY; rosterHour++) {
+        const absoluteHour = 8 + rosterHour;
+        const displayHour = absoluteHour % HOURS_PER_DAY;
+
+        for (let crewSlot = 0; crewSlot < MAX_CREW; crewSlot++) {
+            const row = document.createElement("tr");
+            row.className = displayHour >= 8 && displayHour <= 17
+                ? "day-shift"
+                : "night-shift";
+
+            const timeCell = document.createElement("td");
+            timeCell.className = "time-col";
+
+            if (crewSlot === 0) {
+                timeCell.textContent = formatHour(displayHour);
             }
 
-        buildRoster();
+            row.appendChild(timeCell);
+
+            days.forEach(function(day) {
+                const hourStart = new Date(day);
+                hourStart.setHours(absoluteHour, 0, 0, 0);
+
+                const bookings = getBookingsForHour(hourStart);
+                const crewCount = bookings.length;
+
+                const crewName = bookings[crewSlot]
+                    ? bookings[crewSlot].user
+                    : "";
+
+                const crewCell = document.createElement("td");
+                crewCell.className = "crew-name";
+                crewCell.textContent = crewName;
+                row.appendChild(crewCell);
+
+                const restrictionCell = document.createElement("td");
+                restrictionCell.className = "restriction";
+
+                let restriction = "";
+
+                if (crewCount === 0 && crewSlot === 0) {
+                    restriction = "NC";
+                } else if (crewCount === 1 && crewSlot === 0) {
+                    restriction = "D";
+                } else if (crewCount >= 2 && bookings[crewSlot]) {
+                    restriction = bookings[crewSlot].restriction || "";
+                }
+
+                restrictionCell.textContent = restriction;
+                row.appendChild(restrictionCell);
+            });
+
+            rosterBody.appendChild(row);
+        }
+    }
+
+    document.getElementById("rosterRangeText").textContent =
+        formatRosterRange(startDate, endDate);
+}
+
+function showSelectedRoster() {
+    const selectedDates = getSelectedDates();
+
+    if (!selectedDates) {
+        return;
+    }
+
+    buildRoster(selectedDates.startDate, selectedDates.endDate);
+}
+
+document.getElementById("applyDatesButton").addEventListener("click", function() {
+    showSelectedRoster();
+});
+
+document.getElementById("nextFortnightButton").addEventListener("click", function() {
+    const selectedDates = getSelectedDates();
+
+    if (!selectedDates) {
+        return;
+    }
+
+    const nextStartDate = addDays(selectedDates.endDate, 1);
+    const nextEndDate = addDays(nextStartDate, 13);
+
+    document.getElementById("rosterStartDate").value =
+        formatDateForInput(nextStartDate);
+
+    document.getElementById("rosterEndDate").value =
+        formatDateForInput(nextEndDate);
+
+    buildRoster(nextStartDate, nextEndDate);
+});
+
+showSelectedRoster();
     <\/script>
 </body>
 </html>`;
