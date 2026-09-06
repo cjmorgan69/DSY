@@ -663,6 +663,16 @@
         <option value="C">C</option>
     </select>
 </div>
+             <div class="field">
+  <label for="clinicalLevelSelect">Clinical level</label>
+  <select id="clinicalLevelSelect" required>
+    <option value="">Select clinical level</option>
+    <option value="PARA">PARA</option>
+    <option value="AO">AO</option>
+    <option value="AR">AR</option>
+    <option value="AA">AA</option>
+  </select>
+</div>   
             </div>
 
             <div id="bookingSummary" class="booking-summary" aria-live="polite">
@@ -776,6 +786,7 @@
         const startTimeSelect = document.getElementById("startTimeSelect");
         const finishTimeSelect = document.getElementById("finishTimeSelect");
         const restrictionSelect = document.getElementById("restrictionSelect");
+        const clinicalLevelSelect = document.getElementById("clinicalLevelSelect");
         const bookingSummary = document.getElementById("bookingSummary");
         const bookButton = document.getElementById("bookButton");
         const refreshButton = document.getElementById("refreshButton");
@@ -1243,6 +1254,11 @@ finishTimeSelect.addEventListener("change", () => {
                 nameInput.focus();
                 return;
             }
+            if (!clinicalLevelSelect.value) {
+    showToast("Please select a clinical level.");
+    clinicalLevelSelect.focus();
+    return;
+}
 
             if (!selection.complete || !selection.valid) {
                 updateBookingSummary();
@@ -1261,6 +1277,7 @@ finishTimeSelect.addEventListener("change", () => {
     id: createId(),
     user: currentUser,
     restriction: restrictionSelect.value,
+    clinicalLevel: clinicalLevelSelect.value,
     start: selection.startDate.toISOString(),
     end: selection.endDate.toISOString(),
     createdAt: new Date().toISOString()
@@ -1279,6 +1296,7 @@ finishTimeSelect.addEventListener("change", () => {
                 showToast("Your shift was booked successfully.");
                 startTimeSelect.value = "";
                 restrictionSelect.value = "";
+                clinicalLevelSelect.value = "";
                 populateFinishTimes();
                 await loadBookingsAfterSave();
 
