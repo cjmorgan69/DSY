@@ -988,6 +988,18 @@ function confirmCentralRosteringNoticeIfRequired() {
         "Continue with this booking?"
     );
 }
+        function cancellationNeedsCentralRosteringNotice(event) {
+    if (!submittedRosterPeriod?.start || !submittedRosterPeriod?.end) {
+        return false;
+    }
+
+    const bookingStart = new Date(event.start);
+    const bookingEnd = new Date(event.end);
+    const submittedStart = new Date(submittedRosterPeriod.start);
+    const submittedEnd = new Date(submittedRosterPeriod.end);
+
+    return bookingStart < submittedEnd && bookingEnd > submittedStart;
+}
         function registerEventListeners() {
             nameInput.addEventListener("input", handleNameChange);
            bookingDateInput.addEventListener("change", () => {
@@ -1308,6 +1320,19 @@ finishTimeSelect.addEventListener("change", () => {
             const event = events.find(item => item.id === eventId);
 
             if (!event) return;
+            if (cancellationNeedsCentralRosteringNotice(event)) {
+    const centralConfirmed = window.confirm(
+        "Central Rostering notification required.\n\n" +
+        "Cancelling this shift changes a roster period already submitted " +
+        "as hard copy. After cancelling, you must phone Central Rostering " +
+        "to advise them.\n\n" +
+        "Continue with this cancellation?"
+    );
+
+    if (!centralConfirmed) {
+        return;
+    }
+}
 
             const confirmed = window.confirm(`Cancel ${event.user}'s shift from ${formatDateTime(new Date(event.start))} to ${formatDateTime(new Date(event.end))}?`);
 
