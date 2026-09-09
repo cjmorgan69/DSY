@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Crew Shift Roster</title>
+
     <style>
         :root {
             --primary: #22c55e;
@@ -22,7 +23,8 @@
             --green-light: #f0fdf4;
             --blue: #0284c7;
             --blue-light: #e0f2fe;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05),
+                      0 8px 10px -6px rgba(0, 0, 0, 0.05);
             --radius: 16px;
         }
 
@@ -35,7 +37,9 @@
             margin: 0;
             padding-bottom: 3rem;
             color: var(--text);
-            background: radial-gradient(circle at top right, #e0e7ff, transparent 35rem), var(--background);
+            background:
+                radial-gradient(circle at top right, #e0e7ff, transparent 35rem),
+                var(--background);
             font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
@@ -47,7 +51,10 @@
             transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
         }
 
-        button:disabled { cursor: not-allowed; opacity: 0.55; }
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
 
         .container {
             width: min(1100px, 100%);
@@ -70,7 +77,11 @@
             backdrop-filter: blur(12px);
         }
 
-        .brand { display: flex; align-items: center; gap: 0.75rem; }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
 
         .brand-icon {
             display: grid;
@@ -84,9 +95,16 @@
             font-size: 1.25rem;
         }
 
-        .brand h1 { margin: 0; font-size: 1.35rem; }
+        .brand h1 {
+            margin: 0;
+            font-size: 1.35rem;
+        }
 
-        .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.85rem; }
+        .brand p {
+            margin: 0.2rem 0 0;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
 
         .header-controls {
             display: flex;
@@ -117,16 +135,32 @@
             background: var(--surface);
         }
 
-        .user-section label { color: var(--muted); font-size: 0.82rem; font-weight: 700; }
+        .user-section label {
+            color: var(--muted);
+            font-size: 0.82rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
 
-        .user-section input {
-            width: 145px;
+        .user-section input,
+        .user-section select {
+            min-width: 0;
             padding: 0.25rem;
             color: var(--primary-dark);
             border: 0;
-            outline: 0;
             background: transparent;
             font-weight: 700;
+        }
+
+        .user-section input { width: 145px; }
+
+        .user-section select { min-height: 32px; }
+
+        .user-section input:focus-visible,
+        .user-section select:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 3px;
+            border-radius: 4px;
         }
 
         .connection-status {
@@ -161,7 +195,10 @@
             box-shadow: var(--shadow);
         }
 
-        .card-title { margin: 0 0 1rem; font-size: 1.15rem; }
+        .card-title {
+            margin: 0 0 1rem;
+            font-size: 1.15rem;
+        }
 
         .notice {
             margin-bottom: 1.25rem;
@@ -181,11 +218,21 @@
             margin-bottom: 1rem;
         }
 
-        .field { display: flex; flex-direction: column; gap: 0.4rem; }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
 
-        .field label { color: var(--muted); font-size: 0.84rem; font-weight: 700; }
+        .field label {
+            color: var(--muted);
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
 
-        .field input, .field select, .search-input {
+        .field input,
+        .field select,
+        .search-input {
             width: 100%;
             min-height: 46px;
             padding: 0.7rem 0.9rem;
@@ -196,10 +243,18 @@
             background: var(--background);
         }
 
-        .field input:focus, .field select:focus, .search-input:focus {
+        .field input:focus,
+        .field select:focus,
+        .search-input:focus {
             border-color: var(--primary);
             background: var(--surface);
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+        }
+
+        .field-help {
+            color: var(--muted);
+            font-size: 0.75rem;
+            line-height: 1.4;
         }
 
         .booking-summary {
@@ -213,9 +268,7 @@
             line-height: 1.5;
         }
 
-        .booking-summary:empty {
-    display: none;
-}
+        .booking-summary:empty { display: none; }
 
         .booking-summary.valid {
             color: var(--green);
@@ -235,7 +288,9 @@
             background: var(--red-light);
         }
 
-        .action-bar, .calendar-actions, .view-switcher {
+        .action-bar,
+        .calendar-actions,
+        .view-switcher {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
@@ -249,14 +304,20 @@
             background: #f1f5f9;
         }
 
-        .view-tab, .btn-primary, .btn-secondary, .btn-danger {
+        .view-tab,
+        .btn-primary,
+        .btn-secondary,
+        .btn-danger {
             min-height: 42px;
             padding: 0.65rem 1rem;
             border-radius: 10px;
             font-weight: 800;
         }
 
-        .view-tab { color: var(--muted); background: transparent; }
+        .view-tab {
+            color: var(--muted);
+            background: transparent;
+        }
 
         .view-tab.active {
             color: var(--primary-dark);
@@ -280,13 +341,13 @@
             border: 1px solid #d8ddff;
             background: var(--primary-light);
         }
-        
+
         .roster-launch-button {
-    width: 100%;
-    min-height: 54px;
-    margin-bottom: 1.25rem;
-    font-size: 1rem;
-}
+            width: 100%;
+            min-height: 54px;
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
+        }
 
         .btn-danger {
             color: var(--red);
@@ -309,11 +370,22 @@
             margin-bottom: 1.25rem;
         }
 
-        .calendar-header h2 { margin: 0; font-size: 1.35rem; }
+        .calendar-header h2 {
+            margin: 0;
+            font-size: 1.35rem;
+        }
 
-        .calendar-header p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.84rem; }
+        .calendar-header p {
+            margin: 0.25rem 0 0;
+            color: var(--muted);
+            font-size: 0.84rem;
+        }
 
-        .calendar-grid { display: flex; flex-direction: column; gap: 1rem; }
+        .calendar-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
 
         .day {
             overflow: hidden;
@@ -337,7 +409,11 @@
 
         .day-heading:hover { background: #f8fafc; }
 
-        .day-title-group { display: flex; align-items: center; gap: 0.75rem; }
+        .day-title-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
 
         .day-toggle {
             display: grid;
@@ -356,11 +432,21 @@
             transform: rotate(180deg);
         }
 
-        .day-heading h3 { margin: 0; font-size: 1.05rem; }
+        .day-heading h3 {
+            margin: 0;
+            font-size: 1.05rem;
+        }
 
-        .day-subtitle { color: var(--muted); font-size: 0.8rem; font-weight: 700; }
+        .day-subtitle {
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
 
-        .day-body { display: none; border-top: 1px solid var(--border); }
+        .day-body {
+            display: none;
+            border-top: 1px solid var(--border);
+        }
 
         .day.open .day-body { display: block; }
 
@@ -388,7 +474,11 @@
             align-self: stretch;
         }
 
-        .timeline-line { position: absolute; inset-block: 0; width: 4px; }
+        .timeline-line {
+            position: absolute;
+            inset-block: 0;
+            width: 4px;
+        }
 
         .line-empty { background: var(--red); }
         .line-partial { background: var(--yellow); }
@@ -404,9 +494,20 @@
             box-shadow: 0 0 0 3px var(--surface);
         }
 
-        .node-empty { border-color: var(--red); background: var(--red); }
-        .node-partial { border-color: var(--yellow); background: var(--yellow); }
-        .node-covered { border-color: var(--green); background: var(--green); }
+        .node-empty {
+            border-color: var(--red);
+            background: var(--red);
+        }
+
+        .node-partial {
+            border-color: var(--yellow);
+            background: var(--yellow);
+        }
+
+        .node-covered {
+            border-color: var(--green);
+            background: var(--green);
+        }
 
         .timeline-content {
             display: flex;
@@ -420,7 +521,11 @@
             background: var(--background);
         }
 
-        .crew-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+        .crew-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
 
         .chip {
             padding: 0.24rem 0.55rem;
@@ -431,7 +536,18 @@
             font-weight: 700;
         }
 
-        .empty-chip { color: var(--muted); font-size: 0.8rem; font-style: italic; }
+        .empty-chip {
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        .status-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.35rem;
+        }
 
         .status-badge {
             padding: 0.25rem 0.55rem;
@@ -441,9 +557,25 @@
             white-space: nowrap;
         }
 
-        .status-empty { color: var(--red); background: var(--red-light); }
-        .status-partial { color: var(--yellow); background: var(--yellow-light); }
-        .status-covered { color: var(--green); background: var(--green-light); }
+        .status-empty {
+            color: var(--red);
+            background: var(--red-light);
+        }
+
+        .status-partial {
+            color: var(--yellow);
+            background: var(--yellow-light);
+        }
+
+        .status-covered {
+            color: var(--green);
+            background: var(--green-light);
+        }
+
+        .status-operational {
+            color: var(--blue);
+            background: var(--blue-light);
+        }
 
         .table-card { display: none; }
         .table-card.active { display: block; }
@@ -464,7 +596,11 @@
             border-radius: 12px;
         }
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+        }
 
         th, td {
             padding: 0.8rem;
@@ -480,7 +616,11 @@
             text-transform: uppercase;
         }
 
-        .empty-state { padding: 2rem; color: var(--muted); text-align: center; }
+        .empty-state {
+            padding: 2rem;
+            color: var(--muted);
+            text-align: center;
+        }
 
         .modal-overlay {
             position: fixed;
@@ -491,12 +631,17 @@
             align-items: center;
             padding: 1rem;
             opacity: 0;
+            visibility: hidden;
             pointer-events: none;
             background: rgba(15, 23, 42, 0.55);
             transition: opacity 0.2s ease;
         }
 
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
 
         .modal {
             width: min(620px, 100%);
@@ -507,7 +652,8 @@
             background: var(--surface);
         }
 
-        .modal-header, .shift-item {
+        .modal-header,
+        .shift-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -525,9 +671,16 @@
             background: var(--background);
         }
 
-        .shift-time { font-size: 0.86rem; font-weight: 700; }
+        .shift-time {
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
 
-        .shift-detail { margin-top: 0.2rem; color: var(--muted); font-size: 0.76rem; }
+        .shift-detail {
+            margin-top: 0.2rem;
+            color: var(--muted);
+            font-size: 0.76rem;
+        }
 
         .toast {
             position: fixed;
@@ -545,61 +698,90 @@
             transition: transform 0.25s ease, opacity 0.25s ease;
         }
 
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
 
         .hidden { display: none !important; }
+
+        .central-roster-warning {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid #f59e0b;
+            border-left: 5px solid #d97706;
+            border-radius: 8px;
+            background: #fffbeb;
+            color: #78350f;
+            line-height: 1.45;
+        }
+
+        .roster-submission-manager {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .roster-submission-manager p {
+            margin: 0.3rem 0 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
 
         @media (max-width: 760px) {
             .form-grid { grid-template-columns: 1fr; }
             .header-controls { width: 100%; }
             .user-section { flex: 1; }
-        }
 
-        @media (max-width: 560px) {
-            header, .header-controls, .calendar-header, .shift-item {
+            .roster-submission-manager {
                 align-items: stretch;
                 flex-direction: column;
             }
-            .timeline-row { grid-template-columns: 52px 22px 1fr; }
-            .timeline-time { padding-right: 0.25rem; font-size: 0.7rem; }
-            .timeline-content { align-items: flex-start; flex-direction: column; }
+        }
+
+        @media (max-width: 560px) {
+            header,
+            .header-controls,
+            .calendar-header,
+            .shift-item {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .user-section { justify-content: space-between; }
+            .user-section input { flex: 1; }
+
+            .timeline-row {
+                grid-template-columns: 52px 22px 1fr;
+            }
+
+            .timeline-time {
+                padding-right: 0.25rem;
+                font-size: 0.7rem;
+            }
+
+            .timeline-content {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .status-group { justify-content: flex-start; }
+
+            .status-badge {
+                white-space: normal;
+                line-height: 1.4;
+            }
+
             .search-input { max-width: none; }
         }
-   .central-roster-warning {
-    margin-top: 1rem;
-    padding: 1rem;
-    border: 1px solid #f59e0b;
-    border-left: 5px solid #d97706;
-    border-radius: 8px;
-    background: #fffbeb;
-    color: #78350f;
-    line-height: 1.45;
-}
-
-.roster-submission-manager {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 1rem;
-    padding: 1rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: #f8fafc;
-}
-
-.roster-submission-manager p {
-    margin: 0.3rem 0 0;
-    color: var(--muted);
-    font-size: 0.9rem;
-}
-
-@media (max-width: 760px) {
-    .roster-submission-manager {
-        align-items: stretch;
-        flex-direction: column;
-    }
-}
     </style>
 </head>
 
@@ -616,30 +798,57 @@
 
             <div class="header-controls">
                 <span id="teamBadge" class="team-badge"></span>
+
                 <div class="user-section">
                     <label for="nameInput">Name:</label>
-                    <input id="nameInput" type="text" maxlength="80" autocomplete="name" placeholder="Your name">
+                    <input
+                        id="nameInput"
+                        type="text"
+                        maxlength="80"
+                        autocomplete="name"
+                        placeholder="Your name"
+                    >
+                </div>
+
+                <div class="user-section">
+                    <label for="clinicalLevelSelect">Clinical level:</label>
+                    <select id="clinicalLevelSelect" required>
+                        <option value="">Select level</option>
+                        <option value="PARA">PARA</option>
+                        <option value="AO">AO</option>
+                        <option value="AR">AR</option>
+                        <option value="AA">AA</option>
+                        <option value="REC">REC — Recruit</option>
+                    </select>
                 </div>
             </div>
         </header>
 
-        <div id="connectionStatus" class="connection-status" aria-live="polite">
+        <div
+            id="connectionStatus"
+            class="connection-status"
+            aria-live="polite"
+        >
             Connecting to the roster…
         </div>
 
-       <section class="card">
-    <button id="viewRosterButton" class="btn-secondary roster-launch-button" type="button">
-        📋 View Team Roster — Next 14 Days
-    </button>
+        <section class="card">
+            <button
+                id="viewRosterButton"
+                class="btn-secondary roster-launch-button"
+                type="button"
+                disabled
+            >
+                📋 View Team Roster — Next 14 Days
+            </button>
 
-    <h2 class="card-title">Book a shift</h2>
+            <h2 class="card-title">Book a shift</h2>
 
             <div class="form-grid">
                 <div class="field">
                     <label for="bookingDateInput">Start date</label>
                     <input id="bookingDateInput" type="date">
                 </div>
-              
 
                 <div class="field">
                     <label for="startTimeSelect">Start time</label>
@@ -647,83 +856,137 @@
                         <option value="">Select start time</option>
                     </select>
                 </div>
-                  <div class="field">
-    <label for="finishTimeSelect">Finish time</label>
-    <select id="finishTimeSelect" disabled>
-        <option value="">Select a start time first</option>
-    </select>
-</div>
 
                 <div class="field">
-    <label for="restrictionSelect">Restriction</label>
-    <select id="restrictionSelect">
-        <option value="">None</option>
-        <option value="A">A</option>
-        <option value="B">B</option>
-        <option value="C">C</option>
-    </select>
-</div>
-             <div class="field">
-  <label for="clinicalLevelSelect">Clinical level</label>
-  <select id="clinicalLevelSelect" required>
-    <option value="">Select clinical level</option>
-    <option value="PARA">PARA</option>
-    <option value="AO">AO</option>
-    <option value="AR">AR</option>
-    <option value="AA">AA</option>
-  </select>
-</div>   
+                    <label for="finishTimeSelect">Finish time</label>
+                    <select id="finishTimeSelect" disabled>
+                        <option value="">Select a start time first</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="restrictionSelect">Flexibility restriction</label>
+
+                    <select
+                        id="restrictionSelect"
+                        aria-describedby="restrictionHelp"
+                    >
+                        <option value="N" selected>N — No restriction</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                    </select>
+
+                    <small id="restrictionHelp" class="field-help">
+                        Optional: leave N selected for no restriction,
+                        or choose A, B or C. Operational restrictions
+                        are calculated separately.
+                    </small>
+                </div>
             </div>
 
-            <div id="bookingSummary" class="booking-summary" aria-live="polite">
-              
+            <div
+                id="bookingSummary"
+                class="booking-summary"
+                aria-live="polite"
+            ></div>
+
+            <div
+                id="centralRosteringWarning"
+                class="central-roster-warning"
+                hidden
+                role="alert"
+            ></div>
+
+            <div class="roster-submission-manager">
+                <div>
+                    <strong>Central Rostering hard-copy status</strong>
+                    <p id="rosterSubmissionStatus">
+                        Checking submitted roster status…
+                    </p>
+                </div>
             </div>
-
-            <div id="centralRosteringWarning" class="central-roster-warning" hidden role="alert"></div>
-
-<div class="roster-submission-manager">
-    <div>
-        <strong>Central Rostering hard-copy status</strong>
-        <p id="rosterSubmissionStatus">Checking submitted roster status…</p>
-    </div>
-
-    
-</div>
 
             <div class="action-bar">
-                <button id="bookButton" class="btn-primary" type="button" disabled>
+                <button
+                    id="bookButton"
+                    class="btn-primary"
+                    type="button"
+                    disabled
+                >
                     Confirm shift
                 </button>
 
-                <button id="refreshButton" class="btn-secondary" type="button">
+                <button
+                    id="refreshButton"
+                    class="btn-secondary"
+                    type="button"
+                >
                     Refresh roster
                 </button>
 
-                <button id="myBookingsButton" class="btn-secondary" type="button">
+                <button
+                    id="myBookingsButton"
+                    class="btn-secondary"
+                    type="button"
+                >
                     My bookings
                 </button>
 
-               
-                <button id="markRosterSentButton" class="btn-secondary" type="button">
-    Manager: Mark hard copy as sent
-</button>
+                <button
+                    id="markRosterSentButton"
+                    class="btn-secondary"
+                    type="button"
+                >
+                    Manager: Mark hard copy as sent
+                </button>
             </div>
         </section>
 
         <div class="view-switcher">
-            <button id="timelineTab" class="view-tab active" type="button">Timeline</button>
-            <button id="listTab" class="view-tab" type="button">Booking list</button>
+            <button
+                id="timelineTab"
+                class="view-tab active"
+                type="button"
+            >
+                Timeline
+            </button>
+
+            <button
+                id="listTab"
+                class="view-tab"
+                type="button"
+            >
+                Booking list
+            </button>
         </div>
 
         <section id="timelineSection">
             <div class="calendar-header">
                 <div>
                     <h2>Roster coverage</h2>
-                                   </div>
+                    <p>
+                        Coverage excludes REC observers.
+                        Operational restrictions are shown separately.
+                    </p>
+                </div>
 
                 <div class="calendar-actions">
-                    <button id="expandAllButton" class="btn-secondary" type="button">Expand all</button>
-                    <button id="collapseAllButton" class="btn-secondary" type="button">Collapse all</button>
+                    <button
+                        id="expandAllButton"
+                        class="btn-secondary"
+                        type="button"
+                    >
+                        Expand all
+                    </button>
+
+                    <button
+                        id="collapseAllButton"
+                        class="btn-secondary"
+                        type="button"
+                    >
+                        Collapse all
+                    </button>
                 </div>
             </div>
 
@@ -733,7 +996,14 @@
         <section id="listSection" class="card table-card">
             <div class="table-toolbar">
                 <strong>All active bookings</strong>
-                <input id="searchInput" class="search-input" type="search" placeholder="Search bookings">
+
+                <input
+                    id="searchInput"
+                    class="search-input"
+                    type="search"
+                    placeholder="Search bookings"
+                    aria-label="Search bookings"
+                >
             </div>
 
             <div class="table-wrapper">
@@ -741,6 +1011,9 @@
                     <thead>
                         <tr>
                             <th>Crew member</th>
+                            <th>Clinical level</th>
+                            <th>Flexibility</th>
+                            <th>Operational*</th>
                             <th>Start</th>
                             <th>Finish</th>
                             <th>Duration</th>
@@ -750,64 +1023,158 @@
                     <tbody id="bookingTableBody"></tbody>
                 </table>
             </div>
+
+            <p class="field-help">
+                *Operational codes describe the crew and may change during
+                a shift. REC is an observer and does not change the code.
+                Review means clinical information is missing or unrecognised.
+            </p>
         </section>
     </div>
 
     <div id="bookingsModal" class="modal-overlay">
-        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bookingsModalTitle">
+        <div
+            class="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="bookingsModalTitle"
+        >
             <div class="modal-header">
                 <h3 id="bookingsModalTitle">My upcoming bookings</h3>
-                <button id="closeModalButton" class="btn-secondary btn-small" type="button">Close</button>
+
+                <button
+                    id="closeModalButton"
+                    class="btn-secondary btn-small"
+                    type="button"
+                >
+                    Close
+                </button>
             </div>
+
             <div id="myBookingsList"></div>
         </div>
     </div>
 
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+    ></div>
 
     <script>
+        "use strict";
+
         const TEAM_NAME = "Tumby Bay";
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygMS2I0_8toHLX-NEEOdFE5bt_DPP_74TKR4gkdvFA04CqdC77c4wlRZD2JcBOLejd/exec";
+
+        const APPS_SCRIPT_URL =
+            "https://script.google.com/macros/s/AKfycbygMS2I0_8toHLX-NEEOdFE5bt_DPP_74TKR4gkdvFA04CqdC77c4wlRZD2JcBOLejd/exec";
+
         const MAX_CREW = 3;
         const HOURS_PER_DAY = 24;
         const MAX_SHIFT_HOURS = 24;
         const DAYS_TO_SHOW = 9;
-        const USER_STORAGE_KEY = `crew-roster-user-${TEAM_NAME.toLowerCase()}`;
 
-        let currentUser = localStorage.getItem(USER_STORAGE_KEY) || "";
+        const CLINICAL_LEVELS = ["PARA", "AO", "AR", "AA", "REC"];
+        const FLEXIBILITY_CODES = ["N", "A", "B", "C"];
+
+        const USER_STORAGE_KEY =
+            `crew-roster-user-${TEAM_NAME.toLowerCase()}`;
+
+        const CLINICAL_STORAGE_KEY =
+            `crew-roster-clinical-level-${TEAM_NAME.toLowerCase()}`;
+
+        /*
+         * OPERATIONAL RESTRICTIONS
+         *
+         * REC is always an observer and is excluded from calculations.
+         * REC still occupies a booking place under MAX_CREW.
+         *
+         * No non-recruit crew: NC
+         * One AR: D
+         * Two or more AR, or AR with AA, without AO/PARA: E
+         * AA-only operational crew: Z
+         *
+         * Working assumptions retained from the previous revision:
+         * - AO/PARA alone, including with REC observers: D.
+         * - AO/PARA with another non-recruit: no operational code.
+         *
+         * The empty object is retained for compatibility with existing
+         * timeline, list, CSV and printable-window function calls.
+         */
+        const OPERATIONAL_RULES = Object.freeze({});
+
+        let currentUser = readStoredValue(USER_STORAGE_KEY).trim();
+        let currentClinicalLevel = readStoredValue(CLINICAL_STORAGE_KEY);
+
+        if (!CLINICAL_LEVELS.includes(currentClinicalLevel)) {
+            currentClinicalLevel = "";
+        }
+
         let events = [];
         let isLoading = false;
-        let toastTimer;
+        let hasLoadedBookings = false;
+        let submissionStatusLoaded = false;
         let submittedRosterPeriod = null;
         let lastCentralRosteringWarningKey = "";
+        let toastTimer;
+        let modalReturnFocus = null;
 
         const nameInput = document.getElementById("nameInput");
-        const bookingDateInput = document.getElementById("bookingDateInput");
-        const startTimeSelect = document.getElementById("startTimeSelect");
-        const finishTimeSelect = document.getElementById("finishTimeSelect");
-        const restrictionSelect = document.getElementById("restrictionSelect");
-        const clinicalLevelSelect = document.getElementById("clinicalLevelSelect");
-        const bookingSummary = document.getElementById("bookingSummary");
-        const bookButton = document.getElementById("bookButton");
-        const refreshButton = document.getElementById("refreshButton");
-        const calendarElement = document.getElementById("calendarElement");
-        const connectionStatus = document.getElementById("connectionStatus");
-        const timelineSection = document.getElementById("timelineSection");
-        const listSection = document.getElementById("listSection");
-        const timelineTab = document.getElementById("timelineTab");
-        const listTab = document.getElementById("listTab");
-        const bookingTableBody = document.getElementById("bookingTableBody");
-        const searchInput = document.getElementById("searchInput");
-        const bookingsModal = document.getElementById("bookingsModal");
-        const myBookingsList = document.getElementById("myBookingsList");
-        const toast = document.getElementById("toast");
+        const clinicalLevelSelect =
+            document.getElementById("clinicalLevelSelect");
+        const bookingDateInput =
+            document.getElementById("bookingDateInput");
+        const startTimeSelect =
+            document.getElementById("startTimeSelect");
+        const finishTimeSelect =
+            document.getElementById("finishTimeSelect");
+        const restrictionSelect =
+            document.getElementById("restrictionSelect");
+        const bookingSummary =
+            document.getElementById("bookingSummary");
+        const bookButton =
+            document.getElementById("bookButton");
+        const refreshButton =
+            document.getElementById("refreshButton");
+        const viewRosterButton =
+            document.getElementById("viewRosterButton");
+        const markRosterSentButton =
+            document.getElementById("markRosterSentButton");
+        const calendarElement =
+            document.getElementById("calendarElement");
+        const connectionStatus =
+            document.getElementById("connectionStatus");
+        const timelineSection =
+            document.getElementById("timelineSection");
+        const listSection =
+            document.getElementById("listSection");
+        const timelineTab =
+            document.getElementById("timelineTab");
+        const listTab =
+            document.getElementById("listTab");
+        const bookingTableBody =
+            document.getElementById("bookingTableBody");
+        const searchInput =
+            document.getElementById("searchInput");
+        const bookingsModal =
+            document.getElementById("bookingsModal");
+        const myBookingsList =
+            document.getElementById("myBookingsList");
+        const toast =
+            document.getElementById("toast");
 
         initialise();
 
         function initialise() {
             document.getElementById("teamBadge").textContent = TEAM_NAME;
-            document.getElementById("teamSubtitle").textContent = `${TEAM_NAME} volunteer roster`;
+
+            document.getElementById("teamSubtitle").textContent =
+                `${TEAM_NAME} volunteer roster`;
+
             nameInput.value = currentUser;
+            clinicalLevelSelect.value = currentClinicalLevel;
+            restrictionSelect.value = "N";
 
             const today = startOfDay(new Date());
             bookingDateInput.min = formatDateKey(today);
@@ -815,304 +1182,722 @@
 
             populateStartTimes();
             registerEventListeners();
-            renderCalendar();
-            renderBookingTable();
-            updateBookingSummary();
-            loadBookingsAfterSave();
-            loadRosterSubmissionStatus();
+            renderAll();
+            void refreshRoster();
         }
 
-        function getDateTimeFromBookingInputs(dateValue, timeValue) {
-    if (!dateValue || timeValue === "") {
-        return null;
-    }
+        function readStoredValue(key) {
+            try {
+                return localStorage.getItem(key) || "";
+            } catch (error) {
+                console.warn("Local storage is unavailable:", error);
+                return "";
+            }
+        }
 
-    const dateParts = dateValue.split("-").map(Number);
-    const timeMatch = String(timeValue).match(/^(\d{1,2})/);
+        function saveStoredValue(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (error) {
+                console.warn("Unable to save browser preference:", error);
+                showToast("Your browser could not remember this setting.");
+            }
+        }
 
-    if (!timeMatch) {
-        return null;
-    }
-
-    const hour = Number(timeMatch[1]);
-
-    // JavaScript automatically handles values such as 24–30
-    // as hours on the next day, for overnight shifts.
-    return new Date(
-        dateParts[0],
-        dateParts[1] - 1,
-        dateParts[2],
-        hour,
-        0,
-        0,
-        0
-    );
-}
-
-function selectedShiftNeedsCentralRosteringNotice() {
-    if (!submittedRosterPeriod?.start || !submittedRosterPeriod?.end) {
-        return false;
-    }
-
-    const selection = readShiftSelection();
-
-    if (!selection.complete || !selection.valid) {
-        return false;
-    }
-
-    const submittedStart = new Date(submittedRosterPeriod.start);
-    const submittedEnd = new Date(submittedRosterPeriod.end);
-
-    return (
-        selection.startDate < submittedEnd &&
-        selection.endDate > submittedStart
-    );
-}
-
-function updateCentralRosteringWarning() {
-    const warning = document.getElementById("centralRosteringWarning");
-
-    if (!warning) {
-        return;
-    }
-
-    if (selectedShiftNeedsCentralRosteringNotice()) {
-        warning.hidden = false;
-        warning.innerHTML = `
-            <strong>Central Rostering notification required</strong><br>
-            This shift falls within a roster period that has already been
-            submitted to Central Rostering as a hard copy. After confirming
-            this booking, please contact Central Rostering by phone to advise
-            them of the change.
-        `;
-    } else {
-        warning.hidden = true;
-        warning.textContent = "";
-    }
-}
-function showCentralRosteringPopupIfRequired() {
-    if (!selectedShiftNeedsCentralRosteringNotice()) {
-        lastCentralRosteringWarningKey = "";
-        return;
-    }
-
-    const selection = readShiftSelection();
-
-    if (!selection.complete || !selection.valid) {
-        return;
-    }
-
-    const warningKey =
-        `${selection.startDate.toISOString()}-${selection.endDate.toISOString()}`;
-
-    // Do not repeatedly show the same warning while the same
-    // shift selection remains selected.
-    if (warningKey === lastCentralRosteringWarningKey) {
-        return;
-    }
-
-    lastCentralRosteringWarningKey = warningKey;
-
-    window.alert(
-        "Central Rostering notification required.\n\n" +
-        "This shift falls within a roster period that has already been " +
-        "submitted to Central Rostering as a hard copy.\n\n" +
-        "You may still make the booking, but after confirming it you must " +
-        "phone Central Rostering to notify them of the change."
-    );
-}
-function formatRosterPeriodDateTime(dateValue) {
-    return new Date(dateValue).toLocaleString("en-AU", {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false
-    });
-}
-
-async function loadRosterSubmissionStatus() {
-    const result = await callRosterApi("getRosterSubmission");
-
-    submittedRosterPeriod = result?.rosterSubmission || null;
-
-    const status = document.getElementById("rosterSubmissionStatus");
-
-    if (!submittedRosterPeriod?.start || !submittedRosterPeriod?.end) {
-        status.textContent =
-            "No current hard-copy roster period has been marked as sent.";
-        updateCentralRosteringWarning();
-        return;
-    }
-
-    status.textContent =
-        `Warning active for shifts from ` +
-        `${formatRosterPeriodDateTime(submittedRosterPeriod.start)} ` +
-        `to ${formatRosterPeriodDateTime(submittedRosterPeriod.end)}.`;
-
-    updateCentralRosteringWarning();
-}
-
-async function markHardCopyRosterAsSent() {
-    const managerPassword = window.prompt(
-        "Enter the roster manager password to mark the hard copy as sent:"
-    );
-
-    if (!managerPassword) {
-        return;
-    }
-
-    const confirmed = window.confirm(
-        "Mark the upcoming Wednesday 08:00 to following Wednesday 08:00 " +
-        "roster period as sent to Central Rostering?"
-    );
-
-    if (!confirmed) {
-        return;
-    }
-
-    try {
-        const result = await callRosterApi("markRosterSent", {
-            managerPassword: managerPassword
-        });
-
-        submittedRosterPeriod = result?.rosterSubmission || null;
-
-        alert("Hard-copy roster status has been updated.");
-        await loadRosterSubmissionStatus();
-    } catch (error) {
-        alert(error.message || "Unable to update the hard-copy roster status.");
-    }
-}
-
-function confirmCentralRosteringNoticeIfRequired() {
-    if (!selectedShiftNeedsCentralRosteringNotice()) {
-        return true;
-    }
-
-    return window.confirm(
-        "Central Rostering notification required.\n\n" +
-        "This booking changes a roster period already submitted as hard copy. " +
-        "After confirming the shift, you must phone Central Rostering to advise them.\n\n" +
-        "Continue with this booking?"
-    );
-}
-        function cancellationNeedsCentralRosteringNotice(event) {
-    if (!submittedRosterPeriod?.start || !submittedRosterPeriod?.end) {
-        return false;
-    }
-
-    const bookingStart = new Date(event.start);
-    const bookingEnd = new Date(event.end);
-    const submittedStart = new Date(submittedRosterPeriod.start);
-    const submittedEnd = new Date(submittedRosterPeriod.end);
-
-    return bookingStart < submittedEnd && bookingEnd > submittedStart;
-}
         function registerEventListeners() {
             nameInput.addEventListener("input", handleNameChange);
-           bookingDateInput.addEventListener("change", () => {
-    updateBookingSummary();
-    updateCentralRosteringWarning();
-    showCentralRosteringPopupIfRequired();
-});
 
-startTimeSelect.addEventListener("change", () => {
-    populateFinishTimes();
-    updateBookingSummary();
-    updateCentralRosteringWarning();
-    showCentralRosteringPopupIfRequired();
-});
+            clinicalLevelSelect.addEventListener("change", () => {
+                currentClinicalLevel = clinicalLevelSelect.value;
+                saveStoredValue(
+                    CLINICAL_STORAGE_KEY,
+                    currentClinicalLevel
+                );
+                updateBookingSummary();
+            });
 
-finishTimeSelect.addEventListener("change", () => {
-    updateBookingSummary();
-    updateCentralRosteringWarning();
-    showCentralRosteringPopupIfRequired();
-});
+            bookingDateInput.addEventListener(
+                "change",
+                handleShiftSelectionChange
+            );
+
+            startTimeSelect.addEventListener("change", () => {
+                populateFinishTimes();
+                handleShiftSelectionChange();
+            });
+
+            finishTimeSelect.addEventListener(
+                "change",
+                handleShiftSelectionChange
+            );
+
+            restrictionSelect.addEventListener(
+                "change",
+                updateBookingSummary
+            );
+
             bookButton.addEventListener("click", bookSelectedShift);
-            refreshButton.addEventListener("click", loadBookingsAfterSave);
-            document.getElementById("myBookingsButton").addEventListener("click", openBookingsModal);
-            document.getElementById("viewRosterButton").addEventListener("click", openRosterView);
-            document.getElementById("closeModalButton").addEventListener("click", closeBookingsModal);
+            refreshButton.addEventListener("click", refreshRoster);
+            viewRosterButton.addEventListener("click", openRosterView);
+
+            markRosterSentButton.addEventListener(
+                "click",
+                markHardCopyRosterAsSent
+            );
+
+            document.getElementById("myBookingsButton")
+                .addEventListener("click", openBookingsModal);
+
+            document.getElementById("closeModalButton")
+                .addEventListener("click", closeBookingsModal);
+
             bookingsModal.addEventListener("click", event => {
-                if (event.target === bookingsModal) closeBookingsModal();
+                if (event.target === bookingsModal) {
+                    closeBookingsModal();
+                }
             });
+
             document.addEventListener("keydown", event => {
-                if (event.key === "Escape") closeBookingsModal();
-            });
-            timelineTab.addEventListener("click", () => switchView("timeline"));
-            listTab.addEventListener("click", () => switchView("list"));
-            document.getElementById("expandAllButton").addEventListener("click", () => toggleAllDays(true));
-            document.getElementById("collapseAllButton").addEventListener("click", () => toggleAllDays(false));
-            searchInput.addEventListener("input", renderBookingTable);
-                  document
-                .getElementById("markRosterSentButton")
-                .addEventListener("click", markHardCopyRosterAsSent);
-        }
+                if (!bookingsModal.classList.contains("active")) {
+                    return;
+                }
 
-        function callRosterApi(action, payload = {}) {
-            return new Promise((resolve, reject) => {
-                const requestData = { action, team: TEAM_NAME, ...payload };
-                const callbackName = "jsonpCallback_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+                if (event.key === "Escape") {
+                    closeBookingsModal();
+                    return;
+                }
 
-                window[callbackName] = function(data) {
-                    delete window[callbackName];
-                    document.body.removeChild(script);
-                    resolve(data);
-                };
+                if (event.key === "Tab") {
+                    const focusable = Array.from(
+                        bookingsModal.querySelectorAll(
+                            'button:not(:disabled), input:not(:disabled), ' +
+                            'select:not(:disabled), [tabindex="0"]'
+                        )
+                    );
 
-                const script = document.createElement("script");
-                script.src = APPS_SCRIPT_URL + "?callback=" + encodeURIComponent(callbackName) + "&payload=" + encodeURIComponent(JSON.stringify(requestData));
+                    const first = focusable[0];
+                    const last = focusable[focusable.length - 1];
 
-                script.onerror = function() {
-                    delete window[callbackName];
-                    document.body.removeChild(script);
-                    reject(new Error("Failed to load from Apps Script. Check the deployment URL."));
-                };
-
-                document.body.appendChild(script);
-
-                setTimeout(() => {
-                    if (window[callbackName]) {
-                        delete window[callbackName];
-                        document.body.removeChild(script);
-                        reject(new Error("Apps Script request timed out."));
+                    if (
+                        event.shiftKey &&
+                        document.activeElement === first
+                    ) {
+                        event.preventDefault();
+                        last?.focus();
+                    } else if (
+                        !event.shiftKey &&
+                        document.activeElement === last
+                    ) {
+                        event.preventDefault();
+                        first?.focus();
                     }
-                }, 10000);
+                }
             });
+
+            timelineTab.addEventListener(
+                "click",
+                () => switchView("timeline")
+            );
+
+            listTab.addEventListener(
+                "click",
+                () => switchView("list")
+            );
+
+            document.getElementById("expandAllButton")
+                .addEventListener("click", () => toggleAllDays(true));
+
+            document.getElementById("collapseAllButton")
+                .addEventListener("click", () => toggleAllDays(false));
+
+            searchInput.addEventListener("input", renderBookingTable);
         }
 
-        function normaliseBooking(booking) {
-    return {
-        id: String(booking.id || ""),
-        team: String(booking.team || TEAM_NAME),
-        user: String(booking.user || ""),
-        restriction: String(booking.restriction || "").trim().toUpperCase(),
-        start: String(booking.start || ""),
-        end: String(booking.end || ""),
-        createdAt: String(booking.createdAt || "")
-    };
-}
-
-        function isValidBooking(booking) {
-            const start = new Date(booking.start);
-            const end = new Date(booking.end);
-            return Boolean(booking.id && booking.user && !Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime()) && end > start);
+        function handleShiftSelectionChange() {
+            updateBookingSummary();
+            updateCentralRosteringWarning();
+            showCentralRosteringPopupIfRequired();
         }
 
         function handleNameChange() {
             currentUser = nameInput.value.trim();
-            localStorage.setItem(USER_STORAGE_KEY, currentUser);
+            saveStoredValue(USER_STORAGE_KEY, currentUser);
+
             updateBookingSummary();
-            renderCalendar();
             renderBookingTable();
-            if (bookingsModal.classList.contains("active")) renderMyBookings();
+
+            if (bookingsModal.classList.contains("active")) {
+                renderMyBookings();
+            }
+        }
+
+        /*
+         * Existing JSONP transport retained for Apps Script compatibility.
+         *
+         * The backend must independently enforce:
+         * - Accepted clinical levels, including REC.
+         * - Optional flexibility: N, A, B or C.
+         * - Authentication and manager-password validation.
+         * - Team isolation, overlaps and maximum crew capacity.
+         *
+         * JSONP sends payloads through a GET URL. Moving mutations and
+         * manager credentials to authenticated POST requests requires
+         * a corresponding backend change.
+         */
+        function callRosterApi(action, payload = {}) {
+            return new Promise((resolve, reject) => {
+                const requestData = {
+                    ...payload,
+                    action,
+                    team: TEAM_NAME
+                };
+
+                const callbackName =
+                    "jsonpCallback_" +
+                    Date.now() +
+                    "_" +
+                    Math.random().toString(36).slice(2);
+
+                const script = document.createElement("script");
+
+                let settled = false;
+                let timer;
+
+                function cleanup() {
+                    clearTimeout(timer);
+                    script.remove();
+                    delete window[callbackName];
+                }
+
+                function finish(error, data) {
+                    if (settled) return;
+
+                    settled = true;
+                    cleanup();
+
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(data);
+                    }
+                }
+
+                window[callbackName] = data => {
+                    if (!data || typeof data !== "object") {
+                        finish(
+                            new Error("Apps Script returned an invalid response.")
+                        );
+                        return;
+                    }
+
+                    if (data.success === false || data.error) {
+                        finish(
+                            new Error(
+                                data.error || "The roster request was rejected."
+                            )
+                        );
+                        return;
+                    }
+
+                    finish(null, data);
+                };
+
+                script.async = true;
+
+                script.src =
+                    APPS_SCRIPT_URL +
+                    "?callback=" + encodeURIComponent(callbackName) +
+                    "&payload=" +
+                    encodeURIComponent(JSON.stringify(requestData));
+
+                script.onerror = () => {
+                    finish(
+                        new Error(
+                            "Failed to load from Apps Script. " +
+                            "Check the deployment URL and connection."
+                        )
+                    );
+                };
+
+                timer = setTimeout(() => {
+                    finish(new Error("Apps Script request timed out."));
+                }, 15000);
+
+                document.body.appendChild(script);
+            });
+        }
+
+        function normaliseBooking(booking) {
+            const level = String(booking.clinicalLevel || "")
+                .trim()
+                .toUpperCase();
+
+            const restriction = String(booking.restriction || "")
+                .trim()
+                .toUpperCase();
+
+            return {
+                id: String(booking.id || ""),
+                team: String(booking.team || TEAM_NAME),
+                user: String(booking.user || "").trim(),
+                restriction: restriction || "N",
+                clinicalLevel: CLINICAL_LEVELS.includes(level)
+                    ? level
+                    : "",
+                start: String(booking.start || ""),
+                end: String(booking.end || ""),
+                createdAt: String(booking.createdAt || "")
+            };
+        }
+
+        function isValidBooking(booking) {
+            const start = new Date(booking.start);
+            const end = new Date(booking.end);
+
+            return Boolean(
+                booking.id &&
+                booking.user &&
+                booking.team === TEAM_NAME &&
+                Number.isFinite(start.getTime()) &&
+                Number.isFinite(end.getTime()) &&
+                end > start
+            );
+        }
+
+        function flexibilityLabel(booking) {
+            const code = String(booking.restriction || "")
+                .trim()
+                .toUpperCase() || "N";
+
+            return FLEXIBILITY_CODES.includes(code)
+                ? code
+                : `Legacy: ${code}`;
+        }
+
+        /*
+         * Shared calculation for timeline, lists, CSV and print window.
+         * REC is removed before calculating the operational restriction.
+         */
+        function getOperationalStatus(bookings, rules) {
+            // "rules" is retained for compatibility with existing calls.
+            const allowedLevels = ["PARA", "AO", "AR", "AA", "REC"];
+
+            const crew = bookings.map(booking => ({
+                clinicalLevel: String(booking.clinicalLevel || "")
+                    .trim()
+                    .toUpperCase()
+            }));
+
+            const hasUnknownLevel = crew.some(member =>
+                !allowedLevels.includes(member.clinicalLevel)
+            );
+
+            if (hasUnknownLevel) {
+                return {
+                    code: "Review",
+                    review: true,
+                    reason:
+                        "At least one booking has no recognised clinical level. " +
+                        "Confirm the clinical information before assigning a code."
+                };
+            }
+
+            const operationalCrew = crew.filter(member =>
+                member.clinicalLevel !== "REC"
+            );
+
+            if (operationalCrew.length === 0) {
+                return {
+                    code: "NC",
+                    review: false,
+                    reason: crew.length
+                        ? "Only recruits are booked. Recruits are observers."
+                        : "No crew assigned."
+                };
+            }
+
+            const aoCount = operationalCrew.filter(member =>
+                member.clinicalLevel === "AO" ||
+                member.clinicalLevel === "PARA"
+            ).length;
+
+            const arCount = operationalCrew.filter(member =>
+                member.clinicalLevel === "AR"
+            ).length;
+
+            const aaCount = operationalCrew.filter(member =>
+                member.clinicalLevel === "AA"
+            ).length;
+
+            /*
+             * Working assumption:
+             * AO/PARA with another non-recruit removes E/Z.
+             * AO/PARA alone retains D, regardless of REC observers.
+             */
+            if (aoCount > 0) {
+                if (operationalCrew.length === 1) {
+                    return {
+                        code: "D",
+                        review: false,
+                        reason:
+                            "One operational crew member. Recruits are observers " +
+                            "and do not remove the single-crew restriction."
+                    };
+                }
+
+                return {
+                    code: "",
+                    review: false,
+                    reason:
+                        "AO/PARA is present with another operational crew member. " +
+                        "No E/Z restriction is assigned."
+                };
+            }
+
+            // Two AR, or an AR working with an AA.
+            if (arCount >= 2 || (arCount >= 1 && aaCount >= 1)) {
+                return {
+                    code: "E",
+                    review: false,
+                    reason:
+                        "The operational crew contains two or more AR, " +
+                        "or an AR with an AA. Recruits are excluded."
+                };
+            }
+
+            // AA-only operational crew.
+            if (aaCount >= 1 && arCount === 0) {
+                return {
+                    code: "Z",
+                    review: false,
+                    reason:
+                        "The operational crew consists of AA crew members only. " +
+                        "Recruits are excluded."
+                };
+            }
+
+            // One AR, with or without recruits.
+            if (arCount === 1 && aaCount === 0) {
+                return {
+                    code: "D",
+                    review: false,
+                    reason:
+                        "One AR is available. Recruits are observers " +
+                        "and do not remove the single-crew restriction."
+                };
+            }
+
+            return {
+                code: "Review",
+                review: true,
+                reason: "The operational crew combination requires review."
+            };
+        }
+
+        async function loadBookingsAfterSave() {
+            try {
+                const data = await callRosterApi("getBookings");
+
+                if (!data.success || !Array.isArray(data.bookings)) {
+                    throw new Error(
+                        "The roster did not return a valid bookings list."
+                    );
+                }
+
+                events = data.bookings
+                    .map(normaliseBooking)
+                    .filter(isValidBooking);
+
+                hasLoadedBookings = true;
+                renderAll();
+
+                return data;
+            } catch (error) {
+                hasLoadedBookings = false;
+                renderAll();
+                throw error;
+            }
+        }
+
+        async function loadRosterSubmissionStatus() {
+            const status =
+                document.getElementById("rosterSubmissionStatus");
+
+            submissionStatusLoaded = false;
+
+            try {
+                const result = await callRosterApi("getRosterSubmission");
+
+                if (
+                    !Object.prototype.hasOwnProperty.call(
+                        result,
+                        "rosterSubmission"
+                    )
+                ) {
+                    throw new Error(
+                        "Apps Script did not return the hard-copy status."
+                    );
+                }
+
+                const period = result.rosterSubmission;
+
+                if (period !== null) {
+                    const start = new Date(period?.start);
+                    const end = new Date(period?.end);
+
+                    if (
+                        !period?.start ||
+                        !period?.end ||
+                        !Number.isFinite(start.getTime()) ||
+                        !Number.isFinite(end.getTime()) ||
+                        end <= start
+                    ) {
+                        throw new Error(
+                            "The submitted roster period is invalid."
+                        );
+                    }
+                }
+
+                submittedRosterPeriod = period;
+                submissionStatusLoaded = true;
+
+                if (!period) {
+                    status.textContent =
+                        "No current hard-copy roster period has been marked as sent.";
+                } else {
+                    status.textContent =
+                        "Warning active for shifts from " +
+                        formatRosterPeriodDateTime(period.start) +
+                        " to " +
+                        formatRosterPeriodDateTime(period.end) +
+                        ".";
+                }
+
+                updateCentralRosteringWarning();
+                updateBookingSummary();
+
+                return result;
+            } catch (error) {
+                submittedRosterPeriod = null;
+                submissionStatusLoaded = false;
+
+                status.textContent =
+                    "Unable to verify hard-copy status. " +
+                    "Refresh before changing bookings.";
+
+                updateCentralRosteringWarning();
+                updateBookingSummary();
+
+                throw error;
+            }
+        }
+
+        async function refreshRoster() {
+            if (isLoading) return;
+
+            setLoading(true);
+            setConnectionStatus(
+                "Refreshing roster and hard-copy status…",
+                ""
+            );
+
+            try {
+                const results = await Promise.allSettled([
+                    loadBookingsAfterSave(),
+                    loadRosterSubmissionStatus()
+                ]);
+
+                const failures = results
+                    .filter(result => result.status === "rejected")
+                    .map(result => result.reason.message);
+
+                if (failures.length) {
+                    throw new Error(failures.join(" "));
+                }
+
+                showLoadedConnectionStatus();
+            } catch (error) {
+                console.error("Roster refresh failed:", error);
+                setConnectionStatus(error.message, "error");
+                showToast(error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function showLoadedConnectionStatus() {
+            const now = new Date();
+
+            const activeBookings = events.filter(event =>
+                new Date(event.end) > now
+            );
+
+            setConnectionStatus(
+                `${activeBookings.length} active bookings loaded for ${TEAM_NAME}.`,
+                "connected"
+            );
+        }
+
+        function overlapsSubmittedPeriod(start, end) {
+            if (
+                !submissionStatusLoaded ||
+                !submittedRosterPeriod?.start ||
+                !submittedRosterPeriod?.end
+            ) {
+                return false;
+            }
+
+            return (
+                new Date(start) < new Date(submittedRosterPeriod.end) &&
+                new Date(end) > new Date(submittedRosterPeriod.start)
+            );
+        }
+
+        function selectedShiftNeedsCentralRosteringNotice() {
+            const selection = readShiftSelection();
+
+            return Boolean(
+                selection.complete &&
+                selection.valid &&
+                overlapsSubmittedPeriod(
+                    selection.startDate,
+                    selection.endDate
+                )
+            );
+        }
+
+        function updateCentralRosteringWarning() {
+            const warning =
+                document.getElementById("centralRosteringWarning");
+
+            if (selectedShiftNeedsCentralRosteringNotice()) {
+                warning.hidden = false;
+
+                warning.innerHTML = `
+                    <strong>Central Rostering notification required</strong><br>
+                    This shift falls within a roster period already submitted
+                    to Central Rostering as a hard copy. After confirming this
+                    booking, please phone Central Rostering to advise them
+                    of the change.
+                `;
+            } else {
+                warning.hidden = true;
+                warning.textContent = "";
+            }
+        }
+
+        function showCentralRosteringPopupIfRequired() {
+            if (!selectedShiftNeedsCentralRosteringNotice()) {
+                lastCentralRosteringWarningKey = "";
+                return;
+            }
+
+            const selection = readShiftSelection();
+
+            const warningKey =
+                selection.startDate.toISOString() + "-" +
+                selection.endDate.toISOString() + "-" +
+                submittedRosterPeriod.start + "-" +
+                submittedRosterPeriod.end;
+
+            if (warningKey === lastCentralRosteringWarningKey) {
+                return;
+            }
+
+            lastCentralRosteringWarningKey = warningKey;
+
+            window.alert(
+                "Central Rostering notification required.\n\n" +
+                "This shift falls within a roster period already submitted " +
+                "to Central Rostering as a hard copy.\n\n" +
+                "You may still book, but after confirming you must phone " +
+                "Central Rostering to notify them of the change."
+            );
+        }
+
+        function confirmCentralRosteringNoticeIfRequired() {
+            if (!submissionStatusLoaded) {
+                showToast(
+                    "Refresh the hard-copy roster status before booking."
+                );
+                return false;
+            }
+
+            if (!selectedShiftNeedsCentralRosteringNotice()) {
+                return true;
+            }
+
+            return window.confirm(
+                "Central Rostering notification required.\n\n" +
+                "This booking changes a roster period already submitted " +
+                "as hard copy. After confirming the shift, you must phone " +
+                "Central Rostering to advise them.\n\n" +
+                "Continue with this booking?"
+            );
+        }
+
+        function cancellationNeedsCentralRosteringNotice(event) {
+            return overlapsSubmittedPeriod(event.start, event.end);
+        }
+
+        function formatRosterPeriodDateTime(dateValue) {
+            return new Date(dateValue).toLocaleString("en-AU", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+        }
+
+        async function markHardCopyRosterAsSent() {
+            if (isLoading) return;
+
+            const managerPassword = window.prompt(
+                "Enter the roster manager password to mark the hard copy as sent:"
+            );
+
+            if (!managerPassword) return;
+
+            const confirmed = window.confirm(
+                "Mark the upcoming Wednesday 08:00 to following Wednesday 08:00 " +
+                "roster period as sent to Central Rostering?"
+            );
+
+            if (!confirmed) return;
+
+            setLoading(true);
+
+            try {
+                const result = await callRosterApi("markRosterSent", {
+                    managerPassword
+                });
+
+                if (!result.success) {
+                    throw new Error(
+                        "Apps Script did not confirm the hard-copy update."
+                    );
+                }
+
+                await loadRosterSubmissionStatus();
+
+                window.alert("Hard-copy roster status has been updated.");
+                showCentralRosteringPopupIfRequired();
+            } catch (error) {
+                window.alert(
+                    error.message || "Unable to update hard-copy status."
+                );
+            } finally {
+                setLoading(false);
+            }
         }
 
         function populateStartTimes() {
-            startTimeSelect.innerHTML = '<option value="">Select start time</option>';
+            startTimeSelect.innerHTML =
+                '<option value="">Select start time</option>';
+
             for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
                 const option = document.createElement("option");
                 option.value = String(hour);
@@ -1123,26 +1908,42 @@ finishTimeSelect.addEventListener("change", () => {
 
         function populateFinishTimes() {
             finishTimeSelect.innerHTML = "";
+
             if (startTimeSelect.value === "") {
                 finishTimeSelect.disabled = true;
-                finishTimeSelect.innerHTML = '<option value="">Select a start time first</option>';
+                finishTimeSelect.innerHTML =
+                    '<option value="">Select a start time first</option>';
                 return;
             }
 
-            finishTimeSelect.disabled = false;
+            finishTimeSelect.disabled = isLoading;
+
             const placeholder = document.createElement("option");
             placeholder.value = "";
             placeholder.textContent = "Select finish time";
             finishTimeSelect.appendChild(placeholder);
 
             const startHour = Number(startTimeSelect.value);
-            for (let duration = 1; duration <= MAX_SHIFT_HOURS; duration++) {
+
+            for (
+                let duration = 1;
+                duration <= MAX_SHIFT_HOURS;
+                duration++
+            ) {
                 const absoluteFinish = startHour + duration;
                 const finishHour = absoluteFinish % HOURS_PER_DAY;
-                const dayOffset = Math.floor(absoluteFinish / HOURS_PER_DAY);
+                const dayOffset =
+                    Math.floor(absoluteFinish / HOURS_PER_DAY);
+
                 const option = document.createElement("option");
+
                 option.value = String(duration);
-                option.textContent = `${formatHour(finishHour)}${dayOffset > 0 ? " — next day" : ""} (${duration} ${duration === 1 ? "hour" : "hours"})`;
+
+                option.textContent =
+                    `${formatHour(finishHour)}` +
+                    `${dayOffset > 0 ? " — next day" : ""}` +
+                    ` (${duration} ${duration === 1 ? "hour" : "hours"})`;
+
                 finishTimeSelect.appendChild(option);
             }
         }
@@ -1152,7 +1953,11 @@ finishTimeSelect.addEventListener("change", () => {
             const startValue = startTimeSelect.value;
             const durationValue = finishTimeSelect.value;
 
-            if (!dateValue || startValue === "" || durationValue === "") {
+            if (
+                !dateValue ||
+                startValue === "" ||
+                durationValue === ""
+            ) {
                 return { complete: false, valid: false };
             }
 
@@ -1160,15 +1965,50 @@ finishTimeSelect.addEventListener("change", () => {
             const startHour = Number(startValue);
             const duration = Number(durationValue);
 
+            if (
+                !startDate ||
+                !Number.isInteger(startHour) ||
+                startHour < 0 ||
+                startHour >= HOURS_PER_DAY
+            ) {
+                return {
+                    complete: true,
+                    valid: false,
+                    message: "Please select a valid start date and time."
+                };
+            }
+
+            if (
+                !Number.isInteger(duration) ||
+                duration < 1 ||
+                duration > MAX_SHIFT_HOURS
+            ) {
+                return {
+                    complete: true,
+                    valid: false,
+                    message: "The shift must be between 1 and 24 hours."
+                };
+            }
+
             startDate.setHours(startHour, 0, 0, 0);
+
+            // Existing browser-local, wall-clock calculation retained.
             const endDate = addHours(startDate, duration);
 
             if (startDate < startOfCurrentHour(new Date())) {
-                return { complete: true, valid: false, message: "The shift cannot start in the past." };
+                return {
+                    complete: true,
+                    valid: false,
+                    message: "The shift cannot start in the past."
+                };
             }
 
-            if (!Number.isInteger(duration) || duration < 1 || duration > MAX_SHIFT_HOURS) {
-                return { complete: true, valid: false, message: "The shift must be between 1 and 24 hours." };
+            if (endDate <= startDate) {
+                return {
+                    complete: true,
+                    valid: false,
+                    message: "The finish time must be later than the start time."
+                };
             }
 
             return {
@@ -1177,7 +2017,8 @@ finishTimeSelect.addEventListener("change", () => {
                 startDate,
                 endDate,
                 duration,
-                isOvernight: formatDateKey(startDate) !== formatDateKey(endDate)
+                isOvernight:
+                    formatDateKey(startDate) !== formatDateKey(endDate)
             };
         }
 
@@ -1198,29 +2039,61 @@ finishTimeSelect.addEventListener("change", () => {
                 return;
             }
 
-            const availability = checkShiftAvailability(selection);
-            const description = `${formatDateTime(selection.startDate)} to ${formatDateTime(selection.endDate)}`;
+            const description =
+                `${formatDateTime(selection.startDate)} to ` +
+                formatDateTime(selection.endDate);
 
-            if (!availability.available) {
-                bookingSummary.classList.add("invalid");
-                bookingSummary.textContent = `${description}. ${availability.message}`;
+            if (isLoading) {
+                bookingSummary.classList.add("warning");
+                bookingSummary.textContent =
+                    "Please wait while the roster is updating.";
+                return;
+            }
+
+            if (!hasLoadedBookings || !submissionStatusLoaded) {
+                bookingSummary.classList.add("warning");
+                bookingSummary.textContent =
+                    "Refresh the roster successfully before confirming a shift.";
                 return;
             }
 
             if (!currentUser) {
                 bookingSummary.classList.add("warning");
-                bookingSummary.textContent = `${description}. Enter your name before confirming the shift.`;
+                bookingSummary.textContent =
+                    `${description}. Enter your name in the header before confirming.`;
                 return;
             }
 
-            if (isLoading) {
+            if (!CLINICAL_LEVELS.includes(currentClinicalLevel)) {
                 bookingSummary.classList.add("warning");
-                bookingSummary.textContent = "Please wait while the roster is loading.";
+                bookingSummary.textContent =
+                    `${description}. Select your clinical level beside your name.`;
+                return;
+            }
+
+            const availability = checkShiftAvailability(selection);
+
+            if (!availability.available) {
+                bookingSummary.classList.add("invalid");
+                bookingSummary.textContent =
+                    `${description}. ${availability.message}`;
                 return;
             }
 
             bookingSummary.classList.add("valid");
-            bookingSummary.textContent = `Vacancy available for ${currentUser}: ${description} (${selection.duration} ${selection.duration === 1 ? "hour" : "hours"}).${selection.isOvernight ? " This is an overnight shift." : ""}`;
+
+            bookingSummary.textContent =
+                `Vacancy available for ${currentUser} (${currentClinicalLevel}): ` +
+                `${description} (${selection.duration} ` +
+                `${selection.duration === 1 ? "hour" : "hours"}). ` +
+                `Flexibility: ${getSelectedFlexibilityRestriction()}.` +
+                (selection.isOvernight
+                    ? " This is an overnight shift."
+                    : "") +
+                (currentClinicalLevel === "REC"
+                    ? " Recruit bookings are observer places."
+                    : "");
+
             bookButton.disabled = false;
         }
 
@@ -1230,14 +2103,27 @@ finishTimeSelect.addEventListener("change", () => {
             while (hourStart < selection.endDate) {
                 const bookings = getBookingsForHour(hourStart);
 
-                const alreadyBooked = currentUser && bookings.some(event => normaliseName(event.user) === normaliseName(currentUser));
+                const alreadyBooked = currentUser && bookings.some(event =>
+                    normaliseName(event.user) === normaliseName(currentUser)
+                );
 
                 if (alreadyBooked) {
-                    return { available: false, message: `You already have a booking during ${formatHourPeriod(hourStart)}.` };
+                    return {
+                        available: false,
+                        message:
+                            "You already have a booking during " +
+                            `${formatHourPeriod(hourStart)}.`
+                    };
                 }
 
+                // Recruits use booking places even though they are observers.
                 if (bookings.length >= MAX_CREW) {
-                    return { available: false, message: `${formatHourPeriod(hourStart)} already has ${MAX_CREW} crew members.` };
+                    return {
+                        available: false,
+                        message:
+                            `${formatHourPeriod(hourStart)} already has ` +
+                            `${MAX_CREW} people booked.`
+                    };
                 }
 
                 hourStart = addHours(hourStart, 1);
@@ -1246,7 +2132,20 @@ finishTimeSelect.addEventListener("change", () => {
             return { available: true };
         }
 
+        function getSelectedFlexibilityRestriction() {
+            const selectedCode = String(restrictionSelect.value || "")
+                .trim()
+                .toUpperCase();
+
+            // Flexibility is optional. No selection-error popup is needed.
+            return FLEXIBILITY_CODES.includes(selectedCode)
+                ? selectedCode
+                : "N";
+        }
+
         async function bookSelectedShift() {
+            if (isLoading) return;
+
             const selection = readShiftSelection();
 
             if (!currentUser) {
@@ -1254,125 +2153,230 @@ finishTimeSelect.addEventListener("change", () => {
                 nameInput.focus();
                 return;
             }
-            if (!clinicalLevelSelect.value) {
-    showToast("Please select a clinical level.");
-    clinicalLevelSelect.focus();
-    return;
-}
+
+            if (!CLINICAL_LEVELS.includes(currentClinicalLevel)) {
+                showToast("Please select your clinical level beside your name.");
+                clinicalLevelSelect.focus();
+                return;
+            }
 
             if (!selection.complete || !selection.valid) {
                 updateBookingSummary();
                 return;
             }
 
-            const availability = checkShiftAvailability(selection);
-
-            if (!availability.available) {
-                showToast(availability.message);
-                updateBookingSummary();
+            if (!hasLoadedBookings || !submissionStatusLoaded) {
+                showToast("Please refresh the roster before booking.");
                 return;
             }
 
-            const newEvent = {
-    id: createId(),
-    user: currentUser,
-    restriction: restrictionSelect.value,
-    clinicalLevel: clinicalLevelSelect.value,
-    start: selection.startDate.toISOString(),
-    end: selection.endDate.toISOString(),
-    createdAt: new Date().toISOString()
-};
-
             setLoading(true);
-            setConnectionStatus("Saving booking…", "");
+            setConnectionStatus(
+                "Checking the latest roster before saving…",
+                ""
+            );
+
+            let saveAttempted = false;
+            let saveConfirmed = false;
 
             try {
+                /*
+                 * Refresh before checking availability and hard-copy status.
+                 * The backend must still enforce capacity atomically to
+                 * prevent simultaneous conflicting bookings.
+                 */
+                await loadBookingsAfterSave();
+                await loadRosterSubmissionStatus();
+
+                const latestSelection = readShiftSelection();
+
+                if (!latestSelection.valid) {
+                    throw new Error(
+                        latestSelection.message || "Please reselect the shift."
+                    );
+                }
+
+                const availability =
+                    checkShiftAvailability(latestSelection);
+
+                if (!availability.available) {
+                    throw new Error(availability.message);
+                }
+
+                const centralNoticeRequired =
+                    selectedShiftNeedsCentralRosteringNotice();
+
+                if (!confirmCentralRosteringNoticeIfRequired()) {
+                    showLoadedConnectionStatus();
+                    return;
+                }
+
+                const newEvent = {
+                    id: createId(),
+                    user: currentUser,
+                    restriction: getSelectedFlexibilityRestriction(),
+                    clinicalLevel: currentClinicalLevel,
+                    start: latestSelection.startDate.toISOString(),
+                    end: latestSelection.endDate.toISOString(),
+                    createdAt: new Date().toISOString()
+                };
+
+                setConnectionStatus("Saving booking…", "");
+                saveAttempted = true;
+
                 const data = await callRosterApi("addBooking", newEvent);
 
                 if (!data.success) {
-                    throw new Error(data.error || "The booking was rejected.");
+                    throw new Error(
+                        "Apps Script did not confirm the booking."
+                    );
                 }
 
-                showToast("Your shift was booked successfully.");
-                startTimeSelect.value = "";
-                restrictionSelect.value = "";
-                clinicalLevelSelect.value = "";
-                populateFinishTimes();
-                await loadBookingsAfterSave();
+                saveConfirmed = true;
 
-                const dayKey = formatDateKey(selection.startDate);
+                startTimeSelect.value = "";
+                restrictionSelect.value = "N";
+                populateFinishTimes();
+
+                // Name and clinical level persist between bookings.
+                lastCentralRosteringWarningKey = "";
+                updateCentralRosteringWarning();
+
+                if (centralNoticeRequired) {
+                    window.alert(
+                        "Your shift was booked.\n\n" +
+                        "Please phone Central Rostering now to advise them " +
+                        "of the change to the submitted hard-copy roster."
+                    );
+                } else {
+                    showToast("Your shift was booked successfully.");
+                }
+
+                await loadBookingsAfterSave();
+                showLoadedConnectionStatus();
+
+                const dayKey =
+                    formatDateKey(latestSelection.startDate);
+
                 requestAnimationFrame(() => {
-                    const target = document.querySelector(`.day[data-date="${dayKey}"]`);
+                    const target = document.querySelector(
+                        `.day[data-date="${dayKey}"]`
+                    );
+
                     if (target) {
                         target.classList.add("open");
-                        target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+                        target.querySelector(".day-heading")
+                            ?.setAttribute("aria-expanded", "true");
+
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start"
+                        });
                     }
                 });
             } catch (error) {
-                console.error("Failed to save booking:", error);
-                setConnectionStatus(error.message, "error");
-                showToast(error.message);
+                console.error("Booking operation failed:", error);
+
+                let message = error.message;
+
+                if (saveConfirmed) {
+                    message =
+                        "Your booking was saved, but the roster could not be refreshed. " +
+                        "Use Refresh roster; do not submit the booking again.";
+                } else if (saveAttempted) {
+                    hasLoadedBookings = false;
+
+                    message +=
+                        " Refresh and check the booking list before trying again; " +
+                        "the server may have received the request.";
+                }
+
+                // Genuine backend errors must not be hidden.
+                setConnectionStatus(message, "error");
+                showToast(message);
             } finally {
                 setLoading(false);
-                updateBookingSummary();
+                updateCentralRosteringWarning();
             }
-        }
-
-        async function loadBookingsAfterSave() {
-            const data = await callRosterApi("getBookings");
-
-            if (!data.success) {
-                throw new Error(data.error || "Booking saved, but the roster could not be refreshed.");
-            }
-
-            events = (data.bookings || []).map(normaliseBooking).filter(isValidBooking);
-            renderAll();
-
-            const now = new Date();
-            const activeBookings = events.filter(event => new Date(event.end) > now);
-
-            setConnectionStatus(`${activeBookings.length} active bookings loaded for ${TEAM_NAME}.`, "connected");
         }
 
         async function cancelShift(eventId) {
+            if (isLoading) return;
+
             const event = events.find(item => item.id === eventId);
-
             if (!event) return;
-            if (cancellationNeedsCentralRosteringNotice(event)) {
-    const centralConfirmed = window.confirm(
-        "Central Rostering notification required.\n\n" +
-        "Cancelling this shift changes a roster period already submitted " +
-        "as hard copy. After cancelling, you must phone Central Rostering " +
-        "to advise them.\n\n" +
-        "Continue with this cancellation?"
-    );
-
-    if (!centralConfirmed) {
-        return;
-    }
-}
-
-            const confirmed = window.confirm(`Cancel ${event.user}'s shift from ${formatDateTime(new Date(event.start))} to ${formatDateTime(new Date(event.end))}?`);
-
-            if (!confirmed) return;
 
             setLoading(true);
 
+            let cancellationAttempted = false;
+            let cancellationConfirmed = false;
+
             try {
-                const data = await callRosterApi("cancelBooking", { bookingId: eventId });
+                await loadRosterSubmissionStatus();
+
+                const centralNoticeRequired =
+                    cancellationNeedsCentralRosteringNotice(event);
+
+                const message =
+                    `Cancel ${event.user}'s shift from ` +
+                    `${formatDateTime(new Date(event.start))} to ` +
+                    `${formatDateTime(new Date(event.end))}?` +
+                    (centralNoticeRequired
+                        ? "\n\nCentral Rostering notification required.\n" +
+                          "This changes a roster period already submitted as hard copy. " +
+                          "After cancelling, you must phone Central Rostering " +
+                          "to advise them of the change."
+                        : "");
+
+                if (!window.confirm(message)) return;
+
+                cancellationAttempted = true;
+
+                const data = await callRosterApi("cancelBooking", {
+                    bookingId: eventId
+                });
 
                 if (!data.success) {
-                    throw new Error(data.error || "The shift could not be cancelled.");
+                    throw new Error(
+                        "Apps Script did not confirm the cancellation."
+                    );
                 }
 
+                cancellationConfirmed = true;
                 events = events.filter(item => item.id !== eventId);
                 renderAll();
-                renderMyBookings();
-                updateBookingSummary();
-                showToast("Shift cancelled.");
+
+                if (centralNoticeRequired) {
+                    window.alert(
+                        "Shift cancelled.\n\n" +
+                        "Please phone Central Rostering now to advise them " +
+                        "of the change to the submitted hard-copy roster."
+                    );
+                } else {
+                    showToast("Shift cancelled.");
+                }
+
+                await loadBookingsAfterSave();
+                showLoadedConnectionStatus();
             } catch (error) {
-                console.error("Failed to cancel shift:", error);
-                showToast(error.message);
+                console.error("Cancellation failed:", error);
+
+                let message = error.message;
+
+                if (cancellationConfirmed) {
+                    message =
+                        "The shift was cancelled, but the roster could not be refreshed. " +
+                        "Please use Refresh roster.";
+                } else if (cancellationAttempted) {
+                    hasLoadedBookings = false;
+
+                    message +=
+                        " Refresh the roster to check whether cancellation completed.";
+                }
+
+                setConnectionStatus(message, "error");
+                showToast(message);
             } finally {
                 setLoading(false);
             }
@@ -1380,32 +2384,76 @@ finishTimeSelect.addEventListener("change", () => {
 
         function getBookingsForHour(hourStart) {
             const hourEnd = addHours(hourStart, 1);
+
             return events.filter(event => {
                 const eventStart = new Date(event.start);
                 const eventEnd = new Date(event.end);
+
                 return eventStart < hourEnd && eventEnd > hourStart;
             });
+        }
+
+        function getBookingOperationalSummary(event) {
+            const codes = new Set();
+            let cursor = new Date(event.start);
+            const end = new Date(event.end);
+
+            while (cursor < end) {
+                const operational = getOperationalStatus(
+                    getBookingsForHour(cursor),
+                    OPERATIONAL_RULES
+                );
+
+                codes.add(operational.code || "None");
+                cursor = addHours(cursor, 1);
+            }
+
+            return Array.from(codes).join(" / ");
         }
 
         function renderAll() {
             renderCalendar();
             renderBookingTable();
             updateBookingSummary();
-            if (bookingsModal.classList.contains("active")) renderMyBookings();
+            updateCentralRosteringWarning();
+
+            if (bookingsModal.classList.contains("active")) {
+                renderMyBookings();
+            }
         }
 
         function renderCalendar() {
-            const openDates = new Set(Array.from(document.querySelectorAll(".day.open")).map(element => element.dataset.date));
+            const existingDays = document.querySelectorAll(".day");
+            const hadDays = existingDays.length > 0;
+
+            const openDates = new Set(
+                Array.from(document.querySelectorAll(".day.open"))
+                    .map(element => element.dataset.date)
+            );
+
             calendarElement.innerHTML = "";
+
+            if (!hasLoadedBookings) {
+                calendarElement.innerHTML =
+                    '<div class="empty-state">' +
+                    'Roster data is not currently verified. Please refresh.' +
+                    '</div>';
+                return;
+            }
 
             const today = startOfDay(new Date());
 
             for (let offset = 0; offset < DAYS_TO_SHOW; offset++) {
                 const date = addDays(today, offset);
                 const dateKey = formatDateKey(date);
-                const shouldOpen = openDates.size > 0 ? openDates.has(dateKey) : offset === 0;
 
-                calendarElement.appendChild(createDayElement(date, shouldOpen));
+                const shouldOpen = hadDays
+                    ? openDates.has(dateKey)
+                    : offset === 0;
+
+                calendarElement.appendChild(
+                    createDayElement(date, shouldOpen)
+                );
             }
         }
 
@@ -1414,20 +2462,36 @@ finishTimeSelect.addEventListener("change", () => {
             section.className = `day${shouldOpen ? " open" : ""}`;
             section.dataset.date = formatDateKey(date);
 
-            let totalCrewHours = 0;
+            let coveredCrewHours = 0;
 
             for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
                 const hourStart = new Date(date);
                 hourStart.setHours(hour, 0, 0, 0);
-                const bookings = getBookingsForHour(hourStart);
-                totalCrewHours += bookings.length;
+
+                const operationalCrewCount =
+                    getBookingsForHour(hourStart)
+                        .filter(booking =>
+                            CLINICAL_LEVELS.includes(booking.clinicalLevel) &&
+                            booking.clinicalLevel !== "REC"
+                        )
+                        .length;
+
+                // Observers do not count toward coverage.
+                // Extra crew cannot offset an uncovered hour.
+                coveredCrewHours += Math.min(operationalCrewCount, 2);
             }
 
             const targetCrewHours = 2 * HOURS_PER_DAY;
-            const coveragePercent = Math.round((totalCrewHours / targetCrewHours) * 100);
+
+            const coveragePercent = Math.round(
+                coveredCrewHours / targetCrewHours * 100
+            );
 
             const heading = document.createElement("div");
             heading.className = "day-heading";
+            heading.tabIndex = 0;
+            heading.setAttribute("role", "button");
+            heading.setAttribute("aria-expanded", String(shouldOpen));
 
             const titleGroup = document.createElement("div");
             titleGroup.className = "day-title-group";
@@ -1435,6 +2499,7 @@ finishTimeSelect.addEventListener("change", () => {
             const toggle = document.createElement("div");
             toggle.className = "day-toggle";
             toggle.textContent = "▼";
+            toggle.setAttribute("aria-hidden", "true");
 
             const title = document.createElement("h3");
             title.textContent = formatDayHeading(date);
@@ -1443,16 +2508,32 @@ finishTimeSelect.addEventListener("change", () => {
 
             const subtitle = document.createElement("span");
             subtitle.className = "day-subtitle";
-            subtitle.textContent = `${isSameDay(date, new Date()) ? "Today · " : ""}${coveragePercent}% coverage`;
+
+            subtitle.textContent =
+                `${isSameDay(date, new Date()) ? "Today · " : ""}` +
+                `${coveragePercent}% crew coverage`;
 
             heading.append(titleGroup, subtitle);
 
-            heading.addEventListener("click", () => {
-                section.classList.toggle("open");
+            function toggleDay() {
+                const open = section.classList.toggle("open");
+                heading.setAttribute("aria-expanded", String(open));
+            }
+
+            heading.addEventListener("click", toggleDay);
+
+            heading.addEventListener("keydown", event => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    toggleDay();
+                }
             });
 
             const body = document.createElement("div");
             body.className = "day-body";
+            body.id = `day-body-${formatDateKey(date)}`;
+
+            heading.setAttribute("aria-controls", body.id);
 
             const inner = document.createElement("div");
             inner.className = "day-body-inner";
@@ -1472,20 +2553,50 @@ finishTimeSelect.addEventListener("change", () => {
             hourStart.setHours(hour, 0, 0, 0);
 
             const bookings = getBookingsForHour(hourStart);
-            const crewCount = bookings.length;
+            const bookedCount = bookings.length;
+
+            const operationalCrewCount = bookings.filter(booking =>
+                CLINICAL_LEVELS.includes(booking.clinicalLevel) &&
+                booking.clinicalLevel !== "REC"
+            ).length;
+
+            const recruitCount = bookings.filter(booking =>
+                booking.clinicalLevel === "REC"
+            ).length;
+
+            const unknownCount = bookings.filter(booking =>
+                !CLINICAL_LEVELS.includes(booking.clinicalLevel)
+            ).length;
+
+            const operational = getOperationalStatus(
+                bookings,
+                OPERATIONAL_RULES
+            );
 
             let state = "empty";
-            let status = "Needs crew (0/2)";
+            let status = "Needs operational crew (0/2)";
 
-            if (crewCount === 1) {
+            if (operationalCrewCount === 1) {
                 state = "partial";
-                status = "One crew (1/2)";
-            } else if (crewCount === 2) {
+                status = "One operational crew (1/2)";
+            } else if (operationalCrewCount >= 2) {
                 state = "covered";
-                status = "Target met (2/2)";
-            } else if (crewCount >= 3) {
-                state = "covered";
-                status = "Full (3/3)";
+                status = `Crew target (${operationalCrewCount}/2)`;
+            }
+
+            if (recruitCount > 0) {
+                status +=
+                    ` · ${recruitCount} REC observer` +
+                    (recruitCount === 1 ? "" : "s");
+            }
+
+            if (unknownCount > 0) {
+                status += ` · ${unknownCount} level unknown`;
+            }
+
+            if (bookedCount >= MAX_CREW) {
+                status +=
+                    ` · Booking places full (${bookedCount}/${MAX_CREW})`;
             }
 
             const row = document.createElement("div");
@@ -1512,7 +2623,7 @@ finishTimeSelect.addEventListener("change", () => {
             const chips = document.createElement("div");
             chips.className = "crew-chips";
 
-            if (bookings.length === 0) {
+            if (!bookings.length) {
                 const empty = document.createElement("span");
                 empty.className = "empty-chip";
                 empty.textContent = "No crew assigned";
@@ -1521,36 +2632,83 @@ finishTimeSelect.addEventListener("change", () => {
                 bookings.forEach(event => {
                     const chip = document.createElement("span");
                     chip.className = "chip";
-                    chip.textContent = event.user;
+
+                    const levelLabel = event.clinicalLevel === "REC"
+                        ? "REC observer"
+                        : event.clinicalLevel || "Level unknown";
+
+                    chip.textContent =
+                        `${event.user} · ${levelLabel}` +
+                        ` · Flex ${flexibilityLabel(event)}`;
+
                     chips.appendChild(chip);
                 });
             }
+
+            const badges = document.createElement("div");
+            badges.className = "status-group";
 
             const badge = document.createElement("span");
             badge.className = `status-badge status-${state}`;
             badge.textContent = status;
 
-            content.append(chips, badge);
+            const operationalBadge = document.createElement("span");
+
+            operationalBadge.className =
+                "status-badge " +
+                (operational.review
+                    ? "status-partial"
+                    : "status-operational");
+
+            operationalBadge.textContent =
+                `Op: ${operational.code || "None"}`;
+
+            operationalBadge.title = operational.reason;
+
+            badges.append(badge, operationalBadge);
+            content.append(chips, badges);
             row.append(time, nodeContainer, content);
 
             return row;
         }
 
         function renderBookingTable() {
-            const query = searchInput.value.trim().toLocaleLowerCase();
+            bookingTableBody.innerHTML = "";
+
+            if (!hasLoadedBookings) {
+                bookingTableBody.innerHTML =
+                    '<tr><td colspan="8" class="empty-state">' +
+                    'Refresh to load verified bookings.' +
+                    '</td></tr>';
+                return;
+            }
+
+            const query =
+                searchInput.value.trim().toLocaleLowerCase();
+
+            const now = new Date();
 
             const filtered = [...events]
+                .filter(event => new Date(event.end) > now)
                 .filter(event => {
                     if (!query) return true;
-                    const searchable = `${event.user} ${formatDateTime(new Date(event.start))}`;
-                    return searchable.toLocaleLowerCase().includes(query);
+
+                    const searchable =
+                        `${event.user} ${event.clinicalLevel} ` +
+                        `${flexibilityLabel(event)} ` +
+                        formatDateTime(new Date(event.start));
+
+                    return searchable
+                        .toLocaleLowerCase()
+                        .includes(query);
                 })
                 .sort((a, b) => new Date(a.start) - new Date(b.start));
 
-            bookingTableBody.innerHTML = "";
-
-            if (filtered.length === 0) {
-                bookingTableBody.innerHTML = '<tr><td colspan="5" class="empty-state">No active bookings found.</td></tr>';
+            if (!filtered.length) {
+                bookingTableBody.innerHTML =
+                    '<tr><td colspan="8" class="empty-state">' +
+                    'No active bookings found.' +
+                    '</td></tr>';
                 return;
             }
 
@@ -1558,68 +2716,127 @@ finishTimeSelect.addEventListener("change", () => {
                 const start = new Date(event.start);
                 const end = new Date(event.end);
                 const duration = (end - start) / 3600000;
-
                 const row = document.createElement("tr");
+
+                const levelLabel = event.clinicalLevel === "REC"
+                    ? "REC — Observer"
+                    : event.clinicalLevel || "Unknown";
 
                 row.innerHTML = `
                     <td><strong>${escapeHtml(event.user)}</strong></td>
+                    <td>${escapeHtml(levelLabel)}</td>
+                    <td>${escapeHtml(flexibilityLabel(event))}</td>
+                    <td>${escapeHtml(getBookingOperationalSummary(event))}</td>
                     <td>${escapeHtml(formatDateTime(start))}</td>
                     <td>${escapeHtml(formatDateTime(end))}</td>
                     <td>${duration} ${duration === 1 ? "hour" : "hours"}</td>
-                    <td><button class="btn-danger btn-small" type="button" data-cancel-id="${escapeHtml(event.id)}">Cancel</button></td>
+                    <td>
+                        <button
+                            class="btn-danger btn-small"
+                            type="button"
+                            data-cancel-id="${escapeHtml(event.id)}"
+                        >Cancel</button>
+                    </td>
                 `;
 
-                row.querySelector("[data-cancel-id]").addEventListener("click", () => cancelShift(event.id));
+                const cancelButton =
+                    row.querySelector("[data-cancel-id]");
+
+                cancelButton.disabled =
+                    isLoading || !submissionStatusLoaded;
+
+                cancelButton.addEventListener(
+                    "click",
+                    () => cancelShift(event.id)
+                );
+
                 bookingTableBody.appendChild(row);
             });
         }
 
         function openBookingsModal() {
+            modalReturnFocus = document.activeElement;
             renderMyBookings();
             bookingsModal.classList.add("active");
+            document.getElementById("closeModalButton").focus();
         }
 
         function closeBookingsModal() {
             bookingsModal.classList.remove("active");
+            modalReturnFocus?.focus();
         }
 
         function renderMyBookings() {
             myBookingsList.innerHTML = "";
 
             if (!currentUser) {
-                myBookingsList.innerHTML = '<div class="empty-state">Enter your name to view your bookings.</div>';
+                myBookingsList.innerHTML =
+                    '<div class="empty-state">' +
+                    'Enter your name to view your bookings.' +
+                    '</div>';
+                return;
+            }
+
+            if (!hasLoadedBookings) {
+                myBookingsList.innerHTML =
+                    '<div class="empty-state">' +
+                    'Refresh the roster to load your bookings.' +
+                    '</div>';
                 return;
             }
 
             const now = new Date();
 
             const userEvents = events
-                .filter(event => normaliseName(event.user) === normaliseName(currentUser) && new Date(event.end) > now)
+                .filter(event =>
+                    normaliseName(event.user) === normaliseName(currentUser) &&
+                    new Date(event.end) > now
+                )
                 .sort((a, b) => new Date(a.start) - new Date(b.start));
 
-            if (userEvents.length === 0) {
-                myBookingsList.innerHTML = `<div class="empty-state">No upcoming bookings found for ${escapeHtml(currentUser)}.</div>`;
+            if (!userEvents.length) {
+                myBookingsList.innerHTML =
+                    `<div class="empty-state">No upcoming bookings found for ` +
+                    `${escapeHtml(currentUser)}.</div>`;
                 return;
             }
 
             userEvents.forEach(event => {
-                const start = new Date(event.start);
-                const end = new Date(event.end);
-
                 const item = document.createElement("div");
                 item.className = "shift-item";
 
                 const information = document.createElement("div");
+
+                const levelLabel = event.clinicalLevel === "REC"
+                    ? "REC — Observer"
+                    : event.clinicalLevel || "Level unknown";
+
                 information.innerHTML = `
-                    <div class="shift-time">${escapeHtml(formatDateTime(start))} to ${escapeHtml(formatDateTime(end))}</div>
-                    <div class="shift-detail">${escapeHtml(TEAM_NAME)}</div>
+                    <div class="shift-time">
+                        ${escapeHtml(formatDateTime(new Date(event.start)))}
+                        to ${escapeHtml(formatDateTime(new Date(event.end)))}
+                    </div>
+                    <div class="shift-detail">
+                        ${escapeHtml(TEAM_NAME)} ·
+                        ${escapeHtml(levelLabel)} ·
+                        Flex ${escapeHtml(flexibilityLabel(event))} ·
+                        Op ${escapeHtml(getBookingOperationalSummary(event))}
+                    </div>
                 `;
 
                 const deleteButton = document.createElement("button");
                 deleteButton.className = "btn-danger btn-small";
                 deleteButton.type = "button";
                 deleteButton.textContent = "Cancel";
-                deleteButton.addEventListener("click", () => cancelShift(event.id));
+                deleteButton.dataset.cancelId = event.id;
+
+                deleteButton.disabled =
+                    isLoading || !submissionStatusLoaded;
+
+                deleteButton.addEventListener(
+                    "click",
+                    () => cancelShift(event.id)
+                );
 
                 item.append(information, deleteButton);
                 myBookingsList.appendChild(item);
@@ -1640,10 +2857,21 @@ finishTimeSelect.addEventListener("change", () => {
         function toggleAllDays(open) {
             document.querySelectorAll(".day").forEach(day => {
                 day.classList.toggle("open", open);
+
+                day.querySelector(".day-heading")
+                    ?.setAttribute("aria-expanded", String(open));
             });
         }
 
+        /*
+         * Existing CSV helper retained without adding an export button.
+         */
         function exportBookingListCSV() {
+            if (!hasLoadedBookings) {
+                showToast("Please refresh the roster first.");
+                return;
+            }
+
             const today = startOfDay(new Date());
             const days = [];
 
@@ -1651,334 +2879,556 @@ finishTimeSelect.addEventListener("change", () => {
                 days.push(addDays(today, i));
             }
 
-            const headerRow = ["Cummins"];
+            const headerRow = [TEAM_NAME];
+
             days.forEach(day => {
                 headerRow.push(formatDayHeading(day));
-                headerRow.push("Restriction");
+                headerRow.push(
+                    "Clinical level",
+                    "Flexibility",
+                    "Operational"
+                );
             });
 
             const rows = [headerRow];
 
             for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
-                for (let crewSlot = 0; crewSlot < 3; crewSlot++) {
-                    const dataRow = [];
-
-                    if (crewSlot === 0) {
-                        dataRow.push(formatHour(hour));
-                    } else {
-                        dataRow.push("");
-                    }
+                for (let crewSlot = 0; crewSlot < MAX_CREW; crewSlot++) {
+                    const dataRow = [
+                        crewSlot === 0 ? formatHour(hour) : ""
+                    ];
 
                     days.forEach(day => {
                         const hourStart = new Date(day);
                         hourStart.setHours(hour, 0, 0, 0);
 
                         const bookings = getBookingsForHour(hourStart);
-                        const crewName = bookings[crewSlot] ? bookings[crewSlot].user : "";
+                        const booking = bookings[crewSlot];
 
-                        dataRow.push(crewName);
-                        dataRow.push("");
+                        const operational = getOperationalStatus(
+                            bookings,
+                            OPERATIONAL_RULES
+                        );
+
+                        dataRow.push(
+                            booking?.user || "",
+                            booking?.clinicalLevel || "",
+                            booking ? flexibilityLabel(booking) : "",
+                            crewSlot === 0
+                                ? operational.code || "None"
+                                : ""
+                        );
                     });
 
                     rows.push(dataRow);
                 }
             }
 
-            downloadCSV(rows, `${TEAM_NAME}_Crew_Bookings_${formatDateKey(new Date())}.csv`);
+            downloadCSV(
+                rows,
+                `${TEAM_NAME}_Crew_Bookings_${formatDateKey(new Date())}.csv`
+            );
+
             showToast("Booking CSV downloaded.");
         }
 
         function downloadCSV(rows, filename) {
-            const csv = rows.map(row => row.map(csvEscape).join(",")).join("\r\n");
-            const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+            const csv = rows
+                .map(row => row.map(csvEscape).join(","))
+                .join("\r\n");
+
+            const blob = new Blob(["\uFEFF" + csv], {
+                type: "text/csv;charset=utf-8;"
+            });
+
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
+
             link.href = url;
             link.download = filename;
             document.body.appendChild(link);
             link.click();
             link.remove();
 
-            setTimeout(() => {
-                URL.revokeObjectURL(url);
-            }, 1000);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
 
         function csvEscape(value) {
-            return '"' + String(value ?? "").replace(/"/g, '""') + '"';
+            let text = String(value ?? "");
+
+            // Prevent user-entered spreadsheet formulas.
+            if (/^[\s]*[=+\-@]/.test(text)) {
+                text = "'" + text;
+            }
+
+            return '"' + text.replace(/"/g, '""') + '"';
         }
 
         function openRosterView() {
-            const rosterWindow = window.open("", "rosterView", "width=1400,height=900");
+            if (!hasLoadedBookings || isLoading) {
+                showToast("Please wait for the roster to load.");
+                return;
+            }
+
+            const rosterWindow = window.open(
+                "",
+                "rosterView",
+                "width=1400,height=900"
+            );
 
             if (!rosterWindow) {
                 showToast("Please allow pop-ups to view the roster.");
                 return;
             }
 
+            rosterWindow.document.open();
             rosterWindow.document.write(buildRosterHTML());
             rosterWindow.document.close();
         }
 
-       function buildRosterHTML() {
-    const today = startOfDay(new Date());
-    const initialStartDate = formatDateKey(today);
-    const initialEndDate = formatDateKey(addDays(today, 13));
+        /*
+         * Escape JSON before inserting it into the printable window script.
+         */
+        function serialiseForInlineScript(value) {
+            return JSON.stringify(value)
+                .replace(/</g, "\\u003c")
+                .replace(/>/g, "\\u003e")
+                .replace(/&/g, "\\u0026")
+                .replace(/\u2028/g, "\\u2028")
+                .replace(/\u2029/g, "\\u2029");
+        }
+
+        function buildRosterHTML() {
+            const today = startOfDay(new Date());
+            const initialStartDate = formatDateKey(today);
+            const initialEndDate = formatDateKey(addDays(today, 13));
+
+            const snapshot = {
+                events,
+                hoursPerDay: HOURS_PER_DAY,
+                maxCrew: MAX_CREW,
+                operationalRules: OPERATIONAL_RULES,
+                generatedAt: new Date().toISOString()
+            };
 
             return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes, maximum-scale=5">
-    <title>${TEAM_NAME} Crew Roster</title>
-   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; padding: 2rem 1rem; color: #333; }
-    .container { max-width: 1400px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .header { margin-bottom: 2rem; border-bottom: 3px solid #22c55e; padding-bottom: 1rem; }
-    .header h1 { font-size: 2rem; color: #16a34a; margin-bottom: 0.5rem; }
-    .header p { color: #666; font-size: 0.95rem; }
-    .controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: end;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-}
+    <title>${escapeHtml(TEAM_NAME)} Crew Roster</title>
 
-.date-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    color: #4b5563;
-    font-size: 0.78rem;
-    font-weight: 700;
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.date-field input {
-    min-height: 42px;
-    padding: 0.55rem 0.7rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    color: #333;
-    background: white;
-}
-    .btn {
-    min-height: 42px;
-    padding: 0.75rem 1rem;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-    .btn-primary { background: #22c55e; color: white; }
-    .btn-primary:hover { background: #16a34a; }
-    .btn-secondary { background: #e5e7eb; color: #333; }
-    .btn-secondary:hover { background: #d1d5db; }
-    .roster-wrapper { overflow-x: auto; overflow-y: auto; max-height: 70vh; border: 1px solid #e5e7eb; border-radius: 8px; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-    thead { background: #f3f4f6; position: sticky; top: 0; z-index: 20; }
-    tr#headerRow { position: sticky; top: 0; z-index: 21; background: #f3f4f6; }
-    tr#headerRow th { position: sticky; top: 0; z-index: 21; background: #f3f4f6; }
-    th { padding: 0.75rem; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #d1d5db; white-space: nowrap; background: #f3f4f6; }
-    th.time-col { width: 60px; position: sticky; left: 0; z-index: 10; }
-    th.empty-header { width: 60px; }
-    td { padding: 0.4rem 0.75rem; border-bottom: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; height: 24px; }
-    td.time-col { font-weight: 700; background: #fafafa; position: sticky; left: 0; z-index: 5; width: 60px; }
-    td.crew-name { background: #f9fafb; font-weight: 500; color: #16a34a; min-width: 120px; }
-    td.crew-name:empty::after { content: "—"; color: #d1d5db; }
-    td.restriction { background: #fafafa; color: #9ca3af; font-size: 0.85rem; min-width: 35px; width: 35px; text-align: center; }
-        /* Operating day: 08:00 through 17:00 inclusive */
-    tr.day-shift td {
-        background: #fff9db;
-    }
-
-    /* Night shift: 18:00 through 07:00 */
-    tr.night-shift td {
-        background: #eef4f8;
-    }
-
-    /* Keep the sticky Time column above the scrolling cells */
-    tr.day-shift td.time-col {
-        background: #fff3b0;
-    }
-
-    tr.night-shift td.time-col {
-        background: #e3edf4;
-    }
-    tbody tr:nth-child(6n+1), tbody tr:nth-child(6n+2), tbody tr:nth-child(6n+3) { background: #ffffff; }
-    tbody tr:nth-child(6n+4), tbody tr:nth-child(6n+5), tbody tr:nth-child(6n+6) { background: #f9fafb; }
-    tbody tr:nth-child(6n+4) { border-top: 3px solid #9ca3af; }
-    .day-header { background: #dbeafe; font-weight: 700; color: #0284c7; text-align: center; padding: 0.5rem 0.75rem !important; }
-    .crew-header { background: #dbeafe; font-weight: 600; color: #0284c7; text-align: center; font-size: 0.8rem; padding: 0.5rem 0.75rem !important; }
-    .restriction-header { background: #fef3c7; font-weight: 600; color: #92400e; text-align: center; font-size: 0.8rem; padding: 0.5rem 0.3rem !important; }
-       .info-box {
-        background: #eff6ff;
-        border-left: 4px solid #0284c7;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        color: #1e40af;
-    }
-
-    @media (max-width: 600px) {
         body {
-            padding: 0.5rem;
-            font-size: 0.85rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 2rem 1rem;
+            color: #333;
         }
 
         .container {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 6px;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .header {
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.6rem;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #22c55e;
+            padding-bottom: 1rem;
         }
 
         .header h1 {
-            font-size: 1.15rem;
-            margin-bottom: 0.25rem;
+            font-size: 2rem;
+            color: #16a34a;
+            margin-bottom: 0.5rem;
         }
 
         .header p {
-            font-size: 0.75rem;
+            color: #666;
+            font-size: 0.95rem;
+            margin-top: 0.3rem;
         }
 
         .controls {
-            position: sticky;
-            top: 0;
-            z-index: 30;
             display: flex;
-            gap: 0.4rem;
-            margin: 0 -0.75rem 0.75rem;
-            padding: 0.5rem 0.75rem;
-            background: rgba(255, 255, 255, 0.96);
-            border-bottom: 1px solid #e5e7eb;
+            flex-wrap: wrap;
+            align-items: end;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
         }
 
-        .controls .btn {
-            flex: 1 1 0;
-            min-height: 38px;
-            padding: 0.55rem 0.65rem;
+        .date-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            color: #4b5563;
             font-size: 0.78rem;
+            font-weight: 700;
         }
+
+        .date-field input {
+            min-height: 42px;
+            padding: 0.55rem 0.7rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            color: #333;
+            background: white;
+        }
+
+        .btn {
+            min-height: 42px;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary { background: #22c55e; color: white; }
+        .btn-primary:hover { background: #16a34a; }
+        .btn-secondary { background: #e5e7eb; color: #333; }
+        .btn-secondary:hover { background: #d1d5db; }
 
         .roster-wrapper {
-            width: 100%;
-            max-height: calc(100dvh - 145px);
-            overflow-x: auto;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
+            overflow: auto;
+            max-height: 70vh;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
         }
 
         table {
-            min-width: 1100px;
-            font-size: 0.8rem;
-        }
-
-        th {
-            padding: 0.55rem 0.45rem;
-        }
-
-        td {
-            height: 30px;
-            padding: 0.35rem 0.45rem;
-        }
-
-        td.crew-name {
-            min-width: 105px;
-        }
-
-        td.restriction {
-            width: 32px;
-            min-width: 32px;
-        }
-    }
-
-    @media print {
-        body {
-            background: white;
-            padding: 0;
-        }
-
-        .container {
-            box-shadow: none;
-            padding: 1rem;
-            max-width: 100%;
-        }
-
-        .controls {
-            display: none;
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
         }
 
         thead {
-            display: table-header-group;
+            background: #f3f4f6;
+            position: sticky;
+            top: 0;
+            z-index: 20;
         }
 
-        tr {
-            page-break-inside: avoid;
+        th {
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 700;
+            color: #374151;
+            border-bottom: 2px solid #d1d5db;
+            white-space: nowrap;
+            background: #f3f4f6;
         }
 
-        th,
+        th.time-col {
+            width: 60px;
+            position: sticky;
+            left: 0;
+            z-index: 25;
+            vertical-align: middle;
+        }
+
         td {
-            padding: 0.3rem 0.4rem;
-            font-size: 0.85rem;
+            padding: 0.4rem 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            height: 24px;
         }
 
-        .roster-wrapper {
-            border: 1px solid #000;
-            max-height: none;
+        td.time-col {
+            font-weight: 700;
+            background: #fafafa;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            width: 60px;
+            vertical-align: top;
         }
-    }
-</style>
+
+        td.crew-name {
+            background: #f9fafb;
+            font-weight: 500;
+            color: #16a34a;
+            min-width: 140px;
+        }
+
+        td.crew-name:empty::after {
+            content: "—";
+            color: #d1d5db;
+        }
+
+        td.restriction,
+        td.operational {
+            background: #fafafa;
+            color: #64748b;
+            font-size: 0.85rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        td.operational {
+            vertical-align: middle;
+            font-weight: 700;
+        }
+
+        td.operational.review { color: #92400e; }
+
+        tr.day-shift td { background: #fff9db; }
+        tr.night-shift td { background: #eef4f8; }
+
+        tr.day-shift td.time-col { background: #fff3b0; }
+        tr.night-shift td.time-col { background: #e3edf4; }
+
+        tr.hour-start td { border-top: 2px solid #9ca3af; }
+
+        .day-header {
+            background: #dbeafe;
+            font-weight: 700;
+            color: #0284c7;
+            text-align: center;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .crew-header {
+            background: #dbeafe;
+            font-weight: 600;
+            color: #0284c7;
+            text-align: center;
+            font-size: 0.8rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .restriction-header,
+        .operational-header {
+            background: #fef3c7;
+            font-weight: 600;
+            color: #92400e;
+            text-align: center;
+            font-size: 0.8rem;
+            padding: 0.5rem 0.3rem;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #0284c7;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: #1e40af;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .container {
+                width: 100%;
+                padding: 0.75rem;
+                border-radius: 6px;
+            }
+
+            .header {
+                margin-bottom: 0.75rem;
+                padding-bottom: 0.6rem;
+            }
+
+            .header h1 {
+                font-size: 1.15rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .header p { font-size: 0.75rem; }
+
+            .controls {
+                position: sticky;
+                top: 0;
+                z-index: 30;
+                gap: 0.4rem;
+                margin: 0 -0.75rem 0.75rem;
+                padding: 0.5rem 0.75rem;
+                background: rgba(255, 255, 255, 0.96);
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .controls .btn {
+                flex: 1 1 0;
+                min-height: 38px;
+                padding: 0.55rem 0.65rem;
+                font-size: 0.78rem;
+            }
+
+            .roster-wrapper {
+                width: 100%;
+                max-height: calc(100dvh - 145px);
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                min-width: 1100px;
+                font-size: 0.8rem;
+            }
+
+            th { padding: 0.55rem 0.45rem; }
+
+            td {
+                height: 30px;
+                padding: 0.35rem 0.45rem;
+            }
+
+            td.crew-name { min-width: 120px; }
+        }
+
+        @media print {
+            @page {
+                size: landscape;
+                margin: 8mm;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .controls { display: none; }
+
+            thead {
+                display: table-header-group;
+                position: static;
+            }
+
+            th.time-col,
+            td.time-col { position: static; }
+
+            tr { break-inside: avoid; }
+
+            th, td {
+                padding: 0.2rem;
+                font-size: 0.65rem;
+            }
+
+            td.crew-name {
+                min-width: 0;
+                overflow-wrap: anywhere;
+            }
+
+            td.restriction,
+            td.operational {
+                min-width: 0;
+                font-size: 0.65rem;
+            }
+
+            .roster-wrapper {
+                border: 1px solid #000;
+                max-height: none;
+                overflow: visible;
+            }
+
+            table { min-width: 0; }
+
+            .info-box {
+                font-size: 0.7rem;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
     <div class="container">
-       <div class="header">
-    <h1>🗓 ${TEAM_NAME} Crew Roster</h1>
-    <p id="rosterRangeText"></p>
-</div>
+        <div class="header">
+            <h1>🗓 ${escapeHtml(TEAM_NAME)} Crew Roster</h1>
+            <p id="rosterRangeText"></p>
+            <p id="snapshotText"></p>
+        </div>
 
-<div class="controls">
-    <label class="date-field">
-        From
-        <input id="rosterStartDate" type="date" value="${initialStartDate}">
-    </label>
+        <div class="controls">
+            <label class="date-field">
+                From
+                <input
+                    id="rosterStartDate"
+                    type="date"
+                    value="${initialStartDate}"
+                >
+            </label>
 
-    <label class="date-field">
-        To
-        <input id="rosterEndDate" type="date" value="${initialEndDate}">
-    </label>
+            <label class="date-field">
+                To
+                <input
+                    id="rosterEndDate"
+                    type="date"
+                    value="${initialEndDate}"
+                >
+            </label>
 
-    <button id="applyDatesButton" class="btn btn-primary" type="button">
-        Show roster
-    </button>
+            <button
+                id="applyDatesButton"
+                class="btn btn-primary"
+                type="button"
+            >
+                Show roster
+            </button>
 
-    <button id="nextFortnightButton" class="btn btn-secondary" type="button">
-        Next 14 days
-    </button>
+            <button
+                id="nextFortnightButton"
+                class="btn btn-secondary"
+                type="button"
+            >
+                Next 14 days
+            </button>
 
-    <button class="btn btn-secondary" type="button" onclick="window.print()">
-        🖨️ Print
-    </button>
+            <button
+                id="printButton"
+                class="btn btn-secondary"
+                type="button"
+            >
+                🖨️ Print
+            </button>
 
-    <button class="btn btn-secondary" type="button" onclick="window.close()">
-        Close
-    </button>
-</div>
+            <button
+                id="closeButton"
+                class="btn btn-secondary"
+                type="button"
+            >
+                Close
+            </button>
+        </div>
+
+        <div class="info-box">
+            Each dated column runs from 08:00 that day to 08:00 the following day.
+            <strong>Flex</strong> = individual N/A/B/C flexibility restriction;
+            N means no restriction.
+            <strong>Op</strong> = crew-wide operational code for that hour.
+            <strong>REC</strong> = recruit observer; excluded from operational
+            calculations.
+            <strong>Review</strong> = missing or unrecognised clinical information.
+            Use a shorter date range if the printed roster is too wide.
+        </div>
 
         <div class="roster-wrapper">
             <table id="rosterTable">
                 <thead>
-                    <tr id="headerRow">
-                        <th class="time-col">Time</th>
-                    </tr>
+                    <tr id="headerRow"></tr>
                 </thead>
                 <tbody id="rosterBody"></tbody>
             </table>
@@ -1986,277 +3436,393 @@ finishTimeSelect.addEventListener("change", () => {
     </div>
 
     <script>
-       const events = ${JSON.stringify(events)};
-const HOURS_PER_DAY = ${HOURS_PER_DAY};
-const MAX_CREW = ${MAX_CREW};
-
-function addHours(date, hours) {
-    const result = new Date(date);
-    result.setHours(result.getHours() + hours);
-    return result;
-}
-
-function addDays(date, days) {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-}
-
-function formatHour(hour) {
-    return String(hour).padStart(2, "0") + ":00";
-}
-
-function formatDateForInput(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return year + "-" + month + "-" + day;
-}
-
-function parseDateInput(value) {
-    const parts = value.split("-").map(Number);
-
-    if (parts.length !== 3 || parts.some(Number.isNaN)) {
-        return null;
-    }
-
-    return new Date(parts[0], parts[1] - 1, parts[2], 0, 0, 0, 0);
-}
-
-function formatRosterRange(startDate, endDate) {
-    const formatter = new Intl.DateTimeFormat("en-AU", {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-    });
-
-    return "Roster for " + formatter.format(startDate) +
-        " to " + formatter.format(endDate);
-}
-
-function getBookingsForHour(hourStart) {
-    const hourEnd = addHours(hourStart, 1);
-
-    return events.filter(function(event) {
-        const eventStart = new Date(event.start);
-        const eventEnd = new Date(event.end);
-
-        return eventStart < hourEnd && eventEnd > hourStart;
-    });
-}
-
-function getSelectedDates() {
-    const startInput = document.getElementById("rosterStartDate");
-    const endInput = document.getElementById("rosterEndDate");
-
-    const startDate = parseDateInput(startInput.value);
-    const endDate = parseDateInput(endInput.value);
-
-    if (!startDate || !endDate) {
-        window.alert("Please select both a From and To date.");
-        return null;
-    }
-
-    if (endDate < startDate) {
-        window.alert("The To date must be the same as or later than the From date.");
-        return null;
-    }
-
-    return {
-        startDate: startDate,
-        endDate: endDate
-    };
-}
-
-function buildRoster(startDate, endDate) {
-    const days = [];
-    let currentDate = new Date(startDate);
-
-    while (currentDate <= endDate) {
-        days.push(new Date(currentDate));
-        currentDate = addDays(currentDate, 1);
-    }
-
-    const headerRow = document.getElementById("headerRow");
-    const rosterBody = document.getElementById("rosterBody");
-    const thead = document.querySelector("thead");
-
-    headerRow.innerHTML = "";
-    rosterBody.innerHTML = "";
-
-    const timeHeader = document.createElement("th");
-    timeHeader.className = "time-col";
-    timeHeader.textContent = "Time";
-    headerRow.appendChild(timeHeader);
-
-    const existingSubHeader = thead.querySelector(".sub-header-row");
-
-    if (existingSubHeader) {
-        existingSubHeader.remove();
-    }
-
-    days.forEach(function(day) {
-        const dayHeader = document.createElement("th");
-        dayHeader.className = "day-header";
-        dayHeader.colSpan = 2;
-        dayHeader.textContent = new Intl.DateTimeFormat("en-AU", {
-            weekday: "short",
-            day: "numeric",
-            month: "short"
-        }).format(day);
-
-        headerRow.appendChild(dayHeader);
-    });
-
-    const subHeaderRow = document.createElement("tr");
-    subHeaderRow.className = "sub-header-row";
-
-    const emptyHeader = document.createElement("th");
-    emptyHeader.className = "empty-header";
-    subHeaderRow.appendChild(emptyHeader);
-
-    days.forEach(function() {
-        const crewHeader = document.createElement("th");
-        crewHeader.className = "crew-header";
-        crewHeader.textContent = "Crew";
-        subHeaderRow.appendChild(crewHeader);
-
-        const restrictionHeader = document.createElement("th");
-        restrictionHeader.className = "restriction-header";
-        restrictionHeader.textContent = "R";
-        subHeaderRow.appendChild(restrictionHeader);
-    });
-
-    thead.appendChild(subHeaderRow);
-
-    for (let rosterHour = 0; rosterHour < HOURS_PER_DAY; rosterHour++) {
-        const absoluteHour = 8 + rosterHour;
-        const displayHour = absoluteHour % HOURS_PER_DAY;
-
-        for (let crewSlot = 0; crewSlot < MAX_CREW; crewSlot++) {
-            const row = document.createElement("tr");
-            row.className = displayHour >= 8 && displayHour <= 17
-                ? "day-shift"
-                : "night-shift";
-
-            const timeCell = document.createElement("td");
-            timeCell.className = "time-col";
-
-            if (crewSlot === 0) {
-                timeCell.textContent = formatHour(displayHour);
-            }
-
-            row.appendChild(timeCell);
-
-            days.forEach(function(day) {
-                const hourStart = new Date(day);
-                hourStart.setHours(absoluteHour, 0, 0, 0);
-
-                const bookings = getBookingsForHour(hourStart);
-                const crewCount = bookings.length;
-
-                const crewName = bookings[crewSlot]
-                    ? bookings[crewSlot].user
-                    : "";
-
-                const crewCell = document.createElement("td");
-                crewCell.className = "crew-name";
-                crewCell.textContent = crewName;
-                row.appendChild(crewCell);
-
-                const restrictionCell = document.createElement("td");
-                restrictionCell.className = "restriction";
-
-                let restriction = "";
-
-                if (crewCount === 0 && crewSlot === 0) {
-                    restriction = "NC";
-                } else if (crewCount === 1 && crewSlot === 0) {
-                    restriction = "D";
-                } else if (crewCount >= 2 && bookings[crewSlot]) {
-                    restriction = bookings[crewSlot].restriction || "";
-                }
-
-                restrictionCell.textContent = restriction;
-                row.appendChild(restrictionCell);
-            });
-
-            rosterBody.appendChild(row);
-        }
-    }
-
-    document.getElementById("rosterRangeText").textContent =
-        formatRosterRange(startDate, endDate);
-}
-
-function showSelectedRoster() {
-    const selectedDates = getSelectedDates();
-
-    if (!selectedDates) {
-        return;
-    }
-
-    buildRoster(selectedDates.startDate, selectedDates.endDate);
-}
-
-document.getElementById("applyDatesButton").addEventListener("click", function() {
-    showSelectedRoster();
-});
-
-document.getElementById("nextFortnightButton").addEventListener("click", function() {
-    const selectedDates = getSelectedDates();
-
-    if (!selectedDates) {
-        return;
-    }
-
-    const nextStartDate = addDays(selectedDates.endDate, 1);
-    const nextEndDate = addDays(nextStartDate, 13);
-
-    document.getElementById("rosterStartDate").value =
-        formatDateForInput(nextStartDate);
-
-    document.getElementById("rosterEndDate").value =
-        formatDateForInput(nextEndDate);
-
-    buildRoster(nextStartDate, nextEndDate);
-});
-
-showSelectedRoster();
+        (${initialiseRosterWindow.toString()})(
+            ${serialiseForInlineScript(snapshot)},
+            ${getOperationalStatus.toString()}
+        );
     <\/script>
 </body>
 </html>`;
         }
 
+        /*
+         * This function runs in the printable roster window.
+         * The operational calculation is passed from the main page,
+         * ensuring REC/E/Z rules are identical in both views.
+         */
+        function initialiseRosterWindow(
+            snapshot,
+            calculateOperationalStatus
+        ) {
+            const events = snapshot.events;
+            const HOURS_PER_DAY = snapshot.hoursPerDay;
+            const MAX_CREW = snapshot.maxCrew;
+
+            function addHours(date, hours) {
+                const result = new Date(date);
+                result.setHours(result.getHours() + hours);
+                return result;
+            }
+
+            function addDays(date, days) {
+                const result = new Date(date);
+                result.setDate(result.getDate() + days);
+                return result;
+            }
+
+            function formatHour(hour) {
+                return String(hour).padStart(2, "0") + ":00";
+            }
+
+            function formatDateForInput(date) {
+                return date.getFullYear() + "-" +
+                    String(date.getMonth() + 1).padStart(2, "0") + "-" +
+                    String(date.getDate()).padStart(2, "0");
+            }
+
+            function parseDateInput(value) {
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                    return null;
+                }
+
+                const parts = value.split("-").map(Number);
+
+                const date = new Date(
+                    parts[0],
+                    parts[1] - 1,
+                    parts[2]
+                );
+
+                return formatDateForInput(date) === value
+                    ? date
+                    : null;
+            }
+
+            function getBookingsForHour(hourStart) {
+                const hourEnd = addHours(hourStart, 1);
+
+                return events.filter(event =>
+                    new Date(event.start) < hourEnd &&
+                    new Date(event.end) > hourStart
+                );
+            }
+
+            function getSelectedDates() {
+                const startDate = parseDateInput(
+                    document.getElementById("rosterStartDate").value
+                );
+
+                const endDate = parseDateInput(
+                    document.getElementById("rosterEndDate").value
+                );
+
+                if (!startDate || !endDate) {
+                    window.alert("Please select valid From and To dates.");
+                    return null;
+                }
+
+                if (endDate < startDate) {
+                    window.alert(
+                        "The To date must be the same as or later than the From date."
+                    );
+                    return null;
+                }
+
+                return { startDate, endDate };
+            }
+
+            function buildRoster(startDate, endDate) {
+                const days = [];
+                let currentDate = new Date(startDate);
+
+                while (currentDate <= endDate) {
+                    if (days.length >= 62) {
+                        window.alert(
+                            "Please select no more than 62 days at a time."
+                        );
+                        return;
+                    }
+
+                    days.push(new Date(currentDate));
+                    currentDate = addDays(currentDate, 1);
+                }
+
+                const headerRow =
+                    document.getElementById("headerRow");
+                const rosterBody =
+                    document.getElementById("rosterBody");
+                const thead =
+                    document.querySelector("thead");
+
+                headerRow.innerHTML = "";
+                rosterBody.innerHTML = "";
+
+                thead.querySelector(".sub-header-row")?.remove();
+
+                const timeHeader = document.createElement("th");
+                timeHeader.className = "time-col";
+                timeHeader.textContent = "Time";
+                timeHeader.rowSpan = 2;
+                headerRow.appendChild(timeHeader);
+
+                const subHeaderRow = document.createElement("tr");
+                subHeaderRow.className = "sub-header-row";
+
+                days.forEach(day => {
+                    const dayHeader = document.createElement("th");
+                    dayHeader.className = "day-header";
+                    dayHeader.colSpan = 3;
+
+                    dayHeader.textContent =
+                        new Intl.DateTimeFormat("en-AU", {
+                            weekday: "short",
+                            day: "numeric",
+                            month: "short"
+                        }).format(day);
+
+                    headerRow.appendChild(dayHeader);
+
+                    const crewHeader = document.createElement("th");
+                    crewHeader.className = "crew-header";
+                    crewHeader.textContent = "Crew / level";
+
+                    const flexibilityHeader =
+                        document.createElement("th");
+
+                    flexibilityHeader.className = "restriction-header";
+                    flexibilityHeader.textContent = "Flex";
+
+                    const operationalHeader =
+                        document.createElement("th");
+
+                    operationalHeader.className = "operational-header";
+                    operationalHeader.textContent = "Op";
+
+                    subHeaderRow.append(
+                        crewHeader,
+                        flexibilityHeader,
+                        operationalHeader
+                    );
+                });
+
+                thead.appendChild(subHeaderRow);
+
+                for (
+                    let rosterHour = 0;
+                    rosterHour < HOURS_PER_DAY;
+                    rosterHour++
+                ) {
+                    const absoluteHour = 8 + rosterHour;
+                    const displayHour = absoluteHour % HOURS_PER_DAY;
+
+                    const dayBookings = days.map(day => {
+                        const hourStart = new Date(day);
+                        hourStart.setHours(absoluteHour, 0, 0, 0);
+                        return getBookingsForHour(hourStart);
+                    });
+
+                    for (
+                        let crewSlot = 0;
+                        crewSlot < MAX_CREW;
+                        crewSlot++
+                    ) {
+                        const row = document.createElement("tr");
+
+                        row.className =
+                            (displayHour >= 8 && displayHour <= 17
+                                ? "day-shift"
+                                : "night-shift") +
+                            (crewSlot === 0 ? " hour-start" : "");
+
+                        if (crewSlot === 0) {
+                            const timeCell = document.createElement("td");
+                            timeCell.className = "time-col";
+                            timeCell.rowSpan = MAX_CREW;
+                            timeCell.textContent = formatHour(displayHour);
+                            row.appendChild(timeCell);
+                        }
+
+                        dayBookings.forEach(bookings => {
+                            const booking = bookings[crewSlot];
+
+                            const crewCell = document.createElement("td");
+                            crewCell.className = "crew-name";
+
+                            if (booking) {
+                                const levelLabel =
+                                    booking.clinicalLevel === "REC"
+                                        ? "REC observer"
+                                        : booking.clinicalLevel || "?";
+
+                                crewCell.textContent =
+                                    booking.user + " (" + levelLabel + ")";
+                            }
+
+                            const flexibilityCell =
+                                document.createElement("td");
+
+                            flexibilityCell.className = "restriction";
+
+                            if (booking) {
+                                const code =
+                                    String(booking.restriction || "")
+                                        .trim()
+                                        .toUpperCase() || "N";
+
+                                flexibilityCell.textContent =
+                                    ["N", "A", "B", "C"].includes(code)
+                                        ? code
+                                        : "Legacy: " + code;
+                            }
+
+                            row.append(crewCell, flexibilityCell);
+
+                            if (crewSlot === 0) {
+                                const operational =
+                                    calculateOperationalStatus(
+                                        bookings,
+                                        snapshot.operationalRules
+                                    );
+
+                                const operationalCell =
+                                    document.createElement("td");
+
+                                operationalCell.className =
+                                    "operational" +
+                                    (operational.review ? " review" : "");
+
+                                operationalCell.rowSpan = MAX_CREW;
+
+                                operationalCell.textContent =
+                                    operational.code || "—";
+
+                                operationalCell.title = operational.reason;
+
+                                row.appendChild(operationalCell);
+                            }
+                        });
+
+                        rosterBody.appendChild(row);
+                    }
+                }
+
+                const formatter = new Intl.DateTimeFormat("en-AU", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric"
+                });
+
+                document.getElementById("rosterRangeText").textContent =
+                    "Roster from " + formatter.format(startDate) +
+                    " 08:00 to " +
+                    formatter.format(addDays(endDate, 1)) +
+                    " 08:00.";
+
+                document.getElementById("snapshotText").textContent =
+                    "Snapshot generated " +
+                    new Date(snapshot.generatedAt)
+                        .toLocaleString("en-AU") +
+                    ". Refresh the main page and reopen this window for updates.";
+            }
+
+            function showSelectedRoster() {
+                const selectedDates = getSelectedDates();
+
+                if (!selectedDates) return;
+
+                buildRoster(
+                    selectedDates.startDate,
+                    selectedDates.endDate
+                );
+            }
+
+            document.getElementById("applyDatesButton")
+                .addEventListener("click", showSelectedRoster);
+
+            document.getElementById("nextFortnightButton")
+                .addEventListener("click", () => {
+                    const selectedDates = getSelectedDates();
+
+                    if (!selectedDates) return;
+
+                    const nextStartDate =
+                        addDays(selectedDates.endDate, 1);
+
+                    const nextEndDate = addDays(nextStartDate, 13);
+
+                    document.getElementById("rosterStartDate").value =
+                        formatDateForInput(nextStartDate);
+
+                    document.getElementById("rosterEndDate").value =
+                        formatDateForInput(nextEndDate);
+
+                    buildRoster(nextStartDate, nextEndDate);
+                });
+
+            document.getElementById("printButton")
+                .addEventListener("click", () => window.print());
+
+            document.getElementById("closeButton")
+                .addEventListener("click", () => window.close());
+
+            showSelectedRoster();
+        }
+
         function setLoading(loading) {
             isLoading = loading;
+
             refreshButton.disabled = loading;
-            if (loading) {
-                bookButton.disabled = true;
-            } else {
-                updateBookingSummary();
-            }
+            markRosterSentButton.disabled = loading;
+            viewRosterButton.disabled = loading || !hasLoadedBookings;
+
+            // Freeze inputs while a roster operation is running.
+            nameInput.disabled = loading;
+            clinicalLevelSelect.disabled = loading;
+            bookingDateInput.disabled = loading;
+            startTimeSelect.disabled = loading;
+            restrictionSelect.disabled = loading;
+
+            finishTimeSelect.disabled =
+                loading || startTimeSelect.value === "";
+
+            document.querySelectorAll("[data-cancel-id]")
+                .forEach(button => {
+                    button.disabled =
+                        loading ||
+                        !hasLoadedBookings ||
+                        !submissionStatusLoaded;
+                });
+
+            updateBookingSummary();
         }
 
         function setConnectionStatus(message, statusClass) {
             connectionStatus.className = "connection-status";
+
             if (statusClass) {
                 connectionStatus.classList.add(statusClass);
             }
+
             connectionStatus.textContent = message;
         }
 
         function createId() {
-            if (window.crypto && typeof crypto.randomUUID === "function") {
-                return crypto.randomUUID();
+            if (
+                window.crypto &&
+                typeof window.crypto.randomUUID === "function"
+            ) {
+                return window.crypto.randomUUID();
             }
-            return Date.now().toString(36) + Math.random().toString(36).slice(2);
+
+            return Date.now().toString(36) +
+                Math.random().toString(36).slice(2);
         }
 
         function normaliseName(value) {
-            return String(value || "").trim().toLocaleLowerCase();
+            return String(value || "")
+                .trim()
+                .toLocaleLowerCase();
         }
 
         function startOfDay(date) {
@@ -2285,14 +3851,37 @@ showSelectedRoster();
 
         function formatDateKey(date) {
             const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, "0");
-            const day = String(date.getDate()).padStart(2, "0");
+
+            const month = String(date.getMonth() + 1)
+                .padStart(2, "0");
+
+            const day = String(date.getDate())
+                .padStart(2, "0");
+
             return `${year}-${month}-${day}`;
         }
 
         function parseDateKey(value) {
-            const [year, month, day] = value.split("-").map(Number);
-            return new Date(year, month - 1, day, 0, 0, 0, 0);
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                return null;
+            }
+
+            const [year, month, day] =
+                value.split("-").map(Number);
+
+            const date = new Date(
+                year,
+                month - 1,
+                day,
+                0,
+                0,
+                0,
+                0
+            );
+
+            return formatDateKey(date) === value
+                ? date
+                : null;
         }
 
         function formatHour(hour) {
@@ -2321,15 +3910,21 @@ showSelectedRoster();
 
         function formatHourPeriod(hourStart) {
             const hourEnd = addHours(hourStart, 1);
-            return `${formatDateTime(hourStart)}–${formatHour(hourEnd.getHours())}`;
+
+            return (
+                `${formatDateTime(hourStart)}–` +
+                formatHour(hourEnd.getHours())
+            );
         }
 
         function isSameDay(first, second) {
-            return first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth() && first.getDate() === second.getDate();
+            return first.getFullYear() === second.getFullYear() &&
+                first.getMonth() === second.getMonth() &&
+                first.getDate() === second.getDate();
         }
 
         function escapeHtml(value) {
-            return String(value || "")
+            return String(value ?? "")
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")
@@ -2341,9 +3936,10 @@ showSelectedRoster();
             clearTimeout(toastTimer);
             toast.textContent = message;
             toast.classList.add("show");
+
             toastTimer = setTimeout(() => {
                 toast.classList.remove("show");
-            }, 3000);
+            }, 5000);
         }
     </script>
 </body>
