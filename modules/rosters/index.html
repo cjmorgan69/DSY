@@ -782,6 +782,50 @@
 
             .search-input { max-width: none; }
         }
+    .manager-controls-panel {
+    margin-top: 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--background);
+}
+
+.manager-controls-panel > summary {
+    padding: 0.85rem 1rem;
+    color: var(--muted);
+    font-size: 0.84rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.manager-controls-panel > summary:hover {
+    color: var(--primary-dark);
+}
+
+.manager-controls-panel > summary:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+    border-radius: 8px;
+}
+
+.manager-controls-panel[open] > summary {
+    color: var(--primary-dark);
+    border-bottom: 1px solid var(--border);
+}
+
+.manager-controls-content {
+    padding: 1rem;
+}
+
+.manager-controls-content > .field-help {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.manager-controls-content #rosterPeriodEditor {
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
     </style>
 </head>
 
@@ -914,76 +958,117 @@
 </div>
 
 <section
-    id="rosterPeriodEditor"
-    class="notice"
-    aria-labelledby="rosterPeriodEditorTitle"
-    hidden
->
-    <h3 id="rosterPeriodEditorTitle">
-        Select the hard-copy roster period
-    </h3>
+   <details id="managerControlsPanel" class="manager-controls-panel">
+    <summary>Manager controls</summary>
 
-    <p id="rosterPeriodTimezoneHelp"></p>
-
-    <form id="rosterPeriodForm">
-        <div class="form-grid">
-            <div class="field">
-                <label for="rosterPeriodStartInput">
-                    Start date and time — inclusive
-                </label>
-
-                <input
-                    id="rosterPeriodStartInput"
-                    type="datetime-local"
-                    step="60"
-                    required
-                    data-roster-manager-control
-                >
-            </div>
-
-            <div class="field">
-                <label for="rosterPeriodEndInput">
-                    End date and time — exclusive
-                </label>
-
-                <input
-                    id="rosterPeriodEndInput"
-                    type="datetime-local"
-                    step="60"
-                    required
-                    data-roster-manager-control
-                >
-            </div>
-        </div>
-
+    <div class="manager-controls-content">
         <p class="field-help">
-            Enter the exact period covered by the hard copy.
-            The end time is not included: a shift starting exactly
-            at that time falls outside this period.
-            Only one submitted period is stored per team.
+            Manage this team's hard-copy submission period.
+            Saving, editing or resetting the status requires
+            the roster manager password.
         </p>
 
         <div class="action-bar">
             <button
-                id="saveRosterPeriodButton"
-                class="btn-primary"
-                type="submit"
-                data-roster-manager-control
+                id="markRosterSentButton"
+                class="btn-secondary"
+                type="button"
             >
-                Mark this period as sent
+                Mark hard copy as sent
             </button>
 
             <button
-                id="closeRosterPeriodEditorButton"
+                id="editRosterPeriodButton"
                 class="btn-secondary"
                 type="button"
-                data-roster-manager-control
+                disabled
             >
-                Close
+                Edit submitted period
+            </button>
+
+            <button
+                id="resetRosterSentButton"
+                class="btn-danger"
+                type="button"
+                disabled
+            >
+                Reset sent status
             </button>
         </div>
-    </form>
-</section>
+
+        <section
+            id="rosterPeriodEditor"
+            class="notice"
+            aria-labelledby="rosterPeriodEditorTitle"
+            hidden
+        >
+            <h3 id="rosterPeriodEditorTitle">
+                Select the hard-copy roster period
+            </h3>
+
+            <p id="rosterPeriodTimezoneHelp"></p>
+
+            <form id="rosterPeriodForm">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="rosterPeriodStartInput">
+                            Start date and time — inclusive
+                        </label>
+
+                        <input
+                            id="rosterPeriodStartInput"
+                            type="datetime-local"
+                            step="60"
+                            required
+                            data-roster-manager-control
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="rosterPeriodEndInput">
+                            End date and time — exclusive
+                        </label>
+
+                        <input
+                            id="rosterPeriodEndInput"
+                            type="datetime-local"
+                            step="60"
+                            required
+                            data-roster-manager-control
+                        >
+                    </div>
+                </div>
+
+                <p class="field-help">
+                    Enter the exact period covered by the hard copy.
+                    The end time is not included: a shift starting
+                    exactly at that time falls outside this period.
+                    Only one submitted period is stored per team.
+                </p>
+
+                <div class="action-bar">
+                    <button
+                        id="saveRosterPeriodButton"
+                        class="btn-primary"
+                        type="submit"
+                        data-roster-manager-control
+                    >
+                        Mark this period as sent
+                    </button>
+
+                    <button
+                        id="closeRosterPeriodEditorButton"
+                        class="btn-secondary"
+                        type="button"
+                        data-roster-manager-control
+                    >
+                        Close editor
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+</details>
 
             <div class="action-bar">
                 <button
@@ -1011,31 +1096,7 @@
                     My bookings
                 </button>
 
-                <button
-    id="markRosterSentButton"
-    class="btn-secondary"
-    type="button"
->
-    Manager: Mark hard copy as sent
-</button>
-
-<button
-    id="editRosterPeriodButton"
-    class="btn-secondary"
-    type="button"
-    disabled
->
-    Manager: Edit submitted period
-</button>
-
-<button
-    id="resetRosterSentButton"
-    class="btn-danger"
-    type="button"
-    disabled
->
-    Manager: Reset sent status
-</button>
+             
             </div>
         </section>
 
