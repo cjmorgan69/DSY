@@ -2097,40 +2097,57 @@
             bookButton.disabled = false;
         }
 
-        function checkShiftAvailability(selection) {
-            let hourStart = new Date(selection.startDate);
+       function checkShiftAvailability(selection) {
+    let hourStart = new Date(selection.startDate);
 
-            while (hourStart < selection.endDate) {
-                const bookings = getBookingsForHour(hourStart);
+    const bookingAsRecruit =
+        String(currentClinicalLevel || "").trim().toUpperCase() === "REC";
 
-                const alreadyBooked = currentUser && bookings.some(event =>
-                    normaliseName(event.user) === normaliseName(currentUser)
-                );
+    while (hourStart < selection.endDate) {
+        const bookings = getBookingsForHour(hourStart);
 
-                if (alreadyBooked) {
-                    return {
-                        available: false,
-                        message:
-                            "You already have a booking during " +
-                            `${formatHourPeriod(hourStart)}.`
-                    };
-                }
+        const alreadyBooked = currentUser && bookings.some(event =>
+            normaliseName(event.user) === normaliseName(currentUser)
+        );
 
-                // Recruits use booking places even though they are observers.
-                if (bookings.length >= MAX_CREW) {
-                    return {
-                        available: false,
-                        message:
-                            `${formatHourPeriod(hourStart)} already has ` +
-                            `${MAX_CREW} people booked.`
-                    };
-                }
-
-                hourStart = addHours(hourStart, 1);
-            }
-
-            return { available: true };
+        if (alreadyBooked) {
+            return {
+                available: false,
+                message:
+                    "You already have a booking during " +
+                    `${formatHourPeriod(hourStart)}.`
+            };
         }
+
+        // Every person, including REC, uses one of the three places.
+        if (bookings.length >= MAX_CREW) {
+            return {
+                available: false,
+                message:
+                    `${formatHourPeriod(hourStart)} already has ` +
+                    `${MAX_CREW} people booked. There are no places available.`
+            };
+        }
+
+        const recruitAlreadyBooked = bookings.some(event =>
+            String(event.clinicalLevel || "").trim().toUpperCase() === "REC"
+        );
+
+        if (bookingAsRecruit && recruitAlreadyBooked) {
+            return {
+                available: false,
+                message:
+                    `The recruit place is already occupied during ` +
+                    `${formatHourPeriod(hourStart)}. ` +
+                    "Only one recruit can be booked per hourly timeslot."
+            };
+        }
+
+        hourStart = addHours(hourStart, 1);
+    }
+
+    return { available: true };
+}
 
         function getSelectedFlexibilityRestriction() {
             const selectedCode = String(restrictionSelect.value || "")
@@ -3167,6 +3184,12 @@
             content: "—";
             color: #d1d5db;
         }
+        td.crew-name.recruit-name {
+    color: #dc2626;
+    font-weight: 700;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
 
         td.restriction,
         td.operational {
@@ -3448,6 +3471,61 @@
             const events = snapshot.events;
             const HOURS_PER_DAY = snapshot.hoursPerDay;
             const MAX_CREW = snapshot.maxCrew;
+            // Display allocation only. Never use these padded slots for
+// capacity checks or operational restriction calculations.
+function allocateCrewSlots(bookings) {
+    const levelOf = booking =>
+        String(booking.clinicalLevel || "").trim().toUpperCase();
+
+    const recruits = bookings.filter(booking =>
+        levelOf(booking) === "REC"
+    );
+
+    // Do not silently omit existing bookings that break the new rules.
+    if (bookings.length > MAX_CREW || recruits.length > 1) {
+        throw new Error(
+            "This timeslot contains more than three people or more than " +
+            "one recruit. Review the existing bookings in the booking list."
+        );
+    }
+
+    const priority = {
+        PARA: 0,
+        AO: 0,
+        AR: 1,
+        AA: 2
+    };
+
+    const nonRecruits = bookings
+        .map((booking, originalIndex) => ({
+            booking,
+            originalIndex
+        }))
+        .filter(item => levelOf(item.booking) !== "REC")
+        .sort((first, second) => {
+            const firstRank = priority[levelOf(first.booking)] ?? 3;
+            const secondRank = priority[levelOf(second.booking)] ?? 3;
+
+            // Equal clinical priority retains the existing returned order.
+            return (
+                firstRank - secondRank ||
+                first.originalIndex - second.originalIndex
+            );
+        })
+        .map(item => item.booking);
+
+    const slots = [null, null, null];
+
+    nonRecruits.forEach((booking, index) => {
+        slots[index] = booking;
+    });
+
+    if (recruits.length === 1) {
+        slots[2] = recruits[0];
+    }
+
+    return slots;
+}
 
             function addHours(date, hours) {
                 const result = new Date(date);
@@ -3606,11 +3684,49 @@
                     const absoluteHour = 8 + rosterHour;
                     const displayHour = absoluteHour % HOURS_PER_DAY;
 
-                    const dayBookings = days.map(day => {
-                        const hourStart = new Date(day);
-                        hourStart.setHours(absoluteHour, 0, 0, 0);
-                        return getBookingsForHour(hourStart);
-                    });
+                   let dayBookings;
+
+try {
+    dayBookings = days.map(day => {
+        const hourStart = new Date(day);
+        hourStart.setHours(absoluteHour, 0, 0, 0);
+
+        const bookings = getBookingsForHour(hourStart);
+
+        try {
+            return {
+                bookings,
+                slots: allocateCrewSlots(bookings)
+            };
+        } catch (error) {
+            throw new Error(
+                hourStart.toLocaleString("en-AU") + ": " + error.message
+            );
+        }
+    });
+} catch (error) {
+    // Clear any partial roster rather than displaying an incomplete
+    // or misleading printout if legacy bookings break the new rules.
+    rosterBody.innerHTML = "";
+
+    const errorRow = document.createElement("tr");
+    const errorCell = document.createElement("td");
+
+    errorCell.colSpan = 1 + days.length * 3;
+    errorCell.textContent = "Roster requires review. " + error.message;
+    errorCell.style.color = "#dc2626";
+    errorCell.style.fontWeight = "700";
+
+    errorRow.appendChild(errorCell);
+    rosterBody.appendChild(errorRow);
+
+    document.getElementById("rosterRangeText").textContent =
+        "Roster not displayed: resolve the conflicting bookings first.";
+
+    document.getElementById("snapshotText").textContent = "";
+
+    return;
+}
 
                     for (
                         let crewSlot = 0;
@@ -3633,11 +3749,17 @@
                             row.appendChild(timeCell);
                         }
 
-                        dayBookings.forEach(bookings => {
-                            const booking = bookings[crewSlot];
+                      dayBookings.forEach(({ bookings, slots }) => {
+    const booking = slots[crewSlot];
 
-                            const crewCell = document.createElement("td");
-                            crewCell.className = "crew-name";
+                           const crewCell = document.createElement("td");
+crewCell.className = "crew-name";
+
+if (
+    String(booking?.clinicalLevel || "").trim().toUpperCase() === "REC"
+) {
+    crewCell.classList.add("recruit-name");
+}
 
                             if (booking) {
                                 const levelLabel =
