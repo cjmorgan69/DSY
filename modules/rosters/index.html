@@ -2289,13 +2289,15 @@
 
                 saveConfirmed = true;
 
-                startTimeSelect.value = "";
-                restrictionSelect.value = "N";
-                populateFinishTimes();
+               // Keep the selected date, start time and finish time.
+// The user can change just the date for their next booking.
 
-                // Name and clinical level persist between bookings.
-                lastCentralRosteringWarningKey = "";
-                updateCentralRosteringWarning();
+// Flexibility remains shift-specific and resets to no restriction.
+restrictionSelect.value = "N";
+
+// Name and clinical level continue to persist.
+lastCentralRosteringWarningKey = "";
+updateCentralRosteringWarning();
 
                 if (centralNoticeRequired) {
                     window.alert(
