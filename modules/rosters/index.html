@@ -3244,6 +3244,20 @@
         }
 
         td.operational.review { color: #92400e; }
+        /* Operational column only — does not affect the Flex column. */
+td.operational[data-op="NC"] { color: #ff0000; }
+td.operational[data-op="A"]  { color: #0080ff; }
+td.operational[data-op="B"]  { color: #00ffff; }
+td.operational[data-op="C"]  { color: #ffff00; }
+td.operational[data-op="D"]  { color: #ff00ff; }
+td.operational[data-op="E"]  { color: #ff8080; }
+td.operational[data-op="Z"]  { color: #808080; }
+td.operational[data-op="N"]  { color: #00ff00; }
+
+td.operational {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
 
         tr.day-shift td { background: #fff9db; }
         tr.night-shift td { background: #eef4f8; }
@@ -3844,10 +3858,14 @@ if (
 
                                 operationalCell.rowSpan = MAX_CREW;
 
-                                operationalCell.textContent =
-                                    operational.code || "—";
+                               operationalCell.textContent =
+    operational.code || "—";
 
-                                operationalCell.title = operational.reason;
+// Used exclusively by the Operational column's colour styling.
+operationalCell.dataset.op =
+    String(operational.code || "").trim().toUpperCase();
+
+operationalCell.title = operational.reason;
 
                                 row.appendChild(operationalCell);
                             }
