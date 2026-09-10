@@ -898,14 +898,92 @@
                 role="alert"
             ></div>
 
-            <div class="roster-submission-manager">
-                <div>
-                    <strong>Central Rostering hard-copy status</strong>
-                    <p id="rosterSubmissionStatus">
-                        Checking submitted roster status…
-                    </p>
-                </div>
+           <div class="roster-submission-manager">
+    <div>
+        <strong>Central Rostering hard-copy status</strong>
+
+        <p id="rosterSubmissionStatus" aria-live="polite">
+            Checking submitted roster status…
+        </p>
+
+        <p>
+            Changes within the submitted period remain allowed,
+            but require notification to Central Rostering.
+        </p>
+    </div>
+</div>
+
+<section
+    id="rosterPeriodEditor"
+    class="notice"
+    aria-labelledby="rosterPeriodEditorTitle"
+    hidden
+>
+    <h3 id="rosterPeriodEditorTitle">
+        Select the hard-copy roster period
+    </h3>
+
+    <p id="rosterPeriodTimezoneHelp"></p>
+
+    <form id="rosterPeriodForm">
+        <div class="form-grid">
+            <div class="field">
+                <label for="rosterPeriodStartInput">
+                    Start date and time — inclusive
+                </label>
+
+                <input
+                    id="rosterPeriodStartInput"
+                    type="datetime-local"
+                    step="60"
+                    required
+                    data-roster-manager-control
+                >
             </div>
+
+            <div class="field">
+                <label for="rosterPeriodEndInput">
+                    End date and time — exclusive
+                </label>
+
+                <input
+                    id="rosterPeriodEndInput"
+                    type="datetime-local"
+                    step="60"
+                    required
+                    data-roster-manager-control
+                >
+            </div>
+        </div>
+
+        <p class="field-help">
+            Enter the exact period covered by the hard copy.
+            The end time is not included: a shift starting exactly
+            at that time falls outside this period.
+            Only one submitted period is stored per team.
+        </p>
+
+        <div class="action-bar">
+            <button
+                id="saveRosterPeriodButton"
+                class="btn-primary"
+                type="submit"
+                data-roster-manager-control
+            >
+                Mark this period as sent
+            </button>
+
+            <button
+                id="closeRosterPeriodEditorButton"
+                class="btn-secondary"
+                type="button"
+                data-roster-manager-control
+            >
+                Close
+            </button>
+        </div>
+    </form>
+</section>
 
             <div class="action-bar">
                 <button
@@ -934,12 +1012,30 @@
                 </button>
 
                 <button
-                    id="markRosterSentButton"
-                    class="btn-secondary"
-                    type="button"
-                >
-                    Manager: Mark hard copy as sent
-                </button>
+    id="markRosterSentButton"
+    class="btn-secondary"
+    type="button"
+>
+    Manager: Mark hard copy as sent
+</button>
+
+<button
+    id="editRosterPeriodButton"
+    class="btn-secondary"
+    type="button"
+    disabled
+>
+    Manager: Edit submitted period
+</button>
+
+<button
+    id="resetRosterSentButton"
+    class="btn-danger"
+    type="button"
+    disabled
+>
+    Manager: Reset sent status
+</button>
             </div>
         </section>
 
@@ -1242,10 +1338,24 @@
             refreshButton.addEventListener("click", refreshRoster);
             viewRosterButton.addEventListener("click", openRosterView);
 
-            markRosterSentButton.addEventListener(
-                "click",
-                markHardCopyRosterAsSent
-            );
+          markRosterSentButton.addEventListener(
+    "click",
+    markHardCopyRosterAsSent
+);
+
+document.getElementById("editRosterPeriodButton")
+    .addEventListener("click", () => {
+        void openRosterPeriodEditor(true);
+    });
+
+document.getElementById("resetRosterSentButton")
+    .addEventListener("click", resetHardCopyRosterStatus);
+
+document.getElementById("rosterPeriodForm")
+    .addEventListener("submit", saveHardCopyRosterPeriod);
+
+document.getElementById("closeRosterPeriodEditorButton")
+    .addEventListener("click", closeRosterPeriodEditor);
 
             document.getElementById("myBookingsButton")
                 .addEventListener("click", openBookingsModal);
@@ -1658,77 +1768,120 @@
         }
 
         async function loadRosterSubmissionStatus() {
-            const status =
-                document.getElementById("rosterSubmissionStatus");
+    submissionStatusLoaded = false;
+    updateRosterManagerControls();
 
-            submissionStatusLoaded = false;
+    try {
+        const result = await callRosterApi("getRosterSubmission");
 
-            try {
-                const result = await callRosterApi("getRosterSubmission");
+        applyRosterSubmissionResult(result);
 
-                if (
-                    !Object.prototype.hasOwnProperty.call(
-                        result,
-                        "rosterSubmission"
-                    )
-                ) {
-                    throw new Error(
-                        "Apps Script did not return the hard-copy status."
-                    );
-                }
+        return result;
+    } catch (error) {
+        invalidateRosterSubmissionStatus();
+        throw error;
+    }
+}
 
-                const period = result.rosterSubmission;
+function applyRosterSubmissionResult(result) {
+    if (
+        !result ||
+        result.success !== true ||
+        !Object.prototype.hasOwnProperty.call(
+            result,
+            "rosterSubmission"
+        )
+    ) {
+        throw new Error(
+            "Apps Script did not return a valid hard-copy status."
+        );
+    }
 
-                if (period !== null) {
-                    const start = new Date(period?.start);
-                    const end = new Date(period?.end);
+    const period = result.rosterSubmission;
 
-                    if (
-                        !period?.start ||
-                        !period?.end ||
-                        !Number.isFinite(start.getTime()) ||
-                        !Number.isFinite(end.getTime()) ||
-                        end <= start
-                    ) {
-                        throw new Error(
-                            "The submitted roster period is invalid."
-                        );
-                    }
-                }
+    if (period !== null) {
+        const start = new Date(period?.start);
+        const end = new Date(period?.end);
 
-                submittedRosterPeriod = period;
-                submissionStatusLoaded = true;
-
-                if (!period) {
-                    status.textContent =
-                        "No current hard-copy roster period has been marked as sent.";
-                } else {
-                    status.textContent =
-                        "Warning active for shifts from " +
-                        formatRosterPeriodDateTime(period.start) +
-                        " to " +
-                        formatRosterPeriodDateTime(period.end) +
-                        ".";
-                }
-
-                updateCentralRosteringWarning();
-                updateBookingSummary();
-
-                return result;
-            } catch (error) {
-                submittedRosterPeriod = null;
-                submissionStatusLoaded = false;
-
-                status.textContent =
-                    "Unable to verify hard-copy status. " +
-                    "Refresh before changing bookings.";
-
-                updateCentralRosteringWarning();
-                updateBookingSummary();
-
-                throw error;
-            }
+        if (
+            !period?.start ||
+            !period?.end ||
+            !Number.isFinite(start.getTime()) ||
+            !Number.isFinite(end.getTime()) ||
+            end <= start
+        ) {
+            throw new Error(
+                "The submitted roster period is invalid."
+            );
         }
+
+        if (
+            period.team &&
+            normaliseName(period.team) !== normaliseName(TEAM_NAME)
+        ) {
+            throw new Error(
+                "The returned hard-copy period belongs to another team."
+            );
+        }
+    }
+
+    submittedRosterPeriod = period;
+    submissionStatusLoaded = true;
+    lastCentralRosteringWarningKey = "";
+
+    const status =
+        document.getElementById("rosterSubmissionStatus");
+
+    if (!period) {
+        status.textContent =
+            `No hard-copy roster period is currently marked as sent for ${TEAM_NAME}.`;
+    } else {
+        status.textContent =
+            `Hard copy marked as sent for ${TEAM_NAME}: ` +
+            formatRosterPeriodDateTime(period.start) +
+            " → " +
+            formatRosterPeriodDateTime(period.end) +
+            " (end exclusive). Changes overlapping this period " +
+            "require notification to Central Rostering.";
+    }
+
+    updateCentralRosteringWarning();
+    updateBookingSummary();
+    updateRosterManagerControls();
+}
+
+function invalidateRosterSubmissionStatus() {
+    submittedRosterPeriod = null;
+    submissionStatusLoaded = false;
+    lastCentralRosteringWarningKey = "";
+
+    document.getElementById("rosterSubmissionStatus").textContent =
+        "Unable to verify hard-copy status. " +
+        "Refresh the roster before changing bookings or retrying " +
+        "a manager update.";
+
+    updateCentralRosteringWarning();
+    updateBookingSummary();
+    updateRosterManagerControls();
+}
+
+function updateRosterManagerControls() {
+    const hasSubmittedPeriod =
+        submissionStatusLoaded && Boolean(submittedRosterPeriod);
+
+    markRosterSentButton.disabled = isLoading;
+
+    document.getElementById("editRosterPeriodButton").disabled =
+        isLoading || !hasSubmittedPeriod;
+
+    document.getElementById("resetRosterSentButton").disabled =
+        isLoading || !hasSubmittedPeriod;
+
+    document.querySelectorAll("[data-roster-manager-control]")
+        .forEach(control => {
+            control.disabled = isLoading;
+        });
+}
 
         async function refreshRoster() {
             if (isLoading) return;
@@ -1890,47 +2043,393 @@
             });
         }
 
-        async function markHardCopyRosterAsSent() {
-            if (isLoading) return;
+       async function markHardCopyRosterAsSent() {
+    await openRosterPeriodEditor(false);
+}
 
-            const managerPassword = window.prompt(
-                "Enter the roster manager password to mark the hard copy as sent:"
+async function openRosterPeriodEditor(editing) {
+    if (isLoading) return;
+
+    setLoading(true);
+
+    let editorOpened = false;
+
+    try {
+        // Get the latest team-specific status before opening.
+        await loadRosterSubmissionStatus();
+
+        if (editing && !submittedRosterPeriod) {
+            throw new Error(
+                "There is no submitted hard-copy period to edit."
             );
-
-            if (!managerPassword) return;
-
-            const confirmed = window.confirm(
-                "Mark the upcoming Wednesday 08:00 to following Wednesday 08:00 " +
-                "roster period as sent to Central Rostering?"
-            );
-
-            if (!confirmed) return;
-
-            setLoading(true);
-
-            try {
-                const result = await callRosterApi("markRosterSent", {
-                    managerPassword
-                });
-
-                if (!result.success) {
-                    throw new Error(
-                        "Apps Script did not confirm the hard-copy update."
-                    );
-                }
-
-                await loadRosterSubmissionStatus();
-
-                window.alert("Hard-copy roster status has been updated.");
-                showCentralRosteringPopupIfRequired();
-            } catch (error) {
-                window.alert(
-                    error.message || "Unable to update hard-copy status."
-                );
-            } finally {
-                setLoading(false);
-            }
         }
+
+        const editor =
+            document.getElementById("rosterPeriodEditor");
+
+        const startInput =
+            document.getElementById("rosterPeriodStartInput");
+
+        const endInput =
+            document.getElementById("rosterPeriodEndInput");
+
+        editor.dataset.mode = editing ? "edit" : "new";
+
+        document.getElementById("rosterPeriodEditorTitle").textContent =
+            editing
+                ? `Edit ${TEAM_NAME}'s submitted period`
+                : `Select ${TEAM_NAME}'s hard-copy roster period`;
+
+        document.getElementById("saveRosterPeriodButton").textContent =
+            editing
+                ? "Save changes to submitted period"
+                : "Mark this period as sent";
+
+        /*
+         * No defaults for a new submission.
+         *
+         * Editing loads the actual saved boundaries;
+         * these are existing values, not calculated defaults.
+         */
+        startInput.value = editing
+            ? formatRosterDateTimeInput(submittedRosterPeriod.start)
+            : "";
+
+        endInput.value = editing
+            ? formatRosterDateTimeInput(submittedRosterPeriod.end)
+            : "";
+
+        const browserTimezone =
+            Intl.DateTimeFormat().resolvedOptions().timeZone ||
+            "your device's local timezone";
+
+        document.getElementById("rosterPeriodTimezoneHelp").textContent =
+            "Dates and times use your device timezone: " +
+            browserTimezone +
+            ". Ensure this matches the team's local time before saving. " +
+            "For Tumby Bay and the other South Australian teams, " +
+            "use Adelaide time.";
+
+        editor.hidden = false;
+        editorOpened = true;
+    } catch (error) {
+        console.error("Unable to open roster period editor:", error);
+
+        window.alert(
+            error.message || "Unable to load the hard-copy status."
+        );
+    } finally {
+        setLoading(false);
+    }
+
+    if (editorOpened) {
+        const editor =
+            document.getElementById("rosterPeriodEditor");
+
+        editor.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+        document.getElementById("rosterPeriodStartInput")
+            .focus({ preventScroll: true });
+    }
+}
+
+function closeRosterPeriodEditor() {
+    if (isLoading) return;
+
+    clearRosterPeriodEditor();
+    markRosterSentButton.focus();
+}
+
+function clearRosterPeriodEditor() {
+    const editor =
+        document.getElementById("rosterPeriodEditor");
+
+    editor.hidden = true;
+    delete editor.dataset.mode;
+
+    // Do not retain dates as defaults for the next submission.
+    document.getElementById("rosterPeriodStartInput").value = "";
+    document.getElementById("rosterPeriodEndInput").value = "";
+}
+
+function formatRosterDateTimeInput(value) {
+    const date = new Date(value);
+
+    if (!Number.isFinite(date.getTime())) {
+        throw new Error("The saved roster date/time is invalid.");
+    }
+
+    return (
+        formatDateKey(date) +
+        "T" +
+        String(date.getHours()).padStart(2, "0") +
+        ":" +
+        String(date.getMinutes()).padStart(2, "0")
+    );
+}
+
+function readRosterPeriodInput(inputId, label) {
+    const input = document.getElementById(inputId);
+    const value = input.value;
+
+    if (!value) {
+        throw new Error(
+            `Please select the ${label.toLowerCase()} date and time.`
+        );
+    }
+
+    /*
+     * datetime-local has no timezone.
+     * Interpret it in the device's local timezone, matching
+     * the current booking form, and send an explicit ISO value.
+     */
+    const date = new Date(value);
+
+    if (
+        !Number.isFinite(date.getTime()) ||
+        formatRosterDateTimeInput(date) !== value
+    ) {
+        throw new Error(
+            `${label} date/time is invalid or does not exist ` +
+            "in your device timezone because of a daylight-saving change."
+        );
+    }
+
+    return date;
+}
+
+async function saveHardCopyRosterPeriod(event) {
+    event.preventDefault();
+
+    if (isLoading) return;
+
+    const form = document.getElementById("rosterPeriodForm");
+
+    if (!form.reportValidity()) return;
+
+    const editing =
+        document.getElementById("rosterPeriodEditor")
+            .dataset.mode === "edit";
+
+    let start;
+    let end;
+
+    try {
+        start = readRosterPeriodInput(
+            "rosterPeriodStartInput",
+            "Start"
+        );
+
+        end = readRosterPeriodInput(
+            "rosterPeriodEndInput",
+            "End"
+        );
+
+        if (end <= start) {
+            throw new Error(
+                "The end date and time must be after " +
+                "the start date and time."
+            );
+        }
+    } catch (error) {
+        window.alert(error.message);
+        return;
+    }
+
+    setLoading(true);
+
+    let updateAttempted = false;
+    let updateConfirmed = false;
+
+    try {
+        // Recheck before confirming a replacement or edit.
+        await loadRosterSubmissionStatus();
+
+        if (editing && !submittedRosterPeriod) {
+            throw new Error(
+                "The submitted period has been reset. " +
+                "Close this editor and choose Mark hard copy as sent."
+            );
+        }
+
+        let message =
+            (editing
+                ? "Update the submitted hard-copy period"
+                : "Mark the hard-copy roster as sent") +
+            ` for ${TEAM_NAME}?\n\n` +
+            "Start: " + formatRosterPeriodDateTime(start) + "\n" +
+            "End: " + formatRosterPeriodDateTime(end) +
+            " (exclusive)\n\n";
+
+        if (!editing && submittedRosterPeriod) {
+            message +=
+                "This will REPLACE the currently submitted period:\n" +
+                formatRosterPeriodDateTime(submittedRosterPeriod.start) +
+                " → " +
+                formatRosterPeriodDateTime(submittedRosterPeriod.end) +
+                "\n\nOnly one submitted period is stored per team.\n\n";
+        }
+
+        message +=
+            "Bookings and cancellations will still be allowed. " +
+            "Changes overlapping this period require notification " +
+            "to Central Rostering.";
+
+        if (!window.confirm(message)) return;
+
+        const managerPassword = window.prompt(
+            "Enter the roster manager password:"
+        );
+
+        if (!managerPassword) return;
+
+        updateAttempted = true;
+
+        const result = await callRosterApi(
+            editing ? "editRosterSubmission" : "markRosterSent",
+            {
+                managerPassword,
+                start: start.toISOString(),
+                end: end.toISOString()
+            }
+        );
+
+        if (result.success !== true) {
+            throw new Error(
+                "Apps Script did not confirm the hard-copy update."
+            );
+        }
+
+        updateConfirmed = true;
+
+        // Use the returned saved period; no extra reload is needed.
+        applyRosterSubmissionResult(result);
+        clearRosterPeriodEditor();
+
+        showToast(
+            editing
+                ? "Submitted hard-copy period updated."
+                : "Hard copy marked as sent for the selected period."
+        );
+
+        if (hasLoadedBookings) {
+            showLoadedConnectionStatus();
+        }
+    } catch (error) {
+        console.error("Hard-copy period update failed:", error);
+
+        let message = error.message ||
+            "Unable to update the hard-copy period.";
+
+        if (updateAttempted) {
+            invalidateRosterSubmissionStatus();
+
+            message += updateConfirmed
+                ? "\n\nThe server confirmed the save, but the returned " +
+                  "status could not be read. Refresh the roster " +
+                  "before making further changes."
+                : "\n\nIf the request timed out or the connection failed, " +
+                  "the server may still have saved it. Refresh the roster " +
+                  "and check the hard-copy status before retrying.";
+
+            setConnectionStatus(message, "error");
+        }
+
+        window.alert(message);
+    } finally {
+        setLoading(false);
+        updateCentralRosteringWarning();
+    }
+}
+
+async function resetHardCopyRosterStatus() {
+    if (isLoading) return;
+
+    setLoading(true);
+
+    let resetAttempted = false;
+    let resetConfirmed = false;
+
+    try {
+        await loadRosterSubmissionStatus();
+
+        if (!submittedRosterPeriod) {
+            showToast(
+                "There is no submitted hard-copy period to reset."
+            );
+            return;
+        }
+
+        const confirmed = window.confirm(
+            `Reset the hard-copy sent status for ${TEAM_NAME}?\n\n` +
+            formatRosterPeriodDateTime(submittedRosterPeriod.start) +
+            " → " +
+            formatRosterPeriodDateTime(submittedRosterPeriod.end) +
+            "\n\nThis removes the notification-warning period " +
+            "for this team only. It does not cancel bookings " +
+            "or affect other teams.\n\n" +
+            "Only reset this if the hard-copy submission status " +
+            "should no longer apply."
+        );
+
+        if (!confirmed) return;
+
+        const managerPassword = window.prompt(
+            "Enter the roster manager password to reset the status:"
+        );
+
+        if (!managerPassword) return;
+
+        resetAttempted = true;
+
+        const result = await callRosterApi("resetRosterSent", {
+            managerPassword
+        });
+
+        if (result.success !== true) {
+            throw new Error(
+                "Apps Script did not confirm the reset."
+            );
+        }
+
+        resetConfirmed = true;
+
+        applyRosterSubmissionResult(result);
+        clearRosterPeriodEditor();
+
+        showToast(`Hard-copy sent status reset for ${TEAM_NAME}.`);
+
+        if (hasLoadedBookings) {
+            showLoadedConnectionStatus();
+        }
+    } catch (error) {
+        console.error("Hard-copy status reset failed:", error);
+
+        let message = error.message ||
+            "Unable to reset the hard-copy status.";
+
+        if (resetAttempted) {
+            invalidateRosterSubmissionStatus();
+
+            message += resetConfirmed
+                ? "\n\nThe server confirmed the reset, but the returned " +
+                  "status could not be read. Refresh the roster."
+                : "\n\nIf the request timed out or the connection failed, " +
+                  "the reset may still have completed. Refresh the roster " +
+                  "and check the status before retrying.";
+
+            setConnectionStatus(message, "error");
+        }
+
+        window.alert(message);
+    } finally {
+        setLoading(false);
+        updateCentralRosteringWarning();
+    }
+}
 
         function populateStartTimes() {
             startTimeSelect.innerHTML =
@@ -3940,33 +4439,34 @@ operationalCell.title = operational.reason;
             showSelectedRoster();
         }
 
-        function setLoading(loading) {
-            isLoading = loading;
+       function setLoading(loading) {
+    isLoading = loading;
 
-            refreshButton.disabled = loading;
-            markRosterSentButton.disabled = loading;
-            viewRosterButton.disabled = loading || !hasLoadedBookings;
+    refreshButton.disabled = loading;
+    viewRosterButton.disabled = loading || !hasLoadedBookings;
 
-            // Freeze inputs while a roster operation is running.
-            nameInput.disabled = loading;
-            clinicalLevelSelect.disabled = loading;
-            bookingDateInput.disabled = loading;
-            startTimeSelect.disabled = loading;
-            restrictionSelect.disabled = loading;
+    updateRosterManagerControls();
 
-            finishTimeSelect.disabled =
-                loading || startTimeSelect.value === "";
+    // Freeze booking inputs while a roster operation is running.
+    nameInput.disabled = loading;
+    clinicalLevelSelect.disabled = loading;
+    bookingDateInput.disabled = loading;
+    startTimeSelect.disabled = loading;
+    restrictionSelect.disabled = loading;
 
-            document.querySelectorAll("[data-cancel-id]")
-                .forEach(button => {
-                    button.disabled =
-                        loading ||
-                        !hasLoadedBookings ||
-                        !submissionStatusLoaded;
-                });
+    finishTimeSelect.disabled =
+        loading || startTimeSelect.value === "";
 
-            updateBookingSummary();
-        }
+    document.querySelectorAll("[data-cancel-id]")
+        .forEach(button => {
+            button.disabled =
+                loading ||
+                !hasLoadedBookings ||
+                !submissionStatusLoaded;
+        });
+
+    updateBookingSummary();
+}
 
         function setConnectionStatus(message, statusClass) {
             connectionStatus.className = "connection-status";
