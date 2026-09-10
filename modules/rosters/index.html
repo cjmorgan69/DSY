@@ -942,134 +942,23 @@
                 role="alert"
             ></div>
 
-           <div class="roster-submission-manager">
-    <div>
-        <strong>Central Rostering hard-copy status</strong>
+                      <!-- Hard-copy status stays visible to everyone. -->
+            <div class="roster-submission-manager">
+                <div>
+                    <strong>Central Rostering hard-copy status</strong>
 
-        <p id="rosterSubmissionStatus" aria-live="polite">
-            Checking submitted roster status…
-        </p>
+                    <p id="rosterSubmissionStatus" aria-live="polite">
+                        Checking submitted roster status…
+                    </p>
 
-        <p>
-            Changes within the submitted period remain allowed,
-            but require notification to Central Rostering.
-        </p>
-    </div>
-</div>
-
-<section
-   <details id="managerControlsPanel" class="manager-controls-panel">
-    <summary>Manager controls</summary>
-
-    <div class="manager-controls-content">
-        <p class="field-help">
-            Manage this team's hard-copy submission period.
-            Saving, editing or resetting the status requires
-            the roster manager password.
-        </p>
-
-        <div class="action-bar">
-            <button
-                id="markRosterSentButton"
-                class="btn-secondary"
-                type="button"
-            >
-                Mark hard copy as sent
-            </button>
-
-            <button
-                id="editRosterPeriodButton"
-                class="btn-secondary"
-                type="button"
-                disabled
-            >
-                Edit submitted period
-            </button>
-
-            <button
-                id="resetRosterSentButton"
-                class="btn-danger"
-                type="button"
-                disabled
-            >
-                Reset sent status
-            </button>
-        </div>
-
-        <section
-            id="rosterPeriodEditor"
-            class="notice"
-            aria-labelledby="rosterPeriodEditorTitle"
-            hidden
-        >
-            <h3 id="rosterPeriodEditorTitle">
-                Select the hard-copy roster period
-            </h3>
-
-            <p id="rosterPeriodTimezoneHelp"></p>
-
-            <form id="rosterPeriodForm">
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="rosterPeriodStartInput">
-                            Start date and time — inclusive
-                        </label>
-
-                        <input
-                            id="rosterPeriodStartInput"
-                            type="datetime-local"
-                            step="60"
-                            required
-                            data-roster-manager-control
-                        >
-                    </div>
-
-                    <div class="field">
-                        <label for="rosterPeriodEndInput">
-                            End date and time — exclusive
-                        </label>
-
-                        <input
-                            id="rosterPeriodEndInput"
-                            type="datetime-local"
-                            step="60"
-                            required
-                            data-roster-manager-control
-                        >
-                    </div>
+                    <p>
+                        Changes within the submitted period remain allowed,
+                        but require notification to Central Rostering.
+                    </p>
                 </div>
+            </div>
 
-                <p class="field-help">
-                    Enter the exact period covered by the hard copy.
-                    The end time is not included: a shift starting
-                    exactly at that time falls outside this period.
-                    Only one submitted period is stored per team.
-                </p>
-
-                <div class="action-bar">
-                    <button
-                        id="saveRosterPeriodButton"
-                        class="btn-primary"
-                        type="submit"
-                        data-roster-manager-control
-                    >
-                        Mark this period as sent
-                    </button>
-
-                    <button
-                        id="closeRosterPeriodEditorButton"
-                        class="btn-secondary"
-                        type="button"
-                        data-roster-manager-control
-                    >
-                        Close editor
-                    </button>
-                </div>
-            </form>
-        </section>
-    </div>
-</details>
-
+            <!-- Everyday booking controls remain outside the manager panel. -->
             <div class="action-bar">
                 <button
                     id="bookButton"
@@ -1095,9 +984,123 @@
                 >
                     My bookings
                 </button>
-
-             
             </div>
+
+            <!-- No "open" attribute: manager controls start collapsed. -->
+            <details
+                id="managerControlsPanel"
+                class="manager-controls-panel"
+            >
+                <summary>Manager controls</summary>
+
+                <div class="manager-controls-content">
+                    <p class="field-help">
+                        Manage this team's hard-copy submission period.
+                        Saving, editing or resetting the status requires
+                        the roster manager password.
+                    </p>
+
+                    <div class="action-bar">
+                        <button
+                            id="markRosterSentButton"
+                            class="btn-secondary"
+                            type="button"
+                        >
+                            Mark hard copy as sent
+                        </button>
+
+                        <button
+                            id="editRosterPeriodButton"
+                            class="btn-secondary"
+                            type="button"
+                            disabled
+                        >
+                            Edit submitted period
+                        </button>
+
+                        <button
+                            id="resetRosterSentButton"
+                            class="btn-danger"
+                            type="button"
+                            disabled
+                        >
+                            Reset sent status
+                        </button>
+                    </div>
+
+                    <section
+                        id="rosterPeriodEditor"
+                        class="notice"
+                        aria-labelledby="rosterPeriodEditorTitle"
+                        hidden
+                    >
+                        <h3 id="rosterPeriodEditorTitle">
+                            Select the hard-copy roster period
+                        </h3>
+
+                        <p id="rosterPeriodTimezoneHelp"></p>
+
+                        <form id="rosterPeriodForm">
+                            <div class="form-grid">
+                                <div class="field">
+                                    <label for="rosterPeriodStartInput">
+                                        Start date and time — inclusive
+                                    </label>
+
+                                    <input
+                                        id="rosterPeriodStartInput"
+                                        type="datetime-local"
+                                        step="60"
+                                        required
+                                        data-roster-manager-control
+                                    >
+                                </div>
+
+                                <div class="field">
+                                    <label for="rosterPeriodEndInput">
+                                        End date and time — exclusive
+                                    </label>
+
+                                    <input
+                                        id="rosterPeriodEndInput"
+                                        type="datetime-local"
+                                        step="60"
+                                        required
+                                        data-roster-manager-control
+                                    >
+                                </div>
+                            </div>
+
+                            <p class="field-help">
+                                Enter the exact period covered by the hard copy.
+                                The end time is not included: a shift starting
+                                exactly at that time falls outside this period.
+                                Only one submitted period is stored per team.
+                            </p>
+
+                            <div class="action-bar">
+                                <button
+                                    id="saveRosterPeriodButton"
+                                    class="btn-primary"
+                                    type="submit"
+                                    data-roster-manager-control
+                                >
+                                    Mark this period as sent
+                                </button>
+
+                                <button
+                                    id="closeRosterPeriodEditorButton"
+                                    class="btn-secondary"
+                                    type="button"
+                                    data-roster-manager-control
+                                >
+                                    Close editor
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </details>
         </section>
 
         <div class="view-switcher">
@@ -3988,7 +3991,12 @@ td.operational {
                 margin-bottom: 0.5rem;
             }
         }
-    </style>
+   .manager-controls-panel > summary {
+    display: list-item;
+    list-style-position: inside;
+}
+
+</style>
 </head>
 
 <body>
