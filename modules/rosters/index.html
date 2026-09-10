@@ -1095,9 +1095,11 @@
          * Two or more AR, or AR with AA, without AO/PARA: E
          * AA-only operational crew: Z
          *
-         * Working assumptions retained from the previous revision:
+                 * AO/PARA rules:
          * - AO/PARA alone, including with REC observers: D.
-         * - AO/PARA with another non-recruit: no operational code.
+         * - AO/PARA with another non-recruit: use the first alphabetical
+         *   non-recruit flexibility code in the order A, B, C, N.
+         * - REC flexibility is excluded. Blank flexibility means N.
          *
          * The empty object is retained for compatibility with existing
          * timeline, list, CSV and printable-window function calls.
@@ -1529,10 +1531,15 @@
                 member.clinicalLevel === "AA"
             ).length;
 
-            /*
-             * Working assumption:
-             * AO/PARA with another non-recruit removes E/Z.
-             * AO/PARA alone retains D, regardless of REC observers.
+                     /*
+             * AO/PARA alone, or with REC only: D.
+             *
+             * AO/PARA with another non-recruit:
+             * use the first alphabetical flexibility code among
+             * non-recruit crew only: A, B, C, then N.
+             *
+             * Blank flexibility is treated as N.
+             * Recruit flexibility never affects the operational code.
              */
             if (aoCount > 0) {
                 if (operationalCrew.length === 1) {
@@ -1545,12 +1552,43 @@
                     };
                 }
 
+                const flexibilityCodes = bookings
+                    .filter(booking =>
+                        String(booking.clinicalLevel || "")
+                            .trim()
+                            .toUpperCase() !== "REC"
+                    )
+                    .map(booking =>
+                        String(booking.restriction || "")
+                            .trim()
+                            .toUpperCase() || "N"
+                    );
+
+                const hasUnknownFlexibility = flexibilityCodes.some(code =>
+                    !["N", "A", "B", "C"].includes(code)
+                );
+
+                if (hasUnknownFlexibility) {
+                    return {
+                        code: "Review",
+                        review: true,
+                        reason:
+                            "AO/PARA is present with another non-recruit, " +
+                            "but a non-recruit booking has an unrecognised " +
+                            "flexibility code. Confirm the flexibility information."
+                    };
+                }
+
+                const selectedCode = flexibilityCodes.sort()[0];
+
                 return {
-                    code: "",
+                    code: selectedCode,
                     review: false,
                     reason:
-                        "AO/PARA is present with another operational crew member. " +
-                        "No E/Z restriction is assigned."
+                        "AO/PARA is present with another non-recruit. " +
+                        "Operational code follows the first alphabetical " +
+                        "non-recruit flexibility code (A, B, C, N). " +
+                        "Selected: " + selectedCode + ". Recruits are excluded."
                 };
             }
 
