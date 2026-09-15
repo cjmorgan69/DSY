@@ -1,1 +1,705 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+  <title>Team Coverage</title>
 
+  <style>
+    :root {
+      --page-background: #f5f5f7;
+      --surface: #ffffff;
+      --text: #1d1d1f;
+      --secondary-text: #6e6e73;
+      --border: #e5e5ea;
+      --blue: #007aff;
+
+      --green: #34c759;
+      --yellow: #ffd60a;
+      --red: #ff3b30;
+
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      color: var(--text);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: var(--page-background);
+    }
+
+    .page {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      padding: 16px 10px 30px;
+    }
+
+    .header {
+      padding: 4px 6px 14px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .header p {
+      margin: 4px 0 0;
+      color: var(--secondary-text);
+      font-size: 0.82rem;
+    }
+
+    .date-controls {
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      gap: 7px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      color: var(--blue);
+      font-size: 1.7rem;
+      line-height: 1;
+      cursor: pointer;
+      border: 0;
+      border-radius: 11px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .icon-button:hover,
+    .icon-button:focus-visible {
+      background: #ebebf0;
+    }
+
+    .date-picker {
+      width: 100%;
+      min-height: 40px;
+      padding: 7px 8px;
+      color: var(--text);
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-align: center;
+      border: 0;
+      border-radius: 11px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .timeline-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .timeline-heading {
+      padding: 13px 10px 11px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .timeline-heading h2 {
+      margin: 0;
+      font-size: 0.98rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .timeline-heading p {
+      margin: 3px 0 0;
+      color: var(--secondary-text);
+      font-size: 0.72rem;
+    }
+
+    /*
+     * Five columns:
+     * time + Tumby Bay + Cummins + Port Lincoln + Team 4.
+     *
+     * This remains readable on a narrow 320px phone screen.
+     */
+    .column-headings,
+    .timeline-row {
+      display: grid;
+      grid-template-columns:
+        44px
+        repeat(4, minmax(0, 1fr));
+      gap: 4px;
+      align-items: center;
+    }
+
+    .column-headings {
+      min-height: 37px;
+      padding: 0 7px;
+      color: var(--secondary-text);
+      font-size: 0.66rem;
+      font-weight: 700;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: #fbfbfd;
+    }
+
+    .column-headings span:first-child {
+      text-align: left;
+    }
+
+    .team-heading {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .timeline-row {
+      min-height: 39px;
+      padding: 3px 7px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .timeline-row:last-child {
+      border-bottom: 0;
+    }
+
+    /*
+     * 18:00 begins the overnight portion of the operational day.
+     */
+    .timeline-row.night-start {
+      border-top: 4px solid #f2f2f7;
+    }
+
+    .hour {
+      color: var(--secondary-text);
+      font-size: 0.72rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .crew-tile {
+      display: grid;
+      min-height: 31px;
+      place-items: center;
+      font-size: 0.86rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      border-radius: 7px;
+    }
+
+    .crew-green {
+      color: #ffffff;
+      background: var(--green);
+    }
+
+    .crew-yellow {
+      color: #3a2b00;
+      background: var(--yellow);
+    }
+
+    .crew-red {
+      color: #ffffff;
+      background: var(--red);
+    }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 11px;
+      color: var(--secondary-text);
+      font-size: 0.7rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    .team-key {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px 12px;
+      margin-top: 12px;
+      color: var(--secondary-text);
+      font-size: 0.69rem;
+    }
+
+    .updated {
+      margin: 12px 0 0;
+      color: var(--secondary-text);
+      font-size: 0.68rem;
+      text-align: center;
+    }
+
+    @media (min-width: 520px) {
+      .page {
+        padding-top: 28px;
+      }
+
+      .column-headings,
+      .timeline-row {
+        grid-template-columns:
+          70px
+          repeat(4, minmax(0, 1fr));
+        gap: 7px;
+      }
+
+      .column-headings {
+        padding-right: 12px;
+        padding-left: 12px;
+        font-size: 0.74rem;
+      }
+
+      .timeline-row {
+        min-height: 44px;
+        padding-right: 12px;
+        padding-left: 12px;
+      }
+
+      .hour {
+        font-size: 0.81rem;
+      }
+
+      .crew-tile {
+        min-height: 35px;
+        font-size: 0.96rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="header">
+      <h1>Team Coverage</h1>
+      <p>Operational crew availability by hour.</p>
+    </header>
+
+    <section
+      class="date-controls"
+      aria-label="Select operational day"
+    >
+      <button
+        id="previous-day"
+        class="icon-button"
+        type="button"
+        aria-label="Previous operational day"
+      >
+        ‹
+      </button>
+
+      <input
+        id="date-picker"
+        class="date-picker"
+        type="date"
+        aria-label="Operational day starting date"
+      >
+
+      <button
+        id="next-day"
+        class="icon-button"
+        type="button"
+        aria-label="Next operational day"
+      >
+        ›
+      </button>
+    </section>
+
+    <section class="timeline-card">
+      <div class="timeline-heading">
+        <h2 id="display-date">Tuesday, 15 September</h2>
+        <p id="operational-range">
+          Operational day: 08:00 → Wed 07:59
+        </p>
+      </div>
+
+      <div class="column-headings">
+        <span>Time</span>
+        <span class="team-heading" title="Tumby Bay">TB</span>
+        <span class="team-heading" title="Cummins">CU</span>
+        <span class="team-heading" title="Port Lincoln">PL</span>
+        <span class="team-heading" title="Team 4">T4</span>
+      </div>
+
+      <div id="timeline"></div>
+    </section>
+
+    <div class="legend" aria-label="Coverage colour legend">
+      <span class="legend-item">
+        <span
+          class="legend-dot"
+          style="background: #34c759;"
+        ></span>
+        2+
+      </span>
+
+      <span class="legend-item">
+        <span
+          class="legend-dot"
+          style="background: #ffd60a;"
+        ></span>
+        1
+      </span>
+
+      <span class="legend-item">
+        <span
+          class="legend-dot"
+          style="background: #ff3b30;"
+        ></span>
+        0
+      </span>
+    </div>
+
+    <div class="team-key" aria-label="Team abbreviations">
+      <span><strong>TB</strong> Tumby Bay</span>
+      <span><strong>CU</strong> Cummins</span>
+      <span><strong>PL</strong> Port Lincoln</span>
+      <span><strong>T4</strong> Team 4</span>
+    </div>
+
+    <p id="updated" class="updated">
+      Preview data only
+    </p>
+  </main>
+
+  <script>
+    "use strict";
+
+    let selectedOperationalDate = getTodayAtMidnight();
+
+    const timelineElement =
+      document.getElementById("timeline");
+
+    const datePicker =
+      document.getElementById("date-picker");
+
+    const displayDate =
+      document.getElementById("display-date");
+
+    const operationalRange =
+      document.getElementById("operational-range");
+
+    const updatedElement =
+      document.getElementById("updated");
+
+    /*
+     * Preview data only.
+     *
+     * Each array represents the 24 hourly positions beginning at
+     * 08:00 on the selected operational date:
+     *
+     * Index 0  = 08:00–09:00
+     * Index 9  = 17:00–18:00
+     * Index 10 = 18:00–19:00
+     * Index 15 = 23:00–00:00
+     * Index 16 = 00:00–01:00 on the following day
+     * Index 23 = 07:00–08:00 on the following day
+     */
+    function getPreviewCoverage(date) {
+      const patternIndex = date.getDate() % 3;
+
+      const patterns = [
+        {
+          tumbyBay: [
+            2, 2, 1, 2, 2, 2, 2, 1,
+            2, 2, 2, 2, 2, 2, 2, 2,
+            2, 2, 1, 1, 2, 2, 2, 1
+          ],
+
+          cummins: [
+            1, 2, 2, 2, 1, 0, 1, 1,
+            2, 2, 2, 2, 1, 1, 2, 2,
+            2, 1, 1, 1, 2, 2, 1, 0
+          ],
+
+          portLincoln: [
+            2, 2, 2, 1, 1, 2, 2, 2,
+            2, 2, 1, 1, 2, 2, 2, 2,
+            1, 1, 2, 2, 2, 2, 2, 1
+          ],
+
+          team4: [
+            0, 0, 1, 1, 1, 1, 2, 2,
+            2, 2, 1, 1, 1, 0, 0, 1,
+            1, 2, 2, 1, 1, 0, 0, 0
+          ]
+        },
+
+        {
+          tumbyBay: [
+            2, 2, 2, 2, 1, 1, 2, 2,
+            2, 2, 2, 1, 1, 1, 2, 2,
+            1, 1, 1, 2, 2, 2, 1, 1
+          ],
+
+          cummins: [
+            2, 2, 2, 1, 1, 1, 1, 2,
+            2, 2, 2, 2, 2, 2, 2, 1,
+            1, 1, 2, 2, 2, 2, 2, 2
+          ],
+
+          portLincoln: [
+            1, 1, 2, 2, 2, 2, 1, 1,
+            2, 2, 2, 2, 2, 1, 1, 2,
+            2, 2, 1, 1, 2, 2, 2, 2
+          ],
+
+          team4: [
+            0, 1, 1, 2, 2, 2, 1, 1,
+            0, 0, 1, 1, 2, 2, 2, 1,
+            1, 1, 0, 0, 1, 2, 2, 1
+          ]
+        },
+
+        {
+          tumbyBay: [
+            1, 1, 2, 2, 2, 1, 1, 0,
+            0, 1, 1, 2, 2, 2, 1, 1,
+            1, 0, 0, 1, 1, 1, 0, 0
+          ],
+
+          cummins: [
+            0, 0, 1, 1, 1, 2, 2, 2,
+            1, 1, 0, 0, 1, 1, 2, 2,
+            2, 1, 1, 0, 0, 0, 1, 1
+          ],
+
+          portLincoln: [
+            2, 2, 2, 2, 1, 1, 1, 2,
+            2, 1, 1, 1, 2, 2, 2, 2,
+            2, 2, 1, 1, 1, 2, 2, 2
+          ],
+
+          team4: [
+            1, 0, 0, 1, 1, 1, 2, 2,
+            1, 1, 1, 0, 0, 1, 1, 2,
+            2, 2, 1, 1, 0, 0, 0, 1
+          ]
+        }
+      ];
+
+      return patterns[patternIndex];
+    }
+
+    function renderTimeline() {
+      const coverage =
+        getPreviewCoverage(selectedOperationalDate);
+
+      const teamCoverage = [
+        coverage.tumbyBay,
+        coverage.cummins,
+        coverage.portLincoln,
+        coverage.team4
+      ];
+
+      timelineElement.innerHTML = "";
+
+      for (let index = 0; index < 24; index++) {
+        const hourNumber = (8 + index) % 24;
+
+        const row = document.createElement("div");
+        row.className = "timeline-row";
+
+        /*
+         * 18:00 starts ten hours after the operational 08:00 start.
+         */
+        if (index === 10) {
+          row.classList.add("night-start");
+        }
+
+        const hour = document.createElement("div");
+        hour.className = "hour";
+        hour.textContent = formatHour(hourNumber);
+
+        row.appendChild(hour);
+
+        teamCoverage.forEach(function(hourlyCounts) {
+          row.appendChild(
+            createCrewTile(hourlyCounts[index])
+          );
+        });
+
+        timelineElement.appendChild(row);
+      }
+
+      datePicker.value =
+        toIsoDate(selectedOperationalDate);
+
+      displayDate.textContent =
+        new Intl.DateTimeFormat("en-AU", {
+          weekday: "long",
+          day: "numeric",
+          month: "long"
+        }).format(selectedOperationalDate);
+
+      const followingDate = addDays(
+        selectedOperationalDate,
+        1
+      );
+
+      operationalRange.textContent =
+        "Operational day: 08:00 → " +
+        new Intl.DateTimeFormat("en-AU", {
+          weekday: "short"
+        }).format(followingDate) +
+        " 07:59";
+
+      updatedElement.textContent =
+        "Preview data · " +
+        new Intl.DateTimeFormat("en-AU", {
+          dateStyle: "medium",
+          timeStyle: "short"
+        }).format(new Date());
+    }
+
+    function createCrewTile(crewCount) {
+      const tile = document.createElement("div");
+
+      tile.className =
+        "crew-tile " +
+        getCrewColourClass(crewCount);
+
+      tile.textContent =
+        crewCount >= 2
+          ? "2+"
+          : String(crewCount);
+
+      tile.setAttribute(
+        "aria-label",
+        crewCount >= 2
+          ? "Two or more operational crew"
+          : crewCount + " operational crew"
+      );
+
+      return tile;
+    }
+
+    function getCrewColourClass(crewCount) {
+      if (crewCount >= 2) {
+        return "crew-green";
+      }
+
+      if (crewCount === 1) {
+        return "crew-yellow";
+      }
+
+      return "crew-red";
+    }
+
+    function formatHour(hourNumber) {
+      const hour =
+        ((hourNumber % 24) + 24) % 24;
+
+      return String(hour).padStart(2, "0") + ":00";
+    }
+
+    function getTodayAtMidnight() {
+      const now = new Date();
+
+      return new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+      );
+    }
+
+    function addDays(date, numberOfDays) {
+      const result = new Date(date);
+
+      result.setDate(
+        result.getDate() + numberOfDays
+      );
+
+      return result;
+    }
+
+    function toIsoDate(date) {
+      const year = date.getFullYear();
+
+      const month = String(
+        date.getMonth() + 1
+      ).padStart(2, "0");
+
+      const day = String(
+        date.getDate()
+      ).padStart(2, "0");
+
+      return year + "-" + month + "-" + day;
+    }
+
+    function fromIsoDate(isoDate) {
+      const parts = isoDate.split("-").map(Number);
+
+      return new Date(
+        parts[0],
+        parts[1] - 1,
+        parts[2]
+      );
+    }
+
+    document
+      .getElementById("previous-day")
+      .addEventListener("click", function() {
+        selectedOperationalDate = addDays(
+          selectedOperationalDate,
+          -1
+        );
+
+        renderTimeline();
+      });
+
+    document
+      .getElementById("next-day")
+      .addEventListener("click", function() {
+        selectedOperationalDate = addDays(
+          selectedOperationalDate,
+          1
+        );
+
+        renderTimeline();
+      });
+
+    datePicker.addEventListener("change", function() {
+      if (!datePicker.value) {
+        return;
+      }
+
+      selectedOperationalDate =
+        fromIsoDate(datePicker.value);
+
+      renderTimeline();
+    });
+
+    renderTimeline();
+  </script>
+</body>
+</html>
