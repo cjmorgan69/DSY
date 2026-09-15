@@ -29,7 +29,6 @@
         }
 
         * { box-sizing: border-box; }
-
         html { scroll-behavior: smooth; }
 
         body {
@@ -153,7 +152,6 @@
         }
 
         .user-section input { width: 145px; }
-
         .user-section select { min-height: 32px; }
 
         .user-section input:focus-visible,
@@ -449,7 +447,6 @@
         }
 
         .day.open .day-body { display: block; }
-
         .day-body-inner { padding: 1rem 1.25rem 1.25rem; }
 
         .timeline-row {
@@ -782,50 +779,51 @@
 
             .search-input { max-width: none; }
         }
-    .manager-controls-panel {
-    margin-top: 1.25rem;
-    margin-bottom: 1rem;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--background);
-}
 
-.manager-controls-panel > summary {
-    padding: 0.85rem 1rem;
-    color: var(--muted);
-    font-size: 0.84rem;
-    font-weight: 800;
-    cursor: pointer;
-}
+        .manager-controls-panel {
+            margin-top: 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--background);
+        }
 
-.manager-controls-panel > summary:hover {
-    color: var(--primary-dark);
-}
+        .manager-controls-panel > summary {
+            padding: 0.85rem 1rem;
+            color: var(--muted);
+            font-size: 0.84rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
 
-.manager-controls-panel > summary:focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 3px;
-    border-radius: 8px;
-}
+        .manager-controls-panel > summary:hover {
+            color: var(--primary-dark);
+        }
 
-.manager-controls-panel[open] > summary {
-    color: var(--primary-dark);
-    border-bottom: 1px solid var(--border);
-}
+        .manager-controls-panel > summary:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 3px;
+            border-radius: 8px;
+        }
 
-.manager-controls-content {
-    padding: 1rem;
-}
+        .manager-controls-panel[open] > summary {
+            color: var(--primary-dark);
+            border-bottom: 1px solid var(--border);
+        }
 
-.manager-controls-content > .field-help {
-    margin-top: 0;
-    margin-bottom: 1rem;
-}
+        .manager-controls-content {
+            padding: 1rem;
+        }
 
-.manager-controls-content #rosterPeriodEditor {
-    margin-top: 1rem;
-    margin-bottom: 0;
-}
+        .manager-controls-content > .field-help {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .manager-controls-content #rosterPeriodEditor {
+            margin-top: 1rem;
+            margin-bottom: 0;
+        }
     </style>
 </head>
 
@@ -942,16 +940,13 @@
                 role="alert"
             ></div>
 
-                      <!-- Hard-copy status stays visible to everyone. -->
+            <!-- Hard-copy status stays visible to everyone. -->
             <div class="roster-submission-manager">
                 <div>
                     <strong>Roster Submission Status</strong>
-
                     <p id="rosterSubmissionStatus" aria-live="polite">
                         Checking submitted roster status…
                     </p>
-
-                   
                 </div>
             </div>
 
@@ -1252,7 +1247,7 @@
          * Two or more AR, or AR with AA, without AO/PARA: E
          * AA-only operational crew: Z
          *
-                 * AO/PARA rules:
+         * AO/PARA rules:
          * - AO/PARA alone, including with REC observers: D.
          * - AO/PARA with another non-recruit: use the first alphabetical
          *   non-recruit flexibility code in the order A, B, C, N.
@@ -1399,24 +1394,24 @@
             refreshButton.addEventListener("click", refreshRoster);
             viewRosterButton.addEventListener("click", openRosterView);
 
-          markRosterSentButton.addEventListener(
-    "click",
-    markHardCopyRosterAsSent
-);
+            markRosterSentButton.addEventListener(
+                "click",
+                markHardCopyRosterAsSent
+            );
 
-document.getElementById("editRosterPeriodButton")
-    .addEventListener("click", () => {
-        void openRosterPeriodEditor(true);
-    });
+            document.getElementById("editRosterPeriodButton")
+                .addEventListener("click", () => {
+                    void openRosterPeriodEditor(true);
+                });
 
-document.getElementById("resetRosterSentButton")
-    .addEventListener("click", resetHardCopyRosterStatus);
+            document.getElementById("resetRosterSentButton")
+                .addEventListener("click", resetHardCopyRosterStatus);
 
-document.getElementById("rosterPeriodForm")
-    .addEventListener("submit", saveHardCopyRosterPeriod);
+            document.getElementById("rosterPeriodForm")
+                .addEventListener("submit", saveHardCopyRosterPeriod);
 
-document.getElementById("closeRosterPeriodEditorButton")
-    .addEventListener("click", closeRosterPeriodEditor);
+            document.getElementById("closeRosterPeriodEditorButton")
+                .addEventListener("click", closeRosterPeriodEditor);
 
             document.getElementById("myBookingsButton")
                 .addEventListener("click", openBookingsModal);
@@ -1702,7 +1697,7 @@ document.getElementById("closeRosterPeriodEditorButton")
                 member.clinicalLevel === "AA"
             ).length;
 
-                     /*
+            /*
              * AO/PARA alone, or with REC only: D.
              *
              * AO/PARA with another non-recruit:
@@ -1803,146 +1798,171 @@ document.getElementById("closeRosterPeriodEditorButton")
             };
         }
 
-        async function loadBookingsAfterSave() {
+        /*
+         * Apply the combined bookings and hard-copy status response.
+         * Also used directly after successful booking/cancellation saves.
+         */
+        function applyRosterSnapshot(data) {
             try {
-                const data = await callRosterApi("getBookings");
-
-                if (!data.success || !Array.isArray(data.bookings)) {
+                if (
+                    !data ||
+                    data.success !== true ||
+                    !Array.isArray(data.bookings) ||
+                    normaliseName(data.team) !== normaliseName(TEAM_NAME)
+                ) {
                     throw new Error(
-                        "The roster did not return a valid bookings list."
+                        "The roster did not return a valid team bookings list."
                     );
                 }
 
-                events = data.bookings
+                const nextEvents = data.bookings
                     .map(normaliseBooking)
                     .filter(isValidBooking);
 
+                applyRosterSubmissionResult(data);
+
+                events = nextEvents;
                 hasLoadedBookings = true;
+
                 renderAll();
 
                 return data;
             } catch (error) {
                 hasLoadedBookings = false;
+                invalidateRosterSubmissionStatus();
+                renderAll();
+                throw error;
+            }
+        }
+
+        async function loadBookingsAfterSave() {
+            try {
+                const data = await callRosterApi("getBookings");
+
+                return applyRosterSnapshot(data);
+            } catch (error) {
+                hasLoadedBookings = false;
+                invalidateRosterSubmissionStatus();
                 renderAll();
                 throw error;
             }
         }
 
         async function loadRosterSubmissionStatus() {
-    submissionStatusLoaded = false;
-    updateRosterManagerControls();
+            submissionStatusLoaded = false;
+            updateRosterManagerControls();
 
-    try {
-        const result = await callRosterApi("getRosterSubmission");
+            try {
+                const result = await callRosterApi("getRosterSubmission");
 
-        applyRosterSubmissionResult(result);
+                applyRosterSubmissionResult(result);
 
-        return result;
-    } catch (error) {
-        invalidateRosterSubmissionStatus();
-        throw error;
-    }
-}
-
-function applyRosterSubmissionResult(result) {
-    if (
-        !result ||
-        result.success !== true ||
-        !Object.prototype.hasOwnProperty.call(
-            result,
-            "rosterSubmission"
-        )
-    ) {
-        throw new Error(
-            "Apps Script did not return a valid hard-copy status."
-        );
-    }
-
-    const period = result.rosterSubmission;
-
-    if (period !== null) {
-        const start = new Date(period?.start);
-        const end = new Date(period?.end);
-
-        if (
-            !period?.start ||
-            !period?.end ||
-            !Number.isFinite(start.getTime()) ||
-            !Number.isFinite(end.getTime()) ||
-            end <= start
-        ) {
-            throw new Error(
-                "The submitted roster period is invalid."
-            );
+                return result;
+            } catch (error) {
+                invalidateRosterSubmissionStatus();
+                throw error;
+            }
         }
 
-        if (
-            period.team &&
-            normaliseName(period.team) !== normaliseName(TEAM_NAME)
-        ) {
-            throw new Error(
-                "The returned hard-copy period belongs to another team."
-            );
+        function applyRosterSubmissionResult(result) {
+            if (
+                !result ||
+                result.success !== true ||
+                !Object.prototype.hasOwnProperty.call(
+                    result,
+                    "rosterSubmission"
+                )
+            ) {
+                throw new Error(
+                    "Apps Script did not return a valid hard-copy status."
+                );
+            }
+
+            const period = result.rosterSubmission;
+
+            if (period !== null) {
+                const start = new Date(period?.start);
+                const end = new Date(period?.end);
+
+                if (
+                    !period?.start ||
+                    !period?.end ||
+                    !Number.isFinite(start.getTime()) ||
+                    !Number.isFinite(end.getTime()) ||
+                    end <= start
+                ) {
+                    throw new Error(
+                        "The submitted roster period is invalid."
+                    );
+                }
+
+                if (
+                    period.team &&
+                    normaliseName(period.team) !== normaliseName(TEAM_NAME)
+                ) {
+                    throw new Error(
+                        "The returned hard-copy period belongs to another team."
+                    );
+                }
+            }
+
+            submittedRosterPeriod = period;
+            submissionStatusLoaded = true;
+            lastCentralRosteringWarningKey = "";
+
+            const status =
+                document.getElementById("rosterSubmissionStatus");
+
+            if (!period) {
+                status.textContent =
+                    `No hard-copy roster period is currently marked as sent for ${TEAM_NAME}.`;
+            } else {
+                status.textContent =
+                    `ROSTER SUBMITTED for ${TEAM_NAME}: ` +
+                    formatRosterPeriodDateTime(period.start) +
+                    " → " +
+                    formatRosterPeriodDateTime(period.end) +
+                    " Changes overlapping this period " +
+                    "require notification to Country Rostering.";
+            }
+
+            updateCentralRosteringWarning();
+            updateBookingSummary();
+            updateRosterManagerControls();
         }
-    }
 
-    submittedRosterPeriod = period;
-    submissionStatusLoaded = true;
-    lastCentralRosteringWarningKey = "";
+        function invalidateRosterSubmissionStatus() {
+            submittedRosterPeriod = null;
+            submissionStatusLoaded = false;
+            lastCentralRosteringWarningKey = "";
 
-    const status =
-        document.getElementById("rosterSubmissionStatus");
+            document.getElementById("rosterSubmissionStatus").textContent =
+                "Unable to verify hard-copy status. " +
+                "Refresh the roster before changing bookings or retrying " +
+                "a manager update.";
 
-    if (!period) {
-        status.textContent =
-            `No hard-copy roster period is currently marked as sent for ${TEAM_NAME}.`;
-    } else {
-        status.textContent =
-            `ROSTER SUBMITTED for ${TEAM_NAME}: ` +
-            formatRosterPeriodDateTime(period.start) +
-            " → " +
-            formatRosterPeriodDateTime(period.end) +
-            " Changes overlapping this period " +
-            "require notification to Country Rostering.";
-    }
+            updateCentralRosteringWarning();
+            updateBookingSummary();
+            updateRosterManagerControls();
+        }
 
-    updateCentralRosteringWarning();
-    updateBookingSummary();
-    updateRosterManagerControls();
-}
+        function updateRosterManagerControls() {
+            const hasSubmittedPeriod =
+                submissionStatusLoaded && Boolean(submittedRosterPeriod);
 
-function invalidateRosterSubmissionStatus() {
-    submittedRosterPeriod = null;
-    submissionStatusLoaded = false;
-    lastCentralRosteringWarningKey = "";
+            markRosterSentButton.disabled = isLoading;
 
-    document.getElementById("rosterSubmissionStatus").textContent =
-        "Unable to verify hard-copy status. " +
-        "Refresh the roster before changing bookings or retrying " +
-        "a manager update.";
+            document.getElementById("editRosterPeriodButton").disabled =
+                isLoading || !hasSubmittedPeriod;
 
-    updateCentralRosteringWarning();
-    updateBookingSummary();
-    updateRosterManagerControls();
-}
+            document.getElementById("resetRosterSentButton").disabled =
+                isLoading || !hasSubmittedPeriod;
 
-function updateRosterManagerControls() {
-    const hasSubmittedPeriod =
-        submissionStatusLoaded && Boolean(submittedRosterPeriod);
-
-    markRosterSentButton.disabled = isLoading;
-
-    document.getElementById("editRosterPeriodButton").disabled =
-        isLoading || !hasSubmittedPeriod;
-
-    document.getElementById("resetRosterSentButton").disabled =
-        isLoading || !hasSubmittedPeriod;
-
-    document.querySelectorAll("[data-roster-manager-control]")
-        .forEach(control => {
-            control.disabled = isLoading;
-        });
-}
+            document.querySelectorAll("[data-roster-manager-control]")
+                .forEach(control => {
+                    control.disabled = isLoading;
+                });
+        }
 
         async function refreshRoster() {
             if (isLoading) return;
@@ -1954,18 +1974,8 @@ function updateRosterManagerControls() {
             );
 
             try {
-                const results = await Promise.allSettled([
-                    loadBookingsAfterSave(),
-                    loadRosterSubmissionStatus()
-                ]);
-
-                const failures = results
-                    .filter(result => result.status === "rejected")
-                    .map(result => result.reason.message);
-
-                if (failures.length) {
-                    throw new Error(failures.join(" "));
-                }
+                // One request loads both bookings and submission status.
+                await loadBookingsAfterSave();
 
                 showLoadedConnectionStatus();
             } catch (error) {
@@ -2103,393 +2113,393 @@ function updateRosterManagerControls() {
             });
         }
 
-       async function markHardCopyRosterAsSent() {
-    await openRosterPeriodEditor(false);
-}
-
-async function openRosterPeriodEditor(editing) {
-    if (isLoading) return;
-
-    setLoading(true);
-
-    let editorOpened = false;
-
-    try {
-        // Get the latest team-specific status before opening.
-        await loadRosterSubmissionStatus();
-
-        if (editing && !submittedRosterPeriod) {
-            throw new Error(
-                "There is no submitted hard-copy period to edit."
-            );
+        async function markHardCopyRosterAsSent() {
+            await openRosterPeriodEditor(false);
         }
 
-        const editor =
-            document.getElementById("rosterPeriodEditor");
+        async function openRosterPeriodEditor(editing) {
+            if (isLoading) return;
 
-        const startInput =
-            document.getElementById("rosterPeriodStartInput");
+            setLoading(true);
 
-        const endInput =
-            document.getElementById("rosterPeriodEndInput");
+            let editorOpened = false;
 
-        editor.dataset.mode = editing ? "edit" : "new";
+            try {
+                // Get the latest team-specific status before opening.
+                await loadRosterSubmissionStatus();
 
-        document.getElementById("rosterPeriodEditorTitle").textContent =
-            editing
-                ? `Edit ${TEAM_NAME}'s submitted period`
-                : `Select ${TEAM_NAME}'s hard-copy roster period`;
+                if (editing && !submittedRosterPeriod) {
+                    throw new Error(
+                        "There is no submitted hard-copy period to edit."
+                    );
+                }
 
-        document.getElementById("saveRosterPeriodButton").textContent =
-            editing
-                ? "Save changes to submitted period"
-                : "Mark this period as sent";
+                const editor =
+                    document.getElementById("rosterPeriodEditor");
 
-        /*
-         * No defaults for a new submission.
-         *
-         * Editing loads the actual saved boundaries;
-         * these are existing values, not calculated defaults.
-         */
-        startInput.value = editing
-            ? formatRosterDateTimeInput(submittedRosterPeriod.start)
-            : "";
+                const startInput =
+                    document.getElementById("rosterPeriodStartInput");
 
-        endInput.value = editing
-            ? formatRosterDateTimeInput(submittedRosterPeriod.end)
-            : "";
+                const endInput =
+                    document.getElementById("rosterPeriodEndInput");
 
-        const browserTimezone =
-            Intl.DateTimeFormat().resolvedOptions().timeZone ||
-            "your device's local timezone";
+                editor.dataset.mode = editing ? "edit" : "new";
 
-        document.getElementById("rosterPeriodTimezoneHelp").textContent =
-            "Dates and times use your device timezone: " +
-            browserTimezone +
-            ". Ensure this matches the team's local time before saving. " +
-            "For Tumby Bay and the other South Australian teams, " +
-            "use Adelaide time.";
+                document.getElementById("rosterPeriodEditorTitle").textContent =
+                    editing
+                        ? `Edit ${TEAM_NAME}'s submitted period`
+                        : `Select ${TEAM_NAME}'s hard-copy roster period`;
 
-        editor.hidden = false;
-        editorOpened = true;
-    } catch (error) {
-        console.error("Unable to open roster period editor:", error);
+                document.getElementById("saveRosterPeriodButton").textContent =
+                    editing
+                        ? "Save changes to submitted period"
+                        : "Mark this period as sent";
 
-        window.alert(
-            error.message || "Unable to load the hard-copy status."
-        );
-    } finally {
-        setLoading(false);
-    }
+                /*
+                 * No defaults for a new submission.
+                 *
+                 * Editing loads the actual saved boundaries;
+                 * these are existing values, not calculated defaults.
+                 */
+                startInput.value = editing
+                    ? formatRosterDateTimeInput(submittedRosterPeriod.start)
+                    : "";
 
-    if (editorOpened) {
-        const editor =
-            document.getElementById("rosterPeriodEditor");
+                endInput.value = editing
+                    ? formatRosterDateTimeInput(submittedRosterPeriod.end)
+                    : "";
 
-        editor.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
+                const browserTimezone =
+                    Intl.DateTimeFormat().resolvedOptions().timeZone ||
+                    "your device's local timezone";
 
-        document.getElementById("rosterPeriodStartInput")
-            .focus({ preventScroll: true });
-    }
-}
+                document.getElementById("rosterPeriodTimezoneHelp").textContent =
+                    "Dates and times use your device timezone: " +
+                    browserTimezone +
+                    ". Ensure this matches the team's local time before saving. " +
+                    "For Tumby Bay and the other South Australian teams, " +
+                    "use Adelaide time.";
 
-function closeRosterPeriodEditor() {
-    if (isLoading) return;
+                editor.hidden = false;
+                editorOpened = true;
+            } catch (error) {
+                console.error("Unable to open roster period editor:", error);
 
-    clearRosterPeriodEditor();
-    markRosterSentButton.focus();
-}
-
-function clearRosterPeriodEditor() {
-    const editor =
-        document.getElementById("rosterPeriodEditor");
-
-    editor.hidden = true;
-    delete editor.dataset.mode;
-
-    // Do not retain dates as defaults for the next submission.
-    document.getElementById("rosterPeriodStartInput").value = "";
-    document.getElementById("rosterPeriodEndInput").value = "";
-}
-
-function formatRosterDateTimeInput(value) {
-    const date = new Date(value);
-
-    if (!Number.isFinite(date.getTime())) {
-        throw new Error("The saved roster date/time is invalid.");
-    }
-
-    return (
-        formatDateKey(date) +
-        "T" +
-        String(date.getHours()).padStart(2, "0") +
-        ":" +
-        String(date.getMinutes()).padStart(2, "0")
-    );
-}
-
-function readRosterPeriodInput(inputId, label) {
-    const input = document.getElementById(inputId);
-    const value = input.value;
-
-    if (!value) {
-        throw new Error(
-            `Please select the ${label.toLowerCase()} date and time.`
-        );
-    }
-
-    /*
-     * datetime-local has no timezone.
-     * Interpret it in the device's local timezone, matching
-     * the current booking form, and send an explicit ISO value.
-     */
-    const date = new Date(value);
-
-    if (
-        !Number.isFinite(date.getTime()) ||
-        formatRosterDateTimeInput(date) !== value
-    ) {
-        throw new Error(
-            `${label} date/time is invalid or does not exist ` +
-            "in your device timezone because of a daylight-saving change."
-        );
-    }
-
-    return date;
-}
-
-async function saveHardCopyRosterPeriod(event) {
-    event.preventDefault();
-
-    if (isLoading) return;
-
-    const form = document.getElementById("rosterPeriodForm");
-
-    if (!form.reportValidity()) return;
-
-    const editing =
-        document.getElementById("rosterPeriodEditor")
-            .dataset.mode === "edit";
-
-    let start;
-    let end;
-
-    try {
-        start = readRosterPeriodInput(
-            "rosterPeriodStartInput",
-            "Start"
-        );
-
-        end = readRosterPeriodInput(
-            "rosterPeriodEndInput",
-            "End"
-        );
-
-        if (end <= start) {
-            throw new Error(
-                "The end date and time must be after " +
-                "the start date and time."
-            );
-        }
-    } catch (error) {
-        window.alert(error.message);
-        return;
-    }
-
-    setLoading(true);
-
-    let updateAttempted = false;
-    let updateConfirmed = false;
-
-    try {
-        // Recheck before confirming a replacement or edit.
-        await loadRosterSubmissionStatus();
-
-        if (editing && !submittedRosterPeriod) {
-            throw new Error(
-                "The submitted period has been reset. " +
-                "Close this editor and choose Mark hard copy as sent."
-            );
-        }
-
-        let message =
-            (editing
-                ? "Update the submitted hard-copy period"
-                : "Mark the hard-copy roster as sent") +
-            ` for ${TEAM_NAME}?\n\n` +
-            "Start: " + formatRosterPeriodDateTime(start) + "\n" +
-            "End: " + formatRosterPeriodDateTime(end) +
-            " (exclusive)\n\n";
-
-        if (!editing && submittedRosterPeriod) {
-            message +=
-                "This will REPLACE the currently submitted period:\n" +
-                formatRosterPeriodDateTime(submittedRosterPeriod.start) +
-                " → " +
-                formatRosterPeriodDateTime(submittedRosterPeriod.end) +
-                "\n\nOnly one submitted period is stored per team.\n\n";
-        }
-
-        message +=
-            "Bookings and cancellations will still be allowed. " +
-            "Changes overlapping this period require notification " +
-            "to Central Rostering.";
-
-        if (!window.confirm(message)) return;
-
-        const managerPassword = window.prompt(
-            "Enter the roster manager password:"
-        );
-
-        if (!managerPassword) return;
-
-        updateAttempted = true;
-
-        const result = await callRosterApi(
-            editing ? "editRosterSubmission" : "markRosterSent",
-            {
-                managerPassword,
-                start: start.toISOString(),
-                end: end.toISOString()
+                window.alert(
+                    error.message || "Unable to load the hard-copy status."
+                );
+            } finally {
+                setLoading(false);
             }
-        );
 
-        if (result.success !== true) {
-            throw new Error(
-                "Apps Script did not confirm the hard-copy update."
+            if (editorOpened) {
+                const editor =
+                    document.getElementById("rosterPeriodEditor");
+
+                editor.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+                document.getElementById("rosterPeriodStartInput")
+                    .focus({ preventScroll: true });
+            }
+        }
+
+        function closeRosterPeriodEditor() {
+            if (isLoading) return;
+
+            clearRosterPeriodEditor();
+            markRosterSentButton.focus();
+        }
+
+        function clearRosterPeriodEditor() {
+            const editor =
+                document.getElementById("rosterPeriodEditor");
+
+            editor.hidden = true;
+            delete editor.dataset.mode;
+
+            // Do not retain dates as defaults for the next submission.
+            document.getElementById("rosterPeriodStartInput").value = "";
+            document.getElementById("rosterPeriodEndInput").value = "";
+        }
+
+        function formatRosterDateTimeInput(value) {
+            const date = new Date(value);
+
+            if (!Number.isFinite(date.getTime())) {
+                throw new Error("The saved roster date/time is invalid.");
+            }
+
+            return (
+                formatDateKey(date) +
+                "T" +
+                String(date.getHours()).padStart(2, "0") +
+                ":" +
+                String(date.getMinutes()).padStart(2, "0")
             );
         }
 
-        updateConfirmed = true;
+        function readRosterPeriodInput(inputId, label) {
+            const input = document.getElementById(inputId);
+            const value = input.value;
 
-        // Use the returned saved period; no extra reload is needed.
-        applyRosterSubmissionResult(result);
-        clearRosterPeriodEditor();
+            if (!value) {
+                throw new Error(
+                    `Please select the ${label.toLowerCase()} date and time.`
+                );
+            }
 
-        showToast(
-            editing
-                ? "Submitted hard-copy period updated."
-                : "Hard copy marked as sent for the selected period."
-        );
+            /*
+             * datetime-local has no timezone.
+             * Interpret it in the device's local timezone, matching
+             * the current booking form, and send an explicit ISO value.
+             */
+            const date = new Date(value);
 
-        if (hasLoadedBookings) {
-            showLoadedConnectionStatus();
-        }
-    } catch (error) {
-        console.error("Hard-copy period update failed:", error);
+            if (
+                !Number.isFinite(date.getTime()) ||
+                formatRosterDateTimeInput(date) !== value
+            ) {
+                throw new Error(
+                    `${label} date/time is invalid or does not exist ` +
+                    "in your device timezone because of a daylight-saving change."
+                );
+            }
 
-        let message = error.message ||
-            "Unable to update the hard-copy period.";
-
-        if (updateAttempted) {
-            invalidateRosterSubmissionStatus();
-
-            message += updateConfirmed
-                ? "\n\nThe server confirmed the save, but the returned " +
-                  "status could not be read. Refresh the roster " +
-                  "before making further changes."
-                : "\n\nIf the request timed out or the connection failed, " +
-                  "the server may still have saved it. Refresh the roster " +
-                  "and check the hard-copy status before retrying.";
-
-            setConnectionStatus(message, "error");
+            return date;
         }
 
-        window.alert(message);
-    } finally {
-        setLoading(false);
-        updateCentralRosteringWarning();
-    }
-}
+        async function saveHardCopyRosterPeriod(event) {
+            event.preventDefault();
 
-async function resetHardCopyRosterStatus() {
-    if (isLoading) return;
+            if (isLoading) return;
 
-    setLoading(true);
+            const form = document.getElementById("rosterPeriodForm");
 
-    let resetAttempted = false;
-    let resetConfirmed = false;
+            if (!form.reportValidity()) return;
 
-    try {
-        await loadRosterSubmissionStatus();
+            const editing =
+                document.getElementById("rosterPeriodEditor")
+                    .dataset.mode === "edit";
 
-        if (!submittedRosterPeriod) {
-            showToast(
-                "There is no submitted hard-copy period to reset."
-            );
-            return;
+            let start;
+            let end;
+
+            try {
+                start = readRosterPeriodInput(
+                    "rosterPeriodStartInput",
+                    "Start"
+                );
+
+                end = readRosterPeriodInput(
+                    "rosterPeriodEndInput",
+                    "End"
+                );
+
+                if (end <= start) {
+                    throw new Error(
+                        "The end date and time must be after " +
+                        "the start date and time."
+                    );
+                }
+            } catch (error) {
+                window.alert(error.message);
+                return;
+            }
+
+            setLoading(true);
+
+            let updateAttempted = false;
+            let updateConfirmed = false;
+
+            try {
+                // Recheck before confirming a replacement or edit.
+                await loadRosterSubmissionStatus();
+
+                if (editing && !submittedRosterPeriod) {
+                    throw new Error(
+                        "The submitted period has been reset. " +
+                        "Close this editor and choose Mark hard copy as sent."
+                    );
+                }
+
+                let message =
+                    (editing
+                        ? "Update the submitted hard-copy period"
+                        : "Mark the hard-copy roster as sent") +
+                    ` for ${TEAM_NAME}?\n\n` +
+                    "Start: " + formatRosterPeriodDateTime(start) + "\n" +
+                    "End: " + formatRosterPeriodDateTime(end) +
+                    " (exclusive)\n\n";
+
+                if (!editing && submittedRosterPeriod) {
+                    message +=
+                        "This will REPLACE the currently submitted period:\n" +
+                        formatRosterPeriodDateTime(submittedRosterPeriod.start) +
+                        " → " +
+                        formatRosterPeriodDateTime(submittedRosterPeriod.end) +
+                        "\n\nOnly one submitted period is stored per team.\n\n";
+                }
+
+                message +=
+                    "Bookings and cancellations will still be allowed. " +
+                    "Changes overlapping this period require notification " +
+                    "to Central Rostering.";
+
+                if (!window.confirm(message)) return;
+
+                const managerPassword = window.prompt(
+                    "Enter the roster manager password:"
+                );
+
+                if (!managerPassword) return;
+
+                updateAttempted = true;
+
+                const result = await callRosterApi(
+                    editing ? "editRosterSubmission" : "markRosterSent",
+                    {
+                        managerPassword,
+                        start: start.toISOString(),
+                        end: end.toISOString()
+                    }
+                );
+
+                if (result.success !== true) {
+                    throw new Error(
+                        "Apps Script did not confirm the hard-copy update."
+                    );
+                }
+
+                updateConfirmed = true;
+
+                // Use the returned saved period; no extra reload is needed.
+                applyRosterSubmissionResult(result);
+                clearRosterPeriodEditor();
+
+                showToast(
+                    editing
+                        ? "Submitted hard-copy period updated."
+                        : "Hard copy marked as sent for the selected period."
+                );
+
+                if (hasLoadedBookings) {
+                    showLoadedConnectionStatus();
+                }
+            } catch (error) {
+                console.error("Hard-copy period update failed:", error);
+
+                let message = error.message ||
+                    "Unable to update the hard-copy period.";
+
+                if (updateAttempted) {
+                    invalidateRosterSubmissionStatus();
+
+                    message += updateConfirmed
+                        ? "\n\nThe server confirmed the save, but the returned " +
+                          "status could not be read. Refresh the roster " +
+                          "before making further changes."
+                        : "\n\nIf the request timed out or the connection failed, " +
+                          "the server may still have saved it. Refresh the roster " +
+                          "and check the hard-copy status before retrying.";
+
+                    setConnectionStatus(message, "error");
+                }
+
+                window.alert(message);
+            } finally {
+                setLoading(false);
+                updateCentralRosteringWarning();
+            }
         }
 
-        const confirmed = window.confirm(
-            `Reset the hard-copy sent status for ${TEAM_NAME}?\n\n` +
-            formatRosterPeriodDateTime(submittedRosterPeriod.start) +
-            " → " +
-            formatRosterPeriodDateTime(submittedRosterPeriod.end) +
-            "\n\nThis removes the notification-warning period " +
-            "for this team only. It does not cancel bookings " +
-            "or affect other teams.\n\n" +
-            "Only reset this if the hard-copy submission status " +
-            "should no longer apply."
-        );
+        async function resetHardCopyRosterStatus() {
+            if (isLoading) return;
 
-        if (!confirmed) return;
+            setLoading(true);
 
-        const managerPassword = window.prompt(
-            "Enter the roster manager password to reset the status:"
-        );
+            let resetAttempted = false;
+            let resetConfirmed = false;
 
-        if (!managerPassword) return;
+            try {
+                await loadRosterSubmissionStatus();
 
-        resetAttempted = true;
+                if (!submittedRosterPeriod) {
+                    showToast(
+                        "There is no submitted hard-copy period to reset."
+                    );
+                    return;
+                }
 
-        const result = await callRosterApi("resetRosterSent", {
-            managerPassword
-        });
+                const confirmed = window.confirm(
+                    `Reset the hard-copy sent status for ${TEAM_NAME}?\n\n` +
+                    formatRosterPeriodDateTime(submittedRosterPeriod.start) +
+                    " → " +
+                    formatRosterPeriodDateTime(submittedRosterPeriod.end) +
+                    "\n\nThis removes the notification-warning period " +
+                    "for this team only. It does not cancel bookings " +
+                    "or affect other teams.\n\n" +
+                    "Only reset this if the hard-copy submission status " +
+                    "should no longer apply."
+                );
 
-        if (result.success !== true) {
-            throw new Error(
-                "Apps Script did not confirm the reset."
-            );
+                if (!confirmed) return;
+
+                const managerPassword = window.prompt(
+                    "Enter the roster manager password to reset the status:"
+                );
+
+                if (!managerPassword) return;
+
+                resetAttempted = true;
+
+                const result = await callRosterApi("resetRosterSent", {
+                    managerPassword
+                });
+
+                if (result.success !== true) {
+                    throw new Error(
+                        "Apps Script did not confirm the reset."
+                    );
+                }
+
+                resetConfirmed = true;
+
+                applyRosterSubmissionResult(result);
+                clearRosterPeriodEditor();
+
+                showToast(`Hard-copy sent status reset for ${TEAM_NAME}.`);
+
+                if (hasLoadedBookings) {
+                    showLoadedConnectionStatus();
+                }
+            } catch (error) {
+                console.error("Hard-copy status reset failed:", error);
+
+                let message = error.message ||
+                    "Unable to reset the hard-copy status.";
+
+                if (resetAttempted) {
+                    invalidateRosterSubmissionStatus();
+
+                    message += resetConfirmed
+                        ? "\n\nThe server confirmed the reset, but the returned " +
+                          "status could not be read. Refresh the roster."
+                        : "\n\nIf the request timed out or the connection failed, " +
+                          "the reset may still have completed. Refresh the roster " +
+                          "and check the status before retrying.";
+
+                    setConnectionStatus(message, "error");
+                }
+
+                window.alert(message);
+            } finally {
+                setLoading(false);
+                updateCentralRosteringWarning();
+            }
         }
-
-        resetConfirmed = true;
-
-        applyRosterSubmissionResult(result);
-        clearRosterPeriodEditor();
-
-        showToast(`Hard-copy sent status reset for ${TEAM_NAME}.`);
-
-        if (hasLoadedBookings) {
-            showLoadedConnectionStatus();
-        }
-    } catch (error) {
-        console.error("Hard-copy status reset failed:", error);
-
-        let message = error.message ||
-            "Unable to reset the hard-copy status.";
-
-        if (resetAttempted) {
-            invalidateRosterSubmissionStatus();
-
-            message += resetConfirmed
-                ? "\n\nThe server confirmed the reset, but the returned " +
-                  "status could not be read. Refresh the roster."
-                : "\n\nIf the request timed out or the connection failed, " +
-                  "the reset may still have completed. Refresh the roster " +
-                  "and check the status before retrying.";
-
-            setConnectionStatus(message, "error");
-        }
-
-        window.alert(message);
-    } finally {
-        setLoading(false);
-        updateCentralRosteringWarning();
-    }
-}
 
         function populateStartTimes() {
             startTimeSelect.innerHTML =
@@ -2694,57 +2704,57 @@ async function resetHardCopyRosterStatus() {
             bookButton.disabled = false;
         }
 
-       function checkShiftAvailability(selection) {
-    let hourStart = new Date(selection.startDate);
+        function checkShiftAvailability(selection) {
+            let hourStart = new Date(selection.startDate);
 
-    const bookingAsRecruit =
-        String(currentClinicalLevel || "").trim().toUpperCase() === "REC";
+            const bookingAsRecruit =
+                String(currentClinicalLevel || "").trim().toUpperCase() === "REC";
 
-    while (hourStart < selection.endDate) {
-        const bookings = getBookingsForHour(hourStart);
+            while (hourStart < selection.endDate) {
+                const bookings = getBookingsForHour(hourStart);
 
-        const alreadyBooked = currentUser && bookings.some(event =>
-            normaliseName(event.user) === normaliseName(currentUser)
-        );
+                const alreadyBooked = currentUser && bookings.some(event =>
+                    normaliseName(event.user) === normaliseName(currentUser)
+                );
 
-        if (alreadyBooked) {
-            return {
-                available: false,
-                message:
-                    "You already have a booking during " +
-                    `${formatHourPeriod(hourStart)}.`
-            };
+                if (alreadyBooked) {
+                    return {
+                        available: false,
+                        message:
+                            "You already have a booking during " +
+                            `${formatHourPeriod(hourStart)}.`
+                    };
+                }
+
+                // Every person, including REC, uses one of the three places.
+                if (bookings.length >= MAX_CREW) {
+                    return {
+                        available: false,
+                        message:
+                            `${formatHourPeriod(hourStart)} already has ` +
+                            `${MAX_CREW} people booked. There are no places available.`
+                    };
+                }
+
+                const recruitAlreadyBooked = bookings.some(event =>
+                    String(event.clinicalLevel || "").trim().toUpperCase() === "REC"
+                );
+
+                if (bookingAsRecruit && recruitAlreadyBooked) {
+                    return {
+                        available: false,
+                        message:
+                            `The recruit place is already occupied during ` +
+                            `${formatHourPeriod(hourStart)}. ` +
+                            "Only one recruit can be booked per hourly timeslot."
+                    };
+                }
+
+                hourStart = addHours(hourStart, 1);
+            }
+
+            return { available: true };
         }
-
-        // Every person, including REC, uses one of the three places.
-        if (bookings.length >= MAX_CREW) {
-            return {
-                available: false,
-                message:
-                    `${formatHourPeriod(hourStart)} already has ` +
-                    `${MAX_CREW} people booked. There are no places available.`
-            };
-        }
-
-        const recruitAlreadyBooked = bookings.some(event =>
-            String(event.clinicalLevel || "").trim().toUpperCase() === "REC"
-        );
-
-        if (bookingAsRecruit && recruitAlreadyBooked) {
-            return {
-                available: false,
-                message:
-                    `The recruit place is already occupied during ` +
-                    `${formatHourPeriod(hourStart)}. ` +
-                    "Only one recruit can be booked per hourly timeslot."
-            };
-        }
-
-        hourStart = addHours(hourStart, 1);
-    }
-
-    return { available: true };
-}
 
         function getSelectedFlexibilityRestriction() {
             const selectedCode = String(restrictionSelect.value || "")
@@ -2798,9 +2808,10 @@ async function resetHardCopyRosterStatus() {
                  * Refresh before checking availability and hard-copy status.
                  * The backend must still enforce capacity atomically to
                  * prevent simultaneous conflicting bookings.
+                 *
+                 * Both are now loaded together in one request.
                  */
                 await loadBookingsAfterSave();
-                await loadRosterSubmissionStatus();
 
                 const latestSelection = readShiftSelection();
 
@@ -2848,15 +2859,18 @@ async function resetHardCopyRosterStatus() {
 
                 saveConfirmed = true;
 
-               // Keep the selected date, start time and finish time.
-// The user can change just the date for their next booking.
+                // The successful save response includes the updated roster.
+                applyRosterSnapshot(data);
 
-// Flexibility remains shift-specific and resets to no restriction.
-restrictionSelect.value = "N";
+                // Keep the selected date, start time and finish time.
+                // The user can change just the date for their next booking.
 
-// Name and clinical level continue to persist.
-lastCentralRosteringWarningKey = "";
-updateCentralRosteringWarning();
+                // Flexibility remains shift-specific and resets to no restriction.
+                restrictionSelect.value = "N";
+
+                // Name and clinical level continue to persist.
+                lastCentralRosteringWarningKey = "";
+                updateCentralRosteringWarning();
 
                 if (centralNoticeRequired) {
                     window.alert(
@@ -2868,7 +2882,7 @@ updateCentralRosteringWarning();
                     showToast("Your shift was booked successfully.");
                 }
 
-                await loadBookingsAfterSave();
+                // No extra reload: the save response supplied the roster.
                 showLoadedConnectionStatus();
 
                 const dayKey =
@@ -2960,8 +2974,9 @@ updateCentralRosteringWarning();
                 }
 
                 cancellationConfirmed = true;
-                events = events.filter(item => item.id !== eventId);
-                renderAll();
+
+                // Use the complete updated roster returned by the server.
+                applyRosterSnapshot(data);
 
                 if (centralNoticeRequired) {
                     window.alert(
@@ -2973,7 +2988,7 @@ updateCentralRosteringWarning();
                     showToast("Shift cancelled.");
                 }
 
-                await loadBookingsAfterSave();
+                // No extra reload: the cancellation response supplied the roster.
                 showLoadedConnectionStatus();
             } catch (error) {
                 console.error("Cancellation failed:", error);
@@ -3783,12 +3798,13 @@ updateCentralRosteringWarning();
             content: "—";
             color: #d1d5db;
         }
+
         td.crew-name.recruit-name {
-    color: #dc2626;
-    font-weight: 700;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-}
+            color: #dc2626;
+            font-weight: 700;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
 
         td.restriction,
         td.operational {
@@ -3805,20 +3821,21 @@ updateCentralRosteringWarning();
         }
 
         td.operational.review { color: #92400e; }
-        /* Operational column only — does not affect the Flex column. */
-td.operational[data-op="NC"] { color: #ff0000; }
-td.operational[data-op="A"]  { color: #0080ff; }
-td.operational[data-op="B"]  { color: #00ffff; }
-td.operational[data-op="C"]  { color: #ffff00; }
-td.operational[data-op="D"]  { color: #ff00ff; }
-td.operational[data-op="E"]  { color: #ff8080; }
-td.operational[data-op="Z"]  { color: #808080; }
-td.operational[data-op="N"]  { color: #00ff00; }
 
-td.operational {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-}
+        /* Operational column only — does not affect the Flex column. */
+        td.operational[data-op="NC"] { color: #ff0000; }
+        td.operational[data-op="A"]  { color: #0080ff; }
+        td.operational[data-op="B"]  { color: #00ffff; }
+        td.operational[data-op="C"]  { color: #ffff00; }
+        td.operational[data-op="D"]  { color: #ff00ff; }
+        td.operational[data-op="E"]  { color: #ff8080; }
+        td.operational[data-op="Z"]  { color: #808080; }
+        td.operational[data-op="N"]  { color: #00ff00; }
+
+        td.operational {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
 
         tr.day-shift td { background: #fff9db; }
         tr.night-shift td { background: #eef4f8; }
@@ -3987,12 +4004,12 @@ td.operational {
                 margin-bottom: 0.5rem;
             }
         }
-   .manager-controls-panel > summary {
-    display: list-item;
-    list-style-position: inside;
-}
 
-</style>
+        .manager-controls-panel > summary {
+            display: list-item;
+            list-style-position: inside;
+        }
+    </style>
 </head>
 
 <body>
@@ -4055,8 +4072,6 @@ td.operational {
             </button>
         </div>
 
-       
-
         <div class="roster-wrapper">
             <table id="rosterTable">
                 <thead>
@@ -4089,61 +4104,62 @@ td.operational {
             const events = snapshot.events;
             const HOURS_PER_DAY = snapshot.hoursPerDay;
             const MAX_CREW = snapshot.maxCrew;
+
             // Display allocation only. Never use these padded slots for
-// capacity checks or operational restriction calculations.
-function allocateCrewSlots(bookings) {
-    const levelOf = booking =>
-        String(booking.clinicalLevel || "").trim().toUpperCase();
+            // capacity checks or operational restriction calculations.
+            function allocateCrewSlots(bookings) {
+                const levelOf = booking =>
+                    String(booking.clinicalLevel || "").trim().toUpperCase();
 
-    const recruits = bookings.filter(booking =>
-        levelOf(booking) === "REC"
-    );
+                const recruits = bookings.filter(booking =>
+                    levelOf(booking) === "REC"
+                );
 
-    // Do not silently omit existing bookings that break the new rules.
-    if (bookings.length > MAX_CREW || recruits.length > 1) {
-        throw new Error(
-            "This timeslot contains more than three people or more than " +
-            "one recruit. Review the existing bookings in the booking list."
-        );
-    }
+                // Do not silently omit existing bookings that break the new rules.
+                if (bookings.length > MAX_CREW || recruits.length > 1) {
+                    throw new Error(
+                        "This timeslot contains more than three people or more than " +
+                        "one recruit. Review the existing bookings in the booking list."
+                    );
+                }
 
-    const priority = {
-        PARA: 0,
-        AO: 0,
-        AR: 1,
-        AA: 2
-    };
+                const priority = {
+                    PARA: 0,
+                    AO: 0,
+                    AR: 1,
+                    AA: 2
+                };
 
-    const nonRecruits = bookings
-        .map((booking, originalIndex) => ({
-            booking,
-            originalIndex
-        }))
-        .filter(item => levelOf(item.booking) !== "REC")
-        .sort((first, second) => {
-            const firstRank = priority[levelOf(first.booking)] ?? 3;
-            const secondRank = priority[levelOf(second.booking)] ?? 3;
+                const nonRecruits = bookings
+                    .map((booking, originalIndex) => ({
+                        booking,
+                        originalIndex
+                    }))
+                    .filter(item => levelOf(item.booking) !== "REC")
+                    .sort((first, second) => {
+                        const firstRank = priority[levelOf(first.booking)] ?? 3;
+                        const secondRank = priority[levelOf(second.booking)] ?? 3;
 
-            // Equal clinical priority retains the existing returned order.
-            return (
-                firstRank - secondRank ||
-                first.originalIndex - second.originalIndex
-            );
-        })
-        .map(item => item.booking);
+                        // Equal clinical priority retains the existing returned order.
+                        return (
+                            firstRank - secondRank ||
+                            first.originalIndex - second.originalIndex
+                        );
+                    })
+                    .map(item => item.booking);
 
-    const slots = [null, null, null];
+                const slots = [null, null, null];
 
-    nonRecruits.forEach((booking, index) => {
-        slots[index] = booking;
-    });
+                nonRecruits.forEach((booking, index) => {
+                    slots[index] = booking;
+                });
 
-    if (recruits.length === 1) {
-        slots[2] = recruits[0];
-    }
+                if (recruits.length === 1) {
+                    slots[2] = recruits[0];
+                }
 
-    return slots;
-}
+                return slots;
+            }
 
             function addHours(date, hours) {
                 const result = new Date(date);
@@ -4302,49 +4318,51 @@ function allocateCrewSlots(bookings) {
                     const absoluteHour = 8 + rosterHour;
                     const displayHour = absoluteHour % HOURS_PER_DAY;
 
-                   let dayBookings;
+                    let dayBookings;
 
-try {
-    dayBookings = days.map(day => {
-        const hourStart = new Date(day);
-        hourStart.setHours(absoluteHour, 0, 0, 0);
+                    try {
+                        dayBookings = days.map(day => {
+                            const hourStart = new Date(day);
+                            hourStart.setHours(absoluteHour, 0, 0, 0);
 
-        const bookings = getBookingsForHour(hourStart);
+                            const bookings = getBookingsForHour(hourStart);
 
-        try {
-            return {
-                bookings,
-                slots: allocateCrewSlots(bookings)
-            };
-        } catch (error) {
-            throw new Error(
-                hourStart.toLocaleString("en-AU") + ": " + error.message
-            );
-        }
-    });
-} catch (error) {
-    // Clear any partial roster rather than displaying an incomplete
-    // or misleading printout if legacy bookings break the new rules.
-    rosterBody.innerHTML = "";
+                            try {
+                                return {
+                                    bookings,
+                                    slots: allocateCrewSlots(bookings)
+                                };
+                            } catch (error) {
+                                throw new Error(
+                                    hourStart.toLocaleString("en-AU") +
+                                    ": " + error.message
+                                );
+                            }
+                        });
+                    } catch (error) {
+                        // Clear any partial roster rather than displaying an incomplete
+                        // or misleading printout if legacy bookings break the new rules.
+                        rosterBody.innerHTML = "";
 
-    const errorRow = document.createElement("tr");
-    const errorCell = document.createElement("td");
+                        const errorRow = document.createElement("tr");
+                        const errorCell = document.createElement("td");
 
-    errorCell.colSpan = 1 + days.length * 3;
-    errorCell.textContent = "Roster requires review. " + error.message;
-    errorCell.style.color = "#dc2626";
-    errorCell.style.fontWeight = "700";
+                        errorCell.colSpan = 1 + days.length * 3;
+                        errorCell.textContent =
+                            "Roster requires review. " + error.message;
+                        errorCell.style.color = "#dc2626";
+                        errorCell.style.fontWeight = "700";
 
-    errorRow.appendChild(errorCell);
-    rosterBody.appendChild(errorRow);
+                        errorRow.appendChild(errorCell);
+                        rosterBody.appendChild(errorRow);
 
-    document.getElementById("rosterRangeText").textContent =
-        "Roster not displayed: resolve the conflicting bookings first.";
+                        document.getElementById("rosterRangeText").textContent =
+                            "Roster not displayed: resolve the conflicting bookings first.";
 
-    document.getElementById("snapshotText").textContent = "";
+                        document.getElementById("snapshotText").textContent = "";
 
-    return;
-}
+                        return;
+                    }
 
                     for (
                         let crewSlot = 0;
@@ -4367,17 +4385,19 @@ try {
                             row.appendChild(timeCell);
                         }
 
-                      dayBookings.forEach(({ bookings, slots }) => {
-    const booking = slots[crewSlot];
+                        dayBookings.forEach(({ bookings, slots }) => {
+                            const booking = slots[crewSlot];
 
-                           const crewCell = document.createElement("td");
-crewCell.className = "crew-name";
+                            const crewCell = document.createElement("td");
+                            crewCell.className = "crew-name";
 
-if (
-    String(booking?.clinicalLevel || "").trim().toUpperCase() === "REC"
-) {
-    crewCell.classList.add("recruit-name");
-}
+                            if (
+                                String(booking?.clinicalLevel || "")
+                                    .trim()
+                                    .toUpperCase() === "REC"
+                            ) {
+                                crewCell.classList.add("recruit-name");
+                            }
 
                             if (booking) {
                                 const levelLabel =
@@ -4424,14 +4444,14 @@ if (
 
                                 operationalCell.rowSpan = MAX_CREW;
 
-                               operationalCell.textContent =
-    operational.code || "—";
+                                operationalCell.textContent =
+                                    operational.code || "—";
 
-// Used exclusively by the Operational column's colour styling.
-operationalCell.dataset.op =
-    String(operational.code || "").trim().toUpperCase();
+                                // Used exclusively by the Operational column's colour styling.
+                                operationalCell.dataset.op =
+                                    String(operational.code || "").trim().toUpperCase();
 
-operationalCell.title = operational.reason;
+                                operationalCell.title = operational.reason;
 
                                 row.appendChild(operationalCell);
                             }
@@ -4504,34 +4524,34 @@ operationalCell.title = operational.reason;
             showSelectedRoster();
         }
 
-       function setLoading(loading) {
-    isLoading = loading;
+        function setLoading(loading) {
+            isLoading = loading;
 
-    refreshButton.disabled = loading;
-    viewRosterButton.disabled = loading || !hasLoadedBookings;
+            refreshButton.disabled = loading;
+            viewRosterButton.disabled = loading || !hasLoadedBookings;
 
-    updateRosterManagerControls();
+            updateRosterManagerControls();
 
-    // Freeze booking inputs while a roster operation is running.
-    nameInput.disabled = loading;
-    clinicalLevelSelect.disabled = loading;
-    bookingDateInput.disabled = loading;
-    startTimeSelect.disabled = loading;
-    restrictionSelect.disabled = loading;
+            // Freeze booking inputs while a roster operation is running.
+            nameInput.disabled = loading;
+            clinicalLevelSelect.disabled = loading;
+            bookingDateInput.disabled = loading;
+            startTimeSelect.disabled = loading;
+            restrictionSelect.disabled = loading;
 
-    finishTimeSelect.disabled =
-        loading || startTimeSelect.value === "";
+            finishTimeSelect.disabled =
+                loading || startTimeSelect.value === "";
 
-    document.querySelectorAll("[data-cancel-id]")
-        .forEach(button => {
-            button.disabled =
-                loading ||
-                !hasLoadedBookings ||
-                !submissionStatusLoaded;
-        });
+            document.querySelectorAll("[data-cancel-id]")
+                .forEach(button => {
+                    button.disabled =
+                        loading ||
+                        !hasLoadedBookings ||
+                        !submissionStatusLoaded;
+                });
 
-    updateBookingSummary();
-}
+            updateBookingSummary();
+        }
 
         function setConnectionStatus(message, statusClass) {
             connectionStatus.className = "connection-status";
