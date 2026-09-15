@@ -1587,9 +1587,14 @@
                     );
                 };
 
-                timer = setTimeout(() => {
-                    finish(new Error("Apps Script request timed out please press Refresh"));
-                }, 30000);
+               timer = setTimeout(() => {
+    finish(
+        new Error(
+            "The roster request timed out. " +
+            "Please refresh and check the roster before retrying."
+        )
+    );
+}, 60000);
 
                 document.body.appendChild(script);
             });
