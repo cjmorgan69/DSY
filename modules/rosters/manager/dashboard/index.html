@@ -4,24 +4,23 @@
   <meta charset="UTF-8">
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0"
+    content="width=device-width, initial-scale=1"
   >
+  <meta name="theme-color" content="#f5f5f7">
   <title>Team Coverage</title>
 
   <style>
     :root {
-      --page-background: #f5f5f7;
+      color-scheme: light;
+      --background: #f5f5f7;
       --surface: #ffffff;
       --text: #1d1d1f;
-      --secondary-text: #6e6e73;
-      --border: #e5e5ea;
-      --blue: #007aff;
-
-      --green: #34c759;
-      --yellow: #ffd60a;
-      --red: #ff3b30;
-
-      --shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --muted: #6e6e73;
+      --line: #e5e5ea;
+      --blue: #0066cc;
+      --green: #b9edc7;
+      --yellow: #ffe581;
+      --red: #ffc4bf;
     }
 
     * {
@@ -29,269 +28,282 @@
     }
 
     body {
-      min-width: 320px;
       margin: 0;
+      background: var(--background);
       color: var(--text);
       font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Display",
-        "SF Pro Text",
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
+        -apple-system, BlinkMacSystemFont,
+        "Helvetica Neue", Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
-      background: var(--page-background);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: default;
+      opacity: 0.35;
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid #80baff;
+      outline-offset: 2px;
+    }
+
+    [hidden] {
+      display: none !important;
     }
 
     .page {
-      width: min(760px, 100%);
-      margin: 0 auto;
-      padding: 16px 10px 30px;
+      max-width: 680px;
+      margin: auto;
+      padding: 18px 10px 28px;
     }
 
-    .header {
-      padding: 4px 6px 14px;
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 3px 14px;
     }
 
-    .header h1 {
+    h1 {
       margin: 0;
-      font-size: 1.45rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
+      font-size: 24px;
+      letter-spacing: -0.8px;
     }
 
-    .header p {
-      margin: 4px 0 0;
-      color: var(--secondary-text);
-      font-size: 0.82rem;
+    .text-button {
+      min-height: 44px;
+      padding: 6px 10px;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 600;
     }
 
     .date-controls {
       display: grid;
-      grid-template-columns: 40px 1fr 40px;
+      grid-template-columns: 44px minmax(0, 1fr) 44px;
       gap: 7px;
-      align-items: center;
       margin-bottom: 10px;
     }
 
-    .icon-button {
-      width: 40px;
-      height: 40px;
-      color: var(--blue);
-      font-size: 1.7rem;
-      line-height: 1;
-      cursor: pointer;
-      border: 0;
-      border-radius: 11px;
-      background: var(--surface);
-      box-shadow: var(--shadow);
-    }
-
-    .icon-button:hover,
-    .icon-button:focus-visible {
-      background: #ebebf0;
-    }
-
-    .date-picker {
+    .date-controls button,
+    .date-controls input {
       width: 100%;
-      min-height: 40px;
-      padding: 7px 8px;
+      min-width: 0;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+
+    .date-controls button {
+      color: var(--blue);
+      font-size: 27px;
+    }
+
+    .date-controls input {
+      padding: 7px;
       color: var(--text);
-      font: inherit;
-      font-size: 0.88rem;
-      font-weight: 600;
       text-align: center;
-      border: 0;
-      border-radius: 11px;
-      background: var(--surface);
-      box-shadow: var(--shadow);
+      font-size: 16px;
     }
 
-    .timeline-card {
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--surface);
-      box-shadow: var(--shadow);
-    }
-
-    .timeline-heading {
-      padding: 13px 10px 11px;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .timeline-heading h2 {
-      margin: 0;
-      font-size: 0.98rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .timeline-heading p {
-      margin: 3px 0 0;
-      color: var(--secondary-text);
-      font-size: 0.72rem;
-    }
-
-    /*
-     * Five columns:
-     * time + Tumby Bay + Cummins + Port Lincoln + Team 4.
-     *
-     * This remains readable on a narrow 320px phone screen.
-     */
-    .column-headings,
-    .timeline-row {
-      display: grid;
-      grid-template-columns:
-        44px
-        repeat(4, minmax(0, 1fr));
-      gap: 4px;
+    .team-controls {
+      display: flex;
       align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
     }
 
-    .column-headings {
-      min-height: 37px;
-      padding: 0 7px;
-      color: var(--secondary-text);
-      font-size: 0.66rem;
-      font-weight: 700;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-      background: #fbfbfd;
-    }
-
-    .column-headings span:first-child {
-      text-align: left;
-    }
-
-    .team-heading {
+    .card {
       overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface);
+      box-shadow: 0 2px 5px #00000003;
     }
 
-    .timeline-row {
-      min-height: 39px;
-      padding: 3px 7px;
-      border-bottom: 1px solid var(--border);
+    .day-heading {
+      padding: 13px 8px 12px;
+      text-align: center;
+      border-bottom: 1px solid var(--line);
     }
 
-    .timeline-row:last-child {
-      border-bottom: 0;
+    h2 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.3px;
     }
 
-    /*
-     * 18:00 begins the overnight portion of the operational day.
-     */
-    .timeline-row.night-start {
+    .day-heading p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+    }
+
+    .time-column {
+      width: 48px;
+    }
+
+    thead th {
+      height: 35px;
+      padding: 4px 2px;
+      border-bottom: 1px solid var(--line);
+      background: #fafafa;
+      color: var(--muted);
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    thead th:first-child {
+      text-align: left;
+      padding-left: 8px;
+    }
+
+    tbody th {
+      padding: 0 0 0 8px;
+      color: var(--muted);
+      text-align: left;
+      font-size: 11px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    tbody td {
+      padding: 2px 3px;
+    }
+
+    tbody td:last-child {
+      padding-right: 7px;
+    }
+
+    tbody tr {
+      height: 28px;
+    }
+
+    tbody tr.night {
       border-top: 4px solid #f2f2f7;
     }
 
-    .hour {
-      color: var(--secondary-text);
-      font-size: 0.72rem;
-      font-variant-numeric: tabular-nums;
-      font-weight: 600;
-      white-space: nowrap;
+    tbody tr.midnight {
+      border-top: 2px solid var(--line);
     }
 
-    .crew-tile {
+    .tile {
       display: grid;
-      min-height: 31px;
+      min-height: 24px;
       place-items: center;
-      font-size: 0.86rem;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: 650;
       font-variant-numeric: tabular-nums;
-      font-weight: 700;
-      border-radius: 7px;
     }
 
-    .crew-green {
-      color: #ffffff;
+    .green {
       background: var(--green);
+      color: #124a25;
     }
 
-    .crew-yellow {
-      color: #3a2b00;
+    .yellow {
       background: var(--yellow);
+      color: #554000;
     }
 
-    .crew-red {
-      color: #ffffff;
+    .red {
       background: var(--red);
+      color: #78221b;
+    }
+
+    .key {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 5px 12px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 11px;
     }
 
     .legend {
       display: flex;
       justify-content: center;
-      gap: 12px;
-      margin-top: 11px;
-      color: var(--secondary-text);
-      font-size: 0.7rem;
+      gap: 15px;
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--muted);
     }
 
-    .legend-item {
+    .legend span {
       display: inline-flex;
-      gap: 4px;
       align-items: center;
+      gap: 5px;
     }
 
-    .legend-dot {
-      width: 9px;
-      height: 9px;
+    .dot {
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
     }
 
-    .team-key {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 4px 12px;
-      margin-top: 12px;
-      color: var(--secondary-text);
-      font-size: 0.69rem;
-    }
-
+    .footnote,
     .updated {
-      margin: 12px 0 0;
-      color: var(--secondary-text);
-      font-size: 0.68rem;
+      margin: 9px 0 0;
       text-align: center;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.5;
     }
 
-    @media (min-width: 520px) {
+    .message {
+      margin: 10px 0;
+      padding: 14px;
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .message.error {
+      color: #8b241b;
+      background: #ffebe8;
+    }
+
+    @media (min-width: 540px) {
       .page {
         padding-top: 28px;
       }
 
-      .column-headings,
-      .timeline-row {
-        grid-template-columns:
-          70px
-          repeat(4, minmax(0, 1fr));
-        gap: 7px;
+      .time-column {
+        width: 65px;
       }
 
-      .column-headings {
-        padding-right: 12px;
-        padding-left: 12px;
-        font-size: 0.74rem;
+      tbody tr {
+        height: 32px;
       }
 
-      .timeline-row {
-        min-height: 44px;
-        padding-right: 12px;
-        padding-left: 12px;
-      }
-
-      .hour {
-        font-size: 0.81rem;
-      }
-
-      .crew-tile {
-        min-height: 35px;
-        font-size: 0.96rem;
+      .tile {
+        min-height: 27px;
       }
     }
   </style>
@@ -299,407 +311,439 @@
 
 <body>
   <main class="page">
-    <header class="header">
+    <header class="top">
       <h1>Team Coverage</h1>
-      <p>Operational crew availability by hour.</p>
+      <div>
+        <button id="today" class="text-button" type="button">
+          Today
+        </button>
+        <button id="refresh" class="text-button" type="button">
+          Refresh
+        </button>
+      </div>
     </header>
 
-    <section
-      class="date-controls"
-      aria-label="Select operational day"
-    >
+    <nav class="date-controls" aria-label="Operational date">
       <button
         id="previous-day"
-        class="icon-button"
         type="button"
         aria-label="Previous operational day"
-      >
-        ‹
-      </button>
+      >‹</button>
 
       <input
         id="date-picker"
-        class="date-picker"
         type="date"
         aria-label="Operational day starting date"
       >
 
       <button
         id="next-day"
-        class="icon-button"
         type="button"
         aria-label="Next operational day"
-      >
-        ›
+      >›</button>
+    </nav>
+
+    <div id="team-controls" class="team-controls" hidden>
+      <button id="previous-teams" class="text-button" type="button">
+        ‹ Teams
       </button>
-    </section>
-
-    <section class="timeline-card">
-      <div class="timeline-heading">
-        <h2 id="display-date">Tuesday, 15 September</h2>
-        <p id="operational-range">
-          Operational day: 08:00 → Wed 07:59
-        </p>
-      </div>
-
-      <div class="column-headings">
-        <span>Time</span>
-        <span class="team-heading" title="Tumby Bay">TB</span>
-        <span class="team-heading" title="Cummins">CU</span>
-        <span class="team-heading" title="Port Lincoln">PL</span>
-        <span class="team-heading" title="Team 4">T4</span>
-      </div>
-
-      <div id="timeline"></div>
-    </section>
-
-    <div class="legend" aria-label="Coverage colour legend">
-      <span class="legend-item">
-        <span
-          class="legend-dot"
-          style="background: #34c759;"
-        ></span>
-        2+
-      </span>
-
-      <span class="legend-item">
-        <span
-          class="legend-dot"
-          style="background: #ffd60a;"
-        ></span>
-        1
-      </span>
-
-      <span class="legend-item">
-        <span
-          class="legend-dot"
-          style="background: #ff3b30;"
-        ></span>
-        0
-      </span>
+      <span id="team-page"></span>
+      <button id="next-teams" class="text-button" type="button">
+        Teams ›
+      </button>
     </div>
 
-    <div class="team-key" aria-label="Team abbreviations">
-      <span><strong>TB</strong> Tumby Bay</span>
-      <span><strong>CU</strong> Cummins</span>
-      <span><strong>PL</strong> Port Lincoln</span>
-      <span><strong>T4</strong> Team 4</span>
-    </div>
+    <div
+      id="message"
+      class="message"
+      role="status"
+      aria-live="polite"
+    >Loading coverage…</div>
 
-    <p id="updated" class="updated">
-      Preview data only
-    </p>
+    <section id="results" hidden>
+      <div class="card">
+        <div class="day-heading">
+          <h2 id="day-title"></h2>
+          <p id="day-range"></p>
+        </div>
+
+        <table aria-label="Hourly operational crew coverage">
+          <colgroup id="columns"></colgroup>
+          <thead id="table-head"></thead>
+          <tbody id="timeline"></tbody>
+        </table>
+      </div>
+
+      <div id="team-key" class="key"></div>
+
+      <div class="legend" aria-label="Coverage legend">
+        <span><i class="dot green"></i>2+ crew</span>
+        <span><i class="dot yellow"></i>1 crew</span>
+        <span><i class="dot red"></i>0 crew</span>
+      </div>
+
+      <p class="footnote">
+        Each row covers the next hour. Numbers show minimum
+        operational crew throughout that hour. REC excluded.
+      </p>
+
+      <p id="dst-note" class="footnote" hidden></p>
+      <p id="updated" class="updated"></p>
+    </section>
   </main>
 
   <script>
     "use strict";
 
-    let selectedOperationalDate = getTodayAtMidnight();
+    // REPLACE THIS with your deployed Apps Script /exec URL.
+    const API_URL = "PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE";
 
-    const timelineElement =
-      document.getElementById("timeline");
+    const TIME_ZONE = "Australia/Adelaide";
+    const TEAMS_PER_PAGE = 4;
 
-    const datePicker =
-      document.getElementById("date-picker");
+    const $ = (id) => document.getElementById(id);
 
-    const displayDate =
-      document.getElementById("display-date");
+    let selectedDate = currentOperationalDate();
+    let dashboard = null;
+    let teamPage = 0;
+    let requestNumber = 0;
+    let activeController = null;
 
-    const operationalRange =
-      document.getElementById("operational-range");
-
-    const updatedElement =
-      document.getElementById("updated");
-
-    /*
-     * Preview data only.
-     *
-     * Each array represents the 24 hourly positions beginning at
-     * 08:00 on the selected operational date:
-     *
-     * Index 0  = 08:00–09:00
-     * Index 9  = 17:00–18:00
-     * Index 10 = 18:00–19:00
-     * Index 15 = 23:00–00:00
-     * Index 16 = 00:00–01:00 on the following day
-     * Index 23 = 07:00–08:00 on the following day
-     */
-    function getPreviewCoverage(date) {
-      const patternIndex = date.getDate() % 3;
-
-      const patterns = [
-        {
-          tumbyBay: [
-            2, 2, 1, 2, 2, 2, 2, 1,
-            2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 1, 1, 2, 2, 2, 1
-          ],
-
-          cummins: [
-            1, 2, 2, 2, 1, 0, 1, 1,
-            2, 2, 2, 2, 1, 1, 2, 2,
-            2, 1, 1, 1, 2, 2, 1, 0
-          ],
-
-          portLincoln: [
-            2, 2, 2, 1, 1, 2, 2, 2,
-            2, 2, 1, 1, 2, 2, 2, 2,
-            1, 1, 2, 2, 2, 2, 2, 1
-          ],
-
-          team4: [
-            0, 0, 1, 1, 1, 1, 2, 2,
-            2, 2, 1, 1, 1, 0, 0, 1,
-            1, 2, 2, 1, 1, 0, 0, 0
-          ]
-        },
-
-        {
-          tumbyBay: [
-            2, 2, 2, 2, 1, 1, 2, 2,
-            2, 2, 2, 1, 1, 1, 2, 2,
-            1, 1, 1, 2, 2, 2, 1, 1
-          ],
-
-          cummins: [
-            2, 2, 2, 1, 1, 1, 1, 2,
-            2, 2, 2, 2, 2, 2, 2, 1,
-            1, 1, 2, 2, 2, 2, 2, 2
-          ],
-
-          portLincoln: [
-            1, 1, 2, 2, 2, 2, 1, 1,
-            2, 2, 2, 2, 2, 1, 1, 2,
-            2, 2, 1, 1, 2, 2, 2, 2
-          ],
-
-          team4: [
-            0, 1, 1, 2, 2, 2, 1, 1,
-            0, 0, 1, 1, 2, 2, 2, 1,
-            1, 1, 0, 0, 1, 2, 2, 1
-          ]
-        },
-
-        {
-          tumbyBay: [
-            1, 1, 2, 2, 2, 1, 1, 0,
-            0, 1, 1, 2, 2, 2, 1, 1,
-            1, 0, 0, 1, 1, 1, 0, 0
-          ],
-
-          cummins: [
-            0, 0, 1, 1, 1, 2, 2, 2,
-            1, 1, 0, 0, 1, 1, 2, 2,
-            2, 1, 1, 0, 0, 0, 1, 1
-          ],
-
-          portLincoln: [
-            2, 2, 2, 2, 1, 1, 1, 2,
-            2, 1, 1, 1, 2, 2, 2, 2,
-            2, 2, 1, 1, 1, 2, 2, 2
-          ],
-
-          team4: [
-            1, 0, 0, 1, 1, 1, 2, 2,
-            1, 1, 1, 0, 0, 1, 1, 2,
-            2, 2, 1, 1, 0, 0, 0, 1
-          ]
-        }
-      ];
-
-      return patterns[patternIndex];
+    function addDays(date, days) {
+      const value = new Date(date + "T12:00:00Z");
+      value.setUTCDate(value.getUTCDate() + days);
+      return value.toISOString().slice(0, 10);
     }
 
-    function renderTimeline() {
-      const coverage =
-        getPreviewCoverage(selectedOperationalDate);
+    function currentOperationalDate() {
+      const parts = new Intl.DateTimeFormat("en-AU", {
+        timeZone: TIME_ZONE,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        hourCycle: "h23"
+      }).formatToParts(new Date());
 
-      const teamCoverage = [
-        coverage.tumbyBay,
-        coverage.cummins,
-        coverage.portLincoln,
-        coverage.team4
-      ];
-
-      timelineElement.innerHTML = "";
-
-      for (let index = 0; index < 24; index++) {
-        const hourNumber = (8 + index) % 24;
-
-        const row = document.createElement("div");
-        row.className = "timeline-row";
-
-        /*
-         * 18:00 starts ten hours after the operational 08:00 start.
-         */
-        if (index === 10) {
-          row.classList.add("night-start");
-        }
-
-        const hour = document.createElement("div");
-        hour.className = "hour";
-        hour.textContent = formatHour(hourNumber);
-
-        row.appendChild(hour);
-
-        teamCoverage.forEach(function(hourlyCounts) {
-          row.appendChild(
-            createCrewTile(hourlyCounts[index])
-          );
-        });
-
-        timelineElement.appendChild(row);
-      }
-
-      datePicker.value =
-        toIsoDate(selectedOperationalDate);
-
-      displayDate.textContent =
-        new Intl.DateTimeFormat("en-AU", {
-          weekday: "long",
-          day: "numeric",
-          month: "long"
-        }).format(selectedOperationalDate);
-
-      const followingDate = addDays(
-        selectedOperationalDate,
-        1
+      const values = Object.fromEntries(
+        parts.map((part) => [part.type, part.value])
       );
 
-      operationalRange.textContent =
-        "Operational day: 08:00 → " +
-        new Intl.DateTimeFormat("en-AU", {
-          weekday: "short"
-        }).format(followingDate) +
-        " 07:59";
+      const date =
+        values.year + "-" + values.month + "-" + values.day;
 
-      updatedElement.textContent =
-        "Preview data · " +
-        new Intl.DateTimeFormat("en-AU", {
-          dateStyle: "medium",
-          timeStyle: "short"
-        }).format(new Date());
+      return Number(values.hour) < 8 ? addDays(date, -1) : date;
     }
 
-    function createCrewTile(crewCount) {
-      const tile = document.createElement("div");
-
-      tile.className =
-        "crew-tile " +
-        getCrewColourClass(crewCount);
-
-      tile.textContent =
-        crewCount >= 2
-          ? "2+"
-          : String(crewCount);
-
-      tile.setAttribute(
-        "aria-label",
-        crewCount >= 2
-          ? "Two or more operational crew"
-          : crewCount + " operational crew"
-      );
-
-      return tile;
+    function formatCalendarDate(date, options) {
+      return new Intl.DateTimeFormat("en-AU", {
+        ...options,
+        timeZone: "UTC"
+      }).format(new Date(date + "T12:00:00Z"));
     }
 
-    function getCrewColourClass(crewCount) {
-      if (crewCount >= 2) {
-        return "crew-green";
-      }
-
-      if (crewCount === 1) {
-        return "crew-yellow";
-      }
-
-      return "crew-red";
+    function showMessage(text, error = false) {
+      $("message").textContent = text;
+      $("message").className = "message" + (error ? " error" : "");
+      $("message").hidden = false;
     }
 
-    function formatHour(hourNumber) {
-      const hour =
-        ((hourNumber % 24) + 24) % 24;
+    function element(tag, text, className) {
+      const node = document.createElement(tag);
 
-      return String(hour).padStart(2, "0") + ":00";
+      if (text !== undefined) node.textContent = text;
+      if (className) node.className = className;
+
+      return node;
     }
 
-    function getTodayAtMidnight() {
-      const now = new Date();
+    async function loadCoverage() {
+      const thisRequest = ++requestNumber;
 
-      return new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate()
-      );
-    }
+      if (activeController) activeController.abort();
 
-    function addDays(date, numberOfDays) {
-      const result = new Date(date);
+      const controller = new AbortController();
+      activeController = controller;
 
-      result.setDate(
-        result.getDate() + numberOfDays
-      );
+      $("date-picker").value = selectedDate;
+      $("results").hidden = true;
+      $("team-controls").hidden = true;
+      $("refresh").disabled = true;
 
-      return result;
-    }
+      showMessage("Loading coverage…");
 
-    function toIsoDate(date) {
-      const year = date.getFullYear();
-
-      const month = String(
-        date.getMonth() + 1
-      ).padStart(2, "0");
-
-      const day = String(
-        date.getDate()
-      ).padStart(2, "0");
-
-      return year + "-" + month + "-" + day;
-    }
-
-    function fromIsoDate(isoDate) {
-      const parts = isoDate.split("-").map(Number);
-
-      return new Date(
-        parts[0],
-        parts[1] - 1,
-        parts[2]
-      );
-    }
-
-    document
-      .getElementById("previous-day")
-      .addEventListener("click", function() {
-        selectedOperationalDate = addDays(
-          selectedOperationalDate,
-          -1
+      if (API_URL.includes("PASTE_YOUR")) {
+        showMessage(
+          "Setup needed: paste your Apps Script /exec URL into API_URL.",
+          true
         );
-
-        renderTimeline();
-      });
-
-    document
-      .getElementById("next-day")
-      .addEventListener("click", function() {
-        selectedOperationalDate = addDays(
-          selectedOperationalDate,
-          1
-        );
-
-        renderTimeline();
-      });
-
-    datePicker.addEventListener("change", function() {
-      if (!datePicker.value) {
+        $("refresh").disabled = false;
         return;
       }
 
-      selectedOperationalDate =
-        fromIsoDate(datePicker.value);
+      const timeout = setTimeout(() => controller.abort(), 30000);
 
-      renderTimeline();
+      try {
+        const url = new URL(API_URL);
+        url.searchParams.set("action", "coverage");
+        url.searchParams.set("date", selectedDate);
+        url.searchParams.set("_", String(Date.now()));
+
+        const response = await fetch(url.toString(), {
+          method: "GET",
+          redirect: "follow",
+          credentials: "omit",
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          throw new Error("Server returned HTTP " + response.status + ".");
+        }
+
+        const data = await response.json();
+
+        if (!data.ok) {
+          throw new Error(data.error || "Unable to load coverage.");
+        }
+
+        if (!Array.isArray(data.teams) || !Array.isArray(data.hours)) {
+          throw new Error("Unexpected dashboard response.");
+        }
+
+        data.hours.forEach((hour) => {
+          if (
+            !Array.isArray(hour.counts) ||
+            hour.counts.length !== data.teams.length ||
+            hour.counts.some(
+              (count) => !Number.isInteger(count) || count < 0
+            )
+          ) {
+            throw new Error("Invalid coverage values returned.");
+          }
+        });
+
+        // Do not let an older request replace a newer date.
+        if (thisRequest !== requestNumber) return;
+
+        dashboard = data;
+
+        if (dashboard.teams.length === 0) {
+          showMessage(
+            "No active teams found. Add teams to the Teams tab " +
+            "and set Active to TRUE."
+          );
+          return;
+        }
+
+        const lastPage = Math.max(
+          0,
+          Math.ceil(dashboard.teams.length / TEAMS_PER_PAGE) - 1
+        );
+
+        teamPage = Math.min(teamPage, lastPage);
+
+        render();
+      } catch (error) {
+        if (thisRequest !== requestNumber) return;
+
+        const detail = error.name === "AbortError"
+          ? "The request timed out."
+          : error.message;
+
+        showMessage(
+          detail +
+          " Check the deployment URL and access permissions, then Refresh.",
+          true
+        );
+      } finally {
+        clearTimeout(timeout);
+
+        if (thisRequest === requestNumber) {
+          $("refresh").disabled = false;
+        }
+      }
+    }
+
+    function render() {
+      if (!dashboard) return;
+
+      const firstTeam = teamPage * TEAMS_PER_PAGE;
+      const visibleTeams = dashboard.teams.slice(
+        firstTeam,
+        firstTeam + TEAMS_PER_PAGE
+      );
+
+      $("message").hidden = true;
+      $("results").hidden = false;
+
+      $("day-title").textContent = formatCalendarDate(
+        dashboard.operationalDate,
+        {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }
+      );
+
+      $("day-range").textContent =
+        "08:00 → " +
+        formatCalendarDate(dashboard.nextDate, {
+          weekday: "short",
+          day: "numeric",
+          month: "short"
+        }) +
+        " 07:59 · Adelaide time";
+
+      $("columns").replaceChildren();
+      $("columns").appendChild(element("col", undefined, "time-column"));
+
+      visibleTeams.forEach(() => {
+        $("columns").appendChild(element("col"));
+      });
+
+      const headingRow = element("tr");
+      const timeHeading = element("th", "Time");
+      timeHeading.scope = "col";
+      headingRow.appendChild(timeHeading);
+
+      visibleTeams.forEach((team) => {
+        const heading = element("th", team.shortName);
+        heading.scope = "col";
+        heading.title = team.name;
+        heading.setAttribute("aria-label", team.name);
+        headingRow.appendChild(heading);
+      });
+
+      $("table-head").replaceChildren(headingRow);
+
+      const fragment = document.createDocumentFragment();
+
+      dashboard.hours.forEach((hour, index) => {
+        const row = element("tr");
+
+        if (hour.label === "18:00") row.classList.add("night");
+
+        if (
+          index > 0 &&
+          hour.calendarDate !== dashboard.hours[index - 1].calendarDate
+        ) {
+          row.classList.add("midnight");
+        }
+
+        const timeCell = element("th", hour.label);
+        timeCell.scope = "row";
+        timeCell.title = hour.detail;
+        timeCell.setAttribute("aria-label", hour.detail);
+        row.appendChild(timeCell);
+
+        visibleTeams.forEach((team, localIndex) => {
+          const count = hour.counts[firstTeam + localIndex];
+          const colour = count >= 2 ? "green" : count === 1 ? "yellow" : "red";
+
+          const cell = element("td");
+          const tile = element("div", String(count), "tile " + colour);
+
+          tile.setAttribute(
+            "aria-label",
+            team.name + ": minimum " + count +
+            " operational crew, " + hour.detail
+          );
+
+          tile.title =
+            team.name + " · " + hour.detail +
+            " · Minimum " + count + " operational crew";
+
+          cell.appendChild(tile);
+          row.appendChild(cell);
+        });
+
+        fragment.appendChild(row);
+      });
+
+      $("timeline").replaceChildren(fragment);
+
+      $("team-key").replaceChildren();
+
+      visibleTeams.forEach((team) => {
+        const item = element("span");
+        item.appendChild(element("strong", team.shortName + " "));
+        item.appendChild(document.createTextNode(team.name));
+        $("team-key").appendChild(item);
+      });
+
+      const pageCount = Math.ceil(
+        dashboard.teams.length / TEAMS_PER_PAGE
+      );
+
+      $("team-controls").hidden = pageCount <= 1;
+      $("previous-teams").disabled = teamPage === 0;
+      $("next-teams").disabled = teamPage >= pageCount - 1;
+
+      $("team-page").textContent =
+        "Teams " + (firstTeam + 1) + "–" +
+        (firstTeam + visibleTeams.length) +
+        " of " + dashboard.teams.length;
+
+      $("dst-note").hidden = dashboard.hours.length === 24;
+      $("dst-note").textContent =
+        "Daylight-saving change: this operational day contains " +
+        dashboard.hours.length + " actual hours.";
+
+      $("updated").textContent =
+        "Updated " +
+        new Intl.DateTimeFormat("en-AU", {
+          timeZone: TIME_ZONE,
+          day: "numeric",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(new Date(dashboard.generatedAt)) +
+        " · Adelaide time";
+    }
+
+    $("previous-day").addEventListener("click", () => {
+      selectedDate = addDays(selectedDate, -1);
+      loadCoverage();
     });
 
-    renderTimeline();
+    $("next-day").addEventListener("click", () => {
+      selectedDate = addDays(selectedDate, 1);
+      loadCoverage();
+    });
+
+    $("today").addEventListener("click", () => {
+      selectedDate = currentOperationalDate();
+      loadCoverage();
+    });
+
+    $("refresh").addEventListener("click", loadCoverage);
+
+    $("date-picker").addEventListener("change", () => {
+      if (!$("date-picker").value) return;
+
+      selectedDate = $("date-picker").value;
+      loadCoverage();
+    });
+
+    $("previous-teams").addEventListener("click", () => {
+      if (teamPage > 0) {
+        teamPage--;
+        render();
+      }
+    });
+
+    $("next-teams").addEventListener("click", () => {
+      if (
+        dashboard &&
+        (teamPage + 1) * TEAMS_PER_PAGE < dashboard.teams.length
+      ) {
+        teamPage++;
+        render();
+      }
+    });
+
+    loadCoverage();
   </script>
 </body>
 </html>
