@@ -1,1 +1,750 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+  <meta name="theme-color" content="#f5f5f7">
+  <title>Team Coverage</title>
 
+  <style>
+    :root {
+      color-scheme: light;
+      --background: #f5f5f7;
+      --surface: #ffffff;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --line: #e5e5ea;
+      --blue: #0066cc;
+      --green: #b9edc7;
+      --yellow: #ffe581;
+      --red: #ffc4bf;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family:
+        -apple-system, BlinkMacSystemFont,
+        "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: default;
+      opacity: 0.35;
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid #80baff;
+      outline-offset: 2px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .page {
+      max-width: 680px;
+      margin: auto;
+      padding: 18px 10px 28px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 3px 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.8px;
+    }
+
+    .text-button {
+      min-height: 44px;
+      padding: 6px 10px;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .date-controls {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) 44px;
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .date-controls button,
+    .date-controls input {
+      width: 100%;
+      min-width: 0;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+
+    .date-controls button {
+      color: var(--blue);
+      font-size: 27px;
+    }
+
+    .date-controls input {
+      padding: 7px;
+      color: var(--text);
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .team-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface);
+      box-shadow: 0 2px 5px #00000003;
+    }
+
+    .day-heading {
+      padding: 13px 8px 12px;
+      text-align: center;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.3px;
+    }
+
+    .day-heading p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+    }
+
+    .time-column {
+      width: 48px;
+    }
+
+    thead th {
+      height: 35px;
+      padding: 4px 2px;
+      border-bottom: 1px solid var(--line);
+      background: #fafafa;
+      color: var(--muted);
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    thead th:first-child {
+      text-align: left;
+      padding-left: 8px;
+    }
+
+    tbody th {
+      padding: 0 0 0 8px;
+      color: var(--muted);
+      text-align: left;
+      font-size: 11px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    tbody td {
+      padding: 2px 3px;
+    }
+
+    tbody td:last-child {
+      padding-right: 7px;
+    }
+
+    tbody tr {
+      height: 28px;
+    }
+
+    tbody tr.night {
+      border-top: 4px solid #f2f2f7;
+    }
+
+    tbody tr.midnight {
+      border-top: 2px solid var(--line);
+    }
+
+    .tile {
+      display: grid;
+      min-height: 24px;
+      place-items: center;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .green {
+      background: var(--green);
+      color: #124a25;
+    }
+
+    .yellow {
+      background: var(--yellow);
+      color: #554000;
+    }
+
+    .red {
+      background: var(--red);
+      color: #78221b;
+    }
+
+    .key {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 5px 12px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .footnote,
+    .updated {
+      margin: 9px 0 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .message {
+      margin: 10px 0;
+      padding: 14px;
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .message.error {
+      color: #8b241b;
+      background: #ffebe8;
+    }
+
+    @media (min-width: 540px) {
+      .page {
+        padding-top: 28px;
+      }
+
+      .time-column {
+        width: 65px;
+      }
+
+      tbody tr {
+        height: 32px;
+      }
+
+      .tile {
+        min-height: 27px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Team Coverage</h1>
+      <div>
+        <button id="today" class="text-button" type="button">
+          Today
+        </button>
+        <button id="refresh" class="text-button" type="button">
+          Refresh
+        </button>
+      </div>
+    </header>
+
+    <nav class="date-controls" aria-label="Operational date">
+      <button
+        id="previous-day"
+        type="button"
+        aria-label="Previous operational day"
+      >‹</button>
+
+      <input
+        id="date-picker"
+        type="date"
+        aria-label="Operational day starting date"
+      >
+
+      <button
+        id="next-day"
+        type="button"
+        aria-label="Next operational day"
+      >›</button>
+    </nav>
+
+    <div id="team-controls" class="team-controls" hidden>
+      <button id="previous-teams" class="text-button" type="button">
+        ‹ Teams
+      </button>
+      <span id="team-page"></span>
+      <button id="next-teams" class="text-button" type="button">
+        Teams ›
+      </button>
+    </div>
+
+    <div
+      id="message"
+      class="message"
+      role="status"
+      aria-live="polite"
+    >Loading coverage…</div>
+
+    <section id="results" hidden>
+      <div class="card">
+        <div class="day-heading">
+          <h2 id="day-title"></h2>
+          <p id="day-range"></p>
+        </div>
+
+        <table aria-label="Hourly operational crew coverage">
+          <colgroup id="columns"></colgroup>
+          <thead id="table-head"></thead>
+          <tbody id="timeline"></tbody>
+        </table>
+      </div>
+
+      <div id="team-key" class="key"></div>
+
+      <div class="legend" aria-label="Coverage legend">
+        <span><i class="dot green"></i>2+ crew</span>
+        <span><i class="dot yellow"></i>1 crew</span>
+        <span><i class="dot red"></i>0 crew</span>
+      </div>
+
+      <p class="footnote">
+        Each row covers the next hour. Numbers show minimum
+        operational crew throughout that hour. REC excluded.
+      </p>
+
+      <p id="dst-note" class="footnote" hidden></p>
+      <p id="updated" class="updated"></p>
+    </section>
+  </main>
+
+  <script>
+    "use strict";
+
+    // REPLACE THIS with your deployed Apps Script /exec URL.
+   const API_URL =
+  "https://script.google.com/macros/s/AKfycbxEboPS9reZI5OpUMdlriag0QeAJzIyXFZ2Jy0z_4qBJLEK054R5bDcJgyWAW2YSP6l/exec";
+
+    const TIME_ZONE = "Australia/Adelaide";
+    const TEAMS_PER_PAGE = 4;
+
+    const $ = (id) => document.getElementById(id);
+
+    let selectedDate = currentOperationalDate();
+    let dashboard = null;
+    let teamPage = 0;
+    let requestNumber = 0;
+    let activeController = null;
+
+    function addDays(date, days) {
+      const value = new Date(date + "T12:00:00Z");
+      value.setUTCDate(value.getUTCDate() + days);
+      return value.toISOString().slice(0, 10);
+    }
+
+    function currentOperationalDate() {
+      const parts = new Intl.DateTimeFormat("en-AU", {
+        timeZone: TIME_ZONE,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        hourCycle: "h23"
+      }).formatToParts(new Date());
+
+      const values = Object.fromEntries(
+        parts.map((part) => [part.type, part.value])
+      );
+
+      const date =
+        values.year + "-" + values.month + "-" + values.day;
+
+      return Number(values.hour) < 8 ? addDays(date, -1) : date;
+    }
+
+    function formatCalendarDate(date, options) {
+      return new Intl.DateTimeFormat("en-AU", {
+        ...options,
+        timeZone: "UTC"
+      }).format(new Date(date + "T12:00:00Z"));
+    }
+
+    function showMessage(text, error = false) {
+      $("message").textContent = text;
+      $("message").className = "message" + (error ? " error" : "");
+      $("message").hidden = false;
+    }
+
+    function element(tag, text, className) {
+      const node = document.createElement(tag);
+
+      if (text !== undefined) node.textContent = text;
+      if (className) node.className = className;
+
+      return node;
+    }
+
+    async function loadCoverage() {
+      const thisRequest = ++requestNumber;
+
+      if (activeController) activeController.abort();
+
+      const controller = new AbortController();
+      activeController = controller;
+
+      $("date-picker").value = selectedDate;
+      $("results").hidden = true;
+      $("team-controls").hidden = true;
+      $("refresh").disabled = true;
+
+      showMessage("Loading coverage…");
+
+      if (API_URL.includes("PASTE_YOUR")) {
+        showMessage(
+          "Setup needed: paste your Apps Script /exec URL into API_URL.",
+          true
+        );
+        $("refresh").disabled = false;
+        return;
+      }
+
+      const timeout = setTimeout(() => controller.abort(), 30000);
+
+      try {
+        const url = new URL(API_URL);
+        url.searchParams.set("action", "coverage");
+        url.searchParams.set("date", selectedDate);
+        url.searchParams.set("_", String(Date.now()));
+
+        const response = await fetch(url.toString(), {
+          method: "GET",
+          redirect: "follow",
+          credentials: "omit",
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          throw new Error("Server returned HTTP " + response.status + ".");
+        }
+
+        const data = await response.json();
+
+        if (!data.ok) {
+          throw new Error(data.error || "Unable to load coverage.");
+        }
+
+        if (!Array.isArray(data.teams) || !Array.isArray(data.hours)) {
+          throw new Error("Unexpected dashboard response.");
+        }
+
+        data.hours.forEach((hour) => {
+          if (
+            !Array.isArray(hour.counts) ||
+            hour.counts.length !== data.teams.length ||
+            hour.counts.some(
+              (count) => !Number.isInteger(count) || count < 0
+            )
+          ) {
+            throw new Error("Invalid coverage values returned.");
+          }
+        });
+
+        // Do not let an older request replace a newer date.
+        if (thisRequest !== requestNumber) return;
+
+        dashboard = data;
+
+        if (dashboard.teams.length === 0) {
+          showMessage(
+            "No active teams found. Add teams to the Teams tab " +
+            "and set Active to TRUE."
+          );
+          return;
+        }
+
+        const lastPage = Math.max(
+          0,
+          Math.ceil(dashboard.teams.length / TEAMS_PER_PAGE) - 1
+        );
+
+        teamPage = Math.min(teamPage, lastPage);
+
+        render();
+      } catch (error) {
+        if (thisRequest !== requestNumber) return;
+
+        const detail = error.name === "AbortError"
+          ? "The request timed out."
+          : error.message;
+
+        showMessage(
+          detail +
+          " Check the deployment URL and access permissions, then Refresh.",
+          true
+        );
+      } finally {
+        clearTimeout(timeout);
+
+        if (thisRequest === requestNumber) {
+          $("refresh").disabled = false;
+        }
+      }
+    }
+
+    function render() {
+      if (!dashboard) return;
+
+      const firstTeam = teamPage * TEAMS_PER_PAGE;
+      const visibleTeams = dashboard.teams.slice(
+        firstTeam,
+        firstTeam + TEAMS_PER_PAGE
+      );
+
+      $("message").hidden = true;
+      $("results").hidden = false;
+
+      $("day-title").textContent = formatCalendarDate(
+        dashboard.operationalDate,
+        {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }
+      );
+
+      $("day-range").textContent =
+        "08:00 → " +
+        formatCalendarDate(dashboard.nextDate, {
+          weekday: "short",
+          day: "numeric",
+          month: "short"
+        }) +
+        " 07:59 · Adelaide time";
+
+      $("columns").replaceChildren();
+      $("columns").appendChild(element("col", undefined, "time-column"));
+
+      visibleTeams.forEach(() => {
+        $("columns").appendChild(element("col"));
+      });
+
+      const headingRow = element("tr");
+      const timeHeading = element("th", "Time");
+      timeHeading.scope = "col";
+      headingRow.appendChild(timeHeading);
+
+      visibleTeams.forEach((team) => {
+        const heading = element("th", team.shortName);
+        heading.scope = "col";
+        heading.title = team.name;
+        heading.setAttribute("aria-label", team.name);
+        headingRow.appendChild(heading);
+      });
+
+      $("table-head").replaceChildren(headingRow);
+
+      const fragment = document.createDocumentFragment();
+
+      dashboard.hours.forEach((hour, index) => {
+        const row = element("tr");
+
+        if (hour.label === "18:00") row.classList.add("night");
+
+        if (
+          index > 0 &&
+          hour.calendarDate !== dashboard.hours[index - 1].calendarDate
+        ) {
+          row.classList.add("midnight");
+        }
+
+        const timeCell = element("th", hour.label);
+        timeCell.scope = "row";
+        timeCell.title = hour.detail;
+        timeCell.setAttribute("aria-label", hour.detail);
+        row.appendChild(timeCell);
+
+        visibleTeams.forEach((team, localIndex) => {
+          const count = hour.counts[firstTeam + localIndex];
+          const colour = count >= 2 ? "green" : count === 1 ? "yellow" : "red";
+
+          const cell = element("td");
+          const tile = element("div", String(count), "tile " + colour);
+
+          tile.setAttribute(
+            "aria-label",
+            team.name + ": minimum " + count +
+            " operational crew, " + hour.detail
+          );
+
+          tile.title =
+            team.name + " · " + hour.detail +
+            " · Minimum " + count + " operational crew";
+
+          cell.appendChild(tile);
+          row.appendChild(cell);
+        });
+
+        fragment.appendChild(row);
+      });
+
+      $("timeline").replaceChildren(fragment);
+
+      $("team-key").replaceChildren();
+
+      visibleTeams.forEach((team) => {
+        const item = element("span");
+        item.appendChild(element("strong", team.shortName + " "));
+        item.appendChild(document.createTextNode(team.name));
+        $("team-key").appendChild(item);
+      });
+
+      const pageCount = Math.ceil(
+        dashboard.teams.length / TEAMS_PER_PAGE
+      );
+
+      $("team-controls").hidden = pageCount <= 1;
+      $("previous-teams").disabled = teamPage === 0;
+      $("next-teams").disabled = teamPage >= pageCount - 1;
+
+      $("team-page").textContent =
+        "Teams " + (firstTeam + 1) + "–" +
+        (firstTeam + visibleTeams.length) +
+        " of " + dashboard.teams.length;
+
+      $("dst-note").hidden = dashboard.hours.length === 24;
+      $("dst-note").textContent =
+        "Daylight-saving change: this operational day contains " +
+        dashboard.hours.length + " actual hours.";
+
+      $("updated").textContent =
+        "Updated " +
+        new Intl.DateTimeFormat("en-AU", {
+          timeZone: TIME_ZONE,
+          day: "numeric",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(new Date(dashboard.generatedAt)) +
+        " · Adelaide time";
+    }
+
+    $("previous-day").addEventListener("click", () => {
+      selectedDate = addDays(selectedDate, -1);
+      loadCoverage();
+    });
+
+    $("next-day").addEventListener("click", () => {
+      selectedDate = addDays(selectedDate, 1);
+      loadCoverage();
+    });
+
+    $("today").addEventListener("click", () => {
+      selectedDate = currentOperationalDate();
+      loadCoverage();
+    });
+
+    $("refresh").addEventListener("click", loadCoverage);
+
+    $("date-picker").addEventListener("change", () => {
+      if (!$("date-picker").value) return;
+
+      selectedDate = $("date-picker").value;
+      loadCoverage();
+    });
+
+    $("previous-teams").addEventListener("click", () => {
+      if (teamPage > 0) {
+        teamPage--;
+        render();
+      }
+    });
+
+    $("next-teams").addEventListener("click", () => {
+      if (
+        dashboard &&
+        (teamPage + 1) * TEAMS_PER_PAGE < dashboard.teams.length
+      ) {
+        teamPage++;
+        render();
+      }
+    });
+
+    loadCoverage();
+  </script>
+</body>
+</html>
