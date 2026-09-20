@@ -21,8 +21,8 @@
             --border: #e2e8f0;
             --blue: #0284c7;
             --blue-light: #e0f2fe;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
-            --radius: 16px;
+            --shadow: 0 8px 18px -8px rgba(15, 23, 42, 0.18);
+            --radius: 14px;
         }
 
         * {
@@ -45,14 +45,14 @@
         }
 
         .container {
-            width: min(1050px, 100%);
+            width: min(760px, 100%);
             margin: 0 auto;
-            padding: 1.5rem 1rem 3rem;
+            padding: 1rem 0.9rem 2rem;
         }
 
         header {
-            margin-bottom: 1.5rem;
-            padding: 1.4rem 1.5rem;
+            margin-bottom: 1rem;
+            padding: 1rem 1.1rem;
             border: 1px solid var(--border);
             border-radius: var(--radius);
             background: rgba(255, 255, 255, 0.92);
@@ -60,9 +60,9 @@
         }
 
         .eyebrow {
-            margin: 0 0 0.35rem;
+            margin: 0 0 0.2rem;
             color: var(--primary-dark);
-            font-size: 0.78rem;
+            font-size: 0.7rem;
             font-weight: 800;
             letter-spacing: 0.08em;
             text-transform: uppercase;
@@ -70,36 +70,38 @@
 
         h1 {
             margin: 0;
-            font-size: clamp(1.5rem, 5vw, 2.1rem);
+            font-size: clamp(1.35rem, 5vw, 1.8rem);
         }
 
         header p:last-child {
-            max-width: 700px;
-            margin: 0.65rem 0 0;
+            margin: 0.35rem 0 0;
             color: var(--muted);
-            line-height: 1.5;
+            font-size: 0.84rem;
+            line-height: 1.4;
         }
 
         .section-heading {
-            margin: 1.75rem 0 0.85rem;
-            font-size: 1.05rem;
+            margin: 1rem 0 0.55rem;
+            color: var(--muted);
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
         }
 
-        .card-grid {
+        .button-grid {
             display: grid;
-            grid-template-columns: repeat(
-                auto-fit,
-                minmax(220px, 1fr)
-            );
-            gap: 1rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.65rem;
         }
 
-        .card {
+        .roster-button {
             display: flex;
-            flex-direction: column;
-            min-height: 175px;
-            padding: 1.25rem;
-            color: inherit;
+            align-items: center;
+            gap: 0.65rem;
+            min-height: 76px;
+            padding: 0.8rem;
+            color: var(--text);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             background: var(--surface);
@@ -107,48 +109,59 @@
             text-decoration: none;
             transition:
                 transform 0.18s ease,
-                border-color 0.18s ease;
+                border-color 0.18s ease,
+                background 0.18s ease;
         }
 
-        .card:hover,
-        .card:focus-visible {
+        .roster-button:hover,
+        .roster-button:focus-visible {
             border-color: var(--primary);
             outline: none;
-            transform: translateY(-3px);
-        }
-
-        .card-icon {
-            display: grid;
-            place-items: center;
-            width: 44px;
-            height: 44px;
-            margin-bottom: 1rem;
-            border-radius: 12px;
             background: var(--primary-light);
-            font-size: 1.3rem;
+            transform: translateY(-2px);
         }
 
-        .card h2 {
-            margin: 0;
-            font-size: 1.05rem;
+        .button-icon {
+            display: grid;
+            flex: 0 0 auto;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            background: var(--primary-light);
+            font-size: 1.1rem;
         }
 
-        .card p {
-            margin: 0.45rem 0 0;
-            color: var(--muted);
-            font-size: 0.88rem;
-            line-height: 1.45;
+        .button-copy {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            min-width: 0;
         }
 
-        .card-action {
-            margin-top: auto;
-            padding-top: 1rem;
+        .button-title {
+            overflow: hidden;
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .button-action {
+            margin-top: 0.15rem;
             color: var(--primary-dark);
-            font-size: 0.85rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .button-arrow {
+            flex: 0 0 auto;
+            color: var(--primary-dark);
+            font-size: 1.15rem;
             font-weight: 800;
         }
 
-        .dashboard-card {
+        .dashboard-button {
             border-color: #bae6fd;
             background: linear-gradient(
                 135deg,
@@ -157,33 +170,47 @@
             );
         }
 
-        .dashboard-card .card-icon {
+        .dashboard-button:hover,
+        .dashboard-button:focus-visible {
+            border-color: var(--blue);
+            background: #dff4ff;
+        }
+
+        .dashboard-button .button-icon {
             background: #ffffff;
         }
 
-        .dashboard-card .card-action {
+        .dashboard-button .button-action,
+        .dashboard-button .button-arrow {
             color: var(--blue);
         }
 
-        .notice {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            border: 1px solid #bfdbfe;
-            border-radius: 12px;
-            color: #1e3a8a;
-            background: #eff6ff;
-            font-size: 0.86rem;
-            line-height: 1.5;
-        }
-
-        @media (max-width: 560px) {
+        @media (max-width: 380px) {
             .container {
-                padding: 1rem 0.8rem 2rem;
+                padding: 0.8rem 0.7rem 1.5rem;
             }
 
-            header,
-            .card {
-                border-radius: 13px;
+            .button-grid {
+                gap: 0.5rem;
+            }
+
+            .roster-button {
+                min-height: 70px;
+                padding: 0.65rem;
+            }
+
+            .button-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 1rem;
+            }
+
+            .button-title {
+                font-size: 0.86rem;
+            }
+
+            .button-action {
+                font-size: 0.68rem;
             }
         }
     </style>
@@ -197,74 +224,83 @@
             <h1>Roster Manager</h1>
 
             <p>
-                Select an individual team roster, or open the combined
-                West Coast coverage summary.
+                Select a team roster or open the West Coast coverage summary.
             </p>
         </header>
 
         <h2 class="section-heading">Team rosters</h2>
 
         <section
-            class="card-grid"
+            class="button-grid"
             aria-label="West Coast team rosters"
         >
-            <a class="card" href="../kimba/">
-                <div class="card-icon" aria-hidden="true">🗓</div>
-                <h2>Kimba</h2>
-               
-                <span class="card-action">
-                    Open Kimba roster →
+            <a class="roster-button" href="../kimba/">
+                <span class="button-icon" aria-hidden="true">🗓</span>
+
+                <span class="button-copy">
+                    <span class="button-title">Kimba</span>
+                    <span class="button-action">Open roster</span>
                 </span>
+
+                <span class="button-arrow" aria-hidden="true">›</span>
             </a>
 
-            <a class="card" href="../port_kenny/">
-                <div class="card-icon" aria-hidden="true">🗓</div>
-                <h2>Port Kenny</h2>
-                
-                <span class="card-action">
-                    Open Port Kenny roster →
+            <a class="roster-button" href="../port_kenny/">
+                <span class="button-icon" aria-hidden="true">🗓</span>
+
+                <span class="button-copy">
+                    <span class="button-title">Port Kenny</span>
+                    <span class="button-action">Open roster</span>
                 </span>
+
+                <span class="button-arrow" aria-hidden="true">›</span>
             </a>
 
-            <a class="card" href="../streakybay/">
-                <div class="card-icon" aria-hidden="true">🗓</div>
-                <h2>Streaky Bay</h2>
-               
-                <span class="card-action">
-                    Open Streaky Bay roster →
+            <a class="roster-button" href="../streakybay/">
+                <span class="button-icon" aria-hidden="true">🗓</span>
+
+                <span class="button-copy">
+                    <span class="button-title">Streaky Bay</span>
+                    <span class="button-action">Open roster</span>
                 </span>
+
+                <span class="button-arrow" aria-hidden="true">›</span>
             </a>
 
-            <a class="card" href="../wudinna/">
-                <div class="card-icon" aria-hidden="true">🗓</div>
-                <h2>Wudinna</h2>
-               
-                <span class="card-action">
-                    Open Wudinna roster →
+            <a class="roster-button" href="../wudinna/">
+                <span class="button-icon" aria-hidden="true">🗓</span>
+
+                <span class="button-copy">
+                    <span class="button-title">Wudinna</span>
+                    <span class="button-action">Open roster</span>
                 </span>
+
+                <span class="button-arrow" aria-hidden="true">›</span>
             </a>
         </section>
 
         <h2 class="section-heading">Cluster overview</h2>
 
         <section
-            class="card-grid"
+            class="button-grid"
             aria-label="West Coast manager tools"
         >
-            <a class="card dashboard-card" href="./dashboard/">
-                <div class="card-icon" aria-hidden="true">📊</div>
-                <h2>Coverage summary</h2>
-                <p>
-                    View combined West Coast availability and coverage
-                    across all teams.
-                </p>
-                <span class="card-action">
-                    Open coverage dashboard →
+            <a
+                class="roster-button dashboard-button"
+                href="./dashboard/"
+            >
+                <span class="button-icon" aria-hidden="true">📊</span>
+
+                <span class="button-copy">
+                    <span class="button-title">Coverage summary</span>
+                    <span class="button-action">
+                        View all West Coast teams
+                    </span>
                 </span>
+
+                <span class="button-arrow" aria-hidden="true">›</span>
             </a>
         </section>
-
-       
     </main>
 </body>
 </html>
