@@ -1,1 +1,4707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Crew Shift Roster</title>
 
+    <style>
+        :root {
+            --primary: #22c55e;
+            --primary-dark: #16a34a;
+            --primary-light: #f0fdf4;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --red: #dc2626;
+            --red-light: #fef2f2;
+            --yellow: #d97706;
+            --yellow-light: #fffbeb;
+            --green: #16a34a;
+            --green-light: #f0fdf4;
+            --blue: #0284c7;
+            --blue-light: #e0f2fe;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05),
+                      0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding-bottom: 3rem;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top right, #e0e7ff, transparent 35rem),
+                var(--background);
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        button, input, select { font: inherit; }
+
+        button {
+            cursor: pointer;
+            border: 0;
+            transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+
+        .container {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1.25rem 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            color: white;
+            border-radius: 12px;
+            background: var(--primary);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            font-size: 1.25rem;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 1.35rem;
+        }
+
+        .brand p {
+            margin: 0.2rem 0 0;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .header-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .team-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            white-space: nowrap;
+            color: var(--primary-dark);
+            background: var(--primary-light);
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            background: var(--surface);
+        }
+
+        .user-section label {
+            color: var(--muted);
+            font-size: 0.82rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .user-section input,
+        .user-section select {
+            min-width: 0;
+            padding: 0.25rem;
+            color: var(--primary-dark);
+            border: 0;
+            background: transparent;
+            font-weight: 700;
+        }
+
+        .user-section input { width: 145px; }
+        .user-section select { min-height: 32px; }
+
+        .user-section input:focus-visible,
+        .user-section select:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        .connection-status {
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--muted);
+            background: var(--surface);
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .connection-status.connected {
+            color: var(--green);
+            border-color: #bbf7d0;
+            background: var(--green-light);
+        }
+
+        .connection-status.error {
+            color: var(--red);
+            border-color: #fecaca;
+            background: var(--red-light);
+        }
+
+        .card {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            margin: 0 0 1rem;
+            font-size: 1.15rem;
+        }
+
+        .notice {
+            margin-bottom: 1.25rem;
+            padding: 0.9rem 1rem;
+            color: #334155;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            background: #eff6ff;
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .field label {
+            color: var(--muted);
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .field input,
+        .field select,
+        .search-input {
+            width: 100%;
+            min-height: 46px;
+            padding: 0.7rem 0.9rem;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: 0;
+            background: var(--background);
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .search-input:focus {
+            border-color: var(--primary);
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+        }
+
+        .field-help {
+            color: var(--muted);
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .booking-summary {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            color: var(--muted);
+            border-left: 4px solid var(--muted);
+            border-radius: 10px;
+            background: var(--background);
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .booking-summary:empty { display: none; }
+
+        .booking-summary.valid {
+            color: var(--green);
+            border-left-color: var(--green);
+            background: var(--green-light);
+        }
+
+        .booking-summary.warning {
+            color: var(--yellow);
+            border-left-color: var(--yellow);
+            background: var(--yellow-light);
+        }
+
+        .booking-summary.invalid {
+            color: var(--red);
+            border-left-color: var(--red);
+            background: var(--red-light);
+        }
+
+        .action-bar,
+        .calendar-actions,
+        .view-switcher {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .view-switcher {
+            margin-bottom: 1.25rem;
+            padding: 0.3rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #f1f5f9;
+        }
+
+        .view-tab,
+        .btn-primary,
+        .btn-secondary,
+        .btn-danger {
+            min-height: 42px;
+            padding: 0.65rem 1rem;
+            border-radius: 10px;
+            font-weight: 800;
+        }
+
+        .view-tab {
+            color: var(--muted);
+            background: transparent;
+        }
+
+        .view-tab.active {
+            color: var(--primary-dark);
+            background: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-primary {
+            color: white;
+            background: var(--primary);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.24);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            color: var(--primary-dark);
+            border: 1px solid #d8ddff;
+            background: var(--primary-light);
+        }
+
+        .roster-launch-button {
+            width: 100%;
+            min-height: 54px;
+            margin-bottom: 1.25rem;
+            font-size: 1rem;
+        }
+
+        .btn-danger {
+            color: var(--red);
+            border: 1px solid #fecaca;
+            background: var(--red-light);
+        }
+
+        .btn-small {
+            min-height: 34px;
+            padding: 0.4rem 0.65rem;
+            font-size: 0.76rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .calendar-header h2 {
+            margin: 0;
+            font-size: 1.35rem;
+        }
+
+        .calendar-header p {
+            margin: 0.25rem 0 0;
+            color: var(--muted);
+            font-size: 0.84rem;
+        }
+
+        .calendar-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .day {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
+        .day.open { border-color: rgba(79, 70, 229, 0.4); }
+
+        .day-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.15rem 1.3rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .day-heading:hover { background: #f8fafc; }
+
+        .day-title-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .day-toggle {
+            display: grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            color: var(--muted);
+            border-radius: 50%;
+            background: var(--background);
+            transition: transform 0.25s ease;
+        }
+
+        .day.open .day-toggle {
+            color: var(--primary);
+            background: var(--primary-light);
+            transform: rotate(180deg);
+        }
+
+        .day-heading h3 {
+            margin: 0;
+            font-size: 1.05rem;
+        }
+
+        .day-subtitle {
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .day-body {
+            display: none;
+            border-top: 1px solid var(--border);
+        }
+
+        .day.open .day-body { display: block; }
+        .day-body-inner { padding: 1rem 1.25rem 1.25rem; }
+
+        .timeline-row {
+            display: grid;
+            grid-template-columns: 65px 28px 1fr;
+            align-items: center;
+            min-height: 52px;
+        }
+
+        .timeline-time {
+            padding-right: 0.7rem;
+            color: var(--muted);
+            text-align: right;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .timeline-node-container {
+            position: relative;
+            display: grid;
+            place-items: center;
+            align-self: stretch;
+        }
+
+        .timeline-line {
+            position: absolute;
+            inset-block: 0;
+            width: 4px;
+        }
+
+        .line-empty { background: var(--red); }
+        .line-partial { background: var(--yellow); }
+        .line-covered { background: var(--green); }
+
+        .timeline-node {
+            position: relative;
+            z-index: 2;
+            width: 14px;
+            height: 14px;
+            border: 3px solid;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px var(--surface);
+        }
+
+        .node-empty {
+            border-color: var(--red);
+            background: var(--red);
+        }
+
+        .node-partial {
+            border-color: var(--yellow);
+            background: var(--yellow);
+        }
+
+        .node-covered {
+            border-color: var(--green);
+            background: var(--green);
+        }
+
+        .timeline-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            margin-left: 0.4rem;
+            padding: 0.55rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--background);
+        }
+
+        .crew-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+
+        .chip {
+            padding: 0.24rem 0.55rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: var(--surface);
+            font-size: 0.76rem;
+            font-weight: 700;
+        }
+
+        .empty-chip {
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        .status-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.35rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .status-empty {
+            color: var(--red);
+            background: var(--red-light);
+        }
+
+        .status-partial {
+            color: var(--yellow);
+            background: var(--yellow-light);
+        }
+
+        .status-covered {
+            color: var(--green);
+            background: var(--green-light);
+        }
+
+        .status-operational {
+            color: var(--blue);
+            background: var(--blue-light);
+        }
+
+        .table-card { display: none; }
+        .table-card.active { display: block; }
+
+        .table-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input { max-width: 260px; }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+        }
+
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        th {
+            color: var(--muted);
+            background: #f1f5f9;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+        }
+
+        .empty-state {
+            padding: 2rem;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            background: rgba(15, 23, 42, 0.55);
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .modal {
+            width: min(620px, 100%);
+            max-height: 85vh;
+            overflow: auto;
+            padding: 1.4rem;
+            border-radius: var(--radius);
+            background: var(--surface);
+        }
+
+        .modal-header,
+        .shift-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .modal-header { margin-bottom: 1rem; }
+        .modal-header h3 { margin: 0; }
+
+        .shift-item {
+            margin-bottom: 0.7rem;
+            padding: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--background);
+        }
+
+        .shift-time {
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+
+        .shift-detail {
+            margin-top: 0.2rem;
+            color: var(--muted);
+            font-size: 0.76rem;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 2rem;
+            z-index: 2000;
+            max-width: calc(100vw - 2rem);
+            padding: 0.85rem 1.3rem;
+            color: white;
+            border-radius: 999px;
+            background: var(--text);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-50%) translateY(80px);
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .hidden { display: none !important; }
+
+        .central-roster-warning {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid #f59e0b;
+            border-left: 5px solid #d97706;
+            border-radius: 8px;
+            background: #fffbeb;
+            color: #78350f;
+            line-height: 1.45;
+        }
+
+        .roster-submission-manager {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .roster-submission-manager p {
+            margin: 0.3rem 0 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 760px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .header-controls { width: 100%; }
+            .user-section { flex: 1; }
+
+            .roster-submission-manager {
+                align-items: stretch;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 560px) {
+            header,
+            .header-controls,
+            .calendar-header,
+            .shift-item {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .user-section { justify-content: space-between; }
+            .user-section input { flex: 1; }
+
+            .timeline-row {
+                grid-template-columns: 52px 22px 1fr;
+            }
+
+            .timeline-time {
+                padding-right: 0.25rem;
+                font-size: 0.7rem;
+            }
+
+            .timeline-content {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .status-group { justify-content: flex-start; }
+
+            .status-badge {
+                white-space: normal;
+                line-height: 1.4;
+            }
+
+            .search-input { max-width: none; }
+        }
+
+        .manager-controls-panel {
+            margin-top: 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--background);
+        }
+
+        .manager-controls-panel > summary {
+            padding: 0.85rem 1rem;
+            color: var(--muted);
+            font-size: 0.84rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .manager-controls-panel > summary:hover {
+            color: var(--primary-dark);
+        }
+
+        .manager-controls-panel > summary:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 3px;
+            border-radius: 8px;
+        }
+
+        .manager-controls-panel[open] > summary {
+            color: var(--primary-dark);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .manager-controls-content {
+            padding: 1rem;
+        }
+
+        .manager-controls-content > .field-help {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .manager-controls-content #rosterPeriodEditor {
+            margin-top: 1rem;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <div class="brand-icon">🗓</div>
+                <div>
+                    <h1>Crew Shift Roster</h1>
+                    <p id="teamSubtitle">Loading team roster…</p>
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <span id="teamBadge" class="team-badge"></span>
+
+                <div class="user-section">
+                    <label for="nameInput">Name:</label>
+                    <input
+                        id="nameInput"
+                        type="text"
+                        maxlength="80"
+                        autocomplete="name"
+                        placeholder="Your name"
+                    >
+                </div>
+
+                <div class="user-section">
+                    <label for="clinicalLevelSelect">Clinical level:</label>
+                    <select id="clinicalLevelSelect" required>
+                        <option value="">Select level</option>
+                        <option value="PARA">PARA</option>
+                        <option value="AO">AO</option>
+                        <option value="AR">AR</option>
+                        <option value="AA">AA</option>
+                        <option value="REC">REC — Recruit</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <div
+            id="connectionStatus"
+            class="connection-status"
+            aria-live="polite"
+        >
+            Connecting to the roster…
+        </div>
+
+        <section class="card">
+            <button
+                id="viewRosterButton"
+                class="btn-secondary roster-launch-button"
+                type="button"
+                disabled
+            >
+                📋 View Team Roster — Next 14 Days
+            </button>
+
+            <h2 class="card-title">Book a shift</h2>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="bookingDateInput">Start date</label>
+                    <input id="bookingDateInput" type="date">
+                </div>
+
+                <div class="field">
+                    <label for="startTimeSelect">Start time</label>
+                    <select id="startTimeSelect">
+                        <option value="">Select start time</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="finishTimeSelect">Finish time</label>
+                    <select id="finishTimeSelect" disabled>
+                        <option value="">Select a start time first</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="restrictionSelect">Flexibility restriction</label>
+
+                    <select
+                        id="restrictionSelect"
+                        aria-describedby="restrictionHelp"
+                    >
+                        <option value="N" selected>N — No restriction</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                    </select>
+
+                    <small id="restrictionHelp" class="field-help">
+                        Optional: leave N selected for no restriction,
+                        or choose A, B or C. Operational restrictions
+                        are calculated separately.
+                    </small>
+                </div>
+            </div>
+
+            <div
+                id="bookingSummary"
+                class="booking-summary"
+                aria-live="polite"
+            ></div>
+
+            <div
+                id="centralRosteringWarning"
+                class="central-roster-warning"
+                hidden
+                role="alert"
+            ></div>
+
+            <!-- Hard-copy status stays visible to everyone. -->
+            <div class="roster-submission-manager">
+                <div>
+                    <strong>Roster Submission Status</strong>
+                    <p id="rosterSubmissionStatus" aria-live="polite">
+                        Checking submitted roster status…
+                    </p>
+                </div>
+            </div>
+
+            <!-- Everyday booking controls remain outside the manager panel. -->
+            <div class="action-bar">
+                <button
+                    id="bookButton"
+                    class="btn-primary"
+                    type="button"
+                    disabled
+                >
+                    Confirm shift
+                </button>
+
+                <button
+                    id="refreshButton"
+                    class="btn-secondary"
+                    type="button"
+                >
+                    Refresh roster
+                </button>
+
+                <button
+                    id="myBookingsButton"
+                    class="btn-secondary"
+                    type="button"
+                >
+                    My bookings
+                </button>
+            </div>
+
+            <!-- No "open" attribute: manager controls start collapsed. -->
+            <details
+                id="managerControlsPanel"
+                class="manager-controls-panel"
+            >
+                <summary>Manager controls</summary>
+
+                <div class="manager-controls-content">
+                    <p class="field-help">
+                        Manage this team's hard-copy submission period.
+                        Saving, editing or resetting the status requires
+                        the roster manager password.
+                    </p>
+
+                    <div class="action-bar">
+                        <button
+                            id="markRosterSentButton"
+                            class="btn-secondary"
+                            type="button"
+                        >
+                            Mark hard copy as sent
+                        </button>
+
+                        <button
+                            id="editRosterPeriodButton"
+                            class="btn-secondary"
+                            type="button"
+                            disabled
+                        >
+                            Edit submitted period
+                        </button>
+
+                        <button
+                            id="resetRosterSentButton"
+                            class="btn-danger"
+                            type="button"
+                            disabled
+                        >
+                            Reset sent status
+                        </button>
+                    </div>
+
+                    <section
+                        id="rosterPeriodEditor"
+                        class="notice"
+                        aria-labelledby="rosterPeriodEditorTitle"
+                        hidden
+                    >
+                        <h3 id="rosterPeriodEditorTitle">
+                            Select the hard-copy roster period
+                        </h3>
+
+                        <p id="rosterPeriodTimezoneHelp"></p>
+
+                        <form id="rosterPeriodForm">
+                            <div class="form-grid">
+                                <div class="field">
+                                    <label for="rosterPeriodStartInput">
+                                        Start date and time — inclusive
+                                    </label>
+
+                                    <input
+                                        id="rosterPeriodStartInput"
+                                        type="datetime-local"
+                                        step="60"
+                                        required
+                                        data-roster-manager-control
+                                    >
+                                </div>
+
+                                <div class="field">
+                                    <label for="rosterPeriodEndInput">
+                                        End date and time — exclusive
+                                    </label>
+
+                                    <input
+                                        id="rosterPeriodEndInput"
+                                        type="datetime-local"
+                                        step="60"
+                                        required
+                                        data-roster-manager-control
+                                    >
+                                </div>
+                            </div>
+
+                            <p class="field-help">
+                                Enter the exact period covered by the hard copy.
+                                The end time is not included: a shift starting
+                                exactly at that time falls outside this period.
+                                Only one submitted period is stored per team.
+                            </p>
+
+                            <div class="action-bar">
+                                <button
+                                    id="saveRosterPeriodButton"
+                                    class="btn-primary"
+                                    type="submit"
+                                    data-roster-manager-control
+                                >
+                                    Mark this period as sent
+                                </button>
+
+                                <button
+                                    id="closeRosterPeriodEditorButton"
+                                    class="btn-secondary"
+                                    type="button"
+                                    data-roster-manager-control
+                                >
+                                    Close editor
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </details>
+        </section>
+
+        <div class="view-switcher">
+            <button
+                id="timelineTab"
+                class="view-tab active"
+                type="button"
+            >
+                Timeline
+            </button>
+
+            <button
+                id="listTab"
+                class="view-tab"
+                type="button"
+            >
+                Booking list
+            </button>
+        </div>
+
+        <section id="timelineSection">
+            <div class="calendar-header">
+                <div>
+                    <h2>Roster coverage</h2>
+                    <p>
+                        Coverage excludes REC observers.
+                        Operational restrictions are shown separately.
+                    </p>
+                </div>
+
+                <div class="calendar-actions">
+                    <button
+                        id="expandAllButton"
+                        class="btn-secondary"
+                        type="button"
+                    >
+                        Expand all
+                    </button>
+
+                    <button
+                        id="collapseAllButton"
+                        class="btn-secondary"
+                        type="button"
+                    >
+                        Collapse all
+                    </button>
+                </div>
+            </div>
+
+            <main id="calendarElement" class="calendar-grid"></main>
+        </section>
+
+        <section id="listSection" class="card table-card">
+            <div class="table-toolbar">
+                <strong>All active bookings</strong>
+
+                <input
+                    id="searchInput"
+                    class="search-input"
+                    type="search"
+                    placeholder="Search bookings"
+                    aria-label="Search bookings"
+                >
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Crew member</th>
+                            <th>Clinical level</th>
+                            <th>Flexibility</th>
+                            <th>Operational*</th>
+                            <th>Start</th>
+                            <th>Finish</th>
+                            <th>Duration</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingTableBody"></tbody>
+                </table>
+            </div>
+
+            <p class="field-help">
+                *Operational codes describe the crew and may change during
+                a shift. REC is an observer and does not change the code.
+                Review means clinical information is missing or unrecognised.
+            </p>
+        </section>
+    </div>
+
+    <div id="bookingsModal" class="modal-overlay">
+        <div
+            class="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="bookingsModalTitle"
+        >
+            <div class="modal-header">
+                <h3 id="bookingsModalTitle">My upcoming bookings</h3>
+
+                <button
+                    id="closeModalButton"
+                    class="btn-secondary btn-small"
+                    type="button"
+                >
+                    Close
+                </button>
+            </div>
+
+            <div id="myBookingsList"></div>
+        </div>
+    </div>
+
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+    <script>
+        "use strict";
+
+        const TEAM_NAME = "Streaky Bay";
+
+        const APPS_SCRIPT_URL =
+            "https://script.google.com/macros/s/AKfycbxrcfdjF7kUZQBkHuw2mqrYXhqz54VrK9Agv-zzOyBG8BbAbC-lrDkY6zGK91VAwB_z/exec";
+
+        const MAX_CREW = 3;
+        const HOURS_PER_DAY = 24;
+        const MAX_SHIFT_HOURS = 24;
+        const DAYS_TO_SHOW = 9;
+
+        const CLINICAL_LEVELS = ["PARA", "AO", "AR", "AA", "REC"];
+        const FLEXIBILITY_CODES = ["N", "A", "B", "C"];
+
+        const USER_STORAGE_KEY =
+            `crew-roster-user-${TEAM_NAME.toLowerCase()}`;
+
+        const CLINICAL_STORAGE_KEY =
+            `crew-roster-clinical-level-${TEAM_NAME.toLowerCase()}`;
+
+        /*
+         * OPERATIONAL RESTRICTIONS
+         *
+         * REC is always an observer and is excluded from calculations.
+         * REC still occupies a booking place under MAX_CREW.
+         *
+         * No non-recruit crew: NC
+         * One AR: D
+         * Two or more AR, or AR with AA, without AO/PARA: E
+         * AA-only operational crew: Z
+         *
+         * AO/PARA rules:
+         * - AO/PARA alone, including with REC observers: D.
+         * - AO/PARA with another non-recruit: use the first alphabetical
+         *   non-recruit flexibility code in the order A, B, C, N.
+         * - REC flexibility is excluded. Blank flexibility means N.
+         *
+         * The empty object is retained for compatibility with existing
+         * timeline, list, CSV and printable-window function calls.
+         */
+        const OPERATIONAL_RULES = Object.freeze({});
+
+        let currentUser = readStoredValue(USER_STORAGE_KEY).trim();
+        let currentClinicalLevel = readStoredValue(CLINICAL_STORAGE_KEY);
+
+        if (!CLINICAL_LEVELS.includes(currentClinicalLevel)) {
+            currentClinicalLevel = "";
+        }
+
+        let events = [];
+        let isLoading = false;
+        let hasLoadedBookings = false;
+        let submissionStatusLoaded = false;
+        let submittedRosterPeriod = null;
+        let lastCentralRosteringWarningKey = "";
+        let toastTimer;
+        let modalReturnFocus = null;
+
+        const nameInput = document.getElementById("nameInput");
+        const clinicalLevelSelect =
+            document.getElementById("clinicalLevelSelect");
+        const bookingDateInput =
+            document.getElementById("bookingDateInput");
+        const startTimeSelect =
+            document.getElementById("startTimeSelect");
+        const finishTimeSelect =
+            document.getElementById("finishTimeSelect");
+        const restrictionSelect =
+            document.getElementById("restrictionSelect");
+        const bookingSummary =
+            document.getElementById("bookingSummary");
+        const bookButton =
+            document.getElementById("bookButton");
+        const refreshButton =
+            document.getElementById("refreshButton");
+        const viewRosterButton =
+            document.getElementById("viewRosterButton");
+        const markRosterSentButton =
+            document.getElementById("markRosterSentButton");
+        const calendarElement =
+            document.getElementById("calendarElement");
+        const connectionStatus =
+            document.getElementById("connectionStatus");
+        const timelineSection =
+            document.getElementById("timelineSection");
+        const listSection =
+            document.getElementById("listSection");
+        const timelineTab =
+            document.getElementById("timelineTab");
+        const listTab =
+            document.getElementById("listTab");
+        const bookingTableBody =
+            document.getElementById("bookingTableBody");
+        const searchInput =
+            document.getElementById("searchInput");
+        const bookingsModal =
+            document.getElementById("bookingsModal");
+        const myBookingsList =
+            document.getElementById("myBookingsList");
+        const toast =
+            document.getElementById("toast");
+
+        initialise();
+
+        function initialise() {
+            document.getElementById("teamBadge").textContent = TEAM_NAME;
+
+            document.getElementById("teamSubtitle").textContent =
+                `${TEAM_NAME} volunteer roster`;
+
+            nameInput.value = currentUser;
+            clinicalLevelSelect.value = currentClinicalLevel;
+            restrictionSelect.value = "N";
+
+            const today = startOfDay(new Date());
+            bookingDateInput.min = formatDateKey(today);
+            bookingDateInput.value = formatDateKey(today);
+
+            populateStartTimes();
+            registerEventListeners();
+            renderAll();
+            void refreshRoster();
+        }
+
+        function readStoredValue(key) {
+            try {
+                return localStorage.getItem(key) || "";
+            } catch (error) {
+                console.warn("Local storage is unavailable:", error);
+                return "";
+            }
+        }
+
+        function saveStoredValue(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (error) {
+                console.warn("Unable to save browser preference:", error);
+                showToast("Your browser could not remember this setting.");
+            }
+        }
+
+        function registerEventListeners() {
+            nameInput.addEventListener("input", handleNameChange);
+
+            clinicalLevelSelect.addEventListener("change", () => {
+                currentClinicalLevel = clinicalLevelSelect.value;
+                saveStoredValue(
+                    CLINICAL_STORAGE_KEY,
+                    currentClinicalLevel
+                );
+                updateBookingSummary();
+            });
+
+            bookingDateInput.addEventListener(
+                "change",
+                handleShiftSelectionChange
+            );
+
+            startTimeSelect.addEventListener("change", () => {
+                populateFinishTimes();
+                handleShiftSelectionChange();
+            });
+
+            finishTimeSelect.addEventListener(
+                "change",
+                handleShiftSelectionChange
+            );
+
+            restrictionSelect.addEventListener(
+                "change",
+                updateBookingSummary
+            );
+
+            bookButton.addEventListener("click", bookSelectedShift);
+            refreshButton.addEventListener("click", refreshRoster);
+            viewRosterButton.addEventListener("click", openRosterView);
+
+            markRosterSentButton.addEventListener(
+                "click",
+                markHardCopyRosterAsSent
+            );
+
+            document.getElementById("editRosterPeriodButton")
+                .addEventListener("click", () => {
+                    void openRosterPeriodEditor(true);
+                });
+
+            document.getElementById("resetRosterSentButton")
+                .addEventListener("click", resetHardCopyRosterStatus);
+
+            document.getElementById("rosterPeriodForm")
+                .addEventListener("submit", saveHardCopyRosterPeriod);
+
+            document.getElementById("closeRosterPeriodEditorButton")
+                .addEventListener("click", closeRosterPeriodEditor);
+
+            document.getElementById("myBookingsButton")
+                .addEventListener("click", openBookingsModal);
+
+            document.getElementById("closeModalButton")
+                .addEventListener("click", closeBookingsModal);
+
+            bookingsModal.addEventListener("click", event => {
+                if (event.target === bookingsModal) {
+                    closeBookingsModal();
+                }
+            });
+
+            document.addEventListener("keydown", event => {
+                if (!bookingsModal.classList.contains("active")) {
+                    return;
+                }
+
+                if (event.key === "Escape") {
+                    closeBookingsModal();
+                    return;
+                }
+
+                if (event.key === "Tab") {
+                    const focusable = Array.from(
+                        bookingsModal.querySelectorAll(
+                            'button:not(:disabled), input:not(:disabled), ' +
+                            'select:not(:disabled), [tabindex="0"]'
+                        )
+                    );
+
+                    const first = focusable[0];
+                    const last = focusable[focusable.length - 1];
+
+                    if (
+                        event.shiftKey &&
+                        document.activeElement === first
+                    ) {
+                        event.preventDefault();
+                        last?.focus();
+                    } else if (
+                        !event.shiftKey &&
+                        document.activeElement === last
+                    ) {
+                        event.preventDefault();
+                        first?.focus();
+                    }
+                }
+            });
+
+            timelineTab.addEventListener(
+                "click",
+                () => switchView("timeline")
+            );
+
+            listTab.addEventListener(
+                "click",
+                () => switchView("list")
+            );
+
+            document.getElementById("expandAllButton")
+                .addEventListener("click", () => toggleAllDays(true));
+
+            document.getElementById("collapseAllButton")
+                .addEventListener("click", () => toggleAllDays(false));
+
+            searchInput.addEventListener("input", renderBookingTable);
+        }
+
+        function handleShiftSelectionChange() {
+            updateBookingSummary();
+            updateCentralRosteringWarning();
+            showCentralRosteringPopupIfRequired();
+        }
+
+        function handleNameChange() {
+            currentUser = nameInput.value.trim();
+            saveStoredValue(USER_STORAGE_KEY, currentUser);
+
+            updateBookingSummary();
+            renderBookingTable();
+
+            if (bookingsModal.classList.contains("active")) {
+                renderMyBookings();
+            }
+        }
+
+        /*
+         * Existing JSONP transport retained for Apps Script compatibility.
+         *
+         * The backend must independently enforce:
+         * - Accepted clinical levels, including REC.
+         * - Optional flexibility: N, A, B or C.
+         * - Authentication and manager-password validation.
+         * - Team isolation, overlaps and maximum crew capacity.
+         *
+         * JSONP sends payloads through a GET URL. Moving mutations and
+         * manager credentials to authenticated POST requests requires
+         * a corresponding backend change.
+         */
+        function callRosterApi(action, payload = {}) {
+            return new Promise((resolve, reject) => {
+                const requestData = {
+                    ...payload,
+                    action,
+                    team: TEAM_NAME
+                };
+
+                const callbackName =
+                    "jsonpCallback_" +
+                    Date.now() +
+                    "_" +
+                    Math.random().toString(36).slice(2);
+
+                const script = document.createElement("script");
+
+                let settled = false;
+                let timer;
+
+                function cleanup() {
+                    clearTimeout(timer);
+                    script.remove();
+                    delete window[callbackName];
+                }
+
+                function finish(error, data) {
+                    if (settled) return;
+
+                    settled = true;
+                    cleanup();
+
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(data);
+                    }
+                }
+
+                window[callbackName] = data => {
+                    if (!data || typeof data !== "object") {
+                        finish(
+                            new Error("Apps Script returned an invalid response.")
+                        );
+                        return;
+                    }
+
+                    if (data.success === false || data.error) {
+                        finish(
+                            new Error(
+                                data.error || "The roster request was rejected."
+                            )
+                        );
+                        return;
+                    }
+
+                    finish(null, data);
+                };
+
+                script.async = true;
+
+                script.src =
+                    APPS_SCRIPT_URL +
+                    "?callback=" + encodeURIComponent(callbackName) +
+                    "&payload=" +
+                    encodeURIComponent(JSON.stringify(requestData));
+
+                script.onerror = () => {
+                    finish(
+                        new Error(
+                            "Failed to load from Apps Script. " +
+                            "Check the deployment URL and connection."
+                        )
+                    );
+                };
+
+               timer = setTimeout(() => {
+    finish(
+        new Error(
+            "The roster request timed out. " +
+            "Please refresh and check the roster before retrying."
+        )
+    );
+}, 60000);
+
+                document.body.appendChild(script);
+            });
+        }
+
+        function normaliseBooking(booking) {
+            const level = String(booking.clinicalLevel || "")
+                .trim()
+                .toUpperCase();
+
+            const restriction = String(booking.restriction || "")
+                .trim()
+                .toUpperCase();
+
+            return {
+                id: String(booking.id || ""),
+                team: String(booking.team || TEAM_NAME),
+                user: String(booking.user || "").trim(),
+                restriction: restriction || "N",
+                clinicalLevel: CLINICAL_LEVELS.includes(level)
+                    ? level
+                    : "",
+                start: String(booking.start || ""),
+                end: String(booking.end || ""),
+                createdAt: String(booking.createdAt || "")
+            };
+        }
+
+        function isValidBooking(booking) {
+            const start = new Date(booking.start);
+            const end = new Date(booking.end);
+
+            return Boolean(
+                booking.id &&
+                booking.user &&
+                booking.team === TEAM_NAME &&
+                Number.isFinite(start.getTime()) &&
+                Number.isFinite(end.getTime()) &&
+                end > start
+            );
+        }
+
+        function flexibilityLabel(booking) {
+            const code = String(booking.restriction || "")
+                .trim()
+                .toUpperCase() || "N";
+
+            return FLEXIBILITY_CODES.includes(code)
+                ? code
+                : `Legacy: ${code}`;
+        }
+
+        /*
+         * Shared calculation for timeline, lists, CSV and print window.
+         * REC is removed before calculating the operational restriction.
+         */
+        function getOperationalStatus(bookings, rules) {
+            // "rules" is retained for compatibility with existing calls.
+            const allowedLevels = ["PARA", "AO", "AR", "AA", "REC"];
+
+            const crew = bookings.map(booking => ({
+                clinicalLevel: String(booking.clinicalLevel || "")
+                    .trim()
+                    .toUpperCase()
+            }));
+
+            const hasUnknownLevel = crew.some(member =>
+                !allowedLevels.includes(member.clinicalLevel)
+            );
+
+            if (hasUnknownLevel) {
+                return {
+                    code: "Review",
+                    review: true,
+                    reason:
+                        "At least one booking has no recognised clinical level. " +
+                        "Confirm the clinical information before assigning a code."
+                };
+            }
+
+            const operationalCrew = crew.filter(member =>
+                member.clinicalLevel !== "REC"
+            );
+
+            if (operationalCrew.length === 0) {
+                return {
+                    code: "NC",
+                    review: false,
+                    reason: crew.length
+                        ? "Only recruits are booked. Recruits are observers."
+                        : "No crew assigned."
+                };
+            }
+
+            const aoCount = operationalCrew.filter(member =>
+                member.clinicalLevel === "AO" ||
+                member.clinicalLevel === "PARA"
+            ).length;
+
+            const arCount = operationalCrew.filter(member =>
+                member.clinicalLevel === "AR"
+            ).length;
+
+            const aaCount = operationalCrew.filter(member =>
+                member.clinicalLevel === "AA"
+            ).length;
+
+            /*
+             * AO/PARA alone, or with REC only: D.
+             *
+             * AO/PARA with another non-recruit:
+             * use the first alphabetical flexibility code among
+             * non-recruit crew only: A, B, C, then N.
+             *
+             * Blank flexibility is treated as N.
+             * Recruit flexibility never affects the operational code.
+             */
+            if (aoCount > 0) {
+                if (operationalCrew.length === 1) {
+                    return {
+                        code: "D",
+                        review: false,
+                        reason:
+                            "One operational crew member. Recruits are observers " +
+                            "and do not remove the single-crew restriction."
+                    };
+                }
+
+                const flexibilityCodes = bookings
+                    .filter(booking =>
+                        String(booking.clinicalLevel || "")
+                            .trim()
+                            .toUpperCase() !== "REC"
+                    )
+                    .map(booking =>
+                        String(booking.restriction || "")
+                            .trim()
+                            .toUpperCase() || "N"
+                    );
+
+                const hasUnknownFlexibility = flexibilityCodes.some(code =>
+                    !["N", "A", "B", "C"].includes(code)
+                );
+
+                if (hasUnknownFlexibility) {
+                    return {
+                        code: "Review",
+                        review: true,
+                        reason:
+                            "AO/PARA is present with another non-recruit, " +
+                            "but a non-recruit booking has an unrecognised " +
+                            "flexibility code. Confirm the flexibility information."
+                    };
+                }
+
+                const selectedCode = flexibilityCodes.sort()[0];
+
+                return {
+                    code: selectedCode,
+                    review: false,
+                    reason:
+                        "AO/PARA is present with another non-recruit. " +
+                        "Operational code follows the first alphabetical " +
+                        "non-recruit flexibility code (A, B, C, N). " +
+                        "Selected: " + selectedCode + ". Recruits are excluded."
+                };
+            }
+
+            // Two AR, or an AR working with an AA.
+            if (arCount >= 2 || (arCount >= 1 && aaCount >= 1)) {
+                return {
+                    code: "E",
+                    review: false,
+                    reason:
+                        "The operational crew contains two or more AR, " +
+                        "or an AR with an AA. Recruits are excluded."
+                };
+            }
+
+            // AA-only operational crew.
+            if (aaCount >= 1 && arCount === 0) {
+                return {
+                    code: "Z",
+                    review: false,
+                    reason:
+                        "The operational crew consists of AA crew members only. " +
+                        "Recruits are excluded."
+                };
+            }
+
+            // One AR, with or without recruits.
+            if (arCount === 1 && aaCount === 0) {
+                return {
+                    code: "D",
+                    review: false,
+                    reason:
+                        "One AR is available. Recruits are observers " +
+                        "and do not remove the single-crew restriction."
+                };
+            }
+
+            return {
+                code: "Review",
+                review: true,
+                reason: "The operational crew combination requires review."
+            };
+        }
+
+        /*
+         * Apply the combined bookings and hard-copy status response.
+         * Also used directly after successful booking/cancellation saves.
+         */
+        function applyRosterSnapshot(data) {
+            try {
+                if (
+                    !data ||
+                    data.success !== true ||
+                    !Array.isArray(data.bookings) ||
+                    normaliseName(data.team) !== normaliseName(TEAM_NAME)
+                ) {
+                    throw new Error(
+                        "The roster did not return a valid team bookings list."
+                    );
+                }
+
+                const nextEvents = data.bookings
+                    .map(normaliseBooking)
+                    .filter(isValidBooking);
+
+                applyRosterSubmissionResult(data);
+
+                events = nextEvents;
+                hasLoadedBookings = true;
+
+                renderAll();
+
+                return data;
+            } catch (error) {
+                hasLoadedBookings = false;
+                invalidateRosterSubmissionStatus();
+                renderAll();
+                throw error;
+            }
+        }
+
+        async function loadBookingsAfterSave() {
+            try {
+                const data = await callRosterApi("getBookings");
+
+                return applyRosterSnapshot(data);
+            } catch (error) {
+                hasLoadedBookings = false;
+                invalidateRosterSubmissionStatus();
+                renderAll();
+                throw error;
+            }
+        }
+
+        async function loadRosterSubmissionStatus() {
+            submissionStatusLoaded = false;
+            updateRosterManagerControls();
+
+            try {
+                const result = await callRosterApi("getRosterSubmission");
+
+                applyRosterSubmissionResult(result);
+
+                return result;
+            } catch (error) {
+                invalidateRosterSubmissionStatus();
+                throw error;
+            }
+        }
+
+        function applyRosterSubmissionResult(result) {
+            if (
+                !result ||
+                result.success !== true ||
+                !Object.prototype.hasOwnProperty.call(
+                    result,
+                    "rosterSubmission"
+                )
+            ) {
+                throw new Error(
+                    "Apps Script did not return a valid hard-copy status."
+                );
+            }
+
+            const period = result.rosterSubmission;
+
+            if (period !== null) {
+                const start = new Date(period?.start);
+                const end = new Date(period?.end);
+
+                if (
+                    !period?.start ||
+                    !period?.end ||
+                    !Number.isFinite(start.getTime()) ||
+                    !Number.isFinite(end.getTime()) ||
+                    end <= start
+                ) {
+                    throw new Error(
+                        "The submitted roster period is invalid."
+                    );
+                }
+
+                if (
+                    period.team &&
+                    normaliseName(period.team) !== normaliseName(TEAM_NAME)
+                ) {
+                    throw new Error(
+                        "The returned hard-copy period belongs to another team."
+                    );
+                }
+            }
+
+            submittedRosterPeriod = period;
+            submissionStatusLoaded = true;
+            lastCentralRosteringWarningKey = "";
+
+            const status =
+                document.getElementById("rosterSubmissionStatus");
+
+            if (!period) {
+                status.textContent =
+                    `No hard-copy roster period is currently marked as sent for ${TEAM_NAME}.`;
+            } else {
+                status.textContent =
+                    `ROSTER SUBMITTED for ${TEAM_NAME}: ` +
+                    formatRosterPeriodDateTime(period.start) +
+                    " → " +
+                    formatRosterPeriodDateTime(period.end) +
+                    " Changes overlapping this period " +
+                    "require notification to Country Rostering.";
+            }
+
+            updateCentralRosteringWarning();
+            updateBookingSummary();
+            updateRosterManagerControls();
+        }
+
+        function invalidateRosterSubmissionStatus() {
+            submittedRosterPeriod = null;
+            submissionStatusLoaded = false;
+            lastCentralRosteringWarningKey = "";
+
+            document.getElementById("rosterSubmissionStatus").textContent =
+                "Unable to verify hard-copy status. " +
+                "Refresh the roster before changing bookings or retrying " +
+                "a manager update.";
+
+            updateCentralRosteringWarning();
+            updateBookingSummary();
+            updateRosterManagerControls();
+        }
+
+        function updateRosterManagerControls() {
+            const hasSubmittedPeriod =
+                submissionStatusLoaded && Boolean(submittedRosterPeriod);
+
+            markRosterSentButton.disabled = isLoading;
+
+            document.getElementById("editRosterPeriodButton").disabled =
+                isLoading || !hasSubmittedPeriod;
+
+            document.getElementById("resetRosterSentButton").disabled =
+                isLoading || !hasSubmittedPeriod;
+
+            document.querySelectorAll("[data-roster-manager-control]")
+                .forEach(control => {
+                    control.disabled = isLoading;
+                });
+        }
+
+        async function refreshRoster() {
+            if (isLoading) return;
+
+            setLoading(true);
+            setConnectionStatus(
+                "Refreshing roster and hard-copy status…",
+                ""
+            );
+
+            try {
+                // One request loads both bookings and submission status.
+                await loadBookingsAfterSave();
+
+                showLoadedConnectionStatus();
+            } catch (error) {
+                console.error("Roster refresh failed:", error);
+                setConnectionStatus(error.message, "error");
+                showToast(error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function showLoadedConnectionStatus() {
+            const now = new Date();
+
+            const activeBookings = events.filter(event =>
+                new Date(event.end) > now
+            );
+
+            setConnectionStatus(
+                `${activeBookings.length} active bookings loaded for ${TEAM_NAME}.`,
+                "connected"
+            );
+        }
+
+        function overlapsSubmittedPeriod(start, end) {
+            if (
+                !submissionStatusLoaded ||
+                !submittedRosterPeriod?.start ||
+                !submittedRosterPeriod?.end
+            ) {
+                return false;
+            }
+
+            return (
+                new Date(start) < new Date(submittedRosterPeriod.end) &&
+                new Date(end) > new Date(submittedRosterPeriod.start)
+            );
+        }
+
+        function selectedShiftNeedsCentralRosteringNotice() {
+            const selection = readShiftSelection();
+
+            return Boolean(
+                selection.complete &&
+                selection.valid &&
+                overlapsSubmittedPeriod(
+                    selection.startDate,
+                    selection.endDate
+                )
+            );
+        }
+
+        function updateCentralRosteringWarning() {
+            const warning =
+                document.getElementById("centralRosteringWarning");
+
+            if (selectedShiftNeedsCentralRosteringNotice()) {
+                warning.hidden = false;
+
+                warning.innerHTML = `
+                    <strong>Central Rostering notification required</strong><br>
+                    This shift falls within a roster period already submitted.
+                    After confirming this booking, please phone Country Rostering to advise them
+                    of the change on 1300 850 985.
+                `;
+            } else {
+                warning.hidden = true;
+                warning.textContent = "";
+            }
+        }
+
+        function showCentralRosteringPopupIfRequired() {
+            if (!selectedShiftNeedsCentralRosteringNotice()) {
+                lastCentralRosteringWarningKey = "";
+                return;
+            }
+
+            const selection = readShiftSelection();
+
+            const warningKey =
+                selection.startDate.toISOString() + "-" +
+                selection.endDate.toISOString() + "-" +
+                submittedRosterPeriod.start + "-" +
+                submittedRosterPeriod.end;
+
+            if (warningKey === lastCentralRosteringWarningKey) {
+                return;
+            }
+
+            lastCentralRosteringWarningKey = warningKey;
+
+            window.alert(
+                "Country Rostering notification required.\n\n" +
+                "This shift falls within a roster period already submitted " +
+                "to Country Rostering as a hard copy.\n\n" +
+                "You may still book, but after confirming you must phone " +
+                "Country Rostering to notify them of the change."
+            );
+        }
+
+        function confirmCentralRosteringNoticeIfRequired() {
+            if (!submissionStatusLoaded) {
+                showToast(
+                    "Refresh the hard-copy roster status before booking."
+                );
+                return false;
+            }
+
+            if (!selectedShiftNeedsCentralRosteringNotice()) {
+                return true;
+            }
+
+            return window.confirm(
+                "Country Rostering notification required.\n\n" +
+                "This booking changes a roster period already submitted " +
+                "as hard copy. After confirming the shift, you must phone " +
+                "Country Rostering to advise them.\n\n" +
+                "Continue with this booking?"
+            );
+        }
+
+        function cancellationNeedsCentralRosteringNotice(event) {
+            return overlapsSubmittedPeriod(event.start, event.end);
+        }
+
+        function formatRosterPeriodDateTime(dateValue) {
+            return new Date(dateValue).toLocaleString("en-AU", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+        }
+
+        async function markHardCopyRosterAsSent() {
+            await openRosterPeriodEditor(false);
+        }
+
+        async function openRosterPeriodEditor(editing) {
+            if (isLoading) return;
+
+            setLoading(true);
+
+            let editorOpened = false;
+
+            try {
+                // Get the latest team-specific status before opening.
+                await loadRosterSubmissionStatus();
+
+                if (editing && !submittedRosterPeriod) {
+                    throw new Error(
+                        "There is no submitted hard-copy period to edit."
+                    );
+                }
+
+                const editor =
+                    document.getElementById("rosterPeriodEditor");
+
+                const startInput =
+                    document.getElementById("rosterPeriodStartInput");
+
+                const endInput =
+                    document.getElementById("rosterPeriodEndInput");
+
+                editor.dataset.mode = editing ? "edit" : "new";
+
+                document.getElementById("rosterPeriodEditorTitle").textContent =
+                    editing
+                        ? `Edit ${TEAM_NAME}'s submitted period`
+                        : `Select ${TEAM_NAME}'s hard-copy roster period`;
+
+                document.getElementById("saveRosterPeriodButton").textContent =
+                    editing
+                        ? "Save changes to submitted period"
+                        : "Mark this period as sent";
+
+                /*
+                 * No defaults for a new submission.
+                 *
+                 * Editing loads the actual saved boundaries;
+                 * these are existing values, not calculated defaults.
+                 */
+                startInput.value = editing
+                    ? formatRosterDateTimeInput(submittedRosterPeriod.start)
+                    : "";
+
+                endInput.value = editing
+                    ? formatRosterDateTimeInput(submittedRosterPeriod.end)
+                    : "";
+
+                const browserTimezone =
+                    Intl.DateTimeFormat().resolvedOptions().timeZone ||
+                    "your device's local timezone";
+
+                document.getElementById("rosterPeriodTimezoneHelp").textContent =
+                    "Dates and times use your device timezone: " +
+                    browserTimezone +
+                    ". Ensure this matches the team's local time before saving. " +
+                    "For Tumby Bay and the other South Australian teams, " +
+                    "use Adelaide time.";
+
+                editor.hidden = false;
+                editorOpened = true;
+            } catch (error) {
+                console.error("Unable to open roster period editor:", error);
+
+                window.alert(
+                    error.message || "Unable to load the hard-copy status."
+                );
+            } finally {
+                setLoading(false);
+            }
+
+            if (editorOpened) {
+                const editor =
+                    document.getElementById("rosterPeriodEditor");
+
+                editor.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+                document.getElementById("rosterPeriodStartInput")
+                    .focus({ preventScroll: true });
+            }
+        }
+
+        function closeRosterPeriodEditor() {
+            if (isLoading) return;
+
+            clearRosterPeriodEditor();
+            markRosterSentButton.focus();
+        }
+
+        function clearRosterPeriodEditor() {
+            const editor =
+                document.getElementById("rosterPeriodEditor");
+
+            editor.hidden = true;
+            delete editor.dataset.mode;
+
+            // Do not retain dates as defaults for the next submission.
+            document.getElementById("rosterPeriodStartInput").value = "";
+            document.getElementById("rosterPeriodEndInput").value = "";
+        }
+
+        function formatRosterDateTimeInput(value) {
+            const date = new Date(value);
+
+            if (!Number.isFinite(date.getTime())) {
+                throw new Error("The saved roster date/time is invalid.");
+            }
+
+            return (
+                formatDateKey(date) +
+                "T" +
+                String(date.getHours()).padStart(2, "0") +
+                ":" +
+                String(date.getMinutes()).padStart(2, "0")
+            );
+        }
+
+        function readRosterPeriodInput(inputId, label) {
+            const input = document.getElementById(inputId);
+            const value = input.value;
+
+            if (!value) {
+                throw new Error(
+                    `Please select the ${label.toLowerCase()} date and time.`
+                );
+            }
+
+            /*
+             * datetime-local has no timezone.
+             * Interpret it in the device's local timezone, matching
+             * the current booking form, and send an explicit ISO value.
+             */
+            const date = new Date(value);
+
+            if (
+                !Number.isFinite(date.getTime()) ||
+                formatRosterDateTimeInput(date) !== value
+            ) {
+                throw new Error(
+                    `${label} date/time is invalid or does not exist ` +
+                    "in your device timezone because of a daylight-saving change."
+                );
+            }
+
+            return date;
+        }
+
+        async function saveHardCopyRosterPeriod(event) {
+            event.preventDefault();
+
+            if (isLoading) return;
+
+            const form = document.getElementById("rosterPeriodForm");
+
+            if (!form.reportValidity()) return;
+
+            const editing =
+                document.getElementById("rosterPeriodEditor")
+                    .dataset.mode === "edit";
+
+            let start;
+            let end;
+
+            try {
+                start = readRosterPeriodInput(
+                    "rosterPeriodStartInput",
+                    "Start"
+                );
+
+                end = readRosterPeriodInput(
+                    "rosterPeriodEndInput",
+                    "End"
+                );
+
+                if (end <= start) {
+                    throw new Error(
+                        "The end date and time must be after " +
+                        "the start date and time."
+                    );
+                }
+            } catch (error) {
+                window.alert(error.message);
+                return;
+            }
+
+            setLoading(true);
+
+            let updateAttempted = false;
+            let updateConfirmed = false;
+
+            try {
+                // Recheck before confirming a replacement or edit.
+                await loadRosterSubmissionStatus();
+
+                if (editing && !submittedRosterPeriod) {
+                    throw new Error(
+                        "The submitted period has been reset. " +
+                        "Close this editor and choose Mark hard copy as sent."
+                    );
+                }
+
+                let message =
+                    (editing
+                        ? "Update the submitted hard-copy period"
+                        : "Mark the hard-copy roster as sent") +
+                    ` for ${TEAM_NAME}?\n\n` +
+                    "Start: " + formatRosterPeriodDateTime(start) + "\n" +
+                    "End: " + formatRosterPeriodDateTime(end) +
+                    " (exclusive)\n\n";
+
+                if (!editing && submittedRosterPeriod) {
+                    message +=
+                        "This will REPLACE the currently submitted period:\n" +
+                        formatRosterPeriodDateTime(submittedRosterPeriod.start) +
+                        " → " +
+                        formatRosterPeriodDateTime(submittedRosterPeriod.end) +
+                        "\n\nOnly one submitted period is stored per team.\n\n";
+                }
+
+                message +=
+                    "Bookings and cancellations will still be allowed. " +
+                    "Changes overlapping this period require notification " +
+                    "to Central Rostering.";
+
+                if (!window.confirm(message)) return;
+
+                const managerPassword = window.prompt(
+                    "Enter the roster manager password:"
+                );
+
+                if (!managerPassword) return;
+
+                updateAttempted = true;
+
+                const result = await callRosterApi(
+                    editing ? "editRosterSubmission" : "markRosterSent",
+                    {
+                        managerPassword,
+                        start: start.toISOString(),
+                        end: end.toISOString()
+                    }
+                );
+
+                if (result.success !== true) {
+                    throw new Error(
+                        "Apps Script did not confirm the hard-copy update."
+                    );
+                }
+
+                updateConfirmed = true;
+
+                // Use the returned saved period; no extra reload is needed.
+                applyRosterSubmissionResult(result);
+                clearRosterPeriodEditor();
+
+                showToast(
+                    editing
+                        ? "Submitted hard-copy period updated."
+                        : "Hard copy marked as sent for the selected period."
+                );
+
+                if (hasLoadedBookings) {
+                    showLoadedConnectionStatus();
+                }
+            } catch (error) {
+                console.error("Hard-copy period update failed:", error);
+
+                let message = error.message ||
+                    "Unable to update the hard-copy period.";
+
+                if (updateAttempted) {
+                    invalidateRosterSubmissionStatus();
+
+                    message += updateConfirmed
+                        ? "\n\nThe server confirmed the save, but the returned " +
+                          "status could not be read. Refresh the roster " +
+                          "before making further changes."
+                        : "\n\nIf the request timed out or the connection failed, " +
+                          "the server may still have saved it. Refresh the roster " +
+                          "and check the hard-copy status before retrying.";
+
+                    setConnectionStatus(message, "error");
+                }
+
+                window.alert(message);
+            } finally {
+                setLoading(false);
+                updateCentralRosteringWarning();
+            }
+        }
+
+        async function resetHardCopyRosterStatus() {
+            if (isLoading) return;
+
+            setLoading(true);
+
+            let resetAttempted = false;
+            let resetConfirmed = false;
+
+            try {
+                await loadRosterSubmissionStatus();
+
+                if (!submittedRosterPeriod) {
+                    showToast(
+                        "There is no submitted hard-copy period to reset."
+                    );
+                    return;
+                }
+
+                const confirmed = window.confirm(
+                    `Reset the hard-copy sent status for ${TEAM_NAME}?\n\n` +
+                    formatRosterPeriodDateTime(submittedRosterPeriod.start) +
+                    " → " +
+                    formatRosterPeriodDateTime(submittedRosterPeriod.end) +
+                    "\n\nThis removes the notification-warning period " +
+                    "for this team only. It does not cancel bookings " +
+                    "or affect other teams.\n\n" +
+                    "Only reset this if the hard-copy submission status " +
+                    "should no longer apply."
+                );
+
+                if (!confirmed) return;
+
+                const managerPassword = window.prompt(
+                    "Enter the roster manager password to reset the status:"
+                );
+
+                if (!managerPassword) return;
+
+                resetAttempted = true;
+
+                const result = await callRosterApi("resetRosterSent", {
+                    managerPassword
+                });
+
+                if (result.success !== true) {
+                    throw new Error(
+                        "Apps Script did not confirm the reset."
+                    );
+                }
+
+                resetConfirmed = true;
+
+                applyRosterSubmissionResult(result);
+                clearRosterPeriodEditor();
+
+                showToast(`Hard-copy sent status reset for ${TEAM_NAME}.`);
+
+                if (hasLoadedBookings) {
+                    showLoadedConnectionStatus();
+                }
+            } catch (error) {
+                console.error("Hard-copy status reset failed:", error);
+
+                let message = error.message ||
+                    "Unable to reset the hard-copy status.";
+
+                if (resetAttempted) {
+                    invalidateRosterSubmissionStatus();
+
+                    message += resetConfirmed
+                        ? "\n\nThe server confirmed the reset, but the returned " +
+                          "status could not be read. Refresh the roster."
+                        : "\n\nIf the request timed out or the connection failed, " +
+                          "the reset may still have completed. Refresh the roster " +
+                          "and check the status before retrying.";
+
+                    setConnectionStatus(message, "error");
+                }
+
+                window.alert(message);
+            } finally {
+                setLoading(false);
+                updateCentralRosteringWarning();
+            }
+        }
+
+        function populateStartTimes() {
+            startTimeSelect.innerHTML =
+                '<option value="">Select start time</option>';
+
+            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                const option = document.createElement("option");
+                option.value = String(hour);
+                option.textContent = formatHour(hour);
+                startTimeSelect.appendChild(option);
+            }
+        }
+
+        function populateFinishTimes() {
+            finishTimeSelect.innerHTML = "";
+
+            if (startTimeSelect.value === "") {
+                finishTimeSelect.disabled = true;
+                finishTimeSelect.innerHTML =
+                    '<option value="">Select a start time first</option>';
+                return;
+            }
+
+            finishTimeSelect.disabled = isLoading;
+
+            const placeholder = document.createElement("option");
+            placeholder.value = "";
+            placeholder.textContent = "Select finish time";
+            finishTimeSelect.appendChild(placeholder);
+
+            const startHour = Number(startTimeSelect.value);
+
+            for (
+                let duration = 1;
+                duration <= MAX_SHIFT_HOURS;
+                duration++
+            ) {
+                const absoluteFinish = startHour + duration;
+                const finishHour = absoluteFinish % HOURS_PER_DAY;
+                const dayOffset =
+                    Math.floor(absoluteFinish / HOURS_PER_DAY);
+
+                const option = document.createElement("option");
+
+                option.value = String(duration);
+
+                option.textContent =
+                    `${formatHour(finishHour)}` +
+                    `${dayOffset > 0 ? " — next day" : ""}` +
+                    ` (${duration} ${duration === 1 ? "hour" : "hours"})`;
+
+                finishTimeSelect.appendChild(option);
+            }
+        }
+
+        function readShiftSelection() {
+            const dateValue = bookingDateInput.value;
+            const startValue = startTimeSelect.value;
+            const durationValue = finishTimeSelect.value;
+
+            if (
+                !dateValue ||
+                startValue === "" ||
+                durationValue === ""
+            ) {
+                return { complete: false, valid: false };
+            }
+
+            const startDate = parseDateKey(dateValue);
+            const startHour = Number(startValue);
+            const duration = Number(durationValue);
+
+            if (
+                !startDate ||
+                !Number.isInteger(startHour) ||
+                startHour < 0 ||
+                startHour >= HOURS_PER_DAY
+            ) {
+                return {
+                    complete: true,
+                    valid: false,
+                    message: "Please select a valid start date and time."
+                };
+            }
+
+            if (
+                !Number.isInteger(duration) ||
+                duration < 1 ||
+                duration > MAX_SHIFT_HOURS
+            ) {
+                return {
+                    complete: true,
+                    valid: false,
+                    message: "The shift must be between 1 and 24 hours."
+                };
+            }
+
+            startDate.setHours(startHour, 0, 0, 0);
+
+            // Existing browser-local, wall-clock calculation retained.
+            const endDate = addHours(startDate, duration);
+
+            if (startDate < startOfCurrentHour(new Date())) {
+                return {
+                    complete: true,
+                    valid: false,
+                    message: "The shift cannot start in the past."
+                };
+            }
+
+            if (endDate <= startDate) {
+                return {
+                    complete: true,
+                    valid: false,
+                    message: "The finish time must be later than the start time."
+                };
+            }
+
+            return {
+                complete: true,
+                valid: true,
+                startDate,
+                endDate,
+                duration,
+                isOvernight:
+                    formatDateKey(startDate) !== formatDateKey(endDate)
+            };
+        }
+
+        function updateBookingSummary() {
+            bookingSummary.className = "booking-summary";
+            bookButton.disabled = true;
+
+            const selection = readShiftSelection();
+
+            if (!selection.complete) {
+                bookingSummary.textContent = "";
+                return;
+            }
+
+            if (!selection.valid) {
+                bookingSummary.classList.add("invalid");
+                bookingSummary.textContent = selection.message;
+                return;
+            }
+
+            const description =
+                `${formatDateTime(selection.startDate)} to ` +
+                formatDateTime(selection.endDate);
+
+            if (isLoading) {
+                bookingSummary.classList.add("warning");
+                bookingSummary.textContent =
+                    "Please wait while the roster is updating.";
+                return;
+            }
+
+            if (!hasLoadedBookings || !submissionStatusLoaded) {
+                bookingSummary.classList.add("warning");
+                bookingSummary.textContent =
+                    "Refresh the roster successfully before confirming a shift.";
+                return;
+            }
+
+            if (!currentUser) {
+                bookingSummary.classList.add("warning");
+                bookingSummary.textContent =
+                    `${description}. Enter your name in the header before confirming.`;
+                return;
+            }
+
+            if (!CLINICAL_LEVELS.includes(currentClinicalLevel)) {
+                bookingSummary.classList.add("warning");
+                bookingSummary.textContent =
+                    `${description}. Select your clinical level beside your name.`;
+                return;
+            }
+
+            const availability = checkShiftAvailability(selection);
+
+            if (!availability.available) {
+                bookingSummary.classList.add("invalid");
+                bookingSummary.textContent =
+                    `${description}. ${availability.message}`;
+                return;
+            }
+
+            bookingSummary.classList.add("valid");
+
+            bookingSummary.textContent =
+                `Vacancy available for ${currentUser} (${currentClinicalLevel}): ` +
+                `${description} (${selection.duration} ` +
+                `${selection.duration === 1 ? "hour" : "hours"}). ` +
+                `Flexibility: ${getSelectedFlexibilityRestriction()}.` +
+                (selection.isOvernight
+                    ? " This is an overnight shift."
+                    : "") +
+                (currentClinicalLevel === "REC"
+                    ? " Recruit bookings are observer places."
+                    : "");
+
+            bookButton.disabled = false;
+        }
+
+        function checkShiftAvailability(selection) {
+            let hourStart = new Date(selection.startDate);
+
+            const bookingAsRecruit =
+                String(currentClinicalLevel || "").trim().toUpperCase() === "REC";
+
+            while (hourStart < selection.endDate) {
+                const bookings = getBookingsForHour(hourStart);
+
+                const alreadyBooked = currentUser && bookings.some(event =>
+                    normaliseName(event.user) === normaliseName(currentUser)
+                );
+
+                if (alreadyBooked) {
+                    return {
+                        available: false,
+                        message:
+                            "You already have a booking during " +
+                            `${formatHourPeriod(hourStart)}.`
+                    };
+                }
+
+                // Every person, including REC, uses one of the three places.
+                if (bookings.length >= MAX_CREW) {
+                    return {
+                        available: false,
+                        message:
+                            `${formatHourPeriod(hourStart)} already has ` +
+                            `${MAX_CREW} people booked. There are no places available.`
+                    };
+                }
+
+                const recruitAlreadyBooked = bookings.some(event =>
+                    String(event.clinicalLevel || "").trim().toUpperCase() === "REC"
+                );
+
+                if (bookingAsRecruit && recruitAlreadyBooked) {
+                    return {
+                        available: false,
+                        message:
+                            `The recruit place is already occupied during ` +
+                            `${formatHourPeriod(hourStart)}. ` +
+                            "Only one recruit can be booked per hourly timeslot."
+                    };
+                }
+
+                hourStart = addHours(hourStart, 1);
+            }
+
+            return { available: true };
+        }
+
+        function getSelectedFlexibilityRestriction() {
+            const selectedCode = String(restrictionSelect.value || "")
+                .trim()
+                .toUpperCase();
+
+            // Flexibility is optional. No selection-error popup is needed.
+            return FLEXIBILITY_CODES.includes(selectedCode)
+                ? selectedCode
+                : "N";
+        }
+
+        async function bookSelectedShift() {
+            if (isLoading) return;
+
+            const selection = readShiftSelection();
+
+            if (!currentUser) {
+                showToast("Please enter your name first.");
+                nameInput.focus();
+                return;
+            }
+
+            if (!CLINICAL_LEVELS.includes(currentClinicalLevel)) {
+                showToast("Please select your clinical level beside your name.");
+                clinicalLevelSelect.focus();
+                return;
+            }
+
+            if (!selection.complete || !selection.valid) {
+                updateBookingSummary();
+                return;
+            }
+
+            if (!hasLoadedBookings || !submissionStatusLoaded) {
+                showToast("Please refresh the roster before booking.");
+                return;
+            }
+
+            setLoading(true);
+            setConnectionStatus(
+                "Checking the latest roster before saving…",
+                ""
+            );
+
+            let saveAttempted = false;
+            let saveConfirmed = false;
+
+            try {
+                /*
+                 * Refresh before checking availability and hard-copy status.
+                 * The backend must still enforce capacity atomically to
+                 * prevent simultaneous conflicting bookings.
+                 *
+                 * Both are now loaded together in one request.
+                 */
+                await loadBookingsAfterSave();
+
+                const latestSelection = readShiftSelection();
+
+                if (!latestSelection.valid) {
+                    throw new Error(
+                        latestSelection.message || "Please reselect the shift."
+                    );
+                }
+
+                const availability =
+                    checkShiftAvailability(latestSelection);
+
+                if (!availability.available) {
+                    throw new Error(availability.message);
+                }
+
+                const centralNoticeRequired =
+                    selectedShiftNeedsCentralRosteringNotice();
+
+                if (!confirmCentralRosteringNoticeIfRequired()) {
+                    showLoadedConnectionStatus();
+                    return;
+                }
+
+                const newEvent = {
+                    id: createId(),
+                    user: currentUser,
+                    restriction: getSelectedFlexibilityRestriction(),
+                    clinicalLevel: currentClinicalLevel,
+                    start: latestSelection.startDate.toISOString(),
+                    end: latestSelection.endDate.toISOString(),
+                    createdAt: new Date().toISOString()
+                };
+
+                setConnectionStatus("Saving booking…", "");
+                saveAttempted = true;
+
+                const data = await callRosterApi("addBooking", newEvent);
+
+                if (!data.success) {
+                    throw new Error(
+                        "Apps Script did not confirm the booking."
+                    );
+                }
+
+                saveConfirmed = true;
+
+                // The successful save response includes the updated roster.
+                applyRosterSnapshot(data);
+
+                // Keep the selected date, start time and finish time.
+                // The user can change just the date for their next booking.
+
+                // Flexibility remains shift-specific and resets to no restriction.
+                restrictionSelect.value = "N";
+
+                // Name and clinical level continue to persist.
+                lastCentralRosteringWarningKey = "";
+                updateCentralRosteringWarning();
+
+                if (centralNoticeRequired) {
+                    window.alert(
+                        "Your shift was booked.\n\n" +
+                        "Please phone Central Rostering now to advise them " +
+                        "of the change to the submitted hard-copy roster."
+                    );
+                } else {
+                    showToast("Your shift was booked successfully.");
+                }
+
+                // No extra reload: the save response supplied the roster.
+                showLoadedConnectionStatus();
+
+                const dayKey =
+                    formatDateKey(latestSelection.startDate);
+
+                requestAnimationFrame(() => {
+                    const target = document.querySelector(
+                        `.day[data-date="${dayKey}"]`
+                    );
+
+                    if (target) {
+                        target.classList.add("open");
+
+                        target.querySelector(".day-heading")
+                            ?.setAttribute("aria-expanded", "true");
+
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start"
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error("Booking operation failed:", error);
+
+                let message = error.message;
+
+                if (saveConfirmed) {
+                    message =
+                        "Your booking was saved, but the roster could not be refreshed. " +
+                        "Use Refresh roster; do not submit the booking again.";
+                } else if (saveAttempted) {
+                    hasLoadedBookings = false;
+
+                    message +=
+                        " Refresh and check the booking list before trying again; " +
+                        "the server may have received the request.";
+                }
+
+                // Genuine backend errors must not be hidden.
+                setConnectionStatus(message, "error");
+                showToast(message);
+            } finally {
+                setLoading(false);
+                updateCentralRosteringWarning();
+            }
+        }
+
+        async function cancelShift(eventId) {
+            if (isLoading) return;
+
+            const event = events.find(item => item.id === eventId);
+            if (!event) return;
+
+            setLoading(true);
+
+            let cancellationAttempted = false;
+            let cancellationConfirmed = false;
+
+            try {
+                await loadRosterSubmissionStatus();
+
+                const centralNoticeRequired =
+                    cancellationNeedsCentralRosteringNotice(event);
+
+                const message =
+                    `Cancel ${event.user}'s shift from ` +
+                    `${formatDateTime(new Date(event.start))} to ` +
+                    `${formatDateTime(new Date(event.end))}?` +
+                    (centralNoticeRequired
+                        ? "\n\nCountry Rostering notification required.\n" +
+                          "This changes a roster period already submitted as hard copy. " +
+                          "After cancelling, you must phone Country Rostering " +
+                          "to advise them of the change on 1300 850 985."
+                        : "");
+
+                if (!window.confirm(message)) return;
+
+                cancellationAttempted = true;
+
+                const data = await callRosterApi("cancelBooking", {
+                    bookingId: eventId
+                });
+
+                if (!data.success) {
+                    throw new Error(
+                        "Apps Script did not confirm the cancellation."
+                    );
+                }
+
+                cancellationConfirmed = true;
+
+                // Use the complete updated roster returned by the server.
+                applyRosterSnapshot(data);
+
+                if (centralNoticeRequired) {
+                    window.alert(
+                        "Shift cancelled.\n\n" +
+                        "Please phone Central Rostering now to advise them " +
+                        "of the change to the submitted hard-copy roster."
+                    );
+                } else {
+                    showToast("Shift cancelled.");
+                }
+
+                // No extra reload: the cancellation response supplied the roster.
+                showLoadedConnectionStatus();
+            } catch (error) {
+                console.error("Cancellation failed:", error);
+
+                let message = error.message;
+
+                if (cancellationConfirmed) {
+                    message =
+                        "The shift was cancelled, but the roster could not be refreshed. " +
+                        "Please use Refresh roster.";
+                } else if (cancellationAttempted) {
+                    hasLoadedBookings = false;
+
+                    message +=
+                        " Refresh the roster to check whether cancellation completed.";
+                }
+
+                setConnectionStatus(message, "error");
+                showToast(message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function getBookingsForHour(hourStart) {
+            const hourEnd = addHours(hourStart, 1);
+
+            return events.filter(event => {
+                const eventStart = new Date(event.start);
+                const eventEnd = new Date(event.end);
+
+                return eventStart < hourEnd && eventEnd > hourStart;
+            });
+        }
+
+        function getBookingOperationalSummary(event) {
+            const codes = new Set();
+            let cursor = new Date(event.start);
+            const end = new Date(event.end);
+
+            while (cursor < end) {
+                const operational = getOperationalStatus(
+                    getBookingsForHour(cursor),
+                    OPERATIONAL_RULES
+                );
+
+                codes.add(operational.code || "None");
+                cursor = addHours(cursor, 1);
+            }
+
+            return Array.from(codes).join(" / ");
+        }
+
+        function renderAll() {
+            renderCalendar();
+            renderBookingTable();
+            updateBookingSummary();
+            updateCentralRosteringWarning();
+
+            if (bookingsModal.classList.contains("active")) {
+                renderMyBookings();
+            }
+        }
+
+        function renderCalendar() {
+            const existingDays = document.querySelectorAll(".day");
+            const hadDays = existingDays.length > 0;
+
+            const openDates = new Set(
+                Array.from(document.querySelectorAll(".day.open"))
+                    .map(element => element.dataset.date)
+            );
+
+            calendarElement.innerHTML = "";
+
+            if (!hasLoadedBookings) {
+                calendarElement.innerHTML =
+                    '<div class="empty-state">' +
+                    'Roster data is not currently verified. Please refresh.' +
+                    '</div>';
+                return;
+            }
+
+            const today = startOfDay(new Date());
+
+            for (let offset = 0; offset < DAYS_TO_SHOW; offset++) {
+                const date = addDays(today, offset);
+                const dateKey = formatDateKey(date);
+
+                const shouldOpen = hadDays
+                    ? openDates.has(dateKey)
+                    : offset === 0;
+
+                calendarElement.appendChild(
+                    createDayElement(date, shouldOpen)
+                );
+            }
+        }
+
+        function createDayElement(date, shouldOpen) {
+            const section = document.createElement("section");
+            section.className = `day${shouldOpen ? " open" : ""}`;
+            section.dataset.date = formatDateKey(date);
+
+            let coveredCrewHours = 0;
+
+            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                const hourStart = new Date(date);
+                hourStart.setHours(hour, 0, 0, 0);
+
+                const operationalCrewCount =
+                    getBookingsForHour(hourStart)
+                        .filter(booking =>
+                            CLINICAL_LEVELS.includes(booking.clinicalLevel) &&
+                            booking.clinicalLevel !== "REC"
+                        )
+                        .length;
+
+                // Observers do not count toward coverage.
+                // Extra crew cannot offset an uncovered hour.
+                coveredCrewHours += Math.min(operationalCrewCount, 2);
+            }
+
+            const targetCrewHours = 2 * HOURS_PER_DAY;
+
+            const coveragePercent = Math.round(
+                coveredCrewHours / targetCrewHours * 100
+            );
+
+            const heading = document.createElement("div");
+            heading.className = "day-heading";
+            heading.tabIndex = 0;
+            heading.setAttribute("role", "button");
+            heading.setAttribute("aria-expanded", String(shouldOpen));
+
+            const titleGroup = document.createElement("div");
+            titleGroup.className = "day-title-group";
+
+            const toggle = document.createElement("div");
+            toggle.className = "day-toggle";
+            toggle.textContent = "▼";
+            toggle.setAttribute("aria-hidden", "true");
+
+            const title = document.createElement("h3");
+            title.textContent = formatDayHeading(date);
+
+            titleGroup.append(toggle, title);
+
+            const subtitle = document.createElement("span");
+            subtitle.className = "day-subtitle";
+
+            subtitle.textContent =
+                `${isSameDay(date, new Date()) ? "Today · " : ""}` +
+                `${coveragePercent}% crew coverage`;
+
+            heading.append(titleGroup, subtitle);
+
+            function toggleDay() {
+                const open = section.classList.toggle("open");
+                heading.setAttribute("aria-expanded", String(open));
+            }
+
+            heading.addEventListener("click", toggleDay);
+
+            heading.addEventListener("keydown", event => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    toggleDay();
+                }
+            });
+
+            const body = document.createElement("div");
+            body.className = "day-body";
+            body.id = `day-body-${formatDateKey(date)}`;
+
+            heading.setAttribute("aria-controls", body.id);
+
+            const inner = document.createElement("div");
+            inner.className = "day-body-inner";
+
+            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                inner.appendChild(createTimelineRow(date, hour));
+            }
+
+            body.appendChild(inner);
+            section.append(heading, body);
+
+            return section;
+        }
+
+        function createTimelineRow(date, hour) {
+            const hourStart = new Date(date);
+            hourStart.setHours(hour, 0, 0, 0);
+
+            const bookings = getBookingsForHour(hourStart);
+            const bookedCount = bookings.length;
+
+            const operationalCrewCount = bookings.filter(booking =>
+                CLINICAL_LEVELS.includes(booking.clinicalLevel) &&
+                booking.clinicalLevel !== "REC"
+            ).length;
+
+            const recruitCount = bookings.filter(booking =>
+                booking.clinicalLevel === "REC"
+            ).length;
+
+            const unknownCount = bookings.filter(booking =>
+                !CLINICAL_LEVELS.includes(booking.clinicalLevel)
+            ).length;
+
+            const operational = getOperationalStatus(
+                bookings,
+                OPERATIONAL_RULES
+            );
+
+            let state = "empty";
+            let status = "Needs operational crew (0/2)";
+
+            if (operationalCrewCount === 1) {
+                state = "partial";
+                status = "One operational crew (1/2)";
+            } else if (operationalCrewCount >= 2) {
+                state = "covered";
+                status = `Crew target (${operationalCrewCount}/2)`;
+            }
+
+            if (recruitCount > 0) {
+                status +=
+                    ` · ${recruitCount} REC observer` +
+                    (recruitCount === 1 ? "" : "s");
+            }
+
+            if (unknownCount > 0) {
+                status += ` · ${unknownCount} level unknown`;
+            }
+
+            if (bookedCount >= MAX_CREW) {
+                status +=
+                    ` · Booking places full (${bookedCount}/${MAX_CREW})`;
+            }
+
+            const row = document.createElement("div");
+            row.className = "timeline-row";
+
+            const time = document.createElement("div");
+            time.className = "timeline-time";
+            time.textContent = formatHour(hour);
+
+            const nodeContainer = document.createElement("div");
+            nodeContainer.className = "timeline-node-container";
+
+            const line = document.createElement("div");
+            line.className = `timeline-line line-${state}`;
+
+            const node = document.createElement("div");
+            node.className = `timeline-node node-${state}`;
+
+            nodeContainer.append(line, node);
+
+            const content = document.createElement("div");
+            content.className = "timeline-content";
+
+            const chips = document.createElement("div");
+            chips.className = "crew-chips";
+
+            if (!bookings.length) {
+                const empty = document.createElement("span");
+                empty.className = "empty-chip";
+                empty.textContent = "No crew assigned";
+                chips.appendChild(empty);
+            } else {
+                bookings.forEach(event => {
+                    const chip = document.createElement("span");
+                    chip.className = "chip";
+
+                    const levelLabel = event.clinicalLevel === "REC"
+                        ? "REC observer"
+                        : event.clinicalLevel || "Level unknown";
+
+                    chip.textContent =
+                        `${event.user} · ${levelLabel}` +
+                        ` · Flex ${flexibilityLabel(event)}`;
+
+                    chips.appendChild(chip);
+                });
+            }
+
+            const badges = document.createElement("div");
+            badges.className = "status-group";
+
+            const badge = document.createElement("span");
+            badge.className = `status-badge status-${state}`;
+            badge.textContent = status;
+
+            const operationalBadge = document.createElement("span");
+
+            operationalBadge.className =
+                "status-badge " +
+                (operational.review
+                    ? "status-partial"
+                    : "status-operational");
+
+            operationalBadge.textContent =
+                `Op: ${operational.code || "None"}`;
+
+            operationalBadge.title = operational.reason;
+
+            badges.append(badge, operationalBadge);
+            content.append(chips, badges);
+            row.append(time, nodeContainer, content);
+
+            return row;
+        }
+
+        function renderBookingTable() {
+            bookingTableBody.innerHTML = "";
+
+            if (!hasLoadedBookings) {
+                bookingTableBody.innerHTML =
+                    '<tr><td colspan="8" class="empty-state">' +
+                    'Refresh to load verified bookings.' +
+                    '</td></tr>';
+                return;
+            }
+
+            const query =
+                searchInput.value.trim().toLocaleLowerCase();
+
+            const now = new Date();
+
+            const filtered = [...events]
+                .filter(event => new Date(event.end) > now)
+                .filter(event => {
+                    if (!query) return true;
+
+                    const searchable =
+                        `${event.user} ${event.clinicalLevel} ` +
+                        `${flexibilityLabel(event)} ` +
+                        formatDateTime(new Date(event.start));
+
+                    return searchable
+                        .toLocaleLowerCase()
+                        .includes(query);
+                })
+                .sort((a, b) => new Date(a.start) - new Date(b.start));
+
+            if (!filtered.length) {
+                bookingTableBody.innerHTML =
+                    '<tr><td colspan="8" class="empty-state">' +
+                    'No active bookings found.' +
+                    '</td></tr>';
+                return;
+            }
+
+            filtered.forEach(event => {
+                const start = new Date(event.start);
+                const end = new Date(event.end);
+                const duration = (end - start) / 3600000;
+                const row = document.createElement("tr");
+
+                const levelLabel = event.clinicalLevel === "REC"
+                    ? "REC — Observer"
+                    : event.clinicalLevel || "Unknown";
+
+                row.innerHTML = `
+                    <td><strong>${escapeHtml(event.user)}</strong></td>
+                    <td>${escapeHtml(levelLabel)}</td>
+                    <td>${escapeHtml(flexibilityLabel(event))}</td>
+                    <td>${escapeHtml(getBookingOperationalSummary(event))}</td>
+                    <td>${escapeHtml(formatDateTime(start))}</td>
+                    <td>${escapeHtml(formatDateTime(end))}</td>
+                    <td>${duration} ${duration === 1 ? "hour" : "hours"}</td>
+                    <td>
+                        <button
+                            class="btn-danger btn-small"
+                            type="button"
+                            data-cancel-id="${escapeHtml(event.id)}"
+                        >Cancel</button>
+                    </td>
+                `;
+
+                const cancelButton =
+                    row.querySelector("[data-cancel-id]");
+
+                cancelButton.disabled =
+                    isLoading || !submissionStatusLoaded;
+
+                cancelButton.addEventListener(
+                    "click",
+                    () => cancelShift(event.id)
+                );
+
+                bookingTableBody.appendChild(row);
+            });
+        }
+
+        function openBookingsModal() {
+            modalReturnFocus = document.activeElement;
+            renderMyBookings();
+            bookingsModal.classList.add("active");
+            document.getElementById("closeModalButton").focus();
+        }
+
+        function closeBookingsModal() {
+            bookingsModal.classList.remove("active");
+            modalReturnFocus?.focus();
+        }
+
+        function renderMyBookings() {
+            myBookingsList.innerHTML = "";
+
+            if (!currentUser) {
+                myBookingsList.innerHTML =
+                    '<div class="empty-state">' +
+                    'Enter your name to view your bookings.' +
+                    '</div>';
+                return;
+            }
+
+            if (!hasLoadedBookings) {
+                myBookingsList.innerHTML =
+                    '<div class="empty-state">' +
+                    'Refresh the roster to load your bookings.' +
+                    '</div>';
+                return;
+            }
+
+            const now = new Date();
+
+            const userEvents = events
+                .filter(event =>
+                    normaliseName(event.user) === normaliseName(currentUser) &&
+                    new Date(event.end) > now
+                )
+                .sort((a, b) => new Date(a.start) - new Date(b.start));
+
+            if (!userEvents.length) {
+                myBookingsList.innerHTML =
+                    `<div class="empty-state">No upcoming bookings found for ` +
+                    `${escapeHtml(currentUser)}.</div>`;
+                return;
+            }
+
+            userEvents.forEach(event => {
+                const item = document.createElement("div");
+                item.className = "shift-item";
+
+                const information = document.createElement("div");
+
+                const levelLabel = event.clinicalLevel === "REC"
+                    ? "REC — Observer"
+                    : event.clinicalLevel || "Level unknown";
+
+                information.innerHTML = `
+                    <div class="shift-time">
+                        ${escapeHtml(formatDateTime(new Date(event.start)))}
+                        to ${escapeHtml(formatDateTime(new Date(event.end)))}
+                    </div>
+                    <div class="shift-detail">
+                        ${escapeHtml(TEAM_NAME)} ·
+                        ${escapeHtml(levelLabel)} ·
+                        Flex ${escapeHtml(flexibilityLabel(event))} ·
+                        Op ${escapeHtml(getBookingOperationalSummary(event))}
+                    </div>
+                `;
+
+                const deleteButton = document.createElement("button");
+                deleteButton.className = "btn-danger btn-small";
+                deleteButton.type = "button";
+                deleteButton.textContent = "Cancel";
+                deleteButton.dataset.cancelId = event.id;
+
+                deleteButton.disabled =
+                    isLoading || !submissionStatusLoaded;
+
+                deleteButton.addEventListener(
+                    "click",
+                    () => cancelShift(event.id)
+                );
+
+                item.append(information, deleteButton);
+                myBookingsList.appendChild(item);
+            });
+        }
+
+        function switchView(view) {
+            const showList = view === "list";
+
+            timelineSection.classList.toggle("hidden", showList);
+            listSection.classList.toggle("active", showList);
+            timelineTab.classList.toggle("active", !showList);
+            listTab.classList.toggle("active", showList);
+
+            if (showList) renderBookingTable();
+        }
+
+        function toggleAllDays(open) {
+            document.querySelectorAll(".day").forEach(day => {
+                day.classList.toggle("open", open);
+
+                day.querySelector(".day-heading")
+                    ?.setAttribute("aria-expanded", String(open));
+            });
+        }
+
+        /*
+         * Existing CSV helper retained without adding an export button.
+         */
+        function exportBookingListCSV() {
+            if (!hasLoadedBookings) {
+                showToast("Please refresh the roster first.");
+                return;
+            }
+
+            const today = startOfDay(new Date());
+            const days = [];
+
+            for (let i = 0; i < DAYS_TO_SHOW + 2; i++) {
+                days.push(addDays(today, i));
+            }
+
+            const headerRow = [TEAM_NAME];
+
+            days.forEach(day => {
+                headerRow.push(formatDayHeading(day));
+                headerRow.push(
+                    "Clinical level",
+                    "Flexibility",
+                    "Operational"
+                );
+            });
+
+            const rows = [headerRow];
+
+            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                for (let crewSlot = 0; crewSlot < MAX_CREW; crewSlot++) {
+                    const dataRow = [
+                        crewSlot === 0 ? formatHour(hour) : ""
+                    ];
+
+                    days.forEach(day => {
+                        const hourStart = new Date(day);
+                        hourStart.setHours(hour, 0, 0, 0);
+
+                        const bookings = getBookingsForHour(hourStart);
+                        const booking = bookings[crewSlot];
+
+                        const operational = getOperationalStatus(
+                            bookings,
+                            OPERATIONAL_RULES
+                        );
+
+                        dataRow.push(
+                            booking?.user || "",
+                            booking?.clinicalLevel || "",
+                            booking ? flexibilityLabel(booking) : "",
+                            crewSlot === 0
+                                ? operational.code || "None"
+                                : ""
+                        );
+                    });
+
+                    rows.push(dataRow);
+                }
+            }
+
+            downloadCSV(
+                rows,
+                `${TEAM_NAME}_Crew_Bookings_${formatDateKey(new Date())}.csv`
+            );
+
+            showToast("Booking CSV downloaded.");
+        }
+
+        function downloadCSV(rows, filename) {
+            const csv = rows
+                .map(row => row.map(csvEscape).join(","))
+                .join("\r\n");
+
+            const blob = new Blob(["\uFEFF" + csv], {
+                type: "text/csv;charset=utf-8;"
+            });
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function csvEscape(value) {
+            let text = String(value ?? "");
+
+            // Prevent user-entered spreadsheet formulas.
+            if (/^[\s]*[=+\-@]/.test(text)) {
+                text = "'" + text;
+            }
+
+            return '"' + text.replace(/"/g, '""') + '"';
+        }
+
+        function openRosterView() {
+            if (!hasLoadedBookings || isLoading) {
+                showToast("Please wait for the roster to load.");
+                return;
+            }
+
+            const rosterWindow = window.open(
+                "",
+                "rosterView",
+                "width=1400,height=900"
+            );
+
+            if (!rosterWindow) {
+                showToast("Please allow pop-ups to view the roster.");
+                return;
+            }
+
+            rosterWindow.document.open();
+            rosterWindow.document.write(buildRosterHTML());
+            rosterWindow.document.close();
+        }
+
+        /*
+         * Escape JSON before inserting it into the printable window script.
+         */
+        function serialiseForInlineScript(value) {
+            return JSON.stringify(value)
+                .replace(/</g, "\\u003c")
+                .replace(/>/g, "\\u003e")
+                .replace(/&/g, "\\u0026")
+                .replace(/\u2028/g, "\\u2028")
+                .replace(/\u2029/g, "\\u2029");
+        }
+
+        function buildRosterHTML() {
+            const today = startOfDay(new Date());
+            const initialStartDate = formatDateKey(today);
+            const initialEndDate = formatDateKey(addDays(today, 13));
+
+            const snapshot = {
+                events,
+                hoursPerDay: HOURS_PER_DAY,
+                maxCrew: MAX_CREW,
+                operationalRules: OPERATIONAL_RULES,
+                generatedAt: new Date().toISOString()
+            };
+
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes, maximum-scale=5">
+    <title>${escapeHtml(TEAM_NAME)} Crew Roster</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 2rem 1rem;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #22c55e;
+            padding-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #16a34a;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.95rem;
+            margin-top: 0.3rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: end;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .date-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            color: #4b5563;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .date-field input {
+            min-height: 42px;
+            padding: 0.55rem 0.7rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            color: #333;
+            background: white;
+        }
+
+        .btn {
+            min-height: 42px;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary { background: #22c55e; color: white; }
+        .btn-primary:hover { background: #16a34a; }
+        .btn-secondary { background: #e5e7eb; color: #333; }
+        .btn-secondary:hover { background: #d1d5db; }
+
+        .roster-wrapper {
+            overflow: auto;
+            max-height: 70vh;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead {
+            background: #f3f4f6;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        th {
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 700;
+            color: #374151;
+            border-bottom: 2px solid #d1d5db;
+            white-space: nowrap;
+            background: #f3f4f6;
+        }
+
+        th.time-col {
+            width: 60px;
+            position: sticky;
+            left: 0;
+            z-index: 25;
+            vertical-align: middle;
+        }
+
+        td {
+            padding: 0.4rem 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            height: 24px;
+        }
+
+        td.time-col {
+            font-weight: 700;
+            background: #fafafa;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            width: 60px;
+            vertical-align: top;
+        }
+
+        td.crew-name {
+            background: #f9fafb;
+            font-weight: 500;
+            color: #16a34a;
+            min-width: 140px;
+        }
+
+        td.crew-name:empty::after {
+            content: "—";
+            color: #d1d5db;
+        }
+
+        td.crew-name.recruit-name {
+            color: #dc2626;
+            font-weight: 700;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        td.restriction,
+        td.operational {
+            background: #fafafa;
+            color: #64748b;
+            font-size: 0.85rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        td.operational {
+            vertical-align: middle;
+            font-weight: 700;
+        }
+
+        td.operational.review { color: #92400e; }
+
+        /* Operational column only — does not affect the Flex column. */
+        td.operational[data-op="NC"] { color: #ff0000; }
+        td.operational[data-op="A"]  { color: #0080ff; }
+        td.operational[data-op="B"]  { color: #00ffff; }
+        td.operational[data-op="C"]  { color: #ffff00; }
+        td.operational[data-op="D"]  { color: #ff00ff; }
+        td.operational[data-op="E"]  { color: #ff8080; }
+        td.operational[data-op="Z"]  { color: #808080; }
+        td.operational[data-op="N"]  { color: #00ff00; }
+
+        td.operational {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        tr.day-shift td { background: #fff9db; }
+        tr.night-shift td { background: #eef4f8; }
+
+        tr.day-shift td.time-col { background: #fff3b0; }
+        tr.night-shift td.time-col { background: #e3edf4; }
+
+        tr.hour-start td { border-top: 2px solid #9ca3af; }
+
+        .day-header {
+            background: #dbeafe;
+            font-weight: 700;
+            color: #0284c7;
+            text-align: center;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .crew-header {
+            background: #dbeafe;
+            font-weight: 600;
+            color: #0284c7;
+            text-align: center;
+            font-size: 0.8rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .restriction-header,
+        .operational-header {
+            background: #fef3c7;
+            font-weight: 600;
+            color: #92400e;
+            text-align: center;
+            font-size: 0.8rem;
+            padding: 0.5rem 0.3rem;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #0284c7;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: #1e40af;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .container {
+                width: 100%;
+                padding: 0.75rem;
+                border-radius: 6px;
+            }
+
+            .header {
+                margin-bottom: 0.75rem;
+                padding-bottom: 0.6rem;
+            }
+
+            .header h1 {
+                font-size: 1.15rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .header p { font-size: 0.75rem; }
+
+            .controls {
+                position: sticky;
+                top: 0;
+                z-index: 30;
+                gap: 0.4rem;
+                margin: 0 -0.75rem 0.75rem;
+                padding: 0.5rem 0.75rem;
+                background: rgba(255, 255, 255, 0.96);
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .controls .btn {
+                flex: 1 1 0;
+                min-height: 38px;
+                padding: 0.55rem 0.65rem;
+                font-size: 0.78rem;
+            }
+
+            .roster-wrapper {
+                width: 100%;
+                max-height: calc(100dvh - 145px);
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                min-width: 1100px;
+                font-size: 0.8rem;
+            }
+
+            th { padding: 0.55rem 0.45rem; }
+
+            td {
+                height: 30px;
+                padding: 0.35rem 0.45rem;
+            }
+
+            td.crew-name { min-width: 120px; }
+        }
+
+        @media print {
+            @page {
+                size: landscape;
+                margin: 8mm;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .controls { display: none; }
+
+            thead {
+                display: table-header-group;
+                position: static;
+            }
+
+            th.time-col,
+            td.time-col { position: static; }
+
+            tr { break-inside: avoid; }
+
+            th, td {
+                padding: 0.2rem;
+                font-size: 0.65rem;
+            }
+
+            td.crew-name {
+                min-width: 0;
+                overflow-wrap: anywhere;
+            }
+
+            td.restriction,
+            td.operational {
+                min-width: 0;
+                font-size: 0.65rem;
+            }
+
+            .roster-wrapper {
+                border: 1px solid #000;
+                max-height: none;
+                overflow: visible;
+            }
+
+            table { min-width: 0; }
+
+            .info-box {
+                font-size: 0.7rem;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        .manager-controls-panel > summary {
+            display: list-item;
+            list-style-position: inside;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗓 ${escapeHtml(TEAM_NAME)} Crew Roster</h1>
+            <p id="rosterRangeText"></p>
+            <p id="snapshotText"></p>
+        </div>
+
+        <div class="controls">
+            <label class="date-field">
+                From
+                <input
+                    id="rosterStartDate"
+                    type="date"
+                    value="${initialStartDate}"
+                >
+            </label>
+
+            <label class="date-field">
+                To
+                <input
+                    id="rosterEndDate"
+                    type="date"
+                    value="${initialEndDate}"
+                >
+            </label>
+
+            <button
+                id="applyDatesButton"
+                class="btn btn-primary"
+                type="button"
+            >
+                Show roster
+            </button>
+
+            <button
+                id="nextFortnightButton"
+                class="btn btn-secondary"
+                type="button"
+            >
+                Next 14 days
+            </button>
+
+            <button
+                id="printButton"
+                class="btn btn-secondary"
+                type="button"
+            >
+                🖨️ Print
+            </button>
+
+            <button
+                id="closeButton"
+                class="btn btn-secondary"
+                type="button"
+            >
+                Close
+            </button>
+        </div>
+
+        <div class="roster-wrapper">
+            <table id="rosterTable">
+                <thead>
+                    <tr id="headerRow"></tr>
+                </thead>
+                <tbody id="rosterBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        (${initialiseRosterWindow.toString()})(
+            ${serialiseForInlineScript(snapshot)},
+            ${getOperationalStatus.toString()}
+        );
+    <\/script>
+</body>
+</html>`;
+        }
+
+        /*
+         * This function runs in the printable roster window.
+         * The operational calculation is passed from the main page,
+         * ensuring REC/E/Z rules are identical in both views.
+         */
+        function initialiseRosterWindow(
+            snapshot,
+            calculateOperationalStatus
+        ) {
+            const events = snapshot.events;
+            const HOURS_PER_DAY = snapshot.hoursPerDay;
+            const MAX_CREW = snapshot.maxCrew;
+
+            // Display allocation only. Never use these padded slots for
+            // capacity checks or operational restriction calculations.
+            function allocateCrewSlots(bookings) {
+                const levelOf = booking =>
+                    String(booking.clinicalLevel || "").trim().toUpperCase();
+
+                const recruits = bookings.filter(booking =>
+                    levelOf(booking) === "REC"
+                );
+
+                // Do not silently omit existing bookings that break the new rules.
+                if (bookings.length > MAX_CREW || recruits.length > 1) {
+                    throw new Error(
+                        "This timeslot contains more than three people or more than " +
+                        "one recruit. Review the existing bookings in the booking list."
+                    );
+                }
+
+                const priority = {
+                    PARA: 0,
+                    AO: 0,
+                    AR: 1,
+                    AA: 2
+                };
+
+                const nonRecruits = bookings
+                    .map((booking, originalIndex) => ({
+                        booking,
+                        originalIndex
+                    }))
+                    .filter(item => levelOf(item.booking) !== "REC")
+                    .sort((first, second) => {
+                        const firstRank = priority[levelOf(first.booking)] ?? 3;
+                        const secondRank = priority[levelOf(second.booking)] ?? 3;
+
+                        // Equal clinical priority retains the existing returned order.
+                        return (
+                            firstRank - secondRank ||
+                            first.originalIndex - second.originalIndex
+                        );
+                    })
+                    .map(item => item.booking);
+
+                const slots = [null, null, null];
+
+                nonRecruits.forEach((booking, index) => {
+                    slots[index] = booking;
+                });
+
+                if (recruits.length === 1) {
+                    slots[2] = recruits[0];
+                }
+
+                return slots;
+            }
+
+            function addHours(date, hours) {
+                const result = new Date(date);
+                result.setHours(result.getHours() + hours);
+                return result;
+            }
+
+            function addDays(date, days) {
+                const result = new Date(date);
+                result.setDate(result.getDate() + days);
+                return result;
+            }
+
+            function formatHour(hour) {
+                return String(hour).padStart(2, "0") + ":00";
+            }
+
+            function formatDateForInput(date) {
+                return date.getFullYear() + "-" +
+                    String(date.getMonth() + 1).padStart(2, "0") + "-" +
+                    String(date.getDate()).padStart(2, "0");
+            }
+
+            function parseDateInput(value) {
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                    return null;
+                }
+
+                const parts = value.split("-").map(Number);
+
+                const date = new Date(
+                    parts[0],
+                    parts[1] - 1,
+                    parts[2]
+                );
+
+                return formatDateForInput(date) === value
+                    ? date
+                    : null;
+            }
+
+            function getBookingsForHour(hourStart) {
+                const hourEnd = addHours(hourStart, 1);
+
+                return events.filter(event =>
+                    new Date(event.start) < hourEnd &&
+                    new Date(event.end) > hourStart
+                );
+            }
+
+            function getSelectedDates() {
+                const startDate = parseDateInput(
+                    document.getElementById("rosterStartDate").value
+                );
+
+                const endDate = parseDateInput(
+                    document.getElementById("rosterEndDate").value
+                );
+
+                if (!startDate || !endDate) {
+                    window.alert("Please select valid From and To dates.");
+                    return null;
+                }
+
+                if (endDate < startDate) {
+                    window.alert(
+                        "The To date must be the same as or later than the From date."
+                    );
+                    return null;
+                }
+
+                return { startDate, endDate };
+            }
+
+            function buildRoster(startDate, endDate) {
+                const days = [];
+                let currentDate = new Date(startDate);
+
+                while (currentDate <= endDate) {
+                    if (days.length >= 62) {
+                        window.alert(
+                            "Please select no more than 62 days at a time."
+                        );
+                        return;
+                    }
+
+                    days.push(new Date(currentDate));
+                    currentDate = addDays(currentDate, 1);
+                }
+
+                const headerRow =
+                    document.getElementById("headerRow");
+                const rosterBody =
+                    document.getElementById("rosterBody");
+                const thead =
+                    document.querySelector("thead");
+
+                headerRow.innerHTML = "";
+                rosterBody.innerHTML = "";
+
+                thead.querySelector(".sub-header-row")?.remove();
+
+                const timeHeader = document.createElement("th");
+                timeHeader.className = "time-col";
+                timeHeader.textContent = "Time";
+                timeHeader.rowSpan = 2;
+                headerRow.appendChild(timeHeader);
+
+                const subHeaderRow = document.createElement("tr");
+                subHeaderRow.className = "sub-header-row";
+
+                days.forEach(day => {
+                    const dayHeader = document.createElement("th");
+                    dayHeader.className = "day-header";
+                    dayHeader.colSpan = 3;
+
+                    dayHeader.textContent =
+                        new Intl.DateTimeFormat("en-AU", {
+                            weekday: "short",
+                            day: "numeric",
+                            month: "short"
+                        }).format(day);
+
+                    headerRow.appendChild(dayHeader);
+
+                    const crewHeader = document.createElement("th");
+                    crewHeader.className = "crew-header";
+                    crewHeader.textContent = "Crew / level";
+
+                    const flexibilityHeader =
+                        document.createElement("th");
+
+                    flexibilityHeader.className = "restriction-header";
+                    flexibilityHeader.textContent = "Flex";
+
+                    const operationalHeader =
+                        document.createElement("th");
+
+                    operationalHeader.className = "operational-header";
+                    operationalHeader.textContent = "Op";
+
+                    subHeaderRow.append(
+                        crewHeader,
+                        flexibilityHeader,
+                        operationalHeader
+                    );
+                });
+
+                thead.appendChild(subHeaderRow);
+
+                for (
+                    let rosterHour = 0;
+                    rosterHour < HOURS_PER_DAY;
+                    rosterHour++
+                ) {
+                    const absoluteHour = 8 + rosterHour;
+                    const displayHour = absoluteHour % HOURS_PER_DAY;
+
+                    let dayBookings;
+
+                    try {
+                        dayBookings = days.map(day => {
+                            const hourStart = new Date(day);
+                            hourStart.setHours(absoluteHour, 0, 0, 0);
+
+                            const bookings = getBookingsForHour(hourStart);
+
+                            try {
+                                return {
+                                    bookings,
+                                    slots: allocateCrewSlots(bookings)
+                                };
+                            } catch (error) {
+                                throw new Error(
+                                    hourStart.toLocaleString("en-AU") +
+                                    ": " + error.message
+                                );
+                            }
+                        });
+                    } catch (error) {
+                        // Clear any partial roster rather than displaying an incomplete
+                        // or misleading printout if legacy bookings break the new rules.
+                        rosterBody.innerHTML = "";
+
+                        const errorRow = document.createElement("tr");
+                        const errorCell = document.createElement("td");
+
+                        errorCell.colSpan = 1 + days.length * 3;
+                        errorCell.textContent =
+                            "Roster requires review. " + error.message;
+                        errorCell.style.color = "#dc2626";
+                        errorCell.style.fontWeight = "700";
+
+                        errorRow.appendChild(errorCell);
+                        rosterBody.appendChild(errorRow);
+
+                        document.getElementById("rosterRangeText").textContent =
+                            "Roster not displayed: resolve the conflicting bookings first.";
+
+                        document.getElementById("snapshotText").textContent = "";
+
+                        return;
+                    }
+
+                    for (
+                        let crewSlot = 0;
+                        crewSlot < MAX_CREW;
+                        crewSlot++
+                    ) {
+                        const row = document.createElement("tr");
+
+                        row.className =
+                            (displayHour >= 8 && displayHour <= 17
+                                ? "day-shift"
+                                : "night-shift") +
+                            (crewSlot === 0 ? " hour-start" : "");
+
+                        if (crewSlot === 0) {
+                            const timeCell = document.createElement("td");
+                            timeCell.className = "time-col";
+                            timeCell.rowSpan = MAX_CREW;
+                            timeCell.textContent = formatHour(displayHour);
+                            row.appendChild(timeCell);
+                        }
+
+                        dayBookings.forEach(({ bookings, slots }) => {
+                            const booking = slots[crewSlot];
+
+                            const crewCell = document.createElement("td");
+                            crewCell.className = "crew-name";
+
+                            if (
+                                String(booking?.clinicalLevel || "")
+                                    .trim()
+                                    .toUpperCase() === "REC"
+                            ) {
+                                crewCell.classList.add("recruit-name");
+                            }
+
+                            if (booking) {
+                                const levelLabel =
+                                    booking.clinicalLevel === "REC"
+                                        ? "REC observer"
+                                        : booking.clinicalLevel || "?";
+
+                                crewCell.textContent =
+                                    booking.user + " (" + levelLabel + ")";
+                            }
+
+                            const flexibilityCell =
+                                document.createElement("td");
+
+                            flexibilityCell.className = "restriction";
+
+                            if (booking) {
+                                const code =
+                                    String(booking.restriction || "")
+                                        .trim()
+                                        .toUpperCase() || "N";
+
+                                flexibilityCell.textContent =
+                                    ["N", "A", "B", "C"].includes(code)
+                                        ? code
+                                        : "Legacy: " + code;
+                            }
+
+                            row.append(crewCell, flexibilityCell);
+
+                            if (crewSlot === 0) {
+                                const operational =
+                                    calculateOperationalStatus(
+                                        bookings,
+                                        snapshot.operationalRules
+                                    );
+
+                                const operationalCell =
+                                    document.createElement("td");
+
+                                operationalCell.className =
+                                    "operational" +
+                                    (operational.review ? " review" : "");
+
+                                operationalCell.rowSpan = MAX_CREW;
+
+                                operationalCell.textContent =
+                                    operational.code || "—";
+
+                                // Used exclusively by the Operational column's colour styling.
+                                operationalCell.dataset.op =
+                                    String(operational.code || "").trim().toUpperCase();
+
+                                operationalCell.title = operational.reason;
+
+                                row.appendChild(operationalCell);
+                            }
+                        });
+
+                        rosterBody.appendChild(row);
+                    }
+                }
+
+                const formatter = new Intl.DateTimeFormat("en-AU", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric"
+                });
+
+                document.getElementById("rosterRangeText").textContent =
+                    "Roster from " + formatter.format(startDate) +
+                    " 08:00 to " +
+                    formatter.format(addDays(endDate, 1)) +
+                    " 08:00.";
+
+                document.getElementById("snapshotText").textContent =
+                    "Snapshot generated " +
+                    new Date(snapshot.generatedAt)
+                        .toLocaleString("en-AU") +
+                    ". Refresh the main page and reopen this window for updates.";
+            }
+
+            function showSelectedRoster() {
+                const selectedDates = getSelectedDates();
+
+                if (!selectedDates) return;
+
+                buildRoster(
+                    selectedDates.startDate,
+                    selectedDates.endDate
+                );
+            }
+
+            document.getElementById("applyDatesButton")
+                .addEventListener("click", showSelectedRoster);
+
+            document.getElementById("nextFortnightButton")
+                .addEventListener("click", () => {
+                    const selectedDates = getSelectedDates();
+
+                    if (!selectedDates) return;
+
+                    const nextStartDate =
+                        addDays(selectedDates.endDate, 1);
+
+                    const nextEndDate = addDays(nextStartDate, 13);
+
+                    document.getElementById("rosterStartDate").value =
+                        formatDateForInput(nextStartDate);
+
+                    document.getElementById("rosterEndDate").value =
+                        formatDateForInput(nextEndDate);
+
+                    buildRoster(nextStartDate, nextEndDate);
+                });
+
+            document.getElementById("printButton")
+                .addEventListener("click", () => window.print());
+
+            document.getElementById("closeButton")
+                .addEventListener("click", () => window.close());
+
+            showSelectedRoster();
+        }
+
+        function setLoading(loading) {
+            isLoading = loading;
+
+            refreshButton.disabled = loading;
+            viewRosterButton.disabled = loading || !hasLoadedBookings;
+
+            updateRosterManagerControls();
+
+            // Freeze booking inputs while a roster operation is running.
+            nameInput.disabled = loading;
+            clinicalLevelSelect.disabled = loading;
+            bookingDateInput.disabled = loading;
+            startTimeSelect.disabled = loading;
+            restrictionSelect.disabled = loading;
+
+            finishTimeSelect.disabled =
+                loading || startTimeSelect.value === "";
+
+            document.querySelectorAll("[data-cancel-id]")
+                .forEach(button => {
+                    button.disabled =
+                        loading ||
+                        !hasLoadedBookings ||
+                        !submissionStatusLoaded;
+                });
+
+            updateBookingSummary();
+        }
+
+        function setConnectionStatus(message, statusClass) {
+            connectionStatus.className = "connection-status";
+
+            if (statusClass) {
+                connectionStatus.classList.add(statusClass);
+            }
+
+            connectionStatus.textContent = message;
+        }
+
+        function createId() {
+            if (
+                window.crypto &&
+                typeof window.crypto.randomUUID === "function"
+            ) {
+                return window.crypto.randomUUID();
+            }
+
+            return Date.now().toString(36) +
+                Math.random().toString(36).slice(2);
+        }
+
+        function normaliseName(value) {
+            return String(value || "")
+                .trim()
+                .toLocaleLowerCase();
+        }
+
+        function startOfDay(date) {
+            const result = new Date(date);
+            result.setHours(0, 0, 0, 0);
+            return result;
+        }
+
+        function startOfCurrentHour(date) {
+            const result = new Date(date);
+            result.setMinutes(0, 0, 0);
+            return result;
+        }
+
+        function addHours(date, hours) {
+            const result = new Date(date);
+            result.setHours(result.getHours() + hours);
+            return result;
+        }
+
+        function addDays(date, days) {
+            const result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+
+        function formatDateKey(date) {
+            const year = date.getFullYear();
+
+            const month = String(date.getMonth() + 1)
+                .padStart(2, "0");
+
+            const day = String(date.getDate())
+                .padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+        }
+
+        function parseDateKey(value) {
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                return null;
+            }
+
+            const [year, month, day] =
+                value.split("-").map(Number);
+
+            const date = new Date(
+                year,
+                month - 1,
+                day,
+                0,
+                0,
+                0,
+                0
+            );
+
+            return formatDateKey(date) === value
+                ? date
+                : null;
+        }
+
+        function formatHour(hour) {
+            return String(hour).padStart(2, "0") + ":00";
+        }
+
+        function formatDayHeading(date) {
+            return new Intl.DateTimeFormat("en-AU", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }).format(date);
+        }
+
+        function formatDateTime(date) {
+            const datePart = new Intl.DateTimeFormat("en-AU", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+                year: "numeric"
+            }).format(date);
+
+            return `${datePart} at ${formatHour(date.getHours())}`;
+        }
+
+        function formatHourPeriod(hourStart) {
+            const hourEnd = addHours(hourStart, 1);
+
+            return (
+                `${formatDateTime(hourStart)}–` +
+                formatHour(hourEnd.getHours())
+            );
+        }
+
+        function isSameDay(first, second) {
+            return first.getFullYear() === second.getFullYear() &&
+                first.getMonth() === second.getMonth() &&
+                first.getDate() === second.getDate();
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function showToast(message) {
+            clearTimeout(toastTimer);
+            toast.textContent = message;
+            toast.classList.add("show");
+
+            toastTimer = setTimeout(() => {
+                toast.classList.remove("show");
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
