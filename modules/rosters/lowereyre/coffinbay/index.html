@@ -2576,14 +2576,18 @@ function postNote(event) {
     event.preventDefault();
 
     if (!currentUser) {
-        window.alert("Close Team notes and enter your name in the page header first.");
+        window.alert(
+            "Close Team notes and enter your name in the page header first."
+        );
         return;
     }
 
     const text = $("messageTextarea").value.trim();
 
     if (!text || text.length > 2000) {
-        window.alert("Enter a note between 1 and 2000 characters.");
+        window.alert(
+            "Enter a note between 1 and 2000 characters."
+        );
         return;
     }
 
@@ -2593,22 +2597,385 @@ function postNote(event) {
             pendingNote.author === currentUser &&
             pendingNote.text === text &&
             typeof pendingNote.id === "string" &&
-            /^[a-f0-9]{64}$/.test(pendingNote.deleteToken || "");
+            /^[a-f0-9]{64}$/.test(
+                pendingNote.deleteToken || ""
+            );
 
         if (!reusable) {
             pendingNote = {
                 id: createId(),
                 author: currentUser,
-                text,
-                delete)
-    .map(function(item) { return item.index; })
-    .sort(function(a, b) { return b - a; });
+                text: text,
+                deleteToken: createDeletionToken()
+            };
+        }
 
-  for (const index of indexesToDelete) {
-    sheet.deleteRow(index + 1);
-    data.splice(index, 1);
-  }
+        noteTokens.set(
+            pendingNote.id,
+            pendingNote.deleteToken
+        );
 
-  SpreadsheetApp.flush();
-  return data;
+        const tokenSaved = saveStored(
+            NOTE_TOKEN_PREFIX + pendingNote.id,
+            pendingNote.deleteToken
+        );
+
+        saveStored(
+            PENDING_NOTE_KEY,
+            JSON.stringify(pendingNote)
+        );
+
+        let confirmed = false;
+
+        try {
+            const result = await callRosterApi(
+                "addMessage",
+                pendingNote
+            );
+
+            confirmed = true;
+
+            $("messageTextarea").value = "";
+
+            pendingNote = null;
+
+            removeStored(PENDING_NOTE_KEY);
+
+            updateMessagePreview();
+
+            applyMessages(result);
+
+            $("notesStatus").textContent = tokenSaved
+                ? "Note posted. Its date/time was recorded by the server."
+                : "Note posted. Browser storage is unavailable; a manager may need to delete it later.";
+
+            showToast("Note posted.");
+
+        } catch (error) {
+            $("notesStatus").textContent = confirmed
+                ? "The note was saved. Refresh notes to reload the board."
+                : "Posting was not confirmed. Refresh notes first. If needed, retry the unchanged draft.";
+
+            throw new Error(
+                confirmed
+                    ? "The note was saved, but the returned list could not be read. Refresh notes; do not post it again."
+                    : error.message +
+                      "\n\nRefresh notes before retrying. Keep the draft unchanged to reuse the same request ID."
+            );
+        }
+    });
 }
+
+function deleteNote(id, asManager) {
+    return runTask(async () => {
+        if (!window.confirm("Delete this note?")) {
+            return;
+        }
+
+        const payload = {
+            messageId: id
+        };
+
+        if (asManager) {
+            payload.managerPassword = window.prompt(
+                "Enter the roster manager password to delete this note:"
+            );
+
+            if (!payload.managerPassword) {
+                return;
+            }
+        } else {
+            payload.deleteToken = noteToken(id);
+
+            if (!payload.deleteToken) {
+                throw new Error(
+                    "The deletion key is unavailable. Ask a manager to delete the note."
+                );
+            }
+        }
+
+        try {
+            const result = await callRosterApi(
+                "deleteMessage",
+                payload
+            );
+
+            applyMessages(result);
+
+            noteTokens.delete(id);
+
+            removeStored(
+                NOTE_TOKEN_PREFIX + id
+            );
+
+            showToast("Note deleted.");
+
+        } catch (error) {
+            throw new Error(
+                error.message +
+                "\n\nRefresh notes to check whether deletion completed."
+            );
+        }
+    });
+}
+
+/* =========================================================
+ * INITIALISATION
+ * ========================================================= */
+
+function initialise() {
+    $("teamBadge").textContent = TEAM_NAME;
+
+    $("teamSubtitle").textContent =
+        TEAM_NAME + " volunteer roster";
+
+    $("nameInput").value = currentUser;
+
+    $("clinicalLevelSelect").value =
+        currentClinicalLevel;
+
+    $("bookingDateInput").min =
+        teamDateKey();
+
+    $("bookingDateInput").value =
+        teamDateKey();
+
+    populateStartTimes();
+    populateFinishTimes();
+
+    $("nameInput").addEventListener("input", () => {
+        currentUser = $("nameInput").value.trim();
+
+        saveStored(
+            USER_STORAGE_KEY,
+            currentUser
+        );
+
+        updateBookingSummary();
+        updateMessagePreview();
+
+        if ($("bookingsModal").open) {
+            renderMyBookings();
+        }
+    });
+
+    $("clinicalLevelSelect").addEventListener(
+        "change",
+        () => {
+            currentClinicalLevel =
+                $("clinicalLevelSelect").value;
+
+            saveStored(
+                CLINICAL_STORAGE_KEY,
+                currentClinicalLevel
+            );
+
+            updateBookingSummary();
+        }
+    );
+
+    $("bookingDateInput").addEventListener(
+        "change",
+        handleShiftChange
+    );
+
+    $("startTimeSelect").addEventListener(
+        "change",
+        () => {
+            populateFinishTimes();
+            handleShiftChange();
+        }
+    );
+
+    $("finishTimeSelect").addEventListener(
+        "change",
+        handleShiftChange
+    );
+
+    $("restrictionSelect").addEventListener(
+        "change",
+        updateBookingSummary
+    );
+
+    $("bookButton").addEventListener(
+        "click",
+        bookSelectedShift
+    );
+
+    $("refreshButton").addEventListener(
+        "click",
+        refreshRoster
+    );
+
+    $("viewRosterButton").addEventListener(
+        "click",
+        openRosterView
+    );
+
+    $("myBookingsButton").addEventListener(
+        "click",
+        () => {
+            renderMyBookings();
+
+            if (!$("bookingsModal").open) {
+                $("bookingsModal").showModal();
+            }
+        }
+    );
+
+    $("closeBookingsButton").addEventListener(
+        "click",
+        () => $("bookingsModal").close()
+    );
+
+    $("timelineTab").addEventListener(
+        "click",
+        () => switchView("timeline")
+    );
+
+    $("listTab").addEventListener(
+        "click",
+        () => switchView("list")
+    );
+
+    $("searchInput").addEventListener(
+        "input",
+        renderBookingTable
+    );
+
+    $("expandAllButton").addEventListener(
+        "click",
+        () => {
+            document.querySelectorAll(".day")
+                .forEach(day => {
+                    day.open = true;
+                });
+        }
+    );
+
+    $("collapseAllButton").addEventListener(
+        "click",
+        () => {
+            document.querySelectorAll(".day")
+                .forEach(day => {
+                    day.open = false;
+                });
+        }
+    );
+
+    $("markRosterSentButton").addEventListener(
+        "click",
+        () => openPeriodEditor(false)
+    );
+
+    $("editRosterPeriodButton").addEventListener(
+        "click",
+        () => openPeriodEditor(true)
+    );
+
+    $("resetRosterSentButton").addEventListener(
+        "click",
+        resetPeriod
+    );
+
+    $("rosterPeriodForm").addEventListener(
+        "submit",
+        savePeriod
+    );
+
+    $("closeRosterPeriodEditorButton").addEventListener(
+        "click",
+        clearPeriodEditor
+    );
+
+    $("teamNotesButton").addEventListener(
+        "click",
+        openNotes
+    );
+
+    $("closeNotesButton").addEventListener(
+        "click",
+        () => $("notesModal").close()
+    );
+
+    $("noteForm").addEventListener(
+        "submit",
+        postNote
+    );
+
+    $("messageTextarea").addEventListener(
+        "input",
+        updateMessagePreview
+    );
+
+    $("refreshNotesButton").addEventListener(
+        "click",
+        () => runTask(fetchMessages)
+    );
+
+    $("clearMessageButton").addEventListener(
+        "click",
+        () => {
+            $("messageTextarea").value = "";
+            updateMessagePreview();
+            $("messageTextarea").focus();
+        }
+    );
+
+    /*
+     * Restore a draft only if it belongs to the currently
+     * stored browser user.
+     */
+    if (
+        pendingNote &&
+        pendingNote.author === currentUser &&
+        typeof pendingNote.text === "string"
+    ) {
+        $("messageTextarea").value =
+            pendingNote.text;
+    }
+
+    /*
+     * Allow clicking outside either native dialog to close it.
+     */
+    for (
+        const dialog of [
+            $("bookingsModal"),
+            $("notesModal")
+        ]
+    ) {
+        dialog.addEventListener("click", event => {
+            if (event.target !== dialog) {
+                return;
+            }
+
+            const bounds =
+                dialog.getBoundingClientRect();
+
+            const outside =
+                event.clientX < bounds.left ||
+                event.clientX > bounds.right ||
+                event.clientY < bounds.top ||
+                event.clientY > bounds.bottom;
+
+            if (outside) {
+                dialog.close();
+            }
+        });
+    }
+
+    updateMessagePreview();
+    renderAll();
+
+    /*
+     * This is the startup roster request.
+     * It changes “Connecting to the roster…” to
+     * “Refreshing roster and hard-copy status…”.
+     */
+    void refreshRoster();
+}
+
+initialise();
+</script>
+</body>
+</html>
