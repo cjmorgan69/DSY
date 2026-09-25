@@ -3615,8 +3615,93 @@
         }
 
         function closeBookingsModal() {
+            
             bookingsModal.classList.remove("active");
             modalReturnFocus?.focus();
+        }
+        
+                /* =====================================================
+         * TEAM NOTES: MODAL AND LOCAL DRAFT
+         *
+         * Apps Script loading/posting/deleting is added next.
+         * ===================================================== */
+
+        function openNotesModal() {
+            notesReturnFocus = document.activeElement;
+
+            updateMessagePreview();
+
+            notesStatus.textContent =
+                "Shared notes will load when Team Notes is connected.";
+
+            if (!messagesList.childElementCount) {
+                messagesList.innerHTML =
+                    '<div class="empty-state">' +
+                    'No notes loaded yet.' +
+                    '</div>';
+            }
+
+            notesModal.classList.add("active");
+
+            window.setTimeout(() => {
+                messageTextarea.focus();
+            }, 0);
+        }
+
+        function closeNotesModal() {
+            notesModal.classList.remove("active");
+            notesReturnFocus?.focus();
+        }
+
+        function updateMessagePreview() {
+            messagePreview.textContent = currentUser
+                ? currentUser +
+                  " — date/time will be recorded automatically when posted."
+                : "Enter your name in the main page header before posting.";
+
+            messageCount.textContent =
+                `${messageTextarea.value.length} / 2000 characters`;
+        }
+
+        function handleNoteDraftInput() {
+            saveNoteDraft();
+            updateMessagePreview();
+        }
+
+        function saveNoteDraft() {
+            const draft = messageTextarea.value;
+
+            try {
+                if (!draft) {
+                    localStorage.removeItem(NOTE_DRAFT_STORAGE_KEY);
+                    return;
+                }
+
+                localStorage.setItem(NOTE_DRAFT_STORAGE_KEY, draft);
+            } catch (error) {
+                console.warn("Unable to save Team Notes draft:", error);
+            }
+        }
+
+        function restoreNoteDraft() {
+            try {
+                const draft =
+                    localStorage.getItem(NOTE_DRAFT_STORAGE_KEY) || "";
+
+                if (draft) {
+                    messageTextarea.value = draft;
+                }
+            } catch (error) {
+                console.warn("Unable to restore Team Notes draft:", error);
+            }
+        }
+
+        function clearNoteDraft() {
+            try {
+                localStorage.removeItem(NOTE_DRAFT_STORAGE_KEY);
+            } catch (error) {
+                console.warn("Unable to clear Team Notes draft:", error);
+            }
         }
 
         function renderMyBookings() {
