@@ -1614,6 +1614,52 @@
                     closeBookingsModal();
                 }
             });
+                        teamNotesButton.addEventListener(
+                "click",
+                openNotesModal
+            );
+
+            closeNotesButton.addEventListener(
+                "click",
+                closeNotesModal
+            );
+
+            notesModal.addEventListener("click", event => {
+                if (event.target === notesModal) {
+                    closeNotesModal();
+                }
+            });
+
+            messageTextarea.addEventListener(
+                "input",
+                handleNoteDraftInput
+            );
+
+            clearMessageButton.addEventListener("click", () => {
+                messageTextarea.value = "";
+                clearNoteDraft();
+                updateMessagePreview();
+                messageTextarea.focus();
+            });
+
+            /*
+             * Posting and refreshing shared notes are connected
+             * in the next step. These placeholders prevent the
+             * form from performing a normal page submission.
+             */
+            noteForm.addEventListener("submit", event => {
+                event.preventDefault();
+
+                showToast(
+                    "Team Notes are being connected. Posting will be enabled in the next update."
+                );
+            });
+
+            refreshNotesButton.addEventListener("click", () => {
+                showToast(
+                    "Team Notes are being connected. Refresh will be enabled in the next update."
+                );
+            });
 
             document.addEventListener("keydown", event => {
                 if (!bookingsModal.classList.contains("active")) {
