@@ -1214,6 +1214,97 @@
             <div id="myBookingsList"></div>
         </div>
     </div>
+        <div
+        id="notesModal"
+        class="modal-overlay"
+    >
+        <div
+            class="modal notes-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="notesModalTitle"
+        >
+            <div class="modal-header">
+                <h3 id="notesModalTitle">
+                    Team notes — Availability &amp; leave
+                </h3>
+
+                <button
+                    id="closeNotesButton"
+                    class="btn-secondary btn-small"
+                    type="button"
+                >
+                    Close
+                </button>
+            </div>
+
+            <p class="field-help">
+                Notes are shared with people who can access this team's roster.
+                Do not include patient details or sensitive personal information.
+                A note does not create, cancel or change a shift booking.
+            </p>
+
+            <form id="noteForm" class="note-composer">
+                <p id="messagePreview" class="message-preview"></p>
+
+                <div class="field">
+                    <label for="messageTextarea">Your note</label>
+
+                    <textarea
+                        id="messageTextarea"
+                        maxlength="2000"
+                        required
+                        placeholder="Leave a note about availability, leave or team scheduling…"
+                    ></textarea>
+                </div>
+
+                <p id="messageCount" class="field-help">
+                    0 / 2000 characters
+                </p>
+
+                <div class="action-bar">
+                    <button
+                        id="postMessageButton"
+                        class="btn-primary"
+                        type="submit"
+                    >
+                        Post note
+                    </button>
+
+                    <button
+                        id="clearMessageButton"
+                        class="btn-secondary"
+                        type="button"
+                    >
+                        Clear
+                    </button>
+
+                    <button
+                        id="refreshNotesButton"
+                        class="btn-secondary"
+                        type="button"
+                    >
+                        Refresh notes
+                    </button>
+                </div>
+            </form>
+
+            <div
+                id="notesStatus"
+                role="status"
+                aria-live="polite"
+            ></div>
+
+            <div id="messagesList"></div>
+
+            <p class="field-help">
+                Newest notes appear first. The latest 500 notes per team are
+                retained. You can delete notes posted from this browser while
+                its saved deletion key remains available. A manager can delete
+                notes from any device.
+            </p>
+        </div>
+    </div>
 
     <div
         id="toast"
