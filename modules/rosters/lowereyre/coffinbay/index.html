@@ -1431,6 +1431,14 @@
         let lastCentralRosteringWarningKey = "";
         let toastTimer;
         let modalReturnFocus = null;
+                /*
+         * Team Notes state.
+         * Notes are connected to Apps Script in the next step.
+         */
+        const NOTE_DRAFT_STORAGE_KEY =
+            `crew-roster-note-draft-${TEAM_NAME.toLowerCase()}`;
+
+        let notesReturnFocus = null;
 
         const nameInput = document.getElementById("nameInput");
         const clinicalLevelSelect =
