@@ -1661,79 +1661,60 @@
                 );
             });
 
-            document.addEventListener("keydown", event => {
-                if (!bookingsModal.classList.contains("active")) {
+                        document.addEventListener("keydown", event => {
+                const activeModal = notesModal.classList.contains("active")
+                    ? notesModal
+                    : bookingsModal.classList.contains("active")
+                        ? bookingsModal
+                        : null;
+
+                if (!activeModal) {
                     return;
                 }
 
                 if (event.key === "Escape") {
-                    closeBookingsModal();
+                    if (activeModal === notesModal) {
+                        closeNotesModal();
+                    } else {
+                        closeBookingsModal();
+                    }
+
                     return;
                 }
 
-                if (event.key === "Tab") {
-                    const focusable = Array.from(
-                        bookingsModal.querySelectorAll(
-                            'button:not(:disabled), input:not(:disabled), ' +
-                            'select:not(:disabled), [tabindex="0"]'
-                        )
-                    );
+                if (event.key !== "Tab") {
+                    return;
+                }
 
-                    const first = focusable[0];
-                    const last = focusable[focusable.length - 1];
+                const focusable = Array.from(
+                    activeModal.querySelectorAll(
+                        'button:not(:disabled), input:not(:disabled), ' +
+                        'select:not(:disabled), textarea:not(:disabled), ' +
+                        '[tabindex="0"]'
+                    )
+                );
 
-                    if (
-                        event.shiftKey &&
-                        document.activeElement === first
-                    ) {
-                        event.preventDefault();
-                        last?.focus();
-                    } else if (
-                        !event.shiftKey &&
-                        document.activeElement === last
-                    ) {
-                        event.preventDefault();
-                        first?.focus();
-                    }
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+
+                if (!first || !last) {
+                    return;
+                }
+
+                if (
+                    event.shiftKey &&
+                    document.activeElement === first
+                ) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (
+                    !event.shiftKey &&
+                    document.activeElement === last
+                ) {
+                    event.preventDefault();
+                    first.focus();
                 }
             });
-
-            timelineTab.addEventListener(
-                "click",
-                () => switchView("timeline")
-            );
-
-            listTab.addEventListener(
-                "click",
-                () => switchView("list")
-            );
-
-            document.getElementById("expandAllButton")
-                .addEventListener("click", () => toggleAllDays(true));
-
-            document.getElementById("collapseAllButton")
-                .addEventListener("click", () => toggleAllDays(false));
-
-            searchInput.addEventListener("input", renderBookingTable);
-        }
-
-        function handleShiftSelectionChange() {
-            updateBookingSummary();
-            updateCentralRosteringWarning();
-            showCentralRosteringPopupIfRequired();
-        }
-
-        function handleNameChange() {
-            currentUser = nameInput.value.trim();
-            saveStoredValue(USER_STORAGE_KEY, currentUser);
-
-            updateBookingSummary();
-            renderBookingTable();
-
-            if (bookingsModal.classList.contains("active")) {
-                renderMyBookings();
-            }
-        }
 
         /*
          * Existing JSONP transport retained for Apps Script compatibility.
