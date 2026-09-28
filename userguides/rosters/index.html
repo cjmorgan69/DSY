@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover"
+    >
+    <title>Crew Shift Roster — User Guide</title>
+
+    <style>
+        :root {
+            --primary: #22c55e;
+            --primary-dark: #16a34a;
+            --primary-light: #f0fdf4;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --red: #dc2626;
+            --red-light: #fef2f2;
+            --yellow: #d97706;
+            --yellow-light: #fffbeb;
+            --green: #16a34a;
+            --green-light: #f0fdf4;
+            --blue: #0284c7;
+            --blue-light: #e0f2fe;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05),
+                      0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding-bottom: 3rem;
+            color: var(--text);
+            background:
+                radial-gradient(
+                    circle at top right,
+                    #e0e7ff,
+                    transparent 35rem
+                ),
+                var(--background);
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        .container {
+            width: min(900px, 100%);
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1.25rem 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            color: white;
+            border-radius: 12px;
+            background: var(--primary);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+            font-size: 1.25rem;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 1.35rem;
+        }
+
+        .brand p {
+            margin: 0.2rem 0 0;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .team-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 0.75rem;
+            border-radius: 999px;
+            color: var(--primary-dark);
+            background: var(--primary-light);
+            font-size: 0.78rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .notice {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            color: #334155;
+            border: 1px solid #bfdbfe;
+            border-left: 4px solid var(--blue);
+            border-radius: 10px;
+            background: #eff6ff;
+            font-size: 0.88rem;
+            line-height: 1.55;
+        }
+
+        .guide-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .guide-section {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
+        .guide-section summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.1rem 1.25rem;
+            cursor: pointer;
+            list-style: none;
+            font-size: 1rem;
+            font-weight: 800;
+            user-select: none;
+        }
+
+        .guide-section summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .guide-section summary:hover {
+            background: #f8fafc;
+        }
+
+        .guide-section summary:focus-visible {
+            outline: 3px solid rgba(34, 197, 94, 0.35);
+            outline-offset: -3px;
+        }
+
+        .guide-section summary::after {
+            display: grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            flex: 0 0 auto;
+            border-radius: 50%;
+            color: var(--muted);
+            background: var(--background);
+            content: "▼";
+            font-size: 0.7rem;
+            transition: transform 0.25s ease;
+        }
+
+        .guide-section[open] summary {
+            color: var(--primary-dark);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .guide-section[open] summary::after {
+            color: var(--primary);
+            background: var(--primary-light);
+            transform: rotate(180deg);
+        }
+
+        .guide-content {
+            padding: 1.25rem;
+            line-height: 1.6;
+        }
+
+        .guide-content h2 {
+            margin: 0 0 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .guide-content h3 {
+            margin: 1.25rem 0 0.45rem;
+            font-size: 0.95rem;
+        }
+
+        .guide-content h3:first-child {
+            margin-top: 0;
+        }
+
+        .guide-content p {
+            margin: 0 0 0.85rem;
+        }
+
+        .guide-content ul,
+        .guide-content ol {
+            margin: 0.5rem 0 1rem;
+            padding-left: 1.35rem;
+        }
+
+        .guide-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .instruction-box {
+            margin: 1rem 0;
+            padding: 0.9rem 1rem;
+            border-left: 4px solid var(--primary);
+            border-radius: 10px;
+            color: #166534;
+            background: var(--green-light);
+        }
+
+        .warning-box {
+            margin: 1rem 0;
+            padding: 0.9rem 1rem;
+            border-left: 4px solid var(--yellow);
+            border-radius: 10px;
+            color: #78350f;
+            background: var(--yellow-light);
+        }
+
+        .important-box {
+            margin: 1rem 0;
+            padding: 0.9rem 1rem;
+            border-left: 4px solid var(--red);
+            border-radius: 10px;
+            color: #991b1b;
+            background: var(--red-light);
+        }
+
+        .status-key {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(140px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .status-card {
+            padding: 0.85rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--background);
+            font-size: 0.84rem;
+        }
+
+        .status-label {
+            display: inline-block;
+            margin-bottom: 0.35rem;
+            padding: 0.25rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        .status-empty {
+            color: var(--red);
+            background: var(--red-light);
+        }
+
+        .status-partial {
+            color: var(--yellow);
+            background: var(--yellow-light);
+        }
+
+        .status-covered {
+            color: var(--green);
+            background: var(--green-light);
+        }
+
+        .button-example {
+            display: inline-block;
+            margin: 0.2rem 0;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d8ddff;
+            border-radius: 8px;
+            color: var(--primary-dark);
+            background: var(--primary-light);
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .phone-number {
+            display: inline-block;
+            padding: 0.25rem 0.55rem;
+            border-radius: 6px;
+            color: #78350f;
+            background: var(--yellow-light);
+            font-weight: 800;
+            letter-spacing: 0.03em;
+        }
+
+        footer {
+            margin-top: 1.5rem;
+            color: var(--muted);
+            text-align: center;
+            font-size: 0.78rem;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .status-key {
+                grid-template-columns: 1fr;
+            }
+
+            .guide-section summary {
+                padding: 1rem;
+            }
+
+            .guide-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <div class="brand-icon">🗓</div>
+
+                <div>
+                    <h1>Crew Shift Roster</h1>
+                    <p>Quick guide for roster users</p>
+                </div>
+            </div>
+
+            <span class="team-badge">User Guide</span>
+        </header>
+
+        <div class="notice">
+            <strong>Welcome.</strong>
+            Use this guide to book shifts, check roster coverage,
+            view your bookings, share team messages, and manage changes
+            to submitted hard-copy rosters.
+        </div>
+
+        <main class="guide-list">
+            <details class="guide-section" open>
+                <summary>Getting started</summary>
+
+                <div class="guide-content">
+                    <h2>Enter your details</h2>
+
+                    <ol>
+                        <li>Enter your <strong>name</strong> in the page header.</li>
+                        <li>Select your <strong>clinical level</strong>.</li>
+                    </ol>
+
+                    <p>Available clinical levels are:</p>
+
+                    <ul>
+                        <li><strong>PARA</strong></li>
+                        <li><strong>AO</strong></li>
+                        <li><strong>AR</strong></li>
+                        <li><strong>AA</strong></li>
+                        <li><strong>REC</strong> — Recruit / observer</li>
+                    </ul>
+
+                    <div class="instruction-box">
+                        Your name and clinical level are remembered on the
+                        device and browser you are using.
+                    </div>
+                </div>
+            </details>
+
+            <details class="guide-section">
+                <summary>Booking a shift</summary>
+
+                <div class="guide-content">
+                    <h2>How to book</h2>
+
+                    <ol>
+                        <li>Select the <strong>start date</strong>.</li>
+                        <li>Select a <strong>start time</strong>.</li>
+                        <li>Select a <strong>finish time</strong>.</li>
+                        <li>
+                            Select a flexibility restriction if applicable:
+                            <strong>N</strong>, <strong>A</strong>,
+                            <strong>B</strong>, or <strong>C</strong>.
+                        </li>
+                        <li>Check the booking summary shown below the form.</li>
+                        <li>Select <span class="button-example">Confirm shift</span>.</li>
+                    </ol>
+
+                    <p>The system checks that:</p>
+
+                    <ul>
+                        <li>The shift does not start in the past.</li>
+                        <li>You do not have another overlapping booking.</li>
+                        <li>No more than three people are booked at one time.</li>
+                        <li>Only one REC observer is booked per hourly period.</li>
+                    </ul>
+
+                    <div class="warning-box">
+                        A REC booking occupies one of the three available
+                        places but is an observer and does not count toward
+                        operational crew coverage.
+                    </div>
+                </div>
+            </details>
+
+            <details class="guide-section">
+                <summary>Understanding the Timeline</summary>
+
+                <div class="guide-content">
+                    <h2>Roster-day time period</h2>
+
+                    <p>Roster days run from:</p>
+
+                    <div class="instruction-box">
+                        <strong>08:00 until 07:59 the following morning.</strong>
+                    </div>
+
+                    <p>
+                        For example, a booking at <strong>03:00 Tuesday</strong>
+                        appears under the roster-day card for <strong>Monday</strong>.
+                    </p>
+
+                    <h3>Coverage colours</h3>
+
+                    <div class="status-key">
+                        <div class="status-card">
+                            <span class="status-label status-empty">
+                                Red
+                            </span>
+
+                            <br>
+
+                            No operational crew are assigned.
+                        </div>
+
+                        <div class="status-card">
+                            <span class="status-label status-partial">
+                                Yellow
+                            </span>
+
+                            <br>
+
+                            One operational crew member is assigned.
+                        </div>
+
+                        <div class="status-card">
+                            <span class="status-label status-covered">
+                                Green
+                            </span>
+
+                            <br>
+
+                            Two or more operational crew are assigned.
+                        </div>
+                    </div>
+
+                    <h3>Expanding and collapsing days</h3>
+
+                    <p>
+                        Select a day heading to show or hide its hourly
+                        timeline. Use
+                        <span class="button-example">Expand all</span>
+                        or
+                        <span class="button-example">Collapse all</span>
+                        to manage all visible days at once.
+                    </p>
+                </div>
+            </details>
+
+            <details class="guide-section">
+                <summary>Viewing the printable team roster</summary>
+
+                <div class="guide-content">
+                    <h2>Team roster view</h2>
+
+                    <p>
+                        Select:
+                    </p>
+
+                    <p>
+                        <span class="button-example">
+                            📋 View Team Roster — Next 14 Days
+                        </span>
+                    </p>
+
+                    <p>
+                        This opens a separate window containing a roster table.
+                        In that window you can:
+                    </p>
+
+                    <ul>
+                        <li>Select a different date range.</li>
+                        <li>Move to the next 14-day period.</li>
+                        <li>Print the displayed roster.</li>
+                        <li>Close the roster window when finished.</li>
+                    </ul>
+                </div>
+            </details>
+
+            <details class="guide-section">
+                <summary>Booking list, My bookings, and cancellations</summary>
+
+                <div class="guide-content">
+                    <h2>Booking list</h2>
+
+                    <p>
+                        Select the <strong>Booking list</strong> tab to view
+                        active bookings for the team.
+                    </p>
+
+                    <p>
+                        Use the search field to find a booking by crew member,
+                        clinical level, flexibility code, or date.
+                    </p>
+
+                    <h2>My bookings</h2>
+
+                    <p>
+                        Select <span class="button-example">My bookings</span>
+                        to view upcoming bookings matching the name entered
+                        in the header.
+                    </p>
+
+                    <div class="warning-box">
+                        Use your name consistently. A different spelling,
+                        nickname, or extra space may prevent your bookings
+                        from appearing in <strong>My bookings</strong>.
+                    </div>
+
+                    <h2>Cancelling a shift</h2>
+
+                    <ol>
+                        <li>Find the booking in the Booking list or My bookings.</li>
+                        <li>Select <span class="button-example">Cancel</span>.</li>
+                        <li>Read the confirmation message and confirm the cancellation.</li>
+                    </ol>
+                </div>
+            </details>
+
+            <details class="guide-section">
+                <summary>Team messages</summary>
+
+                <div class="guide-content">
+                    <h2>Shared roster messages</h2>
+
+                    <p>
+                        Select
+                        <span class="button-example">Team messages</span>
+                        to view or post notes visible to other users of the
+                        same team roster.
+                    </p>
+
+                    <p>Use the message board for:</p>
+
+                    <ul>
+                        <li>Availability updates.</li>
+                        <li>Leave notifications.</li>
+                        <li>Roster-related information.</li>
+                        <li>General team coordination.</li>
+                    </ul>
+
+                    <h3>Posting a message</h3>
+
+                    <ol>
+                        <li>Make sure your name is entered in the header.</li>
+                        <li>Open <strong>Team messages</strong>.</li>
+                        <li>Type your message.</li>
+                        <li>Select <span class="button-example">Post message</span>.</li>
+                    </ol>
+
+                    <h3>Deleting a message</h3>
+
+                    <ul>
+                        <li>
+                            A message posted from your current browser will
+                            show a <strong>Delete</strong> button.
+                        </li>
+                        <li>
+                            A roster manager can remove any message using
+                            <strong>Manager delete</strong> and the manager password.
+                        </li>
+                        <li>
+                            If browser data is cleared or you use another device,
+                            your normal Delete button may no longer be available.
+                        </li>
+                    </ul>
+
+                    <div class="important-box">
+                        <strong>Do not post confidential information.</strong>
+                        Never include patient details, clinical details, private
+                        contact information, or other sensitive personal information.
+                    </div>
+                </div>
+            </details>
+
+            <details class="guide-section">
+                <summary>Submitted hard-copy roster periods</summary>
+
+                <div class="guide-content">
+                    <h2>Hard-copy submission status</h2>
+
+                    <p>
+                        The roster displays whether a hard-copy roster period
+                        has been submitted to Country Rostering.
+                    </p>
+
+                    <p>
+                        Bookings and cancellations are still allowed during a
+                        submitted period. However, changes that overlap that
+                        period require notification to Country Rostering.
+                    </p>
+
+                    <div class="warning-box">
+                        If the roster displays a Country Rostering warning,
+                        follow the on-screen prompt after making the booking
+                        or cancellation.
+                    </div>
+
+                    <p>Country Rostering phone number:</p>
+
+                    <p>
+                        <span class="phone-number">1300 850 985</span>
+                    </p>
+                </div>
+            </details>
+
+            <details class="guide-section">
+                <summary>Refreshing and getting help</summary>
+
+                <div class="guide-content">
+                    <h2>Refresh the roster</h2>
+
+                    <p>
+                        Select
+                        <span class="button-example">Refresh roster</span>
+                        to load the latest bookings and hard-copy submission
+                        status.
+                    </p>
+
+                    <p>Refresh the roster if:</p>
+
+                    <ul>
+                        <li>You have left the page open for some time.</li>
+                        <li>A booking or cancellation was unsuccessful.</li>
+                        <li>You need to see another person’s recent booking.</li>
+                        <li>The page shows a connection or verification warning.</li>
+                    </ul>
+
+                    <h2>If something is not working</h2>
+
+                    <ol>
+                        <li>Check your internet connection.</li>
+                        <li>Select <strong>Refresh roster</strong>.</li>
+                        <li>Check that your name and clinical level are correct.</li>
+                        <li>Try refreshing the browser page.</li>
+                        <li>Contact your roster manager if the problem continues.</li>
+                    </ol>
+                </div>
+            </details>
+        </main>
+
+        <footer>
+            Crew Shift Roster — Quick User Guide
+        </footer>
+    </div>
+</body>
+</html>
