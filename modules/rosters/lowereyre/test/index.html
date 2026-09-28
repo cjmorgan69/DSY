@@ -1118,8 +1118,8 @@
                 <div>
                     <h2>Roster coverage</h2>
                     <p>
-                        Coverage excludes REC observers.
-                        Operational restrictions are shown separately.
+                       Roster days run from 08:00 until 07:59 the following morning.
+Coverage excludes observers.
                     </p>
                 </div>
 
@@ -1226,6 +1226,7 @@
         const HOURS_PER_DAY = 24;
         const MAX_SHIFT_HOURS = 24;
         const DAYS_TO_SHOW = 9;
+        const ROSTER_START_HOUR = 8;
 
         const CLINICAL_LEVELS = ["PARA", "AO", "AR", "AA", "REC"];
         const FLEXIBILITY_CODES = ["N", "A", "B", "C"];
@@ -2890,8 +2891,12 @@
                 // No extra reload: the save response supplied the roster.
                 showLoadedConnectionStatus();
 
-                const dayKey =
-                    formatDateKey(latestSelection.startDate);
+                              const dayKey =
+                    formatDateKey(
+                        startOfRosterDay(
+                            latestSelection.startDate
+                        )
+                    );
 
                 requestAnimationFrame(() => {
                     const target = document.querySelector(
@@ -3058,7 +3063,7 @@
             }
         }
 
-        function renderCalendar() {
+            function renderCalendar() {
             const existingDays = document.querySelectorAll(".day");
             const hadDays = existingDays.length > 0;
 
@@ -3077,10 +3082,16 @@
                 return;
             }
 
-            const today = startOfDay(new Date());
+            /*
+             * Timeline days begin at 08:00.
+             *
+             * For example, at 06:00 on Monday the current visible
+             * roster day is Sunday 08:00 through Monday 07:59.
+             */
+            const firstRosterDay = startOfRosterDay(new Date());
 
             for (let offset = 0; offset < DAYS_TO_SHOW; offset++) {
-                const date = addDays(today, offset);
+                const date = addDays(firstRosterDay, offset);
                 const dateKey = formatDateKey(date);
 
                 const shouldOpen = hadDays
@@ -3093,28 +3104,54 @@
             }
         }
 
-        function createDayElement(date, shouldOpen) {
+            function createDayElement(date, shouldOpen) {
             const section = document.createElement("section");
             section.className = `day${shouldOpen ? " open" : ""}`;
             section.dataset.date = formatDateKey(date);
 
             let coveredCrewHours = 0;
 
-            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+            /*
+             * The 24 rows represent:
+             *
+             * 08:00–08:59 on the roster-day date
+             * through to
+             * 07:00–07:59 on the following calendar date.
+             */
+            for (
+                let rosterHour = 0;
+                rosterHour < HOURS_PER_DAY;
+                rosterHour++
+            ) {
+                const absoluteHour =
+                    ROSTER_START_HOUR + rosterHour;
+
                 const hourStart = new Date(date);
-                hourStart.setHours(hour, 0, 0, 0);
+
+                /*
+                 * JavaScript automatically rolls 24–31 into
+                 * the following calendar day.
+                 */
+                hourStart.setHours(absoluteHour, 0, 0, 0);
 
                 const operationalCrewCount =
                     getBookingsForHour(hourStart)
                         .filter(booking =>
-                            CLINICAL_LEVELS.includes(booking.clinicalLevel) &&
+                            CLINICAL_LEVELS.includes(
+                                booking.clinicalLevel
+                            ) &&
                             booking.clinicalLevel !== "REC"
                         )
                         .length;
 
-                // Observers do not count toward coverage.
-                // Extra crew cannot offset an uncovered hour.
-                coveredCrewHours += Math.min(operationalCrewCount, 2);
+                /*
+                 * REC observers do not count toward the
+                 * two-person operational crew target.
+                 */
+                coveredCrewHours += Math.min(
+                    operationalCrewCount,
+                    2
+                );
             }
 
             const targetCrewHours = 2 * HOURS_PER_DAY;
@@ -3127,7 +3164,10 @@
             heading.className = "day-heading";
             heading.tabIndex = 0;
             heading.setAttribute("role", "button");
-            heading.setAttribute("aria-expanded", String(shouldOpen));
+            heading.setAttribute(
+                "aria-expanded",
+                String(shouldOpen)
+            );
 
             const titleGroup = document.createElement("div");
             titleGroup.className = "day-title-group";
@@ -3145,9 +3185,19 @@
             const subtitle = document.createElement("span");
             subtitle.className = "day-subtitle";
 
+                       const isCurrentRosterDay =
+                isSameDay(
+                    date,
+                    startOfRosterDay(new Date())
+                );
+
             subtitle.textContent =
-                `${isSameDay(date, new Date()) ? "Today · " : ""}` +
-                `${coveragePercent}% crew coverage`;
+                (isCurrentRosterDay
+                    ? "Current roster day · "
+                    : "") +
+                "08:00–07:59 next day · " +
+                coveragePercent +
+                "% crew coverage";
 
             heading.append(titleGroup, subtitle);
 
@@ -3174,8 +3224,14 @@
             const inner = document.createElement("div");
             inner.className = "day-body-inner";
 
-            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
-                inner.appendChild(createTimelineRow(date, hour));
+            for (
+                let rosterHour = 0;
+                rosterHour < HOURS_PER_DAY;
+                rosterHour++
+            ) {
+                inner.appendChild(
+                    createTimelineRow(date, rosterHour)
+                );
             }
 
             body.appendChild(inner);
@@ -3184,9 +3240,24 @@
             return section;
         }
 
-        function createTimelineRow(date, hour) {
+              function createTimelineRow(date, rosterHour) {
+            /*
+             * rosterHour 0 = 08:00 on the roster-day date.
+             * rosterHour 23 = 07:00 on the following calendar day.
+             */
+            const absoluteHour =
+                ROSTER_START_HOUR + rosterHour;
+
+            const displayHour =
+                absoluteHour % HOURS_PER_DAY;
+
             const hourStart = new Date(date);
-            hourStart.setHours(hour, 0, 0, 0);
+
+            /*
+             * setHours(24+) deliberately rolls into the next date.
+             * This matches the existing printable roster logic.
+             */
+            hourStart.setHours(absoluteHour, 0, 0, 0);
 
             const bookings = getBookingsForHour(hourStart);
             const bookedCount = bookings.length;
@@ -3240,7 +3311,17 @@
 
             const time = document.createElement("div");
             time.className = "timeline-time";
-            time.textContent = formatHour(hour);
+
+            time.textContent =
+                formatHour(displayHour) +
+                (absoluteHour >= HOURS_PER_DAY
+                    ? " · next day"
+                    : "");
+
+            /*
+             * Hovering the time shows the actual calendar date/time.
+             */
+            time.title = formatDateTime(hourStart);
 
             const nodeContainer = document.createElement("div");
             nodeContainer.className = "timeline-node-container";
@@ -4589,6 +4670,21 @@
         function startOfDay(date) {
             const result = new Date(date);
             result.setHours(0, 0, 0, 0);
+            return result;
+        }
+                /*
+         * A roster day begins at 08:00.
+         *
+         * Before 08:00, the current roster day started on the
+         * previous calendar date.
+         */
+        function startOfRosterDay(date = new Date()) {
+            const result = startOfDay(date);
+
+            if (date.getHours() < ROSTER_START_HOUR) {
+                result.setDate(result.getDate() - 1);
+            }
+
             return result;
         }
 
