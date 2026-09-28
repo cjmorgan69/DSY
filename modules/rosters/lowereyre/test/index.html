@@ -700,6 +700,110 @@
             transform: translateX(-50%) translateY(0);
         }
 
+               .message-board-modal {
+            width: min(760px, 100%);
+        }
+
+        .message-board-intro {
+            margin: 0 0 1rem;
+            padding: 0.85rem 1rem;
+            color: #334155;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            background: #eff6ff;
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        .message-form {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--background);
+        }
+
+        .message-form textarea {
+            width: 100%;
+            min-height: 100px;
+            resize: vertical;
+            padding: 0.75rem 0.9rem;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: 0;
+            background: var(--surface);
+            font: inherit;
+            line-height: 1.45;
+        }
+
+        .message-form textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+        }
+
+        .message-form-footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .message-character-count {
+            color: var(--muted);
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .messages-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .message-item {
+            padding: 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--background);
+        }
+
+        .message-item-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.55rem;
+        }
+
+        .message-author {
+            font-size: 0.88rem;
+            font-weight: 800;
+        }
+
+        .message-time {
+            margin-top: 0.15rem;
+            color: var(--muted);
+            font-size: 0.74rem;
+        }
+
+        .message-text {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            color: var(--text);
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .message-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.4rem;
+        }
         .hidden { display: none !important; }
 
         .central-roster-warning {
@@ -951,7 +1055,7 @@
             </div>
 
             <!-- Everyday booking controls remain outside the manager panel. -->
-            <div class="action-bar">
+                        <div class="action-bar">
                 <button
                     id="bookButton"
                     class="btn-primary"
@@ -962,10 +1066,19 @@
                 </button>
 
                 <button
+                    id="messagesButton"
+                    class="btn-secondary"
+                    type="button"
+                >
+                    Team messages
+                </button>
+
+                <button
                     id="refreshButton"
                     class="btn-secondary"
                     type="button"
                 >
+                   
                     Refresh roster
                 </button>
 
@@ -1208,6 +1321,85 @@ Coverage excludes observers.
     </div>
 
     <div
+
+            <div id="messagesModal" class="modal-overlay">
+        <div
+            class="modal message-board-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="messagesModalTitle"
+        >
+            <div class="modal-header">
+                <div>
+                    <h3 id="messagesModalTitle">Team messages</h3>
+                    <p class="field-help">
+                        Shared notes for the <span id="messagesTeamName"></span> team.
+                    </p>
+                </div>
+
+                <button
+                    id="closeMessagesModalButton"
+                    class="btn-secondary btn-small"
+                    type="button"
+                >
+                    Close
+                </button>
+            </div>
+
+            <p class="message-board-intro">
+                Use this board for availability, leave, or roster-related notes.
+                Do not post confidential patient, clinical, or personal information.
+                Notes are visible to everyone using this team roster.
+            </p>
+
+            <form id="messageForm" class="message-form">
+                <label class="field" for="messageTextInput">
+                    <span>New message</span>
+
+                    <textarea
+                        id="messageTextInput"
+                        maxlength="2000"
+                        placeholder="Write a message for the team…"
+                        aria-describedby="messageCharacterCount"
+                        required
+                    ></textarea>
+                </label>
+
+                <div class="message-form-footer">
+                    <span
+                        id="messageCharacterCount"
+                        class="message-character-count"
+                    >
+                        0 / 2000
+                    </span>
+
+                    <div class="action-bar">
+                        <button
+                            id="refreshMessagesButton"
+                            class="btn-secondary"
+                            type="button"
+                        >
+                            Refresh messages
+                        </button>
+
+                        <button
+                            id="postMessageButton"
+                            class="btn-primary"
+                            type="submit"
+                        >
+                            Post message
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div
+                id="messagesList"
+                class="messages-list"
+                aria-live="polite"
+            ></div>
+        </div>
+    </div>
         id="toast"
         class="toast"
         role="status"
@@ -1273,8 +1465,11 @@ Coverage excludes observers.
         let submittedRosterPeriod = null;
         let lastCentralRosteringWarningKey = "";
         let toastTimer;
-        let modalReturnFocus = null;
-
+               let modalReturnFocus = null;
+        let messagesModalReturnFocus = null;
+        let messages = [];
+        let messagesLoading = false;
+        
         const nameInput = document.getElementById("nameInput");
         const clinicalLevelSelect =
             document.getElementById("clinicalLevelSelect");
@@ -1318,6 +1513,29 @@ Coverage excludes observers.
             document.getElementById("myBookingsList");
         const toast =
             document.getElementById("toast");
+                const messagesButton =
+            document.getElementById("messagesButton");
+
+        const messagesModal =
+            document.getElementById("messagesModal");
+
+        const messagesList =
+            document.getElementById("messagesList");
+
+        const messageTextInput =
+            document.getElementById("messageTextInput");
+
+        const messageCharacterCount =
+            document.getElementById("messageCharacterCount");
+
+        const postMessageButton =
+            document.getElementById("postMessageButton");
+
+        const refreshMessagesButton =
+            document.getElementById("refreshMessagesButton");
+
+        const MESSAGE_DELETE_TOKENS_STORAGE_KEY =
+            `crew-roster-message-delete-tokens-${TEAM_NAME.toLowerCase()}`;
 
         initialise();
 
@@ -1414,6 +1632,33 @@ Coverage excludes observers.
             document.getElementById("closeRosterPeriodEditorButton")
                 .addEventListener("click", closeRosterPeriodEditor);
 
+                        messagesButton.addEventListener(
+                "click",
+                openMessagesModal
+            );
+
+            document.getElementById("closeMessagesModalButton")
+                .addEventListener("click", closeMessagesModal);
+
+            messagesModal.addEventListener("click", event => {
+                if (event.target === messagesModal) {
+                    closeMessagesModal();
+                }
+            });
+
+            document.getElementById("messageForm")
+                .addEventListener("submit", postMessage);
+
+            refreshMessagesButton.addEventListener(
+                "click",
+                loadMessages
+            );
+
+            messageTextInput.addEventListener(
+                "input",
+                updateMessageCharacterCount
+            );
+
             document.getElementById("myBookingsButton")
                 .addEventListener("click", openBookingsModal);
 
@@ -1426,21 +1671,35 @@ Coverage excludes observers.
                 }
             });
 
-            document.addEventListener("keydown", event => {
-                if (!bookingsModal.classList.contains("active")) {
+                       document.addEventListener("keydown", event => {
+                const activeModal = bookingsModal.classList.contains("active")
+                    ? bookingsModal
+                    : messagesModal.classList.contains("active")
+                        ? messagesModal
+                        : null;
+
+                if (!activeModal) {
                     return;
                 }
 
                 if (event.key === "Escape") {
-                    closeBookingsModal();
+                    if (activeModal === bookingsModal) {
+                        closeBookingsModal();
+                    } else {
+                        closeMessagesModal();
+                    }
+
                     return;
                 }
 
                 if (event.key === "Tab") {
                     const focusable = Array.from(
-                        bookingsModal.querySelectorAll(
-                            'button:not(:disabled), input:not(:disabled), ' +
-                            'select:not(:disabled), [tabindex="0"]'
+                        activeModal.querySelectorAll(
+                            'button:not(:disabled), ' +
+                            'input:not(:disabled), ' +
+                            'select:not(:disabled), ' +
+                            'textarea:not(:disabled), ' +
+                            '[tabindex="0"]'
                         )
                     );
 
@@ -1462,7 +1721,6 @@ Coverage excludes observers.
                     }
                 }
             });
-
             timelineTab.addEventListener(
                 "click",
                 () => switchView("timeline")
@@ -3470,7 +3728,466 @@ Coverage excludes observers.
                 bookingTableBody.appendChild(row);
             });
         }
+        function readMessageDeleteTokens() {
+            try {
+                const stored = localStorage.getItem(
+                    MESSAGE_DELETE_TOKENS_STORAGE_KEY
+                );
 
+                if (!stored) {
+                    return {};
+                }
+
+                const parsed = JSON.parse(stored);
+
+                return parsed &&
+                    typeof parsed === "object" &&
+                    !Array.isArray(parsed)
+                    ? parsed
+                    : {};
+            } catch (error) {
+                console.warn(
+                    "Unable to read message deletion keys:",
+                    error
+                );
+
+                return {};
+            }
+        }
+
+        function saveMessageDeleteTokens(tokens) {
+            try {
+                localStorage.setItem(
+                    MESSAGE_DELETE_TOKENS_STORAGE_KEY,
+                    JSON.stringify(tokens)
+                );
+            } catch (error) {
+                console.warn(
+                    "Unable to save message deletion keys:",
+                    error
+                );
+
+                showToast(
+                    "This browser could not save the private delete key."
+                );
+            }
+        }
+
+        function createDeleteToken() {
+            if (
+                window.crypto &&
+                typeof window.crypto.getRandomValues === "function"
+            ) {
+                const bytes = new Uint8Array(32);
+
+                window.crypto.getRandomValues(bytes);
+
+                return Array.from(bytes)
+                    .map(byte =>
+                        byte.toString(16).padStart(2, "0")
+                    )
+                    .join("");
+            }
+
+            throw new Error(
+                "Your browser cannot securely create a message deletion key."
+            );
+        }
+
+        function updateMessageCharacterCount() {
+            messageCharacterCount.textContent =
+                `${messageTextInput.value.length} / 2000`;
+        }
+
+        function setMessagesLoading(loading) {
+            messagesLoading = loading;
+
+            messagesButton.disabled = loading;
+            postMessageButton.disabled = loading;
+            refreshMessagesButton.disabled = loading;
+            messageTextInput.disabled = loading;
+        }
+
+        function normaliseMessage(message) {
+            return {
+                id: String(message.id || ""),
+                team: String(message.team || ""),
+                author: String(message.author || "").trim(),
+                text: String(message.text || "").trim(),
+                timestamp: String(
+                    message.timestamp || message.createdAt || ""
+                ),
+                createdAt: String(message.createdAt || "")
+            };
+        }
+
+        function isValidMessage(message) {
+            const createdAt = new Date(
+                message.createdAt || message.timestamp
+            );
+
+            return Boolean(
+                message.id &&
+                message.author &&
+                message.text &&
+                normaliseName(message.team) === normaliseName(TEAM_NAME) &&
+                Number.isFinite(createdAt.getTime())
+            );
+        }
+
+        function applyMessagesSnapshot(data) {
+            if (
+                !data ||
+                data.success !== true ||
+                !Array.isArray(data.messages) ||
+                normaliseName(data.team) !== normaliseName(TEAM_NAME)
+            ) {
+                throw new Error(
+                    "The message board did not return a valid team message list."
+                );
+            }
+
+            messages = data.messages
+                .map(normaliseMessage)
+                .filter(isValidMessage);
+
+            renderMessages();
+        }
+
+        async function loadMessages() {
+            if (messagesLoading) {
+                return;
+            }
+
+            setMessagesLoading(true);
+
+            try {
+                const data = await callRosterApi("getMessages");
+
+                applyMessagesSnapshot(data);
+            } catch (error) {
+                console.error("Unable to load team messages:", error);
+
+                messagesList.innerHTML = "";
+
+                const errorState = document.createElement("div");
+                errorState.className = "empty-state";
+                errorState.textContent =
+                    error.message ||
+                    "Unable to load team messages.";
+
+                messagesList.appendChild(errorState);
+                showToast(errorState.textContent);
+            } finally {
+                setMessagesLoading(false);
+            }
+        }
+
+        async function openMessagesModal() {
+            messagesModalReturnFocus = document.activeElement;
+
+            document.getElementById("messagesTeamName").textContent =
+                TEAM_NAME;
+
+            messageTextInput.value = "";
+            updateMessageCharacterCount();
+
+            messagesModal.classList.add("active");
+
+            messagesList.innerHTML = "";
+
+            const loadingState = document.createElement("div");
+            loadingState.className = "empty-state";
+            loadingState.textContent = "Loading team messages…";
+
+            messagesList.appendChild(loadingState);
+
+            messageTextInput.focus();
+
+            await loadMessages();
+        }
+
+        function closeMessagesModal() {
+            messagesModal.classList.remove("active");
+            messagesModalReturnFocus?.focus();
+        }
+
+        function formatMessageTimestamp(value) {
+            const date = new Date(value);
+
+            if (!Number.isFinite(date.getTime())) {
+                return "Time unavailable";
+            }
+
+            return date.toLocaleString("en-AU", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+        }
+
+        function renderMessages() {
+            messagesList.innerHTML = "";
+
+            if (!messages.length) {
+                const empty = document.createElement("div");
+                empty.className = "empty-state";
+                empty.textContent =
+                    `No team messages have been posted for ${TEAM_NAME} yet.`;
+
+                messagesList.appendChild(empty);
+                return;
+            }
+
+            const deleteTokens = readMessageDeleteTokens();
+
+            messages.forEach(message => {
+                const item = document.createElement("article");
+                item.className = "message-item";
+
+                const header = document.createElement("div");
+                header.className = "message-item-header";
+
+                const authorDetails = document.createElement("div");
+
+                const author = document.createElement("div");
+                author.className = "message-author";
+                author.textContent = message.author;
+
+                const timestamp = document.createElement("div");
+                timestamp.className = "message-time";
+                timestamp.textContent =
+                    formatMessageTimestamp(
+                        message.timestamp || message.createdAt
+                    );
+
+                authorDetails.append(author, timestamp);
+
+                const actions = document.createElement("div");
+                actions.className = "message-actions";
+
+                /*
+                 * Only this posting browser receives its private
+                 * deletion key, so only it gets the normal Delete button.
+                 */
+                if (deleteTokens[message.id]) {
+                    const deleteButton =
+                        document.createElement("button");
+
+                    deleteButton.className =
+                        "btn-danger btn-small";
+
+                    deleteButton.type = "button";
+                    deleteButton.textContent = "Delete";
+
+                    deleteButton.addEventListener("click", () => {
+                        void deleteOwnMessage(message.id);
+                    });
+
+                    actions.appendChild(deleteButton);
+                }
+
+                const managerDeleteButton =
+                    document.createElement("button");
+
+                managerDeleteButton.className =
+                    "btn-secondary btn-small";
+
+                managerDeleteButton.type = "button";
+                managerDeleteButton.textContent = "Manager delete";
+
+                managerDeleteButton.addEventListener("click", () => {
+                    void deleteMessageAsManager(message.id);
+                });
+
+                actions.appendChild(managerDeleteButton);
+                header.append(authorDetails, actions);
+
+                const text = document.createElement("div");
+                text.className = "message-text";
+
+                /*
+                 * textContent prevents notes from being interpreted
+                 * as HTML or JavaScript.
+                 */
+                text.textContent = message.text;
+
+                item.append(header, text);
+                messagesList.appendChild(item);
+            });
+        }
+
+        async function postMessage(event) {
+            event.preventDefault();
+
+            if (messagesLoading) {
+                return;
+            }
+
+            const author = currentUser.trim();
+            const text = messageTextInput.value.trim();
+
+            if (!author) {
+                showToast(
+                    "Enter your name in the header before posting a message."
+                );
+
+                closeMessagesModal();
+                nameInput.focus();
+
+                return;
+            }
+
+            if (!text) {
+                showToast("Please write a message before posting.");
+                messageTextInput.focus();
+                return;
+            }
+
+            if (text.length > 2000) {
+                showToast("Messages must contain no more than 2,000 characters.");
+                return;
+            }
+
+            let id;
+            let deleteToken;
+
+            try {
+                id = createId();
+                deleteToken = createDeleteToken();
+            } catch (error) {
+                showToast(error.message);
+                return;
+            }
+
+            setMessagesLoading(true);
+
+            try {
+                const data = await callRosterApi("addMessage", {
+                    id,
+                    author,
+                    text,
+                    deleteToken
+                });
+
+                const deleteTokens = readMessageDeleteTokens();
+
+                /*
+                 * Store only the private key for messages posted by
+                 * this browser. The backend stores only its hash.
+                 */
+                deleteTokens[id] = deleteToken;
+                saveMessageDeleteTokens(deleteTokens);
+
+                applyMessagesSnapshot(data);
+
+                messageTextInput.value = "";
+                updateMessageCharacterCount();
+
+                showToast("Team message posted.");
+                messageTextInput.focus();
+            } catch (error) {
+                console.error("Unable to post team message:", error);
+                showToast(
+                    error.message || "Unable to post the team message."
+                );
+            } finally {
+                setMessagesLoading(false);
+            }
+        }
+
+        async function deleteOwnMessage(messageId) {
+            if (messagesLoading) {
+                return;
+            }
+
+            const deleteTokens = readMessageDeleteTokens();
+            const deleteToken = deleteTokens[messageId];
+
+            if (!deleteToken) {
+                showToast(
+                    "This browser does not have the private delete key."
+                );
+
+                return;
+            }
+
+            if (!window.confirm("Delete this team message?")) {
+                return;
+            }
+
+            setMessagesLoading(true);
+
+            try {
+                const data = await callRosterApi("deleteMessage", {
+                    messageId,
+                    deleteToken
+                });
+
+                delete deleteTokens[messageId];
+                saveMessageDeleteTokens(deleteTokens);
+
+                applyMessagesSnapshot(data);
+                showToast("Team message deleted.");
+            } catch (error) {
+                console.error("Unable to delete team message:", error);
+                showToast(
+                    error.message || "Unable to delete the team message."
+                );
+            } finally {
+                setMessagesLoading(false);
+            }
+        }
+
+        async function deleteMessageAsManager(messageId) {
+            if (messagesLoading) {
+                return;
+            }
+
+            const confirmed = window.confirm(
+                "Manager delete will permanently remove this message. Continue?"
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            const managerPassword = window.prompt(
+                "Enter the roster manager password:"
+            );
+
+            if (!managerPassword) {
+                return;
+            }
+
+            setMessagesLoading(true);
+
+            try {
+                const data = await callRosterApi("deleteMessage", {
+                    messageId,
+                    managerPassword
+                });
+
+                const deleteTokens = readMessageDeleteTokens();
+
+                delete deleteTokens[messageId];
+                saveMessageDeleteTokens(deleteTokens);
+
+                applyMessagesSnapshot(data);
+                showToast("Team message deleted by manager.");
+            } catch (error) {
+                console.error("Manager message deletion failed:", error);
+                showToast(
+                    error.message || "Unable to delete the team message."
+                );
+            } finally {
+                setMessagesLoading(false);
+            }
+        }
         function openBookingsModal() {
             modalReturnFocus = document.activeElement;
             renderMyBookings();
