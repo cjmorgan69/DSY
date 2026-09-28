@@ -1322,7 +1322,30 @@ Coverage excludes observers.
 
     <div
 
-            <div id="messagesModal" class="modal-overlay">
+    <div id="bookingsModal" class="modal-overlay">
+        <div
+            class="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="bookingsModalTitle"
+        >
+            <div class="modal-header">
+                <h3 id="bookingsModalTitle">My upcoming bookings</h3>
+
+                <button
+                    id="closeModalButton"
+                    class="btn-secondary btn-small"
+                    type="button"
+                >
+                    Close
+                </button>
+            </div>
+
+            <div id="myBookingsList"></div>
+        </div>
+    </div>
+
+    <div id="messagesModal" class="modal-overlay">
         <div
             class="modal message-board-modal"
             role="dialog"
@@ -1332,8 +1355,10 @@ Coverage excludes observers.
             <div class="modal-header">
                 <div>
                     <h3 id="messagesModalTitle">Team messages</h3>
+
                     <p class="field-help">
-                        Shared notes for the <span id="messagesTeamName"></span> team.
+                        Shared notes for the
+                        <span id="messagesTeamName"></span> team.
                     </p>
                 </div>
 
@@ -1347,9 +1372,10 @@ Coverage excludes observers.
             </div>
 
             <p class="message-board-intro">
-                Use this board for availability, leave, or roster-related notes.
-                Do not post confidential patient, clinical, or personal information.
-                Notes are visible to everyone using this team roster.
+                Use this board for availability, leave, or roster-related
+                notes. Do not post confidential patient, clinical, or personal
+                information. Notes are visible to everyone using this team
+                roster.
             </p>
 
             <form id="messageForm" class="message-form">
@@ -1400,6 +1426,8 @@ Coverage excludes observers.
             ></div>
         </div>
     </div>
+
+    <div
         id="toast"
         class="toast"
         role="status"
