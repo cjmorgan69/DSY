@@ -924,7 +924,7 @@
             margin-bottom: 1rem;
         }
 
-        .manager-controls-content #rosterPeriodEditor {
+        .manager-controls-content #rosterSentUntilEditor {
             margin-top: 1rem;
             margin-bottom: 0;
         }
@@ -1100,9 +1100,9 @@
 
                 <div class="manager-controls-content">
                     <p class="field-help">
-                        Manage this team's hard-copy submission period.
-                        Saving, editing or resetting the status requires
-                        the roster manager password.
+                        Manage the point up to which this team's hard-copy roster has been
+                        sent to Country Rostering. Saving, editing or resetting the status
+                        requires the roster manager password.
                     </p>
 
                     <div class="action-bar">
@@ -1115,12 +1115,12 @@
                         </button>
 
                         <button
-                            id="editRosterPeriodButton"
+                            id="editRosterSentUntilButton"
                             class="btn-secondary"
                             type="button"
                             disabled
                         >
-                            Edit submitted period
+                            Edit sent cut-off
                         </button>
 
                         <button
@@ -1134,67 +1134,67 @@
                     </div>
 
                     <section
-                        id="rosterPeriodEditor"
+                        id="rosterSentUntilEditor"
                         class="notice"
-                        aria-labelledby="rosterPeriodEditorTitle"
+                        aria-labelledby="rosterSentUntilEditorTitle"
                         hidden
                     >
-                        <h3 id="rosterPeriodEditorTitle">
-                            Select the hard-copy roster period
+                        <h3 id="rosterSentUntilEditorTitle">
+                            Set hard-copy roster sent cut-off
                         </h3>
 
-                        <p id="rosterPeriodTimezoneHelp"></p>
+                        <p id="rosterSentUntilTimezoneHelp"></p>
 
-                        <form id="rosterPeriodForm">
+                        <form id="rosterSentUntilForm">
                             <div class="form-grid">
                                 <div class="field">
-                                    <label for="rosterPeriodStartInput">
-                                        Start date and time — inclusive
+                                    <label for="rosterSentUntilDateInput">
+                                        Roster sent up until — date
                                     </label>
 
                                     <input
-                                        id="rosterPeriodStartInput"
-                                        type="datetime-local"
-                                        step="60"
+                                        id="rosterSentUntilDateInput"
+                                        type="date"
                                         required
                                         data-roster-manager-control
                                     >
                                 </div>
 
                                 <div class="field">
-                                    <label for="rosterPeriodEndInput">
-                                        End date and time — exclusive
+                                    <label for="rosterSentUntilHourSelect">
+                                        Roster sent up until — time
                                     </label>
 
-                                    <input
-                                        id="rosterPeriodEndInput"
-                                        type="datetime-local"
-                                        step="60"
+                                    <select
+                                        id="rosterSentUntilHourSelect"
                                         required
                                         data-roster-manager-control
                                     >
+                                        <option value="">Select hour</option>
+                                    </select>
                                 </div>
                             </div>
 
                             <p class="field-help">
-                                Enter the exact period covered by the hard copy.
-                                The end time is not included: a shift starting
-                                exactly at that time falls outside this period.
-                                Only one submitted period is stored per team.
+                                Select the exact point up to which the hard-copy roster has
+                                been sent to Country Rostering. For example, selecting
+                                <strong>Wednesday 14 October at 08:00</strong> means changes
+                                affecting any shift that starts before 08:00 require notification.
+                                A shift starting exactly at 08:00 is outside the sent roster.
                             </p>
 
                             <div class="action-bar">
                                 <button
-                                    id="saveRosterPeriodButton"
+                                    id="saveRosterSentUntilButton"
                                     class="btn-primary"
                                     type="submit"
                                     data-roster-manager-control
                                 >
-                                    Mark this period as sent
+                                    Save sent cut-off
                                 </button>
 
                                 <button
-                                    id="closeRosterPeriodEditorButton"
+                                    id="closeRosterSentUntilEditorButton"
                                     class="btn-secondary"
                                     type="button"
                                     data-roster-manager-control
@@ -1296,31 +1296,6 @@ Coverage excludes observers.
             </p>
         </section>
     </div>
-
-    <div id="bookingsModal" class="modal-overlay">
-        <div
-            class="modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="bookingsModalTitle"
-        >
-            <div class="modal-header">
-                <h3 id="bookingsModalTitle">My upcoming bookings</h3>
-
-                <button
-                    id="closeModalButton"
-                    class="btn-secondary btn-small"
-                    type="button"
-                >
-                    Close
-                </button>
-            </div>
-
-            <div id="myBookingsList"></div>
-        </div>
-    </div>
-
-    <div
 
     <div id="bookingsModal" class="modal-overlay">
         <div
@@ -1490,7 +1465,7 @@ Coverage excludes observers.
         let isLoading = false;
         let hasLoadedBookings = false;
         let submissionStatusLoaded = false;
-        let submittedRosterPeriod = null;
+        let rosterSentUntil = null;
         let lastCentralRosteringWarningKey = "";
         let toastTimer;
                let modalReturnFocus = null;
@@ -1582,6 +1557,7 @@ Coverage excludes observers.
             bookingDateInput.value = formatDateKey(today);
 
             populateStartTimes();
+            populateRosterSentUntilHours();
             registerEventListeners();
             renderAll();
             void refreshRoster();
@@ -1641,24 +1617,23 @@ Coverage excludes observers.
             refreshButton.addEventListener("click", refreshRoster);
             viewRosterButton.addEventListener("click", openRosterView);
 
-            markRosterSentButton.addEventListener(
-                "click",
-                markHardCopyRosterAsSent
-            );
+            markRosterSentButton.addEventListener("click", () => {
+                void openRosterSentUntilEditor(false);
+            });
 
-            document.getElementById("editRosterPeriodButton")
+            document.getElementById("editRosterSentUntilButton")
                 .addEventListener("click", () => {
-                    void openRosterPeriodEditor(true);
+                    void openRosterSentUntilEditor(true);
                 });
 
             document.getElementById("resetRosterSentButton")
                 .addEventListener("click", resetHardCopyRosterStatus);
 
-            document.getElementById("rosterPeriodForm")
-                .addEventListener("submit", saveHardCopyRosterPeriod);
+            document.getElementById("rosterSentUntilForm")
+                .addEventListener("submit", saveRosterSentUntil);
 
-            document.getElementById("closeRosterPeriodEditorButton")
-                .addEventListener("click", closeRosterPeriodEditor);
+            document.getElementById("closeRosterSentUntilEditorButton")
+                .addEventListener("click", closeRosterSentUntilEditor);
 
                         messagesButton.addEventListener(
                 "click",
@@ -2170,52 +2145,50 @@ Coverage excludes observers.
                 );
             }
 
-            const period = result.rosterSubmission;
+            const submission = result.rosterSubmission;
 
-            if (period !== null) {
-                const start = new Date(period?.start);
-                const end = new Date(period?.end);
+            if (submission !== null) {
+                const sentUntil = new Date(submission?.sentUntil);
 
                 if (
-                    !period?.start ||
-                    !period?.end ||
-                    !Number.isFinite(start.getTime()) ||
-                    !Number.isFinite(end.getTime()) ||
-                    end <= start
+                    !submission?.sentUntil ||
+                    !Number.isFinite(sentUntil.getTime())
                 ) {
                     throw new Error(
-                        "The submitted roster period is invalid."
+                        "The saved hard-copy sent cut-off is invalid."
                     );
                 }
 
                 if (
-                    period.team &&
-                    normaliseName(period.team) !== normaliseName(TEAM_NAME)
+                    submission.team &&
+                    normaliseName(submission.team) !== normaliseName(TEAM_NAME)
                 ) {
                     throw new Error(
-                        "The returned hard-copy period belongs to another team."
+                        "The returned hard-copy status belongs to another team."
                     );
                 }
             }
 
-            submittedRosterPeriod = period;
+            rosterSentUntil = submission
+                ? new Date(submission.sentUntil)
+                : null;
+
             submissionStatusLoaded = true;
             lastCentralRosteringWarningKey = "";
 
-            const status =
-                document.getElementById("rosterSubmissionStatus");
+            const status = document.getElementById(
+                "rosterSubmissionStatus"
+            );
 
-            if (!period) {
+            if (!rosterSentUntil) {
                 status.textContent =
-                    `No hard-copy roster period is currently marked as sent for ${TEAM_NAME}.`;
+                    `No hard-copy roster cut-off is currently marked as sent for ${TEAM_NAME}.`;
             } else {
                 status.textContent =
-                    `ROSTER SUBMITTED for ${TEAM_NAME}: ` +
-                    formatRosterPeriodDateTime(period.start) +
-                    " → " +
-                    formatRosterPeriodDateTime(period.end) +
-                    " Changes overlapping this period " +
-                    "require notification to Country Rostering.";
+                    `ROSTER SENT for ${TEAM_NAME} up until ` +
+                    `${formatRosterSentUntilDateTime(rosterSentUntil)}. ` +
+                    "Changes affecting shifts before this cut-off require " +
+                    "notification to Country Rostering.";
             }
 
             updateCentralRosteringWarning();
@@ -2224,7 +2197,7 @@ Coverage excludes observers.
         }
 
         function invalidateRosterSubmissionStatus() {
-            submittedRosterPeriod = null;
+            rosterSentUntil = null;
             submissionStatusLoaded = false;
             lastCentralRosteringWarningKey = "";
 
@@ -2239,16 +2212,16 @@ Coverage excludes observers.
         }
 
         function updateRosterManagerControls() {
-            const hasSubmittedPeriod =
-                submissionStatusLoaded && Boolean(submittedRosterPeriod);
+            const hasSavedCutOff =
+                submissionStatusLoaded && Boolean(rosterSentUntil);
 
             markRosterSentButton.disabled = isLoading;
 
-            document.getElementById("editRosterPeriodButton").disabled =
-                isLoading || !hasSubmittedPeriod;
+            document.getElementById("editRosterSentUntilButton").disabled =
+                isLoading || !hasSavedCutOff;
 
             document.getElementById("resetRosterSentButton").disabled =
-                isLoading || !hasSubmittedPeriod;
+                isLoading || !hasSavedCutOff;
 
             document.querySelectorAll("[data-roster-manager-control]")
                 .forEach(control => {
@@ -2292,19 +2265,33 @@ Coverage excludes observers.
             );
         }
 
-        function overlapsSubmittedPeriod(start, end) {
+        function shiftNeedsCentralRosteringNotice(start, end) {
             if (
                 !submissionStatusLoaded ||
-                !submittedRosterPeriod?.start ||
-                !submittedRosterPeriod?.end
+                !rosterSentUntil ||
+                !Number.isFinite(rosterSentUntil.getTime())
             ) {
                 return false;
             }
 
-            return (
-                new Date(start) < new Date(submittedRosterPeriod.end) &&
-                new Date(end) > new Date(submittedRosterPeriod.start)
-            );
+            const shiftStart = new Date(start);
+            const shiftEnd = new Date(end);
+
+            if (
+                !Number.isFinite(shiftStart.getTime()) ||
+                !Number.isFinite(shiftEnd.getTime()) ||
+                shiftEnd <= shiftStart
+            ) {
+                return false;
+            }
+
+            /*
+             * The submitted period is ongoing from the past up to rosterSentUntil.
+             *
+             * A shift beginning exactly at the cut-off is NOT part of the
+             * hard-copy roster already sent.
+             */
+            return shiftStart < rosterSentUntil;
         }
 
         function selectedShiftNeedsCentralRosteringNotice() {
@@ -2313,7 +2300,7 @@ Coverage excludes observers.
             return Boolean(
                 selection.complete &&
                 selection.valid &&
-                overlapsSubmittedPeriod(
+                shiftNeedsCentralRosteringNotice(
                     selection.startDate,
                     selection.endDate
                 )
@@ -2321,17 +2308,18 @@ Coverage excludes observers.
         }
 
         function updateCentralRosteringWarning() {
-            const warning =
-                document.getElementById("centralRosteringWarning");
+            const warning = document.getElementById(
+                "centralRosteringWarning"
+            );
 
             if (selectedShiftNeedsCentralRosteringNotice()) {
                 warning.hidden = false;
 
                 warning.innerHTML = `
                     <strong>Central Rostering notification required</strong><br>
-                    This shift falls within a roster period already submitted.
-                    After confirming this booking, please phone Country Rostering to advise them
-                    of the change on 1300 850 985.
+                    This shift starts before the hard-copy roster sent cut-off.
+                    After confirming this booking, please phone Country Rostering
+                    to advise them of the change on 1300 850 985.
                 `;
             } else {
                 warning.hidden = true;
@@ -2350,8 +2338,7 @@ Coverage excludes observers.
             const warningKey =
                 selection.startDate.toISOString() + "-" +
                 selection.endDate.toISOString() + "-" +
-                submittedRosterPeriod.start + "-" +
-                submittedRosterPeriod.end;
+                rosterSentUntil.toISOString();
 
             if (warningKey === lastCentralRosteringWarningKey) {
                 return;
@@ -2361,7 +2348,7 @@ Coverage excludes observers.
 
             window.alert(
                 "Country Rostering notification required.\n\n" +
-                "This shift falls within a roster period already submitted " +
+                "This shift starts before the roster cut-off already sent " +
                 "to Country Rostering as a hard copy.\n\n" +
                 "You may still book, but after confirming you must phone " +
                 "Country Rostering to notify them of the change."
@@ -2382,18 +2369,21 @@ Coverage excludes observers.
 
             return window.confirm(
                 "Country Rostering notification required.\n\n" +
-                "This booking changes a roster period already submitted " +
-                "as hard copy. After confirming the shift, you must phone " +
+                "This booking changes a shift before the hard-copy roster " +
+                "sent cut-off. After confirming the shift, you must phone " +
                 "Country Rostering to advise them.\n\n" +
                 "Continue with this booking?"
             );
         }
 
         function cancellationNeedsCentralRosteringNotice(event) {
-            return overlapsSubmittedPeriod(event.start, event.end);
+            return shiftNeedsCentralRosteringNotice(
+                event.start,
+                event.end
+            );
         }
 
-        function formatRosterPeriodDateTime(dateValue) {
+        function formatRosterSentUntilDateTime(dateValue) {
             return new Date(dateValue).toLocaleString("en-AU", {
                 weekday: "short",
                 day: "numeric",
@@ -2405,11 +2395,7 @@ Coverage excludes observers.
             });
         }
 
-        async function markHardCopyRosterAsSent() {
-            await openRosterPeriodEditor(false);
-        }
-
-        async function openRosterPeriodEditor(editing) {
+        async function openRosterSentUntilEditor(editing) {
             if (isLoading) return;
 
             setLoading(true);
@@ -2417,185 +2403,185 @@ Coverage excludes observers.
             let editorOpened = false;
 
             try {
-                // Get the latest team-specific status before opening.
                 await loadRosterSubmissionStatus();
 
-                if (editing && !submittedRosterPeriod) {
+                if (editing && !rosterSentUntil) {
                     throw new Error(
-                        "There is no submitted hard-copy period to edit."
+                        "There is no hard-copy sent cut-off to edit."
                     );
                 }
 
-                const editor =
-                    document.getElementById("rosterPeriodEditor");
+                const editor = document.getElementById(
+                    "rosterSentUntilEditor"
+                );
 
-                const startInput =
-                    document.getElementById("rosterPeriodStartInput");
+                const dateInput = document.getElementById(
+                    "rosterSentUntilDateInput"
+                );
 
-                const endInput =
-                    document.getElementById("rosterPeriodEndInput");
+                const hourSelect = document.getElementById(
+                    "rosterSentUntilHourSelect"
+                );
 
                 editor.dataset.mode = editing ? "edit" : "new";
 
-                document.getElementById("rosterPeriodEditorTitle").textContent =
-                    editing
-                        ? `Edit ${TEAM_NAME}'s submitted period`
-                        : `Select ${TEAM_NAME}'s hard-copy roster period`;
+                document.getElementById(
+                    "rosterSentUntilEditorTitle"
+                ).textContent = editing
+                    ? `Edit ${TEAM_NAME}'s hard-copy sent cut-off`
+                    : `Set ${TEAM_NAME}'s hard-copy sent cut-off`;
 
-                document.getElementById("saveRosterPeriodButton").textContent =
-                    editing
-                        ? "Save changes to submitted period"
-                        : "Mark this period as sent";
+                document.getElementById(
+                    "saveRosterSentUntilButton"
+                ).textContent = editing
+                    ? "Save sent cut-off"
+                    : "Mark roster as sent up until this time";
 
-                /*
-                 * No defaults for a new submission.
-                 *
-                 * Editing loads the actual saved boundaries;
-                 * these are existing values, not calculated defaults.
-                 */
-                startInput.value = editing
-                    ? formatRosterDateTimeInput(submittedRosterPeriod.start)
-                    : "";
-
-                endInput.value = editing
-                    ? formatRosterDateTimeInput(submittedRosterPeriod.end)
-                    : "";
+                if (editing && rosterSentUntil) {
+                    dateInput.value = formatDateKey(rosterSentUntil);
+                    hourSelect.value = String(
+                        rosterSentUntil.getHours()
+                    ).padStart(2, "0");
+                } else {
+                    dateInput.value = "";
+                    hourSelect.value = "";
+                }
 
                 const browserTimezone =
                     Intl.DateTimeFormat().resolvedOptions().timeZone ||
                     "your device's local timezone";
 
-                document.getElementById("rosterPeriodTimezoneHelp").textContent =
+                document.getElementById(
+                    "rosterSentUntilTimezoneHelp"
+                ).textContent =
                     "Dates and times use your device timezone: " +
                     browserTimezone +
                     ". Ensure this matches the team's local time before saving. " +
-                    "For Tumby Bay and the other South Australian teams, " +
-                    "use Adelaide time.";
+                    "For South Australian teams, use Adelaide time.";
 
                 editor.hidden = false;
                 editorOpened = true;
             } catch (error) {
-                console.error("Unable to open roster period editor:", error);
+                console.error("Unable to open sent cut-off editor:", error);
 
                 window.alert(
-                    error.message || "Unable to load the hard-copy status."
+                    error.message ||
+                    "Unable to load the hard-copy status."
                 );
             } finally {
                 setLoading(false);
             }
 
             if (editorOpened) {
-                const editor =
-                    document.getElementById("rosterPeriodEditor");
+                const editor = document.getElementById(
+                    "rosterSentUntilEditor"
+                );
 
                 editor.scrollIntoView({
                     behavior: "smooth",
                     block: "center"
                 });
 
-                document.getElementById("rosterPeriodStartInput")
+                document.getElementById("rosterSentUntilDateInput")
                     .focus({ preventScroll: true });
             }
         }
 
-        function closeRosterPeriodEditor() {
+        function closeRosterSentUntilEditor() {
             if (isLoading) return;
 
-            clearRosterPeriodEditor();
+            clearRosterSentUntilEditor();
             markRosterSentButton.focus();
         }
 
-        function clearRosterPeriodEditor() {
-            const editor =
-                document.getElementById("rosterPeriodEditor");
+        function clearRosterSentUntilEditor() {
+            const editor = document.getElementById(
+                "rosterSentUntilEditor"
+            );
 
             editor.hidden = true;
             delete editor.dataset.mode;
 
-            // Do not retain dates as defaults for the next submission.
-            document.getElementById("rosterPeriodStartInput").value = "";
-            document.getElementById("rosterPeriodEndInput").value = "";
+            document.getElementById(
+                "rosterSentUntilDateInput"
+            ).value = "";
+
+            document.getElementById(
+                "rosterSentUntilHourSelect"
+            ).value = "";
         }
 
-        function formatRosterDateTimeInput(value) {
-            const date = new Date(value);
+        function readRosterSentUntilInput() {
+            const dateValue = document.getElementById(
+                "rosterSentUntilDateInput"
+            ).value;
 
-            if (!Number.isFinite(date.getTime())) {
-                throw new Error("The saved roster date/time is invalid.");
-            }
+            const hourValue = document.getElementById(
+                "rosterSentUntilHourSelect"
+            ).value;
 
-            return (
-                formatDateKey(date) +
-                "T" +
-                String(date.getHours()).padStart(2, "0") +
-                ":" +
-                String(date.getMinutes()).padStart(2, "0")
-            );
-        }
-
-        function readRosterPeriodInput(inputId, label) {
-            const input = document.getElementById(inputId);
-            const value = input.value;
-
-            if (!value) {
+            if (!dateValue) {
                 throw new Error(
-                    `Please select the ${label.toLowerCase()} date and time.`
+                    "Please select the date the roster has been sent up until."
                 );
             }
 
-            /*
-             * datetime-local has no timezone.
-             * Interpret it in the device's local timezone, matching
-             * the current booking form, and send an explicit ISO value.
-             */
-            const date = new Date(value);
+            if (hourValue === "") {
+                throw new Error(
+                    "Please select the hour the roster has been sent up until."
+                );
+            }
+
+            const date = parseDateKey(dateValue);
+            const hour = Number(hourValue);
 
             if (
-                !Number.isFinite(date.getTime()) ||
-                formatRosterDateTimeInput(date) !== value
+                !date ||
+                !Number.isInteger(hour) ||
+                hour < 0 ||
+                hour >= HOURS_PER_DAY
             ) {
                 throw new Error(
-                    `${label} date/time is invalid or does not exist ` +
-                    "in your device timezone because of a daylight-saving change."
+                    "The hard-copy sent cut-off date or hour is invalid."
+                );
+            }
+
+            date.setHours(hour, 0, 0, 0);
+
+            /*
+             * Detect a non-existent local hour during daylight-saving changes.
+             */
+            if (
+                formatDateKey(date) !== dateValue ||
+                date.getHours() !== hour
+            ) {
+                throw new Error(
+                    "That hour does not exist in your device timezone because of a daylight-saving change."
                 );
             }
 
             return date;
         }
 
-        async function saveHardCopyRosterPeriod(event) {
+        async function saveRosterSentUntil(event) {
             event.preventDefault();
 
             if (isLoading) return;
 
-            const form = document.getElementById("rosterPeriodForm");
+            const form = document.getElementById(
+                "rosterSentUntilForm"
+            );
 
             if (!form.reportValidity()) return;
 
             const editing =
-                document.getElementById("rosterPeriodEditor")
+                document.getElementById("rosterSentUntilEditor")
                     .dataset.mode === "edit";
 
-            let start;
-            let end;
+            let sentUntil;
 
             try {
-                start = readRosterPeriodInput(
-                    "rosterPeriodStartInput",
-                    "Start"
-                );
-
-                end = readRosterPeriodInput(
-                    "rosterPeriodEndInput",
-                    "End"
-                );
-
-                if (end <= start) {
-                    throw new Error(
-                        "The end date and time must be after " +
-                        "the start date and time."
-                    );
-                }
+                sentUntil = readRosterSentUntilInput();
             } catch (error) {
                 window.alert(error.message);
                 return;
@@ -2607,38 +2593,42 @@ Coverage excludes observers.
             let updateConfirmed = false;
 
             try {
-                // Recheck before confirming a replacement or edit.
                 await loadRosterSubmissionStatus();
 
-                if (editing && !submittedRosterPeriod) {
+                if (editing && !rosterSentUntil) {
                     throw new Error(
-                        "The submitted period has been reset. " +
+                        "The hard-copy sent status has been reset. " +
                         "Close this editor and choose Mark hard copy as sent."
+                    );
+                }
+
+                if (rosterSentUntil && sentUntil < rosterSentUntil) {
+                    throw new Error(
+                        "The sent cut-off cannot be moved backwards. " +
+                        "Use Reset sent status first if a genuine correction is required."
                     );
                 }
 
                 let message =
                     (editing
-                        ? "Update the submitted hard-copy period"
+                        ? "Update the hard-copy roster sent cut-off"
                         : "Mark the hard-copy roster as sent") +
                     ` for ${TEAM_NAME}?\n\n` +
-                    "Start: " + formatRosterPeriodDateTime(start) + "\n" +
-                    "End: " + formatRosterPeriodDateTime(end) +
-                    " (exclusive)\n\n";
+                    "Sent up until: " +
+                    formatRosterSentUntilDateTime(sentUntil) +
+                    "\n\n";
 
-                if (!editing && submittedRosterPeriod) {
+                if (!editing && rosterSentUntil) {
                     message +=
-                        "This will REPLACE the currently submitted period:\n" +
-                        formatRosterPeriodDateTime(submittedRosterPeriod.start) +
-                        " → " +
-                        formatRosterPeriodDateTime(submittedRosterPeriod.end) +
-                        "\n\nOnly one submitted period is stored per team.\n\n";
+                        "Current sent cut-off:\n" +
+                        formatRosterSentUntilDateTime(rosterSentUntil) +
+                        "\n\n";
                 }
 
                 message +=
                     "Bookings and cancellations will still be allowed. " +
-                    "Changes overlapping this period require notification " +
-                    "to Central Rostering.";
+                    "Changes affecting shifts before the cut-off require " +
+                    "notification to Country Rostering.";
 
                 if (!window.confirm(message)) return;
 
@@ -2651,11 +2641,12 @@ Coverage excludes observers.
                 updateAttempted = true;
 
                 const result = await callRosterApi(
-                    editing ? "editRosterSubmission" : "markRosterSent",
+                    editing
+                        ? "editRosterSubmission"
+                        : "markRosterSent",
                     {
                         managerPassword,
-                        start: start.toISOString(),
-                        end: end.toISOString()
+                        sentUntil: sentUntil.toISOString()
                     }
                 );
 
@@ -2667,32 +2658,31 @@ Coverage excludes observers.
 
                 updateConfirmed = true;
 
-                // Use the returned saved period; no extra reload is needed.
                 applyRosterSubmissionResult(result);
-                clearRosterPeriodEditor();
+                clearRosterSentUntilEditor();
 
                 showToast(
                     editing
-                        ? "Submitted hard-copy period updated."
-                        : "Hard copy marked as sent for the selected period."
+                        ? "Hard-copy sent cut-off updated."
+                        : "Hard copy marked as sent up until the selected time."
                 );
 
                 if (hasLoadedBookings) {
                     showLoadedConnectionStatus();
                 }
             } catch (error) {
-                console.error("Hard-copy period update failed:", error);
+                console.error("Hard-copy sent cut-off update failed:", error);
 
                 let message = error.message ||
-                    "Unable to update the hard-copy period.";
+                    "Unable to update the hard-copy sent cut-off.";
 
                 if (updateAttempted) {
                     invalidateRosterSubmissionStatus();
 
                     message += updateConfirmed
                         ? "\n\nThe server confirmed the save, but the returned " +
-                          "status could not be read. Refresh the roster " +
-                          "before making further changes."
+                          "status could not be read. Refresh the roster before " +
+                          "making further changes."
                         : "\n\nIf the request timed out or the connection failed, " +
                           "the server may still have saved it. Refresh the roster " +
                           "and check the hard-copy status before retrying.";
@@ -2718,23 +2708,22 @@ Coverage excludes observers.
             try {
                 await loadRosterSubmissionStatus();
 
-                if (!submittedRosterPeriod) {
+                if (!rosterSentUntil) {
                     showToast(
-                        "There is no submitted hard-copy period to reset."
+                        "There is no hard-copy sent cut-off to reset."
                     );
                     return;
                 }
 
                 const confirmed = window.confirm(
                     `Reset the hard-copy sent status for ${TEAM_NAME}?\n\n` +
-                    formatRosterPeriodDateTime(submittedRosterPeriod.start) +
-                    " → " +
-                    formatRosterPeriodDateTime(submittedRosterPeriod.end) +
-                    "\n\nThis removes the notification-warning period " +
-                    "for this team only. It does not cancel bookings " +
-                    "or affect other teams.\n\n" +
-                    "Only reset this if the hard-copy submission status " +
-                    "should no longer apply."
+                    "Current sent cut-off:\n" +
+                    formatRosterSentUntilDateTime(rosterSentUntil) +
+                    "\n\nThis removes the Central Rostering notification warning " +
+                    "for this team only. It does not cancel bookings or affect " +
+                    "other teams.\n\n" +
+                    "Only reset this if the hard-copy submission status should " +
+                    "no longer apply."
                 );
 
                 if (!confirmed) return;
@@ -2760,7 +2749,7 @@ Coverage excludes observers.
                 resetConfirmed = true;
 
                 applyRosterSubmissionResult(result);
-                clearRosterPeriodEditor();
+                clearRosterSentUntilEditor();
 
                 showToast(`Hard-copy sent status reset for ${TEAM_NAME}.`);
 
@@ -2802,6 +2791,23 @@ Coverage excludes observers.
                 option.value = String(hour);
                 option.textContent = formatHour(hour);
                 startTimeSelect.appendChild(option);
+            }
+        }
+
+        function populateRosterSentUntilHours() {
+            const select = document.getElementById(
+                "rosterSentUntilHourSelect"
+            );
+
+            select.innerHTML = '<option value="">Select hour</option>';
+
+            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                const option = document.createElement("option");
+
+                option.value = String(hour).padStart(2, "0");
+                option.textContent = formatHour(hour);
+
+                select.appendChild(option);
             }
         }
 
