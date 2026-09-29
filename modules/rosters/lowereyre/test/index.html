@@ -924,7 +924,7 @@
             margin-bottom: 1rem;
         }
 
-        .manager-controls-content #rosterPeriodEditor {
+        .manager-controls-content #rosterSentUntilEditor {
             margin-top: 1rem;
             margin-bottom: 0;
         }
@@ -1100,9 +1100,9 @@
 
                 <div class="manager-controls-content">
                     <p class="field-help">
-                        Manage this team's hard-copy submission period.
-                        Saving, editing or resetting the status requires
-                        the roster manager password.
+                        Manage the point up to which this team's hard-copy roster has been
+                        sent to Country Rostering. Saving, editing or resetting the status
+                        requires the roster manager password.
                     </p>
 
                     <div class="action-bar">
@@ -1115,12 +1115,12 @@
                         </button>
 
                         <button
-                            id="editRosterPeriodButton"
+                            id="editRosterSentUntilButton"
                             class="btn-secondary"
                             type="button"
                             disabled
                         >
-                            Edit submitted period
+                            Edit sent cut-off
                         </button>
 
                         <button
@@ -1134,67 +1134,67 @@
                     </div>
 
                     <section
-                        id="rosterPeriodEditor"
+                        id="rosterSentUntilEditor"
                         class="notice"
-                        aria-labelledby="rosterPeriodEditorTitle"
+                        aria-labelledby="rosterSentUntilEditorTitle"
                         hidden
                     >
-                        <h3 id="rosterPeriodEditorTitle">
-                            Select the hard-copy roster period
+                        <h3 id="rosterSentUntilEditorTitle">
+                            Set hard-copy roster sent cut-off
                         </h3>
 
-                        <p id="rosterPeriodTimezoneHelp"></p>
+                        <p id="rosterSentUntilTimezoneHelp"></p>
 
-                        <form id="rosterPeriodForm">
+                        <form id="rosterSentUntilForm">
                             <div class="form-grid">
                                 <div class="field">
-                                    <label for="rosterPeriodStartInput">
-                                        Start date and time — inclusive
+                                    <label for="rosterSentUntilDateInput">
+                                        Roster sent up until — date
                                     </label>
 
                                     <input
-                                        id="rosterPeriodStartInput"
-                                        type="datetime-local"
-                                        step="60"
+                                        id="rosterSentUntilDateInput"
+                                        type="date"
                                         required
                                         data-roster-manager-control
                                     >
                                 </div>
 
                                 <div class="field">
-                                    <label for="rosterPeriodEndInput">
-                                        End date and time — exclusive
+                                    <label for="rosterSentUntilHourSelect">
+                                        Roster sent up until — time
                                     </label>
 
-                                    <input
-                                        id="rosterPeriodEndInput"
-                                        type="datetime-local"
-                                        step="60"
+                                    <select
+                                        id="rosterSentUntilHourSelect"
                                         required
                                         data-roster-manager-control
                                     >
+                                        <option value="">Select hour</option>
+                                    </select>
                                 </div>
                             </div>
 
                             <p class="field-help">
-                                Enter the exact period covered by the hard copy.
-                                The end time is not included: a shift starting
-                                exactly at that time falls outside this period.
-                                Only one submitted period is stored per team.
+                                Select the exact point up to which the hard-copy roster has
+                                been sent to Country Rostering. For example, selecting
+                                <strong>Wednesday 14 October at 08:00</strong> means changes
+                                affecting any shift that starts before 08:00 require notification.
+                                A shift starting exactly at 08:00 is outside the sent roster.
                             </p>
 
                             <div class="action-bar">
                                 <button
-                                    id="saveRosterPeriodButton"
+                                    id="saveRosterSentUntilButton"
                                     class="btn-primary"
                                     type="submit"
                                     data-roster-manager-control
                                 >
-                                    Mark this period as sent
+                                    Save sent cut-off
                                 </button>
 
                                 <button
-                                    id="closeRosterPeriodEditorButton"
+                                    id="closeRosterSentUntilEditorButton"
                                     class="btn-secondary"
                                     type="button"
                                     data-roster-manager-control
@@ -1296,31 +1296,6 @@ Coverage excludes observers.
             </p>
         </section>
     </div>
-
-    <div id="bookingsModal" class="modal-overlay">
-        <div
-            class="modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="bookingsModalTitle"
-        >
-            <div class="modal-header">
-                <h3 id="bookingsModalTitle">My upcoming bookings</h3>
-
-                <button
-                    id="closeModalButton"
-                    class="btn-secondary btn-small"
-                    type="button"
-                >
-                    Close
-                </button>
-            </div>
-
-            <div id="myBookingsList"></div>
-        </div>
-    </div>
-
-    <div
 
     <div id="bookingsModal" class="modal-overlay">
         <div
@@ -1490,7 +1465,7 @@ Coverage excludes observers.
         let isLoading = false;
         let hasLoadedBookings = false;
         let submissionStatusLoaded = false;
-        let submittedRosterPeriod = null;
+        let rosterSentUntil = null;
         let lastCentralRosteringWarningKey = "";
         let toastTimer;
                let modalReturnFocus = null;
@@ -1582,6 +1557,7 @@ Coverage excludes observers.
             bookingDateInput.value = formatDateKey(today);
 
             populateStartTimes();
+            populateRosterSentUntilHours();
             registerEventListeners();
             renderAll();
             void refreshRoster();
@@ -1641,24 +1617,23 @@ Coverage excludes observers.
             refreshButton.addEventListener("click", refreshRoster);
             viewRosterButton.addEventListener("click", openRosterView);
 
-            markRosterSentButton.addEventListener(
-                "click",
-                markHardCopyRosterAsSent
-            );
+            markRosterSentButton.addEventListener("click", () => {
+                void openRosterSentUntilEditor(false);
+            });
 
-            document.getElementById("editRosterPeriodButton")
+            document.getElementById("editRosterSentUntilButton")
                 .addEventListener("click", () => {
-                    void openRosterPeriodEditor(true);
+                    void openRosterSentUntilEditor(true);
                 });
 
             document.getElementById("resetRosterSentButton")
                 .addEventListener("click", resetHardCopyRosterStatus);
 
-            document.getElementById("rosterPeriodForm")
-                .addEventListener("submit", saveHardCopyRosterPeriod);
+            document.getElementById("rosterSentUntilForm")
+                .addEventListener("submit", saveRosterSentUntil);
 
-            document.getElementById("closeRosterPeriodEditorButton")
-                .addEventListener("click", closeRosterPeriodEditor);
+            document.getElementById("closeRosterSentUntilEditorButton")
+                .addEventListener("click", closeRosterSentUntilEditor);
 
                         messagesButton.addEventListener(
                 "click",
@@ -2170,52 +2145,50 @@ Coverage excludes observers.
                 );
             }
 
-            const period = result.rosterSubmission;
+            const submission = result.rosterSubmission;
 
-            if (period !== null) {
-                const start = new Date(period?.start);
-                const end = new Date(period?.end);
+            if (submission !== null) {
+                const sentUntil = new Date(submission?.sentUntil);
 
                 if (
-                    !period?.start ||
-                    !period?.end ||
-                    !Number.isFinite(start.getTime()) ||
-                    !Number.isFinite(end.getTime()) ||
-                    end <= start
+                    !submission?.sentUntil ||
+                    !Number.isFinite(sentUntil.getTime())
                 ) {
                     throw new Error(
-                        "The submitted roster period is invalid."
+                        "The saved hard-copy sent cut-off is invalid."
                     );
                 }
 
                 if (
-                    period.team &&
-                    normaliseName(period.team) !== normaliseName(TEAM_NAME)
+                    submission.team &&
+                    normaliseName(submission.team) !== normaliseName(TEAM_NAME)
                 ) {
                     throw new Error(
-                        "The returned hard-copy period belongs to another team."
+                        "The returned hard-copy status belongs to another team."
                     );
                 }
             }
 
-            submittedRosterPeriod = period;
+            rosterSentUntil = submission
+                ? new Date(submission.sentUntil)
+                : null;
+
             submissionStatusLoaded = true;
             lastCentralRosteringWarningKey = "";
 
-            const status =
-                document.getElementById("rosterSubmissionStatus");
+            const status = document.getElementById(
+                "rosterSubmissionStatus"
+            );
 
-            if (!period) {
+            if (!rosterSentUntil) {
                 status.textContent =
-                    `No hard-copy roster period is currently marked as sent for ${TEAM_NAME}.`;
+                    `No hard-copy roster cut-off is currently marked as sent for ${TEAM_NAME}.`;
             } else {
                 status.textContent =
-                    `ROSTER SUBMITTED for ${TEAM_NAME}: ` +
-                    formatRosterPeriodDateTime(period.start) +
-                    " → " +
-                    formatRosterPeriodDateTime(period.end) +
-                    " Changes overlapping this period " +
-                    "require notification to Country Rostering.";
+                    `ROSTER SENT for ${TEAM_NAME} up until ` +
+                    `${formatRosterSentUntilDateTime(rosterSentUntil)}. ` +
+                    "Changes affecting shifts before this cut-off require " +
+                    "notification to Country Rostering.";
             }
 
             updateCentralRosteringWarning();
@@ -2224,7 +2197,7 @@ Coverage excludes observers.
         }
 
         function invalidateRosterSubmissionStatus() {
-            submittedRosterPeriod = null;
+            rosterSentUntil = null;
             submissionStatusLoaded = false;
             lastCentralRosteringWarningKey = "";
 
@@ -2239,16 +2212,16 @@ Coverage excludes observers.
         }
 
         function updateRosterManagerControls() {
-            const hasSubmittedPeriod =
-                submissionStatusLoaded && Boolean(submittedRosterPeriod);
+            const hasSavedCutOff =
+                submissionStatusLoaded && Boolean(rosterSentUntil);
 
             markRosterSentButton.disabled = isLoading;
 
-            document.getElementById("editRosterPeriodButton").disabled =
-                isLoading || !hasSubmittedPeriod;
+            document.getElementById("editRosterSentUntilButton").disabled =
+                isLoading || !hasSavedCutOff;
 
             document.getElementById("resetRosterSentButton").disabled =
-                isLoading || !hasSubmittedPeriod;
+                isLoading || !hasSavedCutOff;
 
             document.querySelectorAll("[data-roster-manager-control]")
                 .forEach(control => {
@@ -2292,19 +2265,33 @@ Coverage excludes observers.
             );
         }
 
-        function overlapsSubmittedPeriod(start, end) {
+        function shiftNeedsCentralRosteringNotice(start, end) {
             if (
                 !submissionStatusLoaded ||
-                !submittedRosterPeriod?.start ||
-                !submittedRosterPeriod?.end
+                !rosterSentUntil ||
+                !Number.isFinite(rosterSentUntil.getTime())
             ) {
                 return false;
             }
 
-            return (
-                new Date(start) < new Date(submittedRosterPeriod.end) &&
-                new Date(end) > new Date(submittedRosterPeriod.start)
-            );
+            const shiftStart = new Date(start);
+            const shiftEnd = new Date(end);
+
+            if (
+                !Number.isFinite(shiftStart.getTime()) ||
+                !Number.isFinite(shiftEnd.getTime()) ||
+                shiftEnd <= shiftStart
+            ) {
+                return false;
+            }
+
+            /*
+             * The submitted period is ongoing from the past up to rosterSentUntil.
+             *
+             * A shift beginning exactly at the cut-off is NOT part of the
+             * hard-copy roster already sent.
+             */
+            return shiftStart < rosterSentUntil;
         }
 
         function selectedShiftNeedsCentralRosteringNotice() {
@@ -2313,7 +2300,7 @@ Coverage excludes observers.
             return Boolean(
                 selection.complete &&
                 selection.valid &&
-                overlapsSubmittedPeriod(
+                shiftNeedsCentralRosteringNotice(
                     selection.startDate,
                     selection.endDate
                 )
@@ -2321,17 +2308,18 @@ Coverage excludes observers.
         }
 
         function updateCentralRosteringWarning() {
-            const warning =
-                document.getElementById("centralRosteringWarning");
+            const warning = document.getElementById(
+                "centralRosteringWarning"
+            );
 
             if (selectedShiftNeedsCentralRosteringNotice()) {
                 warning.hidden = false;
 
                 warning.innerHTML = `
                     <strong>Central Rostering notification required</strong><br>
-                    This shift falls within a roster period already submitted.
-                    After confirming this booking, please phone Country Rostering to advise them
-                    of the change on 1300 850 985.
+                    This shift starts before the hard-copy roster sent cut-off.
+                    After confirming this booking, please phone Country Rostering
+                    to advise them of the change on 1300 850 985.
                 `;
             } else {
                 warning.hidden = true;
@@ -2350,8 +2338,7 @@ Coverage excludes observers.
             const warningKey =
                 selection.startDate.toISOString() + "-" +
                 selection.endDate.toISOString() + "-" +
-                submittedRosterPeriod.start + "-" +
-                submittedRosterPeriod.end;
+                rosterSentUntil.toISOString();
 
             if (warningKey === lastCentralRosteringWarningKey) {
                 return;
@@ -2361,7 +2348,7 @@ Coverage excludes observers.
 
             window.alert(
                 "Country Rostering notification required.\n\n" +
-                "This shift falls within a roster period already submitted " +
+                "This shift starts before the roster cut-off already sent " +
                 "to Country Rostering as a hard copy.\n\n" +
                 "You may still book, but after confirming you must phone " +
                 "Country Rostering to notify them of the change."
@@ -2382,18 +2369,21 @@ Coverage excludes observers.
 
             return window.confirm(
                 "Country Rostering notification required.\n\n" +
-                "This booking changes a roster period already submitted " +
-                "as hard copy. After confirming the shift, you must phone " +
+                "This booking changes a shift before the hard-copy roster " +
+                "sent cut-off. After confirming the shift, you must phone " +
                 "Country Rostering to advise them.\n\n" +
                 "Continue with this booking?"
             );
         }
 
         function cancellationNeedsCentralRosteringNotice(event) {
-            return overlapsSubmittedPeriod(event.start, event.end);
+            return shiftNeedsCentralRosteringNotice(
+                event.start,
+                event.end
+            );
         }
 
-        function formatRosterPeriodDateTime(dateValue) {
+        function formatRosterSentUntilDateTime(dateValue) {
             return new Date(dateValue).toLocaleString("en-AU", {
                 weekday: "short",
                 day: "numeric",
@@ -2405,11 +2395,7 @@ Coverage excludes observers.
             });
         }
 
-        async function markHardCopyRosterAsSent() {
-            await openRosterPeriodEditor(false);
-        }
-
-        async function openRosterPeriodEditor(editing) {
+        async function openRosterSentUntilEditor(editing) {
             if (isLoading) return;
 
             setLoading(true);
@@ -2417,185 +2403,185 @@ Coverage excludes observers.
             let editorOpened = false;
 
             try {
-                // Get the latest team-specific status before opening.
                 await loadRosterSubmissionStatus();
 
-                if (editing && !submittedRosterPeriod) {
+                if (editing && !rosterSentUntil) {
                     throw new Error(
-                        "There is no submitted hard-copy period to edit."
+                        "There is no hard-copy sent cut-off to edit."
                     );
                 }
 
-                const editor =
-                    document.getElementById("rosterPeriodEditor");
+                const editor = document.getElementById(
+                    "rosterSentUntilEditor"
+                );
 
-                const startInput =
-                    document.getElementById("rosterPeriodStartInput");
+                const dateInput = document.getElementById(
+                    "rosterSentUntilDateInput"
+                );
 
-                const endInput =
-                    document.getElementById("rosterPeriodEndInput");
+                const hourSelect = document.getElementById(
+                    "rosterSentUntilHourSelect"
+                );
 
                 editor.dataset.mode = editing ? "edit" : "new";
 
-                document.getElementById("rosterPeriodEditorTitle").textContent =
-                    editing
-                        ? `Edit ${TEAM_NAME}'s submitted period`
-                        : `Select ${TEAM_NAME}'s hard-copy roster period`;
+                document.getElementById(
+                    "rosterSentUntilEditorTitle"
+                ).textContent = editing
+                    ? `Edit ${TEAM_NAME}'s hard-copy sent cut-off`
+                    : `Set ${TEAM_NAME}'s hard-copy sent cut-off`;
 
-                document.getElementById("saveRosterPeriodButton").textContent =
-                    editing
-                        ? "Save changes to submitted period"
-                        : "Mark this period as sent";
+                document.getElementById(
+                    "saveRosterSentUntilButton"
+                ).textContent = editing
+                    ? "Save sent cut-off"
+                    : "Mark roster as sent up until this time";
 
-                /*
-                 * No defaults for a new submission.
-                 *
-                 * Editing loads the actual saved boundaries;
-                 * these are existing values, not calculated defaults.
-                 */
-                startInput.value = editing
-                    ? formatRosterDateTimeInput(submittedRosterPeriod.start)
-                    : "";
-
-                endInput.value = editing
-                    ? formatRosterDateTimeInput(submittedRosterPeriod.end)
-                    : "";
+                if (editing && rosterSentUntil) {
+                    dateInput.value = formatDateKey(rosterSentUntil);
+                    hourSelect.value = String(
+                        rosterSentUntil.getHours()
+                    ).padStart(2, "0");
+                } else {
+                    dateInput.value = "";
+                    hourSelect.value = "";
+                }
 
                 const browserTimezone =
                     Intl.DateTimeFormat().resolvedOptions().timeZone ||
                     "your device's local timezone";
 
-                document.getElementById("rosterPeriodTimezoneHelp").textContent =
+                document.getElementById(
+                    "rosterSentUntilTimezoneHelp"
+                ).textContent =
                     "Dates and times use your device timezone: " +
                     browserTimezone +
                     ". Ensure this matches the team's local time before saving. " +
-                    "For Tumby Bay and the other South Australian teams, " +
-                    "use Adelaide time.";
+                    "For South Australian teams, use Adelaide time.";
 
                 editor.hidden = false;
                 editorOpened = true;
             } catch (error) {
-                console.error("Unable to open roster period editor:", error);
+                console.error("Unable to open sent cut-off editor:", error);
 
                 window.alert(
-                    error.message || "Unable to load the hard-copy status."
+                    error.message ||
+                    "Unable to load the hard-copy status."
                 );
             } finally {
                 setLoading(false);
             }
 
             if (editorOpened) {
-                const editor =
-                    document.getElementById("rosterPeriodEditor");
+                const editor = document.getElementById(
+                    "rosterSentUntilEditor"
+                );
 
                 editor.scrollIntoView({
                     behavior: "smooth",
                     block: "center"
                 });
 
-                document.getElementById("rosterPeriodStartInput")
+                document.getElementById("rosterSentUntilDateInput")
                     .focus({ preventScroll: true });
             }
         }
 
-        function closeRosterPeriodEditor() {
+        function closeRosterSentUntilEditor() {
             if (isLoading) return;
 
-            clearRosterPeriodEditor();
+            clearRosterSentUntilEditor();
             markRosterSentButton.focus();
         }
 
-        function clearRosterPeriodEditor() {
-            const editor =
-                document.getElementById("rosterPeriodEditor");
+        function clearRosterSentUntilEditor() {
+            const editor = document.getElementById(
+                "rosterSentUntilEditor"
+            );
 
             editor.hidden = true;
             delete editor.dataset.mode;
 
-            // Do not retain dates as defaults for the next submission.
-            document.getElementById("rosterPeriodStartInput").value = "";
-            document.getElementById("rosterPeriodEndInput").value = "";
+            document.getElementById(
+                "rosterSentUntilDateInput"
+            ).value = "";
+
+            document.getElementById(
+                "rosterSentUntilHourSelect"
+            ).value = "";
         }
 
-        function formatRosterDateTimeInput(value) {
-            const date = new Date(value);
+        function readRosterSentUntilInput() {
+            const dateValue = document.getElementById(
+                "rosterSentUntilDateInput"
+            ).value;
 
-            if (!Number.isFinite(date.getTime())) {
-                throw new Error("The saved roster date/time is invalid.");
-            }
+            const hourValue = document.getElementById(
+                "rosterSentUntilHourSelect"
+            ).value;
 
-            return (
-                formatDateKey(date) +
-                "T" +
-                String(date.getHours()).padStart(2, "0") +
-                ":" +
-                String(date.getMinutes()).padStart(2, "0")
-            );
-        }
-
-        function readRosterPeriodInput(inputId, label) {
-            const input = document.getElementById(inputId);
-            const value = input.value;
-
-            if (!value) {
+            if (!dateValue) {
                 throw new Error(
-                    `Please select the ${label.toLowerCase()} date and time.`
+                    "Please select the date the roster has been sent up until."
                 );
             }
 
-            /*
-             * datetime-local has no timezone.
-             * Interpret it in the device's local timezone, matching
-             * the current booking form, and send an explicit ISO value.
-             */
-            const date = new Date(value);
+            if (hourValue === "") {
+                throw new Error(
+                    "Please select the hour the roster has been sent up until."
+                );
+            }
+
+            const date = parseDateKey(dateValue);
+            const hour = Number(hourValue);
 
             if (
-                !Number.isFinite(date.getTime()) ||
-                formatRosterDateTimeInput(date) !== value
+                !date ||
+                !Number.isInteger(hour) ||
+                hour < 0 ||
+                hour >= HOURS_PER_DAY
             ) {
                 throw new Error(
-                    `${label} date/time is invalid or does not exist ` +
-                    "in your device timezone because of a daylight-saving change."
+                    "The hard-copy sent cut-off date or hour is invalid."
+                );
+            }
+
+            date.setHours(hour, 0, 0, 0);
+
+            /*
+             * Detect a non-existent local hour during daylight-saving changes.
+             */
+            if (
+                formatDateKey(date) !== dateValue ||
+                date.getHours() !== hour
+            ) {
+                throw new Error(
+                    "That hour does not exist in your device timezone because of a daylight-saving change."
                 );
             }
 
             return date;
         }
 
-        async function saveHardCopyRosterPeriod(event) {
+        async function saveRosterSentUntil(event) {
             event.preventDefault();
 
             if (isLoading) return;
 
-            const form = document.getElementById("rosterPeriodForm");
+            const form = document.getElementById(
+                "rosterSentUntilForm"
+            );
 
             if (!form.reportValidity()) return;
 
             const editing =
-                document.getElementById("rosterPeriodEditor")
+                document.getElementById("rosterSentUntilEditor")
                     .dataset.mode === "edit";
 
-            let start;
-            let end;
+            let sentUntil;
 
             try {
-                start = readRosterPeriodInput(
-                    "rosterPeriodStartInput",
-                    "Start"
-                );
-
-                end = readRosterPeriodInput(
-                    "rosterPeriodEndInput",
-                    "End"
-                );
-
-                if (end <= start) {
-                    throw new Error(
-                        "The end date and time must be after " +
-                        "the start date and time."
-                    );
-                }
+                sentUntil = readRosterSentUntilInput();
             } catch (error) {
                 window.alert(error.message);
                 return;
@@ -2607,38 +2593,42 @@ Coverage excludes observers.
             let updateConfirmed = false;
 
             try {
-                // Recheck before confirming a replacement or edit.
                 await loadRosterSubmissionStatus();
 
-                if (editing && !submittedRosterPeriod) {
+                if (editing && !rosterSentUntil) {
                     throw new Error(
-                        "The submitted period has been reset. " +
+                        "The hard-copy sent status has been reset. " +
                         "Close this editor and choose Mark hard copy as sent."
+                    );
+                }
+
+                if (rosterSentUntil && sentUntil < rosterSentUntil) {
+                    throw new Error(
+                        "The sent cut-off cannot be moved backwards. " +
+                        "Use Reset sent status first if a genuine correction is required."
                     );
                 }
 
                 let message =
                     (editing
-                        ? "Update the submitted hard-copy period"
+                        ? "Update the hard-copy roster sent cut-off"
                         : "Mark the hard-copy roster as sent") +
                     ` for ${TEAM_NAME}?\n\n` +
-                    "Start: " + formatRosterPeriodDateTime(start) + "\n" +
-                    "End: " + formatRosterPeriodDateTime(end) +
-                    " (exclusive)\n\n";
+                    "Sent up until: " +
+                    formatRosterSentUntilDateTime(sentUntil) +
+                    "\n\n";
 
-                if (!editing && submittedRosterPeriod) {
+                if (!editing && rosterSentUntil) {
                     message +=
-                        "This will REPLACE the currently submitted period:\n" +
-                        formatRosterPeriodDateTime(submittedRosterPeriod.start) +
-                        " → " +
-                        formatRosterPeriodDateTime(submittedRosterPeriod.end) +
-                        "\n\nOnly one submitted period is stored per team.\n\n";
+                        "Current sent cut-off:\n" +
+                        formatRosterSentUntilDateTime(rosterSentUntil) +
+                        "\n\n";
                 }
 
                 message +=
                     "Bookings and cancellations will still be allowed. " +
-                    "Changes overlapping this period require notification " +
-                    "to Central Rostering.";
+                    "Changes affecting shifts before the cut-off require " +
+                    "notification to Country Rostering.";
 
                 if (!window.confirm(message)) return;
 
@@ -2651,11 +2641,12 @@ Coverage excludes observers.
                 updateAttempted = true;
 
                 const result = await callRosterApi(
-                    editing ? "editRosterSubmission" : "markRosterSent",
+                    editing
+                        ? "editRosterSubmission"
+                        : "markRosterSent",
                     {
                         managerPassword,
-                        start: start.toISOString(),
-                        end: end.toISOString()
+                        sentUntil: sentUntil.toISOString()
                     }
                 );
 
@@ -2667,32 +2658,31 @@ Coverage excludes observers.
 
                 updateConfirmed = true;
 
-                // Use the returned saved period; no extra reload is needed.
                 applyRosterSubmissionResult(result);
-                clearRosterPeriodEditor();
+                clearRosterSentUntilEditor();
 
                 showToast(
                     editing
-                        ? "Submitted hard-copy period updated."
-                        : "Hard copy marked as sent for the selected period."
+                        ? "Hard-copy sent cut-off updated."
+                        : "Hard copy marked as sent up until the selected time."
                 );
 
                 if (hasLoadedBookings) {
                     showLoadedConnectionStatus();
                 }
             } catch (error) {
-                console.error("Hard-copy period update failed:", error);
+                console.error("Hard-copy sent cut-off update failed:", error);
 
                 let message = error.message ||
-                    "Unable to update the hard-copy period.";
+                    "Unable to update the hard-copy sent cut-off.";
 
                 if (updateAttempted) {
                     invalidateRosterSubmissionStatus();
 
                     message += updateConfirmed
                         ? "\n\nThe server confirmed the save, but the returned " +
-                          "status could not be read. Refresh the roster " +
-                          "before making further changes."
+                          "status could not be read. Refresh the roster before " +
+                          "making further changes."
                         : "\n\nIf the request timed out or the connection failed, " +
                           "the server may still have saved it. Refresh the roster " +
                           "and check the hard-copy status before retrying.";
@@ -2718,23 +2708,22 @@ Coverage excludes observers.
             try {
                 await loadRosterSubmissionStatus();
 
-                if (!submittedRosterPeriod) {
+                if (!rosterSentUntil) {
                     showToast(
-                        "There is no submitted hard-copy period to reset."
+                        "There is no hard-copy sent cut-off to reset."
                     );
                     return;
                 }
 
                 const confirmed = window.confirm(
                     `Reset the hard-copy sent status for ${TEAM_NAME}?\n\n` +
-                    formatRosterPeriodDateTime(submittedRosterPeriod.start) +
-                    " → " +
-                    formatRosterPeriodDateTime(submittedRosterPeriod.end) +
-                    "\n\nThis removes the notification-warning period " +
-                    "for this team only. It does not cancel bookings " +
-                    "or affect other teams.\n\n" +
-                    "Only reset this if the hard-copy submission status " +
-                    "should no longer apply."
+                    "Current sent cut-off:\n" +
+                    formatRosterSentUntilDateTime(rosterSentUntil) +
+                    "\n\nThis removes the Central Rostering notification warning " +
+                    "for this team only. It does not cancel bookings or affect " +
+                    "other teams.\n\n" +
+                    "Only reset this if the hard-copy submission status should " +
+                    "no longer apply."
                 );
 
                 if (!confirmed) return;
@@ -2760,7 +2749,7 @@ Coverage excludes observers.
                 resetConfirmed = true;
 
                 applyRosterSubmissionResult(result);
-                clearRosterPeriodEditor();
+                clearRosterSentUntilEditor();
 
                 showToast(`Hard-copy sent status reset for ${TEAM_NAME}.`);
 
@@ -2802,6 +2791,23 @@ Coverage excludes observers.
                 option.value = String(hour);
                 option.textContent = formatHour(hour);
                 startTimeSelect.appendChild(option);
+            }
+        }
+
+        function populateRosterSentUntilHours() {
+            const select = document.getElementById(
+                "rosterSentUntilHourSelect"
+            );
+
+            select.innerHTML = '<option value="">Select hour</option>';
+
+            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                const option = document.createElement("option");
+
+                option.value = String(hour).padStart(2, "0");
+                option.textContent = formatHour(hour);
+
+                select.appendChild(option);
             }
         }
 
@@ -2862,2687 +2868,13 @@ Coverage excludes observers.
 
             const startDate = parseDateKey(dateValue);
             const startHour = Number(startValue);
-            const duration = Number(durationValue);
+            const duration = Numberassword, sentUntil }` using the same `markRosterSent` / `editRosterSubmission` actions. It won't let you move the cut-off backwards, so use **Reset sent status** first if you really need to correct it.
+- **Reset:** Works the same way, with updated wording.
+- **Cleanup:** Removed the duplicate `bookingsModal` and the stray `<div`. The CSS selector now points at the new editor's ID.
 
-            if (
-                !startDate ||
-                !Number.isInteger(startHour) ||
-                startHour < 0 ||
-                startHour >= HOURS_PER_DAY
-            ) {
-                return {
-                    complete: true,
-                    valid: false,
-                    message: "Please select a valid start date and time."
-                };
-            }
+## Important before you deploy
 
-            if (
-                !Number.isInteger(duration) ||
-                duration < 1 ||
-                duration > MAX_SHIFT_HOURS
-            ) {
-                return {
-                    complete: true,
-                    valid: false,
-                    message: "The shift must be between 1 and 24 hours."
-                };
-            }
+**Don't publish this HTML until the Apps Script is updated as well.** This page now expects the backend to return:
 
-            startDate.setHours(startHour, 0, 0, 0);
-
-            // Existing browser-local, wall-clock calculation retained.
-            const endDate = addHours(startDate, duration);
-
-            if (startDate < startOfCurrentHour(new Date())) {
-                return {
-                    complete: true,
-                    valid: false,
-                    message: "The shift cannot start in the past."
-                };
-            }
-
-            if (endDate <= startDate) {
-                return {
-                    complete: true,
-                    valid: false,
-                    message: "The finish time must be later than the start time."
-                };
-            }
-
-            return {
-                complete: true,
-                valid: true,
-                startDate,
-                endDate,
-                duration,
-                isOvernight:
-                    formatDateKey(startDate) !== formatDateKey(endDate)
-            };
-        }
-
-        function updateBookingSummary() {
-            bookingSummary.className = "booking-summary";
-            bookButton.disabled = true;
-
-            const selection = readShiftSelection();
-
-            if (!selection.complete) {
-                bookingSummary.textContent = "";
-                return;
-            }
-
-            if (!selection.valid) {
-                bookingSummary.classList.add("invalid");
-                bookingSummary.textContent = selection.message;
-                return;
-            }
-
-            const description =
-                `${formatDateTime(selection.startDate)} to ` +
-                formatDateTime(selection.endDate);
-
-            if (isLoading) {
-                bookingSummary.classList.add("warning");
-                bookingSummary.textContent =
-                    "Please wait while the roster is updating.";
-                return;
-            }
-
-            if (!hasLoadedBookings || !submissionStatusLoaded) {
-                bookingSummary.classList.add("warning");
-                bookingSummary.textContent =
-                    "Refresh the roster successfully before confirming a shift.";
-                return;
-            }
-
-            if (!currentUser) {
-                bookingSummary.classList.add("warning");
-                bookingSummary.textContent =
-                    `${description}. Enter your name in the header before confirming.`;
-                return;
-            }
-
-            if (!CLINICAL_LEVELS.includes(currentClinicalLevel)) {
-                bookingSummary.classList.add("warning");
-                bookingSummary.textContent =
-                    `${description}. Select your clinical level beside your name.`;
-                return;
-            }
-
-            const availability = checkShiftAvailability(selection);
-
-            if (!availability.available) {
-                bookingSummary.classList.add("invalid");
-                bookingSummary.textContent =
-                    `${description}. ${availability.message}`;
-                return;
-            }
-
-            bookingSummary.classList.add("valid");
-
-            bookingSummary.textContent =
-                `Vacancy available for ${currentUser} (${currentClinicalLevel}): ` +
-                `${description} (${selection.duration} ` +
-                `${selection.duration === 1 ? "hour" : "hours"}). ` +
-                `Flexibility: ${getSelectedFlexibilityRestriction()}.` +
-                (selection.isOvernight
-                    ? " This is an overnight shift."
-                    : "") +
-                (currentClinicalLevel === "REC"
-                    ? " Recruit bookings are observer places."
-                    : "");
-
-            bookButton.disabled = false;
-        }
-
-        function checkShiftAvailability(selection) {
-            let hourStart = new Date(selection.startDate);
-
-            const bookingAsRecruit =
-                String(currentClinicalLevel || "").trim().toUpperCase() === "REC";
-
-            while (hourStart < selection.endDate) {
-                const bookings = getBookingsForHour(hourStart);
-
-                const alreadyBooked = currentUser && bookings.some(event =>
-                    normaliseName(event.user) === normaliseName(currentUser)
-                );
-
-                if (alreadyBooked) {
-                    return {
-                        available: false,
-                        message:
-                            "You already have a booking during " +
-                            `${formatHourPeriod(hourStart)}.`
-                    };
-                }
-
-                // Every person, including REC, uses one of the three places.
-                if (bookings.length >= MAX_CREW) {
-                    return {
-                        available: false,
-                        message:
-                            `${formatHourPeriod(hourStart)} already has ` +
-                            `${MAX_CREW} people booked. There are no places available.`
-                    };
-                }
-
-                const recruitAlreadyBooked = bookings.some(event =>
-                    String(event.clinicalLevel || "").trim().toUpperCase() === "REC"
-                );
-
-                if (bookingAsRecruit && recruitAlreadyBooked) {
-                    return {
-                        available: false,
-                        message:
-                            `The recruit place is already occupied during ` +
-                            `${formatHourPeriod(hourStart)}. ` +
-                            "Only one recruit can be booked per hourly timeslot."
-                    };
-                }
-
-                hourStart = addHours(hourStart, 1);
-            }
-
-            return { available: true };
-        }
-
-        function getSelectedFlexibilityRestriction() {
-            const selectedCode = String(restrictionSelect.value || "")
-                .trim()
-                .toUpperCase();
-
-            // Flexibility is optional. No selection-error popup is needed.
-            return FLEXIBILITY_CODES.includes(selectedCode)
-                ? selectedCode
-                : "N";
-        }
-
-        async function bookSelectedShift() {
-            if (isLoading) return;
-
-            const selection = readShiftSelection();
-
-            if (!currentUser) {
-                showToast("Please enter your name first.");
-                nameInput.focus();
-                return;
-            }
-
-            if (!CLINICAL_LEVELS.includes(currentClinicalLevel)) {
-                showToast("Please select your clinical level beside your name.");
-                clinicalLevelSelect.focus();
-                return;
-            }
-
-            if (!selection.complete || !selection.valid) {
-                updateBookingSummary();
-                return;
-            }
-
-            if (!hasLoadedBookings || !submissionStatusLoaded) {
-                showToast("Please refresh the roster before booking.");
-                return;
-            }
-
-            setLoading(true);
-            setConnectionStatus(
-                "Checking the latest roster before saving…",
-                ""
-            );
-
-            let saveAttempted = false;
-            let saveConfirmed = false;
-
-            try {
-                /*
-                 * Refresh before checking availability and hard-copy status.
-                 * The backend must still enforce capacity atomically to
-                 * prevent simultaneous conflicting bookings.
-                 *
-                 * Both are now loaded together in one request.
-                 */
-                await loadBookingsAfterSave();
-
-                const latestSelection = readShiftSelection();
-
-                if (!latestSelection.valid) {
-                    throw new Error(
-                        latestSelection.message || "Please reselect the shift."
-                    );
-                }
-
-                const availability =
-                    checkShiftAvailability(latestSelection);
-
-                if (!availability.available) {
-                    throw new Error(availability.message);
-                }
-
-                const centralNoticeRequired =
-                    selectedShiftNeedsCentralRosteringNotice();
-
-                if (!confirmCentralRosteringNoticeIfRequired()) {
-                    showLoadedConnectionStatus();
-                    return;
-                }
-
-                const newEvent = {
-                    id: createId(),
-                    user: currentUser,
-                    restriction: getSelectedFlexibilityRestriction(),
-                    clinicalLevel: currentClinicalLevel,
-                    start: latestSelection.startDate.toISOString(),
-                    end: latestSelection.endDate.toISOString(),
-                    createdAt: new Date().toISOString()
-                };
-
-                setConnectionStatus("Saving booking…", "");
-                saveAttempted = true;
-
-                const data = await callRosterApi("addBooking", newEvent);
-
-                if (!data.success) {
-                    throw new Error(
-                        "Apps Script did not confirm the booking."
-                    );
-                }
-
-                saveConfirmed = true;
-
-                // The successful save response includes the updated roster.
-                applyRosterSnapshot(data);
-
-                // Keep the selected date, start time and finish time.
-                // The user can change just the date for their next booking.
-
-                // Flexibility remains shift-specific and resets to no restriction.
-                restrictionSelect.value = "N";
-
-                // Name and clinical level continue to persist.
-                lastCentralRosteringWarningKey = "";
-                updateCentralRosteringWarning();
-
-                if (centralNoticeRequired) {
-                    window.alert(
-                        "Your shift was booked.\n\n" +
-                        "Please phone Central Rostering now to advise them " +
-                        "of the change to the submitted hard-copy roster."
-                    );
-                } else {
-                    showToast("Your shift was booked successfully.");
-                }
-
-                // No extra reload: the save response supplied the roster.
-                showLoadedConnectionStatus();
-
-                              const dayKey =
-                    formatDateKey(
-                        startOfRosterDay(
-                            latestSelection.startDate
-                        )
-                    );
-
-                requestAnimationFrame(() => {
-                    const target = document.querySelector(
-                        `.day[data-date="${dayKey}"]`
-                    );
-
-                    if (target) {
-                        target.classList.add("open");
-
-                        target.querySelector(".day-heading")
-                            ?.setAttribute("aria-expanded", "true");
-
-                        target.scrollIntoView({
-                            behavior: "smooth",
-                            block: "start"
-                        });
-                    }
-                });
-            } catch (error) {
-                console.error("Booking operation failed:", error);
-
-                let message = error.message;
-
-                if (saveConfirmed) {
-                    message =
-                        "Your booking was saved, but the roster could not be refreshed. " +
-                        "Use Refresh roster; do not submit the booking again.";
-                } else if (saveAttempted) {
-                    hasLoadedBookings = false;
-
-                    message +=
-                        " Refresh and check the booking list before trying again; " +
-                        "the server may have received the request.";
-                }
-
-                // Genuine backend errors must not be hidden.
-                setConnectionStatus(message, "error");
-                showToast(message);
-            } finally {
-                setLoading(false);
-                updateCentralRosteringWarning();
-            }
-        }
-
-        async function cancelShift(eventId) {
-            if (isLoading) return;
-
-            const event = events.find(item => item.id === eventId);
-            if (!event) return;
-
-            setLoading(true);
-
-            let cancellationAttempted = false;
-            let cancellationConfirmed = false;
-
-            try {
-                await loadRosterSubmissionStatus();
-
-                const centralNoticeRequired =
-                    cancellationNeedsCentralRosteringNotice(event);
-
-                const message =
-                    `Cancel ${event.user}'s shift from ` +
-                    `${formatDateTime(new Date(event.start))} to ` +
-                    `${formatDateTime(new Date(event.end))}?` +
-                    (centralNoticeRequired
-                        ? "\n\nCountry Rostering notification required.\n" +
-                          "This changes a roster period already submitted as hard copy. " +
-                          "After cancelling, you must phone Country Rostering " +
-                          "to advise them of the change on 1300 850 985."
-                        : "");
-
-                if (!window.confirm(message)) return;
-
-                cancellationAttempted = true;
-
-                const data = await callRosterApi("cancelBooking", {
-                    bookingId: eventId
-                });
-
-                if (!data.success) {
-                    throw new Error(
-                        "Apps Script did not confirm the cancellation."
-                    );
-                }
-
-                cancellationConfirmed = true;
-
-                // Use the complete updated roster returned by the server.
-                applyRosterSnapshot(data);
-
-                if (centralNoticeRequired) {
-                    window.alert(
-                        "Shift cancelled.\n\n" +
-                        "Please phone Central Rostering now to advise them " +
-                        "of the change to the submitted hard-copy roster."
-                    );
-                } else {
-                    showToast("Shift cancelled.");
-                }
-
-                // No extra reload: the cancellation response supplied the roster.
-                showLoadedConnectionStatus();
-            } catch (error) {
-                console.error("Cancellation failed:", error);
-
-                let message = error.message;
-
-                if (cancellationConfirmed) {
-                    message =
-                        "The shift was cancelled, but the roster could not be refreshed. " +
-                        "Please use Refresh roster.";
-                } else if (cancellationAttempted) {
-                    hasLoadedBookings = false;
-
-                    message +=
-                        " Refresh the roster to check whether cancellation completed.";
-                }
-
-                setConnectionStatus(message, "error");
-                showToast(message);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        function getBookingsForHour(hourStart) {
-            const hourEnd = addHours(hourStart, 1);
-
-            return events.filter(event => {
-                const eventStart = new Date(event.start);
-                const eventEnd = new Date(event.end);
-
-                return eventStart < hourEnd && eventEnd > hourStart;
-            });
-        }
-
-        function getBookingOperationalSummary(event) {
-            const codes = new Set();
-            let cursor = new Date(event.start);
-            const end = new Date(event.end);
-
-            while (cursor < end) {
-                const operational = getOperationalStatus(
-                    getBookingsForHour(cursor),
-                    OPERATIONAL_RULES
-                );
-
-                codes.add(operational.code || "None");
-                cursor = addHours(cursor, 1);
-            }
-
-            return Array.from(codes).join(" / ");
-        }
-
-        function renderAll() {
-            renderCalendar();
-            renderBookingTable();
-            updateBookingSummary();
-            updateCentralRosteringWarning();
-
-            if (bookingsModal.classList.contains("active")) {
-                renderMyBookings();
-            }
-        }
-
-            function renderCalendar() {
-            const existingDays = document.querySelectorAll(".day");
-            const hadDays = existingDays.length > 0;
-
-            const openDates = new Set(
-                Array.from(document.querySelectorAll(".day.open"))
-                    .map(element => element.dataset.date)
-            );
-
-            calendarElement.innerHTML = "";
-
-            if (!hasLoadedBookings) {
-                calendarElement.innerHTML =
-                    '<div class="empty-state">' +
-                    'Roster data is not currently verified. Please refresh.' +
-                    '</div>';
-                return;
-            }
-
-            /*
-             * Timeline days begin at 08:00.
-             *
-             * For example, at 06:00 on Monday the current visible
-             * roster day is Sunday 08:00 through Monday 07:59.
-             */
-            const firstRosterDay = startOfRosterDay(new Date());
-
-            for (let offset = 0; offset < DAYS_TO_SHOW; offset++) {
-                const date = addDays(firstRosterDay, offset);
-                const dateKey = formatDateKey(date);
-
-                const shouldOpen = hadDays
-                    ? openDates.has(dateKey)
-                    : offset === 0;
-
-                calendarElement.appendChild(
-                    createDayElement(date, shouldOpen)
-                );
-            }
-        }
-
-            function createDayElement(date, shouldOpen) {
-            const section = document.createElement("section");
-            section.className = `day${shouldOpen ? " open" : ""}`;
-            section.dataset.date = formatDateKey(date);
-
-            let coveredCrewHours = 0;
-
-            /*
-             * The 24 rows represent:
-             *
-             * 08:00–08:59 on the roster-day date
-             * through to
-             * 07:00–07:59 on the following calendar date.
-             */
-            for (
-                let rosterHour = 0;
-                rosterHour < HOURS_PER_DAY;
-                rosterHour++
-            ) {
-                const absoluteHour =
-                    ROSTER_START_HOUR + rosterHour;
-
-                const hourStart = new Date(date);
-
-                /*
-                 * JavaScript automatically rolls 24–31 into
-                 * the following calendar day.
-                 */
-                hourStart.setHours(absoluteHour, 0, 0, 0);
-
-                const operationalCrewCount =
-                    getBookingsForHour(hourStart)
-                        .filter(booking =>
-                            CLINICAL_LEVELS.includes(
-                                booking.clinicalLevel
-                            ) &&
-                            booking.clinicalLevel !== "REC"
-                        )
-                        .length;
-
-                /*
-                 * REC observers do not count toward the
-                 * two-person operational crew target.
-                 */
-                coveredCrewHours += Math.min(
-                    operationalCrewCount,
-                    2
-                );
-            }
-
-            const targetCrewHours = 2 * HOURS_PER_DAY;
-
-            const coveragePercent = Math.round(
-                coveredCrewHours / targetCrewHours * 100
-            );
-
-            const heading = document.createElement("div");
-            heading.className = "day-heading";
-            heading.tabIndex = 0;
-            heading.setAttribute("role", "button");
-            heading.setAttribute(
-                "aria-expanded",
-                String(shouldOpen)
-            );
-
-            const titleGroup = document.createElement("div");
-            titleGroup.className = "day-title-group";
-
-            const toggle = document.createElement("div");
-            toggle.className = "day-toggle";
-            toggle.textContent = "▼";
-            toggle.setAttribute("aria-hidden", "true");
-
-            const title = document.createElement("h3");
-            title.textContent = formatDayHeading(date);
-
-            titleGroup.append(toggle, title);
-
-            const subtitle = document.createElement("span");
-            subtitle.className = "day-subtitle";
-
-                       const isCurrentRosterDay =
-                isSameDay(
-                    date,
-                    startOfRosterDay(new Date())
-                );
-
-            subtitle.textContent =
-                (isCurrentRosterDay
-                    ? "Current roster day · "
-                    : "") +
-                "08:00–07:59 next day · " +
-                coveragePercent +
-                "% crew coverage";
-
-            heading.append(titleGroup, subtitle);
-
-            function toggleDay() {
-                const open = section.classList.toggle("open");
-                heading.setAttribute("aria-expanded", String(open));
-            }
-
-            heading.addEventListener("click", toggleDay);
-
-            heading.addEventListener("keydown", event => {
-                if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    toggleDay();
-                }
-            });
-
-            const body = document.createElement("div");
-            body.className = "day-body";
-            body.id = `day-body-${formatDateKey(date)}`;
-
-            heading.setAttribute("aria-controls", body.id);
-
-            const inner = document.createElement("div");
-            inner.className = "day-body-inner";
-
-            for (
-                let rosterHour = 0;
-                rosterHour < HOURS_PER_DAY;
-                rosterHour++
-            ) {
-                inner.appendChild(
-                    createTimelineRow(date, rosterHour)
-                );
-            }
-
-            body.appendChild(inner);
-            section.append(heading, body);
-
-            return section;
-        }
-
-              function createTimelineRow(date, rosterHour) {
-            /*
-             * rosterHour 0 = 08:00 on the roster-day date.
-             * rosterHour 23 = 07:00 on the following calendar day.
-             */
-            const absoluteHour =
-                ROSTER_START_HOUR + rosterHour;
-
-            const displayHour =
-                absoluteHour % HOURS_PER_DAY;
-
-            const hourStart = new Date(date);
-
-            /*
-             * setHours(24+) deliberately rolls into the next date.
-             * This matches the existing printable roster logic.
-             */
-            hourStart.setHours(absoluteHour, 0, 0, 0);
-
-            const bookings = getBookingsForHour(hourStart);
-            const bookedCount = bookings.length;
-
-            const operationalCrewCount = bookings.filter(booking =>
-                CLINICAL_LEVELS.includes(booking.clinicalLevel) &&
-                booking.clinicalLevel !== "REC"
-            ).length;
-
-            const recruitCount = bookings.filter(booking =>
-                booking.clinicalLevel === "REC"
-            ).length;
-
-            const unknownCount = bookings.filter(booking =>
-                !CLINICAL_LEVELS.includes(booking.clinicalLevel)
-            ).length;
-
-            const operational = getOperationalStatus(
-                bookings,
-                OPERATIONAL_RULES
-            );
-
-            let state = "empty";
-            let status = "Needs operational crew (0/2)";
-
-            if (operationalCrewCount === 1) {
-                state = "partial";
-                status = "One operational crew (1/2)";
-            } else if (operationalCrewCount >= 2) {
-                state = "covered";
-                status = `Crew target (${operationalCrewCount}/2)`;
-            }
-
-            if (recruitCount > 0) {
-                status +=
-                    ` · ${recruitCount} REC observer` +
-                    (recruitCount === 1 ? "" : "s");
-            }
-
-            if (unknownCount > 0) {
-                status += ` · ${unknownCount} level unknown`;
-            }
-
-            if (bookedCount >= MAX_CREW) {
-                status +=
-                    ` · Booking places full (${bookedCount}/${MAX_CREW})`;
-            }
-
-            const row = document.createElement("div");
-            row.className = "timeline-row";
-
-            const time = document.createElement("div");
-            time.className = "timeline-time";
-
-            time.textContent =
-                formatHour(displayHour) +
-                (absoluteHour >= HOURS_PER_DAY
-                    ? " · next day"
-                    : "");
-
-            /*
-             * Hovering the time shows the actual calendar date/time.
-             */
-            time.title = formatDateTime(hourStart);
-
-            const nodeContainer = document.createElement("div");
-            nodeContainer.className = "timeline-node-container";
-
-            const line = document.createElement("div");
-            line.className = `timeline-line line-${state}`;
-
-            const node = document.createElement("div");
-            node.className = `timeline-node node-${state}`;
-
-            nodeContainer.append(line, node);
-
-            const content = document.createElement("div");
-            content.className = "timeline-content";
-
-            const chips = document.createElement("div");
-            chips.className = "crew-chips";
-
-            if (!bookings.length) {
-                const empty = document.createElement("span");
-                empty.className = "empty-chip";
-                empty.textContent = "No crew assigned";
-                chips.appendChild(empty);
-            } else {
-                bookings.forEach(event => {
-                    const chip = document.createElement("span");
-                    chip.className = "chip";
-
-                    const levelLabel = event.clinicalLevel === "REC"
-                        ? "REC observer"
-                        : event.clinicalLevel || "Level unknown";
-
-                    chip.textContent =
-                        `${event.user} · ${levelLabel}` +
-                        ` · Flex ${flexibilityLabel(event)}`;
-
-                    chips.appendChild(chip);
-                });
-            }
-
-            const badges = document.createElement("div");
-            badges.className = "status-group";
-
-            const badge = document.createElement("span");
-            badge.className = `status-badge status-${state}`;
-            badge.textContent = status;
-
-            const operationalBadge = document.createElement("span");
-
-            operationalBadge.className =
-                "status-badge " +
-                (operational.review
-                    ? "status-partial"
-                    : "status-operational");
-
-            operationalBadge.textContent =
-                `Op: ${operational.code || "None"}`;
-
-            operationalBadge.title = operational.reason;
-
-            badges.append(badge, operationalBadge);
-            content.append(chips, badges);
-            row.append(time, nodeContainer, content);
-
-            return row;
-        }
-
-        function renderBookingTable() {
-            bookingTableBody.innerHTML = "";
-
-            if (!hasLoadedBookings) {
-                bookingTableBody.innerHTML =
-                    '<tr><td colspan="8" class="empty-state">' +
-                    'Refresh to load verified bookings.' +
-                    '</td></tr>';
-                return;
-            }
-
-            const query =
-                searchInput.value.trim().toLocaleLowerCase();
-
-            const now = new Date();
-
-            const filtered = [...events]
-                .filter(event => new Date(event.end) > now)
-                .filter(event => {
-                    if (!query) return true;
-
-                    const searchable =
-                        `${event.user} ${event.clinicalLevel} ` +
-                        `${flexibilityLabel(event)} ` +
-                        formatDateTime(new Date(event.start));
-
-                    return searchable
-                        .toLocaleLowerCase()
-                        .includes(query);
-                })
-                .sort((a, b) => new Date(a.start) - new Date(b.start));
-
-            if (!filtered.length) {
-                bookingTableBody.innerHTML =
-                    '<tr><td colspan="8" class="empty-state">' +
-                    'No active bookings found.' +
-                    '</td></tr>';
-                return;
-            }
-
-            filtered.forEach(event => {
-                const start = new Date(event.start);
-                const end = new Date(event.end);
-                const duration = (end - start) / 3600000;
-                const row = document.createElement("tr");
-
-                const levelLabel = event.clinicalLevel === "REC"
-                    ? "REC — Observer"
-                    : event.clinicalLevel || "Unknown";
-
-                row.innerHTML = `
-                    <td><strong>${escapeHtml(event.user)}</strong></td>
-                    <td>${escapeHtml(levelLabel)}</td>
-                    <td>${escapeHtml(flexibilityLabel(event))}</td>
-                    <td>${escapeHtml(getBookingOperationalSummary(event))}</td>
-                    <td>${escapeHtml(formatDateTime(start))}</td>
-                    <td>${escapeHtml(formatDateTime(end))}</td>
-                    <td>${duration} ${duration === 1 ? "hour" : "hours"}</td>
-                    <td>
-                        <button
-                            class="btn-danger btn-small"
-                            type="button"
-                            data-cancel-id="${escapeHtml(event.id)}"
-                        >Cancel</button>
-                    </td>
-                `;
-
-                const cancelButton =
-                    row.querySelector("[data-cancel-id]");
-
-                cancelButton.disabled =
-                    isLoading || !submissionStatusLoaded;
-
-                cancelButton.addEventListener(
-                    "click",
-                    () => cancelShift(event.id)
-                );
-
-                bookingTableBody.appendChild(row);
-            });
-        }
-        function readMessageDeleteTokens() {
-            try {
-                const stored = localStorage.getItem(
-                    MESSAGE_DELETE_TOKENS_STORAGE_KEY
-                );
-
-                if (!stored) {
-                    return {};
-                }
-
-                const parsed = JSON.parse(stored);
-
-                return parsed &&
-                    typeof parsed === "object" &&
-                    !Array.isArray(parsed)
-                    ? parsed
-                    : {};
-            } catch (error) {
-                console.warn(
-                    "Unable to read message deletion keys:",
-                    error
-                );
-
-                return {};
-            }
-        }
-
-        function saveMessageDeleteTokens(tokens) {
-            try {
-                localStorage.setItem(
-                    MESSAGE_DELETE_TOKENS_STORAGE_KEY,
-                    JSON.stringify(tokens)
-                );
-            } catch (error) {
-                console.warn(
-                    "Unable to save message deletion keys:",
-                    error
-                );
-
-                showToast(
-                    "This browser could not save the private delete key."
-                );
-            }
-        }
-
-        function createDeleteToken() {
-            if (
-                window.crypto &&
-                typeof window.crypto.getRandomValues === "function"
-            ) {
-                const bytes = new Uint8Array(32);
-
-                window.crypto.getRandomValues(bytes);
-
-                return Array.from(bytes)
-                    .map(byte =>
-                        byte.toString(16).padStart(2, "0")
-                    )
-                    .join("");
-            }
-
-            throw new Error(
-                "Your browser cannot securely create a message deletion key."
-            );
-        }
-
-        function updateMessageCharacterCount() {
-            messageCharacterCount.textContent =
-                `${messageTextInput.value.length} / 2000`;
-        }
-
-        function setMessagesLoading(loading) {
-            messagesLoading = loading;
-
-            messagesButton.disabled = loading;
-            postMessageButton.disabled = loading;
-            refreshMessagesButton.disabled = loading;
-            messageTextInput.disabled = loading;
-        }
-
-        function normaliseMessage(message) {
-            return {
-                id: String(message.id || ""),
-                team: String(message.team || ""),
-                author: String(message.author || "").trim(),
-                text: String(message.text || "").trim(),
-                timestamp: String(
-                    message.timestamp || message.createdAt || ""
-                ),
-                createdAt: String(message.createdAt || "")
-            };
-        }
-
-        function isValidMessage(message) {
-            const createdAt = new Date(
-                message.createdAt || message.timestamp
-            );
-
-            return Boolean(
-                message.id &&
-                message.author &&
-                message.text &&
-                normaliseName(message.team) === normaliseName(TEAM_NAME) &&
-                Number.isFinite(createdAt.getTime())
-            );
-        }
-
-        function applyMessagesSnapshot(data) {
-            if (
-                !data ||
-                data.success !== true ||
-                !Array.isArray(data.messages) ||
-                normaliseName(data.team) !== normaliseName(TEAM_NAME)
-            ) {
-                throw new Error(
-                    "The message board did not return a valid team message list."
-                );
-            }
-
-            messages = data.messages
-                .map(normaliseMessage)
-                .filter(isValidMessage);
-
-            renderMessages();
-        }
-
-        async function loadMessages() {
-            if (messagesLoading) {
-                return;
-            }
-
-            setMessagesLoading(true);
-
-            try {
-                const data = await callRosterApi("getMessages");
-
-                applyMessagesSnapshot(data);
-            } catch (error) {
-                console.error("Unable to load team messages:", error);
-
-                messagesList.innerHTML = "";
-
-                const errorState = document.createElement("div");
-                errorState.className = "empty-state";
-                errorState.textContent =
-                    error.message ||
-                    "Unable to load team messages.";
-
-                messagesList.appendChild(errorState);
-                showToast(errorState.textContent);
-            } finally {
-                setMessagesLoading(false);
-            }
-        }
-
-        async function openMessagesModal() {
-            messagesModalReturnFocus = document.activeElement;
-
-            document.getElementById("messagesTeamName").textContent =
-                TEAM_NAME;
-
-            messageTextInput.value = "";
-            updateMessageCharacterCount();
-
-            messagesModal.classList.add("active");
-
-            messagesList.innerHTML = "";
-
-            const loadingState = document.createElement("div");
-            loadingState.className = "empty-state";
-            loadingState.textContent = "Loading team messages…";
-
-            messagesList.appendChild(loadingState);
-
-            messageTextInput.focus();
-
-            await loadMessages();
-        }
-
-        function closeMessagesModal() {
-            messagesModal.classList.remove("active");
-            messagesModalReturnFocus?.focus();
-        }
-
-        function formatMessageTimestamp(value) {
-            const date = new Date(value);
-
-            if (!Number.isFinite(date.getTime())) {
-                return "Time unavailable";
-            }
-
-            return date.toLocaleString("en-AU", {
-                weekday: "short",
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false
-            });
-        }
-
-        function renderMessages() {
-            messagesList.innerHTML = "";
-
-            if (!messages.length) {
-                const empty = document.createElement("div");
-                empty.className = "empty-state";
-                empty.textContent =
-                    `No team messages have been posted for ${TEAM_NAME} yet.`;
-
-                messagesList.appendChild(empty);
-                return;
-            }
-
-            const deleteTokens = readMessageDeleteTokens();
-
-            messages.forEach(message => {
-                const item = document.createElement("article");
-                item.className = "message-item";
-
-                const header = document.createElement("div");
-                header.className = "message-item-header";
-
-                const authorDetails = document.createElement("div");
-
-                const author = document.createElement("div");
-                author.className = "message-author";
-                author.textContent = message.author;
-
-                const timestamp = document.createElement("div");
-                timestamp.className = "message-time";
-                timestamp.textContent =
-                    formatMessageTimestamp(
-                        message.timestamp || message.createdAt
-                    );
-
-                authorDetails.append(author, timestamp);
-
-                const actions = document.createElement("div");
-                actions.className = "message-actions";
-
-                /*
-                 * Only this posting browser receives its private
-                 * deletion key, so only it gets the normal Delete button.
-                 */
-                if (deleteTokens[message.id]) {
-                    const deleteButton =
-                        document.createElement("button");
-
-                    deleteButton.className =
-                        "btn-danger btn-small";
-
-                    deleteButton.type = "button";
-                    deleteButton.textContent = "Delete";
-
-                    deleteButton.addEventListener("click", () => {
-                        void deleteOwnMessage(message.id);
-                    });
-
-                    actions.appendChild(deleteButton);
-                }
-
-                const managerDeleteButton =
-                    document.createElement("button");
-
-                managerDeleteButton.className =
-                    "btn-secondary btn-small";
-
-                managerDeleteButton.type = "button";
-                managerDeleteButton.textContent = "Manager delete";
-
-                managerDeleteButton.addEventListener("click", () => {
-                    void deleteMessageAsManager(message.id);
-                });
-
-                actions.appendChild(managerDeleteButton);
-                header.append(authorDetails, actions);
-
-                const text = document.createElement("div");
-                text.className = "message-text";
-
-                /*
-                 * textContent prevents notes from being interpreted
-                 * as HTML or JavaScript.
-                 */
-                text.textContent = message.text;
-
-                item.append(header, text);
-                messagesList.appendChild(item);
-            });
-        }
-
-        async function postMessage(event) {
-            event.preventDefault();
-
-            if (messagesLoading) {
-                return;
-            }
-
-            const author = currentUser.trim();
-            const text = messageTextInput.value.trim();
-
-            if (!author) {
-                showToast(
-                    "Enter your name in the header before posting a message."
-                );
-
-                closeMessagesModal();
-                nameInput.focus();
-
-                return;
-            }
-
-            if (!text) {
-                showToast("Please write a message before posting.");
-                messageTextInput.focus();
-                return;
-            }
-
-            if (text.length > 2000) {
-                showToast("Messages must contain no more than 2,000 characters.");
-                return;
-            }
-
-            let id;
-            let deleteToken;
-
-            try {
-                id = createId();
-                deleteToken = createDeleteToken();
-            } catch (error) {
-                showToast(error.message);
-                return;
-            }
-
-            setMessagesLoading(true);
-
-            try {
-                const data = await callRosterApi("addMessage", {
-                    id,
-                    author,
-                    text,
-                    deleteToken
-                });
-
-                const deleteTokens = readMessageDeleteTokens();
-
-                /*
-                 * Store only the private key for messages posted by
-                 * this browser. The backend stores only its hash.
-                 */
-                deleteTokens[id] = deleteToken;
-                saveMessageDeleteTokens(deleteTokens);
-
-                applyMessagesSnapshot(data);
-
-                messageTextInput.value = "";
-                updateMessageCharacterCount();
-
-                showToast("Team message posted.");
-                messageTextInput.focus();
-            } catch (error) {
-                console.error("Unable to post team message:", error);
-                showToast(
-                    error.message || "Unable to post the team message."
-                );
-            } finally {
-                setMessagesLoading(false);
-            }
-        }
-
-        async function deleteOwnMessage(messageId) {
-            if (messagesLoading) {
-                return;
-            }
-
-            const deleteTokens = readMessageDeleteTokens();
-            const deleteToken = deleteTokens[messageId];
-
-            if (!deleteToken) {
-                showToast(
-                    "This browser does not have the private delete key."
-                );
-
-                return;
-            }
-
-            if (!window.confirm("Delete this team message?")) {
-                return;
-            }
-
-            setMessagesLoading(true);
-
-            try {
-                const data = await callRosterApi("deleteMessage", {
-                    messageId,
-                    deleteToken
-                });
-
-                delete deleteTokens[messageId];
-                saveMessageDeleteTokens(deleteTokens);
-
-                applyMessagesSnapshot(data);
-                showToast("Team message deleted.");
-            } catch (error) {
-                console.error("Unable to delete team message:", error);
-                showToast(
-                    error.message || "Unable to delete the team message."
-                );
-            } finally {
-                setMessagesLoading(false);
-            }
-        }
-
-        async function deleteMessageAsManager(messageId) {
-            if (messagesLoading) {
-                return;
-            }
-
-            const confirmed = window.confirm(
-                "Manager delete will permanently remove this message. Continue?"
-            );
-
-            if (!confirmed) {
-                return;
-            }
-
-            const managerPassword = window.prompt(
-                "Enter the roster manager password:"
-            );
-
-            if (!managerPassword) {
-                return;
-            }
-
-            setMessagesLoading(true);
-
-            try {
-                const data = await callRosterApi("deleteMessage", {
-                    messageId,
-                    managerPassword
-                });
-
-                const deleteTokens = readMessageDeleteTokens();
-
-                delete deleteTokens[messageId];
-                saveMessageDeleteTokens(deleteTokens);
-
-                applyMessagesSnapshot(data);
-                showToast("Team message deleted by manager.");
-            } catch (error) {
-                console.error("Manager message deletion failed:", error);
-                showToast(
-                    error.message || "Unable to delete the team message."
-                );
-            } finally {
-                setMessagesLoading(false);
-            }
-        }
-        function openBookingsModal() {
-            modalReturnFocus = document.activeElement;
-            renderMyBookings();
-            bookingsModal.classList.add("active");
-            document.getElementById("closeModalButton").focus();
-        }
-
-        function closeBookingsModal() {
-            bookingsModal.classList.remove("active");
-            modalReturnFocus?.focus();
-        }
-
-        function renderMyBookings() {
-            myBookingsList.innerHTML = "";
-
-            if (!currentUser) {
-                myBookingsList.innerHTML =
-                    '<div class="empty-state">' +
-                    'Enter your name to view your bookings.' +
-                    '</div>';
-                return;
-            }
-
-            if (!hasLoadedBookings) {
-                myBookingsList.innerHTML =
-                    '<div class="empty-state">' +
-                    'Refresh the roster to load your bookings.' +
-                    '</div>';
-                return;
-            }
-
-            const now = new Date();
-
-            const userEvents = events
-                .filter(event =>
-                    normaliseName(event.user) === normaliseName(currentUser) &&
-                    new Date(event.end) > now
-                )
-                .sort((a, b) => new Date(a.start) - new Date(b.start));
-
-            if (!userEvents.length) {
-                myBookingsList.innerHTML =
-                    `<div class="empty-state">No upcoming bookings found for ` +
-                    `${escapeHtml(currentUser)}.</div>`;
-                return;
-            }
-
-            userEvents.forEach(event => {
-                const item = document.createElement("div");
-                item.className = "shift-item";
-
-                const information = document.createElement("div");
-
-                const levelLabel = event.clinicalLevel === "REC"
-                    ? "REC — Observer"
-                    : event.clinicalLevel || "Level unknown";
-
-                information.innerHTML = `
-                    <div class="shift-time">
-                        ${escapeHtml(formatDateTime(new Date(event.start)))}
-                        to ${escapeHtml(formatDateTime(new Date(event.end)))}
-                    </div>
-                    <div class="shift-detail">
-                        ${escapeHtml(TEAM_NAME)} ·
-                        ${escapeHtml(levelLabel)} ·
-                        Flex ${escapeHtml(flexibilityLabel(event))} ·
-                        Op ${escapeHtml(getBookingOperationalSummary(event))}
-                    </div>
-                `;
-
-                const deleteButton = document.createElement("button");
-                deleteButton.className = "btn-danger btn-small";
-                deleteButton.type = "button";
-                deleteButton.textContent = "Cancel";
-                deleteButton.dataset.cancelId = event.id;
-
-                deleteButton.disabled =
-                    isLoading || !submissionStatusLoaded;
-
-                deleteButton.addEventListener(
-                    "click",
-                    () => cancelShift(event.id)
-                );
-
-                item.append(information, deleteButton);
-                myBookingsList.appendChild(item);
-            });
-        }
-
-        function switchView(view) {
-            const showList = view === "list";
-
-            timelineSection.classList.toggle("hidden", showList);
-            listSection.classList.toggle("active", showList);
-            timelineTab.classList.toggle("active", !showList);
-            listTab.classList.toggle("active", showList);
-
-            if (showList) renderBookingTable();
-        }
-
-        function toggleAllDays(open) {
-            document.querySelectorAll(".day").forEach(day => {
-                day.classList.toggle("open", open);
-
-                day.querySelector(".day-heading")
-                    ?.setAttribute("aria-expanded", String(open));
-            });
-        }
-
-        /*
-         * Existing CSV helper retained without adding an export button.
-         */
-        function exportBookingListCSV() {
-            if (!hasLoadedBookings) {
-                showToast("Please refresh the roster first.");
-                return;
-            }
-
-            const today = startOfDay(new Date());
-            const days = [];
-
-            for (let i = 0; i < DAYS_TO_SHOW + 2; i++) {
-                days.push(addDays(today, i));
-            }
-
-            const headerRow = [TEAM_NAME];
-
-            days.forEach(day => {
-                headerRow.push(formatDayHeading(day));
-                headerRow.push(
-                    "Clinical level",
-                    "Flexibility",
-                    "Operational"
-                );
-            });
-
-            const rows = [headerRow];
-
-            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
-                for (let crewSlot = 0; crewSlot < MAX_CREW; crewSlot++) {
-                    const dataRow = [
-                        crewSlot === 0 ? formatHour(hour) : ""
-                    ];
-
-                    days.forEach(day => {
-                        const hourStart = new Date(day);
-                        hourStart.setHours(hour, 0, 0, 0);
-
-                        const bookings = getBookingsForHour(hourStart);
-                        const booking = bookings[crewSlot];
-
-                        const operational = getOperationalStatus(
-                            bookings,
-                            OPERATIONAL_RULES
-                        );
-
-                        dataRow.push(
-                            booking?.user || "",
-                            booking?.clinicalLevel || "",
-                            booking ? flexibilityLabel(booking) : "",
-                            crewSlot === 0
-                                ? operational.code || "None"
-                                : ""
-                        );
-                    });
-
-                    rows.push(dataRow);
-                }
-            }
-
-            downloadCSV(
-                rows,
-                `${TEAM_NAME}_Crew_Bookings_${formatDateKey(new Date())}.csv`
-            );
-
-            showToast("Booking CSV downloaded.");
-        }
-
-        function downloadCSV(rows, filename) {
-            const csv = rows
-                .map(row => row.map(csvEscape).join(","))
-                .join("\r\n");
-
-            const blob = new Blob(["\uFEFF" + csv], {
-                type: "text/csv;charset=utf-8;"
-            });
-
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
-        }
-
-        function csvEscape(value) {
-            let text = String(value ?? "");
-
-            // Prevent user-entered spreadsheet formulas.
-            if (/^[\s]*[=+\-@]/.test(text)) {
-                text = "'" + text;
-            }
-
-            return '"' + text.replace(/"/g, '""') + '"';
-        }
-
-        function openRosterView() {
-            if (!hasLoadedBookings || isLoading) {
-                showToast("Please wait for the roster to load.");
-                return;
-            }
-
-            const rosterWindow = window.open(
-                "",
-                "rosterView",
-                "width=1400,height=900"
-            );
-
-            if (!rosterWindow) {
-                showToast("Please allow pop-ups to view the roster.");
-                return;
-            }
-
-            rosterWindow.document.open();
-            rosterWindow.document.write(buildRosterHTML());
-            rosterWindow.document.close();
-        }
-
-        /*
-         * Escape JSON before inserting it into the printable window script.
-         */
-        function serialiseForInlineScript(value) {
-            return JSON.stringify(value)
-                .replace(/</g, "\\u003c")
-                .replace(/>/g, "\\u003e")
-                .replace(/&/g, "\\u0026")
-                .replace(/\u2028/g, "\\u2028")
-                .replace(/\u2029/g, "\\u2029");
-        }
-
-        function buildRosterHTML() {
-            const today = startOfDay(new Date());
-            const initialStartDate = formatDateKey(today);
-            const initialEndDate = formatDateKey(addDays(today, 13));
-
-            const snapshot = {
-                events,
-                hoursPerDay: HOURS_PER_DAY,
-                maxCrew: MAX_CREW,
-                operationalRules: OPERATIONAL_RULES,
-                generatedAt: new Date().toISOString()
-            };
-
-            return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes, maximum-scale=5">
-    <title>${escapeHtml(TEAM_NAME)} Crew Roster</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #f5f5f5;
-            padding: 2rem 1rem;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .header {
-            margin-bottom: 2rem;
-            border-bottom: 3px solid #22c55e;
-            padding-bottom: 1rem;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            color: #16a34a;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 0.95rem;
-            margin-top: 0.3rem;
-        }
-
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: end;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .date-field {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-            color: #4b5563;
-            font-size: 0.78rem;
-            font-weight: 700;
-        }
-
-        .date-field input {
-            min-height: 42px;
-            padding: 0.55rem 0.7rem;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            color: #333;
-            background: white;
-        }
-
-        .btn {
-            min-height: 42px;
-            padding: 0.75rem 1rem;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary { background: #22c55e; color: white; }
-        .btn-primary:hover { background: #16a34a; }
-        .btn-secondary { background: #e5e7eb; color: #333; }
-        .btn-secondary:hover { background: #d1d5db; }
-
-        .roster-wrapper {
-            overflow: auto;
-            max-height: 70vh;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-
-        thead {
-            background: #f3f4f6;
-            position: sticky;
-            top: 0;
-            z-index: 20;
-        }
-
-        th {
-            padding: 0.75rem;
-            text-align: left;
-            font-weight: 700;
-            color: #374151;
-            border-bottom: 2px solid #d1d5db;
-            white-space: nowrap;
-            background: #f3f4f6;
-        }
-
-        th.time-col {
-            width: 60px;
-            position: sticky;
-            left: 0;
-            z-index: 25;
-            vertical-align: middle;
-        }
-
-        td {
-            padding: 0.4rem 0.75rem;
-            border-bottom: 1px solid #e5e7eb;
-            border-right: 1px solid #e5e7eb;
-            height: 24px;
-        }
-
-        td.time-col {
-            font-weight: 700;
-            background: #fafafa;
-            position: sticky;
-            left: 0;
-            z-index: 5;
-            width: 60px;
-            vertical-align: top;
-        }
-
-        td.crew-name {
-            background: #f9fafb;
-            font-weight: 500;
-            color: #16a34a;
-            min-width: 140px;
-        }
-
-        td.crew-name:empty::after {
-            content: "—";
-            color: #d1d5db;
-        }
-
-        td.crew-name.recruit-name {
-            color: #dc2626;
-            font-weight: 700;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-
-        td.restriction,
-        td.operational {
-            background: #fafafa;
-            color: #64748b;
-            font-size: 0.85rem;
-            min-width: 40px;
-            text-align: center;
-        }
-
-        td.operational {
-            vertical-align: middle;
-            font-weight: 700;
-        }
-
-        td.operational.review { color: #92400e; }
-
-        /* Operational column only — does not affect the Flex column. */
-        td.operational[data-op="NC"] { color: #ff0000; }
-        td.operational[data-op="A"]  { color: #0080ff; }
-        td.operational[data-op="B"]  { color: #00ffff; }
-        td.operational[data-op="C"]  { color: #ffff00; }
-        td.operational[data-op="D"]  { color: #ff00ff; }
-        td.operational[data-op="E"]  { color: #ff8080; }
-        td.operational[data-op="Z"]  { color: #808080; }
-        td.operational[data-op="N"]  { color: #00ff00; }
-
-        td.operational {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-
-        tr.day-shift td { background: #fff9db; }
-        tr.night-shift td { background: #eef4f8; }
-
-        tr.day-shift td.time-col { background: #fff3b0; }
-        tr.night-shift td.time-col { background: #e3edf4; }
-
-        tr.hour-start td { border-top: 2px solid #9ca3af; }
-
-        .day-header {
-            background: #dbeafe;
-            font-weight: 700;
-            color: #0284c7;
-            text-align: center;
-            padding: 0.5rem 0.75rem;
-        }
-
-        .crew-header {
-            background: #dbeafe;
-            font-weight: 600;
-            color: #0284c7;
-            text-align: center;
-            font-size: 0.8rem;
-            padding: 0.5rem 0.75rem;
-        }
-
-        .restriction-header,
-        .operational-header {
-            background: #fef3c7;
-            font-weight: 600;
-            color: #92400e;
-            text-align: center;
-            font-size: 0.8rem;
-            padding: 0.5rem 0.3rem;
-        }
-
-        .info-box {
-            background: #eff6ff;
-            border-left: 4px solid #0284c7;
-            padding: 0.8rem 1rem;
-            margin-bottom: 1.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            line-height: 1.5;
-            color: #1e40af;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 0.5rem;
-                font-size: 0.85rem;
-            }
-
-            .container {
-                width: 100%;
-                padding: 0.75rem;
-                border-radius: 6px;
-            }
-
-            .header {
-                margin-bottom: 0.75rem;
-                padding-bottom: 0.6rem;
-            }
-
-            .header h1 {
-                font-size: 1.15rem;
-                margin-bottom: 0.25rem;
-            }
-
-            .header p { font-size: 0.75rem; }
-
-            .controls {
-                position: sticky;
-                top: 0;
-                z-index: 30;
-                gap: 0.4rem;
-                margin: 0 -0.75rem 0.75rem;
-                padding: 0.5rem 0.75rem;
-                background: rgba(255, 255, 255, 0.96);
-                border-bottom: 1px solid #e5e7eb;
-            }
-
-            .controls .btn {
-                flex: 1 1 0;
-                min-height: 38px;
-                padding: 0.55rem 0.65rem;
-                font-size: 0.78rem;
-            }
-
-            .roster-wrapper {
-                width: 100%;
-                max-height: calc(100dvh - 145px);
-                -webkit-overflow-scrolling: touch;
-            }
-
-            table {
-                min-width: 1100px;
-                font-size: 0.8rem;
-            }
-
-            th { padding: 0.55rem 0.45rem; }
-
-            td {
-                height: 30px;
-                padding: 0.35rem 0.45rem;
-            }
-
-            td.crew-name { min-width: 120px; }
-        }
-
-        @media print {
-            @page {
-                size: landscape;
-                margin: 8mm;
-            }
-
-            body {
-                background: white;
-                padding: 0;
-            }
-
-            .container {
-                box-shadow: none;
-                padding: 0;
-                max-width: 100%;
-            }
-
-            .controls { display: none; }
-
-            thead {
-                display: table-header-group;
-                position: static;
-            }
-
-            th.time-col,
-            td.time-col { position: static; }
-
-            tr { break-inside: avoid; }
-
-            th, td {
-                padding: 0.2rem;
-                font-size: 0.65rem;
-            }
-
-            td.crew-name {
-                min-width: 0;
-                overflow-wrap: anywhere;
-            }
-
-            td.restriction,
-            td.operational {
-                min-width: 0;
-                font-size: 0.65rem;
-            }
-
-            .roster-wrapper {
-                border: 1px solid #000;
-                max-height: none;
-                overflow: visible;
-            }
-
-            table { min-width: 0; }
-
-            .info-box {
-                font-size: 0.7rem;
-                margin-bottom: 0.5rem;
-            }
-        }
-
-        .manager-controls-panel > summary {
-            display: list-item;
-            list-style-position: inside;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🗓 ${escapeHtml(TEAM_NAME)} Crew Roster</h1>
-            <p id="rosterRangeText"></p>
-            <p id="snapshotText"></p>
-        </div>
-
-        <div class="controls">
-            <label class="date-field">
-                From
-                <input
-                    id="rosterStartDate"
-                    type="date"
-                    value="${initialStartDate}"
-                >
-            </label>
-
-            <label class="date-field">
-                To
-                <input
-                    id="rosterEndDate"
-                    type="date"
-                    value="${initialEndDate}"
-                >
-            </label>
-
-            <button
-                id="applyDatesButton"
-                class="btn btn-primary"
-                type="button"
-            >
-                Show roster
-            </button>
-
-            <button
-                id="nextFortnightButton"
-                class="btn btn-secondary"
-                type="button"
-            >
-                Next 14 days
-            </button>
-
-            <button
-                id="printButton"
-                class="btn btn-secondary"
-                type="button"
-            >
-                🖨️ Print
-            </button>
-
-            <button
-                id="closeButton"
-                class="btn btn-secondary"
-                type="button"
-            >
-                Close
-            </button>
-        </div>
-
-        <div class="roster-wrapper">
-            <table id="rosterTable">
-                <thead>
-                    <tr id="headerRow"></tr>
-                </thead>
-                <tbody id="rosterBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <script>
-        (${initialiseRosterWindow.toString()})(
-            ${serialiseForInlineScript(snapshot)},
-            ${getOperationalStatus.toString()}
-        );
-    <\/script>
-</body>
-</html>`;
-        }
-
-        /*
-         * This function runs in the printable roster window.
-         * The operational calculation is passed from the main page,
-         * ensuring REC/E/Z rules are identical in both views.
-         */
-        function initialiseRosterWindow(
-            snapshot,
-            calculateOperationalStatus
-        ) {
-            const events = snapshot.events;
-            const HOURS_PER_DAY = snapshot.hoursPerDay;
-            const MAX_CREW = snapshot.maxCrew;
-
-            // Display allocation only. Never use these padded slots for
-            // capacity checks or operational restriction calculations.
-            function allocateCrewSlots(bookings) {
-                const levelOf = booking =>
-                    String(booking.clinicalLevel || "").trim().toUpperCase();
-
-                const recruits = bookings.filter(booking =>
-                    levelOf(booking) === "REC"
-                );
-
-                // Do not silently omit existing bookings that break the new rules.
-                if (bookings.length > MAX_CREW || recruits.length > 1) {
-                    throw new Error(
-                        "This timeslot contains more than three people or more than " +
-                        "one recruit. Review the existing bookings in the booking list."
-                    );
-                }
-
-                const priority = {
-                    PARA: 0,
-                    AO: 0,
-                    AR: 1,
-                    AA: 2
-                };
-
-                const nonRecruits = bookings
-                    .map((booking, originalIndex) => ({
-                        booking,
-                        originalIndex
-                    }))
-                    .filter(item => levelOf(item.booking) !== "REC")
-                    .sort((first, second) => {
-                        const firstRank = priority[levelOf(first.booking)] ?? 3;
-                        const secondRank = priority[levelOf(second.booking)] ?? 3;
-
-                        // Equal clinical priority retains the existing returned order.
-                        return (
-                            firstRank - secondRank ||
-                            first.originalIndex - second.originalIndex
-                        );
-                    })
-                    .map(item => item.booking);
-
-                const slots = [null, null, null];
-
-                nonRecruits.forEach((booking, index) => {
-                    slots[index] = booking;
-                });
-
-                if (recruits.length === 1) {
-                    slots[2] = recruits[0];
-                }
-
-                return slots;
-            }
-
-            function addHours(date, hours) {
-                const result = new Date(date);
-                result.setHours(result.getHours() + hours);
-                return result;
-            }
-
-            function addDays(date, days) {
-                const result = new Date(date);
-                result.setDate(result.getDate() + days);
-                return result;
-            }
-
-            function formatHour(hour) {
-                return String(hour).padStart(2, "0") + ":00";
-            }
-
-            function formatDateForInput(date) {
-                return date.getFullYear() + "-" +
-                    String(date.getMonth() + 1).padStart(2, "0") + "-" +
-                    String(date.getDate()).padStart(2, "0");
-            }
-
-            function parseDateInput(value) {
-                if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-                    return null;
-                }
-
-                const parts = value.split("-").map(Number);
-
-                const date = new Date(
-                    parts[0],
-                    parts[1] - 1,
-                    parts[2]
-                );
-
-                return formatDateForInput(date) === value
-                    ? date
-                    : null;
-            }
-
-            function getBookingsForHour(hourStart) {
-                const hourEnd = addHours(hourStart, 1);
-
-                return events.filter(event =>
-                    new Date(event.start) < hourEnd &&
-                    new Date(event.end) > hourStart
-                );
-            }
-
-            function getSelectedDates() {
-                const startDate = parseDateInput(
-                    document.getElementById("rosterStartDate").value
-                );
-
-                const endDate = parseDateInput(
-                    document.getElementById("rosterEndDate").value
-                );
-
-                if (!startDate || !endDate) {
-                    window.alert("Please select valid From and To dates.");
-                    return null;
-                }
-
-                if (endDate < startDate) {
-                    window.alert(
-                        "The To date must be the same as or later than the From date."
-                    );
-                    return null;
-                }
-
-                return { startDate, endDate };
-            }
-
-            function buildRoster(startDate, endDate) {
-                const days = [];
-                let currentDate = new Date(startDate);
-
-                while (currentDate <= endDate) {
-                    if (days.length >= 62) {
-                        window.alert(
-                            "Please select no more than 62 days at a time."
-                        );
-                        return;
-                    }
-
-                    days.push(new Date(currentDate));
-                    currentDate = addDays(currentDate, 1);
-                }
-
-                const headerRow =
-                    document.getElementById("headerRow");
-                const rosterBody =
-                    document.getElementById("rosterBody");
-                const thead =
-                    document.querySelector("thead");
-
-                headerRow.innerHTML = "";
-                rosterBody.innerHTML = "";
-
-                thead.querySelector(".sub-header-row")?.remove();
-
-                const timeHeader = document.createElement("th");
-                timeHeader.className = "time-col";
-                timeHeader.textContent = "Time";
-                timeHeader.rowSpan = 2;
-                headerRow.appendChild(timeHeader);
-
-                const subHeaderRow = document.createElement("tr");
-                subHeaderRow.className = "sub-header-row";
-
-                days.forEach(day => {
-                    const dayHeader = document.createElement("th");
-                    dayHeader.className = "day-header";
-                    dayHeader.colSpan = 3;
-
-                    dayHeader.textContent =
-                        new Intl.DateTimeFormat("en-AU", {
-                            weekday: "short",
-                            day: "numeric",
-                            month: "short"
-                        }).format(day);
-
-                    headerRow.appendChild(dayHeader);
-
-                    const crewHeader = document.createElement("th");
-                    crewHeader.className = "crew-header";
-                    crewHeader.textContent = "Crew / level";
-
-                    const flexibilityHeader =
-                        document.createElement("th");
-
-                    flexibilityHeader.className = "restriction-header";
-                    flexibilityHeader.textContent = "Flex";
-
-                    const operationalHeader =
-                        document.createElement("th");
-
-                    operationalHeader.className = "operational-header";
-                    operationalHeader.textContent = "Op";
-
-                    subHeaderRow.append(
-                        crewHeader,
-                        flexibilityHeader,
-                        operationalHeader
-                    );
-                });
-
-                thead.appendChild(subHeaderRow);
-
-                for (
-                    let rosterHour = 0;
-                    rosterHour < HOURS_PER_DAY;
-                    rosterHour++
-                ) {
-                    const absoluteHour = 8 + rosterHour;
-                    const displayHour = absoluteHour % HOURS_PER_DAY;
-
-                    let dayBookings;
-
-                    try {
-                        dayBookings = days.map(day => {
-                            const hourStart = new Date(day);
-                            hourStart.setHours(absoluteHour, 0, 0, 0);
-
-                            const bookings = getBookingsForHour(hourStart);
-
-                            try {
-                                return {
-                                    bookings,
-                                    slots: allocateCrewSlots(bookings)
-                                };
-                            } catch (error) {
-                                throw new Error(
-                                    hourStart.toLocaleString("en-AU") +
-                                    ": " + error.message
-                                );
-                            }
-                        });
-                    } catch (error) {
-                        // Clear any partial roster rather than displaying an incomplete
-                        // or misleading printout if legacy bookings break the new rules.
-                        rosterBody.innerHTML = "";
-
-                        const errorRow = document.createElement("tr");
-                        const errorCell = document.createElement("td");
-
-                        errorCell.colSpan = 1 + days.length * 3;
-                        errorCell.textContent =
-                            "Roster requires review. " + error.message;
-                        errorCell.style.color = "#dc2626";
-                        errorCell.style.fontWeight = "700";
-
-                        errorRow.appendChild(errorCell);
-                        rosterBody.appendChild(errorRow);
-
-                        document.getElementById("rosterRangeText").textContent =
-                            "Roster not displayed: resolve the conflicting bookings first.";
-
-                        document.getElementById("snapshotText").textContent = "";
-
-                        return;
-                    }
-
-                    for (
-                        let crewSlot = 0;
-                        crewSlot < MAX_CREW;
-                        crewSlot++
-                    ) {
-                        const row = document.createElement("tr");
-
-                        row.className =
-                            (displayHour >= 8 && displayHour <= 17
-                                ? "day-shift"
-                                : "night-shift") +
-                            (crewSlot === 0 ? " hour-start" : "");
-
-                        if (crewSlot === 0) {
-                            const timeCell = document.createElement("td");
-                            timeCell.className = "time-col";
-                            timeCell.rowSpan = MAX_CREW;
-                            timeCell.textContent = formatHour(displayHour);
-                            row.appendChild(timeCell);
-                        }
-
-                        dayBookings.forEach(({ bookings, slots }) => {
-                            const booking = slots[crewSlot];
-
-                            const crewCell = document.createElement("td");
-                            crewCell.className = "crew-name";
-
-                            if (
-                                String(booking?.clinicalLevel || "")
-                                    .trim()
-                                    .toUpperCase() === "REC"
-                            ) {
-                                crewCell.classList.add("recruit-name");
-                            }
-
-                            if (booking) {
-                                const levelLabel =
-                                    booking.clinicalLevel === "REC"
-                                        ? "REC observer"
-                                        : booking.clinicalLevel || "?";
-
-                                crewCell.textContent =
-                                    booking.user + " (" + levelLabel + ")";
-                            }
-
-                            const flexibilityCell =
-                                document.createElement("td");
-
-                            flexibilityCell.className = "restriction";
-
-                            if (booking) {
-                                const code =
-                                    String(booking.restriction || "")
-                                        .trim()
-                                        .toUpperCase() || "N";
-
-                                flexibilityCell.textContent =
-                                    ["N", "A", "B", "C"].includes(code)
-                                        ? code
-                                        : "Legacy: " + code;
-                            }
-
-                            row.append(crewCell, flexibilityCell);
-
-                            if (crewSlot === 0) {
-                                const operational =
-                                    calculateOperationalStatus(
-                                        bookings,
-                                        snapshot.operationalRules
-                                    );
-
-                                const operationalCell =
-                                    document.createElement("td");
-
-                                operationalCell.className =
-                                    "operational" +
-                                    (operational.review ? " review" : "");
-
-                                operationalCell.rowSpan = MAX_CREW;
-
-                                operationalCell.textContent =
-                                    operational.code || "—";
-
-                                // Used exclusively by the Operational column's colour styling.
-                                operationalCell.dataset.op =
-                                    String(operational.code || "").trim().toUpperCase();
-
-                                operationalCell.title = operational.reason;
-
-                                row.appendChild(operationalCell);
-                            }
-                        });
-
-                        rosterBody.appendChild(row);
-                    }
-                }
-
-                const formatter = new Intl.DateTimeFormat("en-AU", {
-                    weekday: "short",
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric"
-                });
-
-                document.getElementById("rosterRangeText").textContent =
-                    "Roster from " + formatter.format(startDate) +
-                    " 08:00 to " +
-                    formatter.format(addDays(endDate, 1)) +
-                    " 08:00.";
-
-                document.getElementById("snapshotText").textContent =
-                    "Snapshot generated " +
-                    new Date(snapshot.generatedAt)
-                        .toLocaleString("en-AU") +
-                    ". Refresh the main page and reopen this window for updates.";
-            }
-
-            function showSelectedRoster() {
-                const selectedDates = getSelectedDates();
-
-                if (!selectedDates) return;
-
-                buildRoster(
-                    selectedDates.startDate,
-                    selectedDates.endDate
-                );
-            }
-
-            document.getElementById("applyDatesButton")
-                .addEventListener("click", showSelectedRoster);
-
-            document.getElementById("nextFortnightButton")
-                .addEventListener("click", () => {
-                    const selectedDates = getSelectedDates();
-
-                    if (!selectedDates) return;
-
-                    const nextStartDate =
-                        addDays(selectedDates.endDate, 1);
-
-                    const nextEndDate = addDays(nextStartDate, 13);
-
-                    document.getElementById("rosterStartDate").value =
-                        formatDateForInput(nextStartDate);
-
-                    document.getElementById("rosterEndDate").value =
-                        formatDateForInput(nextEndDate);
-
-                    buildRoster(nextStartDate, nextEndDate);
-                });
-
-            document.getElementById("printButton")
-                .addEventListener("click", () => window.print());
-
-            document.getElementById("closeButton")
-                .addEventListener("click", () => window.close());
-
-            showSelectedRoster();
-        }
-
-        function setLoading(loading) {
-            isLoading = loading;
-
-            refreshButton.disabled = loading;
-            viewRosterButton.disabled = loading || !hasLoadedBookings;
-
-            updateRosterManagerControls();
-
-            // Freeze booking inputs while a roster operation is running.
-            nameInput.disabled = loading;
-            clinicalLevelSelect.disabled = loading;
-            bookingDateInput.disabled = loading;
-            startTimeSelect.disabled = loading;
-            restrictionSelect.disabled = loading;
-
-            finishTimeSelect.disabled =
-                loading || startTimeSelect.value === "";
-
-            document.querySelectorAll("[data-cancel-id]")
-                .forEach(button => {
-                    button.disabled =
-                        loading ||
-                        !hasLoadedBookings ||
-                        !submissionStatusLoaded;
-                });
-
-            updateBookingSummary();
-        }
-
-        function setConnectionStatus(message, statusClass) {
-            connectionStatus.className = "connection-status";
-
-            if (statusClass) {
-                connectionStatus.classList.add(statusClass);
-            }
-
-            connectionStatus.textContent = message;
-        }
-
-        function createId() {
-            if (
-                window.crypto &&
-                typeof window.crypto.randomUUID === "function"
-            ) {
-                return window.crypto.randomUUID();
-            }
-
-            return Date.now().toString(36) +
-                Math.random().toString(36).slice(2);
-        }
-
-        function normaliseName(value) {
-            return String(value || "")
-                .trim()
-                .toLocaleLowerCase();
-        }
-
-        function startOfDay(date) {
-            const result = new Date(date);
-            result.setHours(0, 0, 0, 0);
-            return result;
-        }
-                /*
-         * A roster day begins at 08:00.
-         *
-         * Before 08:00, the current roster day started on the
-         * previous calendar date.
-         */
-        function startOfRosterDay(date = new Date()) {
-            const result = startOfDay(date);
-
-            if (date.getHours() < ROSTER_START_HOUR) {
-                result.setDate(result.getDate() - 1);
-            }
-
-            return result;
-        }
-
-        function startOfCurrentHour(date) {
-            const result = new Date(date);
-            result.setMinutes(0, 0, 0);
-            return result;
-        }
-
-        function addHours(date, hours) {
-            const result = new Date(date);
-            result.setHours(result.getHours() + hours);
-            return result;
-        }
-
-        function addDays(date, days) {
-            const result = new Date(date);
-            result.setDate(result.getDate() + days);
-            return result;
-        }
-
-        function formatDateKey(date) {
-            const year = date.getFullYear();
-
-            const month = String(date.getMonth() + 1)
-                .padStart(2, "0");
-
-            const day = String(date.getDate())
-                .padStart(2, "0");
-
-            return `${year}-${month}-${day}`;
-        }
-
-        function parseDateKey(value) {
-            if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-                return null;
-            }
-
-            const [year, month, day] =
-                value.split("-").map(Number);
-
-            const date = new Date(
-                year,
-                month - 1,
-                day,
-                0,
-                0,
-                0,
-                0
-            );
-
-            return formatDateKey(date) === value
-                ? date
-                : null;
-        }
-
-        function formatHour(hour) {
-            return String(hour).padStart(2, "0") + ":00";
-        }
-
-        function formatDayHeading(date) {
-            return new Intl.DateTimeFormat("en-AU", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric"
-            }).format(date);
-        }
-
-        function formatDateTime(date) {
-            const datePart = new Intl.DateTimeFormat("en-AU", {
-                weekday: "short",
-                day: "numeric",
-                month: "short",
-                year: "numeric"
-            }).format(date);
-
-            return `${datePart} at ${formatHour(date.getHours())}`;
-        }
-
-        function formatHourPeriod(hourStart) {
-            const hourEnd = addHours(hourStart, 1);
-
-            return (
-                `${formatDateTime(hourStart)}–` +
-                formatHour(hourEnd.getHours())
-            );
-        }
-
-        function isSameDay(first, second) {
-            return first.getFullYear() === second.getFullYear() &&
-                first.getMonth() === second.getMonth() &&
-                first.getDate() === second.getDate();
-        }
-
-        function escapeHtml(value) {
-            return String(value ?? "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        function showToast(message) {
-            clearTimeout(toastTimer);
-            toast.textContent = message;
-            toast.classList.add("show");
-
-            toastTimer = setTimeout(() => {
-                toast.classList.remove("show");
-            }, 5000);
-        }
-    </script>
-</body>
-</html>
+```javascript
+rosterSubmission: { team: "Coffin Bay", sentUntil: "2026-10-14T08:00:00.000Z" }
