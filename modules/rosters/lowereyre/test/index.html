@@ -2174,7 +2174,64 @@ Coverage excludes observers.
                     throw new Error(
                         "The returned hard-copy status belongs to another team."
                     );
-                }.querySelectorAll("[data-roster-manager-control]")
+                }
+            }
+
+            rosterSentUntil = submission
+                ? new Date(submission.sentUntil)
+                : null;
+
+            submissionStatusLoaded = true;
+            lastCentralRosteringWarningKey = "";
+
+            const status = document.getElementById(
+                "rosterSubmissionStatus"
+            );
+
+            if (!rosterSentUntil) {
+                status.textContent =
+                    `No hard-copy roster cut-off is currently marked as sent for ${TEAM_NAME}.`;
+            } else {
+                status.textContent =
+                    `ROSTER SENT for ${TEAM_NAME} up until ` +
+                    `${formatRosterSentUntilDateTime(rosterSentUntil)}. ` +
+                    "Changes affecting shifts before this cut-off require " +
+                    "notification to Country Rostering.";
+            }
+
+            updateCentralRosteringWarning();
+            updateBookingSummary();
+            updateRosterManagerControls();
+        }
+
+        function invalidateRosterSubmissionStatus() {
+            rosterSentUntil = null;
+            submissionStatusLoaded = false;
+            lastCentralRosteringWarningKey = "";
+
+            document.getElementById("rosterSubmissionStatus").textContent =
+                "Unable to verify hard-copy status. " +
+                "Refresh the roster before changing bookings or retrying " +
+                "a manager update.";
+
+            updateCentralRosteringWarning();
+            updateBookingSummary();
+            updateRosterManagerControls();
+        }
+
+        function updateRosterManagerControls() {
+            const hasSavedCutOff =
+                submissionStatusLoaded && Boolean(rosterSentUntil);
+
+            markRosterSentButton.disabled = isLoading;
+
+            document.getElementById("editRosterSentUntilButton").disabled =
+                isLoading || !hasSavedCutOff;
+
+            document.getElementById("resetRosterSentButton").disabled =
+                isLoading || !hasSavedCutOff;
+
+            document.querySelectorAll("[data-roster-manager-control]")
                 .forEach(control => {
                     control.disabled = isLoading;
                 });
