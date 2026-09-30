@@ -1037,13 +1037,6 @@
                 aria-live="polite"
             ></div>
 
-            <div
-                id="centralRosteringWarning"
-                class="central-roster-warning"
-                hidden
-                role="alert"
-            ></div>
-
             <!-- Hard-copy status stays visible to everyone. -->
             <div class="roster-submission-manager">
                 <div>
@@ -1423,14 +1416,6 @@ Coverage excludes observers.
         const DAYS_TO_SHOW = 9;
         const ROSTER_START_HOUR = 8;
 
-        /*
-         * Hard-copy changes to shifts starting MORE than this many hours
-         * away are emailed to Country Rostering automatically by the
-         * backend. Changes within this window still require a phone call.
-         * Keep in step with COUNTRY_ROSTERING_EMAIL_MIN_HOURS in Apps Script.
-         */
-        const COUNTRY_ROSTERING_EMAIL_MIN_HOURS = 24;
-
         const CLINICAL_LEVELS = ["PARA", "AO", "AR", "AA", "REC"];
         const FLEXIBILITY_CODES = ["N", "A", "B", "C"];
 
@@ -1753,8 +1738,6 @@ Coverage excludes observers.
 
         function handleShiftSelectionChange() {
             updateBookingSummary();
-            updateCentralRosteringWarning();
-            showCentralRosteringPopupIfRequired();
         }
 
         function handleNameChange() {
@@ -2199,7 +2182,6 @@ Coverage excludes observers.
                     "notification to Country Rostering.";
             }
 
-            updateCentralRosteringWarning();
             updateBookingSummary();
             updateRosterManagerControls();
         }
@@ -2214,7 +2196,6 @@ Coverage excludes observers.
                 "Refresh the roster before changing bookings or retrying " +
                 "a manager update.";
 
-            updateCentralRosteringWarning();
             updateBookingSummary();
             updateRosterManagerControls();
         }
@@ -2312,131 +2293,6 @@ Coverage excludes observers.
                     selection.startDate,
                     selection.endDate
                 )
-            );
-        }
-
-        /*
-         * True when the shift starts more than
-         * COUNTRY_ROSTERING_EMAIL_MIN_HOURS from now. Such hard-copy
-         * changes are emailed to Country Rostering automatically.
-         *
-         * Used for pre-confirmation wording only. The final message
-         * after saving relies on the backend's countryRosteringEmailed
-         * confirmation.
-         */
-        function shiftIsBeyondPhoneWindow(start) {
-            const shiftStart = new Date(start);
-
-            if (!Number.isFinite(shiftStart.getTime())) {
-                return false;
-            }
-
-            return (
-                shiftStart.getTime() - Date.now() >
-                COUNTRY_ROSTERING_EMAIL_MIN_HOURS * 3600000
-            );
-        }
-
-        function updateCentralRosteringWarning() {
-            const warning = document.getElementById(
-                "centralRosteringWarning"
-            );
-
-            if (selectedShiftNeedsCentralRosteringNotice()) {
-                warning.hidden = false;
-
-                const selection = readShiftSelection();
-
-                if (shiftIsBeyondPhoneWindow(selection.startDate)) {
-                    warning.innerHTML = `
-                        <strong>Country Rostering will be notified by email</strong><br>
-                        This shift starts before the hard-copy roster sent cut-off.
-                        Because it is more than 24 hours away, Country Rostering
-                        will be emailed automatically when you confirm this booking.
-                    `;
-                } else {
-                    warning.innerHTML = `
-                        <strong>Central Rostering notification required</strong><br>
-                        This shift starts before the hard-copy roster sent cut-off.
-                        After confirming this booking, please phone Country Rostering
-                        to advise them of the change on 1300 850 985.
-                    `;
-                }
-            } else {
-                warning.hidden = true;
-                warning.textContent = "";
-            }
-        }
-
-        function showCentralRosteringPopupIfRequired() {
-            if (!selectedShiftNeedsCentralRosteringNotice()) {
-                lastCentralRosteringWarningKey = "";
-                return;
-            }
-
-            const selection = readShiftSelection();
-
-            const warningKey =
-                selection.startDate.toISOString() + "-" +
-                selection.endDate.toISOString() + "-" +
-                rosterSentUntil.toISOString();
-
-            if (warningKey === lastCentralRosteringWarningKey) {
-                return;
-            }
-
-            lastCentralRosteringWarningKey = warningKey;
-
-            if (shiftIsBeyondPhoneWindow(selection.startDate)) {
-                window.alert(
-                    "Country Rostering notification required.\n\n" +
-                    "This shift starts before the roster cut-off already sent " +
-                    "to Country Rostering as a hard copy.\n\n" +
-                    "Because the shift is more than 24 hours away, Country " +
-                    "Rostering will be emailed automatically after you confirm."
-                );
-                return;
-            }
-
-            window.alert(
-                "Country Rostering notification required.\n\n" +
-                "This shift starts before the roster cut-off already sent " +
-                "to Country Rostering as a hard copy.\n\n" +
-                "You may still book, but after confirming you must phone " +
-                "Country Rostering to notify them of the change."
-            );
-        }
-
-        function confirmCentralRosteringNoticeIfRequired() {
-            if (!submissionStatusLoaded) {
-                showToast(
-                    "Refresh the hard-copy roster status before booking."
-                );
-                return false;
-            }
-
-            if (!selectedShiftNeedsCentralRosteringNotice()) {
-                return true;
-            }
-
-            const selection = readShiftSelection();
-
-            if (shiftIsBeyondPhoneWindow(selection.startDate)) {
-                return window.confirm(
-                    "Country Rostering notification required.\n\n" +
-                    "This booking changes a shift before the hard-copy roster " +
-                    "sent cut-off. After confirming the shift, Country Rostering " +
-                    "will be emailed automatically.\n\n" +
-                    "Continue with this booking?"
-                );
-            }
-
-            return window.confirm(
-                "Country Rostering notification required.\n\n" +
-                "This booking changes a shift before the hard-copy roster " +
-                "sent cut-off. After confirming the shift, you must phone " +
-                "Country Rostering to advise them.\n\n" +
-                "Continue with this booking?"
             );
         }
 
@@ -2757,7 +2613,6 @@ Coverage excludes observers.
                 window.alert(message);
             } finally {
                 setLoading(false);
-                updateCentralRosteringWarning();
             }
         }
 
@@ -2842,7 +2697,6 @@ Coverage excludes observers.
                 window.alert(message);
             } finally {
                 setLoading(false);
-                updateCentralRosteringWarning();
             }
         }
 
@@ -3129,6 +2983,47 @@ Coverage excludes observers.
                 : "N";
         }
 
+        /*
+         * Single post-save outcome message for bookings and cancellations.
+         *
+         * The backend response is the source of truth:
+         * - requiresCentralNotification: the shift is before the sent cut-off.
+         * - countryRosteringEmailed: the Country Rostering email was sent.
+         *
+         * The user is only asked to phone when the backend has not
+         * confirmed an automatic email.
+         */
+        function showHardCopyChangeOutcome(action, data) {
+            if (!data.requiresCentralNotification) {
+                showToast(
+                    action === "booked"
+                        ? "Your shift was booked successfully."
+                        : "Shift cancelled."
+                );
+
+                return;
+            }
+
+            if (data.countryRosteringEmailed === true) {
+                showToast(
+                    action === "booked"
+                        ? "Shift booked. Country Rostering has been notified by email."
+                        : "Shift cancelled. Country Rostering has been notified by email."
+                );
+
+                return;
+            }
+
+            window.alert(
+                (action === "booked"
+                    ? "Your shift was booked."
+                    : "Shift cancelled.") +
+                "\n\nThis change affects the submitted hard-copy roster." +
+                "\n\nPlease phone Country Rostering now to advise them " +
+                "of the change on 1300 850 985."
+            );
+        }
+
         async function bookSelectedShift() {
             if (isLoading) return;
 
@@ -3190,13 +3085,8 @@ Coverage excludes observers.
                     throw new Error(availability.message);
                 }
 
-                const centralNoticeRequired =
-                    selectedShiftNeedsCentralRosteringNotice();
-
-                if (!confirmCentralRosteringNoticeIfRequired()) {
-                    showLoadedConnectionStatus();
-                    return;
-                }
+                // The backend determines whether Country Rostering notification
+                // is required after the booking has successfully been saved.
 
                 const newEvent = {
                     id: createId(),
@@ -3232,29 +3122,8 @@ Coverage excludes observers.
 
                 // Name and clinical level continue to persist.
                 lastCentralRosteringWarningKey = "";
-                updateCentralRosteringWarning();
 
-                if (centralNoticeRequired) {
-                    /*
-                     * countryRosteringEmailed is only true when the backend
-                     * confirms the email was sent (shift more than 24 hours
-                     * away). Otherwise the user must phone, as before.
-                     */
-                    if (data.countryRosteringEmailed === true) {
-                        window.alert(
-                            "Your shift was booked.\n\n" +
-                            "This change has been emailed to Country Rostering."
-                        );
-                    } else {
-                        window.alert(
-                            "Your shift was booked.\n\n" +
-                            "Please phone Central Rostering now to advise them " +
-                            "of the change to the submitted hard-copy roster."
-                        );
-                    }
-                } else {
-                    showToast("Your shift was booked successfully.");
-                }
+                showHardCopyChangeOutcome("booked", data);
 
                 // No extra reload: the save response supplied the roster.
                 showLoadedConnectionStatus();
@@ -3305,7 +3174,6 @@ Coverage excludes observers.
                 showToast(message);
             } finally {
                 setLoading(false);
-                updateCentralRosteringWarning();
             }
         }
 
@@ -3323,27 +3191,10 @@ Coverage excludes observers.
             try {
                 await loadRosterSubmissionStatus();
 
-                const centralNoticeRequired =
-                    cancellationNeedsCentralRosteringNotice(event);
-
-                const beyondPhoneWindow =
-                    shiftIsBeyondPhoneWindow(event.start);
-
                 const message =
                     `Cancel ${event.user}'s shift from ` +
                     `${formatDateTime(new Date(event.start))} to ` +
-                    `${formatDateTime(new Date(event.end))}?` +
-                    (centralNoticeRequired
-                        ? (beyondPhoneWindow
-                            ? "\n\nCountry Rostering notification required.\n" +
-                              "This changes a roster period already submitted as hard copy. " +
-                              "Country Rostering will be emailed automatically " +
-                              "after cancelling."
-                            : "\n\nCountry Rostering notification required.\n" +
-                              "This changes a roster period already submitted as hard copy. " +
-                              "After cancelling, you must phone Country Rostering " +
-                              "to advise them of the change on 1300 850 985.")
-                        : "");
+                    `${formatDateTime(new Date(event.end))}?`;
 
                 if (!window.confirm(message)) return;
 
@@ -3364,27 +3215,7 @@ Coverage excludes observers.
                 // Use the complete updated roster returned by the server.
                 applyRosterSnapshot(data);
 
-                if (centralNoticeRequired) {
-                    /*
-                     * countryRosteringEmailed is only true when the backend
-                     * confirms the email was sent (shift more than 24 hours
-                     * away). Otherwise the user must phone, as before.
-                     */
-                    if (data.countryRosteringEmailed === true) {
-                        window.alert(
-                            "Shift cancelled.\n\n" +
-                            "This change has been emailed to Country Rostering."
-                        );
-                    } else {
-                        window.alert(
-                            "Shift cancelled.\n\n" +
-                            "Please phone Central Rostering now to advise them " +
-                            "of the change to the submitted hard-copy roster."
-                        );
-                    }
-                } else {
-                    showToast("Shift cancelled.");
-                }
+                showHardCopyChangeOutcome("cancelled", data);
 
                 // No extra reload: the cancellation response supplied the roster.
                 showLoadedConnectionStatus();
@@ -3444,7 +3275,6 @@ Coverage excludes observers.
             renderCalendar();
             renderBookingTable();
             updateBookingSummary();
-            updateCentralRosteringWarning();
 
             if (bookingsModal.classList.contains("active")) {
                 renderMyBookings();
