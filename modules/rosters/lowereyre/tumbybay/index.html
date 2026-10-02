@@ -1124,6 +1124,15 @@
                         >
                             Reset sent status
                         </button>
+
+                        <button
+                            id="countryRosterViewButton"
+                            class="btn-secondary"
+                            type="button"
+                            disabled
+                        >
+                            Open Country Rostering PDF view — 7 days
+                        </button>
                     </div>
 
                     <section
@@ -1485,6 +1494,8 @@ Coverage excludes observers.
             document.getElementById("refreshButton");
         const viewRosterButton =
             document.getElementById("viewRosterButton");
+        const countryRosterViewButton =
+            document.getElementById("countryRosterViewButton");
         const markRosterSentButton =
             document.getElementById("markRosterSentButton");
         const calendarElement =
@@ -1609,6 +1620,11 @@ Coverage excludes observers.
             bookButton.addEventListener("click", bookSelectedShift);
             refreshButton.addEventListener("click", refreshRoster);
             viewRosterButton.addEventListener("click", openRosterView);
+
+            countryRosterViewButton.addEventListener(
+                "click",
+                openCountryRosterView
+            );
 
             markRosterSentButton.addEventListener("click", () => {
                 void openRosterSentUntilEditor(false);
@@ -5287,11 +5303,951 @@ Coverage excludes observers.
             showSelectedRoster();
         }
 
+        /*
+         * COUNTRY ROSTERING PDF VIEW
+         *
+         * Separate output for Country Rostering:
+         * - 7 roster days wide, 08:00 to 08:00.
+         * - No Flex columns.
+         * - Op cells filled with their code colour (black/white text).
+         * - Split into exactly two A4 landscape pages:
+         *   Page 1: 08:00–19:59, Page 2: 20:00–07:59.
+         *
+         * Uses the same crew-slot ordering and operational calculation
+         * as the existing roster view. Booking behaviour is unchanged.
+         */
+        function openCountryRosterView() {
+            if (!hasLoadedBookings || isLoading) {
+                showToast("Please wait for the roster to load.");
+                return;
+            }
+
+            const rosterWindow = window.open(
+                "",
+                "countryRosterView",
+                "width=1600,height=900"
+            );
+
+            if (!rosterWindow) {
+                showToast(
+                    "Please allow pop-ups to view the Country Rostering roster."
+                );
+                return;
+            }
+
+            rosterWindow.document.open();
+            rosterWindow.document.write(buildCountryRosterHTML());
+            rosterWindow.document.close();
+        }
+
+        function buildCountryRosterHTML() {
+            // Roster-day based: before 08:00 the current roster day
+            // started on the previous calendar date.
+            const firstRosterDay = startOfRosterDay(new Date());
+            const initialStartDate = formatDateKey(firstRosterDay);
+
+            const snapshot = {
+                events,
+                teamName: TEAM_NAME,
+                hoursPerDay: HOURS_PER_DAY,
+                maxCrew: MAX_CREW,
+                operationalRules: OPERATIONAL_RULES,
+                generatedAt: new Date().toISOString()
+            };
+
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes, maximum-scale=5">
+    <title>${escapeHtml(TEAM_NAME)} Country Rostering Roster</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 2rem 1rem;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid #22c55e;
+            padding-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            color: #16a34a;
+            margin-bottom: 0.4rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: end;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .date-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            color: #4b5563;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .date-field input {
+            min-height: 42px;
+            padding: 0.55rem 0.7rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            color: #333;
+            background: white;
+        }
+
+        .btn {
+            min-height: 42px;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary { background: #22c55e; color: white; }
+        .btn-primary:hover { background: #16a34a; }
+        .btn-secondary { background: #e5e7eb; color: #333; }
+        .btn-secondary:hover { background: #d1d5db; }
+
+        .print-help {
+            background: #eff6ff;
+            border-left: 4px solid #0284c7;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: #1e40af;
+        }
+
+        .roster-page {
+            margin-bottom: 1.5rem;
+        }
+
+        .page-caption {
+            margin-bottom: 0.4rem;
+            color: #374151;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .roster-wrapper {
+            overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1100px;
+            table-layout: fixed;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        col.col-time { width: 60px; }
+        col.col-op { width: 44px; }
+
+        th {
+            padding: 0.5rem 0.4rem;
+            text-align: center;
+            font-weight: 700;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            white-space: nowrap;
+            overflow: hidden;
+            background: #f3f4f6;
+        }
+
+        th.time-col {
+            vertical-align: middle;
+        }
+
+        td {
+            padding: 0.3rem 0.5rem;
+            border: 1px solid #e5e7eb;
+            height: 24px;
+        }
+
+        td.time-col {
+            font-weight: 700;
+            text-align: center;
+            vertical-align: top;
+        }
+
+        td.crew-name {
+            font-weight: 500;
+            color: #16a34a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        td.crew-name:empty::after {
+            content: "—";
+            color: #d1d5db;
+        }
+
+        td.crew-name.recruit-name {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        tr.day-shift td { background: #fff9db; }
+        tr.night-shift td { background: #eef4f8; }
+
+        tr.day-shift td.time-col { background: #fff3b0; }
+        tr.night-shift td.time-col { background: #e3edf4; }
+
+        tr.hour-start td { border-top: 2px solid #9ca3af; }
+
+        .day-header {
+            background: #dbeafe;
+            color: #0284c7;
+        }
+
+        .crew-header {
+            background: #dbeafe;
+            color: #0284c7;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .operational-header {
+            background: #fef3c7;
+            color: #92400e;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        /*
+         * Op cells: whole cell filled with the code colour.
+         * Dark fills use white text; light fills use black text.
+         */
+        td.operational {
+            padding: 0;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: 800;
+            color: #000000;
+        }
+
+        td.operational[data-op="NC"] { background: #ff0000; color: #ffffff; }
+        td.operational[data-op="A"]  { background: #0080ff; color: #ffffff; }
+        td.operational[data-op="B"]  { background: #00ffff; color: #000000; }
+        td.operational[data-op="C"]  { background: #ffff00; color: #000000; }
+        td.operational[data-op="D"]  { background: #ff00ff; color: #ffffff; }
+        td.operational[data-op="E"]  { background: #ff8080; color: #000000; }
+        td.operational[data-op="Z"]  { background: #808080; color: #000000; }
+        td.operational[data-op="N"]  { background: #00ff00; color: #000000; }
+        td.operational[data-op="REVIEW"] { background: #fef3c7; color: #000000; }
+
+        td.error-cell {
+            height: auto;
+            padding: 1rem;
+            color: #dc2626;
+            font-weight: 700;
+            white-space: normal;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .container {
+                width: 100%;
+                padding: 0.75rem;
+                border-radius: 6px;
+            }
+
+            .header h1 { font-size: 1.15rem; }
+            .header p { font-size: 0.75rem; }
+
+            .controls .btn {
+                flex: 1 1 0;
+                min-height: 38px;
+                padding: 0.55rem 0.65rem;
+                font-size: 0.78rem;
+            }
+
+            .roster-wrapper {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 5mm;
+            }
+
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
+
+            .container {
+                max-width: none;
+                margin: 0;
+                padding: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .controls,
+            .print-help {
+                display: none;
+            }
+
+            .header {
+                margin: 0 0 1.5mm;
+                padding: 0 0 1.5mm;
+                border-bottom-width: 1px;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 11pt;
+            }
+
+            .header p {
+                margin-top: 0.5mm;
+                font-size: 7pt;
+            }
+
+            .roster-page {
+                margin: 0;
+            }
+
+            /* Page 2 always starts on a new sheet, before an hourly block. */
+            .roster-page.page-break {
+                break-before: page;
+                page-break-before: always;
+            }
+
+            .page-caption {
+                margin-bottom: 1mm;
+                font-size: 7pt;
+            }
+
+            .roster-wrapper {
+                overflow: visible;
+                border: 0;
+                border-radius: 0;
+            }
+
+            table {
+                min-width: 0;
+                font-size: 6pt;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            col.col-time { width: 11mm; }
+            col.col-op { width: 7mm; }
+
+            th {
+                padding: 0.4mm 0.5mm;
+                font-size: 6pt;
+                line-height: 1.1;
+                border: 0.2mm solid #6b7280;
+            }
+
+            tr {
+                height: 4.3mm;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            td {
+                height: 4.3mm;
+                padding: 0 0.6mm;
+                font-size: 6pt;
+                line-height: 1.1;
+                border: 0.2mm solid #9ca3af;
+            }
+
+            tr.hour-start td {
+                border-top: 0.5mm solid #374151;
+            }
+
+            td.operational {
+                padding: 0;
+                font-size: 7pt;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>${escapeHtml(TEAM_NAME)} — Country Rostering Roster</h1>
+            <p id="rosterRangeText"></p>
+            <p id="snapshotText"></p>
+        </div>
+
+        <div class="controls">
+            <label class="date-field">
+                First roster day (7 days shown)
+                <input
+                    id="rosterStartDate"
+                    type="date"
+                    value="${initialStartDate}"
+                >
+            </label>
+
+            <button
+                id="applyDatesButton"
+                class="btn btn-primary"
+                type="button"
+            >
+                Show roster
+            </button>
+
+            <button
+                id="nextWeekButton"
+                class="btn btn-secondary"
+                type="button"
+            >
+                Next 7 days
+            </button>
+
+            <button
+                id="printButton"
+                class="btn btn-secondary"
+                type="button"
+            >
+                🖨️ Print / Save PDF
+            </button>
+
+            <button
+                id="closeButton"
+                class="btn btn-secondary"
+                type="button"
+            >
+                Close
+            </button>
+        </div>
+
+        <p class="print-help">
+            To save as PDF: choose <strong>Save as PDF</strong>, paper size
+            <strong>A4</strong>, layout <strong>Landscape</strong>,
+            scale <strong>100%</strong>, and turn
+            <strong>Background graphics</strong> on so the Op colours are included.
+            The roster prints on two pages: 08:00–19:59 and 20:00–07:59.
+        </p>
+
+        <div id="rosterPages"></div>
+    </div>
+
+    <script>
+        (${initialiseCountryRosterWindow.toString()})(
+            ${serialiseForInlineScript(snapshot)},
+            ${getOperationalStatus.toString()}
+        );
+    <\/script>
+</body>
+</html>`;
+        }
+
+        /*
+         * This function runs in the Country Rostering window.
+         * The operational calculation is passed from the main page,
+         * ensuring the rules are identical in every view.
+         */
+        function initialiseCountryRosterWindow(
+            snapshot,
+            calculateOperationalStatus
+        ) {
+            const events = snapshot.events;
+            const HOURS_PER_DAY = snapshot.hoursPerDay;
+            const MAX_CREW = snapshot.maxCrew;
+            const DAYS_WIDE = 7;
+            const ROSTER_START_HOUR = 8;
+            const HOURS_PER_PAGE = 12;
+
+            // Display allocation only — identical to the existing roster view.
+            function allocateCrewSlots(bookings) {
+                const levelOf = booking =>
+                    String(booking.clinicalLevel || "").trim().toUpperCase();
+
+                const recruits = bookings.filter(booking =>
+                    levelOf(booking) === "REC"
+                );
+
+                if (bookings.length > MAX_CREW || recruits.length > 1) {
+                    throw new Error(
+                        "This timeslot contains more than three people or more than " +
+                        "one recruit. Review the existing bookings in the booking list."
+                    );
+                }
+
+                const priority = {
+                    PARA: 0,
+                    AO: 0,
+                    AR: 1,
+                    AA: 2
+                };
+
+                const nonRecruits = bookings
+                    .map((booking, originalIndex) => ({
+                        booking,
+                        originalIndex
+                    }))
+                    .filter(item => levelOf(item.booking) !== "REC")
+                    .sort((first, second) => {
+                        const firstRank = priority[levelOf(first.booking)] ?? 3;
+                        const secondRank = priority[levelOf(second.booking)] ?? 3;
+
+                        return (
+                            firstRank - secondRank ||
+                            first.originalIndex - second.originalIndex
+                        );
+                    })
+                    .map(item => item.booking);
+
+                const slots = [null, null, null];
+
+                nonRecruits.forEach((booking, index) => {
+                    slots[index] = booking;
+                });
+
+                if (recruits.length === 1) {
+                    slots[2] = recruits[0];
+                }
+
+                return slots;
+            }
+
+            function addHours(date, hours) {
+                const result = new Date(date);
+                result.setHours(result.getHours() + hours);
+                return result;
+            }
+
+            function addDays(date, days) {
+                const result = new Date(date);
+                result.setDate(result.getDate() + days);
+                return result;
+            }
+
+            function formatHour(hour) {
+                return String(hour).padStart(2, "0") + ":00";
+            }
+
+            function formatHourEnd(hour) {
+                return String(hour).padStart(2, "0") + ":59";
+            }
+
+            function formatDateForInput(date) {
+                return date.getFullYear() + "-" +
+                    String(date.getMonth() + 1).padStart(2, "0") + "-" +
+                    String(date.getDate()).padStart(2, "0");
+            }
+
+            function parseDateInput(value) {
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                    return null;
+                }
+
+                const parts = value.split("-").map(Number);
+
+                const date = new Date(
+                    parts[0],
+                    parts[1] - 1,
+                    parts[2]
+                );
+
+                return formatDateForInput(date) === value
+                    ? date
+                    : null;
+            }
+
+            function getBookingsForHour(hourStart) {
+                const hourEnd = addHours(hourStart, 1);
+
+                return events.filter(event =>
+                    new Date(event.start) < hourEnd &&
+                    new Date(event.end) > hourStart
+                );
+            }
+
+            function getSelectedStartDate() {
+                const startDate = parseDateInput(
+                    document.getElementById("rosterStartDate").value
+                );
+
+                if (!startDate) {
+                    window.alert("Please select a valid first roster day.");
+                    return null;
+                }
+
+                return startDate;
+            }
+
+            function createRosterTable(days) {
+                const table = document.createElement("table");
+
+                const colgroup = document.createElement("colgroup");
+
+                const timeCol = document.createElement("col");
+                timeCol.className = "col-time";
+                colgroup.appendChild(timeCol);
+
+                days.forEach(() => {
+                    const crewCol = document.createElement("col");
+                    crewCol.className = "col-crew";
+
+                    const opCol = document.createElement("col");
+                    opCol.className = "col-op";
+
+                    colgroup.append(crewCol, opCol);
+                });
+
+                table.appendChild(colgroup);
+
+                const thead = document.createElement("thead");
+                const headerRow = document.createElement("tr");
+                const subHeaderRow = document.createElement("tr");
+
+                const timeHeader = document.createElement("th");
+                timeHeader.className = "time-col";
+                timeHeader.textContent = "Time";
+                timeHeader.rowSpan = 2;
+                headerRow.appendChild(timeHeader);
+
+                days.forEach(day => {
+                    const dayHeader = document.createElement("th");
+                    dayHeader.className = "day-header";
+                    dayHeader.colSpan = 2;
+
+                    dayHeader.textContent =
+                        new Intl.DateTimeFormat("en-AU", {
+                            weekday: "short",
+                            day: "numeric",
+                            month: "short"
+                        }).format(day);
+
+                    headerRow.appendChild(dayHeader);
+
+                    const crewHeader = document.createElement("th");
+                    crewHeader.className = "crew-header";
+                    crewHeader.textContent = "Crew / level";
+
+                    const operationalHeader = document.createElement("th");
+                    operationalHeader.className = "operational-header";
+                    operationalHeader.textContent = "Op";
+
+                    subHeaderRow.append(crewHeader, operationalHeader);
+                });
+
+                thead.append(headerRow, subHeaderRow);
+                table.appendChild(thead);
+
+                return table;
+            }
+
+            function appendHourRows(tbody, hour) {
+                const displayHour = hour.displayHour;
+
+                for (
+                    let crewSlot = 0;
+                    crewSlot < MAX_CREW;
+                    crewSlot++
+                ) {
+                    const row = document.createElement("tr");
+
+                    row.className =
+                        (displayHour >= 8 && displayHour <= 17
+                            ? "day-shift"
+                            : "night-shift") +
+                        (crewSlot === 0 ? " hour-start" : "");
+
+                    if (crewSlot === 0) {
+                        const timeCell = document.createElement("td");
+                        timeCell.className = "time-col";
+                        timeCell.rowSpan = MAX_CREW;
+                        timeCell.textContent = formatHour(displayHour);
+                        row.appendChild(timeCell);
+                    }
+
+                    hour.dayBookings.forEach(({ bookings, slots }) => {
+                        const booking = slots[crewSlot];
+
+                        const crewCell = document.createElement("td");
+                        crewCell.className = "crew-name";
+
+                        if (
+                            String(booking?.clinicalLevel || "")
+                                .trim()
+                                .toUpperCase() === "REC"
+                        ) {
+                            crewCell.classList.add("recruit-name");
+                        }
+
+                        if (booking) {
+                            const levelLabel =
+                                booking.clinicalLevel === "REC"
+                                    ? "REC observer"
+                                    : booking.clinicalLevel || "?";
+
+                            crewCell.textContent =
+                                booking.user + " (" + levelLabel + ")";
+
+                            crewCell.title = crewCell.textContent;
+                        }
+
+                        row.appendChild(crewCell);
+
+                        if (crewSlot === 0) {
+                            const operational =
+                                calculateOperationalStatus(
+                                    bookings,
+                                    snapshot.operationalRules
+                                );
+
+                            const operationalCell =
+                                document.createElement("td");
+
+                            operationalCell.className =
+                                "operational" +
+                                (operational.review ? " review" : "");
+
+                            operationalCell.rowSpan = MAX_CREW;
+
+                            operationalCell.textContent =
+                                operational.code || "—";
+
+                            // Drives the Op cell fill colour.
+                            operationalCell.dataset.op =
+                                String(operational.code || "").trim().toUpperCase();
+
+                            operationalCell.title = operational.reason;
+
+                            row.appendChild(operationalCell);
+                        }
+                    });
+
+                    tbody.appendChild(row);
+                }
+            }
+
+            function buildRoster(startDate) {
+                const days = [];
+
+                for (let offset = 0; offset < DAYS_WIDE; offset++) {
+                    days.push(addDays(startDate, offset));
+                }
+
+                const pagesElement =
+                    document.getElementById("rosterPages");
+
+                pagesElement.innerHTML = "";
+
+                const hourData = [];
+
+                try {
+                    for (
+                        let rosterHour = 0;
+                        rosterHour < HOURS_PER_DAY;
+                        rosterHour++
+                    ) {
+                        const absoluteHour = ROSTER_START_HOUR + rosterHour;
+
+                        hourData.push({
+                            displayHour: absoluteHour % HOURS_PER_DAY,
+                            dayBookings: days.map(day => {
+                                const hourStart = new Date(day);
+                                hourStart.setHours(absoluteHour, 0, 0, 0);
+
+                                const bookings = getBookingsForHour(hourStart);
+
+                                try {
+                                    return {
+                                        bookings,
+                                        slots: allocateCrewSlots(bookings)
+                                    };
+                                } catch (error) {
+                                    throw new Error(
+                                        hourStart.toLocaleString("en-AU") +
+                                        ": " + error.message
+                                    );
+                                }
+                            })
+                        });
+                    }
+                } catch (error) {
+                    // Never print an incomplete or misleading roster.
+                    const table = createRosterTable(days);
+                    const tbody = document.createElement("tbody");
+                    const errorRow = document.createElement("tr");
+                    const errorCell = document.createElement("td");
+
+                    errorCell.className = "error-cell";
+                    errorCell.colSpan = 1 + days.length * 2;
+                    errorCell.textContent =
+                        "Roster requires review. " + error.message;
+
+                    errorRow.appendChild(errorCell);
+                    tbody.appendChild(errorRow);
+                    table.appendChild(tbody);
+
+                    const wrapper = document.createElement("div");
+                    wrapper.className = "roster-wrapper";
+                    wrapper.appendChild(table);
+                    pagesElement.appendChild(wrapper);
+
+                    document.getElementById("rosterRangeText").textContent =
+                        "Roster not displayed: resolve the conflicting bookings first.";
+
+                    document.getElementById("snapshotText").textContent = "";
+
+                    return;
+                }
+
+                const formatter = new Intl.DateTimeFormat("en-AU", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric"
+                });
+
+                const rangeText =
+                    "Roster from " + formatter.format(startDate) +
+                    " 08:00 to " +
+                    formatter.format(addDays(startDate, DAYS_WIDE)) +
+                    " 08:00.";
+
+                const pageCount = Math.ceil(HOURS_PER_DAY / HOURS_PER_PAGE);
+
+                for (let pageIndex = 0; pageIndex < pageCount; pageIndex++) {
+                    const pageHours = hourData.slice(
+                        pageIndex * HOURS_PER_PAGE,
+                        (pageIndex + 1) * HOURS_PER_PAGE
+                    );
+
+                    const section = document.createElement("section");
+                    section.className =
+                        "roster-page" + (pageIndex > 0 ? " page-break" : "");
+
+                    const caption = document.createElement("div");
+                    caption.className = "page-caption";
+                    caption.textContent =
+                        snapshot.teamName +
+                        " — Page " + (pageIndex + 1) + " of " + pageCount +
+                        " · " + formatHour(pageHours[0].displayHour) +
+                        " to " +
+                        formatHourEnd(pageHours[pageHours.length - 1].displayHour) +
+                        " · " + rangeText;
+
+                    const table = createRosterTable(days);
+                    const tbody = document.createElement("tbody");
+
+                    pageHours.forEach(hour => appendHourRows(tbody, hour));
+
+                    table.appendChild(tbody);
+
+                    const wrapper = document.createElement("div");
+                    wrapper.className = "roster-wrapper";
+                    wrapper.appendChild(table);
+
+                    section.append(caption, wrapper);
+                    pagesElement.appendChild(section);
+                }
+
+                document.getElementById("rosterRangeText").textContent =
+                    rangeText;
+
+                document.getElementById("snapshotText").textContent =
+                    "Snapshot generated " +
+                    new Date(snapshot.generatedAt)
+                        .toLocaleString("en-AU") +
+                    ". Refresh the main page and reopen this window for updates.";
+            }
+
+            function showSelectedRoster() {
+                const startDate = getSelectedStartDate();
+
+                if (!startDate) return;
+
+                buildRoster(startDate);
+            }
+
+            document.getElementById("applyDatesButton")
+                .addEventListener("click", showSelectedRoster);
+
+            document.getElementById("nextWeekButton")
+                .addEventListener("click", () => {
+                    const startDate = getSelectedStartDate();
+
+                    if (!startDate) return;
+
+                    const nextStartDate = addDays(startDate, DAYS_WIDE);
+
+                    document.getElementById("rosterStartDate").value =
+                        formatDateForInput(nextStartDate);
+
+                    buildRoster(nextStartDate);
+                });
+
+            document.getElementById("printButton")
+                .addEventListener("click", () => window.print());
+
+            document.getElementById("closeButton")
+                .addEventListener("click", () => window.close());
+
+            showSelectedRoster();
+        }
+
         function setLoading(loading) {
             isLoading = loading;
 
             refreshButton.disabled = loading;
             viewRosterButton.disabled = loading || !hasLoadedBookings;
+            countryRosterViewButton.disabled = loading || !hasLoadedBookings;
 
             updateRosterManagerControls();
 
