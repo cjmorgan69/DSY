@@ -3168,8 +3168,10 @@ Coverage excludes observers.
                 // The successful save response includes the updated roster.
                 applyRosterSnapshot(data);
 
-                // Keep the selected date, start time and finish time.
-                // The user can change just the date for their next booking.
+                // Clear the date but keep the start and finish times, so the
+                // just-booked shift does not show as a clash. The user picks
+                // the next date to book the same times again.
+                bookingDateInput.value = "";
 
                 // Flexibility remains shift-specific and resets to no restriction.
                 restrictionSelect.value = "N";
