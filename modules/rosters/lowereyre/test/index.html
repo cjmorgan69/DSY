@@ -1867,11 +1867,15 @@ Coverage excludes observers.
                     }
 
                     if (data.success === false || data.error) {
-                        finish(
-                            new Error(
-                                data.error || "The roster request was rejected."
-                            )
+                        const rejection = new Error(
+                            data.error || "The roster request was rejected."
                         );
+
+                        // The server answered, so this is a definite rejection
+                        // rather than a lost or timed-out request.
+                        rejection.serverRejected = true;
+
+                        finish(rejection);
                         return;
                     }
 
@@ -3107,24 +3111,16 @@ Coverage excludes observers.
             }
 
             setLoading(true);
-            setConnectionStatus(
-                "Checking the latest roster before saving…",
-                ""
-            );
-
             let saveAttempted = false;
             let saveConfirmed = false;
 
             try {
                 /*
-                 * Refresh before checking availability and hard-copy status.
-                 * The backend must still enforce capacity atomically to
-                 * prevent simultaneous conflicting bookings.
-                 *
-                 * Both are now loaded together in one request.
+                 * No pre-save roster reload: the backend re-checks overlaps,
+                 * capacity and the recruit place under its lock before
+                 * writing, and returns the updated roster. The local check
+                 * below uses the roster already on screen.
                  */
-                await loadBookingsAfterSave();
-
                 const latestSelection = readShiftSelection();
 
                 if (!latestSelection.valid) {
@@ -3195,7 +3191,7 @@ Coverage excludes observers.
                     message =
                         "Your booking was saved, but the roster could not be refreshed. " +
                         "Use Refresh roster; do not submit the booking again.";
-                } else if (saveAttempted) {
+                } else if (saveAttempted && !error.serverRejected) {
                     hasLoadedBookings = false;
 
                     message +=
@@ -3206,6 +3202,17 @@ Coverage excludes observers.
                 // Genuine backend errors must not be hidden.
                 setConnectionStatus(message, "error");
                 showToast(message);
+
+                if (error.serverRejected) {
+                    // The roster on screen was out of date (for example,
+                    // someone else booked first). Reload it so the
+                    // timeline shows why.
+                    try {
+                        await loadBookingsAfterSave();
+                    } catch (refreshError) {
+                        console.error("Roster reload failed:", refreshError);
+                    }
+                }
             } finally {
                 setLoading(false);
             }
@@ -3223,8 +3230,8 @@ Coverage excludes observers.
             let cancellationConfirmed = false;
 
             try {
-                await loadRosterSubmissionStatus();
-
+                // The backend decides whether Country Rostering must be
+                // notified, so no status fetch is needed before confirming.
                 const message =
                     `Cancel ${event.user}'s shift from ` +
                     `${formatDateTime(new Date(event.start))} to ` +
@@ -3262,7 +3269,7 @@ Coverage excludes observers.
                     message =
                         "The shift was cancelled, but the roster could not be refreshed. " +
                         "Please use Refresh roster.";
-                } else if (cancellationAttempted) {
+                } else if (cancellationAttempted && !error.serverRejected) {
                     hasLoadedBookings = false;
 
                     message +=
