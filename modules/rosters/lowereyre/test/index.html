@@ -3184,30 +3184,6 @@ Coverage excludes observers.
                 // No extra reload: the save response supplied the roster.
                 showLoadedConnectionStatus();
 
-                              const dayKey =
-                    formatDateKey(
-                        startOfRosterDay(
-                            latestSelection.startDate
-                        )
-                    );
-
-                requestAnimationFrame(() => {
-                    const target = document.querySelector(
-                        `.day[data-date="${dayKey}"]`
-                    );
-
-                    if (target) {
-                        target.classList.add("open");
-
-                        target.querySelector(".day-heading")
-                            ?.setAttribute("aria-expanded", "true");
-
-                        target.scrollIntoView({
-                            behavior: "smooth",
-                            block: "start"
-                        });
-                    }
-                });
             } catch (error) {
                 console.error("Booking operation failed:", error);
 
