@@ -928,6 +928,44 @@
             margin-top: 1rem;
             margin-bottom: 0;
         }
+         .confetti-canvas {
+ position: fixed;
+ inset: 0;
+ z-index: 3000;
+ width: 100vw;
+ height: 100vh;
+ pointer-events: none;
+ }
+ .thank-you-banner {
+ position: fixed;
+ top: 50%;
+ left: 50%;
+ z-index: 3001;
+ max-width: calc(100vw - 2rem);
+ padding: 1.4rem 2rem;
+ color: white;
+ text-align: center;
+ border-radius: var(--radius);
+ background: var(--primary-dark);
+ box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+ opacity: 0;
+ pointer-events: none;
+ transform: translate(-50%, -50%) scale(0.85);
+ transition: opacity 0.3s ease, transform 0.3s ease;
+ }
+ .thank-you-banner.show {
+ opacity: 1;
+ transform: translate(-50%, -50%) scale(1);
+ }
+ .thank-you-banner .thank-you-title {
+ margin: 0;
+ font-size: 1.6rem;
+ font-weight: 800;
+ }
+ .thank-you-banner .thank-you-text {
+ margin: 0.35rem 0 0;
+ font-size: 0.95rem;
+ }
     </style>
 </head>
 
@@ -3139,6 +3177,8 @@ Coverage excludes observers.
                 // Name and clinical level continue to persist.
                 lastCentralRosteringWarningKey = "";
 
+                 showThankYouConfetti();
+ showHardCopyChangeOutcome("booked", data);
                 showHardCopyChangeOutcome("booked", data);
 
                 // No extra reload: the save response supplied the roster.
@@ -6431,6 +6471,93 @@ Coverage excludes observers.
                 toast.classList.remove("show");
             }, 5000);
         }
+         /*
+ * Thank-you message with confetti.
+ * Shown only after a confirmed booking, never for cancellations.
+ */
+ let thankYouTimer;
+ let confettiFrame;
+ function showThankYouConfetti() {
+ // Respect users who have asked their device to reduce motion.
+ const reduceMotion =
+ window.matchMedia &&
+ window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+ document.querySelector(".thank-you-banner")?.remove();
+ document.querySelector(".confetti-canvas")?.remove();
+ cancelAnimationFrame(confettiFrame);
+ clearTimeout(thankYouTimer);
+ const banner = document.createElement("div");
+ banner.className = "thank-you-banner";
+ banner.setAttribute("role", "status");
+ banner.innerHTML =
+ '<p class="thank-you-title">Thank you! 🎉</p>' +
+ '<p class="thank-you-text">Your shift has been booked.</p>';
+ document.body.appendChild(banner);
+ requestAnimationFrame(() => banner.classList.add("show"));
+ const removeAll = () => {
+ banner.classList.remove("show");
+ setTimeout(() => banner.remove(), 300);
+ };
+ if (reduceMotion) {
+ thankYouTimer = setTimeout(removeAll, 3000);
+ return;
+ }
+ const canvas = document.createElement("canvas");
+ canvas.className = "confetti-canvas";
+ canvas.setAttribute("aria-hidden", "true");
+ document.body.appendChild(canvas);
+ const context = canvas.getContext("2d");
+ const ratio = window.devicePixelRatio || 1;
+ canvas.width = window.innerWidth * ratio;
+ canvas.height = window.innerHeight * ratio;
+ context.scale(ratio, ratio);
+ const colours = [
+ "#22c55e", "#16a34a", "#f59e0b",
+ "#0284c7", "#dc2626", "#a855f7", "#ec4899"
+ ];
+ const width = window.innerWidth;
+ const height = window.innerHeight;
+ const pieces = Array.from({ length: 140 }, () => ({
+ x: Math.random() * width,
+ y: -20 - Math.random() * height * 0.5,
+ size: 6 + Math.random() * 6,
+ colour: colours[Math.floor(Math.random() * colours.length)],
+ speedY: 2 + Math.random() * 3.5,
+ speedX: -1.5 + Math.random() * 3,
+ rotation: Math.random() * Math.PI * 2,
+ spin: -0.2 + Math.random() * 0.4
+ }));
+ const startTime = performance.now();
+ const duration = 3500;
+ function frame(now) {
+ const elapsed = now - startTime;
+ context.clearRect(0, 0, width, height);
+ pieces.forEach(piece => {
+ piece.x += piece.speedX;
+ piece.y += piece.speedY;
+ piece.rotation += piece.spin;
+ context.save();
+ context.translate(piece.x, piece.y);
+ context.rotate(piece.rotation);
+ context.fillStyle = piece.colour;
+ context.globalAlpha = Math.max(0, 1 - elapsed / duration);
+ context.fillRect(
+ -piece.size / 2,
+ -piece.size / 2,
+ piece.size,
+ piece.size * 0.6
+ );
+ context.restore();
+ });
+ if (elapsed < duration) {
+ confettiFrame = requestAnimationFrame(frame);
+ } else {
+ canvas.remove();
+ }
+ }
+ confettiFrame = requestAnimationFrame(frame);
+ thankYouTimer = setTimeout(removeAll, 3200);
+ }
     </script>
 </body>
 </html>
