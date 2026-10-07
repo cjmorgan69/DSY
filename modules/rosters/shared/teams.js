@@ -20,15 +20,18 @@ const CENTRALEYRE_API =
 const WESTCOAST_API =
     "https://script.google.com/macros/s/AKfycbxrcfdjF7kUZQBkHuw2mqrYXhqz54VrK9Agv-zzOyBG8BbAbC-lrDkY6zGK91VAwB_z/exec";
 
-window.DSY_ROSTER_TEAMS = Object.freeze({
+/*
+ * Optional page features, on for every team (see roster.js):
+ * - savedRoster:     show the last roster at once while updating
+ * - loadingMessages: quote or tip while the roster loads
+ * To try a new feature on one team first, give that team its own
+ * "features" list instead.
+ */
+const STANDARD_FEATURES = ["savedRoster", "loadingMessages"];
+
+const ROSTER_TEAM_LIST = {
     // Lower Eyre (plus the test roster)
-    test: {
-        name: "Summer Bay",
-        cluster: "Lower Eyre",
-        apiUrl: TEST_API,
-        // Trial features; add to other teams once happy.
-        features: ["savedRoster", "loadingMessages"]
-    },
+    test: { name: "Summer Bay", cluster: "Lower Eyre", apiUrl: TEST_API },
     tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     cummins: { name: "Cummins", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
@@ -45,4 +48,13 @@ window.DSY_ROSTER_TEAMS = Object.freeze({
     port_kenny: { name: "Port Kenny", cluster: "West Coast", apiUrl: WESTCOAST_API },
     streakybay: { name: "Streaky Bay", cluster: "West Coast", apiUrl: WESTCOAST_API },
     wudinna: { name: "Wudinna", cluster: "West Coast", apiUrl: WESTCOAST_API }
-});
+};
+
+window.DSY_ROSTER_TEAMS = Object.freeze(
+    Object.fromEntries(
+        Object.entries(ROSTER_TEAM_LIST).map(([id, team]) => [
+            id,
+            Object.freeze({ features: STANDARD_FEATURES, ...team })
+        ])
+    )
+);
