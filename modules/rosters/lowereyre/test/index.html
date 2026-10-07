@@ -2676,101 +2676,50 @@ Coverage excludes observers.
         }
 
         /*
-         * Called from the Country Rostering PDF window after the manager
-         * confirms and enters the password there. Moves the hard-copy cut-off
-         * to the end of the printed 7 days. Everything before the cut-off is
-         * treated as sent, so only moving it backwards is refused.
+         * The Country Rostering PDF window saves the hard-copy cut-off itself,
+         * because on phones and tablets it opens as a separate tab and this
+         * page is paused in the background. It then tells this page, either
+         * directly or (if this page was paused) through a storage event that
+         * arrives when the page is next shown.
          */
-        async function markCountryRosterSentUntil(sentUntilIso, managerPassword) {
-            if (isLoading) {
-                return {
-                    ok: false,
-                    message:
-                        "The main roster page is busy. Wait a moment, then try again."
-                };
-            }
+        const COUNTRY_ROSTER_SENT_STORAGE_KEY =
+            "dsyRosterSentUpdate:" + normaliseName(TEAM_NAME);
 
-            const sentUntil = new Date(sentUntilIso);
-
-            if (!Number.isFinite(sentUntil.getTime())) {
-                return { ok: false, message: "The cut-off date is invalid." };
-            }
-
-            setLoading(true);
-
-            let updateAttempted = false;
-
+        function applyCountryRosterSentResult(result) {
             try {
-                await loadRosterSubmissionStatus();
+                applyRosterSubmissionResult(result);
 
-                if (rosterSentUntil && sentUntil < rosterSentUntil) {
-                    throw new Error(
-                        "The roster is already marked as sent up until " +
-                        formatRosterSentUntilDateTime(rosterSentUntil) +
-                        ", which is later than the end of these 7 days. " +
-                        "The cut-off cannot be moved backwards."
+                if (rosterSentUntil) {
+                    showToast(
+                        "Hard copy marked as sent up until " +
+                        formatRosterSentUntilDateTime(rosterSentUntil) + "."
                     );
                 }
 
-                if (
-                    rosterSentUntil &&
-                    sentUntil.getTime() === rosterSentUntil.getTime()
-                ) {
-                    return {
-                        ok: true,
-                        sentUntil: rosterSentUntil.toISOString(),
-                        message:
-                            "Already marked as sent up until " +
-                            formatRosterSentUntilDateTime(rosterSentUntil) + "."
-                    };
-                }
-
-                updateAttempted = true;
-
-                const result = await callRosterApi("markRosterSent", {
-                    managerPassword,
-                    sentUntil: sentUntil.toISOString()
-                });
-
-                applyRosterSubmissionResult(result);
-
-                showToast(
-                    "Hard copy marked as sent up until " +
-                    formatRosterSentUntilDateTime(rosterSentUntil) + "."
-                );
-
-                if (hasLoadedBookings) {
+                if (hasLoadedBookings && !isLoading) {
                     showLoadedConnectionStatus();
                 }
-
-                return {
-                    ok: true,
-                    sentUntil: rosterSentUntil.toISOString(),
-                    message:
-                        "Marked as sent up until " +
-                        formatRosterSentUntilDateTime(rosterSentUntil) + "."
-                };
             } catch (error) {
-                console.error("Marking the PDF period as sent failed:", error);
-
-                let message = error.message ||
-                    "Unable to update the hard-copy sent cut-off.";
-
-                if (updateAttempted && !error.serverRejected) {
-                    invalidateRosterSubmissionStatus();
-
-                    message +=
-                        " The server may still have saved it. Refresh the main " +
-                        "roster page and check the hard-copy status before retrying.";
-                }
-
-                return { ok: false, message };
-            } finally {
-                setLoading(false);
+                console.error("Unable to apply the new hard-copy status:", error);
+                invalidateRosterSubmissionStatus();
             }
         }
 
-        window.markCountryRosterSentUntil = markCountryRosterSentUntil;
+        window.applyCountryRosterSentResult = applyCountryRosterSentResult;
+
+        window.addEventListener("storage", event => {
+            if (event.key !== COUNTRY_ROSTER_SENT_STORAGE_KEY || !event.newValue) {
+                return;
+            }
+
+            try {
+                applyCountryRosterSentResult(
+                    JSON.parse(event.newValue).result
+                );
+            } catch (error) {
+                console.error("Unable to read the hard-copy update:", error);
+            }
+        });
 
         async function resetHardCopyRosterStatus() {
             if (isLoading) return;
@@ -5478,6 +5427,8 @@ Coverage excludes observers.
                     submissionStatusLoaded && rosterSentUntil
                         ? rosterSentUntil.toISOString()
                         : null,
+                apiUrl: APPS_SCRIPT_URL,
+                sentStorageKey: COUNTRY_ROSTER_SENT_STORAGE_KEY,
                 generatedAt: new Date().toISOString()
             };
 
@@ -6436,24 +6387,96 @@ Coverage excludes observers.
                 setSentStatus(current, "");
             }
 
+            /*
+             * Same JSONP request format as the main page. The PDF window
+             * makes the request itself so it works even when the main page
+             * is a paused background tab (phones and tablets).
+             */
+            function callRosterApi(action, payload) {
+                return new Promise((resolve, reject) => {
+                    const callbackName =
+                        "countryRosterCallback_" + Date.now() + "_" +
+                        Math.random().toString(36).slice(2);
+
+                    const script = document.createElement("script");
+                    let timer;
+
+                    function finish(error, data) {
+                        clearTimeout(timer);
+                        script.remove();
+                        delete window[callbackName];
+
+                        if (error) reject(error);
+                        else resolve(data);
+                    }
+
+                    window[callbackName] = data => {
+                        if (!data || typeof data !== "object") {
+                            finish(new Error("Apps Script returned an invalid response."));
+                            return;
+                        }
+
+                        if (data.success === false || data.error) {
+                            const rejection = new Error(
+                                data.error || "The request was rejected."
+                            );
+                            rejection.serverRejected = true;
+                            finish(rejection);
+                            return;
+                        }
+
+                        finish(null, data);
+                    };
+
+                    script.onerror = () => finish(
+                        new Error("Failed to reach Apps Script. Check the connection.")
+                    );
+
+                    timer = setTimeout(() => finish(
+                        new Error("The request timed out.")
+                    ), 60000);
+
+                    script.src =
+                        snapshot.apiUrl +
+                        "?callback=" + encodeURIComponent(callbackName) +
+                        "&payload=" + encodeURIComponent(JSON.stringify({
+                            ...payload,
+                            action,
+                            team: snapshot.teamName
+                        }));
+
+                    document.body.appendChild(script);
+                });
+            }
+
+            function notifyMainPage(result) {
+                // Direct update when the main page is running.
+                try {
+                    if (
+                        window.opener &&
+                        !window.opener.closed &&
+                        typeof window.opener.applyCountryRosterSentResult === "function"
+                    ) {
+                        window.opener.applyCountryRosterSentResult(result);
+                    }
+                } catch (error) {
+                    console.warn("Main page could not be updated directly:", error);
+                }
+
+                // Delivered when a paused main page is shown again.
+                try {
+                    localStorage.setItem(
+                        snapshot.sentStorageKey,
+                        JSON.stringify({ result, at: Date.now() })
+                    );
+                } catch (error) {
+                    console.warn("Main page update could not be stored:", error);
+                }
+            }
+
             async function markDisplayedPeriodSent() {
                 const cutOff = getDisplayedCutOff();
                 if (!cutOff) return;
-
-                const opener = window.opener;
-
-                if (
-                    !opener ||
-                    opener.closed ||
-                    typeof opener.markCountryRosterSentUntil !== "function"
-                ) {
-                    setSentStatus(
-                        "The main roster page is no longer open. Open this view " +
-                        "again from the roster page to mark it as sent.",
-                        "error"
-                    );
-                    return;
-                }
 
                 const confirmed = window.confirm(
                     "Mark the hard-copy roster for " + snapshot.teamName +
@@ -6475,27 +6498,45 @@ Coverage excludes observers.
                 button.disabled = true;
                 setSentStatus("Saving…", "");
 
-                let result;
-
                 try {
-                    result = await opener.markCountryRosterSentUntil(
-                        cutOff.toISOString(),
-                        managerPassword
-                    );
-                } catch (error) {
-                    result = {
-                        ok: false,
-                        message: error.message || "Unable to save the cut-off."
-                    };
-                }
+                    const result = await callRosterApi("markRosterSent", {
+                        managerPassword,
+                        sentUntil: cutOff.toISOString()
+                    });
 
-                if (result.ok) {
-                    knownSentUntil = new Date(result.sentUntil);
+                    const saved = new Date(result?.rosterSubmission?.sentUntil);
+
+                    if (!Number.isFinite(saved.getTime())) {
+                        throw new Error(
+                            "Apps Script did not return the saved cut-off. " +
+                            "Refresh the main roster page to check it."
+                        );
+                    }
+
+                    knownSentUntil = saved;
+                    notifyMainPage(result);
                     updateSentControls();
-                    setSentStatus(result.message, "ok");
-                } else {
+
+                    const message =
+                        "Marked as sent up until " +
+                        cutOffFormatter.format(saved) + ".";
+
+                    setSentStatus(message, "ok");
+                    window.alert(message);
+                } catch (error) {
+                    let message = error.message ||
+                        "Unable to save the hard-copy cut-off.";
+
+                    if (!error.serverRejected) {
+                        message +=
+                            " The server may still have saved it. Refresh the " +
+                            "main roster page and check the hard-copy status " +
+                            "before trying again.";
+                    }
+
                     updateSentControls();
-                    setSentStatus(result.message, "error");
+                    setSentStatus(message, "error");
+                    window.alert(message);
                 }
             }
 
