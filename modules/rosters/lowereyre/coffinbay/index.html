@@ -928,6 +928,7 @@
             margin-top: 1rem;
             margin-bottom: 0;
         }
+
          .confetti-canvas {
  position: fixed;
  inset: 0;
@@ -1130,21 +1131,26 @@
                 <summary>Manager controls</summary>
 
                 <div class="manager-controls-content">
+                    <div class="action-bar">
+                        <button
+                            id="countryRosterViewButton"
+                            class="btn-primary"
+                            type="button"
+                            disabled
+                        >
+                            Open Country Rostering PDF view — 7 days
+                        </button>
+                    </div>
+
                     <p class="field-help">
-                        Manage the point up to which this team's hard-copy roster has been
-                        sent to Country Rostering. Saving, editing or resetting the status
-                        requires the roster manager password.
+                        Print the 7-day roster for Country Rostering from the PDF view, then
+                        use its <strong>Mark as sent</strong> button to move the hard-copy
+                        cut-off to the end of those 7 days. Use the buttons below only to
+                        correct or reset the cut-off. Each change requires the roster
+                        manager password.
                     </p>
 
                     <div class="action-bar">
-                        <button
-                            id="markRosterSentButton"
-                            class="btn-secondary"
-                            type="button"
-                        >
-                            Mark hard copy as sent
-                        </button>
-
                         <button
                             id="editRosterSentUntilButton"
                             class="btn-secondary"
@@ -1161,15 +1167,6 @@
                             disabled
                         >
                             Reset sent status
-                        </button>
-
-                        <button
-                            id="countryRosterViewButton"
-                            class="btn-secondary"
-                            type="button"
-                            disabled
-                        >
-                            Open Country Rostering PDF view — 7 days
                         </button>
                     </div>
 
@@ -1454,7 +1451,7 @@ Coverage excludes observers.
 
         const TEAM_NAME = "Coffin Bay";
 
-     const APPS_SCRIPT_URL =
+      const APPS_SCRIPT_URL =
     "https://script.google.com/macros/s/AKfycbxEboPS9reZI5OpUMdlriag0QeAJzIyXFZ2Jy0z_4qBJLEK054R5bDcJgyWAW2YSP6l/exec";
 
         const MAX_CREW = 3;
@@ -1534,8 +1531,6 @@ Coverage excludes observers.
             document.getElementById("viewRosterButton");
         const countryRosterViewButton =
             document.getElementById("countryRosterViewButton");
-        const markRosterSentButton =
-            document.getElementById("markRosterSentButton");
         const calendarElement =
             document.getElementById("calendarElement");
         const connectionStatus =
@@ -1663,10 +1658,6 @@ Coverage excludes observers.
                 "click",
                 openCountryRosterView
             );
-
-            markRosterSentButton.addEventListener("click", () => {
-                void openRosterSentUntilEditor(false);
-            });
 
             document.getElementById("editRosterSentUntilButton")
                 .addEventListener("click", () => {
@@ -1866,11 +1857,15 @@ Coverage excludes observers.
                     }
 
                     if (data.success === false || data.error) {
-                        finish(
-                            new Error(
-                                data.error || "The roster request was rejected."
-                            )
+                        const rejection = new Error(
+                            data.error || "The roster request was rejected."
                         );
+
+                        // The server answered, so this is a definite rejection
+                        // rather than a lost or timed-out request.
+                        rejection.serverRejected = true;
+
+                        finish(rejection);
                         return;
                     }
 
@@ -2258,8 +2253,6 @@ Coverage excludes observers.
             const hasSavedCutOff =
                 submissionStatusLoaded && Boolean(rosterSentUntil);
 
-            markRosterSentButton.disabled = isLoading;
-
             document.getElementById("editRosterSentUntilButton").disabled =
                 isLoading || !hasSavedCutOff;
 
@@ -2465,7 +2458,7 @@ Coverage excludes observers.
             if (isLoading) return;
 
             clearRosterSentUntilEditor();
-            markRosterSentButton.focus();
+            document.getElementById("editRosterSentUntilButton").focus();
         }
 
         function clearRosterSentUntilEditor() {
@@ -2572,7 +2565,7 @@ Coverage excludes observers.
                 if (editing && !rosterSentUntil) {
                     throw new Error(
                         "The hard-copy sent status has been reset. " +
-                        "Close this editor and choose Mark hard copy as sent."
+                        "Close this editor and use Mark as sent in the Country Rostering PDF view."
                     );
                 }
 
@@ -2669,6 +2662,52 @@ Coverage excludes observers.
                 setLoading(false);
             }
         }
+
+        /*
+         * The Country Rostering PDF window saves the hard-copy cut-off itself,
+         * because on phones and tablets it opens as a separate tab and this
+         * page is paused in the background. It then tells this page, either
+         * directly or (if this page was paused) through a storage event that
+         * arrives when the page is next shown.
+         */
+        const COUNTRY_ROSTER_SENT_STORAGE_KEY =
+            "dsyRosterSentUpdate:" + normaliseName(TEAM_NAME);
+
+        function applyCountryRosterSentResult(result) {
+            try {
+                applyRosterSubmissionResult(result);
+
+                if (rosterSentUntil) {
+                    showToast(
+                        "Hard copy marked as sent up until " +
+                        formatRosterSentUntilDateTime(rosterSentUntil) + "."
+                    );
+                }
+
+                if (hasLoadedBookings && !isLoading) {
+                    showLoadedConnectionStatus();
+                }
+            } catch (error) {
+                console.error("Unable to apply the new hard-copy status:", error);
+                invalidateRosterSubmissionStatus();
+            }
+        }
+
+        window.applyCountryRosterSentResult = applyCountryRosterSentResult;
+
+        window.addEventListener("storage", event => {
+            if (event.key !== COUNTRY_ROSTER_SENT_STORAGE_KEY || !event.newValue) {
+                return;
+            }
+
+            try {
+                applyCountryRosterSentResult(
+                    JSON.parse(event.newValue).result
+                );
+            } catch (error) {
+                console.error("Unable to read the hard-copy update:", error);
+            }
+        });
 
         async function resetHardCopyRosterStatus() {
             if (isLoading) return;
@@ -3106,24 +3145,16 @@ Coverage excludes observers.
             }
 
             setLoading(true);
-            setConnectionStatus(
-                "Checking the latest roster before saving…",
-                ""
-            );
-
             let saveAttempted = false;
             let saveConfirmed = false;
 
             try {
                 /*
-                 * Refresh before checking availability and hard-copy status.
-                 * The backend must still enforce capacity atomically to
-                 * prevent simultaneous conflicting bookings.
-                 *
-                 * Both are now loaded together in one request.
+                 * No pre-save roster reload: the backend re-checks overlaps,
+                 * capacity and the recruit place under its lock before
+                 * writing, and returns the updated roster. The local check
+                 * below uses the roster already on screen.
                  */
-                await loadBookingsAfterSave();
-
                 const latestSelection = readShiftSelection();
 
                 if (!latestSelection.valid) {
@@ -3179,8 +3210,7 @@ Coverage excludes observers.
                 // Name and clinical level continue to persist.
                 lastCentralRosteringWarningKey = "";
 
-                 showThankYouConfetti();
- showHardCopyChangeOutcome("booked", data);
+               showThankYouConfetti();
                 showHardCopyChangeOutcome("booked", data);
 
                 // No extra reload: the save response supplied the roster.
@@ -3195,7 +3225,7 @@ Coverage excludes observers.
                     message =
                         "Your booking was saved, but the roster could not be refreshed. " +
                         "Use Refresh roster; do not submit the booking again.";
-                } else if (saveAttempted) {
+                } else if (saveAttempted && !error.serverRejected) {
                     hasLoadedBookings = false;
 
                     message +=
@@ -3206,6 +3236,17 @@ Coverage excludes observers.
                 // Genuine backend errors must not be hidden.
                 setConnectionStatus(message, "error");
                 showToast(message);
+
+                if (error.serverRejected) {
+                    // The roster on screen was out of date (for example,
+                    // someone else booked first). Reload it so the
+                    // timeline shows why.
+                    try {
+                        await loadBookingsAfterSave();
+                    } catch (refreshError) {
+                        console.error("Roster reload failed:", refreshError);
+                    }
+                }
             } finally {
                 setLoading(false);
             }
@@ -3223,8 +3264,8 @@ Coverage excludes observers.
             let cancellationConfirmed = false;
 
             try {
-                await loadRosterSubmissionStatus();
-
+                // The backend decides whether Country Rostering must be
+                // notified, so no status fetch is needed before confirming.
                 const message =
                     `Cancel ${event.user}'s shift from ` +
                     `${formatDateTime(new Date(event.start))} to ` +
@@ -3262,7 +3303,7 @@ Coverage excludes observers.
                     message =
                         "The shift was cancelled, but the roster could not be refreshed. " +
                         "Please use Refresh roster.";
-                } else if (cancellationAttempted) {
+                } else if (cancellationAttempted && !error.serverRejected) {
                     hasLoadedBookings = false;
 
                     message +=
@@ -5370,6 +5411,12 @@ Coverage excludes observers.
                 hoursPerDay: HOURS_PER_DAY,
                 maxCrew: MAX_CREW,
                 operationalRules: OPERATIONAL_RULES,
+                rosterSentUntil:
+                    submissionStatusLoaded && rosterSentUntil
+                        ? rosterSentUntil.toISOString()
+                        : null,
+                apiUrl: APPS_SCRIPT_URL,
+                sentStorageKey: COUNTRY_ROSTER_SENT_STORAGE_KEY,
                 generatedAt: new Date().toISOString()
             };
 
@@ -5421,6 +5468,57 @@ Coverage excludes observers.
             color: #666;
             font-size: 0.9rem;
             margin-top: 0.3rem;
+        }
+
+        .mark-sent-panel {
+            display: grid;
+            gap: 0.75rem;
+            max-width: 34rem;
+            margin: 0 0 1rem;
+            padding: 1rem;
+            border: 2px solid #22c55e;
+            border-radius: 8px;
+            background: #f0fdf4;
+        }
+
+        .mark-sent-panel[hidden] {
+            display: none;
+        }
+
+        .mark-sent-panel p {
+            font-weight: 600;
+        }
+
+        .mark-sent-panel input {
+            display: block;
+            width: 100%;
+            margin-top: 0.3rem;
+            padding: 0.6rem;
+            font-size: 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+
+        .mark-sent-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .sent-status {
+            margin: -0.25rem 0 1rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .sent-status.ok {
+            color: #15803d;
+            font-weight: 600;
+        }
+
+        .sent-status.error {
+            color: #b91c1c;
+            font-weight: 600;
         }
 
         .controls {
@@ -5653,6 +5751,8 @@ Coverage excludes observers.
             }
 
             .controls,
+            .sent-status,
+            .mark-sent-panel,
             .print-help {
                 display: none;
             }
@@ -5782,6 +5882,14 @@ Coverage excludes observers.
             </button>
 
             <button
+                id="markSentButton"
+                class="btn btn-primary"
+                type="button"
+            >
+                Mark as sent to Country Rostering
+            </button>
+
+            <button
                 id="closeButton"
                 class="btn btn-secondary"
                 type="button"
@@ -5789,6 +5897,40 @@ Coverage excludes observers.
                 Close
             </button>
         </div>
+
+        <form id="markSentPanel" class="mark-sent-panel" hidden>
+            <p id="markSentQuestion"></p>
+
+            <label class="date-field" for="markSentPassword">
+                Roster manager password
+                <input
+                    id="markSentPassword"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                >
+            </label>
+
+            <div class="mark-sent-actions">
+                <button
+                    id="confirmMarkSentButton"
+                    class="btn btn-primary"
+                    type="submit"
+                >
+                    Confirm and mark as sent
+                </button>
+
+                <button
+                    id="cancelMarkSentButton"
+                    class="btn btn-secondary"
+                    type="button"
+                >
+                    Cancel
+                </button>
+            </div>
+        </form>
+
+        <p id="sentStatus" class="sent-status" aria-live="polite"></p>
 
         <p class="print-help">
             To save as PDF: choose <strong>Save as PDF</strong>, paper size
@@ -6163,6 +6305,9 @@ Coverage excludes observers.
 
                     document.getElementById("snapshotText").textContent = "";
 
+                    displayedStartDate = null;
+                    updateSentControls();
+
                     return;
                 }
 
@@ -6219,6 +6364,10 @@ Coverage excludes observers.
                 document.getElementById("rosterRangeText").textContent =
                     rangeText;
 
+                displayedStartDate = startDate;
+                closeMarkSentPanel();
+                updateSentControls();
+
                 document.getElementById("snapshotText").textContent =
                     "Snapshot generated " +
                     new Date(snapshot.generatedAt)
@@ -6233,6 +6382,255 @@ Coverage excludes observers.
 
                 buildRoster(startDate);
             }
+
+            /*
+             * Hard-copy cut-off: the end of the 7 days on screen.
+             * Everything before the cut-off counts as sent.
+             */
+            let displayedStartDate = null;
+            let knownSentUntil = snapshot.rosterSentUntil
+                ? new Date(snapshot.rosterSentUntil)
+                : null;
+
+            const cutOffFormatter = new Intl.DateTimeFormat("en-AU", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+
+            function getDisplayedCutOff() {
+                if (!displayedStartDate) return null;
+
+                const cutOff = addDays(displayedStartDate, DAYS_WIDE);
+                cutOff.setHours(ROSTER_START_HOUR, 0, 0, 0);
+                return cutOff;
+            }
+
+            function setSentStatus(text, kind) {
+                const status = document.getElementById("sentStatus");
+                status.className = "sent-status" + (kind ? " " + kind : "");
+                status.textContent = text;
+            }
+
+            function updateSentControls() {
+                const button = document.getElementById("markSentButton");
+                const cutOff = getDisplayedCutOff();
+
+                const current = knownSentUntil
+                    ? "Hard copy currently marked as sent up until " +
+                      cutOffFormatter.format(knownSentUntil) + "."
+                    : "No hard-copy cut-off is currently set.";
+
+                if (!cutOff) {
+                    button.disabled = true;
+                    setSentStatus(current, "");
+                    return;
+                }
+
+                if (knownSentUntil && cutOff <= knownSentUntil) {
+                    button.disabled = true;
+                    button.textContent = "Already sent up to here";
+                    setSentStatus(current, "");
+                    return;
+                }
+
+                button.disabled = false;
+                button.textContent =
+                    "Mark as sent up until " + cutOffFormatter.format(cutOff);
+                setSentStatus(current, "");
+            }
+
+            /*
+             * Same JSONP request format as the main page. The PDF window
+             * makes the request itself so it works even when the main page
+             * is a paused background tab (phones and tablets).
+             */
+            function callRosterApi(action, payload) {
+                return new Promise((resolve, reject) => {
+                    const callbackName =
+                        "countryRosterCallback_" + Date.now() + "_" +
+                        Math.random().toString(36).slice(2);
+
+                    const script = document.createElement("script");
+                    let timer;
+
+                    function finish(error, data) {
+                        clearTimeout(timer);
+                        script.remove();
+                        delete window[callbackName];
+
+                        if (error) reject(error);
+                        else resolve(data);
+                    }
+
+                    window[callbackName] = data => {
+                        if (!data || typeof data !== "object") {
+                            finish(new Error("Apps Script returned an invalid response."));
+                            return;
+                        }
+
+                        if (data.success === false || data.error) {
+                            const rejection = new Error(
+                                data.error || "The request was rejected."
+                            );
+                            rejection.serverRejected = true;
+                            finish(rejection);
+                            return;
+                        }
+
+                        finish(null, data);
+                    };
+
+                    script.onerror = () => finish(
+                        new Error("Failed to reach Apps Script. Check the connection.")
+                    );
+
+                    timer = setTimeout(() => finish(
+                        new Error("The request timed out.")
+                    ), 60000);
+
+                    script.src =
+                        snapshot.apiUrl +
+                        "?callback=" + encodeURIComponent(callbackName) +
+                        "&payload=" + encodeURIComponent(JSON.stringify({
+                            ...payload,
+                            action,
+                            team: snapshot.teamName
+                        }));
+
+                    document.body.appendChild(script);
+                });
+            }
+
+            function notifyMainPage(result) {
+                // Direct update when the main page is running.
+                try {
+                    if (
+                        window.opener &&
+                        !window.opener.closed &&
+                        typeof window.opener.applyCountryRosterSentResult === "function"
+                    ) {
+                        window.opener.applyCountryRosterSentResult(result);
+                    }
+                } catch (error) {
+                    console.warn("Main page could not be updated directly:", error);
+                }
+
+                // Delivered when a paused main page is shown again.
+                try {
+                    localStorage.setItem(
+                        snapshot.sentStorageKey,
+                        JSON.stringify({ result, at: Date.now() })
+                    );
+                } catch (error) {
+                    console.warn("Main page update could not be stored:", error);
+                }
+            }
+
+            /*
+             * Confirmation and password are asked in an inline form rather
+             * than confirm()/prompt(): Chrome on iPhone blocks those dialogs
+             * in windows opened by the page.
+             */
+            let pendingCutOff = null;
+
+            function closeMarkSentPanel() {
+                pendingCutOff = null;
+                document.getElementById("markSentPanel").hidden = true;
+                document.getElementById("markSentPassword").value = "";
+            }
+
+            function openMarkSentPanel() {
+                const cutOff = getDisplayedCutOff();
+                if (!cutOff) return;
+
+                pendingCutOff = cutOff;
+
+                document.getElementById("markSentQuestion").textContent =
+                    "Mark the hard-copy roster for " + snapshot.teamName +
+                    " as sent to Country Rostering up until " +
+                    cutOffFormatter.format(cutOff) + "? Changes to any " +
+                    "shift starting before then will require Country " +
+                    "Rostering to be notified.";
+
+                const panel = document.getElementById("markSentPanel");
+                panel.hidden = false;
+                setSentStatus("", "");
+
+                panel.scrollIntoView({ block: "nearest" });
+                document.getElementById("markSentPassword").focus();
+            }
+
+            async function submitMarkSent(event) {
+                event.preventDefault();
+
+                const cutOff = pendingCutOff;
+                const managerPassword =
+                    document.getElementById("markSentPassword").value;
+
+                if (!cutOff || !managerPassword) return;
+
+                closeMarkSentPanel();
+
+                const button = document.getElementById("markSentButton");
+                button.disabled = true;
+                setSentStatus("Saving…", "");
+
+                try {
+                    const result = await callRosterApi("markRosterSent", {
+                        managerPassword,
+                        sentUntil: cutOff.toISOString()
+                    });
+
+                    const saved = new Date(result?.rosterSubmission?.sentUntil);
+
+                    if (!Number.isFinite(saved.getTime())) {
+                        throw new Error(
+                            "Apps Script did not return the saved cut-off. " +
+                            "Refresh the main roster page to check it."
+                        );
+                    }
+
+                    knownSentUntil = saved;
+                    notifyMainPage(result);
+                    updateSentControls();
+
+                    setSentStatus(
+                        "Marked as sent up until " +
+                        cutOffFormatter.format(saved) + ".",
+                        "ok"
+                    );
+                } catch (error) {
+                    let message = error.message ||
+                        "Unable to save the hard-copy cut-off.";
+
+                    if (!error.serverRejected) {
+                        message +=
+                            " The server may still have saved it. Refresh the " +
+                            "main roster page and check the hard-copy status " +
+                            "before trying again.";
+                    }
+
+                    updateSentControls();
+                    setSentStatus(message, "error");
+                }
+
+                document.getElementById("sentStatus")
+                    .scrollIntoView({ block: "nearest" });
+            }
+
+            document.getElementById("markSentButton")
+                .addEventListener("click", openMarkSentPanel);
+
+            document.getElementById("markSentPanel")
+                .addEventListener("submit", submitMarkSent);
+
+            document.getElementById("cancelMarkSentButton")
+                .addEventListener("click", closeMarkSentPanel);
 
             document.getElementById("applyDatesButton")
                 .addEventListener("click", showSelectedRoster);
@@ -6449,6 +6847,7 @@ Coverage excludes observers.
                 toast.classList.remove("show");
             }, 5000);
         }
+
          /*
  * Thank-you message with confetti.
  * Shown only after a confirmed booking, never for cancellations.
