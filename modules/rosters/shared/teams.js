@@ -22,7 +22,13 @@ const WESTCOAST_API =
 
 window.DSY_ROSTER_TEAMS = Object.freeze({
     // Lower Eyre (plus the test roster)
-    test: { name: "Summer Bay", cluster: "Lower Eyre", apiUrl: TEST_API },
+    test: {
+        name: "Summer Bay",
+        cluster: "Lower Eyre",
+        apiUrl: TEST_API,
+        // Trial features; add to other teams once happy.
+        features: ["savedRoster", "loadingMessages"]
+    },
     tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     cummins: { name: "Cummins", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },

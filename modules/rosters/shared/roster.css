@@ -175,7 +175,54 @@
         background: var(--green-light);
     }
 
-    .connection-status.error {
+    /* Saved copy of the roster shown while the fresh one loads. */
+.saved-roster-notice {
+    margin: -0.5rem 0 1rem;
+    padding: 0.65rem 1rem;
+    border: 1px dashed #93c5fd;
+    border-radius: 10px;
+    color: #1e3a8a;
+    background: #eff6ff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+/* Quote or tip shown while the roster loads. */
+.loading-card {
+    margin: 0 0 1rem;
+    padding: 0.9rem 1.1rem;
+    border-left: 4px solid var(--primary);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.loading-card-text {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.95rem;
+    font-style: italic;
+    line-height: 1.5;
+    animation: loading-card-in 0.6s ease;
+}
+
+.loading-card-source {
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+
+@keyframes loading-card-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .loading-card-text { animation: none; }
+}
+
+.connection-status.error {
         color: var(--red);
         border-color: #fecaca;
         background: var(--red-light);

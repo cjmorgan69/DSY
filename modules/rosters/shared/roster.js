@@ -56,6 +56,19 @@
             Connecting to the roster…
         </div>
 
+        <div
+            id="savedRosterNotice"
+            class="saved-roster-notice"
+            role="status"
+            aria-live="polite"
+            hidden
+        ></div>
+
+        <figure id="loadingCard" class="loading-card" aria-live="polite" hidden>
+            <blockquote id="loadingCardText" class="loading-card-text"></blockquote>
+            <figcaption id="loadingCardSource" class="loading-card-source"></figcaption>
+        </figure>
+
         <section class="card">
             <button
                 id="viewRosterButton"
@@ -504,6 +517,13 @@ if (!TEAM_CONFIG) {
 
 const TEAM_NAME = TEAM_CONFIG.name;
 
+/*
+ * Optional features switched on per team in teams.js, e.g.
+ *   features: ["savedRoster", "loadingMessages"]
+ * so they can be tried on the test roster before everyone.
+ */
+const TEAM_FEATURES = new Set(TEAM_CONFIG.features || []);
+
 const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
         const MAX_CREW = 3;
@@ -629,6 +649,47 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         const MESSAGE_DELETE_TOKENS_STORAGE_KEY =
             `crew-roster-message-delete-tokens-${TEAM_NAME.toLowerCase()}`;
 
+        /*
+         * Shown while the roster loads (feature "loadingMessages").
+         * Edit freely: [text, source] - leave source "" for none.
+         */
+        const LOADING_MESSAGES = [
+            ["Adopt the pace of nature: her secret is patience.", "Ralph Waldo Emerson"],
+            ["Rivers know this: there is no hurry. We shall get there some day.", "A. A. Milne"],
+            ["The two most powerful warriors are patience and time.", "Leo Tolstoy, War and Peace"],
+            ["Great things are done by a series of small things brought together.", "Vincent van Gogh"],
+            ["Alone we can do so little; together we can do so much.", "Helen Keller"],
+            ["Service to others is the rent you pay for your room here on earth.", "Muhammad Ali"],
+            ["How wonderful it is that nobody need wait a single moment before starting to improve the world.", "Anne Frank"],
+            ["Unless someone like you cares a whole awful lot, nothing is going to get better. It's not.", "Dr. Seuss, The Lorax"],
+            ["Do what you can, with what you have, where you are.", "Theodore Roosevelt"],
+            ["Never doubt that a small group of thoughtful, committed citizens can change the world.", "Margaret Mead (attributed)"],
+            ["No act of kindness, no matter how small, is ever wasted.", "Aesop"],
+            ["Volunteers don't necessarily have the time; they just have the heart.", "Elizabeth Andrew"],
+            ["Every shift you book means someone in your community isn't waiting alone.", ""],
+            ["Country crews cover a lot of ground. Thank you for being part of yours.", ""],
+            ["Good things come to those who wait… and to those who book early.", ""],
+            ["While the roster loads: stretch, sip some water, take a breath.", ""],
+            ["A full roster is a team effort. Every hour counts.", ""],
+            ["Thanks for giving your time. It makes a real difference.", ""],
+            ["Tip: booking recurring shifts? Your start and finish times stay selected, so just pick the next date.", ""],
+            ["Tip: use the team notes board for swaps and reminders so everyone sees them.", ""],
+            ["Tip: tap a day in the timeline to see who's on and where the gaps are.", ""],
+            ["Tip: set your flexibility (A, B or C) when booking if you could cover another station.", ""],
+            ["Tip: cancelling inside the sent hard-copy period? You may be asked to phone Country Rostering.", ""],
+            ["Tip: your name and clinical level are remembered on this device.", ""]
+        ];
+
+        const SAVED_ROSTER_STORAGE_KEY =
+            `crew-roster-saved-copy-${TEAM_NAME.toLowerCase()}`;
+
+        // A saved copy older than this is not shown.
+        const SAVED_ROSTER_MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
+
+        let displayingSavedRoster = false;
+        let savedRosterTime = null;
+        let loadingCardTimer = null;
+
         initialise();
 
         function initialise() {
@@ -648,8 +709,142 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             populateStartTimes();
             populateRosterSentUntilHours();
             registerEventListeners();
+
+            if (TEAM_FEATURES.has("savedRoster")) {
+                showSavedRoster();
+            }
+
+            if (TEAM_FEATURES.has("loadingMessages")) {
+                startLoadingCard();
+            }
+
             renderAll();
-            void refreshRoster();
+
+            void refreshRoster().finally(stopLoadingCard);
+        }
+
+        /* ----- Saved copy of the roster (feature "savedRoster") -----
+         *
+         * The last verified roster is kept on this device and shown
+         * straight away on the next visit, clearly labelled, while the
+         * fresh roster loads. Booking, cancelling, the PDF view and
+         * manager actions stay locked until the fresh roster arrives
+         * (they all require hasLoadedBookings), so nothing is ever
+         * changed on the basis of the saved copy.
+         */
+        function saveRosterCopy(data) {
+            if (!TEAM_FEATURES.has("savedRoster")) return;
+
+            try {
+                const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+
+                localStorage.setItem(
+                    SAVED_ROSTER_STORAGE_KEY,
+                    JSON.stringify({
+                        team: TEAM_NAME,
+                        savedAt: new Date().toISOString(),
+                        // Only shifts that haven't long finished.
+                        bookings: data.bookings.filter(booking =>
+                            Date.parse(booking.end) > cutoff
+                        )
+                    })
+                );
+            } catch (error) {
+                console.warn("Unable to keep a saved copy of the roster:", error);
+            }
+        }
+
+        function formatSavedRosterTime(date) {
+            return date.toLocaleString("en-AU", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+        }
+
+        function setSavedRosterNotice(text) {
+            const notice = document.getElementById("savedRosterNotice");
+
+            notice.textContent = text || "";
+            notice.hidden = !text;
+        }
+
+        function showSavedRoster() {
+            let saved;
+
+            try {
+                saved = JSON.parse(
+                    localStorage.getItem(SAVED_ROSTER_STORAGE_KEY) || "null"
+                );
+            } catch (error) {
+                return;
+            }
+
+            const savedAt = new Date(saved?.savedAt);
+
+            if (
+                !saved ||
+                !Array.isArray(saved.bookings) ||
+                normaliseName(saved.team) !== normaliseName(TEAM_NAME) ||
+                !Number.isFinite(savedAt.getTime()) ||
+                Date.now() - savedAt.getTime() > SAVED_ROSTER_MAX_AGE_MS
+            ) {
+                return;
+            }
+
+            events = saved.bookings
+                .map(normaliseBooking)
+                .filter(isValidBooking);
+
+            displayingSavedRoster = true;
+            savedRosterTime = savedAt;
+
+            setSavedRosterNotice(
+                "Showing the roster saved on this device at " +
+                formatSavedRosterTime(savedAt) +
+                " · updating… Booking opens once it's up to date."
+            );
+        }
+
+        /* ----- Loading card (feature "loadingMessages") ----- */
+        function showLoadingMessage(index) {
+            const [text, source] =
+                LOADING_MESSAGES[index % LOADING_MESSAGES.length];
+
+            const quote = document.getElementById("loadingCardText");
+            quote.textContent = text;
+
+            // Restart the fade-in for each new message.
+            quote.style.animation = "none";
+            void quote.offsetWidth;
+            quote.style.animation = "";
+
+            const caption = document.getElementById("loadingCardSource");
+            caption.textContent = source ? "— " + source : "";
+            caption.hidden = !source;
+        }
+
+        function startLoadingCard() {
+            if (LOADING_MESSAGES.length === 0) return;
+
+            let index = Math.floor(Math.random() * LOADING_MESSAGES.length);
+            showLoadingMessage(index);
+
+            document.getElementById("loadingCard").hidden = false;
+
+            loadingCardTimer = setInterval(() => {
+                index++;
+                showLoadingMessage(index);
+            }, 6000);
+        }
+
+        function stopLoadingCard() {
+            clearInterval(loadingCardTimer);
+            loadingCardTimer = null;
+            document.getElementById("loadingCard").hidden = true;
         }
 
         function readStoredValue(key) {
@@ -1261,6 +1456,10 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 events = nextEvents;
                 hasLoadedBookings = true;
 
+                displayingSavedRoster = false;
+                setSavedRosterNotice("");
+                saveRosterCopy(data);
+
                 renderAll();
 
                 return data;
@@ -1413,6 +1612,14 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 console.error("Roster refresh failed:", error);
                 setConnectionStatus(error.message, "error");
                 showToast(error.message);
+
+                if (displayingSavedRoster) {
+                    setSavedRosterNotice(
+                        "Couldn't update. Showing the roster saved on this device at " +
+                        formatSavedRosterTime(savedRosterTime) +
+                        ". Booking is paused until it updates: tap Refresh roster to try again."
+                    );
+                }
             } finally {
                 setLoading(false);
             }
@@ -2387,7 +2594,8 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         }
 
         async function cancelShift(eventId) {
-            if (isLoading) return;
+            // Never act on a saved copy: a fresh roster must be loaded.
+            if (isLoading || !hasLoadedBookings) return;
 
             const event = events.find(item => item.id === eventId);
             if (!event) return;
@@ -2504,7 +2712,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
             calendarElement.innerHTML = "";
 
-            if (!hasLoadedBookings) {
+            if (!hasLoadedBookings && !displayingSavedRoster) {
                 calendarElement.innerHTML =
                     '<div class="empty-state">' +
                     'Roster data is not currently verified. Please refresh.' +
@@ -2822,7 +3030,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         function renderBookingTable() {
             bookingTableBody.innerHTML = "";
 
-            if (!hasLoadedBookings) {
+            if (!hasLoadedBookings && !displayingSavedRoster) {
                 bookingTableBody.innerHTML =
                     '<tr><td colspan="8" class="empty-state">' +
                     'Refresh to load verified bookings.' +
@@ -2890,7 +3098,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                     row.querySelector("[data-cancel-id]");
 
                 cancelButton.disabled =
-                    isLoading || !submissionStatusLoaded;
+                    isLoading || !hasLoadedBookings || !submissionStatusLoaded;
 
                 cancelButton.addEventListener(
                     "click",
@@ -3383,7 +3591,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 return;
             }
 
-            if (!hasLoadedBookings) {
+            if (!hasLoadedBookings && !displayingSavedRoster) {
                 myBookingsList.innerHTML =
                     '<div class="empty-state">' +
                     'Refresh the roster to load your bookings.' +
@@ -3437,7 +3645,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 deleteButton.dataset.cancelId = event.id;
 
                 deleteButton.disabled =
-                    isLoading || !submissionStatusLoaded;
+                    isLoading || !hasLoadedBookings || !submissionStatusLoaded;
 
                 deleteButton.addEventListener(
                     "click",
