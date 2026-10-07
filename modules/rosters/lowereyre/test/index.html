@@ -5436,6 +5436,11 @@ Coverage excludes observers.
             print-color-adjust: exact;
         }
 
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: #f5f5f5;
@@ -5704,7 +5709,7 @@ Coverage excludes observers.
             white-space: normal;
         }
 
-        @media (max-width: 600px) {
+        @media screen and (max-width: 600px) {
             body {
                 padding: 0.5rem;
                 font-size: 0.85rem;
@@ -5737,6 +5742,17 @@ Coverage excludes observers.
                 margin: 5mm;
             }
 
+            /*
+             * Lay the printout out at the printable A4 landscape width
+             * (297mm minus two 5mm margins), not the screen width, so
+             * every phone and computer produces the same PDF.
+             */
+            html,
+            body {
+                width: 287mm;
+                margin: 0;
+            }
+
             body {
                 background: #ffffff;
                 padding: 0;
@@ -5752,7 +5768,10 @@ Coverage excludes observers.
                 /*
                  * Built-in print scale, equivalent to choosing 89% in the
                  * print dialog. Leave the dialog's scale at 100%.
+                 * The width is set before the zoom, so it is divided by
+                 * 0.89 to fill exactly 287mm once scaled.
                  */
+                width: calc(287mm / 0.89);
                 zoom: 0.89;
             }
 
