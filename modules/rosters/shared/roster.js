@@ -850,25 +850,103 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         }
 
         /*
-         * Existing JSONP transport retained for Apps Script compatibility.
+         * Requests to the team's Apps Script.
+         *
+         * Ordinary requests use the existing JSONP (GET) transport.
+         * Requests carrying a secret - the roster manager password or a
+         * note's private deletion key - are sent as a POST body instead,
+         * so the secret never appears in a web address (browser history,
+         * proxy and Google request logs). The Apps Script's doPost reads
+         * the same JSON payload.
          *
          * The backend must independently enforce:
          * - Accepted clinical levels, including REC.
          * - Optional flexibility: N, A, B or C.
          * - Authentication and manager-password validation.
          * - Team isolation, overlaps and maximum crew capacity.
-         *
-         * JSONP sends payloads through a GET URL. Moving mutations and
-         * manager credentials to authenticated POST requests requires
-         * a corresponding backend change.
          */
+        function requestCarriesSecret(payload) {
+            return (
+                Object.prototype.hasOwnProperty.call(payload, "managerPassword") ||
+                Object.prototype.hasOwnProperty.call(payload, "deleteToken")
+            );
+        }
+
+        async function postRosterApi(requestData) {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 60000);
+
+            let data;
+
+            try {
+                // text/plain keeps this a "simple" request: no CORS
+                // preflight, which Apps Script cannot answer.
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(requestData),
+                    redirect: "follow",
+                    credentials: "omit",
+                    signal: controller.signal
+                });
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Apps Script returned HTTP " + response.status + "."
+                    );
+                }
+
+                data = await response.json();
+            } catch (error) {
+                if (error.name === "AbortError") {
+                    throw new Error(
+                        "The roster request timed out. " +
+                        "Please refresh and check the roster before retrying."
+                    );
+                }
+
+                if (error instanceof TypeError || error instanceof SyntaxError) {
+                    throw new Error(
+                        "Failed to load from Apps Script. " +
+                        "Check the deployment URL and connection."
+                    );
+                }
+
+                throw error;
+            } finally {
+                clearTimeout(timer);
+            }
+
+            if (!data || typeof data !== "object") {
+                throw new Error("Apps Script returned an invalid response.");
+            }
+
+            if (data.success === false || data.error) {
+                const rejection = new Error(
+                    data.error || "The roster request was rejected."
+                );
+
+                // The server answered, so this is a definite rejection
+                // rather than a lost or timed-out request.
+                rejection.serverRejected = true;
+                throw rejection;
+            }
+
+            return data;
+        }
+
         function callRosterApi(action, payload = {}) {
+            const requestData = {
+                ...payload,
+                action,
+                team: TEAM_NAME
+            };
+
+            if (requestCarriesSecret(payload)) {
+                return postRosterApi(requestData);
+            }
+
             return new Promise((resolve, reject) => {
-                const requestData = {
-                    ...payload,
-                    action,
-                    team: TEAM_NAME
-                };
 
                 const callbackName =
                     "jsonpCallback_" +
@@ -1695,7 +1773,9 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 let message = error.message ||
                     "Unable to update the hard-copy sent cut-off.";
 
-                if (updateAttempted) {
+                // A definite rejection (e.g. wrong password) saved nothing,
+                // so the current status is still valid.
+                if (updateAttempted && !error.serverRejected) {
                     invalidateRosterSubmissionStatus();
 
                     message += updateConfirmed
@@ -1826,7 +1906,9 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 let message = error.message ||
                     "Unable to reset the hard-copy status.";
 
-                if (resetAttempted) {
+                // A definite rejection (e.g. wrong password) saved nothing,
+                // so the current status is still valid.
+                if (resetAttempted && !error.serverRejected) {
                     invalidateRosterSubmissionStatus();
 
                     message += resetConfirmed
@@ -5522,65 +5604,66 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             }
 
             /*
-             * Same JSONP request format as the main page. The PDF window
-             * makes the request itself so it works even when the main page
-             * is a paused background tab (phones and tablets).
+             * The PDF window makes the request itself so it works even when
+             * the main page is a paused background tab (phones and tablets).
+             * Its only request carries the manager password, so it is sent
+             * as a POST body (never in the web address), in the same format
+             * the Apps Script's doPost reads.
              */
-            function callRosterApi(action, payload) {
-                return new Promise((resolve, reject) => {
-                    const callbackName =
-                        "countryRosterCallback_" + Date.now() + "_" +
-                        Math.random().toString(36).slice(2);
+            async function callRosterApi(action, payload) {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 60000);
 
-                    const script = document.createElement("script");
-                    let timer;
+                let data;
 
-                    function finish(error, data) {
-                        clearTimeout(timer);
-                        script.remove();
-                        delete window[callbackName];
-
-                        if (error) reject(error);
-                        else resolve(data);
-                    }
-
-                    window[callbackName] = data => {
-                        if (!data || typeof data !== "object") {
-                            finish(new Error("Apps Script returned an invalid response."));
-                            return;
-                        }
-
-                        if (data.success === false || data.error) {
-                            const rejection = new Error(
-                                data.error || "The request was rejected."
-                            );
-                            rejection.serverRejected = true;
-                            finish(rejection);
-                            return;
-                        }
-
-                        finish(null, data);
-                    };
-
-                    script.onerror = () => finish(
-                        new Error("Failed to reach Apps Script. Check the connection.")
-                    );
-
-                    timer = setTimeout(() => finish(
-                        new Error("The request timed out.")
-                    ), 60000);
-
-                    script.src =
-                        snapshot.apiUrl +
-                        "?callback=" + encodeURIComponent(callbackName) +
-                        "&payload=" + encodeURIComponent(JSON.stringify({
+                try {
+                    const response = await fetch(snapshot.apiUrl, {
+                        method: "POST",
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify({
                             ...payload,
                             action,
                             team: snapshot.teamName
-                        }));
+                        }),
+                        redirect: "follow",
+                        credentials: "omit",
+                        signal: controller.signal
+                    });
 
-                    document.body.appendChild(script);
-                });
+                    if (!response.ok) {
+                        throw new Error(
+                            "Apps Script returned HTTP " + response.status + "."
+                        );
+                    }
+
+                    data = await response.json();
+                } catch (error) {
+                    if (error.name === "AbortError") {
+                        throw new Error("The request timed out.");
+                    }
+
+                    if (error instanceof TypeError || error instanceof SyntaxError) {
+                        throw new Error("Failed to reach Apps Script. Check the connection.");
+                    }
+
+                    throw error;
+                } finally {
+                    clearTimeout(timer);
+                }
+
+                if (!data || typeof data !== "object") {
+                    throw new Error("Apps Script returned an invalid response.");
+                }
+
+                if (data.success === false || data.error) {
+                    const rejection = new Error(
+                        data.error || "The request was rejected."
+                    );
+                    rejection.serverRejected = true;
+                    throw rejection;
+                }
+
+                return data;
             }
 
             function notifyMainPage(result) {
