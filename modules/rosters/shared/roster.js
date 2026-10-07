@@ -2410,7 +2410,10 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 cancellationAttempted = true;
 
                 const data = await callRosterApi("cancelBooking", {
-                    bookingId: eventId
+                    bookingId: eventId,
+
+                    // Recorded in the Change Log as who cancelled.
+                    cancelledBy: currentUser || ""
                 });
 
                 if (!data.success) {
