@@ -2675,6 +2675,103 @@ Coverage excludes observers.
             }
         }
 
+        /*
+         * Called from the Country Rostering PDF window after the manager
+         * confirms and enters the password there. Moves the hard-copy cut-off
+         * to the end of the printed 7 days. Everything before the cut-off is
+         * treated as sent, so only moving it backwards is refused.
+         */
+        async function markCountryRosterSentUntil(sentUntilIso, managerPassword) {
+            if (isLoading) {
+                return {
+                    ok: false,
+                    message:
+                        "The main roster page is busy. Wait a moment, then try again."
+                };
+            }
+
+            const sentUntil = new Date(sentUntilIso);
+
+            if (!Number.isFinite(sentUntil.getTime())) {
+                return { ok: false, message: "The cut-off date is invalid." };
+            }
+
+            setLoading(true);
+
+            let updateAttempted = false;
+
+            try {
+                await loadRosterSubmissionStatus();
+
+                if (rosterSentUntil && sentUntil < rosterSentUntil) {
+                    throw new Error(
+                        "The roster is already marked as sent up until " +
+                        formatRosterSentUntilDateTime(rosterSentUntil) +
+                        ", which is later than the end of these 7 days. " +
+                        "The cut-off cannot be moved backwards."
+                    );
+                }
+
+                if (
+                    rosterSentUntil &&
+                    sentUntil.getTime() === rosterSentUntil.getTime()
+                ) {
+                    return {
+                        ok: true,
+                        sentUntil: rosterSentUntil.toISOString(),
+                        message:
+                            "Already marked as sent up until " +
+                            formatRosterSentUntilDateTime(rosterSentUntil) + "."
+                    };
+                }
+
+                updateAttempted = true;
+
+                const result = await callRosterApi("markRosterSent", {
+                    managerPassword,
+                    sentUntil: sentUntil.toISOString()
+                });
+
+                applyRosterSubmissionResult(result);
+
+                showToast(
+                    "Hard copy marked as sent up until " +
+                    formatRosterSentUntilDateTime(rosterSentUntil) + "."
+                );
+
+                if (hasLoadedBookings) {
+                    showLoadedConnectionStatus();
+                }
+
+                return {
+                    ok: true,
+                    sentUntil: rosterSentUntil.toISOString(),
+                    message:
+                        "Marked as sent up until " +
+                        formatRosterSentUntilDateTime(rosterSentUntil) + "."
+                };
+            } catch (error) {
+                console.error("Marking the PDF period as sent failed:", error);
+
+                let message = error.message ||
+                    "Unable to update the hard-copy sent cut-off.";
+
+                if (updateAttempted && !error.serverRejected) {
+                    invalidateRosterSubmissionStatus();
+
+                    message +=
+                        " The server may still have saved it. Refresh the main " +
+                        "roster page and check the hard-copy status before retrying.";
+                }
+
+                return { ok: false, message };
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        window.markCountryRosterSentUntil = markCountryRosterSentUntil;
+
         async function resetHardCopyRosterStatus() {
             if (isLoading) return;
 
@@ -5377,6 +5474,10 @@ Coverage excludes observers.
                 hoursPerDay: HOURS_PER_DAY,
                 maxCrew: MAX_CREW,
                 operationalRules: OPERATIONAL_RULES,
+                rosterSentUntil:
+                    submissionStatusLoaded && rosterSentUntil
+                        ? rosterSentUntil.toISOString()
+                        : null,
                 generatedAt: new Date().toISOString()
             };
 
@@ -5428,6 +5529,22 @@ Coverage excludes observers.
             color: #666;
             font-size: 0.9rem;
             margin-top: 0.3rem;
+        }
+
+        .sent-status {
+            margin: -0.25rem 0 1rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .sent-status.ok {
+            color: #15803d;
+            font-weight: 600;
+        }
+
+        .sent-status.error {
+            color: #b91c1c;
+            font-weight: 600;
         }
 
         .controls {
@@ -5660,6 +5777,7 @@ Coverage excludes observers.
             }
 
             .controls,
+            .sent-status,
             .print-help {
                 display: none;
             }
@@ -5789,6 +5907,14 @@ Coverage excludes observers.
             </button>
 
             <button
+                id="markSentButton"
+                class="btn btn-primary"
+                type="button"
+            >
+                Mark as sent to Country Rostering
+            </button>
+
+            <button
                 id="closeButton"
                 class="btn btn-secondary"
                 type="button"
@@ -5796,6 +5922,8 @@ Coverage excludes observers.
                 Close
             </button>
         </div>
+
+        <p id="sentStatus" class="sent-status" aria-live="polite"></p>
 
         <p class="print-help">
             To save as PDF: choose <strong>Save as PDF</strong>, paper size
@@ -6170,6 +6298,9 @@ Coverage excludes observers.
 
                     document.getElementById("snapshotText").textContent = "";
 
+                    displayedStartDate = null;
+                    updateSentControls();
+
                     return;
                 }
 
@@ -6226,6 +6357,9 @@ Coverage excludes observers.
                 document.getElementById("rosterRangeText").textContent =
                     rangeText;
 
+                displayedStartDate = startDate;
+                updateSentControls();
+
                 document.getElementById("snapshotText").textContent =
                     "Snapshot generated " +
                     new Date(snapshot.generatedAt)
@@ -6240,6 +6374,133 @@ Coverage excludes observers.
 
                 buildRoster(startDate);
             }
+
+            /*
+             * Hard-copy cut-off: the end of the 7 days on screen.
+             * Everything before the cut-off counts as sent.
+             */
+            let displayedStartDate = null;
+            let knownSentUntil = snapshot.rosterSentUntil
+                ? new Date(snapshot.rosterSentUntil)
+                : null;
+
+            const cutOffFormatter = new Intl.DateTimeFormat("en-AU", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            });
+
+            function getDisplayedCutOff() {
+                if (!displayedStartDate) return null;
+
+                const cutOff = addDays(displayedStartDate, DAYS_WIDE);
+                cutOff.setHours(ROSTER_START_HOUR, 0, 0, 0);
+                return cutOff;
+            }
+
+            function setSentStatus(text, kind) {
+                const status = document.getElementById("sentStatus");
+                status.className = "sent-status" + (kind ? " " + kind : "");
+                status.textContent = text;
+            }
+
+            function updateSentControls() {
+                const button = document.getElementById("markSentButton");
+                const cutOff = getDisplayedCutOff();
+
+                const current = knownSentUntil
+                    ? "Hard copy currently marked as sent up until " +
+                      cutOffFormatter.format(knownSentUntil) + "."
+                    : "No hard-copy cut-off is currently set.";
+
+                if (!cutOff) {
+                    button.disabled = true;
+                    setSentStatus(current, "");
+                    return;
+                }
+
+                if (knownSentUntil && cutOff <= knownSentUntil) {
+                    button.disabled = true;
+                    button.textContent = "Already sent up to here";
+                    setSentStatus(current, "");
+                    return;
+                }
+
+                button.disabled = false;
+                button.textContent =
+                    "Mark as sent up until " + cutOffFormatter.format(cutOff);
+                setSentStatus(current, "");
+            }
+
+            async function markDisplayedPeriodSent() {
+                const cutOff = getDisplayedCutOff();
+                if (!cutOff) return;
+
+                const opener = window.opener;
+
+                if (
+                    !opener ||
+                    opener.closed ||
+                    typeof opener.markCountryRosterSentUntil !== "function"
+                ) {
+                    setSentStatus(
+                        "The main roster page is no longer open. Open this view " +
+                        "again from the roster page to mark it as sent.",
+                        "error"
+                    );
+                    return;
+                }
+
+                const confirmed = window.confirm(
+                    "Mark the hard-copy roster for " + snapshot.teamName +
+                    " as sent to Country Rostering up until " +
+                    cutOffFormatter.format(cutOff) + "?\n\n" +
+                    "Changes to any shift starting before then will require " +
+                    "Country Rostering to be notified."
+                );
+
+                if (!confirmed) return;
+
+                const managerPassword = window.prompt(
+                    "Enter the roster manager password:"
+                );
+
+                if (!managerPassword) return;
+
+                const button = document.getElementById("markSentButton");
+                button.disabled = true;
+                setSentStatus("Saving…", "");
+
+                let result;
+
+                try {
+                    result = await opener.markCountryRosterSentUntil(
+                        cutOff.toISOString(),
+                        managerPassword
+                    );
+                } catch (error) {
+                    result = {
+                        ok: false,
+                        message: error.message || "Unable to save the cut-off."
+                    };
+                }
+
+                if (result.ok) {
+                    knownSentUntil = new Date(result.sentUntil);
+                    updateSentControls();
+                    setSentStatus(result.message, "ok");
+                } else {
+                    updateSentControls();
+                    setSentStatus(result.message, "error");
+                }
+            }
+
+            document.getElementById("markSentButton")
+                .addEventListener("click", markDisplayedPeriodSent);
 
             document.getElementById("applyDatesButton")
                 .addEventListener("click", showSelectedRoster);
