@@ -5482,6 +5482,41 @@ Coverage excludes observers.
             margin-top: 0.3rem;
         }
 
+        .mark-sent-panel {
+            display: grid;
+            gap: 0.75rem;
+            max-width: 34rem;
+            margin: 0 0 1rem;
+            padding: 1rem;
+            border: 2px solid #22c55e;
+            border-radius: 8px;
+            background: #f0fdf4;
+        }
+
+        .mark-sent-panel[hidden] {
+            display: none;
+        }
+
+        .mark-sent-panel p {
+            font-weight: 600;
+        }
+
+        .mark-sent-panel input {
+            display: block;
+            width: 100%;
+            margin-top: 0.3rem;
+            padding: 0.6rem;
+            font-size: 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+
+        .mark-sent-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
         .sent-status {
             margin: -0.25rem 0 1rem;
             font-size: 0.9rem;
@@ -5729,6 +5764,7 @@ Coverage excludes observers.
 
             .controls,
             .sent-status,
+            .mark-sent-panel,
             .print-help {
                 display: none;
             }
@@ -5873,6 +5909,38 @@ Coverage excludes observers.
                 Close
             </button>
         </div>
+
+        <form id="markSentPanel" class="mark-sent-panel" hidden>
+            <p id="markSentQuestion"></p>
+
+            <label class="date-field" for="markSentPassword">
+                Roster manager password
+                <input
+                    id="markSentPassword"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                >
+            </label>
+
+            <div class="mark-sent-actions">
+                <button
+                    id="confirmMarkSentButton"
+                    class="btn btn-primary"
+                    type="submit"
+                >
+                    Confirm and mark as sent
+                </button>
+
+                <button
+                    id="cancelMarkSentButton"
+                    class="btn btn-secondary"
+                    type="button"
+                >
+                    Cancel
+                </button>
+            </div>
+        </form>
 
         <p id="sentStatus" class="sent-status" aria-live="polite"></p>
 
@@ -6309,6 +6377,7 @@ Coverage excludes observers.
                     rangeText;
 
                 displayedStartDate = startDate;
+                closeMarkSentPanel();
                 updateSentControls();
 
                 document.getElementById("snapshotText").textContent =
@@ -6474,25 +6543,50 @@ Coverage excludes observers.
                 }
             }
 
-            async function markDisplayedPeriodSent() {
+            /*
+             * Confirmation and password are asked in an inline form rather
+             * than confirm()/prompt(): Chrome on iPhone blocks those dialogs
+             * in windows opened by the page.
+             */
+            let pendingCutOff = null;
+
+            function closeMarkSentPanel() {
+                pendingCutOff = null;
+                document.getElementById("markSentPanel").hidden = true;
+                document.getElementById("markSentPassword").value = "";
+            }
+
+            function openMarkSentPanel() {
                 const cutOff = getDisplayedCutOff();
                 if (!cutOff) return;
 
-                const confirmed = window.confirm(
+                pendingCutOff = cutOff;
+
+                document.getElementById("markSentQuestion").textContent =
                     "Mark the hard-copy roster for " + snapshot.teamName +
                     " as sent to Country Rostering up until " +
-                    cutOffFormatter.format(cutOff) + "?\n\n" +
-                    "Changes to any shift starting before then will require " +
-                    "Country Rostering to be notified."
-                );
+                    cutOffFormatter.format(cutOff) + "? Changes to any " +
+                    "shift starting before then will require Country " +
+                    "Rostering to be notified.";
 
-                if (!confirmed) return;
+                const panel = document.getElementById("markSentPanel");
+                panel.hidden = false;
+                setSentStatus("", "");
 
-                const managerPassword = window.prompt(
-                    "Enter the roster manager password:"
-                );
+                panel.scrollIntoView({ block: "nearest" });
+                document.getElementById("markSentPassword").focus();
+            }
 
-                if (!managerPassword) return;
+            async function submitMarkSent(event) {
+                event.preventDefault();
+
+                const cutOff = pendingCutOff;
+                const managerPassword =
+                    document.getElementById("markSentPassword").value;
+
+                if (!cutOff || !managerPassword) return;
+
+                closeMarkSentPanel();
 
                 const button = document.getElementById("markSentButton");
                 button.disabled = true;
@@ -6517,12 +6611,11 @@ Coverage excludes observers.
                     notifyMainPage(result);
                     updateSentControls();
 
-                    const message =
+                    setSentStatus(
                         "Marked as sent up until " +
-                        cutOffFormatter.format(saved) + ".";
-
-                    setSentStatus(message, "ok");
-                    window.alert(message);
+                        cutOffFormatter.format(saved) + ".",
+                        "ok"
+                    );
                 } catch (error) {
                     let message = error.message ||
                         "Unable to save the hard-copy cut-off.";
@@ -6536,12 +6629,20 @@ Coverage excludes observers.
 
                     updateSentControls();
                     setSentStatus(message, "error");
-                    window.alert(message);
                 }
+
+                document.getElementById("sentStatus")
+                    .scrollIntoView({ block: "nearest" });
             }
 
             document.getElementById("markSentButton")
-                .addEventListener("click", markDisplayedPeriodSent);
+                .addEventListener("click", openMarkSentPanel);
+
+            document.getElementById("markSentPanel")
+                .addEventListener("submit", submitMarkSent);
+
+            document.getElementById("cancelMarkSentButton")
+                .addEventListener("click", closeMarkSentPanel);
 
             document.getElementById("applyDatesButton")
                 .addEventListener("click", showSelectedRoster);
