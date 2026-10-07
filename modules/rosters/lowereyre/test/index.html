@@ -1131,21 +1131,26 @@
                 <summary>Manager controls</summary>
 
                 <div class="manager-controls-content">
+                    <div class="action-bar">
+                        <button
+                            id="countryRosterViewButton"
+                            class="btn-primary"
+                            type="button"
+                            disabled
+                        >
+                            Open Country Rostering PDF view — 7 days
+                        </button>
+                    </div>
+
                     <p class="field-help">
-                        Manage the point up to which this team's hard-copy roster has been
-                        sent to Country Rostering. Saving, editing or resetting the status
-                        requires the roster manager password.
+                        Print the 7-day roster for Country Rostering from the PDF view, then
+                        use its <strong>Mark as sent</strong> button to move the hard-copy
+                        cut-off to the end of those 7 days. Use the buttons below only to
+                        correct or reset the cut-off. Each change requires the roster
+                        manager password.
                     </p>
 
                     <div class="action-bar">
-                        <button
-                            id="markRosterSentButton"
-                            class="btn-secondary"
-                            type="button"
-                        >
-                            Mark hard copy as sent
-                        </button>
-
                         <button
                             id="editRosterSentUntilButton"
                             class="btn-secondary"
@@ -1162,15 +1167,6 @@
                             disabled
                         >
                             Reset sent status
-                        </button>
-
-                        <button
-                            id="countryRosterViewButton"
-                            class="btn-secondary"
-                            type="button"
-                            disabled
-                        >
-                            Open Country Rostering PDF view — 7 days
                         </button>
                     </div>
 
@@ -1535,8 +1531,6 @@ Coverage excludes observers.
             document.getElementById("viewRosterButton");
         const countryRosterViewButton =
             document.getElementById("countryRosterViewButton");
-        const markRosterSentButton =
-            document.getElementById("markRosterSentButton");
         const calendarElement =
             document.getElementById("calendarElement");
         const connectionStatus =
@@ -1664,10 +1658,6 @@ Coverage excludes observers.
                 "click",
                 openCountryRosterView
             );
-
-            markRosterSentButton.addEventListener("click", () => {
-                void openRosterSentUntilEditor(false);
-            });
 
             document.getElementById("editRosterSentUntilButton")
                 .addEventListener("click", () => {
@@ -2263,8 +2253,6 @@ Coverage excludes observers.
             const hasSavedCutOff =
                 submissionStatusLoaded && Boolean(rosterSentUntil);
 
-            markRosterSentButton.disabled = isLoading;
-
             document.getElementById("editRosterSentUntilButton").disabled =
                 isLoading || !hasSavedCutOff;
 
@@ -2470,7 +2458,7 @@ Coverage excludes observers.
             if (isLoading) return;
 
             clearRosterSentUntilEditor();
-            markRosterSentButton.focus();
+            document.getElementById("editRosterSentUntilButton").focus();
         }
 
         function clearRosterSentUntilEditor() {
@@ -2577,7 +2565,7 @@ Coverage excludes observers.
                 if (editing && !rosterSentUntil) {
                     throw new Error(
                         "The hard-copy sent status has been reset. " +
-                        "Close this editor and choose Mark hard copy as sent."
+                        "Close this editor and use Mark as sent in the Country Rostering PDF view."
                     );
                 }
 
