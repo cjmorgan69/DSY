@@ -31,7 +31,13 @@ const STANDARD_FEATURES = ["savedRoster", "loadingMessages"];
 
 const ROSTER_TEAM_LIST = {
     // Lower Eyre (plus the test roster)
-    test: { name: "Summer Bay", cluster: "Lower Eyre", apiUrl: TEST_API },
+    test: {
+        name: "Summer Bay",
+        cluster: "Lower Eyre",
+        apiUrl: TEST_API,
+        // Trial: reliable cancellation, on top of the standard features.
+        features: [...STANDARD_FEATURES, "reliableCancel"]
+    },
     tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     cummins: { name: "Cummins", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },

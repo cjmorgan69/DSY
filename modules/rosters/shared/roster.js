@@ -1067,9 +1067,9 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             );
         }
 
-        async function postRosterApi(requestData) {
+        async function postRosterApi(requestData, timeoutMs = 60000) {
             const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), 60000);
+            const timer = setTimeout(() => controller.abort(), timeoutMs);
 
             let data;
 
@@ -1130,7 +1130,9 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             return data;
         }
 
-        function callRosterApi(action, payload = {}) {
+        function callRosterApi(action, payload = {}, options = {}) {
+            const timeoutMs = options.timeoutMs || 60000;
+
             const requestData = {
                 ...payload,
                 action,
@@ -1138,7 +1140,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             };
 
             if (requestCarriesSecret(payload)) {
-                return postRosterApi(requestData);
+                return postRosterApi(requestData, timeoutMs);
             }
 
             return new Promise((resolve, reject) => {
@@ -1214,14 +1216,14 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                     );
                 };
 
-               timer = setTimeout(() => {
-    finish(
-        new Error(
-            "The roster request timed out. " +
-            "Please refresh and check the roster before retrying."
-        )
-    );
-}, 60000);
+                timer = setTimeout(() => {
+                    finish(
+                        new Error(
+                            "The roster request timed out. " +
+                            "Please refresh and check the roster before retrying."
+                        )
+                    );
+                }, timeoutMs);
 
                 document.body.appendChild(script);
             });
@@ -2600,6 +2602,11 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             const event = events.find(item => item.id === eventId);
             if (!event) return;
 
+            if (TEAM_FEATURES.has("reliableCancel")) {
+                await cancelShiftReliably(event);
+                return;
+            }
+
             setLoading(true);
 
             let cancellationAttempted = false;
@@ -2657,6 +2664,174 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
                 setConnectionStatus(message, "error");
                 showToast(message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        /* ----- Reliable cancellation (feature "reliableCancel") -----
+         *
+         * - Immediate feedback: the shift shows "Cancelling…" and a
+         *   toast appears as soon as the person confirms.
+         * - Cancelling is safe to repeat: asking again for a shift that
+         *   is already cancelled just answers "already cancelled". So if
+         *   a reply is lost or times out, the page asks again (up to
+         *   CANCEL_ATTEMPTS times), then checks the roster itself,
+         *   before ever telling the person it could not confirm.
+         * - Nothing is reported as cancelled until the server (or the
+         *   reloaded roster) confirms it, so a failed cancellation can
+         *   never leave a hidden gap in cover.
+         */
+        const CANCEL_ATTEMPTS = 3;
+        const CANCEL_ATTEMPT_TIMEOUT_MS = 25000;
+        const CANCEL_RETRY_PAUSE_MS = 1500;
+
+        function pause(milliseconds) {
+            return new Promise(resolve => setTimeout(resolve, milliseconds));
+        }
+
+        function markShiftCancelling(eventId, cancelling) {
+            document.querySelectorAll("[data-cancel-id]").forEach(button => {
+                if (button.dataset.cancelId !== eventId) return;
+
+                const holder = button.closest("tr, .shift-item") || button;
+                holder.classList.toggle("is-cancelling", cancelling);
+
+                if (cancelling) {
+                    button.dataset.originalLabel = button.textContent;
+                    button.textContent = "Cancelling…";
+                } else if (button.dataset.originalLabel) {
+                    button.textContent = button.dataset.originalLabel;
+                }
+            });
+        }
+
+        async function cancelShiftReliably(event) {
+            const message =
+                `Cancel ${event.user}'s shift from ` +
+                `${formatDateTime(new Date(event.start))} to ` +
+                `${formatDateTime(new Date(event.end))}?`;
+
+            if (!window.confirm(message)) return;
+
+            setLoading(true);
+            markShiftCancelling(event.id, true);
+            setConnectionStatus("Cancelling the shift…", "");
+            showToast("Cancelling the shift…");
+
+            let confirmed = null;   // the server's reply once confirmed
+            let rejection = null;   // a definite "no" from the server
+            let lastError = null;   // lost replies / timeouts
+
+            for (let attempt = 1; attempt <= CANCEL_ATTEMPTS; attempt++) {
+                try {
+                    const data = await callRosterApi(
+                        "cancelBooking",
+                        {
+                            bookingId: event.id,
+
+                            // Recorded in the Change Log as who cancelled.
+                            cancelledBy: currentUser || ""
+                        },
+                        { timeoutMs: CANCEL_ATTEMPT_TIMEOUT_MS }
+                    );
+
+                    if (data.success === true) {
+                        confirmed = data;
+                        break;
+                    }
+
+                    lastError = new Error("Apps Script did not confirm the cancellation.");
+                } catch (error) {
+                    if (error.serverRejected) {
+                        rejection = error;
+                        break;
+                    }
+
+                    lastError = error;
+                    console.warn(`Cancel attempt ${attempt} not confirmed:`, error);
+                }
+
+                if (attempt < CANCEL_ATTEMPTS) {
+                    setConnectionStatus("Still cancelling: checking with the roster…", "");
+                    await pause(CANCEL_RETRY_PAUSE_MS);
+                }
+            }
+
+            // Every reply was lost: look at the roster itself.
+            let verifiedByRoster = false;
+
+            if (!confirmed && !rejection) {
+                try {
+                    const data = await callRosterApi(
+                        "getBookings",
+                        {},
+                        { timeoutMs: CANCEL_ATTEMPT_TIMEOUT_MS }
+                    );
+
+                    applyRosterSnapshot(data);
+
+                    if (!data.bookings.some(booking => String(booking.id) === event.id)) {
+                        verifiedByRoster = true;
+                    } else {
+                        rejection = new Error(
+                            "The shift is still on the roster, so it was not cancelled. Please try again."
+                        );
+                    }
+                } catch (error) {
+                    lastError = error;
+                }
+            }
+
+            try {
+                if (confirmed) {
+                    applyRosterSnapshot(confirmed);
+                    showLoadedConnectionStatus();
+                    showToast("Shift cancelled.");
+                    showHardCopyChangeOutcome("cancelled", confirmed);
+                    return;
+                }
+
+                if (verifiedByRoster) {
+                    showLoadedConnectionStatus();
+                    showToast("Shift cancelled.");
+
+                    // The reply with the hard-copy outcome was lost, so err
+                    // on the side of asking them to make sure.
+                    if (shiftNeedsCentralRosteringNotice(event.start, event.end)) {
+                        window.alert(
+                            "Shift cancelled.\n\nThis shift is inside the hard-copy roster " +
+                            "already sent to Country Rostering. The confirmation of whether " +
+                            "they were emailed was lost, so please phone Country Rostering " +
+                            "on 1300 850 985 to make sure they know."
+                        );
+                    }
+                    return;
+                }
+
+                markShiftCancelling(event.id, false);
+
+                if (rejection) {
+                    setConnectionStatus(rejection.message, "error");
+                    showToast(rejection.message);
+                    return;
+                }
+
+                // No answer at all, even from the roster check.
+                hasLoadedBookings = false;
+                renderAll();
+
+                if (lastError) {
+                    console.error("Cancellation could not be confirmed:", lastError);
+                }
+
+                const uncertain =
+                    "Couldn't confirm the cancellation: no reply from the roster. " +
+                    "It may still have gone through. Refresh the roster when you " +
+                    "have reception before trying again.";
+
+                setConnectionStatus(uncertain, "error");
+                showToast(uncertain);
             } finally {
                 setLoading(false);
             }
