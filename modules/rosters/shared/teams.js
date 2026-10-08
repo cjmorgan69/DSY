@@ -35,8 +35,8 @@ const ROSTER_TEAM_LIST = {
         name: "Summer Bay",
         cluster: "Lower Eyre",
         apiUrl: TEST_API,
-        // Trial: reliable cancellation, on top of the standard features.
-        features: [...STANDARD_FEATURES, "reliableCancel"]
+        // Trial: reliable cancellation and editing, on top of the standard features.
+        features: [...STANDARD_FEATURES, "reliableCancel", "editBooking"]
     },
     tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },

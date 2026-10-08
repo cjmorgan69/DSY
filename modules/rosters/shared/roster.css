@@ -233,6 +233,79 @@
     text-decoration: none;
 }
 
+/* Edit a booking (My bookings). */
+.shift-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: flex-end;
+}
+
+.edit-panel {
+    display: grid;
+    gap: 0.6rem;
+    margin: -0.3rem 0 0.9rem;
+    padding: 0.9rem;
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    background: var(--surface);
+}
+
+.edit-panel.is-saving {
+    opacity: 0.7;
+}
+
+.edit-title {
+    margin: 0;
+    font-weight: 700;
+}
+
+.edit-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.6rem;
+}
+
+.edit-fields label {
+    display: grid;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.edit-fields select {
+    width: 100%;
+    min-width: 0;
+}
+
+.edit-note,
+.edit-summary {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+}
+
+.edit-note {
+    color: var(--muted);
+}
+
+.edit-problem {
+    margin: 0;
+    padding: 0.5rem 0.7rem;
+    border-radius: 8px;
+    color: var(--red);
+    background: var(--red-light);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.edit-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
 .connection-status.error {
         color: var(--red);
         border-color: #fecaca;
