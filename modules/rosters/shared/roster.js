@@ -2430,30 +2430,36 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
          * confirmed an automatic email.
          */
         function showHardCopyChangeOutcome(action, data) {
-            if (!data.requiresCentralNotification) {
-                showToast(
-                    action === "booked"
-                        ? "Your shift was booked successfully."
-                        : "Shift cancelled."
-                );
+            const messages = {
+                booked: {
+                    done: "Your shift was booked successfully.",
+                    emailed: "Shift booked. Country Rostering has been notified by email.",
+                    phone: "Your shift was booked."
+                },
+                cancelled: {
+                    done: "Shift cancelled.",
+                    emailed: "Shift cancelled. Country Rostering has been notified by email.",
+                    phone: "Shift cancelled."
+                },
+                changed: {
+                    done: "Shift changed.",
+                    emailed: "Shift changed. Country Rostering has been notified by email.",
+                    phone: "Shift changed."
+                }
+            }[action] || {};
 
+            if (!data.requiresCentralNotification) {
+                showToast(messages.done);
                 return;
             }
 
             if (data.countryRosteringEmailed === true) {
-                showToast(
-                    action === "booked"
-                        ? "Shift booked. Country Rostering has been notified by email."
-                        : "Shift cancelled. Country Rostering has been notified by email."
-                );
-
+                showToast(messages.emailed);
                 return;
             }
 
             window.alert(
-                (action === "booked"
-                    ? "Your shift was booked."
-                    : "Shift cancelled.") +
+                messages.phone +
                 "\n\nThis change affects the submitted hard-copy roster." +
                 "\n\nPlease phone Country Rostering now to advise them " +
                 "of the change on 1300 850 985."
@@ -2834,6 +2840,386 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 showToast(uncertain);
             } finally {
                 setLoading(false);
+            }
+        }
+
+        /* ----- Edit a booking (feature "editBooking") -----
+         *
+         * Opens under the shift in My bookings, already set to the
+         * shift's current start, finish and flexibility, so only the
+         * part being changed needs touching. Save is enabled once
+         * something differs and the new times pass the same checks as
+         * a booking (ignoring the shift itself). Saving uses the same
+         * confirm-don't-guess approach as reliable cancellation.
+         */
+        function formatShiftSummary(start, end, restriction) {
+            return (
+                `${formatDateTime(start)} to ${formatDateTime(end)}` +
+                ` · flex ${restriction}`
+            );
+        }
+
+        function checkEditAvailability(event, selection) {
+            // Check as if this shift weren't on the roster, for its owner.
+            const savedEvents = events;
+            const savedLevel = currentClinicalLevel;
+
+            try {
+                events = events.filter(item => item.id !== event.id);
+                currentClinicalLevel = event.clinicalLevel;
+
+                return checkShiftAvailability(selection);
+            } finally {
+                events = savedEvents;
+                currentClinicalLevel = savedLevel;
+            }
+        }
+
+        function closeShiftEditor() {
+            document.querySelectorAll(".edit-panel").forEach(panel => panel.remove());
+        }
+
+        function openShiftEditor(event, item) {
+            if (isLoading || !hasLoadedBookings) return;
+
+            const wasOpen = item.nextElementSibling?.classList.contains("edit-panel");
+            closeShiftEditor();
+            if (wasOpen) return;
+
+            const originalStart = new Date(event.start);
+            const originalEnd = new Date(event.end);
+            const originalFlex = event.restriction || "N";
+            const currentHour = startOfCurrentHour(new Date());
+            const started = originalStart < currentHour;
+
+            const panel = document.createElement("div");
+            panel.className = "edit-panel";
+            panel.innerHTML = `
+                <p class="edit-title">Change this shift</p>
+                <div class="edit-fields">
+                    <label>Start
+                        <select data-edit-field="start"></select>
+                    </label>
+                    <label>Finish
+                        <select data-edit-field="finish"></select>
+                    </label>
+                    <label>Flexibility
+                        <select data-edit-field="flex">
+                            <option value="N">N — No restriction</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                        </select>
+                    </label>
+                </div>
+                <p class="edit-note" ${started ? "" : "hidden"}>
+                    This shift has started, so only the finish time and
+                    flexibility can change.
+                </p>
+                <p class="edit-summary" aria-live="polite"></p>
+                <p class="edit-problem" role="alert" hidden></p>
+                <div class="edit-actions">
+                    <button type="button" class="btn-primary btn-small" data-edit-save>
+                        Save changes
+                    </button>
+                    <button type="button" class="btn-secondary btn-small" data-edit-close>
+                        Keep as is
+                    </button>
+                </div>
+            `;
+
+            const startSelect = panel.querySelector('[data-edit-field="start"]');
+            const finishSelect = panel.querySelector('[data-edit-field="finish"]');
+            const flexSelect = panel.querySelector('[data-edit-field="flex"]');
+            const summary = panel.querySelector(".edit-summary");
+            const problem = panel.querySelector(".edit-problem");
+            const saveButton = panel.querySelector("[data-edit-save]");
+
+            // Start: same day as the shift; from now on (or fixed once started).
+            const shiftDay = startOfDay(originalStart);
+
+            for (let hour = 0; hour < HOURS_PER_DAY; hour++) {
+                const candidate = new Date(shiftDay);
+                candidate.setHours(hour, 0, 0, 0);
+
+                if (candidate.getHours() !== hour) continue; // daylight-saving gap
+
+                const allowed = started
+                    ? candidate.getTime() === originalStart.getTime()
+                    : candidate >= currentHour;
+
+                if (!allowed) continue;
+
+                const option = document.createElement("option");
+                option.value = candidate.toISOString();
+                option.textContent = formatHour(hour);
+                startSelect.appendChild(option);
+            }
+
+            startSelect.value = originalStart.toISOString();
+
+            // Always offer the original start, even if it isn't listed above.
+            if (startSelect.value === "") {
+                const option = document.createElement("option");
+                option.value = originalStart.toISOString();
+                option.textContent = formatDateTime(originalStart);
+                startSelect.prepend(option);
+                startSelect.value = option.value;
+            }
+
+            startSelect.disabled = started;
+            flexSelect.value = originalFlex;
+
+            function fillFinishOptions(keepEnd) {
+                const start = new Date(startSelect.value);
+                finishSelect.innerHTML = "";
+
+                for (let duration = 1; duration <= MAX_SHIFT_HOURS; duration++) {
+                    const end = addHours(start, duration);
+                    if (end <= currentHour) continue;
+
+                    const option = document.createElement("option");
+                    option.value = end.toISOString();
+                    option.textContent =
+                        formatHour(end.getHours()) +
+                        (isSameDay(end, start) ? "" : " — next day") +
+                        ` (${duration} ${duration === 1 ? "hour" : "hours"})`;
+
+                    finishSelect.appendChild(option);
+                }
+
+                // Keep the same finish time when only the start changes.
+                const wanted = keepEnd.toISOString();
+                const match = [...finishSelect.options].find(o => o.value === wanted);
+
+                finishSelect.value = match
+                    ? wanted
+                    : (finishSelect.options[0]?.value || "");
+            }
+
+            function update() {
+                const start = new Date(startSelect.value);
+                const end = new Date(finishSelect.value);
+                const flex = flexSelect.value;
+
+                const changed =
+                    start.getTime() !== originalStart.getTime() ||
+                    end.getTime() !== originalEnd.getTime() ||
+                    flex !== originalFlex;
+
+                problem.hidden = true;
+                problem.textContent = "";
+
+                if (!changed) {
+                    summary.textContent =
+                        "Currently " + formatShiftSummary(originalStart, originalEnd, originalFlex) +
+                        ". Change a time or flexibility above.";
+                    saveButton.disabled = true;
+                    return;
+                }
+
+                summary.textContent =
+                    "Was " + formatShiftSummary(originalStart, originalEnd, originalFlex) +
+                    " → now " + formatShiftSummary(start, end, flex);
+
+                const availability = checkEditAvailability(event, {
+                    startDate: start,
+                    endDate: end
+                });
+
+                if (!availability.available) {
+                    problem.textContent = availability.message;
+                    problem.hidden = false;
+                    saveButton.disabled = true;
+                    return;
+                }
+
+                saveButton.disabled = false;
+            }
+
+            fillFinishOptions(originalEnd);
+
+            startSelect.addEventListener("change", () => {
+                fillFinishOptions(new Date(finishSelect.value));
+                update();
+            });
+
+            finishSelect.addEventListener("change", update);
+            flexSelect.addEventListener("change", update);
+
+            panel.querySelector("[data-edit-close]")
+                .addEventListener("click", closeShiftEditor);
+
+            saveButton.addEventListener("click", () => {
+                void saveShiftEdit(event, panel, {
+                    start: new Date(startSelect.value),
+                    end: new Date(finishSelect.value),
+                    restriction: flexSelect.value
+                });
+            });
+
+            update();
+            item.after(panel);
+            panel.scrollIntoView({ block: "nearest" });
+        }
+
+        async function saveShiftEdit(event, panel, change) {
+            if (isLoading) return;
+
+            const problem = panel.querySelector(".edit-problem");
+            const saveButton = panel.querySelector("[data-edit-save]");
+            const fields = panel.querySelectorAll("select, button");
+
+            setLoading(true);
+            fields.forEach(field => { field.disabled = true; });
+            saveButton.textContent = "Saving…";
+            panel.classList.add("is-saving");
+            problem.hidden = true;
+            showToast("Saving your changes…");
+            setConnectionStatus("Saving the changed shift…", "");
+
+            const request = {
+                bookingId: event.id,
+                start: change.start.toISOString(),
+                end: change.end.toISOString(),
+                restriction: change.restriction,
+                previousStart: event.start,
+                previousEnd: event.end,
+
+                // Recorded in the Change Log as who made the change.
+                editedBy: currentUser || ""
+            };
+
+            let confirmed = null;
+            let rejection = null;
+            let lastError = null;
+
+            for (let attempt = 1; attempt <= CANCEL_ATTEMPTS; attempt++) {
+                try {
+                    const data = await callRosterApi(
+                        "editBooking",
+                        request,
+                        { timeoutMs: CANCEL_ATTEMPT_TIMEOUT_MS }
+                    );
+
+                    if (data.success === true) {
+                        confirmed = data;
+                        break;
+                    }
+
+                    lastError = new Error("Apps Script did not confirm the change.");
+                } catch (error) {
+                    if (error.serverRejected) {
+                        rejection = error;
+                        break;
+                    }
+
+                    lastError = error;
+                    console.warn(`Edit attempt ${attempt} not confirmed:`, error);
+                }
+
+                if (attempt < CANCEL_ATTEMPTS) {
+                    setConnectionStatus("Still saving: checking with the roster…", "");
+                    await pause(CANCEL_RETRY_PAUSE_MS);
+                }
+            }
+
+            // Every reply was lost: look at the roster itself.
+            let verifiedByRoster = false;
+
+            if (!confirmed && !rejection) {
+                try {
+                    const data = await callRosterApi(
+                        "getBookings",
+                        {},
+                        { timeoutMs: CANCEL_ATTEMPT_TIMEOUT_MS }
+                    );
+
+                    const booking = data.bookings.find(item => String(item.id) === event.id);
+
+                    applyRosterSnapshot(data);
+
+                    if (
+                        booking &&
+                        Date.parse(booking.start) === change.start.getTime() &&
+                        Date.parse(booking.end) === change.end.getTime() &&
+                        (booking.restriction || "N") === change.restriction
+                    ) {
+                        verifiedByRoster = true;
+                    } else {
+                        rejection = new Error(
+                            "The shift was not changed. Please try again."
+                        );
+                    }
+                } catch (error) {
+                    lastError = error;
+                }
+            }
+
+            try {
+                if (confirmed) {
+                    applyRosterSnapshot(confirmed);
+                    showLoadedConnectionStatus();
+                    showHardCopyChangeOutcome("changed", confirmed);
+                    return;
+                }
+
+                if (verifiedByRoster) {
+                    showLoadedConnectionStatus();
+                    showToast("Shift changed.");
+
+                    if (
+                        shiftNeedsCentralRosteringNotice(event.start, event.end) ||
+                        shiftNeedsCentralRosteringNotice(change.start, change.end)
+                    ) {
+                        window.alert(
+                            "Shift changed.\n\nThis shift is inside the hard-copy roster " +
+                            "already sent to Country Rostering. The confirmation of whether " +
+                            "they were emailed was lost, so please phone Country Rostering " +
+                            "on 1300 850 985 to make sure they know."
+                        );
+                    }
+                    return;
+                }
+
+                if (rejection) {
+                    setConnectionStatus(rejection.message, "error");
+                    showToast(rejection.message);
+
+                    // The editor may have been redrawn away by a roster reload.
+                    if (panel.isConnected) {
+                        problem.textContent = rejection.message;
+                        problem.hidden = false;
+                    }
+                    return;
+                }
+
+                if (lastError) {
+                    console.error("Change could not be confirmed:", lastError);
+                }
+
+                hasLoadedBookings = false;
+                renderAll();
+
+                const uncertain =
+                    "Couldn't confirm the change: no reply from the roster. " +
+                    "It may still have gone through. Refresh the roster when you " +
+                    "have reception before trying again.";
+
+                setConnectionStatus(uncertain, "error");
+                showToast(uncertain);
+            } finally {
+                setLoading(false);
+
+                if (panel.isConnected) {
+                    panel.classList.remove("is-saving");
+                    saveButton.textContent = "Save changes";
+                    panel.querySelectorAll("select, button").forEach(field => {
+                        field.disabled = false;
+                    });
+                    panel.querySelector('[data-edit-field="start"]').disabled =
+                        new Date(event.start) < startOfCurrentHour(new Date());
+                }
             }
         }
 
@@ -3827,7 +4213,28 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                     () => cancelShift(event.id)
                 );
 
-                item.append(information, deleteButton);
+                if (TEAM_FEATURES.has("editBooking")) {
+                    const editButton = document.createElement("button");
+                    editButton.className = "btn-secondary btn-small";
+                    editButton.type = "button";
+                    editButton.textContent = "Edit";
+                    editButton.dataset.editId = event.id;
+                    editButton.disabled = deleteButton.disabled;
+
+                    editButton.addEventListener(
+                        "click",
+                        () => openShiftEditor(event, item)
+                    );
+
+                    const actions = document.createElement("div");
+                    actions.className = "shift-actions";
+                    actions.append(editButton, deleteButton);
+
+                    item.append(information, actions);
+                } else {
+                    item.append(information, deleteButton);
+                }
+
                 myBookingsList.appendChild(item);
             });
         }
@@ -6223,7 +6630,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             finishTimeSelect.disabled =
                 loading || startTimeSelect.value === "";
 
-            document.querySelectorAll("[data-cancel-id]")
+            document.querySelectorAll("[data-cancel-id], [data-edit-id]")
                 .forEach(button => {
                     button.disabled =
                         loading ||
