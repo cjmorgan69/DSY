@@ -24,19 +24,24 @@ const WESTCOAST_API =
  * Optional page features, on for every team (see roster.js):
  * - savedRoster:     show the last roster at once while updating
  * - loadingMessages: quote or tip while the roster loads
+ * - reliableCancel:  cancel shows at once and retries until confirmed
+ * - editBooking:     Edit button in My bookings (needs Apps Script v4)
  * To try a new feature on one team first, give that team its own
  * "features" list instead.
  */
-const STANDARD_FEATURES = ["savedRoster", "loadingMessages"];
+const STANDARD_FEATURES = [
+    "savedRoster",
+    "loadingMessages",
+    "reliableCancel",
+    "editBooking"
+];
 
 const ROSTER_TEAM_LIST = {
     // Lower Eyre (plus the test roster)
     test: {
         name: "Summer Bay",
         cluster: "Lower Eyre",
-        apiUrl: TEST_API,
-        // Trial: reliable cancellation and editing, on top of the standard features.
-        features: [...STANDARD_FEATURES, "reliableCancel", "editBooking"]
+        apiUrl: TEST_API
     },
     tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
