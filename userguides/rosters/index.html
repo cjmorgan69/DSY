@@ -8,6 +8,10 @@
     >
     <title>Crew Shift Roster — User Guide</title>
 
+    <!--
+        Colours, header, cards and buttons match the roster pages
+        (modules/rosters/shared/roster.css) so the guide looks familiar.
+    -->
     <style>
         :root {
             --primary: #22c55e;
@@ -31,13 +35,8 @@
             --radius: 16px;
         }
 
-        * {
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
             min-height: 100vh;
@@ -45,18 +44,9 @@
             padding-bottom: 3rem;
             color: var(--text);
             background:
-                radial-gradient(
-                    circle at top right,
-                    #e0e7ff,
-                    transparent 35rem
-                ),
+                radial-gradient(circle at top right, #e0e7ff, transparent 35rem),
                 var(--background);
-            font-family:
-                Inter,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
         .container {
@@ -64,6 +54,8 @@
             margin: 0 auto;
             padding: 1.5rem 1rem;
         }
+
+        /* ----- Header (as on the roster) ----- */
 
         header {
             display: flex;
@@ -91,6 +83,7 @@
             place-items: center;
             width: 44px;
             height: 44px;
+            flex: 0 0 auto;
             color: white;
             border-radius: 12px;
             background: var(--primary);
@@ -112,26 +105,90 @@
         .team-badge {
             display: inline-flex;
             align-items: center;
-            padding: 0.4rem 0.75rem;
+            padding: 0.35rem 0.7rem;
             border-radius: 999px;
             color: var(--primary-dark);
             background: var(--primary-light);
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             font-weight: 800;
             white-space: nowrap;
         }
 
-        .notice {
+        /* ----- Contents ----- */
+
+        .card {
             margin-bottom: 1.5rem;
-            padding: 1rem;
-            color: #334155;
-            border: 1px solid #bfdbfe;
-            border-left: 4px solid var(--blue);
-            border-radius: 10px;
-            background: #eff6ff;
-            font-size: 0.88rem;
-            line-height: 1.55;
+            padding: 1.25rem 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            box-shadow: var(--shadow);
         }
+
+        .card-title {
+            margin: 0 0 0.35rem;
+            font-size: 1.15rem;
+        }
+
+        .card > p {
+            margin: 0 0 1rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .contents {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .contents h3 {
+            margin: 0 0 0.5rem;
+            color: var(--muted);
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .contents ol {
+            margin: 0;
+            padding-left: 1.25rem;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .contents a {
+            color: var(--primary-dark);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .contents a:hover,
+        .contents a:focus-visible {
+            text-decoration: underline;
+        }
+
+        /* ----- Part headings ----- */
+
+        .part-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin: 2rem 0 0.85rem;
+            font-size: 1.15rem;
+        }
+
+        .part-heading:first-of-type {
+            margin-top: 0;
+        }
+
+        .part-heading .team-badge {
+            font-size: 0.7rem;
+        }
+
+        /* ----- Collapsible sections ----- */
 
         .guide-list {
             display: flex;
@@ -145,6 +202,7 @@
             border-radius: var(--radius);
             background: var(--surface);
             box-shadow: var(--shadow);
+            scroll-margin-top: 1rem;
         }
 
         .guide-section summary {
@@ -203,17 +261,12 @@
             line-height: 1.6;
         }
 
-        .guide-content h2 {
-            margin: 0 0 0.75rem;
-            font-size: 1.1rem;
-        }
-
         .guide-content h3 {
-            margin: 1.25rem 0 0.45rem;
-            font-size: 0.95rem;
+            margin: 1.4rem 0 0.45rem;
+            font-size: 0.98rem;
         }
 
-        .guide-content h3:first-child {
+        .guide-content > h3:first-child {
             margin-top: 0;
         }
 
@@ -231,38 +284,169 @@
             margin-bottom: 0.4rem;
         }
 
-        .instruction-box {
+        /* ----- Tip, warning and important boxes ----- */
+
+        .instruction-box,
+        .warning-box,
+        .important-box {
             margin: 1rem 0;
             padding: 0.9rem 1rem;
-            border-left: 4px solid var(--primary);
             border-radius: 10px;
+            line-height: 1.5;
+        }
+
+        .instruction-box {
+            border-left: 4px solid var(--primary);
             color: #166534;
             background: var(--green-light);
         }
 
         .warning-box {
-            margin: 1rem 0;
-            padding: 0.9rem 1rem;
             border-left: 4px solid var(--yellow);
-            border-radius: 10px;
             color: #78350f;
             background: var(--yellow-light);
         }
 
         .important-box {
-            margin: 1rem 0;
-            padding: 0.9rem 1rem;
             border-left: 4px solid var(--red);
-            border-radius: 10px;
             color: #991b1b;
             background: var(--red-light);
         }
 
+        /* ----- Examples of what the roster shows ----- */
+
+        .example-label {
+            margin: 1rem 0 0.35rem;
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .connection-status {
+            margin-bottom: 0.6rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--muted);
+            background: var(--surface);
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .connection-status.connected {
+            color: var(--green);
+            border-color: #bbf7d0;
+            background: var(--green-light);
+        }
+
+        .connection-status.error {
+            color: var(--red);
+            border-color: #fecaca;
+            background: var(--red-light);
+        }
+
+        .saved-roster-notice {
+            margin-bottom: 0.6rem;
+            padding: 0.65rem 1rem;
+            border: 1px dashed #93c5fd;
+            border-radius: 10px;
+            color: #1e3a8a;
+            background: #eff6ff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            line-height: 1.45;
+        }
+
+        .roster-submission-manager {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .roster-submission-manager p {
+            margin: 0.3rem 0 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .shift-example {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--background);
+        }
+
+        .shift-time {
+            font-weight: 800;
+        }
+
+        .shift-detail {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .shift-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Buttons drawn exactly like the roster's buttons. */
+        .btn-primary,
+        .btn-secondary,
+        .btn-danger {
+            display: inline-block;
+            margin: 0.1rem 0;
+            padding: 0.4rem 0.7rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            line-height: 1.4;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            color: white;
+            background: var(--primary);
+        }
+
+        .btn-secondary {
+            color: var(--primary-dark);
+            border: 1px solid #d8ddff;
+            background: var(--primary-light);
+        }
+
+        .btn-danger {
+            color: var(--red);
+            border: 1px solid #fecaca;
+            background: var(--red-light);
+        }
+
+        .manager-label {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--muted);
+            background: var(--background);
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
         .status-key {
             display: grid;
-            grid-template-columns: repeat(3, minmax(140px, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 0.75rem;
-            margin-top: 1rem;
+            margin: 0.75rem 0 1rem;
         }
 
         .status-card {
@@ -282,31 +466,29 @@
             font-weight: 800;
         }
 
-        .status-empty {
-            color: var(--red);
-            background: var(--red-light);
+        .status-empty { color: var(--red); background: var(--red-light); }
+        .status-partial { color: var(--yellow); background: var(--yellow-light); }
+        .status-covered { color: var(--green); background: var(--green-light); }
+
+        .settings-table {
+            width: 100%;
+            margin: 0.5rem 0 1rem;
+            border-collapse: collapse;
+            font-size: 0.88rem;
         }
 
-        .status-partial {
-            color: var(--yellow);
-            background: var(--yellow-light);
+        .settings-table th,
+        .settings-table td {
+            padding: 0.55rem 0.7rem;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            vertical-align: top;
         }
 
-        .status-covered {
-            color: var(--green);
-            background: var(--green-light);
-        }
-
-        .button-example {
-            display: inline-block;
-            margin: 0.2rem 0;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #d8ddff;
-            border-radius: 8px;
-            color: var(--primary-dark);
-            background: var(--primary-light);
-            font-size: 0.82rem;
-            font-weight: 800;
+        .settings-table th {
+            width: 40%;
+            color: var(--muted);
+            font-weight: 700;
         }
 
         .phone-number {
@@ -317,6 +499,7 @@
             background: var(--yellow-light);
             font-weight: 800;
             letter-spacing: 0.03em;
+            white-space: nowrap;
         }
 
         footer {
@@ -328,10 +511,15 @@
 
         @media (max-width: 600px) {
             header {
-                align-items: stretch;
+                align-items: flex-start;
                 flex-direction: column;
             }
 
+            .card {
+                padding: 1.1rem;
+            }
+
+            .contents,
             .status-key {
                 grid-template-columns: 1fr;
             }
@@ -344,6 +532,11 @@
                 padding: 1rem;
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .guide-section summary::after { transition: none; }
+        }
     </style>
 </head>
 
@@ -355,344 +548,726 @@
 
                 <div>
                     <h1>Crew Shift Roster</h1>
-                    <p>Quick guide for roster users</p>
+                    <p>How to use your team's roster</p>
                 </div>
             </div>
 
             <span class="team-badge">User Guide</span>
         </header>
 
-        <div class="notice">
-            <strong>Welcome.</strong>
-            Use this guide to book shifts, check roster coverage,
-            view your bookings, share team messages, and manage changes
-            to submitted hard-copy rosters.
-        </div>
+        <section class="card" aria-labelledby="contentsTitle">
+            <h2 id="contentsTitle" class="card-title">What's in this guide</h2>
+            <p>
+                Part 1 is for everyone on the roster. Part 2 is for roster
+                managers: printing the roster for Country Rostering and
+                marking it as sent. Tap any heading to open it.
+            </p>
 
-        <main class="guide-list">
-            <details class="guide-section" open>
-                <summary>Getting started</summary>
-
-                <div class="guide-content">
-                    <h2>Enter your details</h2>
-
+            <nav class="contents">
+                <div>
+                    <h3>Part 1 · Crew members</h3>
                     <ol>
-                        <li>Enter your <strong>name</strong> in the page header.</li>
-                        <li>Select your <strong>clinical level</strong>.</li>
+                        <li><a href="#getting-started">Getting started</a></li>
+                        <li><a href="#opening">When the roster opens</a></li>
+                        <li><a href="#booking">Booking a shift</a></li>
+                        <li><a href="#timeline">Reading the roster</a></li>
+                        <li><a href="#my-bookings">Changing or cancelling a shift</a></li>
+                        <li><a href="#sent-roster">Changes to a roster already sent</a></li>
+                        <li><a href="#messages">Team messages</a></li>
+                        <li><a href="#help">If something isn't working</a></li>
                     </ol>
-
-                    <p>Available clinical levels are:</p>
-
-                    <ul>
-                        <li><strong>PARA</strong></li>
-                        <li><strong>AO</strong></li>
-                        <li><strong>AR</strong></li>
-                        <li><strong>AA</strong></li>
-                        <li><strong>REC</strong> — Recruit / observer</li>
-                    </ul>
-
-                    <div class="instruction-box">
-                        Your name and clinical level are remembered on the
-                        device and browser you are using.
-                    </div>
                 </div>
-            </details>
 
-            <details class="guide-section">
-                <summary>Booking a shift</summary>
-
-                <div class="guide-content">
-                    <h2>How to book</h2>
-
-                    <ol>
-                        <li>Select the <strong>start date</strong>.</li>
-                        <li>Select a <strong>start time</strong>.</li>
-                        <li>Select a <strong>finish time</strong>.</li>
-                        <li>
-                            Select a flexibility restriction if applicable:
-                            <strong>N</strong>, <strong>A</strong>,
-                            <strong>B</strong>, or <strong>C</strong>.
-                        </li>
-                        <li>Check the booking summary shown below the form.</li>
-                        <li>Select <span class="button-example">Confirm shift</span>.</li>
+                <div>
+                    <h3>Part 2 · Roster managers</h3>
+                    <ol start="9">
+                        <li><a href="#manager-controls">Manager controls and password</a></li>
+                        <li><a href="#print">Printing the 7-day roster</a></li>
+                        <li><a href="#mark-sent">Marking the roster as sent</a></li>
+                        <li><a href="#after-sent">After it's sent: changes and emails</a></li>
+                        <li><a href="#correct-cutoff">Correcting the sent cut-off</a></li>
+                        <li><a href="#manager-messages">Removing team messages</a></li>
                     </ol>
-
-                    <p>The system checks that:</p>
-
-                    <ul>
-                        <li>The shift does not start in the past.</li>
-                        <li>You do not have another overlapping booking.</li>
-                        <li>No more than three people are booked at one time.</li>
-                        <li>Only one REC observer is booked per hourly period.</li>
-                    </ul>
-
-                    <div class="warning-box">
-                        A REC booking occupies one of the three available
-                        places but is an observer and does not count toward
-                        operational crew coverage.
-                    </div>
                 </div>
-            </details>
+            </nav>
+        </section>
 
-            <details class="guide-section">
-                <summary>Understanding the Timeline</summary>
+        <main>
+            <h2 class="part-heading">
+                Part 1 <span class="team-badge">Crew members</span>
+            </h2>
 
-                <div class="guide-content">
-                    <h2>Roster-day time period</h2>
+            <div class="guide-list">
+                <details class="guide-section" id="getting-started" open>
+                    <summary>1. Getting started</summary>
 
-                    <p>Roster days run from:</p>
+                    <div class="guide-content">
+                        <h3>Open your team's roster</h3>
+                        <p>
+                            Use the roster link your manager sent you. Each team
+                            has its own link, and the team name shows in the
+                            badge at the top of the page.
+                        </p>
 
-                    <div class="instruction-box">
-                        <strong>08:00 until 07:59 the following morning.</strong>
-                    </div>
-
-                    <p>
-                        For example, a booking at <strong>03:00 Tuesday</strong>
-                        appears under the roster-day card for <strong>Monday</strong>.
-                    </p>
-
-                    <h3>Coverage colours</h3>
-
-                    <div class="status-key">
-                        <div class="status-card">
-                            <span class="status-label status-empty">
-                                Red
-                            </span>
-
-                            <br>
-
-                            No operational crew are assigned.
+                        <div class="instruction-box">
+                            <strong>Tip:</strong> add the roster to your phone's
+                            home screen so it opens like an app. In Safari, tap
+                            Share → <strong>Add to Home Screen</strong>. In Chrome,
+                            tap ⋮ → <strong>Add to Home screen</strong>.
+                            <br><strong>Roster managers:</strong> the home-screen
+                            version can stop the Country Rostering PDF view from
+                            opening, so use your browser for manager tasks
+                            (see section 10).
                         </div>
 
-                        <div class="status-card">
-                            <span class="status-label status-partial">
-                                Yellow
-                            </span>
+                        <h3>Enter your name and clinical level</h3>
+                        <ol>
+                            <li>Type your <strong>Name</strong> at the top of the page.</li>
+                            <li>
+                                Choose your <strong>Clinical level</strong>:
+                                PARA, AO, AR, AA or REC (recruit / observer).
+                            </li>
+                        </ol>
 
-                            <br>
+                        <p>
+                            The roster remembers both on this phone or computer,
+                            so you only need to enter them once.
+                        </p>
 
-                            One operational crew member is assigned.
+                        <div class="warning-box">
+                            <strong>Always spell your name the same way.</strong>
+                            My bookings finds your shifts by name, so a nickname,
+                            different spelling or extra space will hide them.
+                        </div>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="opening">
+                    <summary>2. When the roster opens</summary>
+
+                    <div class="guide-content">
+                        <p>
+                            The roster is fetched fresh every time it opens.
+                            This can take a few seconds, longer with poor reception.
+                        </p>
+
+                        <p class="example-label">You may see first</p>
+                        <div class="saved-roster-notice">
+                            Showing the roster saved on this device at 7:42 am ·
+                            updating… Booking opens once it's up to date.
                         </div>
 
-                        <div class="status-card">
-                            <span class="status-label status-covered">
-                                Green
-                            </span>
+                        <p>
+                            This is the roster as it was the last time you opened
+                            it on this device, so you can look straight away.
+                            A quote or tip may also show while you wait.
+                            Booking and cancelling unlock once the fresh roster
+                            arrives.
+                        </p>
 
-                            <br>
+                        <p class="example-label">Ready</p>
+                        <div class="connection-status connected">
+                            12 active bookings loaded for Summer Bay.
+                        </div>
 
-                            Two or more operational crew are assigned.
+                        <div class="instruction-box">
+                            The saved copy only works in a normal browser tab.
+                            Private or incognito tabs forget it (and your name)
+                            each time they close.
                         </div>
                     </div>
+                </details>
 
-                    <h3>Expanding and collapsing days</h3>
+                <details class="guide-section" id="booking">
+                    <summary>3. Booking a shift</summary>
 
-                    <p>
-                        Select a day heading to show or hide its hourly
-                        timeline. Use
-                        <span class="button-example">Expand all</span>
-                        or
-                        <span class="button-example">Collapse all</span>
-                        to manage all visible days at once.
-                    </p>
-                </div>
-            </details>
+                    <div class="guide-content">
+                        <ol>
+                            <li>Choose the <strong>Start date</strong>.</li>
+                            <li>Choose a <strong>Start time</strong>.</li>
+                            <li>
+                                Choose a <strong>Finish time</strong>. Shifts can be
+                                1 to 24 hours and can finish the next day.
+                            </li>
+                            <li>
+                                If you have a <strong>Flexibility restriction</strong>,
+                                choose A, B or C. Otherwise leave
+                                <strong>N — No restriction</strong>.
+                            </li>
+                            <li>Check the summary below the form.</li>
+                            <li>Tap <span class="btn-primary">Confirm shift</span>.</li>
+                        </ol>
 
-            <details class="guide-section">
-                <summary>Viewing the printable team roster</summary>
+                        <p>
+                            You'll see <strong>"Your shift was booked
+                            successfully."</strong> Afterwards the date clears but
+                            the times stay selected, so booking the same hours on
+                            another day just needs a new date.
+                        </p>
 
-                <div class="guide-content">
-                    <h2>Team roster view</h2>
+                        <h3>The roster checks that</h3>
+                        <ul>
+                            <li>The shift doesn't start in the past.</li>
+                            <li>You don't already have a shift at the same time.</li>
+                            <li>No more than <strong>three people</strong> are booked in any hour.</li>
+                            <li>Only <strong>one recruit (REC)</strong> is booked in any hour.</li>
+                        </ul>
 
-                    <p>
-                        Select:
-                    </p>
-
-                    <p>
-                        <span class="button-example">
-                            📋 View Team Roster — Next 14 Days
-                        </span>
-                    </p>
-
-                    <p>
-                        This opens a separate window containing a roster table.
-                        In that window you can:
-                    </p>
-
-                    <ul>
-                        <li>Select a different date range.</li>
-                        <li>Move to the next 14-day period.</li>
-                        <li>Print the displayed roster.</li>
-                        <li>Close the roster window when finished.</li>
-                    </ul>
-                </div>
-            </details>
-
-            <details class="guide-section">
-                <summary>Booking list, My bookings, and cancellations</summary>
-
-                <div class="guide-content">
-                    <h2>Booking list</h2>
-
-                    <p>
-                        Select the <strong>Booking list</strong> tab to view
-                        active bookings for the team.
-                    </p>
-
-                    <p>
-                        Use the search field to find a booking by crew member,
-                        clinical level, flexibility code, or date.
-                    </p>
-
-                    <h2>My bookings</h2>
-
-                    <p>
-                        Select <span class="button-example">My bookings</span>
-                        to view upcoming bookings matching the name entered
-                        in the header.
-                    </p>
-
-                    <div class="warning-box">
-                        Use your name consistently. A different spelling,
-                        nickname, or extra space may prevent your bookings
-                        from appearing in <strong>My bookings</strong>.
+                        <div class="warning-box">
+                            A recruit takes one of the three places but is an
+                            observer, so they don't count towards crew coverage.
+                        </div>
                     </div>
+                </details>
 
-                    <h2>Cancelling a shift</h2>
+                <details class="guide-section" id="timeline">
+                    <summary>4. Reading the roster</summary>
 
-                    <ol>
-                        <li>Find the booking in the Booking list or My bookings.</li>
-                        <li>Select <span class="button-example">Cancel</span>.</li>
-                        <li>Read the confirmation message and confirm the cancellation.</li>
-                    </ol>
-                </div>
-            </details>
+                    <div class="guide-content">
+                        <h3>Timeline</h3>
+                        <p>
+                            Roster days run from <strong>08:00 until 07:59 the
+                            next morning</strong>. A shift at 03:00 Tuesday shows
+                            under Monday.
+                        </p>
 
-            <details class="guide-section">
-                <summary>Team messages</summary>
+                        <p>Each hour is coloured by how many crew are on (observers not counted):</p>
 
-                <div class="guide-content">
-                    <h2>Shared roster messages</h2>
+                        <div class="status-key">
+                            <div class="status-card">
+                                <span class="status-label status-empty">Red</span><br>
+                                No crew booked.
+                            </div>
+                            <div class="status-card">
+                                <span class="status-label status-partial">Yellow</span><br>
+                                One crew member booked.
+                            </div>
+                            <div class="status-card">
+                                <span class="status-label status-covered">Green</span><br>
+                                Two or more crew booked.
+                            </div>
+                        </div>
 
-                    <p>
-                        Select
-                        <span class="button-example">Team messages</span>
-                        to view or post notes visible to other users of the
-                        same team roster.
-                    </p>
+                        <p>
+                            Tap a day to open or close it, or use
+                            <span class="btn-secondary">Expand all</span> and
+                            <span class="btn-secondary">Collapse all</span>.
+                        </p>
 
-                    <p>Use the message board for:</p>
+                        <h3>Booking list</h3>
+                        <p>
+                            The <strong>Booking list</strong> tab shows every active
+                            booking in a table. Search by name, level, flexibility
+                            or date. The <strong>Op</strong> column is the crew's
+                            operational code, worked out automatically from who
+                            is booked.
+                        </p>
 
-                    <ul>
-                        <li>Availability updates.</li>
-                        <li>Leave notifications.</li>
-                        <li>Roster-related information.</li>
-                        <li>General team coordination.</li>
-                    </ul>
-
-                    <h3>Posting a message</h3>
-
-                    <ol>
-                        <li>Make sure your name is entered in the header.</li>
-                        <li>Open <strong>Team messages</strong>.</li>
-                        <li>Type your message.</li>
-                        <li>Select <span class="button-example">Post message</span>.</li>
-                    </ol>
-
-                    <h3>Deleting a message</h3>
-
-                    <ul>
-                        <li>
-                            A message posted from your current browser will
-                            show a <strong>Delete</strong> button.
-                        </li>
-                        <li>
-                            A roster manager can remove any message using
-                            <strong>Manager delete</strong> and the manager password.
-                        </li>
-                        <li>
-                            If browser data is cleared or you use another device,
-                            your normal Delete button may no longer be available.
-                        </li>
-                    </ul>
-
-                    <div class="important-box">
-                        <strong>Do not post confidential information.</strong>
-                        Never include patient details, clinical details, private
-                        contact information, or other sensitive personal information.
+                        <h3>14-day team roster</h3>
+                        <p>
+                            <span class="btn-primary">📋 View Team Roster — Next 14 Days</span>
+                            opens a printable table in a new window. You can pick
+                            other dates, move to the next 14 days, or print it.
+                        </p>
                     </div>
-                </div>
-            </details>
+                </details>
 
-            <details class="guide-section">
-                <summary>Submitted hard-copy roster periods</summary>
+                <details class="guide-section" id="my-bookings">
+                    <summary>5. Changing or cancelling a shift</summary>
 
-                <div class="guide-content">
-                    <h2>Hard-copy submission status</h2>
+                    <div class="guide-content">
+                        <p>
+                            Tap <span class="btn-secondary">My bookings</span> to see
+                            your upcoming shifts. Each one has an
+                            <strong>Edit</strong> and a <strong>Cancel</strong> button
+                            until the shift finishes.
+                        </p>
 
-                    <p>
-                        The roster displays whether a hard-copy roster period
-                        has been submitted to Country Rostering.
-                    </p>
+                        <p class="example-label">My bookings</p>
+                        <div class="shift-example">
+                            <div>
+                                <div class="shift-time">Sat, 10 Oct at 15:00 to Sat, 10 Oct at 19:00</div>
+                                <div class="shift-detail">Summer Bay · PARA · Flex N · Op D</div>
+                            </div>
+                            <div class="shift-actions">
+                                <span class="btn-secondary">Edit</span>
+                                <span class="btn-danger">Cancel</span>
+                            </div>
+                        </div>
 
-                    <p>
-                        Bookings and cancellations are still allowed during a
-                        submitted period. However, changes that overlap that
-                        period require notification to Country Rostering.
-                    </p>
+                        <h3>Changing a shift</h3>
+                        <ol>
+                            <li>Tap <span class="btn-secondary">Edit</span>.</li>
+                            <li>
+                                The panel opens with your current start, finish and
+                                flexibility already filled in. Change only what you
+                                need, such as an earlier finish.
+                            </li>
+                            <li>
+                                Check the line that shows <strong>Was … → now …</strong>.
+                                Any problem (for example, an hour that's already
+                                full) shows in red.
+                            </li>
+                            <li>
+                                Tap <span class="btn-primary">Save changes</span>,
+                                or <span class="btn-secondary">Keep as is</span> to close.
+                            </li>
+                        </ol>
 
-                    <div class="warning-box">
-                        If the roster displays a Country Rostering warning,
-                        follow the on-screen prompt after making the booking
-                        or cancellation.
+                        <ul>
+                            <li><strong>Save changes</strong> stays greyed out until something has changed.</li>
+                            <li>If you move the start, the finish time stays where it was where possible.</li>
+                            <li>
+                                Once a shift has <strong>started</strong>, only the
+                                finish and flexibility can change.
+                            </li>
+                        </ul>
+
+                        <h3>Cancelling a shift</h3>
+                        <ol>
+                            <li>
+                                Tap <span class="btn-danger">Cancel</span> in My bookings
+                                or the Booking list.
+                            </li>
+                            <li>Confirm the message that appears.</li>
+                            <li>
+                                The shift greys out and shows <strong>Cancelling…</strong>
+                                while the roster saves it, then disappears with
+                                <strong>"Shift cancelled."</strong>
+                            </li>
+                        </ol>
+
+                        <div class="instruction-box">
+                            <strong>Poor reception?</strong> Wait. The roster tries
+                            up to three times and checks that the change went
+                            through, so there's no need to tap again.
+                        </div>
+
+                        <p>If the roster can't get any reply at all, you'll see:</p>
+                        <div class="connection-status error">
+                            Couldn't confirm the cancellation: no reply from the roster.
+                            It may still have gone through. Refresh the roster when you
+                            have reception before trying again.
+                        </div>
+                        <p>
+                            When you have reception, tap
+                            <span class="btn-secondary">Refresh roster</span> and check
+                            My bookings before trying again.
+                        </p>
                     </div>
+                </details>
 
-                    <p>Country Rostering phone number:</p>
+                <details class="guide-section" id="sent-roster">
+                    <summary>6. Changes to a roster already sent</summary>
 
-                    <p>
-                        <span class="phone-number">1300 850 985</span>
-                    </p>
-                </div>
-            </details>
+                    <div class="guide-content">
+                        <p>
+                            Your roster manager sends a printed roster to Country
+                            Rostering each week. The <strong>Roster Submission
+                            Status</strong> box shows how far it has been sent:
+                        </p>
 
-            <details class="guide-section">
-                <summary>Refreshing and getting help</summary>
+                        <div class="roster-submission-manager">
+                            <strong>Roster Submission Status</strong>
+                            <p>
+                                ROSTER SENT for Summer Bay up until Mon 19 Oct 2026,
+                                08:00. Changes affecting shifts before this cut-off
+                                require notification to Country Rostering.
+                            </p>
+                        </div>
 
-                <div class="guide-content">
-                    <h2>Refresh the roster</h2>
+                        <p>
+                            You can still book, change and cancel shifts before
+                            the cut-off. Country Rostering just needs to know.
+                        </p>
 
-                    <p>
-                        Select
-                        <span class="button-example">Refresh roster</span>
-                        to load the latest bookings and hard-copy submission
-                        status.
-                    </p>
+                        <h3>What happens</h3>
+                        <ul>
+                            <li>
+                                <strong>Shift more than 24 hours away:</strong>
+                                Country Rostering is emailed automatically. You'll
+                                see <strong>"Country Rostering has been notified by
+                                email."</strong>
+                            </li>
+                            <li>
+                                <strong>Shift within 24 hours</strong>, or the email
+                                couldn't be sent: a message asks you to phone
+                                Country Rostering. Please do it straight away.
+                            </li>
+                        </ul>
 
-                    <p>Refresh the roster if:</p>
+                        <p>Country Rostering:</p>
+                        <p><span class="phone-number">1300 850 985</span></p>
 
-                    <ul>
-                        <li>You have left the page open for some time.</li>
-                        <li>A booking or cancellation was unsuccessful.</li>
-                        <li>You need to see another person’s recent booking.</li>
-                        <li>The page shows a connection or verification warning.</li>
-                    </ul>
+                        <p>
+                            Your roster managers are also emailed about every
+                            change inside the sent roster.
+                        </p>
+                    </div>
+                </details>
 
-                    <h2>If something is not working</h2>
+                <details class="guide-section" id="messages">
+                    <summary>7. Team messages</summary>
 
-                    <ol>
-                        <li>Check your internet connection.</li>
-                        <li>Select <strong>Refresh roster</strong>.</li>
-                        <li>Check that your name and clinical level are correct.</li>
-                        <li>Try refreshing the browser page.</li>
-                        <li>Contact your roster manager if the problem continues.</li>
-                    </ol>
-                </div>
-            </details>
+                    <div class="guide-content">
+                        <p>
+                            <span class="btn-secondary">Team messages</span> is a
+                            shared notice board for your team: availability, leave,
+                            and other roster notes.
+                        </p>
+
+                        <h3>Posting a message</h3>
+                        <ol>
+                            <li>Check your name is entered at the top of the page.</li>
+                            <li>Open <strong>Team messages</strong> and type your note (up to 2,000 characters).</li>
+                            <li>Tap <span class="btn-primary">Post message</span>.</li>
+                        </ol>
+
+                        <h3>Deleting a message</h3>
+                        <p>
+                            Messages you posted from this phone or computer show a
+                            <strong>Delete</strong> button. On another device, or
+                            after clearing your browser data, ask your roster
+                            manager to remove it.
+                        </p>
+
+                        <div class="important-box">
+                            <strong>Never post confidential information.</strong>
+                            No patient or clinical details, and no private contact
+                            or personal information. Everyone on the team roster
+                            can read the board.
+                        </div>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="help">
+                    <summary>8. If something isn't working</summary>
+
+                    <div class="guide-content">
+                        <ol>
+                            <li>Check you have internet or mobile reception.</li>
+                            <li>Tap <span class="btn-secondary">Refresh roster</span>.</li>
+                            <li>Check your name and clinical level are entered correctly.</li>
+                            <li>Reload the page in your browser.</li>
+                            <li>If it still isn't working, contact your roster manager.</li>
+                        </ol>
+
+                        <h3>Common questions</h3>
+                        <ul>
+                            <li>
+                                <strong>My bookings is empty.</strong> Check your name
+                                is spelt exactly as when you booked.
+                            </li>
+                            <li>
+                                <strong>Buttons are greyed out.</strong> The roster is
+                                still loading or saving. Wait a moment, or refresh.
+                            </li>
+                            <li>
+                                <strong>"Unable to verify hard-copy status."</strong>
+                                Refresh the roster before changing bookings.
+                            </li>
+                            <li>
+                                <strong>Another device looks different.</strong> Your
+                                name and saved roster are kept separately on each
+                                device and browser.
+                            </li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+
+            <h2 class="part-heading">
+                Part 2 <span class="team-badge">Roster managers</span>
+            </h2>
+
+            <div class="guide-list">
+                <details class="guide-section" id="manager-controls">
+                    <summary>9. Manager controls and password</summary>
+
+                    <div class="guide-content">
+                        <p>
+                            At the bottom of the <strong>Book a shift</strong> card,
+                            tap <span class="manager-label">Manager controls</span>
+                            to open them. They contain:
+                        </p>
+
+                        <ul>
+                            <li>
+                                <span class="btn-primary">Open Country Rostering PDF view — 7 days</span>
+                                for printing and marking the roster as sent.
+                            </li>
+                            <li>
+                                <span class="btn-secondary">Edit sent cut-off</span> and
+                                <span class="btn-danger">Reset sent status</span>,
+                                for corrections only.
+                            </li>
+                        </ul>
+
+                        <p>
+                            Every manager action asks for the <strong>roster
+                            manager password</strong> for your team. The password
+                            isn't saved, so it's asked for each time.
+                        </p>
+
+                        <div class="important-box">
+                            Keep the password to roster managers. Don't post it in
+                            Team messages or share it with crew.
+                        </div>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="print">
+                    <summary>10. Printing the 7-day roster for Country Rostering</summary>
+
+                    <div class="guide-content">
+                        <div class="instruction-box">
+                            A computer gives the most reliable printout. A phone
+                            works too; see the phone tips below.
+                        </div>
+
+                        <div class="warning-box">
+                            <strong>Use your browser, not the home-screen icon.</strong>
+                            If you added the roster to your home screen, open the
+                            roster link in Safari, Chrome or Edge instead for
+                            manager tasks. The home-screen version can stop the PDF
+                            view and its <strong>Mark as sent</strong> panel from opening.
+                        </div>
+
+                        <h3>Open the PDF view</h3>
+                        <ol>
+                            <li>Tap <span class="btn-secondary">Refresh roster</span> so the roster is up to date.</li>
+                            <li>Open <span class="manager-label">Manager controls</span>.</li>
+                            <li>
+                                Tap <span class="btn-primary">Open Country Rostering PDF view — 7 days</span>.
+                                It opens in a new window or tab.
+                            </li>
+                            <li>
+                                Set <strong>First roster day (7 days shown)</strong>
+                                and tap <span class="btn-primary">Show roster</span>,
+                                or use <span class="btn-secondary">Next 7 days</span>.
+                            </li>
+                            <li>Check the dates and bookings shown are right.</li>
+                        </ol>
+
+                        <h3>Print or save as PDF</h3>
+                        <p>
+                            Tap <span class="btn-secondary">🖨️ Print / Save PDF</span>
+                            and use these settings:
+                        </p>
+
+                        <table class="settings-table">
+                            <tbody>
+                                <tr><th scope="row">Printer / destination</th><td><strong>Save as PDF</strong></td></tr>
+                                <tr><th scope="row">Paper size</th><td><strong>A4</strong></td></tr>
+                                <tr><th scope="row">Layout</th><td><strong>Landscape</strong></td></tr>
+                                <tr><th scope="row">Scale</th><td><strong>100%</strong>. The roster already shrinks itself to fit.</td></tr>
+                                <tr><th scope="row">Background graphics</th><td><strong>On</strong>, so the Op colours print.</td></tr>
+                            </tbody>
+                        </table>
+
+                        <p>
+                            The roster prints on <strong>two pages</strong>:
+                            08:00–19:59 and 20:00–07:59.
+                        </p>
+
+                        <h3>Phone tips</h3>
+                        <ul>
+                            <li>
+                                Check the print preview shows two landscape pages
+                                with no columns cut off.
+                            </li>
+                            <li>
+                                Some phone browsers (for example Microsoft Edge)
+                                size the page differently. If the preview doesn't
+                                fit, lower the scale in the print options until it does.
+                            </li>
+                            <li>
+                                If you see <strong>"Please allow pop-ups to view the
+                                Country Rostering roster."</strong>, allow pop-ups for
+                                the roster in your browser settings and try again.
+                            </li>
+                        </ul>
+
+                        <p>
+                            Send the PDF to Country Rostering in the usual way,
+                            then mark it as sent (next section).
+                        </p>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="mark-sent">
+                    <summary>11. Marking the roster as sent</summary>
+
+                    <div class="guide-content">
+                        <p>
+                            Once the PDF has gone to Country Rostering, record it
+                            from the <strong>same PDF view</strong>. This sets the
+                            hard-copy cut-off to the end of the 7 days you printed.
+                        </p>
+
+                        <ol>
+                            <li>
+                                With the printed 7 days still showing, tap
+                                <span class="btn-primary">Mark as sent up until …</span>.
+                                The button shows the cut-off date and time.
+                            </li>
+                            <li>
+                                A panel opens below the buttons. Read the question,
+                                enter the <strong>Roster manager password</strong>,
+                                and tap <span class="btn-primary">Confirm and mark as sent</span>.
+                            </li>
+                            <li>
+                                You'll see <strong>"Marked as sent up until …"</strong>.
+                                Close the PDF view and refresh the main roster.
+                                The Roster Submission Status box now shows the new cut-off.
+                            </li>
+                        </ol>
+
+                        <h3>Where the cut-off falls</h3>
+                        <p>
+                            The cut-off is <strong>08:00 on the morning after the
+                            last roster day printed</strong>. For example, printing
+                            Monday 12 to Sunday 18 October sets the cut-off at
+                            Monday 19 October, 08:00:
+                        </p>
+                        <ul>
+                            <li>Changes to shifts starting <strong>before</strong> 08:00 Monday 19 need Country Rostering notified.</li>
+                            <li>A shift starting <strong>at</strong> 08:00 Monday 19 or later is outside the sent roster.</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            If the button reads <strong>Already sent up to here</strong>,
+                            those days are already covered. Choose a later
+                            first roster day if you're sending the next week.
+                        </div>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="after-sent">
+                    <summary>12. After it's sent: changes and emails</summary>
+
+                    <div class="guide-content">
+                        <p>
+                            When anyone books, changes or cancels a shift that
+                            starts before the cut-off:
+                        </p>
+
+                        <ul>
+                            <li>
+                                <strong>More than 24 hours before the shift:</strong>
+                                Country Rostering is emailed automatically, with the
+                                crew member, times and change. For an edited shift,
+                                the email includes the previous times.
+                            </li>
+                            <li>
+                                <strong>Within 24 hours:</strong> no email to Country
+                                Rostering. The crew member is asked to phone
+                                <span class="phone-number">1300 850 985</span>.
+                            </li>
+                            <li>
+                                <strong>Always:</strong> the team's roster manager and
+                                the area manager (where their emails are set up) get a
+                                <strong>[Roster Alert]</strong>
+                                email saying what changed and whether Country
+                                Rostering was emailed.
+                            </li>
+                        </ul>
+
+                        <div class="warning-box">
+                            If an alert says the Country Rostering email
+                            <strong>failed</strong>, or the crew member was asked to
+                            phone, check that Country Rostering has been told.
+                        </div>
+
+                        <h3>Change Log</h3>
+                        <p>
+                            Every booking, change, cancellation and cut-off update
+                            is recorded on the <strong>Change Log</strong> tab of
+                            the roster's Google Sheet: when, which team, what
+                            happened and who did it. Use it to check what happened
+                            to a shift.
+                        </p>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="correct-cutoff">
+                    <summary>13. Correcting the sent cut-off</summary>
+
+                    <div class="guide-content">
+                        <p>
+                            Normally you only need <strong>Mark as sent</strong>.
+                            Use these from <span class="manager-label">Manager controls</span>
+                            only to fix a mistake.
+                        </p>
+
+                        <h3>Edit sent cut-off</h3>
+                        <ol>
+                            <li>Tap <span class="btn-secondary">Edit sent cut-off</span>.</li>
+                            <li>Choose the <strong>date</strong> and <strong>time</strong> the roster was sent up until.</li>
+                            <li>
+                                Tap <span class="btn-primary">Save sent cut-off</span>
+                                and enter the password.
+                            </li>
+                        </ol>
+                        <p>
+                            The cut-off can only move <strong>later</strong>. To move
+                            it earlier, reset it first, then set it again.
+                        </p>
+
+                        <h3>Reset sent status</h3>
+                        <p>
+                            <span class="btn-danger">Reset sent status</span>
+                            clears the cut-off for your team only. Changes then
+                            stop triggering Country Rostering notices until the
+                            roster is marked as sent again. It doesn't change any
+                            bookings.
+                        </p>
+
+                        <div class="important-box">
+                            Only reset if the sent status genuinely no longer
+                            applies. While it's reset, Country Rostering isn't told
+                            about changes.
+                        </div>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="manager-messages">
+                    <summary>14. Removing team messages</summary>
+
+                    <div class="guide-content">
+                        <p>
+                            Roster managers can remove any message in
+                            <strong>Team messages</strong>:
+                        </p>
+                        <ol>
+                            <li>Open <span class="btn-secondary">Team messages</span>.</li>
+                            <li>Tap <span class="btn-secondary">Manager delete</span> on the message.</li>
+                            <li>Confirm, then enter the roster manager password.</li>
+                        </ol>
+                        <p>
+                            Remove anything with confidential or personal
+                            information as soon as you see it.
+                        </p>
+                    </div>
+                </details>
+            </div>
         </main>
 
         <footer>
-            Crew Shift Roster — Quick User Guide
+            Crew Shift Roster — User Guide · Country Rostering
+            <span class="phone-number">1300 850 985</span>
         </footer>
     </div>
+
+    <script>
+        // Opening a contents link also opens that section.
+        function openLinkedSection() {
+            const section = document.getElementById(location.hash.slice(1));
+            if (section && section.tagName === "DETAILS") section.open = true;
+        }
+
+        window.addEventListener("hashchange", openLinkedSection);
+        openLinkedSection();
+    </script>
 </body>
 </html>
