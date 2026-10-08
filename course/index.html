@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Ambulance Responder Course</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap">
+<style>
+/* Layout: one phone-width column; each course day is a block of dated sessions under a 7-step day tracker. */
+:root {
+  --bg: #EDF1EE;
+  --surface: #FFFFFF;
+  --ink: #12261F;
+  --muted: #53655D;
+  --line: #D2DBD5;
+  --brand: #0A6A4E;
+  --brand-ink: #FFFFFF;
+  --hi: #E3EC3A;
+  --hi-ink: #1D2A06;
+  --good: #17754A;
+  --good-bg: #DDF1E6;
+  --warn: #8A4B00;
+  --warn-bg: #FBE9CF;
+  --bad: #AE2A22;
+  --bad-bg: #FADEDB;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D1613; --surface: #16221E; --ink: #E7EFEA; --muted: #9BAEA5; --line: #2A3A34;
+    --brand: #43C999; --brand-ink: #05241A; --hi: #D7E24A; --hi-ink: #1D2A06;
+    --good: #6FD6A4; --good-bg: #143325; --warn: #F0B45E; --warn-bg: #3A2A10;
+    --bad: #F2938B; --bad-bg: #3F1C19; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D1613; --surface: #16221E; --ink: #E7EFEA; --muted: #9BAEA5; --line: #2A3A34;
+  --brand: #43C999; --brand-ink: #05241A; --hi: #D7E24A; --hi-ink: #1D2A06;
+  --good: #6FD6A4; --good-bg: #143325; --warn: #F0B45E; --warn-bg: #3A2A10;
+  --bad: #F2938B; --bad-bg: #3F1C19; color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 1rem/1.45 var(--body); font-variant-numeric: tabular-nums;
+  -webkit-text-size-adjust: 100%;
+}
+h1, h2, h3, p, ol, ul { margin: 0; padding: 0; }
+ol, ul { list-style: none; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; text-wrap: balance; }
+h1 { font-size: 1.75rem; font-weight: 700; }
+h2 { font-size: 1.2rem; font-weight: 700; }
+h3 { font-size: 1.02rem; font-weight: 600; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+
+.chequer {
+  height: 16px;
+  background: conic-gradient(var(--brand) 25%, var(--hi) 0 50%, var(--brand) 0 75%, var(--hi) 0) 0 0 / 16px 16px;
+}
+.wrap { max-width: 34rem; margin: 0 auto; padding-inline: 16px; padding-block: 20px 40px; display: flex; flex-direction: column; gap: 28px; }
+.stack { display: flex; flex-direction: column; gap: 12px; }
+.eyebrow { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: .88rem; }
+
+/* Demo bar */
+.demo { background: var(--hi); color: var(--hi-ink); }
+.demo-in { max-width: 34rem; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: .88rem; }
+.demo-in p { flex: 1 1 12rem; min-width: 0; }
+.demo-in div { display: flex; gap: 6px; }
+.demo button { min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--hi-ink); background: transparent; color: var(--hi-ink); font-weight: 700; font-size: .85rem; }
+.demo button[aria-pressed="true"] { background: var(--hi-ink); color: var(--hi); }
+
+/* Header */
+.top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.top > div { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+
+/* Buttons */
+.btn { min-height: 44px; padding: 0 18px; border-radius: var(--r); border: 1.5px solid var(--brand); background: var(--brand); color: var(--brand-ink); font-weight: 700; }
+.btn.ghost { background: transparent; color: var(--brand); }
+.btn.danger { background: var(--bad); border-color: var(--bad); color: var(--surface); }
+.btn.wide { width: 100%; }
+.link { background: none; border: 0; padding: 10px 0; color: var(--brand); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.busy .btn, .busy .link, .busy .tap, .busy .seg button { pointer-events: none; opacity: .55; }
+
+/* Chips */
+.chip { display: inline-flex; align-items: center; min-height: 26px; padding: 0 10px; border-radius: 999px; font-size: .8rem; font-weight: 700; white-space: nowrap; background: var(--line); color: var(--ink); }
+.chip.good { background: var(--good-bg); color: var(--good); }
+.chip.warn { background: var(--warn-bg); color: var(--warn); }
+.chip.bad { background: var(--bad-bg); color: var(--bad); }
+.chip.hi { background: var(--hi); color: var(--hi-ink); }
+
+/* Day tracker */
+.days { display: grid; grid-template-columns: repeat(auto-fit, minmax(2.4rem, 1fr)); gap: 6px; }
+.days li { height: 2.6rem; display: grid; place-items: center; border-radius: 8px; font-family: var(--display); font-weight: 700; border: 1.5px dashed var(--muted); color: var(--muted); }
+.days li.done { background: var(--brand); border: 1.5px solid var(--brand); color: var(--brand-ink); }
+.days li.booked { background: var(--hi); border: 1.5px solid var(--hi-ink); color: var(--hi-ink); }
+.days.mini { grid-template-columns: repeat(auto-fit, minmax(1.1rem, 1.5rem)); gap: 4px; }
+.days.mini li { height: 1.1rem; font-size: 0; border-radius: 4px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .82rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: .85rem; height: .85rem; border-radius: 3px; border: 1.5px dashed var(--muted); }
+.legend i.done { background: var(--brand); border: 1.5px solid var(--brand); }
+.legend i.booked { background: var(--hi); border: 1.5px solid var(--hi-ink); }
+
+/* Panels and session rows */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.panel.pad { padding: 16px; }
+.next { border-left: 6px solid var(--hi); }
+.dayhead { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.dayhead h3 { min-width: 0; }
+.sessions > li + li { border-top: 1px solid var(--line); }
+.session { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 12px 14px; width: 100%; text-align: left; background: none; border: 0; }
+.when { flex: none; width: 3.1rem; display: flex; flex-direction: column; align-items: center; line-height: 1.05; padding: 5px 0; border-radius: 8px; background: var(--bg); }
+.when .dow, .when .mon { font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.when .dom { font-family: var(--display); font-size: 1.3rem; font-weight: 700; }
+.what { flex: 1 1 8rem; min-width: 0; display: flex; flex-direction: column; gap: 3px; overflow-wrap: anywhere; }
+.what .t { font-weight: 700; }
+.act { flex: none; display: flex; align-items: center; gap: 8px; }
+.act .btn { min-height: 40px; padding: 0 14px; }
+.confirm { flex: 1 1 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; border-radius: 8px; background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.confirm div { display: flex; gap: 8px; }
+.tap:hover { background: var(--bg); }
+.tap .go { color: var(--muted); font-size: 1.2rem; }
+
+/* Sign-in */
+.signin { gap: 20px; padding-block: 36px 40px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-weight: 700; }
+.field input, select { min-height: 48px; padding: 0 14px; border-radius: var(--r); border: 1.5px solid var(--muted); background: var(--surface); width: 100%; }
+#code { font-size: 1.3rem; letter-spacing: .18em; text-transform: uppercase; }
+
+/* Facilitator */
+.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: var(--r); background: var(--line); }
+.tabs button { min-height: 40px; border: 0; border-radius: 7px; background: transparent; font-weight: 700; color: var(--muted); }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); }
+.person { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 14px; }
+.person .who { flex: 1 1 9rem; min-width: 0; display: flex; flex-direction: column; gap: 4px; overflow-wrap: anywhere; }
+.person .who b { font-weight: 700; }
+.seg { flex: none; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.seg button { min-height: 42px; min-width: 5rem; padding: 0 10px; border-radius: 8px; border: 1.5px solid var(--muted); background: transparent; font-weight: 700; color: var(--muted); }
+.seg button[aria-pressed="true"].present { background: var(--good-bg); border-color: var(--good); color: var(--good); }
+.seg button[aria-pressed="true"].absent { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+.savebar { position: sticky; bottom: 0; padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--bg); }
+.count { font-family: var(--display); font-weight: 700; white-space: nowrap; }
+
+#toast { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 5; margin: 0 auto; max-width: 32rem; padding: 12px 16px; border-radius: var(--r); background: var(--ink); color: var(--bg); font-weight: 700; }
+#toast.bad { background: var(--bad); color: var(--surface); }
+@media (prefers-reduced-motion: no-preference) { #toast { animation: rise .18s ease-out; } }
+@keyframes rise { from { transform: translateY(8px); opacity: 0; } }
+</style>
+</head>
+<body>
+<script src="config.js"></script>
+<div id="app"></div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+/* ---------------------------------------------------------------------------
+ * Core rules: bookings, attendance and progress.
+ * The same code runs in the sheet (real data) and in the app's demo mode.
+ * `db` is a small storage interface: rows, append, update, today, now, newId.
+ * ------------------------------------------------------------------------- */
+var Core = (function () {
+  'use strict';
+
+  function fail(message) {
+    var e = new Error(message);
+    e.userFacing = true;
+    throw e;
+  }
+  function s(v) { return v == null ? '' : String(v).trim(); }
+  function isActive(student) {
+    var v = s(student.status).toLowerCase();
+    return v === '' || v === 'active';
+  }
+  function byWhen(a, b) {
+    var ka = (a.date || '9999') + ' ' + (a.start_time || '');
+    var kb = (b.date || '9999') + ' ' + (b.start_time || '');
+    return ka < kb ? -1 : ka > kb ? 1 : 0;
+  }
+  function byDay(a, b) {
+    var na = parseFloat(a), nb = parseFloat(b);
+    if (!isNaN(na) && !isNaN(nb) && na !== nb) return na - nb;
+    return String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0;
+  }
+
+  function load(db) {
+    var d = {
+      today: db.today(),
+      students: db.rows('Students').filter(function (r) { return s(r.student_id); }),
+      workshops: db.rows('Workshops').filter(function (r) { return s(r.workshop_id); }).sort(byWhen),
+      bookings: db.rows('Bookings').filter(function (r) { return s(r.student_id) && s(r.workshop_id); }),
+      attendance: db.rows('Attendance').filter(function (r) { return s(r.student_id) && s(r.workshop_id); })
+    };
+    d.studentById = {};
+    d.students.forEach(function (st) { d.studentById[s(st.student_id)] = st; });
+    d.workshopById = {};
+    d.workshops.forEach(function (w) { d.workshopById[s(w.workshop_id)] = w; });
+    d.att = {}; // "student|workshop" -> attendance row (latest wins)
+    d.attendance.forEach(function (a) { d.att[s(a.student_id) + '|' + s(a.workshop_id)] = a; });
+    d.booking = {}; // "student|workshop" -> booking row (latest wins)
+    d.bookings.forEach(function (b) { d.booking[s(b.student_id) + '|' + s(b.workshop_id)] = b; });
+    return d;
+  }
+
+  function isBooked(d, studentId, workshopId) {
+    var b = d.booking[studentId + '|' + workshopId];
+    return !!b && s(b.status).toLowerCase() === 'confirmed';
+  }
+  function attStatus(d, studentId, workshopId) {
+    var a = d.att[studentId + '|' + workshopId];
+    var v = a ? s(a.status).toLowerCase() : '';
+    return v === 'present' || v === 'absent' ? v : null;
+  }
+  function isPast(d, w) { return !!w.date && w.date < d.today; }
+  function sameCohort(a, b) { return s(a).toLowerCase() === s(b).toLowerCase(); }
+
+  function cohortWorkshops(d, cohort) {
+    return d.workshops.filter(function (w) { return sameCohort(w.cohort, cohort); });
+  }
+  function bookedCount(d, w) {
+    var id = s(w.workshop_id), n = 0;
+    d.students.forEach(function (st) {
+      if (isActive(st) && isBooked(d, s(st.student_id), id)) n++;
+    });
+    return n;
+  }
+  function workshopView(d, w) {
+    var cap = parseInt(w.capacity, 10);
+    var booked = bookedCount(d, w);
+    return {
+      id: s(w.workshop_id),
+      cohort: s(w.cohort),
+      day: s(w.day_number),
+      name: s(w.workshop_name),
+      date: s(w.date),
+      time: s(w.start_time),
+      location: s(w.location),
+      notes: s(w.notes),
+      capacity: isNaN(cap) ? null : cap,
+      booked: booked,
+      spotsLeft: isNaN(cap) ? null : Math.max(0, cap - booked),
+      past: isPast(d, w)
+    };
+  }
+
+  /* One entry per course day: done (attended), booked (upcoming booking) or open. */
+  function dayStates(d, student) {
+    var sid = s(student.student_id), states = {}, order = [];
+    cohortWorkshops(d, student.cohort).forEach(function (w) {
+      var day = s(w.day_number);
+      if (!day) return;
+      if (!(day in states)) { states[day] = 'open'; order.push(day); }
+      var wid = s(w.workshop_id);
+      if (attStatus(d, sid, wid) === 'present') states[day] = 'done';
+      else if (states[day] !== 'done' && isBooked(d, sid, wid) && !isPast(d, w)) states[day] = 'booked';
+    });
+    return order.sort(byDay).map(function (day) { return { day: day, state: states[day] }; });
+  }
+
+  function studentHome(db, studentId) {
+    var d = load(db);
+    var st = d.studentById[studentId];
+    if (!st || !isActive(st)) fail('Your access is no longer active. Ask your facilitator.');
+    return {
+      role: 'student',
+      course: db.courseName(),
+      today: d.today,
+      student: { id: studentId, first_name: s(st.first_name), last_name: s(st.last_name), cohort: s(st.cohort) },
+      days: dayStates(d, st),
+      workshops: cohortWorkshops(d, st.cohort).map(function (w) {
+        var v = workshopView(d, w);
+        v.myBooking = isBooked(d, studentId, v.id);
+        v.myAttendance = attStatus(d, studentId, v.id);
+        return v;
+      })
+    };
+  }
+
+  function book(db, studentId, workshopId) {
+    var d = load(db);
+    var st = d.studentById[studentId];
+    var w = d.workshopById[s(workshopId)];
+    if (!st || !isActive(st)) fail('Your access is no longer active. Ask your facilitator.');
+    if (!w || !sameCohort(w.cohort, st.cohort)) fail('That workshop is not part of your course.');
+    if (!w.date) fail('That workshop does not have a date yet.');
+    if (isPast(d, w)) fail('That workshop has already run.');
+    var wid = s(w.workshop_id), day = s(w.day_number);
+    if (isBooked(d, studentId, wid)) fail('You are already booked on this workshop.');
+    cohortWorkshops(d, st.cohort).forEach(function (other) {
+      if (s(other.day_number) !== day) return;
+      var oid = s(other.workshop_id);
+      if (attStatus(d, studentId, oid) === 'present') fail('You have already completed Day ' + day + '.');
+      if (oid !== wid && isBooked(d, studentId, oid) && !isPast(d, other)) {
+        fail('You already have a booking for Day ' + day + '. Cancel it first to switch dates.');
+      }
+    });
+    var v = workshopView(d, w);
+    if (v.spotsLeft !== null && v.spotsLeft <= 0) fail('That workshop is full.');
+    var existing = d.booking[studentId + '|' + wid];
+    if (existing) {
+      db.update('Bookings', existing, { status: 'confirmed', booked_at: db.now() });
+    } else {
+      db.append('Bookings', {
+        booking_id: db.newId('B'), student_id: studentId, workshop_id: wid,
+        booked_at: db.now(), status: 'confirmed'
+      });
+    }
+    return studentHome(db, studentId);
+  }
+
+  function cancel(db, studentId, workshopId) {
+    var d = load(db);
+    var w = d.workshopById[s(workshopId)];
+    if (!w || !isBooked(d, studentId, s(w.workshop_id))) fail('You do not have a booking on that workshop.');
+    if (isPast(d, w)) fail('That workshop has already run.');
+    db.update('Bookings', d.booking[studentId + '|' + s(w.workshop_id)], { status: 'cancelled', booked_at: db.now() });
+    return studentHome(db, studentId);
+  }
+
+  function facHome(db) {
+    var d = load(db);
+    var cohorts = {};
+    d.workshops.forEach(function (w) { if (s(w.cohort)) cohorts[s(w.cohort)] = 1; });
+    d.students.forEach(function (st) { if (s(st.cohort)) cohorts[s(st.cohort)] = 1; });
+    return {
+      role: 'facilitator',
+      course: db.courseName(),
+      today: d.today,
+      cohorts: Object.keys(cohorts).sort(),
+      workshops: d.workshops.map(function (w) {
+        var v = workshopView(d, w), present = 0, marked = 0;
+        d.students.forEach(function (st) {
+          var a = attStatus(d, s(st.student_id), v.id);
+          if (a) marked++;
+          if (a === 'present') present++;
+        });
+        v.present = present;
+        v.marked = marked;
+        return v;
+      }),
+      students: d.students.filter(isActive).map(function (st) {
+        return {
+          id: s(st.student_id),
+          name: (s(st.first_name) + ' ' + s(st.last_name)).trim(),
+          cohort: s(st.cohort),
+          days: dayStates(d, st)
+        };
+      }).sort(function (a, b) { return a.name < b.name ? -1 : a.name > b.name ? 1 : 0; })
+    };
+  }
+
+  function facWorkshop(db, workshopId) {
+    var d = load(db);
+    var w = d.workshopById[s(workshopId)];
+    if (!w) fail('That workshop was not found. It may have been removed from the sheet.');
+    var v = workshopView(d, w);
+    var roster = d.students.filter(function (st) {
+      return isActive(st) && sameCohort(st.cohort, w.cohort);
+    }).map(function (st) {
+      var sid = s(st.student_id);
+      return {
+        student_id: sid,
+        name: (s(st.first_name) + ' ' + s(st.last_name)).trim(),
+        booked: isBooked(d, sid, v.id),
+        status: attStatus(d, sid, v.id)
+      };
+    }).sort(function (a, b) {
+      if (a.booked !== b.booked) return a.booked ? -1 : 1;
+      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
+    return { workshop: v, roster: roster };
+  }
+
+  function facSave(db, workshopId, marks) {
+    var d = load(db);
+    var w = d.workshopById[s(workshopId)];
+    if (!w) fail('That workshop was not found. It may have been removed from the sheet.');
+    var wid = s(w.workshop_id);
+    (marks || []).forEach(function (m) {
+      var sid = s(m.student_id);
+      var status = s(m.status).toLowerCase();
+      var st = d.studentById[sid];
+      if (!st || !sameCohort(st.cohort, w.cohort)) fail('One of those students is not in this cohort.');
+      if (status !== '' && status !== 'present' && status !== 'absent') fail('Attendance must be present or absent.');
+      var existing = d.att[sid + '|' + wid];
+      if (existing) {
+        if (s(existing.status).toLowerCase() !== status) {
+          db.update('Attendance', existing, { status: status, marked_at: db.now() });
+        }
+      } else if (status) {
+        db.append('Attendance', {
+          attendance_id: db.newId('A'), student_id: sid, workshop_id: wid,
+          status: status, marked_at: db.now(), notes: ''
+        });
+      }
+    });
+    return facWorkshop(db, wid);
+  }
+
+  var STUDENT = { home: 1, book: 1, cancel: 1 };
+  var FACILITATOR = { facHome: 1, facWorkshop: 1, facSave: 1 };
+
+  function handle(action, p, ctx, db) {
+    p = p || {};
+    if (STUDENT[action] && ctx.role === 'student') {
+      if (action === 'home') return studentHome(db, ctx.studentId);
+      if (action === 'book') return book(db, ctx.studentId, p.workshop_id);
+      return cancel(db, ctx.studentId, p.workshop_id);
+    }
+    if (FACILITATOR[action] && ctx.role === 'facilitator') {
+      if (action === 'facHome') return facHome(db);
+      if (action === 'facWorkshop') return facWorkshop(db, p.workshop_id);
+      return facSave(db, p.workshop_id, p.marks);
+    }
+    fail('You are not signed in for that.');
+  }
+
+  return { handle: handle, isActive: isActive, WRITES: { book: 1, cancel: 1, facSave: 1 } };
+})();
+
+</script>
+<script>
+(function () {
+  'use strict';
+
+  var CONFIG = window.COURSE_APP || {};
+  var API_URL = String(CONFIG.apiUrl || '').trim();
+  var DEMO = !API_URL;
+  var COURSE = CONFIG.courseName || 'Ambulance Responder Course';
+  var DEMO_CODE = 'MIA234', DEMO_PASSCODE = 'responder';
+
+  var app = document.getElementById('app');
+  var toastEl = document.getElementById('toast');
+  var state = {
+    token: null, home: null, loading: false, busy: false,
+    loginMode: 'student', facTab: 'workshops', cohort: null,
+    roll: null, marks: {}, confirmCancel: null
+  };
+
+  /* ------------------------------ helpers ------------------------------ */
+  function store(key, value) {
+    try { if (value == null) localStorage.removeItem(key); else localStorage.setItem(key, value); } catch (e) {}
+  }
+  function recall(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function parseDate(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || '');
+    return m ? new Date(+m[1], m[2] - 1, +m[3]) : null;
+  }
+  function fmtDate(s) {
+    var d = parseDate(s);
+    return d ? d.toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' }) : 'Date to be confirmed';
+  }
+  function fmtTime(t) {
+    var m = /^(\d{2}):(\d{2})$/.exec(t || '');
+    if (!m) return t || '';
+    var h = +m[1];
+    return ((h % 12) || 12) + ':' + m[2] + (h < 12 ? ' am' : ' pm');
+  }
+  function daysAway(date, today) {
+    var a = parseDate(date), b = parseDate(today);
+    if (!a || !b) return '';
+    var n = Math.round((a - b) / 86400000);
+    return n === 0 ? 'Today' : n === 1 ? 'Tomorrow' : n > 1 ? 'In ' + n + ' days' : '';
+  }
+  function whenBlock(date) {
+    var d = parseDate(date);
+    if (!d) return '<span class="when"><span class="dow">Date</span><span class="dom">?</span><span class="mon">TBC</span></span>';
+    return '<span class="when" aria-hidden="true"><span class="dow">' + d.toLocaleDateString('en-AU', { weekday: 'short' }) +
+      '</span><span class="dom">' + d.getDate() + '</span><span class="mon">' +
+      d.toLocaleDateString('en-AU', { month: 'short' }) + '</span></span>';
+  }
+  function timePlace(w) {
+    return [fmtTime(w.time), w.location].filter(Boolean).map(esc).join(' · ');
+  }
+  var toastTimer;
+  function toast(message, kind) {
+    toastEl.textContent = message;
+    toastEl.className = kind || '';
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.hidden = true; }, 4500);
+  }
+
+  /* -------------------------------- API -------------------------------- */
+  async function api(action, payload) {
+    var body = Object.assign({ action: action, token: state.token }, payload || {});
+    if (DEMO) return demoApi(body);
+    var res, json;
+    try {
+      // text/plain keeps this a simple request, which is what an Apps Script web app accepts.
+      res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) });
+    } catch (e) {
+      throw new Error('Could not reach the course sheet. Check your connection and try again.');
+    }
+    try { json = await res.json(); } catch (e) {
+      throw new Error('The course sheet did not answer properly. Ask your facilitator to check the web app deployment.');
+    }
+    if (!json.ok) {
+      var err = new Error(json.error || 'Something went wrong. Try again.');
+      err.code = json.code;
+      throw err;
+    }
+    return json.data;
+  }
+
+  async function run(task) {
+    if (state.busy) return;
+    state.busy = true;
+    document.body.classList.add('busy');
+    try {
+      await task();
+    } catch (e) {
+      if (e.code === 'auth') clearSession();
+      toast(e.message, 'bad');
+    } finally {
+      state.busy = false;
+      state.loading = false;
+      document.body.classList.remove('busy');
+      render();
+    }
+  }
+
+  function setSession(result) {
+    state.token = result.token;
+    state.home = result.home;
+    state.roll = null;
+    state.confirmCancel = null;
+    if (!DEMO) store('course_app_token', result.token + '|' + result.home.role);
+  }
+  function clearSession() {
+    state.token = null; state.home = null; state.roll = null; state.confirmCancel = null;
+    store('course_app_token', null);
+  }
+
+  /* -------------------------- demo mode backend ------------------------- */
+  var demoDb = null;
+  function makeDemoDb() {
+    var now = new Date();
+    function iso(d) {
+      return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+    }
+    function day(n) { return iso(new Date(now.getFullYear(), now.getMonth(), now.getDate() + n)); }
+    var cohort = String(now.getFullYear());
+    var t = { Students: [], Workshops: [], Bookings: [], Attendance: [] };
+    [['S001', 'Mia', 'Tran'], ['S002', 'Jack', "O'Connor"], ['S003', 'Priya', 'Nair'],
+     ['S004', 'Tom', 'Kowalski'], ['S005', 'Aisha', 'Rahman'], ['S006', 'Ben', 'Fletcher']].forEach(function (r) {
+      t.Students.push({ student_id: r[0], cohort: cohort, first_name: r[1], last_name: r[2], status: 'active' });
+    });
+    [['W001', 1, 'Scene safety and primary survey', -24, '09:00', 'Training Room 1', 12],
+     ['W002', 2, 'CPR and defibrillation', -17, '09:00', 'Training Room 1', 12],
+     ['W003', 3, 'Airway and oxygen therapy', -10, '09:00', 'Training Room 1', 12],
+     ['W004', 3, 'Airway and oxygen therapy', -8, '13:00', 'Training Room 2', 6],
+     ['W005', 4, 'Patient assessment and vital signs', 3, '09:00', 'Training Room 1', 12],
+     ['W006', 4, 'Patient assessment and vital signs', 5, '13:00', 'Training Room 2', 3],
+     ['W007', 5, 'Trauma and bleeding control', 10, '09:00', 'Training Room 1', 12],
+     ['W008', 6, 'Medical emergencies', 17, '09:00', 'Training Room 1', 12],
+     ['W009', 7, 'Scenarios and sign-off', 24, '08:30', 'Station bay 2', 12]].forEach(function (r) {
+      t.Workshops.push({ workshop_id: r[0], cohort: cohort, day_number: String(r[1]), workshop_name: r[2], date: day(r[3]), start_time: r[4], location: r[5], capacity: String(r[6]), notes: '' });
+    });
+    var n = 0;
+    function mark(wid, sid, status) {
+      n++;
+      t.Bookings.push({ booking_id: 'B' + n, student_id: sid, workshop_id: wid, booked_at: '', status: 'confirmed' });
+      if (status) t.Attendance.push({ attendance_id: 'A' + n, student_id: sid, workshop_id: wid, status: status, marked_at: '', notes: '' });
+    }
+    ['S001', 'S002', 'S003', 'S004', 'S005'].forEach(function (s) { mark('W001', s, 'present'); });
+    mark('W001', 'S006', 'absent');
+    ['S001', 'S002', 'S003', 'S005', 'S006'].forEach(function (s) { mark('W002', s, 'present'); });
+    mark('W002', 'S004', 'absent');
+    ['S001', 'S002', 'S003'].forEach(function (s) { mark('W003', s, 'present'); });
+    ['S005', 'S006'].forEach(function (s) { mark('W004', s, 'present'); });
+    ['S001', 'S002', 'S003'].forEach(function (s) { mark('W005', s, null); });
+    ['S005', 'S006'].forEach(function (s) { mark('W006', s, null); });
+    return {
+      rows: function (tab) { return t[tab]; },
+      append: function (tab, obj) { t[tab].push(obj); },
+      update: function (tab, row, changes) { Object.assign(row, changes); },
+      today: function () { return day(0); },
+      now: function () { return day(0); },
+      newId: function (prefix) { n++; return prefix + n; },
+      courseName: function () { return COURSE; }
+    };
+  }
+  async function demoApi(body) {
+    if (!demoDb) demoDb = makeDemoDb();
+    await new Promise(function (r) { setTimeout(r, 150); });
+    if (body.action === 'login') {
+      if (String(body.code || '').toUpperCase().replace(/[^A-Z0-9]/g, '') !== DEMO_CODE) {
+        throw new Error('That access code was not recognised. The demo code is ' + DEMO_CODE + '.');
+      }
+      return { token: 'demo-student', home: Core.handle('home', {}, { role: 'student', studentId: 'S001' }, demoDb) };
+    }
+    if (body.action === 'facLogin') {
+      if (String(body.passcode || '').trim() !== DEMO_PASSCODE) {
+        throw new Error('That passcode is not right. The demo passcode is ' + DEMO_PASSCODE + '.');
+      }
+      return { token: 'demo-facilitator', home: Core.handle('facHome', {}, { role: 'facilitator' }, demoDb) };
+    }
+    var ctx = body.token === 'demo-facilitator' ? { role: 'facilitator' } : { role: 'student', studentId: 'S001' };
+    return Core.handle(body.action, body, ctx, demoDb);
+  }
+
+  /* ------------------------------ rendering ---------------------------- */
+  function demoBar() {
+    if (!DEMO) return '';
+    var role = state.home ? state.home.role : 'signin';
+    function b(key, label) {
+      return '<button type="button" data-act="demo" data-id="' + key + '" aria-pressed="' + (role === key) + '">' + label + '</button>';
+    }
+    return '<div class="demo"><div class="demo-in"><p><b>Demo.</b> Example people and dates. Nothing is saved.</p><div>' +
+      b('student', 'Student') + b('facilitator', 'Facilitator') + b('signin', 'Sign-in') + '</div></div></div>';
+  }
+
+  function dayTracker(days, mini) {
+    return '<ol class="days' + (mini ? ' mini' : '') + '">' + days.map(function (d) {
+      var label = d.state === 'done' ? 'attended' : d.state === 'booked' ? 'booked' : 'not booked';
+      return '<li class="' + d.state + '" title="Day ' + esc(d.day) + ': ' + label + '"><span aria-label="Day ' + esc(d.day) + ', ' + label + '">' + esc(d.day) + '</span></li>';
+    }).join('') + '</ol>';
+  }
+  var LEGEND = '<p class="legend"><span><i class="done"></i>Attended</span><span><i class="booked"></i>Booked</span><span><i></i>Still to book</span></p>';
+
+  function renderSignin() {
+    var fac = state.loginMode === 'facilitator';
+    return '<main class="wrap signin">' +
+      '<div class="stack"><p class="eyebrow">Workshop bookings and attendance</p><h1>' + esc(COURSE) + '</h1></div>' +
+      '<form id="signin" class="stack" autocomplete="off">' +
+      (fac
+        ? '<div class="field"><label for="passcode">Facilitator passcode</label><input id="passcode" type="password" autocomplete="current-password" required>' +
+          (DEMO ? '<p class="small muted">Demo passcode: ' + DEMO_PASSCODE + '</p>' : '') + '</div>'
+        : '<div class="field"><label for="code">Your access code</label><input id="code" type="text" inputmode="text" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="12" required>' +
+          '<p class="small muted">' + (DEMO ? 'Demo code: ' + DEMO_CODE : 'Six letters and numbers from your facilitator.') + '</p></div>') +
+      '<button class="btn wide" type="submit">Sign in</button></form>' +
+      '<button class="link" type="button" data-act="mode">' + (fac ? 'I am a student' : 'Facilitator sign-in') + '</button>' +
+      '</main>';
+  }
+
+  function sessionAction(w, dayState) {
+    if (w.myAttendance === 'present') return '<span class="chip good">Attended</span>';
+    if (w.myAttendance === 'absent') return '<span class="chip bad">Missed</span>';
+    if (w.myBooking && w.past) return '<span class="chip warn">Roll not marked yet</span>';
+    if (w.past) return '<span class="chip">Finished</span>';
+    if (w.myBooking) {
+      return '<span class="chip hi">Booked</span><button class="btn ghost" type="button" data-act="askcancel" data-id="' + esc(w.id) + '">Cancel</button>';
+    }
+    if (dayState === 'done') return '';
+    if (dayState === 'booked') return '<span class="chip">Other date booked</span>';
+    if (!w.date) return '<span class="chip">Date to come</span>';
+    if (w.spotsLeft === 0) return '<span class="chip warn">Full</span>';
+    return '<button class="btn" type="button" data-act="book" data-id="' + esc(w.id) + '">Book</button>';
+  }
+
+  function renderStudent(h) {
+    var done = h.days.filter(function (d) { return d.state === 'done'; }).length;
+    var stateOf = {};
+    h.days.forEach(function (d) { stateOf[d.day] = d.state; });
+    var next = h.workshops.filter(function (w) { return w.myBooking && !w.past; })[0];
+    var groups = {}, order = [];
+    h.workshops.forEach(function (w) {
+      if (!groups[w.day]) { groups[w.day] = []; order.push(w.day); }
+      groups[w.day].push(w);
+    });
+    order.sort(function (a, b) { return parseFloat(a) - parseFloat(b); });
+
+    var html = '<main class="wrap">' +
+      '<header class="top"><div><p class="eyebrow">' + esc(h.course) + '</p><h1>Hi ' + esc(h.student.first_name) + '</h1></div>' +
+      '<button class="link" type="button" data-act="signout">Sign out</button></header>';
+
+    html += '<section class="stack" aria-labelledby="prog"><h2 id="prog">' +
+      (h.days.length ? done + ' of ' + h.days.length + ' days complete' : 'No workshops scheduled yet') + '</h2>' +
+      (h.days.length ? dayTracker(h.days) + LEGEND : '<p class="muted">Your facilitator has not added workshops for your cohort. Check back soon.</p>') + '</section>';
+
+    if (next) {
+      html += '<section class="stack"><h2>Your next workshop</h2><div class="panel pad next stack">' +
+        '<div><p class="eyebrow">Day ' + esc(next.day) + (daysAway(next.date, h.today) ? ' · ' + daysAway(next.date, h.today) : '') + '</p>' +
+        '<h3>' + esc(next.name) + '</h3></div>' +
+        '<p>' + esc(fmtDate(next.date)) + (timePlace(next) ? '<br>' + timePlace(next) : '') + '</p>' +
+        (next.notes ? '<p class="small muted">' + esc(next.notes) + '</p>' : '') + '</div></section>';
+    } else if (h.days.length && done < h.days.length) {
+      html += '<section class="panel pad next"><p><b>Nothing booked.</b> Pick a date below for your next day.</p></section>';
+    }
+
+    if (order.length) html += '<section class="stack"><h2>Workshops</h2>';
+    order.forEach(function (day) {
+      var list = groups[day];
+      var sameName = list.every(function (w) { return w.name === list[0].name; });
+      var st = stateOf[day];
+      html += '<div class="stack"><div class="dayhead"><h3>Day ' + esc(day) + (sameName && list[0].name ? ' · ' + esc(list[0].name) : '') + '</h3>' +
+        (list.length > 1 && st === 'open' ? '<span class="small muted">Choose one date</span>' : '') + '</div>' +
+        '<ul class="panel sessions">' + list.map(function (w) {
+          var meta = [];
+          if (!sameName && w.name) meta.push(esc(w.name));
+          if (!w.past && !w.myBooking && st === 'open' && w.spotsLeft !== null && w.spotsLeft > 0) {
+            meta.push(w.spotsLeft + (w.spotsLeft === 1 ? ' spot left' : ' spots left'));
+          }
+          return '<li><div class="session">' + whenBlock(w.date) +
+            '<div class="what"><p class="t">' + (timePlace(w) || 'Time to be confirmed') + '</p>' +
+            (meta.length ? '<p class="small muted">' + meta.join(' · ') + '</p>' : '') + '</div>' +
+            '<div class="act">' + sessionAction(w, st) + '</div>' +
+            (state.confirmCancel === w.id
+              ? '<div class="confirm"><span>Cancel this booking?</span><div><button class="btn ghost" type="button" data-act="keep">Keep it</button>' +
+                '<button class="btn danger" type="button" data-act="cancel" data-id="' + esc(w.id) + '">Cancel booking</button></div></div>'
+              : '') +
+            '</div></li>';
+        }).join('') + '</ul></div>';
+    });
+    if (order.length) html += '</section>';
+    return html + '</main>';
+  }
+
+  function facWorkshopRow(w) {
+    var status;
+    if (w.past) {
+      status = w.marked ? '<span class="chip good">' + w.present + ' present</span>' : '<span class="chip warn">Roll not marked</span>';
+    } else {
+      status = '<span class="chip' + (w.booked ? ' hi' : '') + '">' + w.booked + (w.capacity !== null ? ' of ' + w.capacity : '') + ' booked</span>';
+    }
+    return '<li><button class="session tap" type="button" data-act="open" data-id="' + esc(w.id) + '">' + whenBlock(w.date) +
+      '<span class="what"><span class="t">Day ' + esc(w.day) + ' · ' + esc(w.name) + '</span><span class="small muted">' + (timePlace(w) || 'Time to be confirmed') + '</span><span>' + status + '</span></span>' +
+      '<span class="act"><span class="go" aria-hidden="true">›</span></span></button></li>';
+  }
+
+  function renderFacilitator(h) {
+    if (state.cohort === null || h.cohorts.indexOf(state.cohort) === -1) state.cohort = h.cohorts[h.cohorts.length - 1] || '';
+    var inCohort = function (x) { return !state.cohort || x.cohort === state.cohort; };
+    var workshops = h.workshops.filter(inCohort);
+    var upcoming = workshops.filter(function (w) { return !w.past; });
+    var past = workshops.filter(function (w) { return w.past; }).reverse();
+    var students = h.students.filter(inCohort);
+
+    var html = '<main class="wrap">' +
+      '<header class="top"><div><p class="eyebrow">' + esc(h.course) + '</p><h1>Facilitator</h1></div>' +
+      '<button class="link" type="button" data-act="signout">Sign out</button></header>';
+    html += '<div class="stack">';
+    if (h.cohorts.length > 1) {
+      html += '<div class="field"><label for="cohort">Cohort</label><select id="cohort">' + h.cohorts.map(function (c) {
+        return '<option' + (c === state.cohort ? ' selected' : '') + '>' + esc(c) + '</option>';
+      }).join('') + '</select></div>';
+    }
+    html += '<div class="tabs" role="tablist">' +
+      '<button type="button" role="tab" data-act="tab" data-id="workshops" aria-selected="' + (state.facTab === 'workshops') + '">Workshops</button>' +
+      '<button type="button" role="tab" data-act="tab" data-id="students" aria-selected="' + (state.facTab === 'students') + '">Students (' + students.length + ')</button></div></div>';
+
+    if (state.facTab === 'workshops') {
+      if (!workshops.length) html += '<p class="panel pad muted">No workshops yet. Add rows to the Workshops tab of the sheet, then use Course App &gt; Fill in IDs.</p>';
+      if (upcoming.length) html += '<section class="stack"><h2>Coming up</h2><ul class="panel sessions">' + upcoming.map(facWorkshopRow).join('') + '</ul></section>';
+      if (past.length) html += '<section class="stack"><h2>Finished</h2><ul class="panel sessions">' + past.map(facWorkshopRow).join('') + '</ul></section>';
+    } else {
+      html += '<section class="stack"><h2>Progress</h2>';
+      if (!students.length) html += '<p class="panel pad muted">No students yet. Add rows to the Students tab of the sheet, then use Course App &gt; Fill in IDs.</p>';
+      else {
+        html += '<ul class="panel sessions">' + students.map(function (s) {
+          var done = s.days.filter(function (d) { return d.state === 'done'; }).length;
+          return '<li class="person"><div class="who"><b>' + esc(s.name) + '</b>' + dayTracker(s.days, true) + '</div>' +
+            '<span class="count">' + done + ' / ' + s.days.length + '</span></li>';
+        }).join('') + '</ul>' + LEGEND;
+      }
+      html += '</section>';
+    }
+    return html + '</main>';
+  }
+
+  function rollChanges() {
+    return state.roll.roster.filter(function (r) { return (state.marks[r.student_id] || '') !== (r.status || ''); });
+  }
+  function renderRoll(roll) {
+    var w = roll.workshop;
+    var present = roll.roster.filter(function (r) { return state.marks[r.student_id] === 'present'; }).length;
+    var changes = rollChanges().length;
+    var html = '<main class="wrap">' +
+      '<div class="stack"><button class="link" type="button" data-act="back" style="align-self:flex-start">‹ All workshops</button>' +
+      '<div><p class="eyebrow">Day ' + esc(w.day) + ' · Roll</p><h1>' + esc(w.name) + '</h1></div>' +
+      '<p class="muted">' + esc(fmtDate(w.date)) + (timePlace(w) ? ' · ' + timePlace(w) : '') + '</p></div>';
+    html += '<section class="stack"><div class="dayhead"><h2>' + present + ' of ' + roll.roster.length + ' present</h2>' +
+      '<span class="small muted">' + w.booked + ' booked</span></div>';
+    if (!roll.roster.length) {
+      html += '<p class="panel pad muted">No active students in this cohort yet.</p>';
+    } else {
+      html += '<ul class="panel sessions">' + roll.roster.map(function (r) {
+        var m = state.marks[r.student_id] || '';
+        function b(v, label) {
+          return '<button type="button" class="' + v + '" data-act="mark" data-id="' + esc(r.student_id) + '" data-v="' + v + '" aria-pressed="' + (m === v) + '">' + label + '</button>';
+        }
+        return '<li class="person"><div class="who"><b>' + esc(r.name) + '</b><span>' +
+          (r.booked ? '<span class="chip hi">Booked</span>' : '<span class="chip">Not booked</span>') + '</span></div>' +
+          '<div class="seg" role="group" aria-label="Attendance for ' + esc(r.name) + '">' + b('present', 'Present') + b('absent', 'Absent') + '</div></li>';
+      }).join('') + '</ul>';
+      html += '<div class="savebar"><button class="btn wide" type="button" data-act="save"' + (changes ? '' : ' disabled style="opacity:.5"') + '>' +
+        (changes ? 'Save roll (' + changes + (changes === 1 ? ' change)' : ' changes)') : 'Roll saved') + '</button></div>';
+    }
+    return html + '</section></main>';
+  }
+
+  function render() {
+    var html;
+    if (state.loading) html = '<main class="wrap"><p class="muted">Loading your course…</p></main>';
+    else if (!state.home) html = renderSignin();
+    else if (state.home.role === 'student') html = renderStudent(state.home);
+    else if (state.roll) html = renderRoll(state.roll);
+    else html = renderFacilitator(state.home);
+    app.innerHTML = '<div class="chequer" aria-hidden="true"></div>' + demoBar() + html;
+  }
+
+  /* -------------------------------- actions ---------------------------- */
+  function openRoll(roll) {
+    state.roll = roll;
+    state.marks = {};
+    roll.roster.forEach(function (r) { state.marks[r.student_id] = r.status || ''; });
+  }
+
+  var actions = {
+    mode: function () { state.loginMode = state.loginMode === 'student' ? 'facilitator' : 'student'; render(); },
+    signout: function () { clearSession(); render(); },
+    demo: function (id) {
+      if (id === 'signin') { clearSession(); render(); return; }
+      run(async function () {
+        setSession(await api(id === 'student' ? 'login' : 'facLogin', { code: DEMO_CODE, passcode: DEMO_PASSCODE }));
+      });
+    },
+    book: function (id) {
+      run(async function () {
+        state.home = await api('book', { workshop_id: id });
+        toast('Booked. See you there.');
+      });
+    },
+    askcancel: function (id) { state.confirmCancel = id; render(); },
+    keep: function () { state.confirmCancel = null; render(); },
+    cancel: function (id) {
+      run(async function () {
+        state.home = await api('cancel', { workshop_id: id });
+        state.confirmCancel = null;
+        toast('Booking cancelled.');
+      });
+    },
+    tab: function (id) { state.facTab = id; render(); },
+    open: function (id) {
+      run(async function () { openRoll(await api('facWorkshop', { workshop_id: id })); window.scrollTo(0, 0); });
+    },
+    back: function () {
+      run(async function () { state.roll = null; state.home = await api('facHome'); });
+    },
+    mark: function (id, el) {
+      var v = el.getAttribute('data-v');
+      state.marks[id] = state.marks[id] === v ? '' : v;
+      render();
+    },
+    save: function () {
+      run(async function () {
+        var marks = rollChanges().map(function (r) { return { student_id: r.student_id, status: state.marks[r.student_id] || '' }; });
+        openRoll(await api('facSave', { workshop_id: state.roll.workshop.id, marks: marks }));
+        toast('Roll saved.');
+      });
+    }
+  };
+
+  app.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-act]');
+    if (!el || state.busy) return;
+    var fn = actions[el.getAttribute('data-act')];
+    if (fn) fn(el.getAttribute('data-id'), el);
+  });
+  app.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var fac = state.loginMode === 'facilitator';
+    var value = document.getElementById(fac ? 'passcode' : 'code').value;
+    run(async function () {
+      setSession(await api(fac ? 'facLogin' : 'login', fac ? { passcode: value } : { code: value }));
+    });
+  });
+  app.addEventListener('change', function (e) {
+    if (e.target.id === 'cohort') { state.cohort = e.target.value; render(); }
+  });
+
+  /* --------------------------------- start ----------------------------- */
+  function start() {
+    if (DEMO) {
+      // Open straight into the student view so there is something to try.
+      demoDb = makeDemoDb();
+      state.token = 'demo-student';
+      state.home = Core.handle('home', {}, { role: 'student', studentId: 'S001' }, demoDb);
+      render();
+      return;
+    }
+    var saved = (recall('course_app_token') || '').split('|');
+    if (saved[0]) {
+      state.token = saved[0];
+      state.loading = true;
+      render();
+      run(async function () {
+        state.home = await api(saved[1] === 'facilitator' ? 'facHome' : 'home');
+      });
+      return;
+    }
+    render();
+  }
+  start();
+})();
+</script>
+</body>
+</html>
