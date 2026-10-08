@@ -142,6 +142,17 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
 .confirm div { display: flex; gap: 8px; }
 .tap:hover { background: var(--background); }
 .tap .go { color: var(--muted); font-size: 1.2rem; }
+.fold {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; width: 100%;
+  padding: 0.85rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); box-shadow: var(--shadow); text-align: left; font-weight: 800;
+}
+.fold > span { display: inline-flex; align-items: center; gap: 0.5rem; }
+.fold .small { color: var(--muted); }
+.fold:hover { border-color: var(--primary); }
+.fold:hover .small { color: var(--primary-dark); }
+.fold-icon { display: inline-block; transition: transform 0.25s ease; }
+.fold[aria-expanded="true"] .fold-icon { transform: rotate(180deg); }
 
 /* Sign-in */
 .field { display: flex; flex-direction: column; gap: 0.4rem; }
@@ -468,7 +479,7 @@ var Core = (function () {
   var state = {
     token: null, home: null, loading: false, busy: false,
     loginMode: 'student', facTab: 'workshops', cohort: null,
-    roll: null, marks: {}, confirmCancel: null
+    roll: null, marks: {}, confirmCancel: null, showDone: false
   };
 
   /* ------------------------------ helpers ------------------------------ */
@@ -718,12 +729,11 @@ var Core = (function () {
       html += '<section class="panel pad next"><p><b>Nothing booked.</b> Pick a date below for your next day.</p></section>';
     }
 
-    if (order.length) html += '<section class="stack"><h2>Workshops</h2>';
-    order.forEach(function (day) {
+    function dayGroup(day) {
       var list = groups[day];
       var sameName = list.every(function (w) { return w.name === list[0].name; });
       var st = stateOf[day];
-      html += '<div class="stack"><div class="dayhead"><h3>Day ' + esc(day) + (sameName && list[0].name ? ' · ' + esc(list[0].name) : '') + '</h3>' +
+      return '<div class="stack"><div class="dayhead"><h3>Day ' + esc(day) + (sameName && list[0].name ? ' · ' + esc(list[0].name) : '') + '</h3>' +
         (list.length > 1 && st === 'open' ? '<span class="small muted">Choose one date</span>' : '') + '</div>' +
         '<ul class="panel sessions">' + list.map(function (w) {
           var meta = [];
@@ -741,8 +751,21 @@ var Core = (function () {
               : '') +
             '</div></li>';
         }).join('') + '</ul></div>';
-    });
-    if (order.length) html += '</section>';
+    }
+
+    // Days already attended start folded away so the screen opens on what is still to do.
+    var doneDays = order.filter(function (day) { return stateOf[day] === 'done'; });
+    var openDays = order.filter(function (day) { return stateOf[day] !== 'done'; });
+    if (order.length) {
+      html += '<section class="stack"><h2>Workshops</h2>';
+      if (doneDays.length) {
+        html += '<button class="fold" type="button" data-act="toggledone" aria-expanded="' + state.showDone + '">' +
+          '<span>Completed days <span class="chip good">' + doneDays.length + ' attended</span></span>' +
+          '<span class="small">' + (state.showDone ? 'Hide' : 'Show') + ' <span class="fold-icon" aria-hidden="true">⌄</span></span></button>';
+        if (state.showDone) html += doneDays.map(dayGroup).join('');
+      }
+      html += openDays.map(dayGroup).join('') + '</section>';
+    }
     return html + '</main>';
   }
 
@@ -848,7 +871,7 @@ var Core = (function () {
 
   var actions = {
     mode: function () { state.loginMode = state.loginMode === 'student' ? 'facilitator' : 'student'; render(); },
-    signout: function () { clearSession(); render(); },
+    signout: function () { clearSession(); state.showDone = false; render(); },
     demo: function (id) {
       if (id === 'signin') { clearSession(); render(); return; }
       run(async function () {
@@ -871,6 +894,7 @@ var Core = (function () {
       });
     },
     tab: function (id) { state.facTab = id; render(); },
+    toggledone: function () { state.showDone = !state.showDone; render(); },
     open: function (id) {
       run(async function () { openRoll(await api('facWorkshop', { workshop_id: id })); window.scrollTo(0, 0); });
     },
