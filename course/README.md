@@ -52,6 +52,12 @@ day_number; a student books one of them.
 
 Bookings and Attendance fill themselves in. You can read, sort and correct them in the sheet.
 
+**Can't make a day** – if a student can't make any date offered for a day, they tap *Can't make any of
+these dates?* under that day and can add a short note. It shows at the top of the facilitator's
+Workshops screen and is marked *Can't attend* on that day's roll. Add another date for that day in the
+Workshops tab; when the student books it, they drop off the list. **Clear** removes someone by hand.
+These notes are kept in the Unavailable tab, which the sheet adds the first time a student sends one.
+
 ## Changing the code later
 After pasting a new `Code.gs`: **Deploy > Manage deployments > edit (pencil) > Version: New version
 > Deploy**. The web app URL stays the same.
