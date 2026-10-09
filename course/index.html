@@ -715,9 +715,9 @@ var Core = (function () {
       '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">🎓</div><div><h1>Hi ' + esc(h.student.first_name) + '</h1><p>' + esc(h.course) + '</p></div></div>' +
       '<button class="link" type="button" data-act="signout">Sign out</button></header>';
 
-    html += '<section class="stack" aria-labelledby="prog"><h2 id="prog">' +
-      (h.days.length ? done + ' of ' + h.days.length + ' days complete' : 'No workshops scheduled yet') + '</h2>' +
-      (h.days.length ? dayTracker(h.days) + LEGEND : '<p class="muted">Your facilitator has not added workshops for your cohort. Check back soon.</p>') + '</section>';
+    html += '<section class="stack" aria-label="Your progress">' +
+      (h.days.length ? dayTracker(h.days) + LEGEND
+        : '<h2>No workshops scheduled yet</h2><p class="muted">Your facilitator has not added workshops for your cohort. Check back soon.</p>') + '</section>';
 
     if (next) {
       html += '<section class="stack"><h2>Your next workshop</h2><div class="panel pad next stack">' +
