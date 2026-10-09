@@ -39,7 +39,8 @@ var Core = (function () {
       students: db.rows('Students').filter(function (r) { return s(r.student_id); }),
       workshops: db.rows('Workshops').filter(function (r) { return s(r.workshop_id); }).sort(byWhen),
       bookings: db.rows('Bookings').filter(function (r) { return s(r.student_id) && s(r.workshop_id); }),
-      attendance: db.rows('Attendance').filter(function (r) { return s(r.student_id) && s(r.workshop_id); })
+      attendance: db.rows('Attendance').filter(function (r) { return s(r.student_id) && s(r.workshop_id); }),
+      unavailable: (db.rows('Unavailable') || []).filter(function (r) { return s(r.student_id) && s(r.day_number); })
     };
     d.studentById = {};
     d.students.forEach(function (st) { d.studentById[s(st.student_id)] = st; });
@@ -49,7 +50,19 @@ var Core = (function () {
     d.attendance.forEach(function (a) { d.att[s(a.student_id) + '|' + s(a.workshop_id)] = a; });
     d.booking = {}; // "student|workshop" -> booking row (latest wins)
     d.bookings.forEach(function (b) { d.booking[s(b.student_id) + '|' + s(b.workshop_id)] = b; });
+    d.na = {}; // "student|day" -> can't-make-it row (latest wins)
+    d.unavailable.forEach(function (r) { d.na[s(r.student_id) + '|' + s(r.day_number)] = r; });
     return d;
+  }
+
+  /* A student's open note that they cannot make any of a day's dates, or null. */
+  function naOpen(d, studentId, day) {
+    var r = d.na[studentId + '|' + day];
+    return r && s(r.status).toLowerCase() === 'open' ? r : null;
+  }
+  function dayName(d, cohort, day) {
+    var w = cohortWorkshops(d, cohort).filter(function (x) { return s(x.day_number) === day && s(x.workshop_name); })[0];
+    return w ? s(w.workshop_name) : '';
   }
 
   function isBooked(d, studentId, workshopId) {
@@ -117,6 +130,12 @@ var Core = (function () {
       today: d.today,
       student: { id: studentId, first_name: s(st.first_name), last_name: s(st.last_name), cohort: s(st.cohort) },
       days: dayStates(d, st),
+      unavailable: dayStates(d, st).filter(function (x) {
+        return x.state === 'open' && naOpen(d, studentId, x.day);
+      }).map(function (x) {
+        var r = naOpen(d, studentId, x.day);
+        return { day: x.day, note: s(r.note), sent_at: s(r.sent_at) };
+      }),
       workshops: cohortWorkshops(d, st.cohort).map(function (w) {
         var v = workshopView(d, w);
         v.myBooking = isBooked(d, studentId, v.id);
@@ -155,6 +174,38 @@ var Core = (function () {
         booked_at: db.now(), status: 'confirmed'
       });
     }
+    var na = naOpen(d, studentId, day);
+    if (na) db.update('Unavailable', na, { status: 'booked' });
+    return studentHome(db, studentId);
+  }
+
+  /* Student tells the facilitator they cannot make any of the dates for a day. */
+  function sendUnavailable(db, studentId, day, note) {
+    var d = load(db);
+    var st = d.studentById[studentId];
+    if (!st || !isActive(st)) fail('Your access is no longer active. Ask your facilitator.');
+    day = s(day);
+    var entry = dayStates(d, st).filter(function (x) { return x.day === day; })[0];
+    if (!entry) fail('That day is not part of your course.');
+    if (entry.state === 'done') fail('You have already completed Day ' + day + '.');
+    if (entry.state === 'booked') fail('You are booked for Day ' + day + '. Cancel that booking first.');
+    note = s(note).slice(0, 300);
+    var existing = d.na[studentId + '|' + day];
+    if (existing) {
+      db.update('Unavailable', existing, { status: 'open', note: note, sent_at: db.now() });
+    } else {
+      db.append('Unavailable', {
+        unavailable_id: db.newId('U'), student_id: studentId, cohort: s(st.cohort), day_number: day,
+        note: note, sent_at: db.now(), status: 'open'
+      });
+    }
+    return studentHome(db, studentId);
+  }
+
+  function withdrawUnavailable(db, studentId, day) {
+    var d = load(db);
+    var na = naOpen(d, studentId, s(day));
+    if (na) db.update('Unavailable', na, { status: 'withdrawn' });
     return studentHome(db, studentId);
   }
 
@@ -195,8 +246,40 @@ var Core = (function () {
           cohort: s(st.cohort),
           days: dayStates(d, st)
         };
-      }).sort(function (a, b) { return a.name < b.name ? -1 : a.name > b.name ? 1 : 0; })
+      }).sort(function (a, b) { return a.name < b.name ? -1 : a.name > b.name ? 1 : 0; }),
+      unavailable: facUnavailable(d)
     };
+  }
+
+  /* Open can't-make-it notes for days the student has not completed, by day then name. */
+  function facUnavailable(d) {
+    var out = [];
+    d.students.filter(isActive).forEach(function (st) {
+      var sid = s(st.student_id);
+      dayStates(d, st).forEach(function (x) {
+        var r = x.state === 'open' && naOpen(d, sid, x.day);
+        if (!r) return;
+        out.push({
+          student_id: sid,
+          name: (s(st.first_name) + ' ' + s(st.last_name)).trim(),
+          cohort: s(st.cohort),
+          day: x.day,
+          day_name: dayName(d, st.cohort, x.day),
+          note: s(r.note),
+          sent_at: s(r.sent_at)
+        });
+      });
+    });
+    return out.sort(function (a, b) {
+      return byDay(a.day, b.day) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+    });
+  }
+
+  function facClearUnavailable(db, studentId, day) {
+    var d = load(db);
+    var na = naOpen(d, s(studentId), s(day));
+    if (na) db.update('Unavailable', na, { status: 'cleared' });
+    return facHome(db);
   }
 
   function facWorkshop(db, workshopId) {
@@ -212,6 +295,7 @@ var Core = (function () {
         student_id: sid,
         name: (s(st.first_name) + ' ' + s(st.last_name)).trim(),
         booked: isBooked(d, sid, v.id),
+        unavailable: !!naOpen(d, sid, v.day),
         status: attStatus(d, sid, v.id)
       };
     }).sort(function (a, b) {
@@ -247,25 +331,28 @@ var Core = (function () {
     return facWorkshop(db, wid);
   }
 
-  var STUDENT = { home: 1, book: 1, cancel: 1 };
-  var FACILITATOR = { facHome: 1, facWorkshop: 1, facSave: 1 };
+  var STUDENT = { home: 1, book: 1, cancel: 1, sendNa: 1, withdrawNa: 1 };
+  var FACILITATOR = { facHome: 1, facWorkshop: 1, facSave: 1, facClearNa: 1 };
 
   function handle(action, p, ctx, db) {
     p = p || {};
     if (STUDENT[action] && ctx.role === 'student') {
       if (action === 'home') return studentHome(db, ctx.studentId);
       if (action === 'book') return book(db, ctx.studentId, p.workshop_id);
+      if (action === 'sendNa') return sendUnavailable(db, ctx.studentId, p.day, p.note);
+      if (action === 'withdrawNa') return withdrawUnavailable(db, ctx.studentId, p.day);
       return cancel(db, ctx.studentId, p.workshop_id);
     }
     if (FACILITATOR[action] && ctx.role === 'facilitator') {
       if (action === 'facHome') return facHome(db);
       if (action === 'facWorkshop') return facWorkshop(db, p.workshop_id);
+      if (action === 'facClearNa') return facClearUnavailable(db, p.student_id, p.day);
       return facSave(db, p.workshop_id, p.marks);
     }
     fail('You are not signed in for that.');
   }
 
-  return { handle: handle, isActive: isActive, WRITES: { book: 1, cancel: 1, facSave: 1 } };
+  return { handle: handle, isActive: isActive, WRITES: { book: 1, cancel: 1, facSave: 1, sendNa: 1, withdrawNa: 1, facClearNa: 1 } };
 })();
 
 /* ---------------------------------------------------------------------------
@@ -277,7 +364,8 @@ var TABS = {
   Students: ['student_id', 'cohort', 'first_name', 'last_name', 'email', 'access_code', 'status'],
   Workshops: ['workshop_id', 'cohort', 'day_number', 'workshop_name', 'date', 'start_time', 'location', 'capacity', 'notes'],
   Bookings: ['booking_id', 'student_id', 'workshop_id', 'booked_at', 'status'],
-  Attendance: ['attendance_id', 'student_id', 'workshop_id', 'status', 'marked_at', 'notes']
+  Attendance: ['attendance_id', 'student_id', 'workshop_id', 'status', 'marked_at', 'notes'],
+  Unavailable: ['unavailable_id', 'student_id', 'cohort', 'day_number', 'note', 'sent_at', 'status']
 };
 var DEFAULT_COURSE_NAME = 'Ambulance Responder Course';
 var STUDENT_SESSION_DAYS = 90;
@@ -318,9 +406,9 @@ function setupSheet() {
   });
 
   // Keep IDs as text, and dates and times in one predictable format.
-  ['Students', 'Workshops', 'Bookings', 'Attendance'].forEach(function (name) {
+  ['Students', 'Workshops', 'Bookings', 'Attendance', 'Unavailable'].forEach(function (name) {
     var sh = ss.getSheetByName(name);
-    ['student_id', 'workshop_id', 'booking_id', 'attendance_id', 'access_code', 'cohort'].forEach(function (h) {
+    ['student_id', 'workshop_id', 'booking_id', 'attendance_id', 'unavailable_id', 'access_code', 'cohort', 'day_number'].forEach(function (h) {
       setColumnFormat_(sh, h, '@');
     });
   });
@@ -328,6 +416,7 @@ function setupSheet() {
   setColumnFormat_(ss.getSheetByName('Workshops'), 'start_time', 'hh:mm');
   setColumnFormat_(ss.getSheetByName('Bookings'), 'booked_at', 'yyyy-mm-dd hh:mm');
   setColumnFormat_(ss.getSheetByName('Attendance'), 'marked_at', 'yyyy-mm-dd hh:mm');
+  setColumnFormat_(ss.getSheetByName('Unavailable'), 'sent_at', 'yyyy-mm-dd hh:mm');
 
   var settings = ss.getSheetByName('Settings');
   if (settings.getLastRow() < 2) settings.appendRow(['course_name', DEFAULT_COURSE_NAME]);
@@ -619,6 +708,8 @@ function sheetDb_() {
   function table(tab) {
     if (tables[tab]) return tables[tab];
     var sh = ss.getSheetByName(tab);
+    // Sheets set up before the Unavailable tab existed get it on the first write.
+    if (!sh && tab === 'Unavailable') return (tables[tab] = { sheet: null, headers: TABS[tab].slice(), rows: [] });
     if (!sh) throw userError_('The sheet is missing its ' + tab + ' tab. Run Course App > Set up sheet.');
     var values = sh.getDataRange().getDisplayValues();
     var headers = (values[0] || []).map(function (h) { return String(h).trim().toLowerCase(); });
@@ -642,6 +733,13 @@ function sheetDb_() {
     rows: function (tab) { return table(tab).rows; },
     append: function (tab, obj) {
       var t = table(tab);
+      if (!t.sheet) {
+        t.sheet = ss.insertSheet(tab);
+        t.sheet.appendRow(t.headers);
+        t.sheet.setFrozenRows(1);
+        t.sheet.getRange(1, 1, 1, t.headers.length).setFontWeight('bold');
+        t.sheet.getRange(2, 1, t.sheet.getMaxRows() - 1, t.headers.length).setNumberFormat('@');
+      }
       t.sheet.appendRow(t.headers.map(function (h) { return obj[h] == null ? '' : obj[h]; }));
       var row = { _row: t.sheet.getLastRow() };
       Object.keys(obj).forEach(function (k) { row[k] = String(obj[k]); });

@@ -151,6 +151,21 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
 .fold .small { color: var(--muted); }
 .fold:hover { border-color: var(--primary); }
 .fold:hover .small { color: var(--primary-dark); }
+.na-link { align-self: flex-start; padding: 0.2rem 0; font-size: 0.88rem; }
+.na-form, .na-sent { display: flex; flex-direction: column; gap: 0.6rem; padding: 0.9rem 1.1rem; border-radius: 12px; font-size: 0.9rem; }
+.na-form { border: 2px solid var(--primary); background: var(--surface); }
+.na-form textarea {
+  width: 100%; min-height: 80px; resize: vertical; padding: 0.7rem 0.9rem;
+  color: var(--text); border: 1px solid var(--border); border-radius: 10px; outline: 0; background: var(--background); font: inherit;
+}
+.na-form textarea:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.14); }
+.na-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.na-sent { flex-direction: row; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; border: 1px solid #fde68a; border-left: 4px solid var(--yellow); background: var(--yellow-light); color: #78350f; }
+.na-sent > div { flex: 1 1 14rem; display: flex; flex-direction: column; gap: 0.3rem; }
+.na-sent .muted { color: #92400e; }
+.na-day { border-left: 4px solid var(--yellow); }
+.na-day-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; padding: 0.9rem 1.1rem 0.4rem; font-weight: 800; }
+.na-day .person .btn { min-height: 36px; padding: 0.4rem 0.8rem; font-size: 0.82rem; }
 .fold-icon { display: inline-block; transition: transform 0.25s ease; }
 .fold[aria-expanded="true"] .fold-icon { transform: rotate(180deg); }
 
@@ -181,7 +196,7 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
 /* Toast (as on the roster) */
 #toast {
   position: fixed; left: 50%; bottom: calc(2rem + env(safe-area-inset-bottom, 0px)); z-index: 2000;
-  max-width: calc(100vw - 2rem); padding: 0.85rem 1.3rem; border-radius: 999px;
+  width: max-content; max-width: calc(100vw - 2rem); padding: 0.85rem 1.3rem; border-radius: 999px;
   background: var(--text); color: white; font-weight: 700; transform: translateX(-50%);
 }
 #toast.bad { background: var(--red); }
@@ -234,7 +249,8 @@ var Core = (function () {
       students: db.rows('Students').filter(function (r) { return s(r.student_id); }),
       workshops: db.rows('Workshops').filter(function (r) { return s(r.workshop_id); }).sort(byWhen),
       bookings: db.rows('Bookings').filter(function (r) { return s(r.student_id) && s(r.workshop_id); }),
-      attendance: db.rows('Attendance').filter(function (r) { return s(r.student_id) && s(r.workshop_id); })
+      attendance: db.rows('Attendance').filter(function (r) { return s(r.student_id) && s(r.workshop_id); }),
+      unavailable: (db.rows('Unavailable') || []).filter(function (r) { return s(r.student_id) && s(r.day_number); })
     };
     d.studentById = {};
     d.students.forEach(function (st) { d.studentById[s(st.student_id)] = st; });
@@ -244,7 +260,19 @@ var Core = (function () {
     d.attendance.forEach(function (a) { d.att[s(a.student_id) + '|' + s(a.workshop_id)] = a; });
     d.booking = {}; // "student|workshop" -> booking row (latest wins)
     d.bookings.forEach(function (b) { d.booking[s(b.student_id) + '|' + s(b.workshop_id)] = b; });
+    d.na = {}; // "student|day" -> can't-make-it row (latest wins)
+    d.unavailable.forEach(function (r) { d.na[s(r.student_id) + '|' + s(r.day_number)] = r; });
     return d;
+  }
+
+  /* A student's open note that they cannot make any of a day's dates, or null. */
+  function naOpen(d, studentId, day) {
+    var r = d.na[studentId + '|' + day];
+    return r && s(r.status).toLowerCase() === 'open' ? r : null;
+  }
+  function dayName(d, cohort, day) {
+    var w = cohortWorkshops(d, cohort).filter(function (x) { return s(x.day_number) === day && s(x.workshop_name); })[0];
+    return w ? s(w.workshop_name) : '';
   }
 
   function isBooked(d, studentId, workshopId) {
@@ -312,6 +340,12 @@ var Core = (function () {
       today: d.today,
       student: { id: studentId, first_name: s(st.first_name), last_name: s(st.last_name), cohort: s(st.cohort) },
       days: dayStates(d, st),
+      unavailable: dayStates(d, st).filter(function (x) {
+        return x.state === 'open' && naOpen(d, studentId, x.day);
+      }).map(function (x) {
+        var r = naOpen(d, studentId, x.day);
+        return { day: x.day, note: s(r.note), sent_at: s(r.sent_at) };
+      }),
       workshops: cohortWorkshops(d, st.cohort).map(function (w) {
         var v = workshopView(d, w);
         v.myBooking = isBooked(d, studentId, v.id);
@@ -350,6 +384,38 @@ var Core = (function () {
         booked_at: db.now(), status: 'confirmed'
       });
     }
+    var na = naOpen(d, studentId, day);
+    if (na) db.update('Unavailable', na, { status: 'booked' });
+    return studentHome(db, studentId);
+  }
+
+  /* Student tells the facilitator they cannot make any of the dates for a day. */
+  function sendUnavailable(db, studentId, day, note) {
+    var d = load(db);
+    var st = d.studentById[studentId];
+    if (!st || !isActive(st)) fail('Your access is no longer active. Ask your facilitator.');
+    day = s(day);
+    var entry = dayStates(d, st).filter(function (x) { return x.day === day; })[0];
+    if (!entry) fail('That day is not part of your course.');
+    if (entry.state === 'done') fail('You have already completed Day ' + day + '.');
+    if (entry.state === 'booked') fail('You are booked for Day ' + day + '. Cancel that booking first.');
+    note = s(note).slice(0, 300);
+    var existing = d.na[studentId + '|' + day];
+    if (existing) {
+      db.update('Unavailable', existing, { status: 'open', note: note, sent_at: db.now() });
+    } else {
+      db.append('Unavailable', {
+        unavailable_id: db.newId('U'), student_id: studentId, cohort: s(st.cohort), day_number: day,
+        note: note, sent_at: db.now(), status: 'open'
+      });
+    }
+    return studentHome(db, studentId);
+  }
+
+  function withdrawUnavailable(db, studentId, day) {
+    var d = load(db);
+    var na = naOpen(d, studentId, s(day));
+    if (na) db.update('Unavailable', na, { status: 'withdrawn' });
     return studentHome(db, studentId);
   }
 
@@ -390,8 +456,40 @@ var Core = (function () {
           cohort: s(st.cohort),
           days: dayStates(d, st)
         };
-      }).sort(function (a, b) { return a.name < b.name ? -1 : a.name > b.name ? 1 : 0; })
+      }).sort(function (a, b) { return a.name < b.name ? -1 : a.name > b.name ? 1 : 0; }),
+      unavailable: facUnavailable(d)
     };
+  }
+
+  /* Open can't-make-it notes for days the student has not completed, by day then name. */
+  function facUnavailable(d) {
+    var out = [];
+    d.students.filter(isActive).forEach(function (st) {
+      var sid = s(st.student_id);
+      dayStates(d, st).forEach(function (x) {
+        var r = x.state === 'open' && naOpen(d, sid, x.day);
+        if (!r) return;
+        out.push({
+          student_id: sid,
+          name: (s(st.first_name) + ' ' + s(st.last_name)).trim(),
+          cohort: s(st.cohort),
+          day: x.day,
+          day_name: dayName(d, st.cohort, x.day),
+          note: s(r.note),
+          sent_at: s(r.sent_at)
+        });
+      });
+    });
+    return out.sort(function (a, b) {
+      return byDay(a.day, b.day) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+    });
+  }
+
+  function facClearUnavailable(db, studentId, day) {
+    var d = load(db);
+    var na = naOpen(d, s(studentId), s(day));
+    if (na) db.update('Unavailable', na, { status: 'cleared' });
+    return facHome(db);
   }
 
   function facWorkshop(db, workshopId) {
@@ -407,6 +505,7 @@ var Core = (function () {
         student_id: sid,
         name: (s(st.first_name) + ' ' + s(st.last_name)).trim(),
         booked: isBooked(d, sid, v.id),
+        unavailable: !!naOpen(d, sid, v.day),
         status: attStatus(d, sid, v.id)
       };
     }).sort(function (a, b) {
@@ -442,25 +541,28 @@ var Core = (function () {
     return facWorkshop(db, wid);
   }
 
-  var STUDENT = { home: 1, book: 1, cancel: 1 };
-  var FACILITATOR = { facHome: 1, facWorkshop: 1, facSave: 1 };
+  var STUDENT = { home: 1, book: 1, cancel: 1, sendNa: 1, withdrawNa: 1 };
+  var FACILITATOR = { facHome: 1, facWorkshop: 1, facSave: 1, facClearNa: 1 };
 
   function handle(action, p, ctx, db) {
     p = p || {};
     if (STUDENT[action] && ctx.role === 'student') {
       if (action === 'home') return studentHome(db, ctx.studentId);
       if (action === 'book') return book(db, ctx.studentId, p.workshop_id);
+      if (action === 'sendNa') return sendUnavailable(db, ctx.studentId, p.day, p.note);
+      if (action === 'withdrawNa') return withdrawUnavailable(db, ctx.studentId, p.day);
       return cancel(db, ctx.studentId, p.workshop_id);
     }
     if (FACILITATOR[action] && ctx.role === 'facilitator') {
       if (action === 'facHome') return facHome(db);
       if (action === 'facWorkshop') return facWorkshop(db, p.workshop_id);
+      if (action === 'facClearNa') return facClearUnavailable(db, p.student_id, p.day);
       return facSave(db, p.workshop_id, p.marks);
     }
     fail('You are not signed in for that.');
   }
 
-  return { handle: handle, isActive: isActive, WRITES: { book: 1, cancel: 1, facSave: 1 } };
+  return { handle: handle, isActive: isActive, WRITES: { book: 1, cancel: 1, facSave: 1, sendNa: 1, withdrawNa: 1, facClearNa: 1 } };
 })();
 
 </script>
@@ -479,7 +581,7 @@ var Core = (function () {
   var state = {
     token: null, home: null, loading: false, busy: false,
     loginMode: 'student', facTab: 'workshops', cohort: null,
-    roll: null, marks: {}, confirmCancel: null, showDone: false
+    roll: null, marks: {}, confirmCancel: null, showDone: false, naFor: null
   };
 
   /* ------------------------------ helpers ------------------------------ */
@@ -578,7 +680,7 @@ var Core = (function () {
     if (!DEMO) store('course_app_token', result.token + '|' + result.home.role);
   }
   function clearSession() {
-    state.token = null; state.home = null; state.roll = null; state.confirmCancel = null;
+    state.token = null; state.home = null; state.roll = null; state.confirmCancel = null; state.naFor = null;
     store('course_app_token', null);
   }
 
@@ -591,7 +693,7 @@ var Core = (function () {
     }
     function day(n) { return iso(new Date(now.getFullYear(), now.getMonth(), now.getDate() + n)); }
     var cohort = String(now.getFullYear());
-    var t = { Students: [], Workshops: [], Bookings: [], Attendance: [] };
+    var t = { Students: [], Workshops: [], Bookings: [], Attendance: [], Unavailable: [] };
     [['S001', 'Mia', 'Tran'], ['S002', 'Jack', "O'Connor"], ['S003', 'Priya', 'Nair'],
      ['S004', 'Tom', 'Kowalski'], ['S005', 'Aisha', 'Rahman'], ['S006', 'Ben', 'Fletcher']].forEach(function (r) {
       t.Students.push({ student_id: r[0], cohort: cohort, first_name: r[1], last_name: r[2], status: 'active' });
@@ -621,6 +723,7 @@ var Core = (function () {
     ['S005', 'S006'].forEach(function (s) { mark('W004', s, 'present'); });
     ['S001', 'S002', 'S003'].forEach(function (s) { mark('W005', s, null); });
     ['S005', 'S006'].forEach(function (s) { mark('W006', s, null); });
+    t.Unavailable.push({ unavailable_id: 'U1', student_id: 'S005', cohort: cohort, day_number: '5', note: 'Rostered on shift that day. Free any weekday after the 20th.', sent_at: day(-1) + ' 18:40', status: 'open' });
     return {
       rows: function (tab) { return t[tab]; },
       append: function (tab, obj) { t[tab].push(obj); },
@@ -699,6 +802,29 @@ var Core = (function () {
     return '<button class="btn" type="button" data-act="book" data-id="' + esc(w.id) + '">Book</button>';
   }
 
+  function sentOn(at) {
+    var d = parseDate(String(at || '').slice(0, 10));
+    return d ? 'Sent ' + d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }) : 'Sent';
+  }
+
+  // Lets a student tell the facilitator they cannot make any date offered for a day.
+  // Only shown when the sheet supports it (h.unavailable is present).
+  function naBlock(h, day) {
+    var sent = h.unavailable.filter(function (x) { return x.day === day; })[0];
+    if (sent) {
+      return '<div class="na-sent"><div><p><b>You told your facilitator you can\'t make these dates.</b> They\'ll look at adding another one. Book it here when it appears.</p>' +
+        (sent.note ? '<p class="small">“' + esc(sent.note) + '”</p>' : '') + '<p class="small muted">' + esc(sentOn(sent.sent_at)) + '</p></div>' +
+        '<button class="btn ghost" type="button" data-act="withdrawna" data-id="' + esc(day) + '">Undo</button></div>';
+    }
+    if (state.naFor === day) {
+      return '<div class="na-form"><label for="na-note"><b>Can\'t make any of these dates?</b> Let your facilitator know so they can look at another date.</label>' +
+        '<textarea id="na-note" maxlength="300" rows="3" placeholder="Optional: when you could come, or anything they should know"></textarea>' +
+        '<div class="na-actions"><button class="btn" type="button" data-act="sendna" data-id="' + esc(day) + '">Send to facilitator</button>' +
+        '<button class="btn ghost" type="button" data-act="closena">Never mind</button></div></div>';
+    }
+    return '<button class="link na-link" type="button" data-act="askna" data-id="' + esc(day) + '">Can\'t make any of these dates?</button>';
+  }
+
   function renderStudent(h) {
     var done = h.days.filter(function (d) { return d.state === 'done'; }).length;
     var stateOf = {};
@@ -750,7 +876,8 @@ var Core = (function () {
                 '<button class="btn danger" type="button" data-act="cancel" data-id="' + esc(w.id) + '">Cancel booking</button></div></div>'
               : '') +
             '</div></li>';
-        }).join('') + '</ul></div>';
+        }).join('') + '</ul>' +
+        (st === 'open' && h.unavailable ? naBlock(h, day) : '') + '</div>';
     }
 
     // Days already attended start folded away so the screen opens on what is still to do.
@@ -803,6 +930,27 @@ var Core = (function () {
       '<button type="button" role="tab" data-act="tab" data-id="students" aria-selected="' + (state.facTab === 'students') + '">Students (' + students.length + ')</button></div></div>';
 
     if (state.facTab === 'workshops') {
+      var cant = (h.unavailable || []).filter(inCohort);
+      if (cant.length) {
+        var byDay = {}, days = [];
+        cant.forEach(function (x) {
+          if (!byDay[x.day]) { byDay[x.day] = []; days.push(x.day); }
+          byDay[x.day].push(x);
+        });
+        html += '<section class="stack"><div class="dayhead"><h2>Can\'t make a day</h2><span class="chip warn">' + cant.length + '</span></div>' +
+          '<p class="small muted">These students can\'t make any date offered for that day. Add another date in the Workshops tab of the sheet; when they book it, they drop off this list.</p>' +
+          days.map(function (day) {
+            var list = byDay[day];
+            return '<div class="panel na-day"><p class="na-day-head">Day ' + esc(day) + (list[0].day_name ? ' · ' + esc(list[0].day_name) : '') +
+              ' <span class="chip">' + list.length + (list.length === 1 ? ' student' : ' students') + '</span></p><ul class="sessions">' +
+              list.map(function (x) {
+                return '<li class="person"><div class="who"><b>' + esc(x.name) + '</b>' +
+                  (x.note ? '<span class="small">“' + esc(x.note) + '”</span>' : '') +
+                  '<span class="small muted">' + esc(sentOn(x.sent_at)) + '</span></div>' +
+                  '<button class="btn ghost" type="button" data-act="clearna" data-id="' + esc(x.student_id) + '|' + esc(x.day) + '">Clear</button></li>';
+              }).join('') + '</ul></div>';
+          }).join('') + '</section>';
+      }
       if (!workshops.length) html += '<p class="panel pad muted">No workshops yet. Add rows to the Workshops tab of the sheet, then use Course App &gt; Fill in IDs.</p>';
       if (upcoming.length) html += '<section class="stack"><h2>Coming up</h2><ul class="panel sessions">' + upcoming.map(facWorkshopRow).join('') + '</ul></section>';
       if (past.length) html += '<section class="stack"><h2>Finished</h2><ul class="panel sessions">' + past.map(facWorkshopRow).join('') + '</ul></section>';
@@ -843,7 +991,7 @@ var Core = (function () {
           return '<button type="button" class="' + v + '" data-act="mark" data-id="' + esc(r.student_id) + '" data-v="' + v + '" aria-pressed="' + (m === v) + '">' + label + '</button>';
         }
         return '<li class="person"><div class="who"><b>' + esc(r.name) + '</b><span>' +
-          (r.booked ? '<span class="chip hi">Booked</span>' : '<span class="chip">Not booked</span>') + '</span></div>' +
+          (r.booked ? '<span class="chip hi">Booked</span>' : r.unavailable ? '<span class="chip warn">Can\'t attend</span>' : '<span class="chip">Not booked</span>') + '</span></div>' +
           '<div class="seg" role="group" aria-label="Attendance for ' + esc(r.name) + '">' + b('present', 'Present') + b('absent', 'Absent') + '</div></li>';
       }).join('') + '</ul>';
       html += '<div class="savebar"><button class="btn wide" type="button" data-act="save"' + (changes ? '' : ' disabled style="opacity:.5"') + '>' +
@@ -894,6 +1042,34 @@ var Core = (function () {
       });
     },
     tab: function (id) { state.facTab = id; render(); },
+    askna: function (id) {
+      state.naFor = id; render();
+      var box = document.getElementById('na-note');
+      if (box) box.focus();
+    },
+    closena: function () { state.naFor = null; render(); },
+    sendna: function (id) {
+      var box = document.getElementById('na-note');
+      var note = box ? box.value : '';
+      run(async function () {
+        state.home = await api('sendNa', { day: id, note: note });
+        state.naFor = null;
+        toast('Sent. Your facilitator will see it.');
+      });
+    },
+    withdrawna: function (id) {
+      run(async function () {
+        state.home = await api('withdrawNa', { day: id });
+        toast('Note withdrawn.');
+      });
+    },
+    clearna: function (id) {
+      var parts = String(id).split('|');
+      run(async function () {
+        state.home = await api('facClearNa', { student_id: parts[0], day: parts[1] });
+        toast('Cleared.');
+      });
+    },
     toggledone: function () { state.showDone = !state.showDone; render(); },
     open: function (id) {
       run(async function () { openRoll(await api('facWorkshop', { workshop_id: id })); window.scrollTo(0, 0); });
