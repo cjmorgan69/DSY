@@ -407,6 +407,19 @@ textarea { min-height: 7rem; resize: vertical; }
       return '<li><button class="item" data-act="editperson" data-id="' + p.id + '"><div class="what"><span class="t">' + esc(nameOf(p)) + '</span><span class="row">' + (gs || '<span class="small muted">Not in any group</span>') + "</span></div>" +
         '<div class="act">' + (p.role === "leader" ? '<span class="chip warn">Leader</span>' : "") + "</div></button></li>";
     }).join("") : '<li class="empty">No one has signed up yet. Share the app link and ask your teams to create an account.</li>') + "</ul>";
+    var courses = S.groups.filter(function (g) { return g.type === "course"; });
+    if (courses.length) {
+      html += '<section class="panel pad stack"><h3>Your courses</h3><ul class="stack">' + courses.map(function (g) {
+        var ns = S.sessions.filter(function (s) { return s.group_id === g.id; }).length;
+        var nm = S.memberships.filter(function (m) { return m.group_id === g.id; }).length;
+        var info = ns + " session" + (ns === 1 ? "" : "s") + ", " + nm + " " + (nm === 1 ? "person" : "people");
+        if (S.delCourse === g.id) {
+          return '<li class="notice stack"><p><strong>Delete ' + esc(g.name) + '?</strong> This removes its ' + ns + ' session' + (ns === 1 ? "" : "s") + ', all bookings and attendance for them, and takes ' + nm + ' ' + (nm === 1 ? "person" : "people") + ' out of the course. Lessons are kept. This cannot be undone.</p>' +
+            '<div class="row"><button class="btn danger small" type="button" data-act="deletecourse" data-id="' + g.id + '">Yes, delete course</button><button class="btn ghost small" type="button" data-act="keepcourse">Keep it</button></div></li>';
+        }
+        return '<li class="row"><div class="what"><span class="t">' + esc(g.name) + '</span><span class="small muted">' + info + '</span></div><button class="btn danger small" type="button" data-act="askdelcourse" data-id="' + g.id + '">Delete</button></li>';
+      }).join("") + "</ul></section>";
+    }
     html += '<form class="panel pad stack" data-form="course"><h3>Add a course</h3><p class="small muted">A course is a separate set of sessions, for example for recruits from different teams. Choose the first date and the last date; sessions are created at the interval you set.</p>' +
       '<label>Course name<input id="c-name" name="name" placeholder="Ambulance Responders 2026" required></label>' +
       '<div class="grid2"><label>First session<input id="c-first" name="first" type="date" required></label><label>Last date<input id="c-last" name="last" type="date" required></label><label>Days between sessions<input id="c-every" name="every" type="number" min="1" value="14" required></label></div>' +
@@ -468,6 +481,15 @@ textarea { min-height: 7rem; resize: vertical; }
       var clear = paths.length ? sb.storage.from("lesson-files").remove(paths) : Promise.resolve({});
       return clear.then(function (r) { if (r.error) throw r.error; return sb.from("lessons").delete().eq("id", d.id); })
         .then(function (r) { if (r.error) throw r.error; S.lessonEdit = null; toast("Lesson deleted."); return refresh(); }).catch(fail);
+    },
+    askdelcourse: function (d) { S.delCourse = d.id; render(); },
+    keepcourse: function () { S.delCourse = null; render(); },
+    deletecourse: function (d) {
+      var g = groupOf(d.id); if (!g || g.type !== "course") return;
+      return sb.from("groups").delete().eq("id", d.id).eq("type", "course").then(function (r) {
+        if (r.error) throw r.error;
+        S.delCourse = null; if (S.filter === d.id) S.filter = "all"; toast("Course deleted."); return refresh();
+      }).catch(fail);
     },
     openfile: function (d) { return openFile(d.id); },
     removefile: function (d) { return removeFile(d.id); },
