@@ -182,10 +182,11 @@ textarea { min-height: 7rem; resize: vertical; }
       q(sb.from("bookings").select("session_id,member_id,status")),
       q(sb.from("profiles").select("*").order("full_name")),
       q(sb.from("memberships").select("*")),
-      q(sb.from("attendance").select("*"))
+      q(sb.from("attendance").select("*")),
+      q(sb.from("lesson_files").select("*").order("created_at"))
     ]).then(function (r) {
       S.groups = r[0]; S.lessons = r[1]; S.sessions = r[2]; S.bookings = r[3];
-      S.profiles = r[4]; S.memberships = r[5]; S.attendance = r[6];
+      S.profiles = r[4]; S.memberships = r[5]; S.attendance = r[6]; S.files = r[7];
     });
   }
 
@@ -317,12 +318,65 @@ textarea { min-height: 7rem; resize: vertical; }
       '<label>Short summary (members see this)<input id="l-summary" name="summary" value="' + esc(l.summary || "") + '"></label>' +
       '<label>Lesson content (only you see this)<textarea id="l-content" name="content">' + esc(l.content || "") + "</textarea></label>" +
       '<label>Resources and links<textarea id="l-res" name="resources">' + esc(l.resources || "") + "</textarea></label>" +
+      '<div class="stack"><h3>Files</h3>' + (l.id
+        ? '<div id="lfiles">' + filesList(l.id) + '</div><label>Add files (up to 50 MB each)<input id="l-upload" type="file" multiple data-act="upload" data-lid="' + l.id + '"></label>'
+        : '<p class="small muted">Save the lesson first, then come back to attach files.</p>') + "</div>" +
       '<h3>Use this lesson in</h3>' +
       (upcoming.length ? '<ul>' + upcoming.map(function (s) {
         return '<li><label class="check"><input type="checkbox" name="sess" value="' + s.id + '"' + (l.id && s.lesson_id === l.id ? " checked" : "") + "> <span>" + esc(parseDate(s.session_date).toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" })) + " - " + esc((groupOf(s.group_id) || {}).name) + "</span>" +
           (s.lesson_id && s.lesson_id !== l.id ? ' <span class="chip warn">Has another lesson</span>' : "") + "</label></li>";
       }).join("") + "</ul>" : '<p class="muted">No upcoming sessions.</p>') +
       '<div class="row"><button class="btn" type="submit">Save lesson</button>' + (l.id ? '<button class="btn danger" type="button" data-act="deletelesson" data-id="' + l.id + '">Delete</button>' : "") + "</div></form>";
+  }
+
+  function fileSize(n) { return n >= 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1024)) + " KB"; }
+  function filesList(lid) {
+    var fs = (S.files || []).filter(function (f) { return f.lesson_id === lid; });
+    if (!fs.length) return '<p class="small muted">No files attached.</p>';
+    return '<ul class="list panel">' + fs.map(function (f) {
+      return '<li><div class="item"><div class="what"><span class="t">' + esc(f.name) + '</span><span class="small muted">' + fileSize(f.size || 0) + '</span></div><div class="act">' +
+        '<button class="btn ghost small" type="button" data-act="openfile" data-id="' + f.id + '">Open</button>' +
+        '<button class="btn danger small" type="button" data-act="removefile" data-id="' + f.id + '">Remove</button></div></div></li>';
+    }).join("") + "</ul>";
+  }
+  function redrawFiles(lid) { var el = document.getElementById("lfiles"); if (el) el.innerHTML = filesList(lid); }
+
+  function uploadFiles(input) {
+    var lid = input.dataset.lid, files = Array.prototype.slice.call(input.files);
+    if (!files.length) return;
+    input.disabled = true; toast("Uploading...");
+    var chain = Promise.resolve(), done = 0;
+    files.forEach(function (file) {
+      chain = chain.then(function () {
+        if (file.size > 52428800) throw new Error(file.name + " is over 50 MB.");
+        var safe = file.name.replace(/[^A-Za-z0-9._-]+/g, "_");
+        var path = lid + "/" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + "-" + safe;
+        return sb.storage.from("lesson-files").upload(path, file, { contentType: file.type || "application/octet-stream" }).then(function (r) {
+          if (r.error) throw r.error;
+          return sb.from("lesson_files").insert({ lesson_id: lid, path: path, name: file.name, size: file.size, content_type: file.type || null }).select().single();
+        }).then(function (r) { if (r.error) throw r.error; S.files.push(r.data); done++; redrawFiles(lid); });
+      });
+    });
+    return chain.then(function () { toast(done + (done === 1 ? " file" : " files") + " attached."); })
+      .catch(fail).then(function () { input.disabled = false; input.value = ""; });
+  }
+  function openFile(id) {
+    var f = by(id, S.files); if (!f) return;
+    var w = window.open("", "_blank");
+    return sb.storage.from("lesson-files").createSignedUrl(f.path, 300).then(function (r) {
+      if (r.error) throw r.error;
+      if (w) w.location.href = r.data.signedUrl; else window.location.href = r.data.signedUrl;
+    }).catch(function (e) { if (w) w.close(); fail(e); });
+  }
+  function removeFile(id) {
+    var f = by(id, S.files); if (!f) return;
+    return sb.storage.from("lesson-files").remove([f.path]).then(function (r) {
+      if (r.error) throw r.error;
+      return sb.from("lesson_files").delete().eq("id", id);
+    }).then(function (r) {
+      if (r.error) throw r.error;
+      S.files = S.files.filter(function (x) { return x.id !== id; }); redrawFiles(f.lesson_id); toast("File removed.");
+    }).catch(fail);
   }
 
   function saveLesson(form) {
@@ -406,8 +460,13 @@ textarea { min-height: 7rem; resize: vertical; }
     lessonback: function () { S.lessonEdit = null; render(); },
     deletelesson: function (d) {
       if (!window.confirm("Delete this lesson? Sessions using it will be left without a lesson.")) return;
-      return sb.from("lessons").delete().eq("id", d.id).then(function (r) { if (r.error) throw r.error; S.lessonEdit = null; toast("Lesson deleted."); return refresh(); }).catch(fail);
+      var paths = (S.files || []).filter(function (f) { return f.lesson_id === d.id; }).map(function (f) { return f.path; });
+      var clear = paths.length ? sb.storage.from("lesson-files").remove(paths) : Promise.resolve({});
+      return clear.then(function (r) { if (r.error) throw r.error; return sb.from("lessons").delete().eq("id", d.id); })
+        .then(function (r) { if (r.error) throw r.error; S.lessonEdit = null; toast("Lesson deleted."); return refresh(); }).catch(fail);
     },
+    openfile: function (d) { return openFile(d.id); },
+    removefile: function (d) { return removeFile(d.id); },
     editperson: function (d) { S.personEdit = d.id; render(); window.scrollTo(0, 0); },
     personback: function () { S.personEdit = null; render(); }
   };
@@ -421,6 +480,7 @@ textarea { min-height: 7rem; resize: vertical; }
     if (t.dataset.act === "attend") setAttendance(t.dataset.sid, t.dataset.mid, t.checked);
     else if (t.dataset.act === "member") setMembership(t.dataset.mid, t.dataset.gid, t.checked);
     else if (t.dataset.act === "role") setRole(t.dataset.mid, t.value);
+    else if (t.dataset.act === "upload") uploadFiles(t);
   });
   document.addEventListener("submit", function (e) {
     var form = e.target; if (!form.dataset.form) return;
