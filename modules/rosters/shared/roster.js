@@ -4439,13 +4439,13 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
         .header {
             margin-bottom: 2rem;
-            border-bottom: 3px solid #22c55e;
+            border-bottom: 3px solid #1f5b43;
             padding-bottom: 1rem;
         }
 
         .header h1 {
             font-size: 2rem;
-            color: #16a34a;
+            color: #174a36;
             margin-bottom: 0.5rem;
         }
 
@@ -4492,8 +4492,8 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             transition: all 0.2s ease;
         }
 
-        .btn-primary { background: #22c55e; color: white; }
-        .btn-primary:hover { background: #16a34a; }
+        .btn-primary { background: #1f5b43; color: white; }
+        .btn-primary:hover { background: #174a36; }
         .btn-secondary { background: #e5e7eb; color: #333; }
         .btn-secondary:hover { background: #d1d5db; }
 
@@ -4555,7 +4555,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         td.crew-name {
             background: #f9fafb;
             font-weight: 500;
-            color: #16a34a;
+            color: #174a36;
             min-width: 140px;
         }
 
@@ -5386,13 +5386,13 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
         .header {
             margin-bottom: 1.5rem;
-            border-bottom: 3px solid #22c55e;
+            border-bottom: 3px solid #1f5b43;
             padding-bottom: 1rem;
         }
 
         .header h1 {
             font-size: 1.6rem;
-            color: #16a34a;
+            color: #174a36;
             margin-bottom: 0.4rem;
         }
 
@@ -5408,9 +5408,9 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             max-width: 34rem;
             margin: 0 0 1rem;
             padding: 1rem;
-            border: 2px solid #22c55e;
+            border: 2px solid #1f5b43;
             border-radius: 8px;
-            background: #f0fdf4;
+            background: #eaf1ed;
         }
 
         .mark-sent-panel[hidden] {
@@ -5444,7 +5444,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         }
 
         .sent-status.ok {
-            color: #15803d;
+            color: #174a36;
             font-weight: 600;
         }
 
@@ -5490,8 +5490,8 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             transition: all 0.2s ease;
         }
 
-        .btn-primary { background: #22c55e; color: white; }
-        .btn-primary:hover { background: #16a34a; }
+        .btn-primary { background: #1f5b43; color: white; }
+        .btn-primary:hover { background: #174a36; }
         .btn-secondary { background: #e5e7eb; color: #333; }
         .btn-secondary:hover { background: #d1d5db; }
 
@@ -5563,7 +5563,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
         td.crew-name {
             font-weight: 500;
-            color: #16a34a;
+            color: #174a36;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -6842,7 +6842,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
  canvas.height = window.innerHeight * ratio;
  context.scale(ratio, ratio);
  const colours = [
- "#22c55e", "#16a34a", "#f59e0b",
+ "#1f5b43", "#4aa37c", "#e3a712",
  "#0284c7", "#dc2626", "#a855f7", "#ec4899"
  ];
  const width = window.innerWidth;

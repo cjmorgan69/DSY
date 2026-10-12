@@ -12,28 +12,33 @@
         Colours, header, cards and buttons match the roster pages
         (modules/rosters/shared/roster.css) so the guide looks familiar.
     -->
+    <meta name="theme-color" content="#1f5b43">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #22c55e;
-            --primary-dark: #16a34a;
-            --primary-light: #f0fdf4;
-            --background: #f8fafc;
+            --primary: #1f5b43;
+            --primary-dark: #174a36;
+            --primary-light: #eaf1ed;
+            --background: #f4f6f1;
             --surface: #ffffff;
-            --text: #0f172a;
-            --muted: #64748b;
-            --border: #e2e8f0;
-            --red: #dc2626;
-            --red-light: #fef2f2;
-            --yellow: #d97706;
-            --yellow-light: #fffbeb;
-            --green: #16a34a;
-            --green-light: #f0fdf4;
-            --blue: #0284c7;
-            --blue-light: #e0f2fe;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05),
-                      0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            --radius: 16px;
-        }
+            --text: #1d2a24;
+            --muted: #5d6b63;
+            --border: #dde3da;
+            --red: #b3392b;
+            --red-light: #f9ecea;
+            --yellow: #9a6700;
+            --yellow-light: #fbf3dc;
+            --green: #2e7d4f;
+            --green-light: #e6f2ea;
+            --blue: #2f6f8f;
+            --blue-light: #e4eff4;
+            --shadow: 0 1px 2px rgba(20, 40, 30, 0.06), 0 6px 16px -8px rgba(20, 40, 30, 0.12);
+            --radius: 14px;
+        --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+        --font-head: "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+    }
 
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -43,10 +48,8 @@
             margin: 0;
             padding-bottom: 3rem;
             color: var(--text);
-            background:
-                radial-gradient(circle at top right, #e0e7ff, transparent 35rem),
-                var(--background);
-            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--background);
+            font-family: var(--font-body);
         }
 
         .container {
@@ -87,7 +90,7 @@
             color: white;
             border-radius: 12px;
             background: var(--primary);
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+            box-shadow: 0 4px 12px rgba(31, 91, 67, 0.3);
             font-size: 1.25rem;
         }
 
@@ -223,11 +226,11 @@
         }
 
         .guide-section summary:hover {
-            background: #f8fafc;
+            background: #f4f6f1;
         }
 
         .guide-section summary:focus-visible {
-            outline: 3px solid rgba(34, 197, 94, 0.35);
+            outline: 3px solid rgba(31, 91, 67, 0.35);
             outline-offset: -3px;
         }
 
@@ -337,7 +340,7 @@
 
         .connection-status.connected {
             color: var(--green);
-            border-color: #bbf7d0;
+            border-color: #cfe0d6;
             background: var(--green-light);
         }
 
@@ -364,7 +367,7 @@
             padding: 1rem;
             border: 1px solid var(--border);
             border-radius: 8px;
-            background: #f8fafc;
+            background: #f4f6f1;
         }
 
         .roster-submission-manager p {
@@ -537,7 +540,9 @@
             html { scroll-behavior: auto; }
             .guide-section summary::after { transition: none; }
         }
-    </style>
+    
+    h1, h2, h3 { font-family: var(--font-head); letter-spacing: -0.02em; }
+  </style>
 </head>
 
 <body>
