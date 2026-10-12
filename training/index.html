@@ -26,7 +26,7 @@
   var $toast = document.getElementById("toast");
   var S = {
     user: null, profile: null, tab: "calendar", view: null,
-    groups: [], lessons: [], sessions: [], bookings: [], profiles: [], memberships: [],
+    reflections: {}, attFilter: null, attSession: null, groups: [], lessons: [], sessions: [], bookings: [], profiles: [], memberships: [],
     mySessions: [], myBookings: {}, filter: "all", typeFilter: "all", showPast: false, authMode: "in", detail: null, lessonEdit: null, personEdit: null,
     shared: [], files: [], shares: [], roster: [], rosterSession: null, lessonView: null, memberTab: "sessions", delSession: null
   };
@@ -102,8 +102,10 @@
       q(sb.from("memberships").select("*")),
       q(sb.from("attendance").select("*")),
       q(sb.from("lesson_files").select("*").order("created_at")),
-      q(sb.from("lesson_shares").select("*"))
+      q(sb.from("lesson_shares").select("*")),
+      q(sb.from("session_reflections").select("*"))
     ]).then(function (r) {
+      S.reflections = {}; r[9].forEach(function (x) { S.reflections[x.session_id] = x.notes; });
       S.groups = r[0]; S.lessons = r[1]; S.sessions = r[2]; S.bookings = r[3];
       S.profiles = r[4]; S.memberships = r[5]; S.attendance = r[6]; S.files = r[7]; S.shares = r[8];
     });
@@ -235,7 +237,7 @@
       return '<li><button class="item" data-act="open" data-id="' + s.id + '">' + tile(s.session_date) +
         '<div class="what"><span class="t">' + (l ? esc(l.title) : s.topic ? esc(s.topic) : '<span class="muted">' + (team ? "No topic yet" : "No lesson yet") + "</span>") + "</span>" +
         '<span class="small muted">' + timeRange(s) + (s.location ? " - " + esc(s.location) : "") + (ledBy(s) ? " - " + esc(ledBy(s)) : "") + '</span><span class="row">' + groupChip(groupOf(s.group_id)) + typeChip(s.session_type) + "</span></div>" +
-        '<div class="act">' + set + (team && !s.facilitator_name ? '<span class="chip warn">Needs facilitator</span>' : "") + '<span class="chip">' + n + " booked</span></div></button></li>";
+        '<div class="act">' + set + (team && !s.facilitator_name ? '<span class="chip warn">Needs facilitator</span>' : "") + '<span class="chip">' + n + " booked</span>" + (S.reflections[s.id] ? '<span class="chip good">Reflection</span>' : s.session_date < t ? '<span class="chip warn">Needs reflection</span>' : "") + "</div></button></li>";
     }).join("") + "</ul>";
   }
 
@@ -261,10 +263,36 @@
       '<label>Notes for you<input id="s-notes" name="notes" value="' + esc(s.notes || "") + '"></label>' +
       '<div class="row"><button class="btn" type="submit">Save session</button>' + (S.delSession === s.id ? "" : '<button class="btn danger" type="button" data-act="asksession" data-id="' + s.id + '">Delete session</button>') + "</div></form>" +
       (S.delSession === s.id ? '<div class="notice stack"><p><strong>Delete this session?</strong> Its bookings and attendance are removed too. This cannot be undone.</p><div class="row"><button class="btn danger small" type="button" data-act="deletesession" data-id="' + s.id + '">Yes, delete session</button><button class="btn ghost small" type="button" data-act="keepsession">Keep it</button></div></div>' : "") + "</section>" +
-      '<section class="panel pad stack"><h3>Attendance</h3>' +
-      (members.length ? '<p class="small muted">Tick each person who came. Those who booked are marked.' + (s.session_type === "team" && s.facilitator_id && s.facilitator_id !== S.profile.id ? " The facilitator can also tick people on the night." : "") + '</p><ul>' + members.map(function (p) {
+      renderAttendance(s, members, att, bookedIds) + renderReflection(s);
+  }
+
+  function renderAttendance(s, members, att, bookedIds) {
+    if (!members.length) return '<section class="panel pad stack"><h3>Attendance</h3><p class="muted">No one is in this group yet. Add people in the People tab.</p></section>';
+    var came = members.filter(function (p) { return att[p.id]; }), nots = members.filter(function (p) { return !att[p.id]; });
+    var f = S.attFilter && S.attSession === s.id ? S.attFilter : (S.reflections[s.id] && came.length ? "came" : "all");
+    var shown = f === "came" ? came : f === "not" ? nots : members;
+    var chips = [["all", "Everyone (" + members.length + ")"], ["came", "Attended (" + came.length + ")"], ["not", "Not attended (" + nots.length + ")"]].map(function (x) {
+      return '<button type="button" aria-pressed="' + (f === x[0]) + '" data-act="attfilter" data-f="' + x[0] + '" data-sid="' + s.id + '">' + x[1] + "</button>";
+    }).join("");
+    return '<section class="panel pad stack"><h3>Attendance</h3><div class="filters" role="group" aria-label="Filter attendance">' + chips + "</div>" +
+      '<p class="small muted">Tick each person who came. Those who booked are marked. Nobody is removed when you tick them, so you can still add or fix people; use the filters to see just who attended.' + (s.session_type === "team" && s.facilitator_id && s.facilitator_id !== S.profile.id ? " The facilitator can also tick people on the night." : "") + "</p>" +
+      (shown.length ? "<ul>" + shown.map(function (p) {
         return '<li><label class="check"><input type="checkbox" data-act="attend" data-sid="' + s.id + '" data-mid="' + p.id + '"' + (att[p.id] ? " checked" : "") + "> <span>" + esc(nameOf(p)) + "</span>" + (bookedIds[p.id] ? ' <span class="chip good">Booked</span>' : "") + "</label></li>";
-      }).join("") + "</ul>" : '<p class="muted">No one is in this group yet. Add people in the People tab.</p>') + "</section>";
+      }).join("") + "</ul>" : '<p class="muted">' + (f === "came" ? "No one is marked as attended yet." : "Everyone is marked as attended.") + "</p>") + "</section>";
+  }
+
+  function renderReflection(s) {
+    var has = S.reflections[s.id] != null;
+    return '<form class="panel pad stack" data-form="reflection" data-id="' + s.id + '"><h3>Reflection</h3><p class="small muted">Your notes on how this session went. They belong to this session only and are never shown to members.</p>' +
+      '<label>Notes<textarea id="s-reflect" name="notes" rows="7" placeholder="What worked, what to change, who needed more help, anything to follow up...">' + esc(S.reflections[s.id] || "") + "</textarea></label>" +
+      '<div class="row"><button class="btn" type="submit">Save reflection</button>' + (has ? '<span class="small muted">Saved</span>' : "") + "</div></form>";
+  }
+
+  function saveReflection(form) {
+    var id = form.dataset.id, notes = new FormData(form).get("notes").trim();
+    var job = notes ? sb.from("session_reflections").upsert({ session_id: id, notes: notes, updated_at: new Date().toISOString() }, { onConflict: "session_id" })
+      : sb.from("session_reflections").delete().eq("session_id", id);
+    return job.then(function (r) { if (r.error) throw r.error; if (notes) S.reflections[id] = notes; else delete S.reflections[id]; toast("Reflection saved."); render(); }).catch(fail);
   }
 
   function saveSession(form) {
@@ -540,8 +568,9 @@
         S.delSession = null; S.detail = null; toast("Session deleted."); return refresh();
       }).catch(fail);
     },
+    attfilter: function (d) { S.attSession = d.sid; S.attFilter = d.f; render(); },
     past: function () { S.showPast = !S.showPast; render(); },
-    open: function (d) { S.detail = d.id; render(); window.scrollTo(0, 0); },
+    open: function (d) { S.detail = d.id; S.attFilter = null; render(); window.scrollTo(0, 0); },
     back: function () { S.detail = null; render(); },
     newlesson: function () { S.lessonEdit = "new"; render(); },
     editlesson: function (d) { S.lessonEdit = d.id; render(); window.scrollTo(0, 0); },
@@ -621,7 +650,8 @@
       job = job.catch(fail);
     } else if (kind === "resetpw") {
       job = sb.rpc("leader_set_password", { member: form.dataset.id, new_password: f.get("pw") }).then(function (r) { if (r.error) throw r.error; form.reset(); toast("Password set. Let them know."); }).catch(fail);
-    } else if (kind === "session") job = saveSession(form);
+    } else if (kind === "reflection") job = saveReflection(form);
+    else if (kind === "session") job = saveSession(form);
     else if (kind === "lesson") job = saveLesson(form);
     else if (kind === "course") job = createCourse(form);
     else if (kind === "page") job = savePage(form);
