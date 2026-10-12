@@ -100,7 +100,7 @@
     if (S.next) {
       var d = parseDate(S.next.session_date);
       html += '<section class="panel nextcard"><div class="when"><span class="dow">' + d.toLocaleDateString("en-AU", { weekday: "short" }) + '</span><span class="dom">' + d.getDate() + '</span><span class="mon">' + d.toLocaleDateString("en-AU", { month: "short" }) + '</span></div>' +
-        '<div class="what"><span class="eyebrow">Next training</span><span class="t">' + (S.next.lesson_title ? esc(S.next.lesson_title) : '<span class="muted">Topic to be confirmed</span>') + '</span><span class="small muted">' + hhmm(S.next.start_time) + " to " + hhmm(S.next.end_time) + (S.next.location ? " - " + esc(S.next.location) : "") + "</span></div>" +
+        '<div class="what"><span class="eyebrow">Next training</span><span class="t">' + ((S.next.lesson_title || S.next.topic) ? esc(S.next.lesson_title || S.next.topic) : '<span class="muted">Topic to be confirmed</span>') + '</span><span class="small muted">' + hhmm(S.next.start_time) + " to " + hhmm(S.next.end_time) + (S.next.location ? " - " + esc(S.next.location) : "") + (S.next.facilitator_name ? " - Led by " + esc(S.next.facilitator_name) : "") + "</span></div>" +
         '<a class="link" href="../training/">Book</a></section>';
     }
     if (g.blurb) html += '<section class="panel pad stack"><h2>About ' + esc(g.name) + '</h2><div class="prose">' + paras(g.blurb) + "</div></section>";
