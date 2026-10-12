@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Team Page</title>
+<style>
+/* Colours, header, cards and buttons match the training app, course app and roster pages.
+   Layout: one column. A photo banner with the team name, two main buttons (training and roster),
+   then the next session, team information and policy links. Sign-in required. */
+:root {
+  --primary: #22c55e;
+  --primary-dark: #16a34a;
+  --primary-light: #f0fdf4;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --red: #dc2626;
+  --blue: #0284c7;
+  --blue-light: #e0f2fe;
+  --shadow: 0 10px 25px -5px rgba(0,0,0,.05), 0 8px 10px -6px rgba(0,0,0,.05);
+  --radius: 16px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  min-height: 100vh; margin: 0; color: var(--text);
+  background: radial-gradient(circle at top right, #e0e7ff, transparent 35rem), var(--background);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5; font-variant-numeric: tabular-nums; -webkit-text-size-adjust: 100%;
+}
+h1, h2, h3, p, ul { margin: 0; padding: 0; }
+ul { list-style: none; }
+h1 { font-size: 1.35rem; } h2 { font-size: 1.1rem; } h3 { font-size: 1.02rem; }
+button, input, a { font: inherit; }
+button { cursor: pointer; transition: transform .2s ease, background .2s ease; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.wrap { width: min(820px, 100%); margin: 0 auto; padding: 1.5rem 1rem 3rem; display: flex; flex-direction: column; gap: 1.25rem; }
+.stack { display: flex; flex-direction: column; gap: .75rem; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
+.muted { color: var(--muted); } .small { font-size: .84rem; }
+.eyebrow { font-size: .75rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.4rem; border: 1px solid var(--border); border-radius: var(--radius); background: rgba(255,255,255,.92); box-shadow: var(--shadow); backdrop-filter: blur(12px); }
+.brand { display: flex; align-items: center; gap: .75rem; min-width: 0; }
+.brand-icon { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 auto; color: #fff; border-radius: 12px; background: var(--primary); box-shadow: 0 4px 12px rgba(34,197,94,.3); font-size: 1.25rem; }
+.brand p { color: var(--muted); font-size: .85rem; overflow-wrap: anywhere; }
+.link { padding: .5rem .9rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: .82rem; font-weight: 800; text-decoration: none; }
+.link:hover { color: var(--primary-dark); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { min-height: 36px; padding: .3rem .85rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--muted); font-weight: 800; font-size: .82rem; }
+.chips button[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: #fff; }
+
+.hero { position: relative; overflow: hidden; border-radius: var(--radius); box-shadow: var(--shadow); background: var(--primary); min-height: 9rem; display: flex; align-items: flex-end; }
+.hero img { display: block; width: 100%; aspect-ratio: 16 / 7; max-height: 22rem; object-fit: cover; }
+.hero .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 2.5rem 1.4rem 1.1rem; background: linear-gradient(to top, rgba(15,23,42,.75), transparent); color: #fff; }
+.hero.plain .cap { position: static; background: none; padding: 2rem 1.4rem 1.2rem; }
+.hero h1 { font-size: 1.7rem; text-wrap: balance; }
+.hero p { opacity: .92; font-size: .92rem; }
+
+.actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: .75rem; }
+.big { display: flex; flex-direction: column; gap: 2px; min-height: 64px; padding: .9rem 1.1rem; border-radius: 12px; border: 0; text-decoration: none; color: #fff; background: var(--primary); box-shadow: 0 4px 12px rgba(34,197,94,.24); font-weight: 800; font-size: 1.02rem; }
+.big span { font-weight: 500; font-size: .82rem; opacity: .95; }
+.big:hover { transform: translateY(-1px); background: var(--primary-dark); }
+.big.alt { color: var(--primary-dark); border: 1px solid #bbf7d0; background: var(--primary-light); box-shadow: none; }
+.big.alt:hover { background: #dcfce7; }
+
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.panel.pad { padding: 1.2rem 1.4rem; }
+.next { border-left: 4px solid var(--primary); display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; padding: 1rem 1.2rem; }
+.when { flex: none; width: 3.2rem; display: flex; flex-direction: column; align-items: center; line-height: 1.05; padding: 5px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--background); }
+.when .dow, .when .mon { font-size: .66rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.when .dom { font-size: 1.25rem; font-weight: 800; }
+.what { flex: 1 1 10rem; min-width: 0; display: flex; flex-direction: column; gap: 2px; overflow-wrap: anywhere; }
+.what .t { font-weight: 700; }
+.prose { display: flex; flex-direction: column; gap: .7rem; overflow-wrap: anywhere; }
+.links > li + li { border-top: 1px solid var(--border); }
+.links a { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .85rem 0; color: var(--text); text-decoration: none; font-weight: 700; overflow-wrap: anywhere; }
+.links a::after { content: "\2192"; color: var(--primary-dark); flex: none; }
+.links a:hover { color: var(--primary-dark); }
+.notice { padding: .8rem 1rem; border-radius: 10px; background: #fffbeb; color: #78350f; font-size: .9rem; }
+
+label { display: flex; flex-direction: column; gap: 4px; font-size: .82rem; font-weight: 700; color: var(--muted); }
+input { width: 100%; min-height: 44px; padding: .55rem .75rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font-size: 1rem; }
+.btn { min-height: 42px; padding: .6rem 1rem; border-radius: 10px; border: 0; color: #fff; background: var(--primary); font-weight: 800; }
+.btn:hover:not(:disabled) { background: var(--primary-dark); }
+.btn:disabled { opacity: .55; }
+.linkbtn { background: none; border: 0; padding: .5rem 0; color: var(--primary-dark); font-weight: 800; }
+.auth { width: min(26rem, 100%); margin: 3rem auto 0; }
+.toast { position: fixed; left: 50%; bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); max-width: min(30rem, calc(100% - 2rem)); padding: .7rem 1rem; border-radius: 12px; background: var(--red); color: #fff; font-size: .9rem; box-shadow: var(--shadow); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><p class="muted">Loading...</p></div>
+<div id="toast" class="toast" hidden></div>
+
+<script src="../training/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  var C = window.TRAINING_APP;
+  var sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
+  var $app = document.getElementById("app");
+  var $toast = document.getElementById("toast");
+  var S = { user: null, profile: null, groups: [], current: null, authMode: "in", photoUrl: null, next: null };
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function fail(e) { $toast.textContent = e && e.message ? e.message : "Something went wrong. Try again."; $toast.hidden = false; clearTimeout(fail.t); fail.t = setTimeout(function () { $toast.hidden = true; }, 6000); }
+  function parseDate(d) { var p = String(d).split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function todayStr() { var n = new Date(); return n.getFullYear() + "-" + String(n.getMonth() + 1).padStart(2, "0") + "-" + String(n.getDate()).padStart(2, "0"); }
+  function hhmm(t) { var h = +String(t).slice(0, 2), m = String(t).slice(3, 5), ap = h >= 12 ? "pm" : "am"; h = h % 12 || 12; return h + (m === "00" ? "" : ":" + m) + ap; }
+  function safeUrl(u) { u = String(u || "").trim(); return /^(https?:\/\/|\/)/i.test(u) && u.indexOf("//") !== 0 ? u : (/^https?:\/\//i.test(u) ? u : ""); }
+  function links(g) { return Array.isArray(g.links) ? g.links.filter(function (l) { return l && l.label && safeUrl(l.url); }) : []; }
+  function hasContent(g) { return !!(g.blurb || g.photo_path || safeUrl(g.roster_url) || links(g).length); }
+  function isLeader() { return S.profile && S.profile.role === "leader"; }
+  function q(p) { return p.then(function (r) { if (r.error) throw r.error; return r.data || []; }); }
+
+  function renderAuth() {
+    var up = S.authMode === "up";
+    $app.innerHTML = '<div class="auth stack"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>Team Page</h1><p>Sign in with your training account.</p></div></div>' +
+      '<form class="panel pad stack" id="authform">' +
+      (up ? '<label>Your name<input id="f-name" name="name" autocomplete="name" required></label>' : "") +
+      '<label>Email<input id="f-email" name="email" type="email" autocomplete="email" required></label>' +
+      '<label>Password<input id="f-pass" name="pass" type="password" minlength="8" autocomplete="' + (up ? "new-password" : "current-password") + '" required></label>' +
+      '<button class="btn" type="submit">' + (up ? "Create account" : "Sign in") + '</button>' +
+      '<button class="linkbtn" type="button" id="swap">' + (up ? "I already have an account" : "Create an account") + '</button></form></div>';
+  }
+
+  function chooseGroup(list) {
+    var want = decodeURIComponent((location.hash || "").slice(1));
+    var hit = list.filter(function (g) { return g.id === want; })[0];
+    return hit || list.filter(hasContent)[0] || list[0] || null;
+  }
+
+  function load() {
+    return q(sb.from("profiles").select("*").eq("id", S.user.id)).then(function (rows) {
+      S.profile = rows[0] || { role: "member", full_name: "" };
+      return q(sb.from("groups").select("*").order("type", { ascending: false }).order("name"));
+    }).then(function (groups) {
+      S.groups = groups;
+      var pool = isLeader() ? groups : groups.filter(hasContent);
+      if (!isLeader() && !pool.length) { location.replace("../training/"); return null; }
+      S.current = chooseGroup(pool);
+      if (!S.current) { $app.innerHTML = header() + '<div class="panel pad muted">You have not been added to a team yet. Ask your team leader to add you, then come back.</div>'; return null; }
+      return loadGroup();
+    });
+  }
+
+  function loadGroup() {
+    var g = S.current; S.photoUrl = null; S.next = null;
+    var jobs = [];
+    if (g.photo_path) jobs.push(sb.storage.from("team-photos").createSignedUrl(g.photo_path, 3600).then(function (r) { if (!r.error) S.photoUrl = r.data.signedUrl; }));
+    jobs.push(sb.from("upcoming_sessions").select("*").eq("group_id", g.id).gte("session_date", todayStr()).order("session_date").order("start_time").limit(1).then(function (r) { if (!r.error && r.data && r.data[0]) S.next = r.data[0]; }));
+    return Promise.all(jobs).then(render);
+  }
+
+  function header() {
+    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName || "Team Training") + '</h1><p>' + esc((S.profile && S.profile.full_name) || "") + '</p></div></div>' +
+      '<div class="row"><a class="link" href="../training/">Training</a><button class="link" type="button" id="signout">Sign out</button></div></header>';
+  }
+
+  function paras(text) {
+    return String(text || "").split(/\n\s*\n/).map(function (p) { return p.trim(); }).filter(Boolean).map(function (p) { return "<p>" + esc(p).replace(/\n/g, "<br>") + "</p>"; }).join("");
+  }
+
+  function render() {
+    var g = S.current, html = header();
+    var pool = isLeader() ? S.groups : S.groups.filter(hasContent);
+    if (pool.length > 1) {
+      html += '<div class="chips" role="group" aria-label="Choose a team">' + pool.map(function (x) { return '<button type="button" data-g="' + x.id + '" aria-pressed="' + (x.id === g.id) + '">' + esc(x.name) + "</button>"; }).join("") + "</div>";
+    }
+    html += '<section class="hero' + (S.photoUrl ? "" : " plain") + '">' + (S.photoUrl ? '<img src="' + esc(S.photoUrl) + '" alt="' + esc(g.name) + '">' : "") +
+      '<div class="cap"><h1>' + esc(g.name) + "</h1><p>" + (g.type === "course" ? "Course" : "Team") + "</p></div></section>";
+    if (isLeader() && !hasContent(g)) html += '<div class="notice">This page is empty, so members of ' + esc(g.name) + ' go straight to the training schedule. Add a photo, information and links in Training, People, Team pages.</div>';
+    var ru = safeUrl(g.roster_url);
+    html += '<div class="actions"><a class="big" href="../training/">Training schedule<span>Book a spot and see upcoming sessions</span></a>' +
+      (ru ? '<a class="big alt" href="' + esc(ru) + '">Your roster<span>Open the roster for ' + esc(g.name) + "</span></a>" : "") + "</div>";
+    if (S.next) {
+      var d = parseDate(S.next.session_date);
+      html += '<section class="panel next"><div class="when"><span class="dow">' + d.toLocaleDateString("en-AU", { weekday: "short" }) + '</span><span class="dom">' + d.getDate() + '</span><span class="mon">' + d.toLocaleDateString("en-AU", { month: "short" }) + '</span></div>' +
+        '<div class="what"><span class="eyebrow">Next training</span><span class="t">' + (S.next.lesson_title ? esc(S.next.lesson_title) : '<span class="muted">Topic to be confirmed</span>') + '</span><span class="small muted">' + hhmm(S.next.start_time) + " to " + hhmm(S.next.end_time) + (S.next.location ? " - " + esc(S.next.location) : "") + "</span></div>" +
+        '<a class="link" href="../training/">Book</a></section>';
+    }
+    if (g.blurb) html += '<section class="panel pad stack"><h2>About ' + esc(g.name) + '</h2><div class="prose">' + paras(g.blurb) + "</div></section>";
+    var ls = links(g);
+    if (ls.length) html += '<section class="panel pad stack"><h2>Policies, procedures and links</h2><ul class="links">' + ls.map(function (l) { return '<li><a href="' + esc(safeUrl(l.url)) + '" rel="noopener">' + esc(l.label) + "</a></li>"; }).join("") + "</ul></section>";
+    $app.innerHTML = html;
+  }
+
+  $app.addEventListener("click", function (e) {
+    var t = e.target.closest("button"); if (!t) return;
+    if (t.id === "signout") sb.auth.signOut();
+    else if (t.id === "swap") { S.authMode = S.authMode === "in" ? "up" : "in"; renderAuth(); }
+    else if (t.dataset.g) { S.current = S.groups.filter(function (x) { return x.id === t.dataset.g; })[0]; history.replaceState(null, "", "#" + encodeURIComponent(S.current.id)); loadGroup().catch(fail); }
+  });
+  $app.addEventListener("submit", function (e) {
+    if (e.target.id !== "authform") return;
+    e.preventDefault();
+    var f = new FormData(e.target), btn = e.target.querySelector('[type="submit"]'); btn.disabled = true;
+    var email = f.get("email").trim(), pass = f.get("pass");
+    var job = S.authMode === "up"
+      ? sb.auth.signUp({ email: email, password: pass, options: { data: { full_name: f.get("name").trim() } } }).then(function (r) {
+          if (r.error) throw r.error;
+          if (!r.data.session) { fail({ message: "Account created. Check your email to confirm it, then sign in." }); S.authMode = "in"; renderAuth(); }
+        })
+      : sb.auth.signInWithPassword({ email: email, password: pass }).then(function (r) { if (r.error) throw r.error; });
+    job.catch(fail).then(function () { if (document.contains(btn)) btn.disabled = false; });
+  });
+
+  function onSession(session) {
+    S.user = session ? session.user : null;
+    if (!S.user) return renderAuth();
+    load().catch(function (e) { fail(e); renderAuth(); });
+  }
+  sb.auth.onAuthStateChange(function (event, session) {
+    if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "SIGNED_OUT") setTimeout(function () { onSession(session); }, 0);
+  });
+})();
+</script>
+</body>
+</html>
