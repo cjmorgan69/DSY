@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Team Training</title>
+<style>
+/* Colours, header, cards, buttons and badges match the course app and roster pages.
+   Layout: one column. Members see their upcoming sessions and book; the team leader gets
+   tabs for Calendar, Lessons and People. */
+:root {
+  --primary: #22c55e;
+  --primary-dark: #16a34a;
+  --primary-light: #f0fdf4;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --yellow: #d97706;
+  --yellow-light: #fffbeb;
+  --green: #16a34a;
+  --green-light: #f0fdf4;
+  --blue: #0284c7;
+  --blue-light: #e0f2fe;
+  --shadow: 0 10px 25px -5px rgba(0,0,0,.05), 0 8px 10px -6px rgba(0,0,0,.05);
+  --radius: 16px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  min-height: 100vh; margin: 0; color: var(--text);
+  background: radial-gradient(circle at top right, #e0e7ff, transparent 35rem), var(--background);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.45; font-variant-numeric: tabular-nums; -webkit-text-size-adjust: 100%;
+}
+h1, h2, h3, p, ul { margin: 0; padding: 0; }
+ul { list-style: none; }
+h1 { font-size: 1.35rem; } h2 { font-size: 1.15rem; } h3 { font-size: 1.02rem; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; transition: transform .2s ease, background .2s ease, opacity .2s ease; }
+button:disabled { cursor: not-allowed; opacity: .55; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+.wrap { width: min(820px, 100%); margin: 0 auto; padding: 1.5rem 1rem 3rem; display: flex; flex-direction: column; gap: 1.25rem; }
+.stack { display: flex; flex-direction: column; gap: .75rem; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
+.eyebrow { font-size: .75rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); } .small { font-size: .84rem; }
+
+.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.4rem; border: 1px solid var(--border); border-radius: var(--radius); background: rgba(255,255,255,.92); box-shadow: var(--shadow); backdrop-filter: blur(12px); }
+.brand { display: flex; align-items: center; gap: .75rem; min-width: 0; }
+.brand > div { min-width: 0; }
+.brand-icon { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 auto; color: #fff; border-radius: 12px; background: var(--primary); box-shadow: 0 4px 12px rgba(34,197,94,.3); font-size: 1.25rem; }
+.brand p { margin-top: .15rem; color: var(--muted); font-size: .85rem; overflow-wrap: anywhere; }
+
+.btn { min-height: 42px; padding: .6rem 1rem; border-radius: 10px; border: 0; color: #fff; background: var(--primary); font-weight: 800; box-shadow: 0 4px 12px rgba(34,197,94,.24); }
+.btn:hover:not(:disabled) { transform: translateY(-1px); background: var(--primary-dark); }
+.btn.ghost { color: var(--primary-dark); border: 1px solid #bbf7d0; background: var(--primary-light); box-shadow: none; }
+.btn.ghost:hover:not(:disabled) { background: #dcfce7; }
+.btn.danger { color: var(--red); border: 1px solid #fecaca; background: var(--red-light); box-shadow: none; }
+.btn.small { min-height: 36px; padding: .4rem .8rem; font-size: .85rem; }
+.link { background: none; border: 0; padding: .5rem .9rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: .82rem; font-weight: 800; }
+.link:hover { color: var(--primary-dark); }
+
+.chip { display: inline-flex; align-items: center; padding: .22rem .55rem; border-radius: 999px; font-size: .7rem; font-weight: 800; white-space: nowrap; background: #f1f5f9; color: var(--muted); }
+.chip.good { background: var(--green-light); color: var(--green); }
+.chip.warn { background: var(--yellow-light); color: var(--yellow); }
+.chip.hi { background: var(--blue-light); color: var(--blue); }
+.chip.course { background: #ede9fe; color: #6d28d9; }
+
+.tabs { display: flex; gap: 6px; padding: 5px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); overflow-x: auto; }
+.tabs button { flex: 1 0 auto; min-height: 40px; padding: .4rem 1rem; border: 0; border-radius: 8px; background: none; color: var(--muted); font-weight: 800; }
+.tabs button[aria-selected="true"] { background: var(--primary); color: #fff; }
+
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.panel.pad { padding: 1.2rem 1.4rem; }
+.next { border-left: 4px solid var(--primary); }
+.list > li + li { border-top: 1px solid var(--border); }
+.item { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; padding: .9rem 1.1rem; width: 100%; text-align: left; background: none; border: 0; }
+button.item:hover { background: var(--background); }
+.when { flex: none; width: 3.2rem; display: flex; flex-direction: column; align-items: center; line-height: 1.05; padding: 5px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--background); }
+.when .dow, .when .mon { font-size: .66rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.when .dom { font-size: 1.25rem; font-weight: 800; }
+.what { flex: 1 1 9rem; min-width: 0; display: flex; flex-direction: column; gap: 3px; overflow-wrap: anywhere; }
+.what .t { font-weight: 700; font-size: .93rem; }
+.act { flex: none; display: flex; align-items: center; gap: 8px; }
+.empty { padding: 1.6rem 1.2rem; text-align: center; color: var(--muted); }
+
+label { display: flex; flex-direction: column; gap: 4px; font-size: .82rem; font-weight: 700; color: var(--muted); }
+input, select, textarea { width: 100%; min-height: 44px; padding: .55rem .75rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font-weight: 500; font-size: 1rem; }
+textarea { min-height: 7rem; resize: vertical; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .75rem; }
+.check { flex-direction: row; align-items: center; gap: .6rem; padding: .5rem .2rem; font-size: .95rem; font-weight: 600; color: var(--text); }
+.check input { width: 22px; min-height: 22px; height: 22px; flex: none; accent-color: var(--primary-dark); }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.filters button { min-height: 36px; padding: .3rem .8rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--muted); font-weight: 800; font-size: .8rem; }
+.filters button[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: #fff; }
+.toast { position: fixed; left: 50%; bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); max-width: min(30rem, calc(100% - 2rem)); padding: .7rem 1rem; border-radius: 12px; background: var(--text); color: #fff; font-size: .9rem; box-shadow: var(--shadow); z-index: 10; }
+.toast.err { background: var(--red); }
+.auth { width: min(26rem, 100%); margin: 3rem auto 0; }
+.notice { padding: .7rem 1rem; border-radius: 10px; background: var(--yellow-light); color: #78350f; font-size: .88rem; }
+.back { align-self: flex-start; }
+@media (max-width: 480px) { .act { width: 100%; } .act .btn { flex: 1; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><p class="muted">Loading...</p></div>
+<div id="toast" class="toast" hidden></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  var C = window.TRAINING_APP;
+  var sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
+  var $app = document.getElementById("app");
+  var $toast = document.getElementById("toast");
+  var S = {
+    user: null, profile: null, tab: "calendar", view: null,
+    groups: [], lessons: [], sessions: [], bookings: [], profiles: [], memberships: [],
+    mySessions: [], myBookings: {}, filter: "all", showPast: false, authMode: "in", detail: null, lessonEdit: null, personEdit: null
+  };
+
+  /* ---------- helpers ---------- */
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function parseDate(d) { var p = String(d).split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function todayStr() { var n = new Date(); return n.getFullYear() + "-" + String(n.getMonth() + 1).padStart(2, "0") + "-" + String(n.getDate()).padStart(2, "0"); }
+  function hhmm(t) { var h = +String(t).slice(0, 2), m = String(t).slice(3, 5), ap = h >= 12 ? "pm" : "am"; h = h % 12 || 12; return h + (m === "00" ? "" : ":" + m) + ap; }
+  function timeRange(s) { return hhmm(s.start_time) + " to " + hhmm(s.end_time); }
+  function tile(d) {
+    var dt = parseDate(d);
+    return '<div class="when"><span class="dow">' + dt.toLocaleDateString("en-AU", { weekday: "short" }) + '</span><span class="dom">' + dt.getDate() + '</span><span class="mon">' + dt.toLocaleDateString("en-AU", { month: "short" }) + "</span></div>";
+  }
+  function longDate(d) { return parseDate(d).toLocaleDateString("en-AU", { weekday: "long", day: "numeric", month: "long" }); }
+  function toast(msg, bad) {
+    $toast.textContent = msg; $toast.className = "toast" + (bad ? " err" : ""); $toast.hidden = false;
+    clearTimeout(toast.t); toast.t = setTimeout(function () { $toast.hidden = true; }, bad ? 6000 : 2600);
+  }
+  function fail(err) { toast(err && err.message ? err.message : "Something went wrong. Try again.", true); }
+  function isLeader() { return S.profile && S.profile.role === "leader"; }
+  function groupChip(g) { return '<span class="chip ' + (g && g.type === "course" ? "course" : "hi") + '">' + esc(g ? g.name : "") + "</span>"; }
+  function by(id, list) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
+  function groupOf(id) { return by(id, S.groups); }
+  function nameOf(p) { return (p && p.full_name) || "Unnamed member"; }
+
+  /* ---------- auth ---------- */
+  function renderAuth() {
+    var up = S.authMode === "up";
+    $app.innerHTML =
+      '<div class="auth stack"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>Sign in to see your sessions and book a spot.</p></div></div>" +
+      '<form class="panel pad stack" data-form="auth" autocomplete="on">' +
+      (up ? '<label>Your name<input id="f-name" name="name" autocomplete="name" required></label>' : "") +
+      '<label>Email<input id="f-email" name="email" type="email" autocomplete="email" required></label>' +
+      '<label>Password<input id="f-pass" name="pass" type="password" minlength="8" autocomplete="' + (up ? "new-password" : "current-password") + '" required></label>' +
+      '<button class="btn" type="submit">' + (up ? "Create account" : "Sign in") + "</button>" +
+      '<button class="link" type="button" data-act="authmode">' + (up ? "I already have an account" : "Create an account") + "</button></form></div>";
+  }
+
+  /* ---------- data loading ---------- */
+  function q(p) { return p.then(function (r) { if (r.error) throw r.error; return r.data || []; }); }
+
+  function loadMember() {
+    return Promise.all([
+      q(sb.from("upcoming_sessions").select("*").gte("session_date", todayStr()).order("session_date").order("start_time")),
+      q(sb.from("bookings").select("session_id,status").eq("member_id", S.user.id))
+    ]).then(function (r) {
+      S.mySessions = r[0]; S.myBookings = {};
+      r[1].forEach(function (b) { S.myBookings[b.session_id] = b.status; });
+    });
+  }
+
+  function loadLeader() {
+    return Promise.all([
+      q(sb.from("groups").select("*").order("type", { ascending: false }).order("name")),
+      q(sb.from("lessons").select("*").order("created_at", { ascending: false })),
+      q(sb.from("sessions").select("*").order("session_date").order("start_time")),
+      q(sb.from("bookings").select("session_id,member_id,status")),
+      q(sb.from("profiles").select("*").order("full_name")),
+      q(sb.from("memberships").select("*")),
+      q(sb.from("attendance").select("*"))
+    ]).then(function (r) {
+      S.groups = r[0]; S.lessons = r[1]; S.sessions = r[2]; S.bookings = r[3];
+      S.profiles = r[4]; S.memberships = r[5]; S.attendance = r[6];
+    });
+  }
+
+  function load() {
+    return q(sb.from("profiles").select("*").eq("id", S.user.id)).then(function (rows) {
+      S.profile = rows[0] || { id: S.user.id, full_name: "", role: "member" };
+      return isLeader() ? loadLeader() : loadMember();
+    });
+  }
+
+  function refresh() { return load().then(render).catch(fail); }
+
+  /* ---------- member view ---------- */
+  function header(sub) {
+    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><button class="link" data-act="signout">Sign out</button></header>';
+  }
+
+  function renderMember() {
+    var rows = S.mySessions, html = header(nameOf(S.profile) + " - your upcoming sessions");
+    if (!rows.length) {
+      html += '<div class="panel empty">No upcoming sessions yet. If you expected to see some, ask your team leader to add you to your team.</div>';
+    } else {
+      html += '<ul class="panel list">' + rows.map(function (s, i) {
+        var booked = S.myBookings[s.id] === "booked";
+        return '<li><div class="item' + (i === 0 ? " next" : "") + '">' + tile(s.session_date) +
+          '<div class="what"><span class="t">' + (s.lesson_title ? esc(s.lesson_title) : '<span class="muted">Topic to be confirmed</span>') + "</span>" +
+          '<span class="small muted">' + timeRange(s) + (s.location ? " - " + esc(s.location) : "") + "</span>" +
+          '<span>' + groupChip({ name: s.group_name, type: s.group_type }) + "</span>" +
+          (s.lesson_summary ? '<span class="small muted">' + esc(s.lesson_summary) + "</span>" : "") + "</div>" +
+          '<div class="act">' + (booked ? '<span class="chip good">Booked</span><button class="btn danger small" data-act="cancel" data-id="' + s.id + '">Cancel</button>'
+            : '<button class="btn small" data-act="book" data-id="' + s.id + '">Book a spot</button>') + "</div></div></li>";
+      }).join("") + "</ul>";
+    }
+    $app.innerHTML = html;
+  }
+
+  function book(id) {
+    return sb.from("bookings").upsert({ session_id: id, member_id: S.user.id, status: "booked" }, { onConflict: "session_id,member_id" })
+      .then(function (r) { if (r.error) throw r.error; toast("Booked. See you there."); return refresh(); }).catch(fail);
+  }
+  function cancelBooking(id) {
+    return sb.from("bookings").update({ status: "cancelled" }).eq("session_id", id).eq("member_id", S.user.id)
+      .then(function (r) { if (r.error) throw r.error; toast("Booking cancelled."); return refresh(); }).catch(fail);
+  }
+
+  /* ---------- leader: shared pieces ---------- */
+  function bookedCount(sid) { return S.bookings.filter(function (b) { return b.session_id === sid && b.status === "booked"; }).length; }
+  function lessonOf(s) { return s.lesson_id ? by(s.lesson_id, S.lessons) : null; }
+
+  function renderLeader() {
+    var html = header("Team leader - " + nameOf(S.profile));
+    if (S.detail) { $app.innerHTML = html + renderSessionDetail(); return; }
+    html += '<div class="tabs" role="tablist">' + [["calendar", "Calendar"], ["lessons", "Lessons"], ["people", "People"]].map(function (t) {
+      return '<button role="tab" aria-selected="' + (S.tab === t[0]) + '" data-act="tab" data-tab="' + t[0] + '">' + t[1] + "</button>";
+    }).join("") + "</div>";
+    html += S.tab === "calendar" ? renderCalendar() : S.tab === "lessons" ? renderLessons() : renderPeople();
+    $app.innerHTML = html;
+  }
+
+  /* ---------- leader: calendar ---------- */
+  function renderCalendar() {
+    var t = todayStr();
+    var list = S.sessions.filter(function (s) {
+      return (S.filter === "all" || s.group_id === S.filter) && (S.showPast || s.session_date >= t);
+    });
+    var html = '<div class="filters" role="group" aria-label="Filter by team or course"><button aria-pressed="' + (S.filter === "all") + '" data-act="filter" data-g="all">All</button>' +
+      S.groups.map(function (g) { return '<button aria-pressed="' + (S.filter === g.id) + '" data-act="filter" data-g="' + g.id + '">' + esc(g.name) + "</button>"; }).join("") +
+      '<button aria-pressed="' + S.showPast + '" data-act="past">Show past</button></div>';
+    if (!list.length) return html + '<div class="panel empty">No sessions to show.</div>';
+    return html + '<ul class="panel list">' + list.map(function (s) {
+      var l = lessonOf(s), n = bookedCount(s.id);
+      return '<li><button class="item" data-act="open" data-id="' + s.id + '">' + tile(s.session_date) +
+        '<div class="what"><span class="t">' + (l ? esc(l.title) : '<span class="muted">No lesson yet</span>') + "</span>" +
+        '<span class="small muted">' + timeRange(s) + (s.location ? " - " + esc(s.location) : "") + "</span><span>" + groupChip(groupOf(s.group_id)) + "</span></div>" +
+        '<div class="act">' + (l ? '<span class="chip good">Lesson set</span>' : '<span class="chip warn">Needs lesson</span>') + '<span class="chip">' + n + " booked</span></div></button></li>";
+    }).join("") + "</ul>";
+  }
+
+  function renderSessionDetail() {
+    var s = by(S.detail, S.sessions); if (!s) { S.detail = null; return ""; }
+    var g = groupOf(s.group_id);
+    var members = S.memberships.filter(function (m) { return m.group_id === s.group_id; }).map(function (m) { return by(m.member_id, S.profiles); }).filter(Boolean);
+    var bookedIds = {}; S.bookings.forEach(function (b) { if (b.session_id === s.id && b.status === "booked") bookedIds[b.member_id] = true; });
+    var att = {}; S.attendance.forEach(function (a) { if (a.session_id === s.id) att[a.member_id] = a.attended; });
+    var nb = Object.keys(bookedIds).length;
+    return '<button class="link back" data-act="back">Back to calendar</button>' +
+      '<section class="panel pad stack"><div class="row">' + groupChip(g) + '<span class="chip">' + nb + " booked</span></div><h2>" + esc(longDate(s.session_date)) + '</h2><p class="muted">' + timeRange(s) + "</p>" +
+      '<form class="stack" data-form="session" data-id="' + s.id + '"><div class="grid2">' +
+      '<label>Lesson<select id="s-lesson" name="lesson"><option value="">No lesson yet</option>' + S.lessons.map(function (l) { return '<option value="' + l.id + '"' + (l.id === s.lesson_id ? " selected" : "") + ">" + esc(l.title) + "</option>"; }).join("") + "</select></label>" +
+      '<label>Location<input id="s-loc" name="location" value="' + esc(s.location || "") + '"></label></div>' +
+      '<label>Notes for you<input id="s-notes" name="notes" value="' + esc(s.notes || "") + '"></label>' +
+      '<button class="btn" type="submit">Save session</button></form></section>' +
+      '<section class="panel pad stack"><h3>Attendance</h3>' +
+      (members.length ? '<p class="small muted">Tick each person who came. Those who booked are marked.</p><ul>' + members.map(function (p) {
+        return '<li><label class="check"><input type="checkbox" data-act="attend" data-sid="' + s.id + '" data-mid="' + p.id + '"' + (att[p.id] ? " checked" : "") + "> <span>" + esc(nameOf(p)) + "</span>" + (bookedIds[p.id] ? ' <span class="chip good">Booked</span>' : "") + "</label></li>";
+      }).join("") + "</ul>" : '<p class="muted">No one is in this group yet. Add people in the People tab.</p>') + "</section>";
+  }
+
+  function saveSession(form) {
+    var id = form.dataset.id, f = new FormData(form);
+    return sb.from("sessions").update({ lesson_id: f.get("lesson") || null, location: f.get("location") || null, notes: f.get("notes") || null }).eq("id", id)
+      .then(function (r) { if (r.error) throw r.error; toast("Session saved."); return load().then(render); }).catch(fail);
+  }
+  function setAttendance(sid, mid, on) {
+    return sb.from("attendance").upsert({ session_id: sid, member_id: mid, attended: on }, { onConflict: "session_id,member_id" })
+      .then(function (r) { if (r.error) throw r.error; var hit = false; S.attendance.forEach(function (a) { if (a.session_id === sid && a.member_id === mid) { a.attended = on; hit = true; } }); if (!hit) S.attendance.push({ session_id: sid, member_id: mid, attended: on }); }).catch(function (e) { fail(e); refresh(); });
+  }
+
+  /* ---------- leader: lessons ---------- */
+  function renderLessons() {
+    if (S.lessonEdit) return renderLessonForm();
+    var html = '<div class="row"><button class="btn" data-act="newlesson">New lesson</button></div>';
+    if (!S.lessons.length) return html + '<div class="panel empty">No lessons yet. Add your first one, then assign it to sessions.</div>';
+    return html + '<ul class="panel list">' + S.lessons.map(function (l) {
+      var n = S.sessions.filter(function (s) { return s.lesson_id === l.id; }).length;
+      return '<li><button class="item" data-act="editlesson" data-id="' + l.id + '"><div class="what"><span class="t">' + esc(l.title) + "</span>" +
+        (l.summary ? '<span class="small muted">' + esc(l.summary) + "</span>" : "") + '</div><div class="act"><span class="chip ' + (n ? "good" : "warn") + '">' + n + " session" + (n === 1 ? "" : "s") + "</span></div></button></li>";
+    }).join("") + "</ul>";
+  }
+
+  function renderLessonForm() {
+    var l = S.lessonEdit === "new" ? { id: "", title: "", summary: "", content: "", resources: "" } : by(S.lessonEdit, S.lessons);
+    if (!l) { S.lessonEdit = null; return renderLessons(); }
+    var t = todayStr();
+    var upcoming = S.sessions.filter(function (s) { return s.session_date >= t; });
+    return '<button class="link back" data-act="lessonback">Back to lessons</button>' +
+      '<form class="panel pad stack" data-form="lesson" data-id="' + l.id + '">' +
+      '<label>Title<input id="l-title" name="title" value="' + esc(l.title) + '" required></label>' +
+      '<label>Short summary (members see this)<input id="l-summary" name="summary" value="' + esc(l.summary || "") + '"></label>' +
+      '<label>Lesson content (only you see this)<textarea id="l-content" name="content">' + esc(l.content || "") + "</textarea></label>" +
+      '<label>Resources and links<textarea id="l-res" name="resources">' + esc(l.resources || "") + "</textarea></label>" +
+      '<h3>Use this lesson in</h3>' +
+      (upcoming.length ? '<ul>' + upcoming.map(function (s) {
+        return '<li><label class="check"><input type="checkbox" name="sess" value="' + s.id + '"' + (l.id && s.lesson_id === l.id ? " checked" : "") + "> <span>" + esc(parseDate(s.session_date).toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" })) + " - " + esc((groupOf(s.group_id) || {}).name) + "</span>" +
+          (s.lesson_id && s.lesson_id !== l.id ? ' <span class="chip warn">Has another lesson</span>' : "") + "</label></li>";
+      }).join("") + "</ul>" : '<p class="muted">No upcoming sessions.</p>') +
+      '<div class="row"><button class="btn" type="submit">Save lesson</button>' + (l.id ? '<button class="btn danger" type="button" data-act="deletelesson" data-id="' + l.id + '">Delete</button>' : "") + "</div></form>";
+  }
+
+  function saveLesson(form) {
+    var f = new FormData(form), id = form.dataset.id;
+    var row = { title: f.get("title").trim(), summary: f.get("summary").trim() || null, content: f.get("content") || null, resources: f.get("resources") || null };
+    var checked = f.getAll("sess");
+    var p = id ? sb.from("lessons").update(row).eq("id", id).select().single() : sb.from("lessons").insert(row).select().single();
+    return p.then(function (r) {
+      if (r.error) throw r.error;
+      var lid = r.data.id, t = todayStr();
+      var off = S.sessions.filter(function (s) { return s.lesson_id === lid && s.session_date >= t && checked.indexOf(s.id) < 0; }).map(function (s) { return s.id; });
+      var ops = [];
+      if (checked.length) ops.push(sb.from("sessions").update({ lesson_id: lid }).in("id", checked));
+      if (off.length) ops.push(sb.from("sessions").update({ lesson_id: null }).in("id", off));
+      return Promise.all(ops).then(function (rs) { rs.forEach(function (x) { if (x.error) throw x.error; }); });
+    }).then(function () { toast("Lesson saved."); S.lessonEdit = null; return load().then(render); }).catch(fail);
+  }
+
+  /* ---------- leader: people and groups ---------- */
+  function renderPeople() {
+    if (S.personEdit) return renderPersonForm();
+    var html = '<ul class="panel list">' + (S.profiles.length ? S.profiles.map(function (p) {
+      var gs = S.memberships.filter(function (m) { return m.member_id === p.id; }).map(function (m) { return groupChip(groupOf(m.group_id)); }).join(" ");
+      return '<li><button class="item" data-act="editperson" data-id="' + p.id + '"><div class="what"><span class="t">' + esc(nameOf(p)) + '</span><span class="row">' + (gs || '<span class="small muted">Not in any group</span>') + "</span></div>" +
+        '<div class="act">' + (p.role === "leader" ? '<span class="chip warn">Leader</span>' : "") + "</div></button></li>";
+    }).join("") : '<li class="empty">No one has signed up yet. Share the app link and ask your teams to create an account.</li>') + "</ul>";
+    html += '<form class="panel pad stack" data-form="course"><h3>Add a course</h3><p class="small muted">A course is a separate set of sessions, for example for recruits from different teams. Choose the first date and the last date; sessions are created at the interval you set.</p>' +
+      '<label>Course name<input id="c-name" name="name" placeholder="Ambulance Responders 2026" required></label>' +
+      '<div class="grid2"><label>First session<input id="c-first" name="first" type="date" required></label><label>Last date<input id="c-last" name="last" type="date" required></label><label>Days between sessions<input id="c-every" name="every" type="number" min="1" value="14" required></label></div>' +
+      '<button class="btn" type="submit">Create course</button></form>';
+    return html;
+  }
+
+  function renderPersonForm() {
+    var p = by(S.personEdit, S.profiles); if (!p) { S.personEdit = null; return renderPeople(); }
+    var inG = {}; S.memberships.forEach(function (m) { if (m.member_id === p.id) inG[m.group_id] = true; });
+    return '<button class="link back" data-act="personback">Back to people</button>' +
+      '<section class="panel pad stack"><h2>' + esc(nameOf(p)) + "</h2><h3>Teams and courses</h3><ul>" +
+      S.groups.map(function (g) { return '<li><label class="check"><input type="checkbox" data-act="member" data-mid="' + p.id + '" data-gid="' + g.id + '"' + (inG[g.id] ? " checked" : "") + "> <span>" + esc(g.name) + "</span> " + (g.type === "course" ? '<span class="chip course">Course</span>' : "") + "</label></li>"; }).join("") + "</ul>" +
+      '<label>Role<select id="p-role" data-act="role" data-mid="' + p.id + '"><option value="member"' + (p.role === "member" ? " selected" : "") + '>Member</option><option value="leader"' + (p.role === "leader" ? " selected" : "") + ">Leader</option></select></label></section>";
+  }
+
+  function setMembership(mid, gid, on) {
+    var p = on ? sb.from("memberships").insert({ member_id: mid, group_id: gid }) : sb.from("memberships").delete().eq("member_id", mid).eq("group_id", gid);
+    return p.then(function (r) {
+      if (r.error) throw r.error;
+      S.memberships = S.memberships.filter(function (m) { return !(m.member_id === mid && m.group_id === gid); });
+      if (on) S.memberships.push({ member_id: mid, group_id: gid });
+    }).catch(function (e) { fail(e); refresh(); });
+  }
+  function setRole(mid, role) {
+    return sb.from("profiles").update({ role: role }).eq("id", mid).then(function (r) { if (r.error) throw r.error; toast("Role updated."); return refresh(); }).catch(fail);
+  }
+  function createCourse(form) {
+    var f = new FormData(form), name = f.get("name").trim();
+    return sb.from("groups").insert({ name: name, type: "course", year: parseDate(f.get("first")).getFullYear() }).select().single().then(function (r) {
+      if (r.error) throw r.error;
+      return sb.rpc("generate_sessions", { p_group: r.data.id, p_first: f.get("first"), p_last: f.get("last"), p_every: +f.get("every") });
+    }).then(function (r) { if (r.error) throw r.error; toast("Course created with " + r.data + " sessions."); return refresh(); }).catch(fail);
+  }
+
+  /* ---------- render and events ---------- */
+  function render() {
+    if (!S.user) return renderAuth();
+    if (isLeader()) return renderLeader();
+    return renderMember();
+  }
+
+  var actions = {
+    authmode: function () { S.authMode = S.authMode === "in" ? "up" : "in"; renderAuth(); },
+    signout: function () { sb.auth.signOut(); },
+    book: function (d) { return book(d.id); },
+    cancel: function (d) { return cancelBooking(d.id); },
+    tab: function (d) { S.tab = d.tab; S.lessonEdit = null; S.personEdit = null; render(); },
+    filter: function (d) { S.filter = d.g; render(); },
+    past: function () { S.showPast = !S.showPast; render(); },
+    open: function (d) { S.detail = d.id; render(); window.scrollTo(0, 0); },
+    back: function () { S.detail = null; render(); },
+    newlesson: function () { S.lessonEdit = "new"; render(); },
+    editlesson: function (d) { S.lessonEdit = d.id; render(); window.scrollTo(0, 0); },
+    lessonback: function () { S.lessonEdit = null; render(); },
+    deletelesson: function (d) {
+      if (!window.confirm("Delete this lesson? Sessions using it will be left without a lesson.")) return;
+      return sb.from("lessons").delete().eq("id", d.id).then(function (r) { if (r.error) throw r.error; S.lessonEdit = null; toast("Lesson deleted."); return refresh(); }).catch(fail);
+    },
+    editperson: function (d) { S.personEdit = d.id; render(); window.scrollTo(0, 0); },
+    personback: function () { S.personEdit = null; render(); }
+  };
+
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest("[data-act]"); if (!t || t.tagName === "INPUT" || t.tagName === "SELECT") return;
+    var fn = actions[t.dataset.act]; if (fn) fn(t.dataset, t);
+  });
+  document.addEventListener("change", function (e) {
+    var t = e.target; if (!t.dataset || !t.dataset.act) return;
+    if (t.dataset.act === "attend") setAttendance(t.dataset.sid, t.dataset.mid, t.checked);
+    else if (t.dataset.act === "member") setMembership(t.dataset.mid, t.dataset.gid, t.checked);
+    else if (t.dataset.act === "role") setRole(t.dataset.mid, t.value);
+  });
+  document.addEventListener("submit", function (e) {
+    var form = e.target; if (!form.dataset.form) return;
+    e.preventDefault();
+    var btn = form.querySelector('[type="submit"]'); if (btn) btn.disabled = true;
+    var kind = form.dataset.form, f = new FormData(form), job;
+    if (kind === "auth") {
+      var email = f.get("email").trim(), pass = f.get("pass");
+      job = S.authMode === "up"
+        ? sb.auth.signUp({ email: email, password: pass, options: { data: { full_name: f.get("name").trim() } } }).then(function (r) {
+            if (r.error) throw r.error;
+            if (!r.data.session) { toast("Account created. Check your email to confirm it, then sign in."); S.authMode = "in"; renderAuth(); }
+          })
+        : sb.auth.signInWithPassword({ email: email, password: pass }).then(function (r) { if (r.error) throw r.error; });
+      job = job.catch(fail);
+    } else if (kind === "session") job = saveSession(form);
+    else if (kind === "lesson") job = saveLesson(form);
+    else if (kind === "course") job = createCourse(form);
+    if (job) job.then(function () { if (btn && document.contains(btn)) btn.disabled = false; });
+  });
+
+  /* ---------- start ---------- */
+  function onSession(session) {
+    S.user = session ? session.user : null;
+    if (!S.user) { S.profile = null; S.detail = null; S.tab = "calendar"; return renderAuth(); }
+    load().then(render).catch(function (e) { fail(e); renderAuth(); });
+  }
+  sb.auth.onAuthStateChange(function (event, session) {
+    if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "SIGNED_OUT") setTimeout(function () { onSession(session); }, 0);
+  });
+})();
+</script>
+</body>
+</html>
