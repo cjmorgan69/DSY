@@ -62,13 +62,15 @@
   }
 
   /* ---------- auth ---------- */
+  function loginEmail(v) { v = String(v || "").trim(); if (v.indexOf("@") > -1) return v.toLowerCase(); return v.toLowerCase().replace(/[^a-z0-9]/g, "") + "@id.dsytraining.com"; }
   function renderAuth() {
     var up = S.authMode === "up";
     $app.innerHTML =
       '<div class="auth stack"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>Sign in to see your sessions and book a spot.</p></div></div>" +
       '<form class="panel pad stack" data-form="auth" autocomplete="on">' +
       (up ? '<label>Your name<input id="f-name" name="name" autocomplete="name" required></label>' : "") +
-      '<label>Email<input id="f-email" name="email" type="email" autocomplete="email" required></label>' +
+      '<label>' + (up ? "Ambulance ID number" : "Ambulance ID number (or email)") + '<input id="f-email" name="email" autocomplete="username" autocapitalize="none" spellcheck="false" inputmode="' + (up ? "numeric" : "text") + '" required></label>' +
+      (up ? '<p class="small muted">Your ID number is only used to sign you in and so your team leader knows who you are. We do not ask for an email address.</p>' : "") +
       '<label>Password<input id="f-pass" name="pass" type="password" minlength="8" autocomplete="' + (up ? "new-password" : "current-password") + '" required></label>' +
       '<button class="btn" type="submit">' + (up ? "Create account" : "Sign in") + "</button>" +
       '<button class="link" type="button" data-act="authmode">' + (up ? "I already have an account" : "Create an account") + "</button></form></div>";
@@ -402,7 +404,7 @@
     if (S.pageEdit) return renderPageForm();
     var html = '<ul class="panel list">' + (S.profiles.length ? S.profiles.map(function (p) {
       var gs = S.memberships.filter(function (m) { return m.member_id === p.id; }).map(function (m) { return groupChip(groupOf(m.group_id)); }).join(" ");
-      return '<li><button class="item" data-act="editperson" data-id="' + p.id + '"><div class="what"><span class="t">' + esc(nameOf(p)) + '</span><span class="row">' + (gs || '<span class="small muted">Not in any group</span>') + "</span></div>" +
+      return '<li><button class="item" data-act="editperson" data-id="' + p.id + '"><div class="what"><span class="t">' + esc(nameOf(p)) + '</span>' + (p.staff_id ? '<span class="small muted">ID ' + esc(p.staff_id) + "</span>" : "") + '<span class="row">' + (gs || '<span class="small muted">Not in any group</span>') + "</span></div>" +
         '<div class="act">' + (p.role === "leader" ? '<span class="chip warn">Leader</span>' : "") + "</div></button></li>";
     }).join("") : '<li class="empty">No one has signed up yet. Share the app link and ask your teams to create an account.</li>') + "</ul>";
     html += '<section class="panel pad stack"><h3>Team pages</h3><p class="small muted">What members see when they open the team page. A team or course with an empty page sends members straight to the training schedule.</p><ul class="list">' +
@@ -436,6 +438,7 @@
     return '<button class="link back" data-act="personback">Back to people</button>' +
       '<section class="panel pad stack"><h2>' + esc(nameOf(p)) + "</h2><h3>Teams and courses</h3><ul>" +
       S.groups.map(function (g) { return '<li><label class="check"><input type="checkbox" data-act="member" data-mid="' + p.id + '" data-gid="' + g.id + '"' + (inG[g.id] ? " checked" : "") + "> <span>" + esc(g.name) + "</span> " + (g.type === "course" ? '<span class="chip course">Course</span>' : "") + "</label></li>"; }).join("") + "</ul>" +
+      (p.id !== S.profile.id ? '<form class="stack" data-form="resetpw" data-id="' + p.id + '"><h3>Reset password</h3><p class="small muted">Set a temporary password and tell them. They can sign in with it straight away.</p><label>New password (8 or more characters)<input name="pw" type="text" minlength="8" autocomplete="off" required></label><button class="btn small" type="submit">Set password</button></form>' : "") +
       '<label>Role<select id="p-role" data-act="role" data-mid="' + p.id + '"><option value="member"' + (p.role === "member" ? " selected" : "") + '>Member</option><option value="leader"' + (p.role === "leader" ? " selected" : "") + ">Leader</option></select></label></section>";
   }
 
@@ -607,14 +610,17 @@
     var btn = form.querySelector('[type="submit"]'); if (btn) btn.disabled = true;
     var kind = form.dataset.form, f = new FormData(form), job;
     if (kind === "auth") {
-      var email = f.get("email").trim(), pass = f.get("pass");
+      var raw = f.get("email").trim(), email = loginEmail(raw), pass = f.get("pass");
+      if (S.authMode === "up" && raw.indexOf("@") > -1) { if (btn) btn.disabled = false; return fail({ message: "Enter your ambulance ID number, not an email address." }); }
       job = S.authMode === "up"
-        ? sb.auth.signUp({ email: email, password: pass, options: { data: { full_name: f.get("name").trim() } } }).then(function (r) {
+        ? sb.auth.signUp({ email: email, password: pass, options: { data: { full_name: f.get("name").trim(), staff_id: raw } } }).then(function (r) {
             if (r.error) throw r.error;
-            if (!r.data.session) { toast("Account created. Check your email to confirm it, then sign in."); S.authMode = "in"; renderAuth(); }
+            if (!r.data.session) return sb.auth.signInWithPassword({ email: email, password: pass }).then(function (x) { if (x.error) throw x.error; });
           })
         : sb.auth.signInWithPassword({ email: email, password: pass }).then(function (r) { if (r.error) throw r.error; });
       job = job.catch(fail);
+    } else if (kind === "resetpw") {
+      job = sb.rpc("leader_set_password", { member: form.dataset.id, new_password: f.get("pw") }).then(function (r) { if (r.error) throw r.error; form.reset(); toast("Password set. Let them know."); }).catch(fail);
     } else if (kind === "session") job = saveSession(form);
     else if (kind === "lesson") job = saveLesson(form);
     else if (kind === "course") job = createCourse(form);

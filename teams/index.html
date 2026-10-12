@@ -37,12 +37,13 @@
   function isLeader() { return S.profile && S.profile.role === "leader"; }
   function q(p) { return p.then(function (r) { if (r.error) throw r.error; return r.data || []; }); }
 
+  function loginEmail(v) { v = String(v || "").trim(); if (v.indexOf("@") > -1) return v.toLowerCase(); return v.toLowerCase().replace(/[^a-z0-9]/g, "") + "@id.dsytraining.com"; }
   function renderAuth() {
     var up = S.authMode === "up";
     $app.innerHTML = '<div class="auth stack"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>Team Page</h1><p>Sign in with your training account.</p></div></div>' +
       '<form class="panel pad stack" id="authform">' +
       (up ? '<label>Your name<input id="f-name" name="name" autocomplete="name" required></label>' : "") +
-      '<label>Email<input id="f-email" name="email" type="email" autocomplete="email" required></label>' +
+      '<label>' + (up ? "Ambulance ID number" : "Ambulance ID number (or email)") + '<input id="f-email" name="email" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>' +
       '<label>Password<input id="f-pass" name="pass" type="password" minlength="8" autocomplete="' + (up ? "new-password" : "current-password") + '" required></label>' +
       '<button class="btn" type="submit">' + (up ? "Create account" : "Sign in") + '</button>' +
       '<button class="linkbtn" type="button" id="swap">' + (up ? "I already have an account" : "Create an account") + '</button></form></div>';
@@ -119,11 +120,12 @@
     if (e.target.id !== "authform") return;
     e.preventDefault();
     var f = new FormData(e.target), btn = e.target.querySelector('[type="submit"]'); btn.disabled = true;
-    var email = f.get("email").trim(), pass = f.get("pass");
+    var raw = f.get("email").trim(), email = loginEmail(raw), pass = f.get("pass");
+    if (S.authMode === "up" && raw.indexOf("@") > -1) { btn.disabled = false; return fail({ message: "Enter your ambulance ID number, not an email address." }); }
     var job = S.authMode === "up"
-      ? sb.auth.signUp({ email: email, password: pass, options: { data: { full_name: f.get("name").trim() } } }).then(function (r) {
+      ? sb.auth.signUp({ email: email, password: pass, options: { data: { full_name: f.get("name").trim(), staff_id: raw } } }).then(function (r) {
           if (r.error) throw r.error;
-          if (!r.data.session) { fail({ message: "Account created. Check your email to confirm it, then sign in." }); S.authMode = "in"; renderAuth(); }
+          if (!r.data.session) return sb.auth.signInWithPassword({ email: email, password: pass }).then(function (x) { if (x.error) throw x.error; });
         })
       : sb.auth.signInWithPassword({ email: email, password: pass }).then(function (r) { if (r.error) throw r.error; });
     job.catch(fail).then(function () { if (document.contains(btn)) btn.disabled = false; });
