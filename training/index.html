@@ -64,6 +64,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .btn.small { min-height: 36px; padding: .4rem .8rem; font-size: .85rem; }
 .link { background: none; border: 0; padding: .5rem .9rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: .82rem; font-weight: 800; }
 .link:hover { color: var(--primary-dark); }
+a.link { text-decoration: none; display: inline-flex; align-items: center; }
 
 .chip { display: inline-flex; align-items: center; padding: .22rem .55rem; border-radius: 999px; font-size: .7rem; font-weight: 800; white-space: nowrap; background: #f1f5f9; color: var(--muted); }
 .chip.good { background: var(--green-light); color: var(--green); }
@@ -205,7 +206,7 @@ textarea { min-height: 7rem; resize: vertical; }
 
   /* ---------- member view ---------- */
   function header(sub) {
-    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><button class="link" data-act="signout">Sign out</button></header>';
+    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row"><a class="link" href="../teams/">Team page</a><button class="link" data-act="signout">Sign out</button></div></header>';
   }
 
   function renderMember() {
@@ -402,11 +403,17 @@ textarea { min-height: 7rem; resize: vertical; }
   /* ---------- leader: people and groups ---------- */
   function renderPeople() {
     if (S.personEdit) return renderPersonForm();
+    if (S.pageEdit) return renderPageForm();
     var html = '<ul class="panel list">' + (S.profiles.length ? S.profiles.map(function (p) {
       var gs = S.memberships.filter(function (m) { return m.member_id === p.id; }).map(function (m) { return groupChip(groupOf(m.group_id)); }).join(" ");
       return '<li><button class="item" data-act="editperson" data-id="' + p.id + '"><div class="what"><span class="t">' + esc(nameOf(p)) + '</span><span class="row">' + (gs || '<span class="small muted">Not in any group</span>') + "</span></div>" +
         '<div class="act">' + (p.role === "leader" ? '<span class="chip warn">Leader</span>' : "") + "</div></button></li>";
     }).join("") : '<li class="empty">No one has signed up yet. Share the app link and ask your teams to create an account.</li>') + "</ul>";
+    html += '<section class="panel pad stack"><h3>Team pages</h3><p class="small muted">What members see when they open the team page. A team or course with an empty page sends members straight to the training schedule.</p><ul class="list">' +
+      S.groups.map(function (g) {
+        var filled = !!(g.blurb || g.photo_path || g.roster_url || (Array.isArray(g.links) && g.links.length));
+        return '<li><button class="item" type="button" data-act="editpage" data-id="' + g.id + '"><div class="what"><span class="t">' + esc(g.name) + '</span></div><div class="act"><span class="chip ' + (filled ? "good" : "warn") + '">' + (filled ? "Page set up" : "Empty") + "</span></div></button></li>";
+      }).join("") + "</ul></section>";
     var courses = S.groups.filter(function (g) { return g.type === "course"; });
     if (courses.length) {
       html += '<section class="panel pad stack"><h3>Your courses</h3><ul class="stack">' + courses.map(function (g) {
@@ -434,6 +441,57 @@ textarea { min-height: 7rem; resize: vertical; }
       '<section class="panel pad stack"><h2>' + esc(nameOf(p)) + "</h2><h3>Teams and courses</h3><ul>" +
       S.groups.map(function (g) { return '<li><label class="check"><input type="checkbox" data-act="member" data-mid="' + p.id + '" data-gid="' + g.id + '"' + (inG[g.id] ? " checked" : "") + "> <span>" + esc(g.name) + "</span> " + (g.type === "course" ? '<span class="chip course">Course</span>' : "") + "</label></li>"; }).join("") + "</ul>" +
       '<label>Role<select id="p-role" data-act="role" data-mid="' + p.id + '"><option value="member"' + (p.role === "member" ? " selected" : "") + '>Member</option><option value="leader"' + (p.role === "leader" ? " selected" : "") + ">Leader</option></select></label></section>";
+  }
+
+  function linksToText(a) { return (Array.isArray(a) ? a : []).map(function (l) { return (l.label || "") + " | " + (l.url || ""); }).join("\n"); }
+  function parseLinks(t) {
+    return String(t || "").split("\n").map(function (line) {
+      var i = line.indexOf("|"); if (i < 0) return null;
+      var label = line.slice(0, i).trim(), url = line.slice(i + 1).trim();
+      return label && url ? { label: label, url: url } : null;
+    }).filter(Boolean);
+  }
+  function renderPageForm() {
+    var g = by(S.pageEdit, S.groups); if (!g) { S.pageEdit = null; return renderPeople(); }
+    return '<button class="link back" type="button" data-act="pageback">Back to people</button>' +
+      '<form class="panel pad stack" data-form="page" data-id="' + g.id + '"><h2>' + esc(g.name) + ' page</h2>' +
+      '<label>About this team (members see this)<textarea id="pg-blurb" name="blurb" placeholder="Station address, meeting place, contacts and anything else the team should know. Leave a blank line between paragraphs.">' + esc(g.blurb || "") + "</textarea></label>" +
+      '<label>Roster link<input id="pg-roster" name="roster" value="' + esc(g.roster_url || "") + '" placeholder="/modules/rosters/lowereyre/tumbybay/"></label>' +
+      '<label>Policies, procedures and links (one per line: name | address)<textarea id="pg-links" name="links" placeholder="SAMS intranet | https://...&#10;Policies and procedures | https://...">' + esc(linksToText(g.links)) + "</textarea></label>" +
+      '<div class="row"><button class="btn" type="submit">Save page</button></div></form>' +
+      '<section class="panel pad stack"><h3>Photo</h3><p class="small muted">' + (g.photo_path ? "A photo is set. Drop a new one to replace it." : "No photo yet.") + '</p>' +
+      '<label class="drop" data-gid="' + g.id + '"><strong>Drag a photo here</strong><span class="small">or click to choose. JPG, PNG or WebP, up to 10 MB.</span><input id="pg-photo" type="file" accept="image/jpeg,image/png,image/webp" data-act="uploadphoto" data-gid="' + g.id + '"></label>' +
+      (g.photo_path ? '<div class="row"><button class="btn danger small" type="button" data-act="removephoto" data-id="' + g.id + '">Remove photo</button></div>' : "") + "</section>";
+  }
+  function savePage(form) {
+    var f = new FormData(form), id = form.dataset.id;
+    var row = { blurb: f.get("blurb").trim() || null, roster_url: f.get("roster").trim() || null, links: parseLinks(f.get("links")) };
+    return sb.from("groups").update(row).eq("id", id).then(function (r) {
+      if (r.error) throw r.error; toast("Page saved."); return load().then(render);
+    }).catch(fail);
+  }
+  function uploadPhoto(gid, fileList) {
+    var file = fileList && fileList[0]; if (!file || S.uploading) return;
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return fail({ message: "Choose a JPG, PNG or WebP photo." });
+    if (file.size > 10485760) return fail({ message: "That photo is over 10 MB." });
+    var g = by(gid, S.groups), old = g && g.photo_path;
+    var path = gid + "/" + Date.now() + "-" + file.name.replace(/[^A-Za-z0-9._-]+/g, "_");
+    S.uploading = true; toast("Uploading photo...");
+    return sb.storage.from("team-photos").upload(path, file, { contentType: file.type }).then(function (r) {
+      if (r.error) throw r.error;
+      return sb.from("groups").update({ photo_path: path }).eq("id", gid);
+    }).then(function (r) {
+      if (r.error) throw r.error;
+      if (old) sb.storage.from("team-photos").remove([old]);
+      toast("Photo saved."); return load().then(render);
+    }).catch(fail).then(function () { S.uploading = false; });
+  }
+  function removePhoto(gid) {
+    var g = by(gid, S.groups); if (!g || !g.photo_path) return;
+    return sb.from("groups").update({ photo_path: null }).eq("id", gid).then(function (r) {
+      if (r.error) throw r.error;
+      return sb.storage.from("team-photos").remove([g.photo_path]);
+    }).then(function () { toast("Photo removed."); return load().then(render); }).catch(fail);
   }
 
   function setMembership(mid, gid, on) {
@@ -467,7 +525,7 @@ textarea { min-height: 7rem; resize: vertical; }
     signout: function () { sb.auth.signOut(); },
     book: function (d) { return book(d.id); },
     cancel: function (d) { return cancelBooking(d.id); },
-    tab: function (d) { S.tab = d.tab; S.lessonEdit = null; S.personEdit = null; render(); },
+    tab: function (d) { S.tab = d.tab; S.lessonEdit = null; S.personEdit = null; S.pageEdit = null; render(); },
     filter: function (d) { S.filter = d.g; render(); },
     past: function () { S.showPast = !S.showPast; render(); },
     open: function (d) { S.detail = d.id; render(); window.scrollTo(0, 0); },
@@ -482,6 +540,9 @@ textarea { min-height: 7rem; resize: vertical; }
       return clear.then(function (r) { if (r.error) throw r.error; return sb.from("lessons").delete().eq("id", d.id); })
         .then(function (r) { if (r.error) throw r.error; S.lessonEdit = null; toast("Lesson deleted."); return refresh(); }).catch(fail);
     },
+    editpage: function (d) { S.pageEdit = d.id; render(); window.scrollTo(0, 0); },
+    pageback: function () { S.pageEdit = null; render(); },
+    removephoto: function (d) { return removePhoto(d.id); },
     askdelcourse: function (d) { S.delCourse = d.id; render(); },
     keepcourse: function () { S.delCourse = null; render(); },
     deletecourse: function (d) {
@@ -507,6 +568,7 @@ textarea { min-height: 7rem; resize: vertical; }
     else if (t.dataset.act === "member") setMembership(t.dataset.mid, t.dataset.gid, t.checked);
     else if (t.dataset.act === "role") setRole(t.dataset.mid, t.value);
     else if (t.dataset.act === "upload") uploadFiles(t.dataset.lid, t.files, t);
+    else if (t.dataset.act === "uploadphoto") uploadPhoto(t.dataset.gid, t.files);
   });
   /* drag and drop: highlight the drop zone, and stop the browser opening a file dropped elsewhere */
   function hasFiles(e) { return e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], "Files") >= 0; }
@@ -525,7 +587,8 @@ textarea { min-height: 7rem; resize: vertical; }
     e.preventDefault();
     Array.prototype.forEach.call(document.querySelectorAll(".drop"), function (d) { d.classList.remove("over"); });
     var z = e.target.closest && e.target.closest(".drop");
-    if (z) uploadFiles(z.dataset.lid, e.dataTransfer.files);
+    if (z && z.dataset.gid) uploadPhoto(z.dataset.gid, e.dataTransfer.files);
+    else if (z) uploadFiles(z.dataset.lid, e.dataTransfer.files);
   });
   document.addEventListener("submit", function (e) {
     var form = e.target; if (!form.dataset.form) return;
@@ -544,6 +607,7 @@ textarea { min-height: 7rem; resize: vertical; }
     } else if (kind === "session") job = saveSession(form);
     else if (kind === "lesson") job = saveLesson(form);
     else if (kind === "course") job = createCourse(form);
+    else if (kind === "page") job = savePage(form);
     if (job) job.then(function () { if (btn && document.contains(btn)) btn.disabled = false; });
   });
 
