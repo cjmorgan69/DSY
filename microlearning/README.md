@@ -5,8 +5,11 @@ You only write the content.
 
 ```
 microlearning/
+  index.html             landing page listing every module (reads modules.js)
+  modules.js             the list of module folders shown on the landing page
   shared/module.css      look (sits on top of /training/theme.css)
-  shared/module.js       builds the page from window.MODULE
+  shared/module.js       builds a module page from window.MODULE
+  shared/landing.js      builds the landing page from each module's content.js
   stroke/                one module = index.html + content.js (+ intro.mp4 and video-src/ if it has a video)
   envenomation/          same layout
   tools/video/           align.py, render.js and make.sh: build a narrated intro video from the recorded audio
@@ -18,7 +21,8 @@ microlearning/
 1. Copy `stroke/` to `microlearning/<name>/`.
 2. Edit `index.html`: change the `<title>` only.
 3. Rewrite `content.js` from the protocol text. Stick to what the protocol says.
-4. Open `/microlearning/<name>/` to check it. Nothing links to modules from the hub; share the link.
+4. Add `"<name>"` to the list in `microlearning/modules.js` so it appears on the landing page (`/microlearning/`).
+5. Open `/microlearning/<name>/` to check it. Nothing links to modules from the hub; share the link.
 
 In a Claude Code session, ask for "a new microlearning module for <protocol>" with the protocol PDF attached:
 the `build-microlearning-module` skill holds the rules and steps (including the video).
