@@ -6,6 +6,7 @@ window.MODULE = {
   title: "Envenomation Training",
   subtitle: "Eyre Peninsula - microlearning module",
   headline: "Recognising and managing envenomation on the Eyre Peninsula",
+  minutes: 25,
   lead: "Work through each section in order. Content follows SA Ambulance Service CPP-008-AO Envenomation - AO and CPPRO-022 Pressure Bandaging and Immobilisation.",
 
   protocol: {

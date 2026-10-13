@@ -76,3 +76,12 @@ tr + tr td { border-top: 1px solid var(--line); }
 .checklist .check:hover { background: var(--brand-soft); }
 .checklist .check input { margin-top: 1px; }
 .checklist .check:has(input:checked) span { color: var(--muted); text-decoration: line-through; }
+
+/* landing page */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: .9rem; }
+.card { display: flex; flex-direction: column; gap: .55rem; padding: 1.15rem 1.25rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--ink); text-decoration: none; box-shadow: 0 1px 2px rgba(20, 40, 30, .05); transition: border-color .2s ease, transform .2s ease; }
+.card:hover { border-color: var(--brand); transform: translateY(-2px); }
+.card h2 { font-size: 1.35rem; }
+.card .go { margin-top: auto; padding-top: .4rem; color: var(--brand); font-weight: 700; }
+.card .go::after { content: " \2192"; }
+.card[hidden] { display: none; }
