@@ -41,7 +41,7 @@ the `build-microlearning-module` skill holds the rules and steps (including the 
 | `reference`, `links` | Tables or lists, plus links out (for example the SAAS Clinical app) |
 | `quiz` | Questions with `options`, `answer` (index) and a `why` line shown after answering |
 | `practical` | Optional hands-on activity: equipment, steps, what good looks like |
-| `podcast`, `furtherLinks` | Optional further learning: an audio file or links |
+| `furtherVideo`, `podcast`, `furtherLinks` | Optional further learning: an extra video (`{src, title, note}`), an audio file or episode link, and links |
 
 **Panels and blocks** (envenomation): set `panels` to your own ordered list. Each panel is
 `{ title, open?, optional?, chip?, blocks: [...] }`, and a block is one of:

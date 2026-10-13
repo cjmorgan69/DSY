@@ -272,6 +272,10 @@
       out.push({ title: pr.title || "Practical", optional: true, chip: "Optional", blocks: bl });
     }
     var fl = [];
+    if (M.furtherVideo) {
+      if (M.furtherVideo.note) fl.push({ text: M.furtherVideo.note, muted: true });
+      fl.push({ video: M.furtherVideo });
+    }
     if (M.podcast && M.podcast.summary) fl.push({ text: M.podcast.summary });
     if (M.podcast) fl.push({ audio: M.podcast });
     if (M.furtherLinks && M.furtherLinks.length) fl.push({ links: M.furtherLinks });
