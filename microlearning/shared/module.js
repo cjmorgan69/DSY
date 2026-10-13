@@ -1,16 +1,22 @@
-/* Builds a microlearning page from window.MODULE (see README.md). All text goes in through textContent. */
+/* Builds a microlearning page from window.MODULE (see README.md). All text goes in through textContent.
+   A module is a list of panels; each panel is a list of blocks. A module can either give `panels` itself,
+   or use the shorthand keys (intro, keyPoints, tool, reference, quiz, practical, podcast) which are turned
+   into the same panels in a fixed order. */
 (function () {
   "use strict";
   var M = window.MODULE;
   if (!M) return;
   var app = document.getElementById("app");
+  var P = M.protocol || {};
 
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function add(parent) { for (var i = 1; i < arguments.length; i++) if (arguments[i]) parent.appendChild(arguments[i]); return parent; }
   function list(items, cls) { var ul = el("ul", cls || "points"); items.forEach(function (t) { ul.appendChild(el("li", null, t)); }); return ul; }
-  function para(text) { return el("p", null, text); }
+  function para(text, cls) { return el("p", cls || null, text); }
+  function link(label, href, cls) { var a = el("a", cls || "link", label); a.href = href; a.target = "_blank"; a.rel = "noopener"; return a; }
   function isAudio(u) { return /\.(mp3|m4a|wav|ogg)(\?|$)/i.test(u); }
   function isVideoFile(u) { return /\.(mp4|webm)(\?|$)/i.test(u); }
+  function titled(text, sub) { var li = el("li"); li.appendChild(el("span", "t", text)); if (sub) { li.appendChild(document.createElement("br")); li.appendChild(document.createTextNode(sub)); } return li; }
 
   var panelNo = 0;
   function panel(title, opts) {
@@ -26,7 +32,7 @@
     d.body = body; return d;
   }
 
-  /* media: video or audio, or a labelled placeholder while the module is in draft */
+  /* media: video or audio, an external link, or a labelled placeholder while the module is in draft */
   function slot(kind, cfg, fallbackTitle) {
     cfg = cfg || {};
     if (cfg.src) {
@@ -36,7 +42,7 @@
       else { var f = el("iframe"); f.src = cfg.src; f.title = cfg.title || fallbackTitle; f.loading = "lazy"; f.allowFullscreen = true; wrap.appendChild(f); }
       return wrap;
     }
-    if (cfg.link) { var la = el("a", "link", cfg.linkLabel || "Open"); la.href = cfg.link; la.target = "_blank"; la.rel = "noopener"; return la; }
+    if (cfg.link) return link(cfg.linkLabel || "Open", cfg.link);
     if (!M.draft) return null;
     var s = el("div", "slot");
     s.appendChild(el("strong", null, (kind === "audio" ? "Audio" : "Video") + " coming soon: " + (cfg.title || fallbackTitle)));
@@ -44,67 +50,76 @@
     return s;
   }
 
-  /* ---------- header ---------- */
-  var P = M.protocol || {};
-  var head = el("header", "top");
-  var brand = el("div", "brand");
-  brand.appendChild(el("div", "brand-icon", "+"));
-  var bt = el("div"); bt.appendChild(el("h1", null, M.title)); bt.appendChild(el("p", null, M.subtitle || "Microlearning module")); brand.appendChild(bt);
-  head.appendChild(brand);
-  var chips = el("div", "row");
-  if (P.code) chips.appendChild(el("span", "chip hi", P.code));
-  if (M.minutes) chips.appendChild(el("span", "chip", "About " + M.minutes + " min"));
-  head.appendChild(chips);
-  app.appendChild(head);
-
-  var intro = el("section", "stack");
-  intro.appendChild(el("span", "eyebrow", "Microlearning"));
-  intro.appendChild(el("h2", null, M.headline));
-  if (M.lead) intro.appendChild(el("p", "muted", M.lead));
-  if (M.draft) intro.appendChild(el("p", "notice small", "Draft: sections marked \"coming soon\" are placeholders. Fill them in or remove them in content.js before sharing."));
-  app.appendChild(intro);
-
-  var stack = el("div", "stack");
-  app.appendChild(stack);
-
-  /* ---------- facilitator guide ---------- */
-  if (M.session) {
-    var fp = panel("Running this session without an instructor", { numbered: false, cls: "facilitator", chip: "Facilitator" });
-    if (M.session.intro) fp.body.appendChild(para(M.session.intro));
-    var ol = el("ol", "steps");
-    M.session.steps.forEach(function (s) {
-      var li = el("li"); li.appendChild(el("span", "t", s.t + (s.time ? " (" + s.time + ")" : ""))); if (s.text) { li.appendChild(document.createElement("br")); li.appendChild(document.createTextNode(s.text)); }
-      ol.appendChild(li);
-    });
-    fp.body.appendChild(ol);
-    stack.appendChild(fp);
+  /* ---------- blocks ---------- */
+  function box(k) {
+    var b = el("div", "box" + (k.tone ? " " + k.tone : ""));
+    b.appendChild(el("h3", null, k.title));
+    if (k.text) b.appendChild(para(k.text));
+    if (k.video) { var v = slot("video", k.video, k.title); if (v) b.appendChild(v); }
+    if (k.steps) { var o = el("ol", "steps"); k.steps.forEach(function (s) { o.appendChild(titled(s.t, s.text)); }); b.appendChild(o); }
+    if (k.items) b.appendChild(list(k.items, "points" + (k.tone === "no" ? " no" : "")));
+    if (k.note) b.appendChild(para(k.note, "small muted"));
+    return b;
   }
 
-  /* ---------- 1 introduction ---------- */
-  var ip = panel("Introduction", { open: true });
-  var vid = slot("video", M.video, M.title + " introduction");
-  if (vid) ip.body.appendChild(vid);
-  (M.intro || []).forEach(function (t) { ip.body.appendChild(para(t)); });
-  stack.appendChild(ip);
-
-  /* ---------- 2 key points ---------- */
-  if (M.keyPoints && M.keyPoints.length) {
-    var kp = panel(M.keyPointsTitle || "Key points");
-    M.keyPoints.forEach(function (k) {
-      var box = el("div", "box" + (k.tone ? " " + k.tone : ""));
-      box.appendChild(el("h3", null, k.title));
-      if (k.text) box.appendChild(para(k.text));
-      if (k.steps) { var o = el("ol", "steps"); k.steps.forEach(function (s) { var li = el("li"); li.appendChild(el("span", "t", s.t)); if (s.text) { li.appendChild(document.createElement("br")); li.appendChild(document.createTextNode(s.text)); } o.appendChild(li); }); box.appendChild(o); }
-      if (k.items) box.appendChild(list(k.items, "points" + (k.tone === "no" ? " no" : "")));
-      kp.body.appendChild(box);
-    });
-    stack.appendChild(kp);
+  function table(r) {
+    var box = el("div", "stack"); box.appendChild(el("h3", null, r.title));
+    if (r.text) box.appendChild(para(r.text, "muted"));
+    if (r.table) {
+      var wrap = el("div", "tablewrap"), t = el("table"), th = el("tr");
+      r.table.head.forEach(function (h) { th.appendChild(el("th", null, h)); });
+      t.appendChild(add(el("thead"), th));
+      var tb = el("tbody");
+      r.table.rows.forEach(function (row) { var tr = el("tr"); row.forEach(function (c) { tr.appendChild(el("td", null, c)); }); tb.appendChild(tr); });
+      t.appendChild(tb); wrap.appendChild(t); box.appendChild(wrap);
+    }
+    if (r.items) box.appendChild(list(r.items));
+    return box;
   }
 
-  /* ---------- 3 decision aid + scenarios ---------- */
-  if (M.tool) {
-    var T = M.tool, tp = panel(T.title);
-    if (T.intro) tp.body.appendChild(el("p", "muted", T.intro));
+  /* tick-off list for practising a procedure */
+  function checklist(c) {
+    var wrap = el("div", "stack");
+    if (c.title) wrap.appendChild(el("h3", null, c.title));
+    if (c.intro) wrap.appendChild(para(c.intro, "muted small"));
+    var items = el("div", "checklist");
+    c.items.forEach(function (s) {
+      var l = el("label", "check"), i = el("input"); i.type = "checkbox";
+      var sp = el("span"); sp.appendChild(el("strong", null, s.t + (s.text ? ". " : ""))); if (s.text) sp.appendChild(document.createTextNode(s.text));
+      l.appendChild(i); l.appendChild(sp); items.appendChild(l);
+    });
+    var row = el("div", "row"), clr = el("button", "link", "Clear ticks"), cnt = el("span", "chip");
+    clr.type = "button"; add(row, clr, cnt);
+    function count() { var n = items.querySelectorAll("input:checked").length, all = c.items.length; cnt.textContent = n + " of " + all + " done"; cnt.className = "chip" + (n === all ? " good" : ""); }
+    items.addEventListener("change", count);
+    clr.addEventListener("click", function () { items.querySelectorAll("input").forEach(function (i) { i.checked = false; }); count(); });
+    count(); add(wrap, items, row); return wrap;
+  }
+
+  /* pick-one selector that shows boxes for the chosen entry */
+  function chooser(c) {
+    var wrap = el("div", "stack"), lab = el("label", null, c.label || "Choose one"), sel = el("select");
+    sel.appendChild(new Option(c.placeholder || "Select", ""));
+    var groups = {};
+    c.options.forEach(function (o) {
+      var parent = sel;
+      if (o.group) { if (!groups[o.group]) { groups[o.group] = el("optgroup"); groups[o.group].label = o.group; sel.appendChild(groups[o.group]); } parent = groups[o.group]; }
+      parent.appendChild(new Option(o.label, o.value));
+    });
+    lab.appendChild(sel); wrap.appendChild(lab);
+    var out = el("div", "stack"); out.setAttribute("aria-live", "polite"); wrap.appendChild(out);
+    function empty() { out.textContent = ""; var b = el("div", "box"); b.appendChild(para(c.empty || "Select an option to see the detail.", "muted")); out.appendChild(b); }
+    sel.addEventListener("change", function () {
+      var d = c.data[sel.value]; if (!d) { empty(); return; }
+      out.textContent = ""; d.sections.forEach(function (s) { out.appendChild(box(s)); });
+    });
+    empty(); return wrap;
+  }
+
+  /* decision aid, with scenarios that fill in the form */
+  function tool(T) {
+    var wrap = el("div", "stack");
+    if (T.intro) wrap.appendChild(para(T.intro, "muted"));
     var form = el("form", "tool"); form.noValidate = true;
     T.fields.forEach(function (f) {
       var ask = el("div", "ask"); ask.appendChild(el("span", "q-t", f.label));
@@ -126,7 +141,7 @@
     var trow = el("div", "row"), go = el("button", "btn", "Check"), clr = el("button", "link", "Clear");
     go.type = "submit"; clr.type = "reset"; add(trow, go, clr); form.appendChild(trow);
     var out = el("div"); out.setAttribute("aria-live", "polite"); out.hidden = true;
-    tp.body.appendChild(form); tp.body.appendChild(out);
+    wrap.appendChild(form); wrap.appendChild(out);
 
     function read() {
       var v = {}, ok = true;
@@ -138,22 +153,22 @@
     }
     function show(v) {
       out.textContent = ""; out.hidden = false;
-      if (!v) { out.appendChild(el("p", "result bad", "Answer every question to see the outcome.")); return; }
-      var r = T.evaluate(v), box = el("div", "outcome" + (r.tone ? " " + r.tone : ""));
-      box.appendChild(el("h3", null, r.headline));
-      if (r.alerts && r.alerts.length) { var al = el("div", "box warn"); al.appendChild(list(r.alerts)); box.appendChild(al); }
-      if (r.why && r.why.length) { box.appendChild(el("span", "eyebrow", "Because")); box.appendChild(list(r.why)); }
-      if (r.actions && r.actions.length) { box.appendChild(el("span", "eyebrow", "What the protocol says to do")); box.appendChild(list(r.actions)); }
-      if (r.note) box.appendChild(el("p", "small muted", r.note));
-      out.appendChild(box);
+      if (!v) { out.appendChild(para("Answer every question to see the outcome.", "result bad")); return; }
+      var r = T.evaluate(v), b = el("div", "outcome" + (r.tone ? " " + r.tone : ""));
+      b.appendChild(el("h3", null, r.headline));
+      if (r.alerts && r.alerts.length) { var al = el("div", "box warn"); al.appendChild(list(r.alerts)); b.appendChild(al); }
+      if (r.why && r.why.length) { b.appendChild(el("span", "eyebrow", "Because")); b.appendChild(list(r.why)); }
+      if (r.actions && r.actions.length) { b.appendChild(el("span", "eyebrow", "What the protocol says to do")); b.appendChild(list(r.actions)); }
+      if (r.note) b.appendChild(para(r.note, "small muted"));
+      out.appendChild(b);
     }
     form.addEventListener("submit", function (e) { e.preventDefault(); show(read()); });
     form.addEventListener("reset", function () { out.hidden = true; out.textContent = ""; });
-    if (T.disclaimer) tp.body.appendChild(el("p", "small muted", T.disclaimer));
+    if (T.disclaimer) wrap.appendChild(para(T.disclaimer, "small muted"));
 
     if (T.scenarios && T.scenarios.length) {
-      tp.body.appendChild(el("h3", null, "Practise with scenarios"));
-      if (T.scenariosNote) tp.body.appendChild(el("p", "small muted", T.scenariosNote));
+      wrap.appendChild(el("h3", null, "Practise with scenarios"));
+      if (T.scenariosNote) wrap.appendChild(para(T.scenariosNote, "small muted"));
       var sc = el("div");
       T.scenarios.forEach(function (s, i) {
         var row = el("div", "scenario"), w = el("div", "what");
@@ -170,38 +185,16 @@
         });
         add(row, w, b); sc.appendChild(row);
       });
-      tp.body.appendChild(sc);
+      wrap.appendChild(sc);
     }
-    stack.appendChild(tp);
+    return wrap;
   }
 
-  /* ---------- 4 reference ---------- */
-  if (M.reference && M.reference.length) {
-    var rp = panel(M.referenceTitle || "Reference");
-    M.reference.forEach(function (r) {
-      var box = el("div", "stack"); box.appendChild(el("h3", null, r.title));
-      if (r.text) box.appendChild(el("p", "muted", r.text));
-      if (r.table) {
-        var wrap = el("div", "tablewrap"), t = el("table"), th = el("tr");
-        r.table.head.forEach(function (h) { th.appendChild(el("th", null, h)); });
-        t.appendChild(add(el("thead"), th));
-        var tb = el("tbody");
-        r.table.rows.forEach(function (row) { var tr = el("tr"); row.forEach(function (c) { tr.appendChild(el("td", null, c)); }); tb.appendChild(tr); });
-        t.appendChild(tb); wrap.appendChild(t); box.appendChild(wrap);
-      }
-      if (r.items) box.appendChild(list(r.items));
-      rp.body.appendChild(box);
-    });
-    if (M.links) { var lr = el("div", "row"); M.links.forEach(function (l) { var a = el("a", "link", l.label); a.href = l.href; a.target = "_blank"; a.rel = "noopener"; lr.appendChild(a); }); rp.body.appendChild(lr); }
-    stack.appendChild(rp);
-  }
-
-  /* ---------- 5 knowledge check ---------- */
-  if (M.quiz && M.quiz.length) {
-    var qp = panel("Knowledge check");
-    qp.body.appendChild(el("p", "muted", "Questions drawn from " + (P.code || "the protocol") + ". Pick an answer for each, then check."));
+  function quiz(Q) {
+    var wrap = el("div", "stack");
+    wrap.appendChild(para(Q.intro || "Questions drawn from " + (P.code || "the protocol") + ". Pick an answer for each, then check.", "muted"));
     var qf = el("form");
-    M.quiz.forEach(function (q, i) {
+    Q.questions.forEach(function (q, i) {
       var d = el("div", "q"); d.appendChild(el("span", "t", (i + 1) + ". " + q.q));
       q.options.forEach(function (opt, j) {
         var l = el("label", "check"), r = el("input"); r.type = "radio"; r.name = "q" + i; r.value = j;
@@ -210,19 +203,19 @@
       d.appendChild(el("span", "result")); d.appendChild(el("span", "why"));
       qf.appendChild(d);
     });
-    var qr = el("div", "row"), sub = el("button", "btn", "Check answers"), rst = el("button", "link", "Start again"), sc2 = el("span", "chip");
-    sub.type = "submit"; rst.type = "reset"; sc2.hidden = true; add(qr, sub, rst, sc2); qf.appendChild(qr);
+    var qr = el("div", "row"), sub = el("button", "btn", "Check answers"), rst = el("button", "link", "Start again"), sc = el("span", "chip");
+    sub.type = "submit"; rst.type = "reset"; sc.hidden = true; add(qr, sub, rst, sc); qf.appendChild(qr);
     function clear() {
       qf.querySelectorAll(".check").forEach(function (l) { l.classList.remove("right", "wrong"); });
       qf.querySelectorAll(".result").forEach(function (r) { r.textContent = ""; r.className = "result"; });
       qf.querySelectorAll(".why").forEach(function (w) { w.textContent = ""; });
-      sc2.hidden = true;
+      sc.hidden = true;
     }
     qf.addEventListener("reset", clear);
     qf.addEventListener("submit", function (e) {
       e.preventDefault(); clear();
       var score = 0, blocks = qf.querySelectorAll(".q");
-      M.quiz.forEach(function (q, i) {
+      Q.questions.forEach(function (q, i) {
         var picked = qf.querySelector('input[name="q' + i + '"]:checked'), r = blocks[i].querySelector(".result"), w = blocks[i].querySelector(".why");
         if (!picked) { r.textContent = "Choose an answer"; r.classList.add("bad"); return; }
         var ok = +picked.value === q.answer; if (ok) score++;
@@ -230,38 +223,100 @@
         r.textContent = ok ? "Correct" : "Not quite. The answer is: " + q.options[q.answer]; r.classList.add(ok ? "good" : "bad");
         if (q.why) w.textContent = q.why;
       });
-      sc2.textContent = "Score " + score + "/" + M.quiz.length + " (" + Math.round(score / M.quiz.length * 100) + "%)";
-      sc2.className = "chip " + (score === M.quiz.length ? "good" : "warn"); sc2.hidden = false;
+      sc.textContent = "Score " + score + "/" + Q.questions.length + " (" + Math.round(score / Q.questions.length * 100) + "%)";
+      sc.className = "chip " + (score === Q.questions.length ? "good" : "warn"); sc.hidden = false;
     });
-    qp.body.appendChild(qf); stack.appendChild(qp);
+    wrap.appendChild(qf); return wrap;
   }
 
-  /* ---------- 6 optional practical ---------- */
-  if (M.practical) {
-    var pp = panel(M.practical.title || "Practical", { optional: true, chip: "Optional" });
-    if (M.practical.intro) pp.body.appendChild(para(M.practical.intro));
-    if (M.practical.equipment) { var eb = el("div", "box"); eb.appendChild(el("h3", null, "What you need")); eb.appendChild(list(M.practical.equipment)); pp.body.appendChild(eb); }
-    if (M.practical.steps) { var po = el("ol", "steps"); M.practical.steps.forEach(function (s) { var li = el("li"); li.appendChild(el("span", "t", s.t)); if (s.text) { li.appendChild(document.createElement("br")); li.appendChild(document.createTextNode(s.text)); } po.appendChild(li); }); pp.body.appendChild(po); }
-    if (M.practical.good) { var gb = el("div", "box"); gb.appendChild(el("h3", null, "What good looks like")); gb.appendChild(list(M.practical.good)); pp.body.appendChild(gb); }
-    if (M.practical.note) pp.body.appendChild(el("p", "small muted", M.practical.note));
-    stack.appendChild(pp);
+  function renderBlock(b, body) {
+    var n;
+    if (b.text) body.appendChild(para(b.text, b.muted ? "muted" : null));
+    if (b.paragraphs) b.paragraphs.forEach(function (t) { body.appendChild(para(t)); });
+    if (b.video !== undefined) { n = slot("video", b.video, b.title || M.title); if (n) body.appendChild(n); }
+    if (b.audio !== undefined) { n = slot("audio", b.audio, b.title || "further learning"); if (n) body.appendChild(n); }
+    if (b.box) body.appendChild(box(b.box));
+    if (b.boxes) b.boxes.forEach(function (k) { body.appendChild(box(k)); });
+    if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (s) { o.appendChild(titled(s.t, s.text)); }); body.appendChild(o); }
+    if (b.checklist) body.appendChild(checklist(b.checklist));
+    if (b.chooser) body.appendChild(chooser(b.chooser));
+    if (b.table) body.appendChild(table(b.table));
+    if (b.tool) body.appendChild(tool(b.tool));
+    if (b.quiz) body.appendChild(quiz(b.quiz));
+    if (b.links) { var lr = el("div", "row"); b.links.forEach(function (l) { lr.appendChild(link(l.label, l.href)); }); body.appendChild(lr); }
+    if (b.note) body.appendChild(para(b.note, "small muted"));
   }
 
-  /* ---------- 7 further learning ---------- */
-  var pod = slot("audio", M.podcast, "further learning");
-  if (pod || (M.furtherLinks && M.furtherLinks.length)) {
-    var fl = panel("Further learning", { optional: true, chip: "Optional" });
-    if (M.podcast && M.podcast.summary) fl.body.appendChild(para(M.podcast.summary));
-    if (pod) fl.body.appendChild(pod);
-    (M.furtherLinks || []).forEach(function (l) { var a = el("a", "link", l.label); a.href = l.href; a.target = "_blank"; a.rel = "noopener"; fl.body.appendChild(a); });
-    stack.appendChild(fl);
+  /* shorthand keys -> panels, in the fixed order */
+  function defaultPanels() {
+    var out = [];
+    out.push({ title: "Introduction", open: true, blocks: [{ video: M.video }].concat((M.intro || []).map(function (t) { return { text: t }; })) });
+    if (M.keyPoints && M.keyPoints.length) out.push({ title: M.keyPointsTitle || "Key points", blocks: [{ boxes: M.keyPoints }] });
+    if (M.tool) out.push({ title: M.tool.title, blocks: [{ tool: M.tool }] });
+    if (M.reference && M.reference.length) out.push({ title: M.referenceTitle || "Reference", blocks: M.reference.map(function (r) { return { table: r }; }).concat(M.links ? [{ links: M.links }] : []) });
+    if (M.quiz && M.quiz.length) out.push({ title: "Knowledge check", blocks: [{ quiz: { questions: M.quiz } }] });
+    if (M.practical) {
+      var pr = M.practical, bl = [];
+      if (pr.intro) bl.push({ text: pr.intro });
+      if (pr.equipment) bl.push({ box: { title: "What you need", items: pr.equipment } });
+      if (pr.steps) bl.push({ steps: pr.steps });
+      if (pr.good) bl.push({ box: { title: "What good looks like", items: pr.good } });
+      if (pr.note) bl.push({ note: pr.note });
+      out.push({ title: pr.title || "Practical", optional: true, chip: "Optional", blocks: bl });
+    }
+    var fl = [];
+    if (M.podcast && M.podcast.summary) fl.push({ text: M.podcast.summary });
+    if (M.podcast) fl.push({ audio: M.podcast });
+    if (M.furtherLinks && M.furtherLinks.length) fl.push({ links: M.furtherLinks });
+    out.push({ title: "Further learning", optional: true, chip: "Optional", blocks: fl, skipIfEmpty: true });
+    return out;
   }
+
+  /* ---------- header ---------- */
+  var head = el("header", "top");
+  var brand = el("div", "brand");
+  brand.appendChild(el("div", "brand-icon", "+"));
+  var bt = el("div"); bt.appendChild(el("h1", null, M.title)); bt.appendChild(el("p", null, M.subtitle || "Microlearning module")); brand.appendChild(bt);
+  head.appendChild(brand);
+  var chips = el("div", "row");
+  [P].concat(P.also || []).forEach(function (p) { if (p.code) chips.appendChild(el("span", "chip hi", p.code)); });
+  if (M.minutes) chips.appendChild(el("span", "chip", "About " + M.minutes + " min"));
+  head.appendChild(chips);
+  app.appendChild(head);
+
+  var intro = el("section", "stack");
+  intro.appendChild(el("span", "eyebrow", "Microlearning"));
+  intro.appendChild(el("h2", null, M.headline));
+  if (M.lead) intro.appendChild(el("p", "muted", M.lead));
+  if (M.draft) intro.appendChild(el("p", "notice small", "Draft: sections marked \"coming soon\" are placeholders. Fill them in or remove them in content.js before sharing."));
+  app.appendChild(intro);
+
+  var stack = el("div", "stack");
+  app.appendChild(stack);
+
+  if (M.session) {
+    var fp = panel("Running this session without an instructor", { numbered: false, cls: "facilitator", chip: "Facilitator" });
+    if (M.session.intro) fp.body.appendChild(para(M.session.intro));
+    var ol = el("ol", "steps");
+    M.session.steps.forEach(function (s) { ol.appendChild(titled(s.t + (s.time ? " (" + s.time + ")" : ""), s.text)); });
+    fp.body.appendChild(ol);
+    stack.appendChild(fp);
+  }
+
+  (M.panels || defaultPanels()).forEach(function (p) {
+    var d = panel(p.title, { open: p.open, optional: p.optional, chip: p.chip });
+    p.blocks.forEach(function (b) { renderBlock(b, d.body); });
+    if (p.skipIfEmpty && !d.body.children.length) return;
+    stack.appendChild(d);
+  });
 
   /* ---------- footer ---------- */
+  function sourceLine(p) { return (p.code || "") + (p.name ? " " + p.name : "") + (p.version ? ", " + p.version : ""); }
   var foot = el("footer", "foot small muted");
   foot.appendChild(el("strong", null, M.title));
-  foot.appendChild(el("span", null, "Based on SA Ambulance Service " + (P.code || "") + (P.name ? " " + P.name : "") + (P.version ? ", " + P.version : "")));
+  foot.appendChild(el("span", null, "Based on SA Ambulance Service " + [P].concat(P.also || []).map(sourceLine).join(" and ")));
   if (P.exported) foot.appendChild(el("span", null, "Protocol text as exported " + P.exported + ". Always check the current version at clinical.saambulance.sa.gov.au"));
+  (M.footerNotes || []).forEach(function (t) { foot.appendChild(el("span", null, t)); });
   foot.appendChild(el("span", null, "Training resource only. It does not replace the protocol or advice from the EOC Clinician."));
   foot.appendChild(el("span", null, "© DSY Productions | LEP Training"));
   app.appendChild(foot);
