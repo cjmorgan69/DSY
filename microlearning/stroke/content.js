@@ -1,7 +1,7 @@
 /* Stroke - AO microlearning. Content only: the layout lives in ../shared/module.js.
    Source: SAAS CPP-016-AO Stroke - AO (exported 15.01.2026, v5.7). Nothing here goes beyond that text. */
 window.MODULE = {
-  draft: true,                        // true shows "coming soon" boxes for empty video/podcast slots
+  draft: false,                       // true shows "coming soon" boxes for empty video/podcast slots
   title: "Stroke",
   subtitle: "Ambulance Officer microlearning",
   headline: "Recognising stroke and getting eligible patients to the right hospital in time",
@@ -13,7 +13,7 @@ window.MODULE = {
   session: {
     intro: "For a team-led session. Allow about 30 minutes. Everyone works through the page on their own device, then discusses together.",
     steps: [
-      { t: "Watch the introduction", time: "3 min", text: "Play the video (once added), or read the overview underneath it." },
+      { t: "Watch the introduction", time: "3 min", text: "Play the video, or read the overview underneath it." },
       { t: "Read the key points", time: "5 min", text: "Take turns reading one box each out loud." },
       { t: "Work the scenarios", time: "10 min", text: "Open the eligibility checker. For each scenario, decide the answer as a group before pressing the button, then compare." },
       { t: "Knowledge check", time: "5 min", text: "Everyone does it alone. Discuss any question people got wrong." },
@@ -22,9 +22,9 @@ window.MODULE = {
   },
 
   video: {
-    // src: "https://www.youtube.com/embed/XXXXXXXXXXX",       // or an .mp4 file in this folder
-    title: "Stroke: what AOs need to know",
-    notes: "About 3 minutes. Suggested outline: why time matters, the BGL check first, ROSIER, the 4 hour and 60 minute rules, and who to phone."
+    src: "intro.mp4",
+    poster: "intro-poster.jpg",
+    title: "Stroke: what AOs need to know"
   },
 
   intro: [
