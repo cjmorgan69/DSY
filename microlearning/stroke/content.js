@@ -185,9 +185,13 @@ window.MODULE = {
   },
 
   podcast: {
-    title: "Stroke recognition and thrombolysis: a deeper dive",
-    summary: "An optional audio overview if you would like to go further. It is not required for the session.",
-    notes: "Idea: a short audio overview generated from CPP-016-AO only. Check it against the protocol before publishing."
-    // src: "overview.mp3"
-  }
+    title: "The Resus Room: stroke episodes",
+    summary: "The Resus Room is a UK emergency medicine podcast. Its 2019 archive has \"Stroke; Roadside to Resus\" (July 2019) and \"Stroke Management; Roadside to Resus\" (August 2019), covering prehospital and in-hospital thrombolysis and stroke management. Optional listening. It reflects UK practice from 2019, so where it differs from CPP-016-AO, follow the protocol.",
+    link: "https://theresusroom.libsyn.com/2019",
+    linkLabel: "Open The Resus Room 2019 episodes"
+  },
+  furtherLinks: [
+    { label: "The Resus Room on Apple Podcasts", href: "https://podcasts.apple.com/ie/podcast/the-resus-room/id1090433226" },
+    { label: "ROSIER scale video clips (CHSS e-Learning, UK NHS)", href: "https://chsselearning.org.uk/?p=3004" }
+  ]
 };
