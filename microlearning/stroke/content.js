@@ -14,7 +14,7 @@ window.MODULE = {
   session: {
     intro: "For a team-led session. Allow about 30 minutes. Everyone works through the page on their own device, then discusses together.",
     steps: [
-      { t: "Read the introduction", time: "3 min", text: "Read the overview and the box on what changed in version 6.0. Watch the intro video if one is shown." },
+      { t: "Read the introduction", time: "3 min", text: "Watch the intro video, then read the box on what changed in version 6.0." },
       { t: "Read the key points", time: "5 min", text: "Take turns reading one box each out loud." },
       { t: "Work the scenarios", time: "10 min", text: "Open the eligibility checker. For each scenario, decide the answer as a group before pressing the button, then compare." },
       { t: "Knowledge check", time: "5 min", text: "Everyone does it alone. Discuss any question people got wrong." },
@@ -23,9 +23,9 @@ window.MODULE = {
   },
 
   video: {
-    // src: "intro.mp4", poster: "intro-poster.jpg",    // add when the version 6.0 video is built
-    title: "Stroke: what AOs need to know",
-    notes: "About 3 minutes. Outline: why time matters, BGL first, ROSIER, the 9 hour and 60 minute rules, and who to notify."
+    src: "intro.mp4",
+    poster: "intro-poster.jpg",
+    title: "Stroke: what AOs need to know"
   },
 
   intro: [
