@@ -76,11 +76,12 @@ function scene(t,i){
     el("line",{x1:cx,y1:cy,x2:cx+Math.cos(ang)*(r-30),y2:cy+Math.sin(ang)*(r-30),stroke:C.gold,"stroke-width":8,"stroke-linecap":"round"},g);
     el("circle",{cx,cy,r:10,fill:C.gold},g);
     badge(g,"Rapid early assessment",270,545,rv(T,S[0].s,0.4));
-    const c1=rv(T,S[1].s), c2=rv(T,S[2].s);
-    if(c1>0){const gg=grp(g,c1);card(gg,520,200,670,130);el("rect",{x:520,y:200,width:8,height:130,rx:4,fill:C.mint},gg);
-      txt("Comprehensive Stroke Unit",{x:556,y:255,"font-size":34,"font-weight":800},gg);txt("CSU: the best place for stroke care",{x:556,y:298,"font-size":24,fill:"#cfe7da"},gg)}
-    if(c2>0){const gg=grp(g,c2);card(gg,520,355,670,130);el("rect",{x:520,y:355,width:8,height:130,rx:4,fill:C.gold},gg);
-      txt("Thrombolysis",{x:556,y:410,"font-size":34,"font-weight":800},gg);txt("clot-busting treatment, only if they arrive in time",{x:556,y:453,"font-size":24,fill:"#cfe7da"},gg)}
+    [["Comprehensive Stroke Unit","CSU: the best place for stroke care",C.mint,S[1].s],
+     ["Stroke Thrombolysis Service","STS: country hospitals with CT and acute stroke services",C.mint,S[2].s],
+     ["Thrombolysis","clot-busting treatment, only if they arrive in time",C.gold,S[3].s]].forEach((c,k)=>{
+      const a=rv(T,c[3]); if(a<=0)return; const y=165+k*135, gg=grp(g,a);
+      card(gg,520,y,690,118);el("rect",{x:520,y,width:8,height:118,rx:4,fill:c[2]},gg);
+      txt(c[0],{x:556,y:y+50,"font-size":33,"font-weight":800},gg);txt(c[1],{x:556,y:y+92,"font-size":22,fill:"#cfe7da"},gg)});
   }
 
   if(i===2){
@@ -93,9 +94,9 @@ function scene(t,i){
     txt("mmol/L",{x:265,y:326,"text-anchor":"middle","font-size":18,fill:"#cfe7da"},g);
     el("circle",{cx:265,cy:430,r:42,fill:"#cfd8d1"},g);el("circle",{cx:265,cy:430,r:30,fill:"#bcc7bf"},g);
     txt("BGL",{x:265,y:520,"text-anchor":"middle","font-size":24,"font-weight":700,fill:C.ink},g);
-    row(g,470,170,740,100,"Basic care and life support",null,rv(T,S[0].s));
+    row(g,470,170,740,100,"Basic care",null,rv(T,S[0].s));
     const a1=rv(T,S[1].s); row(g,470,290,740,100,"Measure the BGL","to rule out low blood sugar",a1,C.mint);
-    const a2=rv(T,S[2].s); const r2=row(g,470,410,740,120,"Below 3.5 mmol/L: treat first","as per CPP-009-AO Hypoglycaemia, then reassess",a2,C.red);
+    const a2=rv(T,S[2].s); const r2=row(g,470,410,740,120,"Below 3.5 mmol/L: treat first","as per CPP-009-AO, then reassess after treatment",a2,C.red);
   }
 
   if(i===3){
@@ -105,13 +106,13 @@ function scene(t,i){
     txt("ROSIER",{x:275,y:275,"text-anchor":"middle","font-size":44,"font-weight":800,fill:C.ink,opacity:rv(T,S[0].s,0.4)},g);
     for(let k=0;k<5;k++)el("rect",{x:185,y:315+k*42,width:180-(k%2)*40,height:12,rx:6,fill:"#c9c3ae",opacity:rv(T,S[0].s+0.4+k*0.15,0.3)},g);
     const a1=rv(T,S[1].s), a2=rv(T,S[2].s);
-    row(g,470,190,740,150,"The preferred stroke recognition tool","of the SA state-wide stroke clinical network",a1,C.mint);
+    row(g,470,190,740,150,"The preferred stroke recognition tool","in South Australia",a1,C.mint);
     row(g,470,370,740,150,"Use it alongside","a thorough history and clinical assessment",a2,C.gold);
   }
 
   if(i===4){
-    txt("Eligible for thrombolysis only if ALL apply",{x:190,y:178,"font-size":26,"font-weight":700,fill:C.gold,opacity:rv(T,S[0].s,0.5)},g);
-    const rows=["Stroke is clinically suspected","ROSIER score is positive","Independent before this event","Arrive at CSU/STS within 4 hours of onset","Travel time under 60 minutes"];
+    txt("Code Stroke: eligible only if ALL apply",{x:190,y:178,"font-size":26,"font-weight":700,fill:C.gold,opacity:rv(T,S[0].s,0.5)},g);
+    const rows=["Stroke is clinically suspected","ROSIER score is positive","Independent before this event","Arrive at CSU/STS within 9 hours of onset","Travel time under 60 minutes"];
     rows.forEach((s,k)=>{const st=S[k+1].s, a=rv(T,st,0.45), y=205+k*70;
       const gg=grp(g,a);card(gg,190,y,900,58);txt(s,{x:262,y:y+39,"font-size":30,"font-weight":600},gg);
       tick(gg,226,y+29,pr(T,st+0.25,st+0.7),19)});
@@ -130,8 +131,8 @@ function scene(t,i){
   }
 
   if(i===6){
-    row(g,110,175,1060,108,"1  Consult the EOC Clinician","for authorisation to transport directly to the closest hospital with a CSU/STS",rv(T,S[0].s),C.gold);
-    row(g,110,300,1060,108,"2  Request clinical support","if the patient is unstable, or transport time is over 20 minutes",rv(T,S[1].s),C.mint);
+    row(g,110,175,1060,108,"1  Consult the EOC Clinician","for authorisation to transport directly to the closest CSU/STS hospital",rv(T,S[0].s),C.gold);
+    row(g,110,300,1060,108,"2  Request clinical support","if unstable, or transport times are likely to be over 20 minutes",rv(T,S[1].s),C.mint);
     row(g,110,425,1060,108,"3  Confirm the details","patient identification + phone number for the substitute decision maker, relative or carer",rv(T,S[2].s),C.gold);
   }
 
@@ -139,25 +140,25 @@ function scene(t,i){
     // phone
     el("rect",{x:140,y:170,width:190,height:370,rx:36,fill:"#e9eee9",filter:"url(#sh)"},g);
     el("rect",{x:156,y:200,width:158,height:290,rx:14,fill:C.ink},g);
-    "ISBAR".split("").forEach((c,k)=>{const a=rv(T,S[0].s+0.6+k*0.35,0.3);txt(c,{x:200,y:243+k*50,"text-anchor":"middle","font-size":36,"font-weight":800,fill:C.gold,opacity:a},g);
+    "ISBAR".split("").forEach((c,k)=>{const a=rv(T,S[1].s+0.2+k*0.35,0.3);txt(c,{x:200,y:243+k*50,"text-anchor":"middle","font-size":36,"font-weight":800,fill:C.gold,opacity:a},g);
       el("rect",{x:226,y:225+k*50,width:64*a,height:10,rx:5,fill:"rgba(255,255,255,.35)"},g)});
     el("circle",{cx:235,cy:515,r:12,fill:"#cfd8d1"},g);
-    row(g,400,170,810,100,"Phone the stroke coordinator","on their mobile, using ISBAR",rv(T,S[0].s),C.gold);
-    const a1=rv(T,S[1].s);if(a1>0){const gg=grp(g,a1);["Eligibility criteria","ETA"].forEach((c,k)=>{const w=c.length*17+60;const x=k?400+ "Eligibility criteria".length*17+80:400;
-      el("rect",{x,y:290,width:w,height:62,rx:31,fill:C.mint},gg);txt(c,{x:x+w/2,y:330,"text-anchor":"middle","font-size":28,"font-weight":800,fill:C.ink},gg)})}
-    row(g,400,385,810,150,"No answer, or local procedure says so",["request GRN notification to the stroke coordinator","at the receiving Emergency Department"],rv(T,S[2].s),C.red);
+    row(g,400,170,810,110,"Notify Code Stroke",["to the stroke coordinator via the SAAS Code Notification Line,","or via local processes"],rv(T,S[0].s),C.gold);
+    const a1=rv(T,S[1].s);if(a1>0){const gg=grp(g,a1);["ISBAR","Code Stroke criteria","ETA"].forEach((c,k)=>{const w=c.length*17+60;const x=[400,400+"ISBAR".length*17+80,400+"ISBAR".length*17+80+"Code Stroke criteria".length*17+80][k];
+      el("rect",{x,y:300,width:w,height:62,rx:31,fill:C.mint},gg);txt(c,{x:x+w/2,y:340,"text-anchor":"middle","font-size":28,"font-weight":800,fill:C.ink},gg)})}
+    row(g,400,395,810,140,"Then confirm arrival",["Confirm Code Stroke arrival via SAGRN notification","to the receiving hospital ED"],rv(T,S[2].s),C.gold);
   }
 
   if(i===8){
     const a0=rv(T,S[0].s), a1=rv(T,S[1].s), a2=rv(T,S[2].s);
     let gg=grp(g,a0);card(gg,70,170,560,270,"rgba(226,87,76,.14)","rgba(226,87,76,.55)");txt("Not eligible if any of:",{x:100,y:218,"font-size":28,"font-weight":800,fill:"#ffb3aa"},gg);
-    bullets(gg,104,276,["ROSIER score negative","4 hours or more from onset","Not independent before"],T,[S[0].s+0.4,S[0].s+1.8,S[0].s+3.4],C.red);
+    bullets(gg,104,276,["ROSIER score negative","Over 9 hours from onset","Not independent before"],T,[S[0].s+0.4,S[0].s+1.8,S[0].s+3.4],C.red);
     if(a1>0){const ga=grp(g,a1);el("path",{d:"M640 305 L680 305 M668 290 L684 305 L668 320",fill:"none",stroke:"#fff","stroke-width":5,"stroke-linecap":"round","stroke-linejoin":"round"},ga)}
     gg=grp(g,a1);card(gg,700,170,510,270);txt("Then transport to:",{x:730,y:218,"font-size":28,"font-weight":800,fill:C.mint},gg);
-    bullets(gg,734,276,["the closest CSU/STS, or","the closest hospital if travel","is excessive, or","consult the EOC Clinician"].slice(0,4).map((s,k)=>s),T,[S[1].s+0.3,S[1].s+2.4,S[1].s+2.4,S[1].s+4.6],C.mint);
+    bullets(gg,734,276,["the closest CSU/STS, or","the nearest hospital, or","consult the EOC Clinician"],T,[S[1].s+0.3,S[1].s+2.4,S[1].s+4.6],C.mint);
     gg=grp(g,a2);card(gg,70,462,1140,104,"rgba(227,167,18,.18)","rgba(227,167,18,.6)");
     txt("Everything else fits, but travel is over 60 minutes",{x:100,y:508,"font-size":29,"font-weight":800,fill:C.gold},gg);
-    txt("consult the EOC Clinician to discuss transport",{x:100,y:546,"font-size":26},gg);
+    txt("consult the EOC Clinician to discuss transport and destination options",{x:100,y:546,"font-size":26},gg);
   }
 
   if(i===9){
