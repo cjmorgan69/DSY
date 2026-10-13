@@ -69,3 +69,10 @@ tr + tr td { border-top: 1px solid var(--line); }
 
 .foot { display: flex; flex-direction: column; gap: .25rem; padding-top: 1rem; border-top: 1px solid var(--line); text-align: center; }
 .foot a { color: var(--brand); }
+
+/* tick-off checklist and chooser */
+.checklist { display: flex; flex-direction: column; }
+.checklist .check { align-items: flex-start; border-radius: 12px; padding: .55rem .6rem; }
+.checklist .check:hover { background: var(--brand-soft); }
+.checklist .check input { margin-top: 1px; }
+.checklist .check:has(input:checked) span { color: var(--muted); text-decoration: line-through; }

@@ -7,10 +7,10 @@ You only write the content.
 microlearning/
   shared/module.css      look (sits on top of /training/theme.css)
   shared/module.js       builds the page from window.MODULE
-  stroke/                one module = index.html + content.js
-    index.html           identical in every module (copy it, change the <title>)
-    content.js           everything that is specific to the protocol
-  envenomation/          earlier hand-built page, not yet on the template
+  stroke/                one module = index.html + content.js (+ intro.mp4 and video-src/ if it has a video)
+  envenomation/          same layout
+  tools/video/           align.py, render.js and make.sh: build a narrated intro video from the recorded audio
+.claude/skills/build-microlearning-module/   the saved instructions for building a module with Claude
 ```
 
 ## Adding a module
@@ -20,9 +20,12 @@ microlearning/
 3. Rewrite `content.js` from the protocol text. Stick to what the protocol says.
 4. Open `/microlearning/<name>/` to check it. Nothing links to modules from the hub; share the link.
 
-## What goes in content.js
+In a Claude Code session, ask for "a new microlearning module for <protocol>" with the protocol PDF attached:
+the `build-microlearning-module` skill holds the rules and steps (including the video).
 
-Every section is optional except the introduction. Sections appear in this fixed order:
+## Two ways to lay a module out
+
+**Shorthand keys** (stroke): every section is optional except the introduction, in this fixed order.
 
 | Key | Section |
 | --- | --- |
@@ -30,13 +33,31 @@ Every section is optional except the introduction. Sections appear in this fixed
 | `video`, `intro` | Introduction: video, then short paragraphs |
 | `keyPoints` | Boxes of bullet points or numbered steps (`tone: "warn"` or `"no"` to colour) |
 | `tool` | Decision aid: `fields`, an `evaluate(values)` function, optional `scenarios` that fill the form |
-| `reference` | Tables or lists, plus `links` out (for example the SAAS Clinical app) |
+| `reference`, `links` | Tables or lists, plus links out (for example the SAAS Clinical app) |
 | `quiz` | Questions with `options`, `answer` (index) and a `why` line shown after answering |
 | `practical` | Optional hands-on activity: equipment, steps, what good looks like |
 | `podcast`, `furtherLinks` | Optional further learning: an audio file or links |
 
-Media slots (`video`, `podcast`) take `src`: a YouTube embed URL, or an `.mp4` / `.mp3` file placed in the module folder.
-While `draft: true`, empty slots show a "coming soon" box with your `notes`. Set `draft: false` before sharing and
+**Panels and blocks** (envenomation): set `panels` to your own ordered list. Each panel is
+`{ title, open?, optional?, chip?, blocks: [...] }`, and a block is one of:
+
+| Block | Shows |
+| --- | --- |
+| `{ text }` / `{ paragraphs }` | Paragraphs |
+| `{ video: {src, title, poster} }` / `{ audio: {src} }` | Embedded media (YouTube embed URL, `.mp4` or `.mp3` file, or `link`) |
+| `{ box: {title, text, items, steps, tone, video, note} }` / `{ boxes: [...] }` | Highlighted boxes |
+| `{ checklist: {title, intro, items: [{t, text}]} }` | Tick-off list for practising a procedure |
+| `{ chooser: {label, options, data} }` | Pick-one selector that shows boxes for the choice |
+| `{ table: {title, text, table: {head, rows}, items} }` | Reference table or list |
+| `{ tool: {...} }` | The same decision aid as above |
+| `{ quiz: {intro, questions} }` | Quiz |
+| `{ steps }`, `{ links }`, `{ note }` | Numbered steps, link buttons, small print |
+
+Both support `protocol: { code, name, version, exported, also: [{code, name, version}] }` (shown in the header
+and footer) and `footerNotes: [...]`.
+
+Media slots take `src`: a YouTube embed URL, or an `.mp4` / `.mp3` file placed in the module folder. While
+`draft: true`, empty slots show a "coming soon" box with your `notes`. Set `draft: false` before sharing and
 empty slots are left out.
 
 ## Rules of thumb
@@ -46,3 +67,4 @@ empty slots are left out.
   a decision pathway (like the stroke eligibility checker), and test `evaluate()` against every scenario.
 - Do not copy protocol content you were not given (for example, the ROSIER items are not in CPP-016-AO, so the stroke
   module does not list them).
+- Scenarios, practical activities and video outlines written by Claude are examples: label them and have them checked.
