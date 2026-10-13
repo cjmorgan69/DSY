@@ -1,0 +1,205 @@
+<!doctype html><meta charset="utf-8">
+<style>
+*{margin:0;box-sizing:border-box}
+body{width:1280px;height:720px;overflow:hidden;background:radial-gradient(120% 90% at 30% 20%,#25694e,#123d2c);color:#fff;font-family:"Helvetica Neue",Arial,sans-serif}
+svg{position:absolute;inset:0}
+</style>
+<svg id="v" width="1280" height="720" viewBox="0 0 1280 720"></svg>
+<script>
+const TL=TIMELINE, NS="http://www.w3.org/2000/svg";
+const C={gold:"#e3a712",red:"#e2574c",mint:"#8be0b1",ink:"#123d2c",card:"rgba(0,0,0,.30)",cardLine:"rgba(255,255,255,.16)",ok:"#3fae74"};
+const cl=t=>Math.max(0,Math.min(1,t)), eo=t=>1-Math.pow(1-cl(t),3);
+const pr=(t,a,b)=>cl((t-a)/(b-a));
+function el(tag,a,p){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);(p||v).appendChild(e);return e}
+function txt(s,a,p){const e=el("text",Object.assign({fill:"#fff","font-family":"Helvetica Neue,Arial,sans-serif"},a),p);e.textContent=s;return e}
+function defs(){const d=el("defs",{});const sh=el("filter",{id:"sh",x:"-20%",y:"-20%",width:"140%",height:"140%"},d);
+  el("feDropShadow",{dx:0,dy:6,stdDeviation:8,"flood-color":"#000","flood-opacity":.28},sh)}
+/* reveal: fade/slide in starting at time s */
+function rv(t,s,d){return eo(pr(t,s,s+(d||0.5)))}
+function grp(p,a){return el("g",{opacity:a,transform:`translate(0 ${(1-a)*16})`},p)}
+function card(g,x,y,w,h,fill,stroke){return el("rect",{x,y,width:w,height:h,rx:22,fill:fill||C.card,stroke:stroke||C.cardLine,"stroke-width":2},g)}
+function badgeNum(g,x,y,n,col){el("circle",{cx:x,cy:y,r:24,fill:col||C.gold},g);txt(String(n),{x,y:y+10,"text-anchor":"middle","font-size":28,"font-weight":800,fill:C.ink},g)}
+function tick(g,x,y,a,r){r=r||20;el("circle",{cx:x,cy:y,r,fill:a>0?C.ok:"rgba(255,255,255,.15)"},g);
+  if(a>0)el("path",{d:`M${x-r*.45} ${y} L${x-r*.1} ${y+r*.38} L${x+r*.5} ${y-r*.35}`,fill:"none",stroke:"#fff","stroke-width":r*.28,"stroke-linecap":"round","stroke-linejoin":"round","stroke-dasharray":60,"stroke-dashoffset":60*(1-a)},g)}
+function row(g,x,y,w,h,title,sub,a,col){
+  const gg=grp(g,a);card(gg,x,y,w,h);
+  el("rect",{x,y,width:8,height:h,rx:4,fill:col||C.gold},gg);
+  txt(title,{x:x+34,y:y+(sub?(Array.isArray(sub)?h*.32:h*.42):h*.62),"font-size":32,"font-weight":700},gg);
+  if(Array.isArray(sub))sub.forEach((ln,k)=>txt(ln,{x:x+34,y:y+h*.62+k*30,"font-size":23,fill:"#cfe7da"},gg));
+  else if(sub)txt(sub,{x:x+34,y:y+h*.76,"font-size":23,fill:"#cfe7da"},gg);
+  return gg}
+function bullets(g,x,y,items,t,starts,col){items.forEach((s,i)=>{const a=rv(t,starts[i]);const gg=grp(g,a);
+  el("circle",{cx:x,cy:y+i*50-9,r:7,fill:col||C.gold},gg);txt(s,{x:x+24,y:y+i*50,"font-size":28},gg)})}
+
+function lineAt(t){let i=0;TL.lines.forEach((l,k)=>{if(t>=l.start-0.45)i=k});return i}
+function sentAt(t,l){let j=0;l.s.forEach((s,k)=>{if(t>=s.s-0.15)j=k});return j}
+
+function chrome(t,i){
+  const l=TL.lines[i], n=TL.lines.length;
+  txt("DSY TRAINING",{x:70,y:62,"font-size":17,"font-weight":700,"letter-spacing":"3",opacity:.65});
+  txt(l.head,{x:70,y:112,"font-size":46,"font-weight":800,"letter-spacing":"-1"});
+  for(let k=0;k<n;k++){const w=32,x=1210-(n-k)*(w+7);
+    el("rect",{x,y:52,width:w,height:7,rx:3.5,fill:"rgba(255,255,255,.22)"});
+    const f=k<i?1:k>i?0:pr(t,l.start,l.end);
+    if(f>0)el("rect",{x,y:52,width:w*f,height:7,rx:3.5,fill:C.gold});}
+  const j=sentAt(t,l), s=l.s[j];
+  const a=Math.min(cl((t-(s.s-0.15))/0.2), t>l.end+0.35?cl(1-(t-l.end-0.35)/0.25):1);
+  const g=el("g",{opacity:a});
+  const long=s.text.length>78;
+  el("rect",{x:70,y:long?570:590,width:1140,height:long?112:84,rx:22,fill:"rgba(0,0,0,.34)"},g);
+  if(!long) txt(s.text,{x:640,y:644,"text-anchor":"middle","font-size":s.text.length>62?30:34,"font-weight":600},g);
+  else{ // wrap into two lines at the nearest space to the middle
+    let m=Math.floor(s.text.length/2), L=s.text.lastIndexOf(" ",m), R=s.text.indexOf(" ",m);
+    const cut=(m-L<R-m||R<0)?L:R;
+    const fs=s.text.length>150?25:(s.text.length>125?28:32);
+    txt(s.text.slice(0,cut),{x:640,y:620,"text-anchor":"middle","font-size":fs,"font-weight":600},g);
+    txt(s.text.slice(cut+1),{x:640,y:664,"text-anchor":"middle","font-size":fs,"font-weight":600},g);}
+  txt("SAAS CPP-009-AO",{x:1210,y:704,"text-anchor":"end","font-size":15,opacity:.5,"letter-spacing":"1.5"});
+}
+
+function scene(t,i){
+  const l=TL.lines[i], S=l.s, T=t;
+  const fade=Math.min(cl((t-(l.start-0.45))/0.35), i<TL.lines.length-1?cl((TL.lines[i+1].start-0.45-t)/0.3):1);
+  const g=el("g",{opacity:fade});
+  const frac=(k,f)=>S[k].s+(S[k].e-S[k].s)*f;               // a moment partway through sentence k
+
+  if(i===0){
+    txt("Hypoglycaemia",{x:640,y:320,"text-anchor":"middle","font-size":132,"font-weight":800,"letter-spacing":"-4",opacity:rv(T,S[0].s,0.5)},g);
+    el("rect",{x:640-230*rv(T,S[0].s+0.2,0.7),y:352,width:460*rv(T,S[0].s+0.2,0.7),height:7,rx:3.5,fill:C.gold},g);
+    txt("What every Ambulance Officer needs to know",{x:640,y:430,"text-anchor":"middle","font-size":38,fill:"#dff1e7",opacity:rv(T,S[1].s,0.5)},g);
+    badge(g,"BGL below 3.5 mmol/L",640,505,rv(T,S[1].s+0.5,0.5),"rgba(226,87,76,.55)");
+  }
+
+  if(i===1){
+    // symptoms, mild to severe
+    const mild=["Confusion","Altered behaviour","Sweating"], sev=["Unconsciousness","Seizure"];
+    const lay=(arr,y0)=>{let x=70;return arr.map(c=>{const w=c.length*12+36,r={c,x,w};x+=w+10;return r})};
+    lay(mild,215).forEach((m,k)=>{const a=rv(T,frac(0,0.12+k*0.12)); if(a<=0)return; const gg=grp(g,a);
+      el("rect",{x:m.x,y:215,width:m.w,height:50,rx:25,fill:"rgba(227,167,18,.35)"},gg);txt(m.c,{x:m.x+m.w/2,y:247,"text-anchor":"middle","font-size":22,"font-weight":700},gg)});
+    const ar=rv(T,frac(0,0.55)); if(ar>0){const gg=grp(g,ar);el("path",{d:"M300 285 L300 325 M284 312 L300 330 L316 312",fill:"none",stroke:"#fff","stroke-width":5,"stroke-linecap":"round","stroke-linejoin":"round"},gg);txt("can progress to",{x:330,y:314,"font-size":22,fill:"#cfe7da"},gg)}
+    lay(sev,360).forEach((m,k)=>{const a=rv(T,frac(0,0.72+k*0.14)); if(a<=0)return; const gg=grp(g,a);
+      el("rect",{x:m.x,y:350,width:m.w,height:50,rx:25,fill:"rgba(226,87,76,.45)"},gg);txt(m.c,{x:m.x+m.w/2,y:382,"text-anchor":"middle","font-size":22,"font-weight":700},gg)});
+    const a1=rv(T,S[1].s); if(a1>0){const gg=grp(g,a1);card(gg,660,175,550,360);txt("Measure the BGL when there is:",{x:688,y:222,"font-size":27,"font-weight":800,fill:C.mint},gg);
+      bullets(gg,692,284,["An altered conscious state","Altered cerebral function","Trauma or seizures","A child (especially)"],T,[frac(1,0.30),frac(1,0.48),frac(1,0.66),frac(1,0.88)],C.gold);}
+  }
+
+  if(i===2){
+    const X0=100,W=1080,vx=v=>X0+v/6*W, y=330;
+    const a0=rv(T,S[0].s,0.6);
+    const gg=grp(g,a0);
+    el("rect",{x:vx(0),y:y-26,width:vx(3.5)-vx(0),height:52,rx:8,fill:T>=S[1].s?"rgba(226,87,76,.55)":"rgba(226,87,76,.22)"},gg);
+    el("rect",{x:vx(3.5),y:y-26,width:vx(6)-vx(3.5),height:52,rx:8,fill:"rgba(63,174,116,.35)"},gg);
+    for(let v=0;v<=6;v++){el("line",{x1:vx(v),y1:y+30,x2:vx(v),y2:y+44,stroke:"#fff","stroke-width":3,opacity:.7},gg);txt(String(v),{x:vx(v),y:y+74,"text-anchor":"middle","font-size":24,fill:"#cfe7da"},gg)}
+    txt("mmol/L",{x:X0+W+6,y:y+74,"font-size":20,fill:"#cfe7da"},gg);
+    el("line",{x1:vx(3.5),y1:y-70,x2:vx(3.5),y2:y+30,stroke:C.gold,"stroke-width":5},gg);
+    txt("3.5",{x:vx(3.5),y:y-82,"text-anchor":"middle","font-size":34,"font-weight":800,fill:C.gold},gg);
+    const n=rv(T,frac(0,0.78),0.5); if(n>0){const gn=grp(g,n);el("line",{x1:vx(2.5),y1:y+28,x2:vx(2.5),y2:y+118,stroke:C.mint,"stroke-width":3,"stroke-dasharray":"6 6"},gn);txt("2.5: neonate normal is above this",{x:vx(2.5),y:y+146,"text-anchor":"middle","font-size":22,fill:C.mint},gn)}
+    txt("Normal: above 3.5 (adults, children)",{x:vx(4.75),y:y+8,"text-anchor":"middle","font-size":20,"font-weight":700,fill:"#c8f2d9",opacity:a0},g);
+    const m=rv(T,S[1].s,0.5); if(m>0){
+      const p=eo(pr(T,S[1].s+0.4,S[1].e)), val=5.0-(5.0-2.8)*p, mx=vx(val), gm=grp(g,m);
+      el("polygon",{points:`${mx},${y-30} ${mx-16},${y-62} ${mx+16},${y-62}`,fill:"#fff"},gm);
+      txt(val.toFixed(1),{x:mx,y:y-72,"text-anchor":"middle","font-size":34,"font-weight":800,fill:val<3.5?"#ff8c82":"#fff"},gm);
+      badge(gm,"The protocol applies below 3.5 mmol/L",640,528,1,"rgba(226,87,76,.7)");}
+  }
+
+  if(i===3){
+    const a0=rv(T,S[0].s,0.5);
+    txt("The aim",{x:640,y:205,"text-anchor":"middle","font-size":54,"font-weight":800,fill:C.gold,opacity:a0},g);
+    const a1=rv(T,S[1].s,0.5);
+    if(a1>0){const gg=grp(g,a1);
+      txt("least invasive",{x:130,y:285,"font-size":24,fill:C.mint},gg);txt("more invasive",{x:1150,y:285,"text-anchor":"end","font-size":24,fill:"#ffb3aa"},gg);
+      el("path",{d:"M130 305 L1150 305 M1128 288 L1152 305 L1128 322",fill:"none",stroke:"#fff","stroke-width":5,"stroke-linecap":"round","stroke-linejoin":"round",opacity:.8},gg);
+      [["Basic care and life support",C.gold,130],["Oral glucose",C.mint,470],["IM glucagon, if the EOC Clinician advises","#ffb3aa",810]].forEach((n,k)=>{
+        const hl=(k===0&&T>=S[2].s)?1:0; el("rect",{x:n[2],y:340,width:340,height:150,rx:22,fill:hl?"rgba(227,167,18,.30)":C.card,stroke:hl?C.gold:C.cardLine,"stroke-width":hl?4:2},gg);
+        el("circle",{cx:n[2]+44,cy:392,r:20,fill:n[1]},gg);txt(String(k+1),{x:n[2]+44,y:400,"text-anchor":"middle","font-size":24,"font-weight":800,fill:C.ink},gg);
+        const words=n[0].split(" "); const mid=Math.ceil(words.length/2);
+        if(words.length>2){txt(words.slice(0,mid).join(" "),{x:n[2]+24,y:444,"font-size":26,"font-weight":700},gg);txt(words.slice(mid).join(" "),{x:n[2]+24,y:476,"font-size":26,"font-weight":700},gg)}
+        else txt(n[0],{x:n[2]+24,y:452,"font-size":28,"font-weight":700},gg)});
+    }
+  }
+
+  if(i===4){
+    // glucose paste tube
+    el("rect",{x:140,y:240,width:90,height:250,rx:20,fill:"#e8eee8",filter:"url(#sh)"},g);
+    el("rect",{x:158,y:200,width:54,height:46,rx:10,fill:C.gold},g);
+    el("rect",{x:140,y:300,width:90,height:90,fill:"rgba(63,174,116,.35)"},g);
+    txt("GLUCOSE",{x:185,y:352,"text-anchor":"middle","font-size":15,"font-weight":800,fill:C.ink,transform:"rotate(-90 185 352)"},g);
+    const a0=rv(T,S[0].s);
+    row(g,320,170,890,96,"Age 2 years or older",null,a0,C.mint);
+    row(g,320,276,890,104,"Adequate GCS to swallow the paste","a cough is a good indicator",rv(T,frac(0,0.30)),C.mint);
+    const big=rv(T,frac(0,0.70)); if(big>0){const gb=grp(g,big);el("rect",{x:320,y:396,width:890,height:98,rx:22,fill:"rgba(227,167,18,.28)",stroke:C.gold,"stroke-width":3},gb);txt("Oral glucose, up to 15 g",{x:365,y:462,"font-size":44,"font-weight":800,fill:C.gold},gb)}
+    badge(g,"Request clinical support as appropriate",760,545,rv(T,S[1].s,0.4),"rgba(0,0,0,.4)");
+  }
+
+  if(i===5){
+    row(g,70,165,1140,86,"Consult the EOC Clinician",null,rv(T,S[0].s),C.gold);
+    // syringe
+    const a1=rv(T,S[1].s); if(a1>0){const gs=grp(g,a1);
+      el("rect",{x:110,y:312,width:260,height:48,rx:10,fill:"#e8eee8",filter:"url(#sh)"},gs);el("rect",{x:116,y:322,width:120,height:28,rx:6,fill:"rgba(63,174,116,.5)"},gs);
+      el("rect",{x:370,y:330,width:60,height:12,fill:"#cfd8d1"},gs);el("rect",{x:430,y:334,width:90,height:4,fill:"#cfd8d1"},gs);el("rect",{x:76,y:325,width:34,height:22,rx:6,fill:"#cfd8d1"},gs);
+      txt("IM glucagon",{x:240,y:292,"text-anchor":"middle","font-size":30,"font-weight":800},gs);txt("only if advised",{x:240,y:400,"text-anchor":"middle","font-size":22,fill:"#cfe7da"},gs)}
+    const a2=rv(T,S[2].s), a3=rv(T,S[3].s);
+    if(a2>0){const gg=grp(g,a2);card(gg,600,285,610,112);el("rect",{x:600,y:285,width:8,height:112,rx:4,fill:C.gold},gg);txt("6 years or older (or 25 kg or more)",{x:630,y:333,"font-size":25,"font-weight":700},gg);txt("1 mg",{x:630,y:381,"font-size":42,"font-weight":800,fill:C.gold},gg)}
+    if(a3>0){const gg=grp(g,a3);card(gg,600,415,610,112);el("rect",{x:600,y:415,width:8,height:112,rx:4,fill:C.mint},gg);txt("2 to under 6 years (or under 25 kg)",{x:630,y:463,"font-size":25,"font-weight":700},gg);txt("0.5 mg",{x:630,y:511,"font-size":42,"font-weight":800,fill:C.mint},gg)}
+  }
+
+  if(i===6){
+    const a0=rv(T,S[0].s);
+    if(a0>0){const gg=grp(g,a0);card(gg,70,180,1140,150,"rgba(227,167,18,.16)","rgba(227,167,18,.6)");txt("Under 2 years",{x:110,y:258,"font-size":54,"font-weight":800,fill:C.gold},gg);txt("Consult the EOC Clinician",{x:110,y:306,"font-size":32,"font-weight":700},gg)}
+    const a1=rv(T,S[1].s);
+    if(a1>0){const gg=grp(g,a1);
+      txt("They may advise:",{x:80,y:392,"font-size":26,fill:"#cfe7da"},gg);
+      [["Oral glucose gel",80,330],["IM glucagon 0.5 mg",430,400]].forEach(o=>{el("rect",{x:o[1],y:410,width:o[2],height:70,rx:35,fill:C.mint},gg);txt(o[0],{x:o[1]+o[2]/2,y:455,"text-anchor":"middle","font-size":30,"font-weight":800,fill:C.ink},gg)});
+      const c=rv(T,frac(1,0.7)); if(c>0){const gc=grp(gg,c);el("rect",{x:870,y:410,width:340,height:70,rx:35,fill:"rgba(0,0,0,.4)",stroke:C.cardLine,"stroke-width":2},gc);txt("Request clinical support",{x:1040,y:455,"text-anchor":"middle","font-size":26,"font-weight":700},gc)}}
+  }
+
+  if(i===7){
+    const checks=[["Right medication",frac(0,0.35)],["Expiry date",frac(1,0.25)],["Right dose",frac(1,0.6)]];
+    txt("Medication checks",{x:80,y:195,"font-size":28,"font-weight":800,fill:C.gold,opacity:rv(T,S[0].s,0.5)},g);
+    txt("before preparing, before giving, and afterwards",{x:80,y:228,"font-size":21,fill:"#cfe7da",opacity:rv(T,S[0].s,0.5)},g);
+    const two=rv(T,frac(0,0.78)); if(two>0){const gt=grp(g,two);el("rect",{x:80,y:250,width:520,height:54,rx:27,fill:"rgba(0,0,0,.35)"},gt);txt("Two clinicians, whenever possible",{x:340,y:285,"text-anchor":"middle","font-size":25,"font-weight":700},gt)}
+    checks.forEach((c,k)=>{const a=rv(T,c[1],0.4), y=325+k*70; const gg=grp(g,a);el("rect",{x:80,y,width:520,height:58,rx:14,fill:C.card,stroke:C.cardLine,"stroke-width":2},gg);txt(c[0],{x:150,y:y+39,"font-size":29,"font-weight":600},gg);tick(gg,112,y+29,pr(T,c[1]+0.2,c[1]+0.7),19)});
+    // thigh (front view) for the IM site
+    const a2=rv(T,S[2].s); if(a2>0){const gg=grp(g,a2);
+      el("rect",{x:800,y:160,width:170,height:380,rx:70,fill:"#e9bb93"},gg);
+      el("ellipse",{cx:900,cy:350,rx:30,ry:78,fill:"rgba(227,167,18,.85)",stroke:"#fff","stroke-width":3},gg);
+      el("rect",{x:955,y:290,width:14,height:130,rx:7,fill:"rgba(226,87,76,.8)"},gg);
+      txt("Vastus lateralis",{x:1000,y:235,"font-size":26,"font-weight":800,fill:C.gold},gg);txt("anterior-lateral mid-thigh",{x:1000,y:266,"font-size":21},gg);
+      el("line",{x1:932,y1:350,x2:996,y2:292,stroke:C.gold,"stroke-width":3},gg);
+      txt("not the side of the thigh",{x:990,y:470,"font-size":21,fill:"#ffb3aa"},gg);
+      el("line",{x1:962,y1:420,x2:985,y2:456,stroke:"#ffb3aa","stroke-width":3},gg);}
+  }
+
+  if(i===8){
+    row(g,110,185,1060,130,"If the patient recovers","consider offering complex carbohydrates to eat",rv(T,S[0].s),C.mint);
+    row(g,110,345,1060,130,"Provide transport","and notify the receiving facility",rv(T,S[1].s),C.gold);
+  }
+
+  if(i===9){
+    const labels=[["1","Measure","the BGL"],["2","Least invasive","first"],["3","EOC Clinician","if oral fails"],["4","Transport","and notify"]];
+    const seg=(S[0].e-S[0].s)/4.4;
+    labels.forEach((p,k)=>{const a=rv(T,S[0].s+0.5+k*seg,0.4), x=70+k*290;
+      const gg=grp(g,a);el("rect",{x,y:240,width:250,height:170,rx:26,fill:k===3?C.gold:"rgba(0,0,0,.32)",stroke:C.cardLine,"stroke-width":2},gg);
+      badgeNum(gg,x+50,292,p[0],k===3?"#fff":C.gold);
+      txt(p[1],{x:x+125,y:352,"text-anchor":"middle","font-size":27,"font-weight":800,fill:k===3?C.ink:"#fff"},gg);txt(p[2],{x:x+125,y:386,"text-anchor":"middle","font-size":23,fill:k===3?C.ink:"#cfe7da"},gg);
+      if(k<3)txt("›",{x:x+270,y:340,"text-anchor":"middle","font-size":60,fill:C.gold,opacity:a},g)});
+    badge(g,"Now try the treatment checker on this page",640,480,rv(T,S[1].s,0.5),"rgba(0,0,0,.35)");
+  }
+}
+function badge(g,s,x,y,a,col){
+  if(a<=0)return;
+  const gg=grp(g,a), w=s.length*15.5+56;
+  el("rect",{x:x-w/2,y:y-30,width:w,height:56,rx:28,fill:col||"rgba(0,0,0,.35)"},gg);
+  txt(s,{x,y:y+9,"text-anchor":"middle","font-size":26,"font-weight":700},gg);
+}
+function render(t){
+  v.innerHTML=""; defs();
+  const i=lineAt(t);
+  scene(t,i); chrome(t,i);
+  const last=TL.lines[TL.lines.length-1].end;
+  if(t>last+0.3){const a=eo(pr(t,last+0.3,last+0.9));
+    el("rect",{x:0,y:0,width:1280,height:720,fill:C.ink,opacity:a*.94});
+    txt("Hypoglycaemia",{x:640,y:330,"text-anchor":"middle","font-size":64,"font-weight":800,opacity:a});
+    txt("SAAS CPP-009-AO  ·  DSY Training",{x:640,y:385,"text-anchor":"middle","font-size":26,opacity:a*.75});}
+}
+</script>

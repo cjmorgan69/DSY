@@ -124,9 +124,9 @@
     T.fields.forEach(function (f) {
       var ask = el("div", "ask"); ask.appendChild(el("span", "q-t", f.label));
       if (f.hint) ask.appendChild(el("span", "small muted", f.hint));
-      if (f.type === "yesno") {
+      if (f.type === "yesno" || f.type === "choice") {
         var o = el("div", "opts");
-        [["yes", "Yes"], ["no", "No"]].forEach(function (p) {
+        (f.type === "yesno" ? [["yes", "Yes"], ["no", "No"]] : f.options.map(function (c) { return [c.value, c.label]; })).forEach(function (p) {
           var l = el("label", "pill"), i = el("input"); i.type = "radio"; i.name = f.id; i.value = p[0];
           l.appendChild(i); l.appendChild(document.createTextNode(p[1])); o.appendChild(l);
         });
@@ -146,8 +146,13 @@
     function read() {
       var v = {}, ok = true;
       T.fields.forEach(function (f) {
-        if (f.type === "yesno") { var c = form.querySelector('input[name="' + f.id + '"]:checked'); if (!c) { ok = false; v[f.id] = null; } else v[f.id] = c.value === "yes"; }
-        else { var raw = form.elements[f.id].value; var x = parseFloat(raw); if (raw === "" || isNaN(x)) { ok = false; v[f.id] = null; } else v[f.id] = x; }
+        if (f.type === "yesno" || f.type === "choice") {
+          var c = form.querySelector('input[name="' + f.id + '"]:checked');
+          if (!c) { if (!f.optional) ok = false; v[f.id] = null; } else v[f.id] = f.type === "yesno" ? c.value === "yes" : c.value;
+        } else {
+          var raw = form.elements[f.id].value; var x = parseFloat(raw);
+          if (raw === "" || isNaN(x)) { if (!f.optional) ok = false; v[f.id] = null; } else v[f.id] = x;
+        }
       });
       return ok ? v : null;
     }
@@ -178,7 +183,9 @@
           form.reset(); out.hidden = true;
           T.fields.forEach(function (f) {
             var val = s.values[f.id];
+            if (val === undefined || val === null) return;
             if (f.type === "yesno") form.querySelector('input[name="' + f.id + '"][value="' + (val ? "yes" : "no") + '"]').checked = true;
+            else if (f.type === "choice") form.querySelector('input[name="' + f.id + '"][value="' + val + '"]').checked = true;
             else form.elements[f.id].value = val;
           });
           show(read()); form.scrollIntoView({ behavior: "smooth", block: "start" });

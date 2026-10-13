@@ -10,8 +10,8 @@ microlearning/
   shared/module.css      look (sits on top of /training/theme.css)
   shared/module.js       builds a module page from window.MODULE
   shared/landing.js      builds the landing page from each module's content.js
-  stroke/                one module = index.html + content.js (+ intro.mp4 and video-src/ if it has a video)
-  envenomation/          same layout
+  stroke/, envenomation/, hypoglycaemia/
+                         one module each = index.html + content.js (+ intro.mp4 and video-src/ if it has a video)
   tools/video/           align.py, render.js and make.sh: build a narrated intro video from the narration audio;
                          voice.json says which ElevenLabs voice narrates (change it there)
 .claude/skills/build-microlearning-module/   the saved instructions for building a module with Claude
@@ -37,7 +37,7 @@ the `build-microlearning-module` skill holds the rules and steps (including the 
 | `session` | Facilitator guide for team-led sessions (collapsed, at the top) |
 | `video`, `intro` | Introduction: video, then short paragraphs |
 | `keyPoints` | Boxes of bullet points or numbered steps (`tone: "warn"` or `"no"` to colour) |
-| `tool` | Decision aid: `fields`, an `evaluate(values)` function, optional `scenarios` that fill the form |
+| `tool` | Decision aid: `fields` (`number`, `yesno` or `choice` with `options`; add `optional: true` to allow a blank), an `evaluate(values)` function, optional `scenarios` that fill the form |
 | `reference`, `links` | Tables or lists, plus links out (for example the SAAS Clinical app) |
 | `quiz` | Questions with `options`, `answer` (index) and a `why` line shown after answering |
 | `practical` | Optional hands-on activity: equipment, steps, what good looks like |
