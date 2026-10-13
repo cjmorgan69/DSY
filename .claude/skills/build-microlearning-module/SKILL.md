@@ -52,15 +52,24 @@ Reference modules: `microlearning/stroke/` (shorthand keys, decision aid, narrat
    - Serve the repo (`python3 -m http.server`), open the page with Playwright at phone width, open every panel,
      run the tool, scenarios and quiz, confirm no console errors and no sideways scroll.
    - Compare against the protocol text one more time: every number, threshold and agency name.
-5. **Video script** (the user records it). Write one paragraph per scene, only protocol facts, spell letters out
-   (`C S U`, `E O C`, `E T A`, `G R N`), spell hard words phonetically (`Rosier`, `Iz-bar`), and give it to the user in
-   ONE plain code block with blank lines between scenes and **no numbers** (numbers get read aloud). Aim for about 3
-   minutes (the user's Roger narration ran about 155 words a minute over a long script, about 110 for a very short one). Explain what each scene will show.
-6. **Narration.** The ElevenLabs connector works for listing voices, but generation was refused on the user's plan
-   (cloned voices and a flagged free tier), so do not retry. The user records in the ElevenLabs app with their
-   voice (Roger - Laid-Back, Casual, Resonant) and uploads the mp3. Uploads have repeatedly been the wrong or an old file:
-   `cmp` it against earlier narrations, check the duration against the word count, and check the first words
-   (speech recognition) before building anything. Tell the user plainly if it is the wrong file.
+5. **Video script.** Write one paragraph per scene, only protocol facts, spell letters out (`C S U`, `E O C`, `E T A`,
+   `G R N`), spell hard words phonetically (`Rosier`, `Iz-bar`), and show it to the user in ONE plain code block with
+   blank lines between scenes and **no numbers** (numbers get read aloud). Aim for about 3 minutes (about 155 words a
+   minute over a long script, about 110 for a very short one). Say what each scene will show. The user reads the script
+   in your reply (it is clinical content): unless they asked you to wait, carry straight on to step 6.
+6. **Narration.** Use the ElevenLabs connector (load it with ToolSearch: `creative_generate_speech`,
+   `creative_get_flow_run_status`, `creative_list_voices`). The voice is in `microlearning/tools/video/voice.json`
+   (currently Roger, premade, `eleven_multilingual_v2`); the user may change it later, so always read the file and never
+   hard-code a voice id. Generate the WHOLE script as one take (`generations_count: 1`, blank lines between scenes), poll
+   until `all_completed`, then download the signed `content_url` from the status result with `curl -o narration.mp3` straight
+   into the scratchpad (never commit or paste the signed URL). Costs about 1 credit per character (a 3 minute script is
+   about 2,600 credits): do not regenerate, or generate extra takes, without the user's say-so. Do a 1 sentence test first if
+   it is the first generation of the session. Then check the file before building: duration against the word count, and the
+   alignment table from step 7, which recognises the first words of every sentence. Tell the user plainly if it is wrong.
+   If generation is refused (plan limits, account activity messages), do not retry or switch voices over and over: tell the
+   user, and fall back to the old route: they record the script in the ElevenLabs app (Roger, settings stability 50,
+   similarity 75, speed 1.0) and upload the mp3. Uploads have repeatedly been the wrong or an old file: `cmp` it against
+   earlier narrations, check the duration, and check the first words before building.
 7. **Build the video.** Copy `microlearning/stroke/video-src/` to `microlearning/<name>/video-src/`, write
    `script.json` (the exact sentences pasted into the voice tool, grouped into scenes) and rewrite `scene()` in
    `scene.html` (one visual per scene; keep the header, progress bar and caption code). Then:
@@ -98,7 +107,8 @@ old text is then clinically wrong, so treat the update as urgent.
    box from the version history so staff who learned the old version notice. Search the file for the old values afterwards.
 3. The intro video now contradicts the page. Remove its `src` (and delete `intro.mp4` and the poster) in the same change, so no
    outdated video is shown, and restore it once the new one is built.
-4. Update `video-src/script.json` and `scene.html`, preview the changed scenes with placeholder timings, and give the user the new
-   narration script (all of it in one block, with the changed sentences listed so they know what moved). Re-record the whole script
-   in one take rather than splicing lines, because pace and tone differ between generations. Then rebuild from the new audio.
+4. Update `video-src/script.json` and `scene.html`, preview the changed scenes with placeholder timings, show the user the new
+   narration script (all of it in one block, with the changed sentences listed so they know what moved), then regenerate the
+   whole narration in one take (step 6 above) rather than splicing lines, because pace and tone differ between generations.
+   Rebuild from the new audio.
 5. Tell the user what changed in plain terms, and that the live page is out of date until the branch is merged.
