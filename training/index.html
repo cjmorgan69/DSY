@@ -57,6 +57,13 @@
   function linkify(text) {
     return esc(text).replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)\]])/g, function (u) { return '<a href="' + u + '" target="_blank" rel="noopener">' + u + "</a>"; });
   }
+  function linkRow(text) {
+    var seen = {}, urls = (String(text || "").match(/https?:\/\/[^\s<]+[^\s<.,;:!?)\]]/g) || []).filter(function (u) { return seen[u] ? false : (seen[u] = true); });
+    if (!urls.length) return "";
+    return '<span class="small muted">Tap a link to open it</span><div class="row">' + urls.map(function (u) {
+      return '<a class="link" href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(u.replace(/^https?:\/\//, "").replace(/\/$/, "")) + "</a>";
+    }).join("") + "</div>";
+  }
   function paras(text) {
     return String(text || "").split(/\n\s*\n/).map(function (p) { return p.trim(); }).filter(Boolean).map(function (p) { return "<p>" + linkify(p).replace(/\n/g, "<br>") + "</p>"; }).join("");
   }
@@ -336,6 +343,7 @@
       '<label>Short summary (members see this)<input id="l-summary" name="summary" value="' + esc(l.summary || "") + '"></label>' +
       '<label>Lesson content (visible to you and anyone you share it with)<textarea id="l-content" name="content">' + esc(l.content || "") + "</textarea></label>" +
       '<label>Resources and links<textarea id="l-res" name="resources">' + esc(l.resources || "") + "</textarea></label>" +
+      '<div class="stack" id="l-links">' + linkRow(l.resources) + "</div>" +
       '<div class="stack"><h3>Files</h3>' + (l.id
         ? '<div id="lfiles">' + filesList(l.id) + '</div><label class="drop" id="l-drop" data-lid="' + l.id + '"><strong>Drag files here</strong><span class="small">or click to choose. Up to 50 MB each.</span><input id="l-upload" type="file" multiple data-act="upload" data-lid="' + l.id + '"></label>'
         : '<p class="small muted">Save the lesson first, then come back to attach files.</p>') + "</div>" +
@@ -599,6 +607,9 @@
   document.addEventListener("click", function (e) {
     var t = e.target.closest("[data-act]"); if (!t || t.tagName === "INPUT" || t.tagName === "SELECT") return;
     var fn = actions[t.dataset.act]; if (fn) fn(t.dataset, t);
+  });
+  document.addEventListener("input", function (e) {
+    if (e.target && e.target.id === "l-res") { var b = document.getElementById("l-links"); if (b) b.innerHTML = linkRow(e.target.value); }
   });
   document.addEventListener("change", function (e) {
     var t = e.target; if (!t.dataset || !t.dataset.act) return;
