@@ -19,7 +19,9 @@ Reference modules: `microlearning/stroke/` (shorthand keys, decision aid, narrat
    ROSIER items are not in CPP-016-AO, so the stroke module does not list them and the practical points to the
    approved reference instead).
 2. **Get the protocol text.** Attached PDF: `pdftotext -layout <file> -`. The clinical site
-   (clinical.saambulance.sa.gov.au) is blocked from the sandbox, so ask the user to attach the PDF or paste the text.
+   (clinical.saambulance.sa.gov.au) is publicly readable but was blocked by the session's network policy until the user allowed
+   the domain. Try `curl -sSL -o p.pdf 'https://clinical.saambulance.sa.gov.au/assets/pdf/home/<Protocol>.pdf'` (spaces as `%20`); if it
+   fails with a 403 CONNECT error, ask the user to attach the PDF or paste the text.
    Read the whole thing, including version history, export date and review date.
 3. **Record the source** in `protocol` (code, name, version, exported). If a protocol's review date has passed, say
    so to the user (CPPRO-022 v1.0 had a review date of 30 Nov 2024). Never hide that.
@@ -53,7 +55,7 @@ Reference modules: `microlearning/stroke/` (shorthand keys, decision aid, narrat
 5. **Video script** (the user records it). Write one paragraph per scene, only protocol facts, spell letters out
    (`C S U`, `E O C`, `E T A`, `G R N`), spell hard words phonetically (`Rosier`, `Iz-bar`), and give it to the user in
    ONE plain code block with blank lines between scenes and **no numbers** (numbers get read aloud). Aim for about 3
-   minutes at the user's slow narration pace (about 115 words a minute). Explain what each scene will show.
+   minutes (the user's Roger narration ran about 155 words a minute over a long script, about 110 for a very short one). Explain what each scene will show.
 6. **Narration.** The ElevenLabs connector works for listing voices, but generation was refused on the user's plan
    (cloned voices and a flagged free tier), so do not retry. The user records in the ElevenLabs app with their
    voice (Roger - Laid-Back, Casual, Resonant) and uploads the mp3. Uploads have repeatedly been the wrong or an old file:
@@ -80,3 +82,21 @@ Reference modules: `microlearning/stroke/` (shorthand keys, decision aid, narrat
 
 What is live, what you could not verify (audio, video playback, any link you could not open), anything you wrote
 yourself that needs their review, and any protocol review dates that have passed.
+
+## When a protocol is updated
+
+Protocols change (CPP-016-AO v5.7 became v6.0 in June 2026: the Code Stroke window went from 4 to 9 hours). A module built on the
+old text is then clinically wrong, so treat the update as urgent.
+
+1. Get the new text and the old text (the old PDF, or `git log` for the module's `content.js` header) and `diff` them. Read the
+   protocol's version history, but do not trust it to be complete: the v6.0 history listed two changes and the diff found more
+   (new Code Notification Line, SAGRN arrival confirmation, "nearest hospital" wording, the ROSIER description).
+2. Update `content.js`: `protocol.version` and `exported`, every number and threshold, the checker's `evaluate()` (re-test every
+   scenario and each exact boundary), scenarios, quiz questions and `why` lines, facility tables, practical. Add a "What changed"
+   box from the version history so staff who learned the old version notice. Search the file for the old values afterwards.
+3. The intro video now contradicts the page. Remove its `src` (and delete `intro.mp4` and the poster) in the same change, so no
+   outdated video is shown, and restore it once the new one is built.
+4. Update `video-src/script.json` and `scene.html`, preview the changed scenes with placeholder timings, and give the user the new
+   narration script (all of it in one block, with the changed sentences listed so they know what moved). Re-record the whole script
+   in one take rather than splicing lines, because pace and tone differ between generations. Then rebuild from the new audio.
+5. Tell the user what changed in plain terms, and that the live page is out of date until the branch is merged.
