@@ -435,11 +435,7 @@
       return '<li><button class="item" data-act="editperson" data-id="' + p.id + '"><div class="what"><span class="t">' + esc(nameOf(p)) + '</span>' + (p.staff_id ? '<span class="small muted">ID ' + esc(p.staff_id) + "</span>" : "") + '<span class="row">' + (gs || '<span class="small muted">Not in any group</span>') + "</span></div>" +
         '<div class="act">' + (p.role === "leader" ? '<span class="chip warn">Leader</span>' : "") + "</div></button></li>";
     }).join("") : '<li class="empty">No one has signed up yet. Share the app link and ask your teams to create an account.</li>') + "</ul>";
-    html += '<section class="panel pad stack"><h3>Team pages</h3><p class="small muted">What members see when they open the team page. A team or course with an empty page sends members straight to the training schedule.</p><ul class="list">' +
-      S.groups.map(function (g) {
-        var filled = !!(g.blurb || g.photo_path || g.roster_url || (Array.isArray(g.links) && g.links.length));
-        return '<li><button class="item" type="button" data-act="editpage" data-id="' + g.id + '"><div class="what"><span class="t">' + esc(g.name) + '</span></div><div class="act"><span class="chip ' + (filled ? "good" : "warn") + '">' + (filled ? "Page set up" : "Empty") + "</span></div></button></li>";
-      }).join("") + "</ul></section>";
+    html += '<section class="panel pad stack"><h3>Team and region pages</h3><p class="small muted">Photos, information, roster links and policy links are now edited from the Region page.</p><div class="row"><a class="link" href="../region/">Open the Region page</a></div></section>';
     var courses = S.groups.filter(function (g) { return g.type === "course"; });
     if (courses.length) {
       html += '<section class="panel pad stack"><h3>Your courses</h3><ul class="stack">' + courses.map(function (g) {
