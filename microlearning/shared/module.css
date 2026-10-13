@@ -85,3 +85,53 @@ tr + tr td { border-top: 1px solid var(--line); }
 .card .go { margin-top: auto; padding-top: .4rem; color: var(--brand); font-weight: 700; }
 .card .go::after { content: " \2192"; }
 .card[hidden] { display: none; }
+
+/* logo in the header: transparent PNG, recoloured to the app green */
+.brand-icon { background: none; overflow: hidden; width: 40px; height: 40px; }
+.brand-icon img { display: block; width: 100%; height: 100%; border-radius: 50%; }
+
+/* flow layout (module sets flow: true): open sections instead of toggles */
+.flow { gap: 1rem; padding-top: .6rem; }
+.flow-head { display: flex; align-items: center; gap: .7rem; }
+.flow-head h2 { font-size: 1.45rem; }
+.flow-head .num { width: 34px; height: 34px; }
+.flow .stack { gap: 1rem; }
+.flow + .flow { border-top: 1px solid var(--line); padding-top: 1.6rem; }
+.scrollbar { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 20; background: transparent; pointer-events: none; }
+.scrollbar span { display: block; height: 100%; width: 0; background: var(--accent); }
+.reveal-on .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+.reveal-on .reveal.in { opacity: 1; transform: none; }
+
+/* swipe tiles */
+.tiles { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; margin: 0 -1rem; padding: .2rem 1rem .4rem; scroll-padding: 0 1rem; -webkit-overflow-scrolling: touch; }
+.tiles::-webkit-scrollbar { display: none; }
+.tile { flex: 0 0 min(76%, 17rem); min-height: 9.5rem; scroll-snap-align: start; display: flex; flex-direction: column; gap: .5rem; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: 0 1px 2px rgba(20, 40, 30, .05); }
+.tile strong { font-family: var(--font-head); font-size: 1.15rem; line-height: 1.2; }
+.tile .small { color: var(--muted); }
+.tile-n { display: grid; place-items: center; min-width: 1.8rem; height: 1.8rem; width: max-content; padding: 0 .55rem; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-size: .78rem; font-weight: 700; }
+.tile.warn { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.tile.no { background: color-mix(in srgb, var(--danger) 8%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 35%, var(--line)); }
+.tilebar { display: flex; align-items: center; justify-content: center; gap: .8rem; }
+.dots { display: flex; gap: 6px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--line); transition: background .2s ease, transform .2s ease; }
+.dot.on { background: var(--brand); transform: scale(1.3); }
+.step { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--brand); font-size: 1.3rem; line-height: 1; }
+.hint { text-align: center; }
+
+/* flash cards */
+.flash { position: relative; display: grid; width: 100%; min-height: 13rem; padding: 0; border: 0; background: none; text-align: left; perspective: 900px; color: var(--ink); }
+.flash .face { grid-area: 1 / 1; display: flex; flex-direction: column; justify-content: center; gap: .6rem; padding: 1.3rem 1.4rem; border-radius: var(--radius); backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: transform .45s ease; box-shadow: 0 2px 8px rgba(20, 40, 30, .1); }
+.flash .face strong { font-family: var(--font-head); font-size: 1.3rem; line-height: 1.25; }
+.flash .front { background: var(--surface); border: 1px solid var(--line); }
+.flash .back { background: var(--brand); color: var(--brand-ink); transform: rotateY(180deg); }
+.flash .back .eyebrow { color: color-mix(in srgb, var(--brand-ink) 75%, transparent); }
+.flash.flipped .front { transform: rotateY(-180deg); }
+.flash.flipped .back { transform: rotateY(0); }
+.rate { justify-content: center; }
+.btn.ghost { background: transparent; color: var(--brand); box-shadow: inset 0 0 0 1px var(--brand); }
+@media (prefers-reduced-motion: reduce) {
+  .flash .face { transition: none; }
+  .tile, .dot { transition: none; }
+}
+
+[hidden] { display: none !important; }

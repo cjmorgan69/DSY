@@ -2,7 +2,8 @@
    Sources: SAAS CPP-003-AO Anaphylaxis - AO, version 3.0 (8 December 2016), exported 31.08.2026, plus the related
    procedures CPPRO-008 Medication Checks and CPPRO-011 Intramuscular Injection (including EpiPen auto-injector
    administration), each v1.0, effective 05/07/2017. Nothing clinical here goes beyond those documents. */
-window.MODULE = {
+var M = window.MODULE = {
+  flow: true,                         // open sections that fade in, swipe tiles and flash cards (see ../README.md)
   draft: false,                       // true shows "coming soon" boxes for empty video/podcast slots
   title: "Anaphylaxis",
   subtitle: "Ambulance Officer microlearning",
@@ -238,3 +239,56 @@ window.MODULE = {
     { label: "The Resus Room: Angioedema (2019)", href: "https://theresusroom.libsyn.com/angioedema" }
   ]
 };
+
+/* Layout: the same content as the shorthand keys above, arranged for scrolling on a phone. */
+M.panels = [
+  { title: "Introduction", blocks: [{ video: M.video }].concat(M.intro.map(function (t) { return { text: t }; })) },
+  { title: "Recognise it", blocks: [
+    { tiles: { title: "Signs of a severe allergic reaction", text: "Swipe through the signs listed in the protocol.", items: M.keyPoints[0].items.map(function (t) { return { title: t }; }) } }
+  ] },
+  { title: "When to give adrenaline", blocks: [
+    { box: { title: "Anaphylaxis suspected AND any one of", tone: "warn", text: "Any single feature below, together with suspected anaphylaxis, starts the adrenaline pathway." } },
+    { tiles: { items: M.keyPoints[1].items.map(function (t) { return { title: t, tone: "warn" }; }) } }
+  ] },
+  { title: "What to do", blocks: [
+    { tiles: { title: "The protocol steps in order", numbered: true, items: M.keyPoints[2].steps.map(function (s) { return { title: s.t, text: s.text }; }) } },
+    { box: M.keyPoints[3] },
+    { box: M.keyPoints[4] }
+  ] },
+  { title: "Using an EpiPen", blocks: [
+    { tiles: { title: "Auto-injector steps (CPPRO-011)", numbered: true, items: [
+      { title: "Prepare", text: "Hand hygiene and the medication checks. Explain and gain consent where possible." },
+      { title: "Choose the site", text: "Mid anterior-lateral thigh. It can be given through clothing if required." },
+      { title: "Cap off", text: "Remove it from the outer container, form a fist around the barrel and remove the blue cap. Do not touch either end." },
+      { title: "Inject", text: "Push the orange end firmly against the thigh until it clicks, and hold it there for 10 or more seconds." },
+      { title: "After", text: "Remove it into a sharps container, gently massage the site for 10 seconds, and record the dose and time." },
+      { title: "Expired or discoloured", text: "Still give it in a life-threatening situation if there is no alternative; tell the receiving team and record it." }
+    ] } }
+  ] },
+  { title: "Flash cards", blocks: [
+    { cards: { items: [
+      { q: "How does the protocol describe anaphylaxis?", a: "A potentially life threatening severe allergic reaction. Treat it as a medical emergency that needs immediate treatment." },
+      { q: "When does the adrenaline pathway apply?", a: "Anaphylaxis suspected AND any one of: hypotension, severe bronchospasm, or severe respiratory distress due to angioedema." },
+      { q: "How should the patient be positioned?", a: "Lay them flat, unless their breathing is difficult. Do not let them stand or walk." },
+      { q: "Which adrenaline do you use first?", a: "The patient's own prescribed auto-injector (for example an EpiPen), following their anaphylaxis plan if it is available." },
+      { q: "Where and how long do you hold an EpiPen?", a: "Orange end firmly against the mid thigh until it clicks, held for 10 or more seconds. Massage the site for 10 seconds." },
+      { q: "No auto-injector. What now?", a: "Consult the EOC Clinician, who may advise IM adrenaline 10 microg/kg (single maximum 500 microg), with further doses if required." },
+      { q: "A 20 kg child is advised IM adrenaline. What dose?", a: "200 microg (10 microg x 20 kg)." },
+      { q: "From what weight is the single dose capped, and at what?", a: "From 50 kg, the single dose is capped at 500 microg." },
+      { q: "Known asthma and an allergy, with sudden breathing difficulty?", a: "Treat for anaphylaxis before giving any asthma medication." },
+      { q: "In young children, what may you see?", a: "They may be pale and floppy." },
+      { q: "Who goes to a health facility?", a: "Every patient with allergy or anaphylaxis, even if they seem to recover after treatment." }
+    ] } }
+  ] },
+  { title: M.tool.title, blocks: [{ tool: M.tool }] },
+  { title: M.referenceTitle, collapsed: true, blocks: M.reference.map(function (r) { return { table: r }; }).concat([{ links: M.links }]) },
+  { title: "Knowledge check", blocks: [{ quiz: { questions: M.quiz } }] },
+  { title: M.practical.title || "Practical", optional: true, collapsed: true, chip: "Optional", blocks: [
+    { text: M.practical.intro }, { box: { title: "What you need", items: M.practical.equipment } },
+    { steps: M.practical.steps }, { box: { title: "What good looks like", items: M.practical.good } }
+  ].concat(M.practical.note ? [{ note: M.practical.note }] : []) },
+  { title: "Further learning", optional: true, collapsed: true, chip: "Optional", blocks: [
+    { text: M.furtherVideo.note, muted: true }, { video: M.furtherVideo },
+    { text: M.podcast.summary }, { audio: M.podcast }, { links: M.furtherLinks }
+  ] }
+];

@@ -50,7 +50,7 @@
   }
 
   var head = el("header", "top");
-  var brand = el("div", "brand"); brand.appendChild(el("div", "brand-icon", "+"));
+  var brand = el("div", "brand"); var lg = el("div", "brand-icon"), li = el("img"); li.src = new URL("dsy-logo.png", document.currentScript.src).href; li.alt = "DSY Training"; li.width = li.height = 40; lg.appendChild(li); brand.appendChild(lg);
   var bt = el("div"); bt.appendChild(el("h1", null, "Microlearning")); bt.appendChild(el("p", null, "Short modules built on SAAS clinical protocols")); brand.appendChild(bt);
   head.appendChild(brand); app.textContent = ""; app.appendChild(head);
 
