@@ -12,7 +12,8 @@ microlearning/
   shared/landing.js      builds the landing page from each module's content.js
   stroke/                one module = index.html + content.js (+ intro.mp4 and video-src/ if it has a video)
   envenomation/          same layout
-  tools/video/           align.py, render.js and make.sh: build a narrated intro video from the recorded audio
+  tools/video/           align.py, render.js and make.sh: build a narrated intro video from the narration audio;
+                         voice.json says which ElevenLabs voice narrates (change it there)
 .claude/skills/build-microlearning-module/   the saved instructions for building a module with Claude
 ```
 
