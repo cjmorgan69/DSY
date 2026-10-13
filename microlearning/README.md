@@ -73,3 +73,14 @@ empty slots are left out.
 - Do not copy protocol content you were not given (for example, the ROSIER items are not in CPP-016-AO, so the stroke
   module does not list them).
 - Scenarios, practical activities and video outlines written by Claude are examples: label them and have them checked.
+
+
+## Flow layout (prototype, used by anaphylaxis)
+
+Set `flow: true` and give `panels` (the shorthand keys still work but need `panels` for this layout). Panels become open
+sections that fade in as you scroll; a panel with `collapsed: true` stays a toggle (good for reference tables). New blocks:
+
+- `{ tiles: { title, text, numbered, items: [{ title, text, tone }] } }` swipe-sideways tiles with dots and arrows.
+- `{ cards: { items: [{ q, a }] } }` flash cards: tap to turn, "Again" cards return at the end.
+
+The header logo is `shared/dsy-logo.png`, the hub logo recoloured to the app green.

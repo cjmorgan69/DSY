@@ -16,6 +16,7 @@
   function link(label, href, cls) { var a = el("a", cls || "link", label); a.href = href; a.target = "_blank"; a.rel = "noopener"; return a; }
   function isAudio(u) { return /\.(mp3|m4a|wav|ogg)(\?|$)/i.test(u); }
   function isVideoFile(u) { return /\.(mp4|webm)(\?|$)/i.test(u); }
+  function logo() { var d = el("div", "brand-icon"), i = el("img"); i.src = new URL("dsy-logo.png", document.currentScript ? document.currentScript.src : location.href).href; i.alt = "DSY Training"; i.width = 40; i.height = 40; d.appendChild(i); return d; }
   function titled(text, sub) { var li = el("li"); li.appendChild(el("span", "t", text)); if (sub) { li.appendChild(document.createElement("br")); li.appendChild(document.createTextNode(sub)); } return li; }
 
   var panelNo = 0;
@@ -236,6 +237,69 @@
     wrap.appendChild(qf); return wrap;
   }
 
+  /* swipe-sideways tiles: M.tiles = {title?, text?, hint?, numbered?, items:[{title, text, tone}]} */
+  function tiles(T) {
+    var wrap = el("div", "stack");
+    if (T.title) wrap.appendChild(el("h3", null, T.title));
+    if (T.text) wrap.appendChild(para(T.text, "muted"));
+    var row = el("div", "tiles"); row.tabIndex = 0; row.setAttribute("role", "group"); row.setAttribute("aria-label", T.title || "Swipe to see more");
+    T.items.forEach(function (it, i) {
+      var t = el("div", "tile" + (it.tone ? " " + it.tone : ""));
+      t.appendChild(el("span", "tile-n", T.numbered ? String(i + 1) : (i + 1) + " / " + T.items.length));
+      t.appendChild(el("strong", null, it.title));
+      if (it.text) t.appendChild(para(it.text, "small"));
+      row.appendChild(t);
+    });
+    var bar = el("div", "tilebar"), dots = el("div", "dots"), prev = el("button", "step", "\u2039"), next = el("button", "step", "\u203A");
+    prev.type = next.type = "button"; prev.setAttribute("aria-label", "Previous"); next.setAttribute("aria-label", "Next");
+    T.items.forEach(function () { dots.appendChild(el("span", "dot")); });
+    var hint = el("span", "small muted hint", T.hint || "Swipe sideways"); add(bar, prev, dots, next); 
+    function step() { var t = row.firstChild; return t ? t.getBoundingClientRect().width + 12 : 1; }
+    function sync() {
+      var i = Math.round(row.scrollLeft / step()), max = T.items.length - 1;
+      if (row.scrollLeft > 0 && row.scrollLeft + row.clientWidth >= row.scrollWidth - 4) i = max;
+      Array.prototype.forEach.call(dots.children, function (d, k) { d.classList.toggle("on", k === i); });
+      prev.disabled = i <= 0; next.disabled = i >= max;
+    }
+    row.addEventListener("scroll", function () { window.requestAnimationFrame(sync); }, { passive: true });
+    prev.addEventListener("click", function () { row.scrollBy({ left: -step(), behavior: "smooth" }); });
+    next.addEventListener("click", function () { row.scrollBy({ left: step(), behavior: "smooth" }); });
+    add(wrap, row, bar, hint); sync(); window.addEventListener("load", sync); window.addEventListener("resize", sync); return wrap;
+  }
+
+  /* flash cards: M.cards = {title?, text?, items:[{q, a}]}; "Again" cards come back at the end */
+  function cards(C) {
+    var wrap = el("div", "stack");
+    if (C.title) wrap.appendChild(el("h3", null, C.title));
+    wrap.appendChild(para(C.text || "Tap the card to turn it over. Say the answer to yourself first.", "muted"));
+    var queue, got, total = C.items.length;
+    var status = el("div", "row"), count = el("span", "chip"), score = el("span", "chip");
+    add(status, count, score);
+    var card = el("button", "flash"); card.type = "button";
+    var front = el("span", "face front"), back = el("span", "face back");
+    card.appendChild(front); card.appendChild(back);
+    var rate = el("div", "row rate"), again = el("button", "btn ghost", "Again"), ok = el("button", "btn", "Got it");
+    again.type = ok.type = "button"; add(rate, again, ok);
+    var done = el("div", "box"); done.hidden = true;
+    var restart = el("button", "btn", "Go through them again"); restart.type = "button";
+    var live = el("div"); live.setAttribute("aria-live", "polite");
+    function show() {
+      card.classList.remove("flipped"); rate.hidden = true;
+      if (!queue.length) { card.hidden = true; status.hidden = true; done.hidden = false; done.firstChild.textContent = "All " + total + " cards done"; return; }
+      var c = C.items[queue[0]];
+      front.textContent = ""; front.appendChild(el("span", "eyebrow", "Question")); front.appendChild(el("strong", null, c.q)); front.appendChild(el("span", "small muted", "Tap to turn over"));
+      back.textContent = ""; back.appendChild(el("span", "eyebrow", "Answer")); back.appendChild(el("strong", null, c.a));
+      count.textContent = got + " of " + total + " got"; score.textContent = queue.length + " to go";
+    }
+    function start() { queue = C.items.map(function (_, i) { return i; }); got = 0; card.hidden = false; status.hidden = false; done.hidden = true; show(); }
+    card.addEventListener("click", function () { var f = card.classList.toggle("flipped"); rate.hidden = !f; });
+    ok.addEventListener("click", function () { queue.shift(); got++; show(); });
+    again.addEventListener("click", function () { queue.push(queue.shift()); show(); });
+    restart.addEventListener("click", start);
+    done.appendChild(el("h3")); done.appendChild(para("Cards you marked Again came back until you got them. The Knowledge check is next.", "muted")); done.appendChild(restart);
+    add(wrap, status, card, rate, done, live); start(); return wrap;
+  }
+
   function renderBlock(b, body) {
     var n;
     if (b.text) body.appendChild(para(b.text, b.muted ? "muted" : null));
@@ -247,6 +311,8 @@
     if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (s) { o.appendChild(titled(s.t, s.text)); }); body.appendChild(o); }
     if (b.checklist) body.appendChild(checklist(b.checklist));
     if (b.chooser) body.appendChild(chooser(b.chooser));
+    if (b.tiles) body.appendChild(tiles(b.tiles));
+    if (b.cards) body.appendChild(cards(b.cards));
     if (b.table) body.appendChild(table(b.table));
     if (b.tool) body.appendChild(tool(b.tool));
     if (b.quiz) body.appendChild(quiz(b.quiz));
@@ -286,7 +352,7 @@
   /* ---------- header ---------- */
   var head = el("header", "top");
   var brand = el("div", "brand");
-  brand.appendChild(el("div", "brand-icon", "+"));
+  brand.appendChild(logo());
   var bt = el("div"); bt.appendChild(el("h1", null, M.title)); bt.appendChild(el("p", null, M.subtitle || "Microlearning module")); brand.appendChild(bt);
   head.appendChild(brand);
   var chips = el("div", "row");
@@ -314,12 +380,36 @@
     stack.appendChild(fp);
   }
 
+  /* M.flow: panels are open sections that fade in as you scroll; a panel with collapsed:true stays a toggle */
+  var flowN = 0;
+  function flowSection(p) {
+    var sec = el("section", "flow stack"), h = el("div", "flow-head reveal");
+    flowN++; h.appendChild(el("span", "num" + (p.optional ? " opt" : ""), p.optional ? "+" : String(flowN))); h.appendChild(el("h2", null, p.title));
+    sec.appendChild(h);
+    var body = el("div", "stack");
+    p.blocks.forEach(function (b) { var part = el("div", "stack reveal"); renderBlock(b, part); if (part.children.length) body.appendChild(part); });
+    sec.appendChild(body); return sec;
+  }
   (M.panels || defaultPanels()).forEach(function (p) {
-    var d = panel(p.title, { open: p.open, optional: p.optional, chip: p.chip });
+    if (M.flow && !p.collapsed) { stack.appendChild(flowSection(p)); return; }
+    var d = panel(p.title, { open: p.open && !M.flow, optional: p.optional, chip: p.chip, numbered: M.flow ? !!p.optional : true });
     p.blocks.forEach(function (b) { renderBlock(b, d.body); });
     if (p.skipIfEmpty && !d.body.children.length) return;
+    if (M.flow) d.classList.add("reveal");
     stack.appendChild(d);
   });
+  if (M.flow) {
+    var bar = el("div", "scrollbar"); bar.setAttribute("aria-hidden", "true"); bar.appendChild(el("span")); document.body.appendChild(bar);
+    var fill = bar.firstChild;
+    function prog() { var h = document.documentElement.scrollHeight - window.innerHeight; fill.style.width = (h > 0 ? Math.min(100, window.scrollY / h * 100) : 0) + "%"; }
+    window.addEventListener("scroll", prog, { passive: true }); prog();
+    var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if ("IntersectionObserver" in window && !calm) {
+      document.documentElement.classList.add("reveal-on");
+      var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
+      document.querySelectorAll(".reveal").forEach(function (n) { io.observe(n); });
+    }
+  }
 
   /* ---------- footer ---------- */
   function sourceLine(p) { return (p.code || "") + (p.name ? " " + p.name : "") + (p.version ? ", " + p.version : ""); }
