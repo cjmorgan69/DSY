@@ -23,6 +23,7 @@
 .tile .btns a.pri { background: var(--brand); color: var(--brand-ink); box-shadow: none; }
 .tile .btns a:hover { filter: brightness(1.08); box-shadow: inset 0 0 0 1px var(--brand); }
 .tile .btns a.pri:hover { box-shadow: none; }
+.tile .btns .editbtn { flex: 1 1 100%; padding: .45rem .8rem; border: 0; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-size: .82rem; font-weight: 600; cursor: pointer; }
 .sec-h { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
 </style>
 </head>
@@ -39,7 +40,7 @@
   var sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
   var $app = document.getElementById("app");
   var $toast = document.getElementById("toast");
-  var S = { user: null, profile: null, region: null, groups: [], next: {}, photos: {}, regionPhoto: null, authMode: "in", edit: false, uploading: false };
+  var S = { editTeam: null, user: null, profile: null, region: null, groups: [], next: {}, photos: {}, regionPhoto: null, authMode: "in", edit: false, uploading: false };
   var MANAGER = "../modules/rosters/lowereyre/manager/", DASH = "../modules/rosters/lowereyre/manager/dashboard/";
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
@@ -103,7 +104,7 @@
     var ru = safeUrl(g.roster_url);
     return '<article class="tile"><div class="ph">' + (S.photos[g.id] ? '<img src="' + esc(S.photos[g.id]) + '" alt="' + esc(g.name) + '">' : esc(initials(g.name))) + '</div>' +
       '<div class="body"><h3>' + esc(g.name) + '</h3><div class="next">' + nextLine(g) + '</div>' +
-      '<div class="btns"><a class="pri" href="../teams/#' + esc(g.id) + '">Team page</a>' + (ru ? '<a href="' + esc(ru) + '">Roster</a>' : "") + '<a href="../training/">Training</a></div></div></article>';
+      '<div class="btns"><a class="pri" href="../teams/#' + esc(g.id) + '">Team page</a>' + (ru ? '<a href="' + esc(ru) + '">Roster</a>' : "") + '<a href="../training/">Training</a><button class="editbtn" type="button" data-edit="' + esc(g.id) + '">Edit page</button></div></div></article>';
   }
 
   function render() {
@@ -113,7 +114,8 @@
     html += '<div class="actions"><a class="big" href="../training/">Team Training<span>Sessions, lessons, attendance and people</span></a>' +
       '<a class="big alt" href="' + DASH + '">Manager dashboard<span>Rosters and cover across the region</span></a>' +
       '<a class="big alt" href="' + MANAGER + '">Roster manager<span>Open the manager roster page</span></a></div>';
-    html += '<section class="stack"><div class="sec-h"><h2>Teams</h2><a class="link" href="../training/">Edit team photos and pages</a></div><div class="tiles">' + S.groups.map(tile).join("") + "</div></section>";
+    html += '<section class="stack"><div class="sec-h"><h2>Teams</h2></div><div class="tiles">' + S.groups.map(tile).join("") + "</div></section>";
+    if (S.editTeam) html += teamForm();
     if (S.edit) { html += editForm(); }
     else {
       var ls = links(r.links);
@@ -135,6 +137,35 @@
       (r.photo_path ? '<div class="row"><button class="btn danger small" type="button" id="rmphoto">Remove photo</button></div>' : "") + "</form>";
   }
 
+  function linkTeam(id) { return S.groups.filter(function (g) { return g.id === id; })[0]; }
+  function teamForm() {
+    var g = linkTeam(S.editTeam); if (!g) return "";
+    return '<form class="panel pad stack" id="teamform" data-id="' + esc(g.id) + '"><h2>' + esc(g.name) + ' team page</h2>' +
+      '<label>About this team (members see this)<textarea name="blurb" rows="6" placeholder="Station address, meeting place, contacts and anything else the team should know. Leave a blank line between paragraphs.">' + esc(g.blurb || "") + "</textarea></label>" +
+      '<label>Roster link<input name="roster" value="' + esc(g.roster_url || "") + '" placeholder="/modules/rosters/lowereyre/tumbybay/"></label>' +
+      '<label>Policies, procedures and links (one per line: name | address)<textarea name="links" rows="5" placeholder="SAMS intranet | https://...">' + esc(linksToText(g.links)) + "</textarea></label>" +
+      '<div class="row"><button class="btn" type="submit">Save team page</button><button class="btn ghost" type="button" id="teamcancel">Close</button></div>' +
+      '<h3>Photo</h3><label class="drop" id="teamdrop"><strong>Drag a photo here</strong><span class="small">or click to choose. JPG, PNG or WebP, up to 10 MB.</span><input id="teamphoto" type="file" accept="image/jpeg,image/png,image/webp"></label>' +
+      (g.photo_path ? '<div class="row"><button class="btn danger small" type="button" id="teamrm">Remove photo</button></div>' : "") + "</form>";
+  }
+  function saveTeam(form) {
+    var f = new FormData(form), id = form.dataset.id;
+    return sb.from("groups").update({ blurb: f.get("blurb").trim() || null, roster_url: f.get("roster").trim() || null, links: parseLinks(f.get("links")) }).eq("id", id)
+      .then(function (r) { if (r.error) throw r.error; return load(); });
+  }
+  function uploadTeamPhoto(file) {
+    var g = linkTeam(S.editTeam);
+    if (!file || !g || S.uploading) return;
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return fail({ message: "Choose a JPG, PNG or WebP photo." });
+    if (file.size > 10485760) return fail({ message: "That photo is over 10 MB." });
+    var old = g.photo_path, path = g.id + "/" + Date.now() + "-" + file.name.replace(/[^A-Za-z0-9._-]+/g, "_");
+    S.uploading = true;
+    sb.storage.from("team-photos").upload(path, file, { contentType: file.type }).then(function (r) {
+      if (r.error) throw r.error;
+      return sb.from("groups").update({ photo_path: path }).eq("id", g.id);
+    }).then(function (r) { if (r.error) throw r.error; if (old) sb.storage.from("team-photos").remove([old]); return load(); }).catch(fail).then(function () { S.uploading = false; });
+  }
+
   function saveRegion(form) {
     var f = new FormData(form);
     var row = { name: f.get("name").trim() || "Lower Eyre Peninsula", blurb: f.get("blurb").trim() || null, links: parseLinks(f.get("links")), updated_at: new Date().toISOString() };
@@ -154,19 +185,23 @@
 
   $app.addEventListener("click", function (e) {
     var t = e.target.closest("button"); if (!t) return;
+    if (t.dataset.edit) { S.editTeam = t.dataset.edit; render(); var f = document.getElementById("teamform"); if (f) f.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+    if (t.id === "teamcancel") { S.editTeam = null; render(); return; }
+    if (t.id === "teamrm") { var g = linkTeam(S.editTeam), old = g.photo_path; sb.from("groups").update({ photo_path: null }).eq("id", g.id).then(function (r) { if (r.error) throw r.error; if (old) sb.storage.from("team-photos").remove([old]); return load(); }).catch(fail); return; }
     if (t.id === "signout") sb.auth.signOut();
     else if (t.id === "swap") { S.authMode = S.authMode === "in" ? "up" : "in"; renderAuth(); }
     else if (t.id === "edit") { S.edit = true; render(); }
     else if (t.id === "cancel") { S.edit = false; render(); }
     else if (t.id === "rmphoto") { var old = S.region.photo_path; sb.from("region_info").update({ photo_path: null }).eq("id", S.region.id || "main").then(function (r) { if (r.error) throw r.error; if (old) sb.storage.from("team-photos").remove([old]); return load(); }).catch(fail); }
   });
-  $app.addEventListener("change", function (e) { if (e.target.id === "regionphoto") uploadRegionPhoto(e.target.files[0]); });
-  document.addEventListener("dragover", function (e) { if (!e.dataTransfer || [].indexOf.call(e.dataTransfer.types || [], "Files") < 0) return; e.preventDefault(); var z = e.target.closest && e.target.closest("#regiondrop"); e.dataTransfer.dropEffect = z ? "copy" : "none"; if (z) z.classList.add("over"); });
-  document.addEventListener("dragleave", function (e) { var z = document.getElementById("regiondrop"); if (z && !e.relatedTarget) z.classList.remove("over"); });
-  document.addEventListener("drop", function (e) { if (!e.dataTransfer || [].indexOf.call(e.dataTransfer.types || [], "Files") < 0) return; e.preventDefault(); var z = e.target.closest && e.target.closest("#regiondrop"); if (z) { z.classList.remove("over"); uploadRegionPhoto(e.dataTransfer.files[0]); } });
+  $app.addEventListener("change", function (e) { if (e.target.id === "regionphoto") uploadRegionPhoto(e.target.files[0]); else if (e.target.id === "teamphoto") uploadTeamPhoto(e.target.files[0]); });
+  document.addEventListener("dragover", function (e) { if (!e.dataTransfer || [].indexOf.call(e.dataTransfer.types || [], "Files") < 0) return; e.preventDefault(); var z = e.target.closest && e.target.closest("#regiondrop, #teamdrop"); e.dataTransfer.dropEffect = z ? "copy" : "none"; if (z) z.classList.add("over"); });
+  document.addEventListener("dragleave", function (e) { if (!e.relatedTarget) [].forEach.call(document.querySelectorAll(".drop"), function (z) { z.classList.remove("over"); }); });
+  document.addEventListener("drop", function (e) { if (!e.dataTransfer || [].indexOf.call(e.dataTransfer.types || [], "Files") < 0) return; e.preventDefault(); var z = e.target.closest && e.target.closest("#regiondrop, #teamdrop"); if (z) { z.classList.remove("over"); if (z.id === "teamdrop") uploadTeamPhoto(e.dataTransfer.files[0]); else uploadRegionPhoto(e.dataTransfer.files[0]); } });
   $app.addEventListener("submit", function (e) {
     e.preventDefault();
     var btn = e.target.querySelector('[type="submit"]'); btn.disabled = true;
+    if (e.target.id === "teamform") { saveTeam(e.target).catch(fail).then(function () { if (document.contains(btn)) btn.disabled = false; }); return; }
     if (e.target.id === "regionform") { saveRegion(e.target).catch(fail).then(function () { if (document.contains(btn)) btn.disabled = false; }); return; }
     if (e.target.id !== "authform") return;
     var f = new FormData(e.target);
