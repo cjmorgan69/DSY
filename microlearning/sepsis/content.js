@@ -24,7 +24,7 @@ var M = window.MODULE = {
     intro: "For a team-led session. Allow about 30 minutes. Everyone works through the page on their own device, then discusses together.",
     steps: [
       { t: "Read the introduction", time: "4 min", text: "Read the signs of sepsis aloud, one each." },
-      { t: "Key points", time: "6 min", text: "Take turns reading a box. Stop at the blood pressure threshold and the ceftriaxone box and check everyone can say them back." },
+      { t: "Key points", time: "6 min", text: "Take turns reading a box. Stop at the box on suspecting sepsis and the blood pressure threshold, and at the ceftriaxone box and check everyone can say them back." },
       { t: "Work the scenarios", time: "8 min", text: "Open the sepsis checker. Decide the pathway, and for meningococcal cases the dose and volume, before pressing the button." },
       { t: "Knowledge check", time: "5 min", text: "Everyone does it alone. Discuss any question people got wrong." },
       { t: "Optional practical", time: "7 min", text: "Pair up and practise reconstituting ceftriaxone with training stock. Do the rest in your own time." }
@@ -55,9 +55,11 @@ var M = window.MODULE = {
       { t: "NEWS2", text: "Use the NEWS2 Sepsis Scoring Calculator with the NEWS2 Adult Sepsis Screening Tool (CTL-062)." },
       { t: "Request clinical support" }
     ] },
-    { title: "The blood pressure decides the pathway", tone: "warn", check: { q: "Suspected sepsis, systolic exactly 100. Which pathway?", a: "Suspected septic shock: the protocol's threshold is SBP 100 mmHg or less." }, items: [
-      "Systolic above 100 mmHg: suspected sepsis",
-      "Systolic 100 mmHg or less: suspected septic shock",
+    { title: "First suspect sepsis, then the blood pressure sets the pathway", tone: "warn", check: { q: "Suspected sepsis, systolic exactly 100. Which pathway?", a: "Suspected septic shock: the protocol's threshold is SBP 100 mmHg or less." }, items: [
+      "Sepsis is suspected from a suspected infection, the signs, your clinical judgement and the NEWS2 screening. The blood pressure does not diagnose it",
+      "Once sepsis is suspected, the systolic BP decides which pathway you follow:",
+      "Suspected sepsis with systolic above 100 mmHg: the suspected sepsis pathway",
+      "Suspected sepsis with systolic 100 mmHg or less: the suspected septic shock pathway",
       "Treatment takes priority over screening when infection is clearly apparent and the patient is hypotensive"
     ] },
     { title: "Suspected sepsis, SBP above 100 mmHg", steps: [
@@ -95,7 +97,7 @@ var M = window.MODULE = {
     title: "Sepsis checker",
     intro: "Answer the questions and the CPP-062-AO pathway is shown, with the ceftriaxone dose and volume worked out from the weight. It follows version 1.0 and assumes your crew carries ceftriaxone.",
     fields: [
-      { id: "infection", type: "yesno", label: "Is infection suspected?" },
+      { id: "infection", type: "yesno", label: "Is sepsis suspected? (suspected infection with signs of sepsis, on your assessment and NEWS2)" },
       { id: "meningo", type: "yesno", label: "Suspected meningococcal septicaemia? (febrile with an altered conscious state, with or without a petechial or purpuric rash)" },
       { id: "sbp", type: "number", label: "Systolic blood pressure (mmHg)", step: "1", placeholder: "e.g. 96" },
       { id: "spo2", type: "number", label: "SpO2 (%)", step: "1", placeholder: "e.g. 93" },
@@ -105,18 +107,18 @@ var M = window.MODULE = {
     ],
     evaluate: function (v) {
       if (!v.infection) {
-        return { tone: "", headline: "Infection not suspected", why: ["CPP-062-AO and NEWS2 sepsis screening are for patients with a suspected infection"],
+        return { tone: "", headline: "Sepsis not suspected", why: ["The pathways apply once sepsis is suspected. Use NEWS2 (CTL-062) for every patient with a suspected infection"],
           actions: ["Continue assessment and basic care"] };
       }
       var shock = v.sbp <= 100, why = [], actions = ["Wear appropriate PPE", "Basic care and life support"];
       var o2 = v.lung ? "Chronic lung disease: consult the EOC Clinician immediately for further support regarding oxygen" : null;
       if (shock) {
-        why.push("SBP " + v.sbp + " mmHg: 100 or less, so suspected septic shock");
+        why.push("Sepsis suspected, and SBP " + v.sbp + " mmHg is 100 or less: the suspected septic shock pathway");
         actions = actions.concat(["Request early clinical support, stating \"suspected septic shock\"",
           "Treatment should not delay extrication or transport; rendezvous with clinical support en route if required",
           "Administer high-flow oxygen"]);
       } else {
-        why.push("SBP " + v.sbp + " mmHg: above 100, so suspected sepsis");
+        why.push("Sepsis suspected, and SBP " + v.sbp + " mmHg is above 100: the suspected sepsis pathway");
         actions.push(v.spo2 < 94 ? "SpO2 " + v.spo2 + "% is below 94%: apply high-flow oxygen" : "SpO2 " + v.spo2 + "%: high-flow oxygen if it falls below 94%");
         actions.push("Request clinical support");
       }
@@ -200,7 +202,7 @@ var M = window.MODULE = {
       why: "If SpO2 is below 94%, apply high flow oxygen." },
     { q: "A patient with suspected sepsis has COPD. What about oxygen?", options: ["Never give oxygen", "Consult the EOC Clinician immediately for further support regarding oxygen", "Give high flow regardless"], answer: 1,
       why: "If any suspected or confirmed history of chronic lung disease, consult the EOC Clinician immediately for further support regarding oxygen." },
-    { q: "Which systolic BP puts a patient on the suspected septic shock pathway?", options: ["Below 90 mmHg", "100 mmHg or less", "Below 120 mmHg"], answer: 1,
+    { q: "Sepsis is suspected. Which systolic BP puts the patient on the suspected septic shock pathway?", options: ["Below 90 mmHg", "100 mmHg or less", "Below 120 mmHg"], answer: 1,
       why: "Suspected sepsis and SBP 100 mmHg or less: request early clinical support, stating \"suspected septic shock\"." },
     { q: "In suspected septic shock, what must treatment not do?", options: ["Delay extrication or transport", "Include oxygen", "Involve the EOC Clinician"], answer: 0,
       why: "Treatment should not delay extrication or transport. Rendezvous with clinical support en route if required." },

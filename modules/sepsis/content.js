@@ -29,7 +29,7 @@ window.MODULE = {
       { text: "A 71 year old man at a farmhouse 12 km north-east of Tumby Bay has been unwell for two days with urinary symptoms, fever and rigors. Tonight his wife can barely rouse him. Tumby Bay Hospital is about 15 minutes away." },
       { box: { title: "Learning objectives", items: [
         "Recognise the signs of sepsis and use NEWS2 (CTL-062) without letting it delay treatment",
-        "Tell suspected sepsis (SBP above 100) from suspected septic shock (SBP 100 or less)",
+        "Suspect sepsis from the infection, the signs, clinical judgement and NEWS2, then use the systolic BP to choose the pathway: above 100 (suspected sepsis) or 100 or less (suspected septic shock)",
         "Give high-flow oxygen, request early clinical support and avoid delaying extrication or transport",
         "Recognise when to consult the EOC Clinician about ceftriaxone (febrile with an altered conscious state)",
         "Prepare and give IM ceftriaxone when advised: dose, reconstitution, sites (CPP-062-AO, CPPRO-011)",
@@ -63,8 +63,8 @@ window.MODULE = {
         { t: "Request clinical support" }
       ] },
       { table: { title: "The pathways (CPP-062-AO)", table: { head: ["", "Actions"], rows: [
-        ["SBP above 100", "High-flow oxygen if SpO2 below 94%; priority transport; consult for ongoing management; notify \"suspected sepsis\""],
-        ["SBP 100 or less", "Request early clinical support stating \"suspected septic shock\"; don't let treatment delay extrication or transport (rendezvous en route if required); high-flow oxygen; priority transport; notify \"suspected septic shock\""],
+        ["Sepsis suspected, SBP above 100", "High-flow oxygen if SpO2 below 94%; priority transport; consult for ongoing management; notify \"suspected sepsis\""],
+        ["Sepsis suspected, SBP 100 or less", "Request early clinical support stating \"suspected septic shock\"; don't let treatment delay extrication or transport (rendezvous en route if required); high-flow oxygen; priority transport; notify \"suspected septic shock\""],
         ["Suspected meningococcal", "Cephalosporin allergy: consult via the EOC Clinician for SAAS Medical Practitioner advice. Otherwise consult the EOC Clinician to give IM ceftriaxone 50 mg/kg, single max 2 g; priority transport; notify \"suspected sepsis\""]
       ] } } },
       { box: { title: "Key reminders", items: [
@@ -92,15 +92,15 @@ window.MODULE = {
         prompts: ["What does the MDT make you think of?", "Which protocol, and what decides the pathway?", "What kit do you want at the door?", "Who does what?"],
         expected: [
           "Fever, confusion, reduced urine output with a likely urinary source: suspect sepsis",
-          "CPP-062-AO; the systolic BP (above 100, or 100 or less) decides the pathway",
+          "CPP-062-AO. Sepsis is suspected from the infection, the signs and NEWS2; once suspected, the systolic BP (above 100, or 100 or less) decides the pathway",
           "Febrile and confused: be ready to consult the EOC Clinician about ceftriaxone",
           "Kit: PPE, Corpuls3, manual BP cuff, thermometer, oxygen, NEWS2 in the app, ceftriaxone kit",
           "Clinician: patient and calls. Driver: obs, NEWS2, preparation"
         ],
         teaching: ["Fever and confusion in an older patient with a known infection source: sepsis until proven otherwise (general teaching)", "Plan for 4 km of dirt road on the way out"],
         realJob: "Read the MDT out loud and agree roles on the way. \"Difficult to rouse\" should raise everyone's alert level.",
-        decisions: [{ q: "What decides between suspected sepsis and suspected septic shock?", options: ["Temperature above 39", "Systolic BP: 100 mmHg or less is septic shock", "Heart rate above 120"], answer: 1,
-          why: "CPP-062-AO: suspected sepsis and SBP above 100 mmHg, or SBP 100 mmHg or less (suspected septic shock), each with its own actions." }],
+        decisions: [{ q: "Once sepsis is suspected, what decides between the suspected sepsis and suspected septic shock pathways?", options: ["Temperature above 39", "Systolic BP: 100 mmHg or less is the septic shock pathway", "Heart rate above 120"], answer: 1,
+          why: "CPP-062-AO: suspected sepsis and SBP above 100 mmHg, or suspected sepsis and SBP 100 mmHg or less (suspected septic shock), each with its own actions. The BP does not diagnose sepsis: the infection, the signs, clinical judgement and NEWS2 do." }],
         cards: [{ q: "Which tool does CPP-062-AO use for every patient with a suspected infection?", a: "The NEWS2 Sepsis Scoring Calculator with the NEWS2 Adult Sepsis Screening Tool (CTL-062)." }]
       } }
     ] },
@@ -135,7 +135,7 @@ window.MODULE = {
       { breakpoint: { title: "Observations and the pathway", type: "Practical skill",
         prompts: ["Read out the obs. What stands out?", "What does SBP 92 mean for the pathway?", "SpO2 91%: what now?", "Why confirm the BP manually?", "Do you finish the NEWS2 before you act?"],
         expected: [
-          "SBP 92 with suspected infection: 100 or less, so suspected septic shock",
+          "Sepsis suspected (likely urinary infection, fever, confusion, fast breathing and heart rate); SBP 92 is 100 or less, so the suspected septic shock pathway",
           "SpO2 91%: high-flow oxygen now",
           "Manual BP confirms the number that changes the pathway (general teaching)",
           "Infection is clear and he's hypotensive: treatment takes priority over screening. The driver runs NEWS2 when hands are free",
@@ -145,7 +145,7 @@ window.MODULE = {
         teachingNote: "The last point is general teaching.",
         realJob: "The driver calls out \"BP 92 on 58, sats 91, rate 118\". The clinician hears hypotension plus infection: oxygen on, and the EOC Clinician call happens now.",
         decisions: [
-          { q: "SBP 92, suspected infection. Which pathway?", options: ["Suspected sepsis", "Suspected septic shock", "Neither until the NEWS2 is done"], answer: 1,
+          { q: "Sepsis is suspected and his SBP is 92. Which pathway?", options: ["Suspected sepsis", "Suspected septic shock", "Neither until the NEWS2 is done"], answer: 1,
             why: "SBP 100 mmHg or less with suspected sepsis is the suspected septic shock pathway. Treatment takes priority over screening when infection is clear and the patient is hypotensive." },
           { q: "Robert is febrile and GCS 9, with no rash. Does ceftriaxone come into it?", options: [
             "No: there's no rash, so it isn't meningococcal",
@@ -266,7 +266,7 @@ window.MODULE = {
       ] } },
       { box: { title: "Take-home messages", tone: "warn", items: [
         "PPE, basic care, NEWS2 for every suspected infection, request clinical support",
-        "SBP 100 or less: suspected septic shock; early clinical support; don't delay transport",
+        "Suspect sepsis first (infection, signs, NEWS2); then SBP 100 or less means the suspected septic shock pathway: early clinical support, don't delay transport",
         "SpO2 below 94%: high-flow oxygen; chronic lung disease, consult the EOC Clinician",
         "Febrile with an altered conscious state: consult the EOC Clinician about ceftriaxone, rash or no rash",
         "Ceftriaxone 50 mg/kg, max 2 g; 3.5 mL per 1 g vial; max 1 g per site",
