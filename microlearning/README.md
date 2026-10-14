@@ -75,16 +75,20 @@ empty slots are left out.
 - Scenarios, practical activities and video outlines written by Claude are examples: label them and have them checked.
 
 
-## Flow layout (prototype, used by anaphylaxis)
+## Flow layout (all modules)
 
-Set `flow: true` and give `panels` (the shorthand keys still work but need `panels` for this layout). Panels become open
-sections that fade in as you scroll; a panel with `collapsed: true` stays a toggle (good for reference tables). New blocks:
+Every module sets `flow: true`. Sections are open and fade in as you scroll; the reference tables, practical and
+further learning stay as toggles (`collapsed: true` on a panel; the shorthand keys do this for you).
 
-- `{ tiles: { title, text, numbered, items: [{ title, text, tone }] } }` swipe-sideways tiles with dots and arrows.
-- `{ cards: { quick: true, items: [{ q, a }] } }` a "Quick check" of one or two flash cards at the end of a section
-  (tap to turn; "Again" cards return). Without `quick` it is a full deck. Keep the Knowledge check quiz as well.
+Keep it light, as the user asked (14 Oct 2026):
 
-Use tiles sparingly: only for a short set of parallel items (such as signs, or steps of a device), never for criteria
-or doses that must all be seen at once. The fade-in works on small pieces (paragraphs, boxes, quiz and checker questions).
+- **Tiles: at most one row per module**, for a short sequence such as device or procedure steps. Mark a key-points box
+  with `tiles: true`, or use `{ tiles: { title, numbered, items: [{ title, text }] } }` in `panels`. Never for criteria
+  or doses that must all be seen at once.
+- **Quick checks: about three single cards per module**, each straight after the part it tests. Add `check: { q, a }`
+  to a key-points box or to `tool`, or use `{ cards: { quick: true, items: [{ q, a }] } }` in `panels`. One card each.
+  The Knowledge check quiz stays at the end.
+
+The fade-in works on small pieces (paragraphs, boxes, quiz and checker questions), so it continues down the whole page.
 
 The header logo is `shared/dsy-logo.png`, the hub logo recoloured to the app green.

@@ -150,12 +150,13 @@ function scene(t,i){
   }
 
   if(i===8){
+    const frac0=f=>S[0].s+(S[0].e-S[0].s)*f;
     const a0=rv(T,S[0].s), a1=rv(T,S[1].s), a2=rv(T,S[2].s);
     let gg=grp(g,a0);card(gg,70,170,560,270,"rgba(226,87,76,.14)","rgba(226,87,76,.55)");txt("Not eligible if any of:",{x:100,y:218,"font-size":28,"font-weight":800,fill:"#ffb3aa"},gg);
-    bullets(gg,104,276,["ROSIER score negative","Over 9 hours from onset","Not independent before"],T,[S[0].s+0.4,S[0].s+1.8,S[0].s+3.4],C.red);
+    bullets(gg,104,276,["ROSIER score negative","Over 9 hours from onset","Not independent before"],T,[frac0(0.14),frac0(0.35),frac0(0.7)],C.red);
     if(a1>0){const ga=grp(g,a1);el("path",{d:"M640 305 L680 305 M668 290 L684 305 L668 320",fill:"none",stroke:"#fff","stroke-width":5,"stroke-linecap":"round","stroke-linejoin":"round"},ga)}
     gg=grp(g,a1);card(gg,700,170,510,270);txt("Then transport to:",{x:730,y:218,"font-size":28,"font-weight":800,fill:C.mint},gg);
-    bullets(gg,734,276,["the closest CSU/STS, or","the nearest hospital, or","consult the EOC Clinician"],T,[S[1].s+0.3,S[1].s+2.4,S[1].s+4.6],C.mint);
+    bullets(gg,734,276,["the closest CSU/STS, or","the nearest hospital, or","consult the EOC Clinician"],T,[S[1].s+0.3,S[1].s+3.1,S[1].s+4.6],C.mint);
     gg=grp(g,a2);card(gg,70,462,1140,104,"rgba(227,167,18,.18)","rgba(227,167,18,.6)");
     txt("Everything else fits, but travel is over 60 minutes",{x:100,y:508,"font-size":29,"font-weight":800,fill:C.gold},gg);
     txt("consult the EOC Clinician to discuss transport and destination options",{x:100,y:546,"font-size":26},gg);

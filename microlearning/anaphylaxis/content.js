@@ -244,11 +244,7 @@ var M = window.MODULE = {
 M.panels = [
   { title: "Introduction", blocks: [{ video: M.video }].concat(M.intro.map(function (t) { return { text: t }; })) },
   { title: "Recognise it", blocks: [
-    { tiles: { title: "Signs of a severe allergic reaction", text: "Swipe through the signs listed in the protocol.", items: M.keyPoints[0].items.map(function (t) { return { title: t }; }) } },
-    { cards: { quick: true, items: [
-      { q: "Name three signs of a severe allergic reaction.", a: "Any of: difficult or noisy breathing, tongue swelling, throat swelling or tightness, hoarse voice or trouble talking, wheeze or persistent cough, persistent dizziness or collapse." },
-      { q: "In young children, what may you see?", a: "They may be pale and floppy." }
-    ] } }
+    { box: M.keyPoints[0] }
   ] },
   { title: "When to give adrenaline", blocks: [
     { box: M.keyPoints[1] },
@@ -260,11 +256,7 @@ M.panels = [
   { title: "What to do", blocks: [
     { steps: M.keyPoints[2].steps },
     { box: M.keyPoints[3] },
-    { box: M.keyPoints[4] },
-    { cards: { quick: true, items: [
-      { q: "How should the patient be positioned?", a: "Lay them flat, unless their breathing is difficult. Do not let them stand or walk." },
-      { q: "Known asthma and an allergy, with sudden breathing difficulty. What first?", a: "Treat for anaphylaxis before giving any asthma medication." }
-    ] } }
+    { box: M.keyPoints[4] }
   ] },
   { title: "Using an EpiPen", blocks: [
     { tiles: { title: "Auto-injector steps (CPPRO-011)", numbered: true, items: [
@@ -281,9 +273,8 @@ M.panels = [
   ] },
   { title: M.tool.title, blocks: [
     { tool: M.tool },
-    { cards: { quick: true, title: "Quick check: the dose", items: [
-      { q: "A 20 kg child is advised IM adrenaline. What dose?", a: "200 microg (10 microg x 20 kg)." },
-      { q: "From what weight is the single dose capped, and at what?", a: "From 50 kg, the single dose is capped at 500 microg." }
+    { cards: { quick: true, items: [
+      { q: "A 20 kg child is advised IM adrenaline. What dose?", a: "200 microg (10 microg x 20 kg). From 50 kg up, the single dose is capped at 500 microg." }
     ] } }
   ] },
   { title: M.referenceTitle, collapsed: true, blocks: M.reference.map(function (r) { return { table: r }; }).concat([{ links: M.links }]) },

@@ -72,7 +72,7 @@ Reference modules: `microlearning/stroke/` (shorthand keys, decision aid, narrat
    it is the first generation of the session. Then check the file before building: duration against the word count, and the
    alignment table from step 7, which recognises the first words of every sentence. Tell the user plainly if it is wrong.
    If generation is refused (plan limits, account activity messages), do not retry or switch voices over and over: tell the
-   user, and fall back to the old route: they record the script in the ElevenLabs app (Roger, settings stability 50,
+   user, and fall back to the old route: they record the script in the ElevenLabs app (the voice in voice.json, stability 50,
    similarity 75, speed 1.0) and upload the mp3. Uploads have repeatedly been the wrong or an old file: `cmp` it against
    earlier narrations, check the duration, and check the first words before building.
 7. **Build the video.** Copy `microlearning/stroke/video-src/` to `microlearning/<name>/video-src/`, write
@@ -90,6 +90,10 @@ Reference modules: `microlearning/stroke/` (shorthand keys, decision aid, narrat
    `content.js` to `{ src: "intro.mp4", poster: "intro-poster.jpg" }`, and delete work files.
    The sandbox browser cannot play H.264, and YouTube is blocked, so say you could not play the video yourself and
    ask the user to watch it with sound.
+7b. **Layout.** Set `flow: true` in `content.js` (see `microlearning/README.md`, "Flow layout"). At most ONE tile row
+   (`tiles: true` on a steps box such as a device or procedure sequence) and about THREE quick-check cards
+   (`check: { q, a }` on the box or tool they test), one card each. The user asked for fewer tiles and flash cards;
+   do not add more without asking. Keep the full quiz.
 8. **List it.** Add the folder name to `microlearning/modules.js` so it shows on the landing page (`/microlearning/`), and check the card
    there (title, protocol version, video and quiz chips). Set `minutes` in `content.js` so the card shows a time.
 9. **Commit and push** to the session branch. Do not open a PR unless asked. If asked to merge, create the PR (check for
