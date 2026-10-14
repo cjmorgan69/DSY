@@ -55,7 +55,8 @@ settings or play files you leave in the container: send files with the file tool
 ## Status (14 Oct 2026)
 
 Microlearning modules live: stroke, envenomation, hypoglycaemia, chest pain, anaphylaxis, asthma (all flow layout;
-all but envenomation narrated by Lee). Each is a Supabase lesson.
+all but envenomation narrated by Lee). Each is a Supabase lesson. Sepsis (`/microlearning/sepsis/`, CPP-062-AO v1.0,
+assumes the crew carries ceftriaxone, narrated by Lee, Khan Academy septic shock video embedded) is in a PR, no lesson yet.
 
 Walk-through scenarios: asthma-ao rebuilt and linked with the asthma module (lesson added). Chest pain
 (`/modules/chest-pain/`, Graham 62) rebuilt and linked with the chest pain module (live, lesson added). Owner's
@@ -73,4 +74,6 @@ local Code Stroke notification is that the EOC Clinician may contact Port Lincol
 GRN radio. Hypoglycaemia: `/modules/hypo/` is an MVA walk-through (convert separately, later) and
 `/modules/hypoglycaemia` is an old short learning page, not a scenario. Owner chose a new non-trauma walk-through:
 `/modules/hypoglycaemia-ao/` (Ron 67, near Cummins; not Port Lincoln, which has paramedics), all DSY-written on
-CPP-009-AO (live, lesson added). Next: the MVA hypo scenario when the owner asks. Update this list as work is done.
+CPP-009-AO (live, lesson added). Sepsis (`/modules/sepsis/`, Robert 71, near Tumby Bay) rebuilt on CPP-062-AO and
+linked with the sepsis module (PR open, no lesson yet); owner chose: the crew raises ceftriaxone (febrile, altered
+conscious state) and the EOC Clinician declines; preparation is practised. Next: the MVA hypo scenario when asked. Update this list as work is done.

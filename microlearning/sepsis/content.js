@@ -31,6 +31,12 @@ var M = window.MODULE = {
     ]
   },
 
+  video: {
+    src: "intro.mp4",
+    poster: "intro-poster.jpg",
+    title: "Sepsis: what AOs need to know"
+  },
+
   intro: [
     "Sepsis is a life-threatening condition that arises when the body's response to an infection damages its own tissues and organs. Almost any type of infection can lead to it: lungs, abdomen, urinary tract, skin or other parts of the body. Early recognition and urgent treatment can save lives and prevent disability, but sepsis can be difficult to predict and diagnose.",
     "Signs can include one or more of: fast breathing or breathlessness; fever and chills; low body temperature; low or no urine output; a fast or slow heartbeat; nausea and vomiting; diarrhoea; fatigue, confusion or sleepiness; a lot of pain or \"feeling worse than ever\"; headache; a new rash, or discoloured or clammy, sweaty skin.",
