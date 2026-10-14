@@ -9,7 +9,8 @@ settings or play files you leave in the container: send files with the file tool
 
 - `/index.html` - the DSY Clinical Training Hub (dark theme, older style). `/ao/index.html` lists the AO walk-through
   scenarios in `/modules/<name>/`.
-- `/microlearning/` - the microlearning modules, one template for all. Read `microlearning/README.md` (content keys,
+- `/microlearning/` - hub with AO, Paramedic and RN tiles; group pages `/microlearning/ao/`, `/paramedic/`, `/rn/`
+  (navy theme for RN) list the modules from `MODULE_LISTS` in `modules.js`. The microlearning modules use one template for all. Read `microlearning/README.md` (content keys,
   flow layout, scenario pages, related links, cache tag) before changing anything there.
 - `/microlearning/shared/` - `module.js`, `module.css`, `landing.js`, `related.js` (pages on the same protocol link to
   each other), `dsy-logo.png`. `/training/theme.css` is the shared colour and type theme.
@@ -58,7 +59,7 @@ Microlearning modules live: stroke, envenomation, hypoglycaemia, chest pain, ana
 all but envenomation narrated by Lee). Each is a Supabase lesson. Sepsis (`/microlearning/sepsis/`, CPP-062-AO v1.0,
 assumes the crew carries ceftriaxone, narrated by Lee, Khan Academy septic shock video embedded) is live, lesson added. Sepsis for rural nursing staff (`/microlearning/sepsis-nursing/`, navy theme, from the NSW CEC
 Adult Sepsis Pathway SMR060.400 and ACI ECAT A3.4 "Sepsis (suspected)"; ECAT review date Jan 2026 has passed; ECAT
-page is behind Cloudflare, the owner pasted its HTML) is in a PR, not on the landing page, no lesson yet.
+page is behind Cloudflare, the owner pasted its HTML) is in a PR, listed on the RN page, no lesson yet.
 
 Walk-through scenarios: asthma-ao rebuilt and linked with the asthma module (lesson added). Chest pain
 (`/modules/chest-pain/`, Graham 62) rebuilt and linked with the chest pain module (live, lesson added). Owner's

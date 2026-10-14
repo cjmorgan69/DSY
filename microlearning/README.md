@@ -5,11 +5,12 @@ You only write the content.
 
 ```
 microlearning/
-  index.html             landing page listing every module (reads modules.js)
-  modules.js             the list of module folders shown on the landing page
+  index.html             hub: one tile per group (AO, Paramedic, RN)
+  ao/, paramedic/, rn/   group landing pages, each listing its modules (rn/ uses the navy theme)
+  modules.js             MODULE_LISTS: the module folders shown on each group page
   shared/module.css      look (sits on top of /training/theme.css)
   shared/module.js       builds a module page from window.MODULE
-  shared/landing.js      builds the landing page from each module's content.js
+  shared/landing.js      builds the hub and the group pages (configured by window.LANDING in each index.html)
   stroke/, envenomation/, hypoglycaemia/
                          one module each = index.html + content.js (+ intro.mp4 and video-src/ if it has a video)
   tools/video/           align.py, render.js and make.sh: build a narrated intro video from the narration audio;
@@ -22,7 +23,7 @@ microlearning/
 1. Copy `stroke/` to `microlearning/<name>/`.
 2. Edit `index.html`: change the `<title>` only.
 3. Rewrite `content.js` from the protocol text. Stick to what the protocol says.
-4. Add `"<name>"` to the list in `microlearning/modules.js` so it appears on the landing page (`/microlearning/`).
+4. Add `"<name>"` to the right group in `MODULE_LISTS` in `microlearning/modules.js` (`ao`, `paramedic` or `rn`) so it appears on that group page (`/microlearning/ao/` etc.) and is counted on the hub tile.
 5. Open `/microlearning/<name>/` to check it. Nothing links to modules from the hub; share the link.
 
 In a Claude Code session, ask for "a new microlearning module for <protocol>" with the protocol PDF attached:

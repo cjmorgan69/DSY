@@ -94,7 +94,8 @@ Reference modules: `microlearning/stroke/` (shorthand keys, decision aid, narrat
    (`tiles: true` on a steps box such as a device or procedure sequence) and about THREE quick-check cards
    (`check: { q, a }` on the box or tool they test), one card each. The user asked for fewer tiles and flash cards;
    do not add more without asking. Keep the full quiz.
-8. **List it.** Add the folder name to `microlearning/modules.js` so it shows on the landing page (`/microlearning/`), and check the card
+8. **List it.** Add the folder name to the right group in `MODULE_LISTS` in `microlearning/modules.js` (`ao`, `paramedic`
+   or `rn`) so it shows on that group page (`/microlearning/ao/` etc.) and in the hub tile count, and check the card
    there (title, protocol version, video and quiz chips). Set `minutes` in `content.js` so the card shows a time.
 8b. **Bump the cache tag.** Scripts are cached for about 4 hours, so if you changed `shared/`, `theme.css` or any
    `content.js`, change the `?v=` tag in every `microlearning/index.html` and `microlearning/*/index.html` (and
