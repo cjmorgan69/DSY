@@ -2,6 +2,10 @@
    codes in its relatedCodes). Each page lists the others under "Built on the same protocol" and leaves itself out.
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
+  "CPP-003-AO": [
+    { kind: "Microlearning module", title: "Anaphylaxis", href: "/microlearning/anaphylaxis/", text: "The adrenaline pathway, the auto-injector and the adrenaline checker, with a narrated video and quiz." },
+    { kind: "Walk-through scenario", title: "Anaphylaxis - AO: David, 54", href: "/modules/anaphylaxis/", text: "Two-person AO crew, bee sting with an expired EpiPen at a rural property. Facilitator and student versions." }
+  ],
   "CPP-008-AO": [
     { kind: "Microlearning module", title: "Envenomation", href: "/microlearning/envenomation/", text: "Bites and stings, the pressure bandage and immobilisation, with a quiz." },
     { kind: "Walk-through scenario", title: "Envenomation - AO: Greg, 52", href: "/modules/envenomation/", text: "Two-person AO crew, brown snake bite to the leg at a rural property. Facilitator and student versions." }
