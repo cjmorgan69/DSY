@@ -68,7 +68,9 @@ distance, as long as movement is minimal and timely. Anaphylaxis (`/modules/anap
 CPP-003-AO and linked with the module (live, lesson added); owner: driver calls the EOC Clinician as soon as
 possible; if the patient looks really sick use an expired EpiPen immediately, otherwise follow EOC directions; the Red
 Kit carries adrenaline 1000 microg in 1 mL. Stroke (`/modules/stroke-AO/`, Frank 78, Coffin Bay) rebuilt on
-CPP-016-AO v6.0 (9-hour window) with ROSIER+ACT (CTL-066) and linked with the module (PR open, no lesson yet); owner:
+CPP-016-AO v6.0 (9-hour window) with ROSIER+ACT (CTL-066) and linked with the module (live, lesson added); owner:
 local Code Stroke notification is that the EOC Clinician may contact Port Lincoln Hospital and/or the crew notifies by
-GRN radio. Next: hypoglycaemia (the AO page links both `/modules/hypo/` and `/modules/hypoglycaemia`:
-ask which to keep). Update this list as work is done.
+GRN radio. Hypoglycaemia: `/modules/hypo/` is an MVA walk-through (convert separately, later) and
+`/modules/hypoglycaemia` is an old short learning page, not a scenario. Owner chose a new non-trauma walk-through:
+`/modules/hypoglycaemia-ao/` (Ron 67, near Cummins; not Port Lincoln, which has paramedics), all DSY-written on
+CPP-009-AO (PR open, no lesson yet). Next: the MVA hypo scenario when the owner asks. Update this list as work is done.
