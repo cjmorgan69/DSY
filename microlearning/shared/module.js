@@ -312,7 +312,53 @@
     if (M.flow && k.check) body.appendChild(cards({ quick: true, items: [k.check] }));
   }
 
+  /* scenario decision: tap one tile, see right or wrong and why (student view) */
+  function decision(d) {
+    var wrap = el("div", "decision stack");
+    wrap.appendChild(el("span", "eyebrow", d.label || "Your call"));
+    wrap.appendChild(el("h3", null, d.q));
+    var grid = el("div", "choices"), out = el("div", "outcome"); out.hidden = true; out.setAttribute("aria-live", "polite");
+    var again = el("button", "link", "Try again"); again.type = "button"; again.hidden = true;
+    var btns = d.options.map(function (o, i) {
+      var b = el("button", "choice", o); b.type = "button";
+      b.addEventListener("click", function () {
+        btns.forEach(function (x, k) { x.disabled = true; if (k === d.answer) x.classList.add("right"); });
+        if (i !== d.answer) b.classList.add("wrong");
+        out.className = "outcome " + (i === d.answer ? "good" : "warn"); out.textContent = "";
+        out.appendChild(el("h3", null, i === d.answer ? "Yes" : "Not quite: " + d.options[d.answer]));
+        if (d.why) out.appendChild(para(d.why));
+        out.hidden = false; again.hidden = false;
+      });
+      grid.appendChild(b); return b;
+    });
+    again.addEventListener("click", function () { btns.forEach(function (x) { x.disabled = false; x.classList.remove("right", "wrong"); }); out.hidden = true; again.hidden = true; });
+    add(wrap, grid, out, again); return wrap;
+  }
+
+  /* scenario break point: facilitator view shows prompts, expected reasoning and teaching points;
+     student view shows the same prompts as questions, with decision tiles and flash cards instead */
+  var bpNo = 0;
+  function breakpoint(B) {
+    bpNo++;
+    var wrap = el("div", "bp stack");
+    var h = el("div", "bp-head");
+    h.appendChild(el("span", "eyebrow", "Break point " + bpNo + (B.type ? " · " + B.type : "")));
+    h.appendChild(el("h3", null, B.title)); wrap.appendChild(h);
+    if (B.prompts) {
+      wrap.appendChild(only(box({ title: "Facilitator prompts", items: B.prompts }), "facilitator"));
+      wrap.appendChild(only(box({ title: "Think about", items: B.prompts }), "student"));
+    }
+    (B.decisions || []).forEach(function (d) { wrap.appendChild(only(decision(d), "student")); });
+    if (B.cards && B.cards.length) wrap.appendChild(only(cards({ quick: true, title: "Flash card" + (B.cards.length > 1 ? "s" : ""), items: B.cards }), "student"));
+    if (B.expected) wrap.appendChild(only(box({ title: "Expected AO reasoning", items: B.expected }), "facilitator"));
+    if (B.teaching) wrap.appendChild(only(box({ title: "Key teaching points", items: B.teaching, note: B.teachingNote }), "facilitator"));
+    if (B.realJob) wrap.appendChild(box({ title: "Real-job translation", tone: "warn", text: B.realJob }));
+    return wrap;
+  }
+  function only(n, who) { if (who) n.classList.add(who === "student" ? "stu-only" : "fac-only"); return n; }
+
   function renderBlock(b, body) {
+    if (b.only) { var w = only(el("div", "stack"), b.only); body.appendChild(w); body = w; }
     var n;
     if (b.text) body.appendChild(para(b.text, b.muted ? "muted" : null));
     if (b.paragraphs) b.paragraphs.forEach(function (t) { body.appendChild(para(t)); });
@@ -329,6 +375,8 @@
     if (b.tool) { body.appendChild(tool(b.tool)); if (M.flow && b.tool.check) body.appendChild(cards({ quick: true, items: [b.tool.check] })); }
     if (b.quiz) body.appendChild(quiz(b.quiz));
     if (b.links) { var lr = el("div", "row"); b.links.forEach(function (l) { lr.appendChild(link(l.label, l.href)); }); body.appendChild(lr); }
+    if (b.decision) body.appendChild(decision(b.decision));
+    if (b.breakpoint) body.appendChild(breakpoint(b.breakpoint));
     if (b.note) body.appendChild(para(b.note, "small muted"));
   }
 
@@ -374,11 +422,39 @@
   app.appendChild(head);
 
   var intro = el("section", "stack");
-  intro.appendChild(el("span", "eyebrow", "Microlearning"));
+  intro.appendChild(el("span", "eyebrow", M.scenario ? "Walk-through scenario" : "Microlearning"));
   intro.appendChild(el("h2", null, M.headline));
   if (M.lead) intro.appendChild(el("p", "muted", M.lead));
   if (M.draft) intro.appendChild(el("p", "notice small", "Draft: sections marked \"coming soon\" are placeholders. Fill them in or remove them in content.js before sharing."));
   app.appendChild(intro);
+
+  /* scenario pages: switch between the facilitator and student versions (kept in the link as ?mode=student) */
+  if (M.scenario) {
+    var bar = el("div", "mode-toggle"), modes = [["facilitator", "Facilitator"], ["student", "Student"]];
+    bar.setAttribute("role", "group"); bar.setAttribute("aria-label", "Version");
+    var cur = /[?&]mode=student\b/.test(location.search) ? "student" : "facilitator";
+    var mbtn = modes.map(function (m) { var b = el("button", null, m[1]); b.type = "button"; b.addEventListener("click", function () { setMode(m[0], true); }); bar.appendChild(b); return b; });
+    var mnote = el("p", "small muted");
+    var setMode = function (m, push) {
+      cur = m; document.body.classList.toggle("mode-student", m === "student"); document.body.classList.toggle("mode-facilitator", m !== "student");
+      mbtn.forEach(function (b, k) { b.setAttribute("aria-pressed", String(modes[k][0] === m)); });
+      mnote.textContent = m === "student" ? "Student version: answer each break point with the tiles and flash cards, then compare at the debrief." : "Facilitator version: prompts, expected AO reasoning and teaching points at every break point.";
+      if (push && window.history && history.replaceState) history.replaceState(null, "", location.pathname + (m === "student" ? "?mode=student" : "") + location.hash);
+    };
+    intro.appendChild(bar); intro.appendChild(mnote); setMode(cur, false);
+  }
+
+  /* links to the other pages built on the same protocol (shared/related.js) */
+  var relCodes = [P.code].concat(M.relatedCodes || []), rel = [], seen = {};
+  relCodes.forEach(function (c) { ((window.RELATED || {})[c] || []).forEach(function (r) {
+    var here = location.pathname.replace(/index\.html$/, "");
+    if (seen[r.href] || here === r.href || here.slice(-r.href.length) === r.href) return; seen[r.href] = 1; rel.push(r); }); });
+  if (rel.length) {
+    var rb = el("div", "related");
+    rb.appendChild(el("span", "eyebrow", "Built on the same protocol"));
+    rel.forEach(function (r) { var a = el("a", "rel-card"); a.href = r.href; a.appendChild(el("span", "chip hi", r.kind)); a.appendChild(el("strong", null, r.title)); if (r.text) a.appendChild(el("span", "small muted", r.text)); rb.appendChild(a); });
+    intro.appendChild(rb);
+  }
 
   var stack = el("div", "stack");
   app.appendChild(stack);
@@ -420,7 +496,7 @@
          blocks, so a long quiz or checker keeps fading in all the way down; nothing is marked inside a marked piece */
       var picked = [];
       app.querySelectorAll(".flow-head, .flow .video, .flow audio, .flow .box, .flow .tiles, .flow .tilebar, .flow .hint, .flow .flash, .flow .steps > li, " +
-        ".flow .points > li, .flow .ask, .flow .tool > .row, .flow .scenario, .flow .q, .flow form > .row, .flow .tablewrap, .flow .stack > h3, .flow .stack > p, .flow .stack > .row, .flow .stack > .eyebrow, .stack > details.panel")
+        ".flow .points > li, .flow .bp-head, .flow .choices, .flow .ask, .flow .tool > .row, .flow .scenario, .flow .q, .flow form > .row, .flow .tablewrap, .flow .stack > h3, .flow .stack > p, .flow .stack > .row, .flow .stack > .eyebrow, .stack > details.panel")
         .forEach(function (n) { if (!picked.some(function (p) { return p.contains(n); })) picked.push(n); });
       document.documentElement.classList.add("reveal-on");
       var io = new IntersectionObserver(function (es) {
@@ -441,5 +517,5 @@
   foot.appendChild(el("span", null, "Training resource only. It does not replace the protocol or advice from the EOC Clinician."));
   foot.appendChild(el("span", null, "© DSY Productions | LEP Training"));
   app.appendChild(foot);
-  document.title = M.title + " - DSY Training";
+  document.title = M.title + (M.scenario ? " scenario" : "") + " - DSY Training";
 })();

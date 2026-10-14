@@ -141,3 +141,22 @@ tr + tr td { border-top: 1px solid var(--line); }
 .quick .eyebrow { color: var(--brand); }
 .quick .flash { min-height: 9rem; }
 .quick-status { display: none; }
+
+/* scenario pages: facilitator / student toggle, break points and decision tiles */
+.mode-toggle { display: inline-flex; align-self: flex-start; padding: 4px; gap: 4px; border-radius: 999px; background: var(--brand-soft); }
+.mode-toggle button { min-height: 40px; padding: .4rem 1.1rem; border: 0; border-radius: 999px; background: transparent; color: var(--brand); font-weight: 700; }
+.mode-toggle button[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); }
+body.mode-student .fac-only, body.mode-facilitator .stu-only { display: none !important; }
+.bp { padding: 1.1rem; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--surface)); }
+.bp-head .eyebrow { color: color-mix(in srgb, var(--accent) 70%, var(--ink)); }
+.bp-head h3 { font-size: 1.2rem; margin-top: .2rem; }
+.choices { display: grid; gap: .6rem; }
+.choice { min-height: 56px; padding: .8rem 1rem; text-align: left; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); font-weight: 600; font-size: 1rem; line-height: 1.35; }
+.choice:hover:not(:disabled) { border-color: var(--brand); }
+.choice:disabled { cursor: default; opacity: 1; }
+.choice.right { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, var(--surface)); }
+.choice.wrong { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, var(--surface)); }
+.related { display: flex; flex-direction: column; gap: .5rem; }
+.rel-card { display: flex; flex-direction: column; align-items: flex-start; gap: .3rem; padding: .85rem 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--ink); text-decoration: none; }
+.rel-card:hover { border-color: var(--brand); }
+.rel-card strong { font-family: var(--font-head); font-size: 1.05rem; }

@@ -100,3 +100,19 @@ with a new page. Every `index.html` under `/microlearning/` loads its CSS and JS
 sets `window.ASSET_VERSION` for the content.js files it loads). **Whenever you change `shared/`, `training/theme.css`
 or a module's `content.js`, change the tag in every `index.html`** (one `sed` over `microlearning/index.html` and
 `microlearning/*/index.html`). New modules copy the current tag.
+
+## Walk-through scenarios and related links
+
+A scenario page (for example `/modules/asthma-ao/`) uses the same template: an `index.html` that loads
+`/training/theme.css`, `/microlearning/shared/module.css`, its own `content.js`, `shared/related.js` and `shared/module.js`.
+Set `scenario: true` for the Facilitator / Student switch at the top (the link keeps `?mode=student`). Blocks:
+
+- `{ breakpoint: { title, type, prompts: [], expected: [], teaching: [], teachingNote, realJob,
+  decisions: [{ q, options: [], answer, why }], cards: [{ q, a }] } }`. Facilitator view: prompts, expected
+  reasoning and teaching points. Student view: the prompts as "Think about", then the decision tiles and flash cards.
+  The real-job translation shows in both.
+- `{ decision: {...} }` on its own, and `only: "student"` or `only: "facilitator"` on any block.
+
+`shared/related.js` maps a protocol code to every module and scenario built on it. Each page shows the others under
+"Built on the same protocol" (by `protocol.code`, plus any codes in `relatedCodes`). **Add a line there whenever a
+module or scenario is built or converted**, and add the `related.js` script tag to its `index.html`.
