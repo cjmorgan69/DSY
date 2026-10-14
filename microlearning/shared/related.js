@@ -3,7 +3,8 @@
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
   "CPP-062-AO": [
-    { kind: "Microlearning module", title: "Sepsis", href: "/microlearning/sepsis/", text: "NEWS2, the SBP 100 threshold, IM ceftriaxone and the sepsis checker, with a quiz." }
+    { kind: "Microlearning module", title: "Sepsis", href: "/microlearning/sepsis/", text: "NEWS2, the SBP 100 threshold, IM ceftriaxone and the sepsis checker, with a quiz." },
+    { kind: "Walk-through scenario", title: "Sepsis - AO: Robert, 71", href: "/modules/sepsis/", text: "Two-person AO crew, suspected septic shock near Tumby Bay, with ceftriaxone practice. Facilitator and student versions." }
   ],
   "CPP-009-AO": [
     { kind: "Microlearning module", title: "Hypoglycaemia", href: "/microlearning/hypoglycaemia/", text: "Oral glucose, glucagon on EOC Clinician advice and the treatment checker, with a narrated video and quiz." },
