@@ -16,7 +16,7 @@
   function link(label, href, cls) { var a = el("a", cls || "link", label); a.href = href; a.target = "_blank"; a.rel = "noopener"; return a; }
   function isAudio(u) { return /\.(mp3|m4a|wav|ogg)(\?|$)/i.test(u); }
   function isVideoFile(u) { return /\.(mp4|webm)(\?|$)/i.test(u); }
-  function logo() { var d = el("div", "brand-icon"), i = el("img"); i.src = new URL("dsy-logo.png", document.currentScript ? document.currentScript.src : location.href).href; i.alt = "DSY Training"; i.width = 40; i.height = 40; d.appendChild(i); return d; }
+  function logo() { var d = el("div", "brand-icon"), i = el("img"); i.src = new URL(M.logo || "dsy-logo.png", document.currentScript ? document.currentScript.src : location.href).href; i.alt = "DSY Training"; i.width = 40; i.height = 40; d.appendChild(i); return d; }
   function titled(text, sub) { var li = el("li"); li.appendChild(el("span", "t", text)); if (sub) { li.appendChild(document.createElement("br")); li.appendChild(document.createTextNode(sub)); } return li; }
 
   var panelNo = 0;
@@ -514,7 +514,7 @@
   foot.appendChild(el("span", null, "Based on SA Ambulance Service " + [P].concat(P.also || []).map(sourceLine).join(" and ")));
   if (P.exported) foot.appendChild(el("span", null, "Protocol text as exported " + P.exported + ". Always check the current version at clinical.saambulance.sa.gov.au"));
   (M.footerNotes || []).forEach(function (t) { foot.appendChild(el("span", null, t)); });
-  foot.appendChild(el("span", null, "Training resource only. It does not replace the protocol or advice from the EOC Clinician."));
+  foot.appendChild(el("span", null, M.disclaimer || "Training resource only. It does not replace the protocol or advice from the EOC Clinician."));
   foot.appendChild(el("span", null, "© DSY Productions | LEP Training"));
   app.appendChild(foot);
   document.title = M.title + (M.scenario ? " scenario" : "") + " - DSY Training";

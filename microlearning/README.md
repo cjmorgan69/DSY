@@ -116,3 +116,11 @@ Set `scenario: true` for the Facilitator / Student switch at the top (the link k
 `shared/related.js` maps a protocol code to every module and scenario built on it. Each page shows the others under
 "Built on the same protocol" (by `protocol.code`, plus any codes in `relatedCodes`). **Add a line there whenever a
 module or scenario is built or converted**, and add the `related.js` script tag to its `index.html`.
+
+## Navy theme (nursing modules)
+
+Modules for nursing staff use a navy colour theme instead of the green: add
+`<link rel="stylesheet" href="../shared/theme-navy.css?v=...">` after `module.css` in `index.html`, set
+`<meta name="theme-color" content="#1c3c6e">`, and set `logo: "dsy-logo-navy.png"` in `content.js`. `disclaimer`
+in `content.js` replaces the footer's EOC Clinician line with wording for the audience. For the intro video, use a
+navy background in `video-src/scene.html` (see `sepsis-nursing/video-src/scene.html`).
