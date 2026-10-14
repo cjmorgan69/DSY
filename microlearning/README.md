@@ -81,6 +81,10 @@ Set `flow: true` and give `panels` (the shorthand keys still work but need `pane
 sections that fade in as you scroll; a panel with `collapsed: true` stays a toggle (good for reference tables). New blocks:
 
 - `{ tiles: { title, text, numbered, items: [{ title, text, tone }] } }` swipe-sideways tiles with dots and arrows.
-- `{ cards: { items: [{ q, a }] } }` flash cards: tap to turn, "Again" cards return at the end.
+- `{ cards: { quick: true, items: [{ q, a }] } }` a "Quick check" of one or two flash cards at the end of a section
+  (tap to turn; "Again" cards return). Without `quick` it is a full deck. Keep the Knowledge check quiz as well.
+
+Use tiles sparingly: only for a short set of parallel items (such as signs, or steps of a device), never for criteria
+or doses that must all be seen at once. The fade-in works on small pieces (paragraphs, boxes, quiz and checker questions).
 
 The header logo is `shared/dsy-logo.png`, the hub logo recoloured to the app green.
