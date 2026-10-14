@@ -7,7 +7,7 @@
   function load(slug) {
     return new Promise(function (resolve) {
       var s = document.createElement("script");
-      s.src = slug + "/content.js";
+      s.src = slug + "/content.js?v=" + (window.ASSET_VERSION || "");
       s.onload = function () { var m = window.MODULE; window.MODULE = null; s.remove(); resolve(m ? { slug: slug, m: m } : { slug: slug, error: true }); };
       s.onerror = function () { s.remove(); resolve({ slug: slug, error: true }); };
       document.head.appendChild(s);

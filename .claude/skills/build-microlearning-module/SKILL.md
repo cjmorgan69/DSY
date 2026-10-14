@@ -96,6 +96,9 @@ Reference modules: `microlearning/stroke/` (shorthand keys, decision aid, narrat
    do not add more without asking. Keep the full quiz.
 8. **List it.** Add the folder name to `microlearning/modules.js` so it shows on the landing page (`/microlearning/`), and check the card
    there (title, protocol version, video and quiz chips). Set `minutes` in `content.js` so the card shows a time.
+8b. **Bump the cache tag.** Scripts are cached for about 4 hours, so if you changed `shared/`, `theme.css` or any
+   `content.js`, change the `?v=` tag in every `microlearning/index.html` and `microlearning/*/index.html` (and
+   `window.ASSET_VERSION` in the landing page) to a new value, e.g. the date plus a letter. See the README.
 9. **Commit and push** to the session branch. Do not open a PR unless asked. If asked to merge, create the PR (check for
    a PR template first), merge with the full 40 character head SHA as `expectedHeadSha`, and give the live URL.
    Modules are not linked from the hub landing page; the user shares the direct link.

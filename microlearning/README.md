@@ -92,3 +92,11 @@ Keep it light, as the user asked (14 Oct 2026):
 The fade-in works on small pieces (paragraphs, boxes, quiz and checker questions), so it continues down the whole page.
 
 The header logo is `shared/dsy-logo.png`, the hub logo recoloured to the app green.
+
+## Caching: bump the version tag
+
+The site caches scripts and styles for about 4 hours (pages for 10 minutes), so phones can run an old `module.js`
+with a new page. Every `index.html` under `/microlearning/` loads its CSS and JS with `?v=<tag>` (and the landing page
+sets `window.ASSET_VERSION` for the content.js files it loads). **Whenever you change `shared/`, `training/theme.css`
+or a module's `content.js`, change the tag in every `index.html`** (one `sed` over `microlearning/index.html` and
+`microlearning/*/index.html`). New modules copy the current tag.
