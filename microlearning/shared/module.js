@@ -269,23 +269,24 @@
 
   /* flash cards: M.cards = {title?, text?, items:[{q, a}]}; "Again" cards come back at the end */
   function cards(C) {
-    var wrap = el("div", "stack");
-    if (C.title) wrap.appendChild(el("h3", null, C.title));
-    wrap.appendChild(para(C.text || "Tap the card to turn it over. Say the answer to yourself first.", "muted"));
+    var wrap = el("div", "stack" + (C.quick ? " quick" : ""));
+    if (C.quick) wrap.appendChild(el("span", "eyebrow", C.title || "Quick check"));
+    else if (C.title) wrap.appendChild(el("h3", null, C.title));
+    wrap.appendChild(para(C.text || (C.quick ? "Say the answer to yourself, then tap the card to check." : "Tap the card to turn it over. Say the answer to yourself first."), "muted small"));
     var queue, got, total = C.items.length;
     var status = el("div", "row"), count = el("span", "chip"), score = el("span", "chip");
-    add(status, count, score);
+    add(status, count, score); if (C.quick) status.className = "row quick-status";
     var card = el("button", "flash"); card.type = "button";
     var front = el("span", "face front"), back = el("span", "face back");
     card.appendChild(front); card.appendChild(back);
     var rate = el("div", "row rate"), again = el("button", "btn ghost", "Again"), ok = el("button", "btn", "Got it");
     again.type = ok.type = "button"; add(rate, again, ok);
     var done = el("div", "box"); done.hidden = true;
-    var restart = el("button", "btn", "Go through them again"); restart.type = "button";
+    var restart = el("button", C.quick ? "link" : "btn", C.quick ? "Again" : "Go through them again"); restart.type = "button";
     var live = el("div"); live.setAttribute("aria-live", "polite");
     function show() {
       card.classList.remove("flipped"); rate.hidden = true;
-      if (!queue.length) { card.hidden = true; status.hidden = true; done.hidden = false; done.firstChild.textContent = "All " + total + " cards done"; return; }
+      if (!queue.length) { card.hidden = true; status.hidden = true; done.hidden = false; done.firstChild.textContent = total === 1 ? "Done" : "All " + total + " cards done"; return; }
       var c = C.items[queue[0]];
       front.textContent = ""; front.appendChild(el("span", "eyebrow", "Question")); front.appendChild(el("strong", null, c.q)); front.appendChild(el("span", "small muted", "Tap to turn over"));
       back.textContent = ""; back.appendChild(el("span", "eyebrow", "Answer")); back.appendChild(el("strong", null, c.a));
@@ -296,7 +297,7 @@
     ok.addEventListener("click", function () { queue.shift(); got++; show(); });
     again.addEventListener("click", function () { queue.push(queue.shift()); show(); });
     restart.addEventListener("click", start);
-    done.appendChild(el("h3")); done.appendChild(para("Cards you marked Again came back until you got them. The Knowledge check is next.", "muted")); done.appendChild(restart);
+    done.appendChild(el("h3")); done.appendChild(para(C.doneText || (C.quick ? "Done. Keep scrolling." : "Cards you marked Again came back until you got them. The Knowledge check is next."), "muted")); done.appendChild(restart);
     add(wrap, status, card, rate, done, live); start(); return wrap;
   }
 
@@ -383,11 +384,11 @@
   /* M.flow: panels are open sections that fade in as you scroll; a panel with collapsed:true stays a toggle */
   var flowN = 0;
   function flowSection(p) {
-    var sec = el("section", "flow stack"), h = el("div", "flow-head reveal");
+    var sec = el("section", "flow stack"), h = el("div", "flow-head");
     flowN++; h.appendChild(el("span", "num" + (p.optional ? " opt" : ""), p.optional ? "+" : String(flowN))); h.appendChild(el("h2", null, p.title));
     sec.appendChild(h);
     var body = el("div", "stack");
-    p.blocks.forEach(function (b) { var part = el("div", "stack reveal"); renderBlock(b, part); if (part.children.length) body.appendChild(part); });
+    p.blocks.forEach(function (b) { var part = el("div", "stack"); renderBlock(b, part); if (part.children.length) body.appendChild(part); });
     sec.appendChild(body); return sec;
   }
   (M.panels || defaultPanels()).forEach(function (p) {
@@ -395,7 +396,6 @@
     var d = panel(p.title, { open: p.open && !M.flow, optional: p.optional, chip: p.chip, numbered: M.flow ? !!p.optional : true });
     p.blocks.forEach(function (b) { renderBlock(b, d.body); });
     if (p.skipIfEmpty && !d.body.children.length) return;
-    if (M.flow) d.classList.add("reveal");
     stack.appendChild(d);
   });
   if (M.flow) {
@@ -405,9 +405,18 @@
     window.addEventListener("scroll", prog, { passive: true }); prog();
     var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if ("IntersectionObserver" in window && !calm) {
+      /* fade the small pieces (a paragraph, a box, a quiz question, a checker question) rather than whole
+         blocks, so a long quiz or checker keeps fading in all the way down; nothing is marked inside a marked piece */
+      var picked = [];
+      app.querySelectorAll(".flow-head, .flow .video, .flow audio, .flow .box, .flow .tiles, .flow .tilebar, .flow .hint, .flow .flash, .flow .steps > li, " +
+        ".flow .points > li, .flow .ask, .flow .tool > .row, .flow .scenario, .flow .q, .flow form > .row, .flow .tablewrap, .flow .stack > h3, .flow .stack > p, .flow .stack > .row, .flow .stack > .eyebrow, .stack > details.panel")
+        .forEach(function (n) { if (!picked.some(function (p) { return p.contains(n); })) picked.push(n); });
       document.documentElement.classList.add("reveal-on");
-      var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
-      document.querySelectorAll(".reveal").forEach(function (n) { io.observe(n); });
+      var io = new IntersectionObserver(function (es) {
+        var k = 0;
+        es.forEach(function (e) { if (!e.isIntersecting) return; e.target.style.transitionDelay = Math.min(k++ * 70, 280) + "ms"; e.target.classList.add("in"); io.unobserve(e.target); });
+      }, { rootMargin: "0px 0px -6% 0px" });
+      picked.forEach(function (n) { n.classList.add("reveal"); io.observe(n); });
     }
   }
 

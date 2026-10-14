@@ -103,11 +103,11 @@ tr + tr td { border-top: 1px solid var(--line); }
 .reveal-on .reveal.in { opacity: 1; transform: none; }
 
 /* swipe tiles */
-.tiles { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; margin: 0 -1rem; padding: .2rem 1rem .4rem; scroll-padding: 0 1rem; -webkit-overflow-scrolling: touch; }
+.tiles { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; margin: 0 -1rem; padding: .2rem 1rem .4rem; scroll-padding: 0 7%; -webkit-overflow-scrolling: touch; }
 .tiles::-webkit-scrollbar { display: none; }
-.tile { flex: 0 0 min(76%, 17rem); min-height: 9.5rem; scroll-snap-align: start; display: flex; flex-direction: column; gap: .5rem; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: 0 1px 2px rgba(20, 40, 30, .05); }
-.tile strong { font-family: var(--font-head); font-size: 1.15rem; line-height: 1.2; }
-.tile .small { color: var(--muted); }
+.tile { flex: 0 0 86%; max-width: 27rem; min-height: 15rem; scroll-snap-align: center; display: flex; flex-direction: column; gap: .8rem; padding: 1.4rem 1.5rem; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: 0 4px 14px rgba(20, 40, 30, .08); }
+.tile strong { font-family: var(--font-head); font-size: 1.5rem; line-height: 1.2; letter-spacing: -.01em; }
+.tile .small { color: var(--muted); font-size: 1rem; }
 .tile-n { display: grid; place-items: center; min-width: 1.8rem; height: 1.8rem; width: max-content; padding: 0 .55rem; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-size: .78rem; font-weight: 700; }
 .tile.warn { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
 .tile.no { background: color-mix(in srgb, var(--danger) 8%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 35%, var(--line)); }
@@ -135,3 +135,9 @@ tr + tr td { border-top: 1px solid var(--line); }
 }
 
 [hidden] { display: none !important; }
+
+/* quick check: one or two flash cards at the end of a section */
+.quick { padding: 1rem; border-radius: var(--radius); background: var(--brand-soft); gap: .7rem; }
+.quick .eyebrow { color: var(--brand); }
+.quick .flash { min-height: 9rem; }
+.quick-status { display: none; }
