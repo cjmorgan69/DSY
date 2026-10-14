@@ -73,4 +73,4 @@ local Code Stroke notification is that the EOC Clinician may contact Port Lincol
 GRN radio. Hypoglycaemia: `/modules/hypo/` is an MVA walk-through (convert separately, later) and
 `/modules/hypoglycaemia` is an old short learning page, not a scenario. Owner chose a new non-trauma walk-through:
 `/modules/hypoglycaemia-ao/` (Ron 67, near Cummins; not Port Lincoln, which has paramedics), all DSY-written on
-CPP-009-AO (PR open, no lesson yet). Next: the MVA hypo scenario when the owner asks. Update this list as work is done.
+CPP-009-AO (live, lesson added). Next: the MVA hypo scenario when the owner asks. Update this list as work is done.
