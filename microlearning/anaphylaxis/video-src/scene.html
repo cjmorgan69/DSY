@@ -45,7 +45,7 @@ function chrome(t,i){
   const j=sentAt(t,l), s=l.s[j];
   const a=Math.min(cl((t-(s.s-0.15))/0.2), t>l.end+0.35?cl(1-(t-l.end-0.35)/0.25):1);
   const g=el("g",{opacity:a});
-  const long=s.text.length>78;
+  const long=s.text.length>70;
   el("rect",{x:70,y:long?570:590,width:1140,height:long?112:84,rx:22,fill:"rgba(0,0,0,.34)"},g);
   if(!long) txt(s.text,{x:640,y:644,"text-anchor":"middle","font-size":s.text.length>62?30:34,"font-weight":600},g);
   else{ // wrap into two lines at the nearest space to the middle
@@ -63,7 +63,7 @@ function scene(t,i){
   const g=el("g",{opacity:fade});
   const frac=(k,f)=>S[k].s+(S[k].e-S[k].s)*f;
   const chips=(items,x0,y,tStart,tEnd,fill,maxX)=>{let x=x0,yy=y;items.forEach((c,k)=>{const w=c.length*12+36;if(x+w>maxX){x=x0;yy+=62}
-      const a=rv(T,tStart+(tEnd-tStart)*k/Math.max(1,items.length-1),0.35);if(a>0){const g2=grp(g,a);el("rect",{x,y:yy,width:w,height:48,rx:24,fill},g2);txt(c,{x:x+w/2,y:yy+31,"text-anchor":"middle","font-size":22,"font-weight":700},g2)}x+=w+10})};
+      const a=rv(T,Array.isArray(tStart)?tStart[k]:tStart+(tEnd-tStart)*k/Math.max(1,items.length-1),0.35);if(a>0){const g2=grp(g,a);el("rect",{x,y:yy,width:w,height:48,rx:24,fill},g2);txt(c,{x:x+w/2,y:yy+31,"text-anchor":"middle","font-size":22,"font-weight":700},g2)}x+=w+10})};
 
   if(i===0){
     txt("Anaphylaxis",{x:640,y:320,"text-anchor":"middle","font-size":132,"font-weight":800,"letter-spacing":"-4",opacity:rv(T,S[0].s,0.5)},g);
@@ -80,25 +80,25 @@ function scene(t,i){
 
   if(i===2){
     txt("Look for",{x:70,y:188,"font-size":24,fill:"#cfe7da",opacity:rv(T,S[0].s,0.4)},g);
-    chips(["Difficult or noisy breathing","Tongue swelling","Throat tightness","Hoarse voice","Trouble talking"],70,205,frac(0,0.10),frac(0,0.85),"rgba(226,87,76,.45)",1210);
-    chips(["Wheeze","Persistent cough","Persistent dizziness","Collapse"],70,345,frac(1,0.15),frac(1,0.8),"rgba(227,167,18,.38)",1210);
-    chips(["Young children: pale and floppy"],70,455,S[2].s+0.2,S[2].s+0.2,"rgba(63,174,116,.45)",1210);
+    chips(["Difficult or noisy breathing","Tongue swelling","Throat tightness","Hoarse voice","Trouble talking"],70,205,[frac(0,0.3),S[1].s,frac(1,0.6),S[2].s,frac(2,0.6)],0,"rgba(226,87,76,.45)",1210);
+    chips(["Wheeze","Persistent cough","Persistent dizziness","Collapse"],70,345,[S[3].s,frac(3,0.5),S[4].s,frac(4,0.7)],0,"rgba(227,167,18,.38)",1210);
+    chips(["Young children: pale and floppy"],70,455,S[5].s+0.2,S[5].s+0.2,"rgba(63,174,116,.45)",1210);
   }
 
   if(i===3){
     const a0=rv(T,S[0].s,0.5); if(a0>0){const gg=grp(g,a0);el("rect",{x:70,y:170,width:520,height:64,rx:32,fill:"rgba(226,87,76,.6)"},gg);txt("Anaphylaxis suspected",{x:330,y:213,"text-anchor":"middle","font-size":32,"font-weight":800},gg);
       txt("AND any one of:",{x:630,y:213,"font-size":28,"font-weight":700,fill:C.gold},gg)}
-    [["Hypotension",frac(0,0.45)],["Severe bronchospasm",frac(0,0.68)],["Severe breathing distress","from airway swelling (angioedema)",frac(0,0.92)]].forEach((c,k)=>{
+    [["Hypotension",S[1].s],["Severe bronchospasm",S[2].s],["Severe breathing distress","from airway swelling (angioedema)",S[3].s]].forEach((c,k)=>{
       const tt=c.length===3?c[2]:c[1], a=rv(T,tt,0.45); if(a<=0)return; const gg=grp(g,a), x=70+k*385;
       card(gg,x,270,370,170,"rgba(0,0,0,.30)");el("rect",{x,y:270,width:8,height:170,rx:4,fill:C.gold},gg);
       txt(c[0],{x:x+28,y:c.length===3?340:350,"font-size":c.length===3?27:32,"font-weight":800},gg);if(c.length===3)txt(c[1],{x:x+28,y:384,"font-size":22,fill:"#cfe7da"},gg)});
-    badge(g,"Any one of those is enough",640,505,rv(T,S[1].s,0.5),"rgba(227,167,18,.5)");
+    badge(g,"Any one of those is enough",640,505,rv(T,S[4].s,0.5),"rgba(227,167,18,.5)");
   }
 
   if(i===4){
     row(g,70,175,1140,100,"Lay the patient flat","unless their breathing is difficult",rv(T,S[0].s),C.mint);
     row(g,70,295,1140,90,"Do not let them stand or walk",null,rv(T,S[1].s),C.red);
-    row(g,70,405,1140,100,"Remove the trigger if you can","and request clinical support",rv(T,S[2].s),C.gold);
+    row(g,70,405,1140,100,"Remove the trigger if you can",T>=S[3].s?"and request clinical support":null,rv(T,S[2].s),C.gold);
   }
 
   if(i===5){
@@ -110,21 +110,22 @@ function scene(t,i){
   }
 
   if(i===6){
-    const st=[["1","Blue cap off",frac(0,0.25)],["2","Orange end firmly","against the mid thigh",frac(0,0.55)],["3","Click, then hold","for 10 or more seconds",frac(0,0.92)]];
+    const st=[["1","Blue cap off",S[0].s],["2","Orange end firmly","against the mid thigh",S[1].s],["3","Click, then hold","for 10 or more seconds",S[2].s]];
     st.forEach((c,k)=>{const tt=c.length===4?c[3]:c[2], a=rv(T,tt,0.45); if(a<=0)return; const gg=grp(g,a), x=70+k*385;
       card(gg,x,175,370,170);badgeNum(gg,x+44,225,c[0],C.gold);
       txt(c[1],{x:x+28,y:292,"font-size":29,"font-weight":800},gg);if(c.length===4)txt(c[2],{x:x+28,y:326,"font-size":23,fill:"#cfe7da"},gg)});
-    badge(g,"Can be given through clothing if required",640,410,rv(T,S[1].s,0.5),"rgba(0,0,0,.4)");
-    row(g,70,462,1140,84,"Then massage the site gently for 10 seconds",null,rv(T,S[2].s),C.mint);
+    badge(g,"Can be given through clothing if required",640,410,rv(T,S[3].s,0.5),"rgba(0,0,0,.4)");
+    row(g,70,462,1140,84,"Then massage the site gently for 10 seconds",null,rv(T,S[4].s),C.mint);
   }
 
   if(i===7){
     row(g,70,170,1140,86,"Consult the EOC Clinician",null,rv(T,S[0].s),C.gold);
     const a1=rv(T,S[1].s); if(a1>0){const gg=grp(g,a1);card(gg,70,275,1140,140,"rgba(0,0,0,.30)");
       txt("They may advise IM adrenaline",{x:104,y:325,"font-size":28,fill:"#cfe7da"},gg);
-      el("rect",{x:104,y:345,width:360,height:56,rx:28,fill:C.mint},gg);txt("10 microg per kg",{x:284,y:383,"text-anchor":"middle","font-size":30,"font-weight":800,fill:C.ink},gg);
-      el("rect",{x:490,y:345,width:560,height:56,rx:28,fill:C.gold},gg);txt("single maximum dose 500 microg",{x:770,y:383,"text-anchor":"middle","font-size":30,"font-weight":800,fill:C.ink},gg)}
-    row(g,70,435,1140,86,"Further doses if required",null,rv(T,S[2].s),C.mint);
+      const p1=rv(T,S[2].s,0.4),p2=rv(T,frac(2,0.45),0.4);
+      if(p1>0){const g3=grp(gg,p1);el("rect",{x:104,y:345,width:360,height:56,rx:28,fill:C.mint},g3);txt("10 microg per kg",{x:284,y:383,"text-anchor":"middle","font-size":30,"font-weight":800,fill:C.ink},g3)}
+      if(p2>0){const g3=grp(gg,p2);el("rect",{x:490,y:345,width:560,height:56,rx:28,fill:C.gold},g3);txt("single maximum dose 500 microg",{x:770,y:383,"text-anchor":"middle","font-size":30,"font-weight":800,fill:C.ink},g3)}}
+    row(g,70,435,1140,86,"Further doses if required",null,rv(T,S[3].s),C.mint);
   }
 
   if(i===8){
@@ -137,7 +138,7 @@ function scene(t,i){
       if(grow>.95)txt(String(d),{x:x+48,y:base-h-10,"text-anchor":"middle","font-size":26,"font-weight":800,fill:hi20?C.gold:(cap?"#ff8c82":"#fff")},g)});
     el("line",{x1:100,y1:base,x2:1180,y2:base,stroke:"#fff","stroke-width":3,opacity:.6},g);
     txt("microg",{x:70,y:178,"font-size":22,fill:"#cfe7da"},g);
-    const c=rv(T,S[1].s+0.2,0.5); if(c>0){el("line",{x1:100,y1:base-500*sc,x2:1180,y2:base-500*sc,stroke:C.red,"stroke-width":4,"stroke-dasharray":"12 8",opacity:c},g);txt("single maximum 500 microg",{x:1180,y:base-500*sc-12,"text-anchor":"end","font-size":24,"font-weight":800,fill:"#ff8c82",opacity:c},g)}
+    const c=rv(T,S[1].s+0.2,0.5); if(c>0){el("line",{x1:100,y1:base-500*sc,x2:1180,y2:base-500*sc,stroke:C.red,"stroke-width":4,"stroke-dasharray":"12 8",opacity:c},g);txt("single maximum 500 microg",{x:104,y:base-500*sc-14,"text-anchor":"start","font-size":24,"font-weight":800,fill:"#ff8c82",opacity:c},g)}
     const a=rv(T,frac(0,0.4),0.4); if(a>0){const gg=grp(g,a);txt("20 kg child",{x:x0+step*1+48,y:base-200*sc-62,"text-anchor":"middle","font-size":24,"font-weight":800,fill:C.gold},gg)}
   }
 
@@ -145,20 +146,19 @@ function scene(t,i){
     const a0=rv(T,S[0].s);
     if(a0>0){const gg=grp(g,a0);card(gg,70,170,520,130,"rgba(0,0,0,.30)");txt("Known asthma and an allergy",{x:100,y:222,"font-size":27,"font-weight":800},gg);txt("sudden breathing difficulty",{x:100,y:260,"font-size":23,fill:"#cfe7da"},gg);
       el("path",{d:"M605 235 L665 235 M647 218 L667 235 L647 252",fill:"none",stroke:"#fff","stroke-width":5,"stroke-linecap":"round","stroke-linejoin":"round"},gg);
-      card(gg,680,170,530,130,"rgba(227,167,18,.18)","rgba(227,167,18,.6)");txt("Treat for anaphylaxis first",{x:710,y:222,"font-size":29,"font-weight":800,fill:C.gold},gg);txt("before any asthma medication",{x:710,y:260,"font-size":23,fill:"#cfe7da"},gg)}
-    row(g,70,325,1140,92,"Continue basic care","provide prompt transport and notify the receiving facility",rv(T,S[1].s),C.mint);
-    row(g,70,437,1140,100,"Every allergy patient goes to a health facility","even if they seem to recover",rv(T,S[2].s),C.red);
+      const a1=rv(T,S[1].s); if(a1>0){const g3=grp(gg,a1);card(g3,680,170,530,130,"rgba(227,167,18,.18)","rgba(227,167,18,.6)");txt("Treat for anaphylaxis first",{x:710,y:222,"font-size":29,"font-weight":800,fill:C.gold},g3);txt("before any asthma medication",{x:710,y:260,"font-size":23,fill:"#cfe7da"},g3)}}
+    row(g,70,325,1140,92,"Continue basic care","provide prompt transport and notify the receiving facility",rv(T,S[2].s),C.mint);
+    row(g,70,437,1140,100,"Every allergy patient goes to a health facility","even if they seem to recover",rv(T,S[3].s),C.red);
   }
 
   if(i===10){
     const labels=[["1","Look for","the signs"],["2","Lay them","flat"],["3","Adrenaline","early"],["4","Auto-injector","first"],["5","Always","transport"]];
-    const seg=(S[0].e-S[0].s)/5.2;
-    labels.forEach((p,k)=>{const a=rv(T,S[0].s+0.5+k*seg,0.4), x=45+k*236;
+    labels.forEach((p,k)=>{const a=rv(T,k===0?frac(0,0.4):S[k].s,0.4), x=45+k*236;
       const gg=grp(g,a);el("rect",{x,y:225,width:216,height:170,rx:26,fill:k===4?C.gold:"rgba(0,0,0,.32)",stroke:C.cardLine,"stroke-width":2},gg);
       badgeNum(gg,x+46,275,p[0],k===4?"#fff":C.gold);
       txt(p[1],{x:x+108,y:338,"text-anchor":"middle","font-size":25,"font-weight":800,fill:k===4?C.ink:"#fff"},gg);txt(p[2],{x:x+108,y:372,"text-anchor":"middle","font-size":23,fill:k===4?C.ink:"#cfe7da"},gg);
       if(k<4)txt("›",{x:x+226,y:330,"text-anchor":"middle","font-size":48,fill:C.gold,opacity:a},g)});
-    badge(g,"Now try the adrenaline checker on this page",640,470,rv(T,S[1].s,0.5),"rgba(0,0,0,.35)");
+    badge(g,"Now try the adrenaline checker on this page",640,470,rv(T,S[5].s,0.5),"rgba(0,0,0,.35)");
   }
 }
 function badge(g,s,x,y,a,col){
