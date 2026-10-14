@@ -95,16 +95,26 @@ function scene(t,i){
     row(g,650,444,560,80,"Request clinical support",null,rv(T,S[4].s),C.mint);
   }
 
-  if(i===4||i===5){
-    const shock=i===5;
+  if(i===4){
+    txt("Suspect sepsis from",{x:70,y:188,"font-size":24,fill:"#cfe7da",opacity:rv(T,S[0].s,0.4)},g);
+    chips(["Suspected infection","The signs","Your judgement","NEWS2"],70,205,[frac(1,0.15),frac(1,0.35),frac(1,0.6),frac(1,0.85)],"rgba(63,174,116,.5)",1210);
+    badge(g,"BP doesn't diagnose it: it sets the pathway",640,300,rv(T,S[2].s,0.5),"rgba(227,167,18,.5)");
+    const a3=rv(T,S[3].s,0.5); if(a3>0){const gg=grp(g,a3);
+      card(gg,70,340,1140,80,"rgba(63,174,116,.25)","rgba(139,224,177,.6)");
+      txt("SBP above 100 mmHg",{x:104,y:392,"font-size":34,"font-weight":800},gg);
+      txt("suspected sepsis pathway",{x:1176,y:392,"text-anchor":"end","font-size":30,"font-weight":800,fill:C.mint},gg)}
+    row(g,70,432,560,72,"Oxygen if needed","priority transport",rv(T,S[4].s),C.mint);
+    row(g,650,432,560,72,"Consult; notify","\"suspected sepsis\"",rv(T,S[5].s),C.mint);
+  }
+
+  if(i===5){
     const a0=rv(T,S[0].s,0.5); if(a0>0){const gg=grp(g,a0);
-      card(gg,70,165,1140,96,shock?"rgba(226,87,76,.28)":"rgba(63,174,116,.25)",shock?"rgba(226,87,76,.7)":"rgba(139,224,177,.6)");
-      txt(shock?"SBP 100 mmHg or less":"SBP above 100 mmHg",{x:104,y:225,"font-size":38,"font-weight":800},gg);
-      txt(shock?"suspected septic shock":"suspected sepsis",{x:1176,y:225,"text-anchor":"end","font-size":34,"font-weight":800,fill:shock?"#ff8c82":C.mint},gg)}
-    const items=shock?[["Request early clinical support","say \"suspected septic shock\""],["Don't delay extrication or transport","rendezvous en route if required"],["High-flow oxygen, priority transport","notify \"suspected septic shock\""]]
-      :[["High-flow oxygen if SpO2 below 94%","priority transport"],["Consult for ongoing management",null],["Notify","\"suspected sepsis\""]];
-    const st=shock?[S[1].s,S[2].s,S[3].s]:[S[2].s,S[3].s,S[4].s];
-    items.forEach((c,k)=>row(g,70,280+k*92,1140,80,c[0],c[1],rv(T,st[k]),shock?C.red:C.mint));
+      card(gg,70,165,1140,96,"rgba(226,87,76,.28)","rgba(226,87,76,.7)");
+      txt("SBP 100 mmHg or less",{x:104,y:225,"font-size":38,"font-weight":800},gg);
+      txt("suspected septic shock pathway",{x:1176,y:225,"text-anchor":"end","font-size":30,"font-weight":800,fill:"#ff8c82"},gg)}
+    const items=[["Request early clinical support","say \"suspected septic shock\""],["Don't delay extrication or transport","rendezvous en route if required"],["High-flow oxygen, priority transport","notify \"suspected septic shock\""]];
+    const st=[S[1].s,S[2].s,S[3].s];
+    items.forEach((c,k)=>row(g,70,280+k*92,1140,80,c[0],c[1],rv(T,st[k]),C.red));
   }
 
   if(i===6){
