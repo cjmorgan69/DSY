@@ -65,8 +65,10 @@ the EOC Clinician for a plan; adequate oxygenation = SpO2 above 94% on air, else
 no CPR detail in scenarios. Envenomation (`/modules/envenomation/`, Greg 52, brown snake) rebuilt and linked with
 the envenomation module (live, lesson added); owner: longboard or carry chair both fine, chosen by helpers and
 distance, as long as movement is minimal and timely. Anaphylaxis (`/modules/anaphylaxis/`, David 54, bee sting) rebuilt from the paramedic CPG onto
-CPP-003-AO and linked with the module (PR open, no lesson yet); owner: driver calls the EOC Clinician as soon as
+CPP-003-AO and linked with the module (live, lesson added); owner: driver calls the EOC Clinician as soon as
 possible; if the patient looks really sick use an expired EpiPen immediately, otherwise follow EOC directions; the Red
-Kit carries adrenaline 1000 microg in 1 mL. Next, in this order: stroke
-(`/modules/stroke-AO/`) and hypoglycaemia (the AO page links both `/modules/hypo/` and `/modules/hypoglycaemia`:
+Kit carries adrenaline 1000 microg in 1 mL. Stroke (`/modules/stroke-AO/`, Frank 78, Coffin Bay) rebuilt on
+CPP-016-AO v6.0 (9-hour window) with ROSIER+ACT (CTL-066) and linked with the module (PR open, no lesson yet); owner:
+local Code Stroke notification is that the EOC Clinician may contact Port Lincoln Hospital and/or the crew notifies by
+GRN radio. Next: hypoglycaemia (the AO page links both `/modules/hypo/` and `/modules/hypoglycaemia`:
 ask which to keep). Update this list as work is done.
