@@ -301,21 +301,32 @@
     add(wrap, status, card, rate, done, live); start(); return wrap;
   }
 
+  /* in the flow layout a box can be shown as swipe tiles (tiles: true, at most one per module) and can carry
+     one quick-check flash card (check: {q, a}) shown straight after it */
+  function boxOrTiles(k, body) {
+    if (M.flow && k.tiles) {
+      body.appendChild(tiles({ title: k.title, text: k.text, numbered: !!k.steps,
+        items: (k.steps || k.items).map(function (x) { return typeof x === "string" ? { title: x } : { title: x.t, text: x.text }; }) }));
+      if (k.note) body.appendChild(para(k.note, "small muted"));
+    } else body.appendChild(box(k));
+    if (M.flow && k.check) body.appendChild(cards({ quick: true, items: [k.check] }));
+  }
+
   function renderBlock(b, body) {
     var n;
     if (b.text) body.appendChild(para(b.text, b.muted ? "muted" : null));
     if (b.paragraphs) b.paragraphs.forEach(function (t) { body.appendChild(para(t)); });
     if (b.video !== undefined) { n = slot("video", b.video, b.title || M.title); if (n) body.appendChild(n); }
     if (b.audio !== undefined) { n = slot("audio", b.audio, b.title || "further learning"); if (n) body.appendChild(n); }
-    if (b.box) body.appendChild(box(b.box));
-    if (b.boxes) b.boxes.forEach(function (k) { body.appendChild(box(k)); });
+    if (b.box) boxOrTiles(b.box, body);
+    if (b.boxes) b.boxes.forEach(function (k) { boxOrTiles(k, body); });
     if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (s) { o.appendChild(titled(s.t, s.text)); }); body.appendChild(o); }
     if (b.checklist) body.appendChild(checklist(b.checklist));
     if (b.chooser) body.appendChild(chooser(b.chooser));
     if (b.tiles) body.appendChild(tiles(b.tiles));
     if (b.cards) body.appendChild(cards(b.cards));
     if (b.table) body.appendChild(table(b.table));
-    if (b.tool) body.appendChild(tool(b.tool));
+    if (b.tool) { body.appendChild(tool(b.tool)); if (M.flow && b.tool.check) body.appendChild(cards({ quick: true, items: [b.tool.check] })); }
     if (b.quiz) body.appendChild(quiz(b.quiz));
     if (b.links) { var lr = el("div", "row"); b.links.forEach(function (l) { lr.appendChild(link(l.label, l.href)); }); body.appendChild(lr); }
     if (b.note) body.appendChild(para(b.note, "small muted"));
@@ -327,7 +338,7 @@
     out.push({ title: "Introduction", open: true, blocks: [{ video: M.video }].concat((M.intro || []).map(function (t) { return { text: t }; })) });
     if (M.keyPoints && M.keyPoints.length) out.push({ title: M.keyPointsTitle || "Key points", blocks: [{ boxes: M.keyPoints }] });
     if (M.tool) out.push({ title: M.tool.title, blocks: [{ tool: M.tool }] });
-    if (M.reference && M.reference.length) out.push({ title: M.referenceTitle || "Reference", blocks: M.reference.map(function (r) { return { table: r }; }).concat(M.links ? [{ links: M.links }] : []) });
+    if (M.reference && M.reference.length) out.push({ title: M.referenceTitle || "Reference", collapsed: true, blocks: M.reference.map(function (r) { return { table: r }; }).concat(M.links ? [{ links: M.links }] : []) });
     if (M.quiz && M.quiz.length) out.push({ title: "Knowledge check", blocks: [{ quiz: { questions: M.quiz } }] });
     if (M.practical) {
       var pr = M.practical, bl = [];
@@ -336,7 +347,7 @@
       if (pr.steps) bl.push({ steps: pr.steps });
       if (pr.good) bl.push({ box: { title: "What good looks like", items: pr.good } });
       if (pr.note) bl.push({ note: pr.note });
-      out.push({ title: pr.title || "Practical", optional: true, chip: "Optional", blocks: bl });
+      out.push({ title: pr.title || "Practical", optional: true, collapsed: true, chip: "Optional", blocks: bl });
     }
     var fl = [];
     if (M.furtherVideo) {
@@ -346,7 +357,7 @@
     if (M.podcast && M.podcast.summary) fl.push({ text: M.podcast.summary });
     if (M.podcast) fl.push({ audio: M.podcast });
     if (M.furtherLinks && M.furtherLinks.length) fl.push({ links: M.furtherLinks });
-    out.push({ title: "Further learning", optional: true, chip: "Optional", blocks: fl, skipIfEmpty: true });
+    out.push({ title: "Further learning", optional: true, collapsed: true, chip: "Optional", blocks: fl, skipIfEmpty: true });
     return out;
   }
 

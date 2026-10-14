@@ -2,6 +2,7 @@
    Sources: SAAS CPP-008-AO Envenomation - AO (exported 31.08.2026) and CPPRO-022 Pressure Bandaging and
    Immobilisation v1.0. Nothing here goes beyond those two documents. */
 window.MODULE = {
+  flow: true,                         // open sections that fade in and a few quick checks (see ../README.md)
   draft: false,
   title: "Envenomation Training",
   subtitle: "Eyre Peninsula - microlearning module",
@@ -20,7 +21,7 @@ window.MODULE = {
       { video: { src: "https://www.youtube.com/embed/5724zYD14LQ?si=aUyky1CmxHHbV57t", title: "Introduction to envenomation" } },
       { text: "A number of venomous animals can cause envenomation through bites or stings. The aim of prehospital treatment is to reduce the effects of the venom and symptomatically manage the patient until definitive care." },
       { text: "Snakebite is the most common type of envenoming accident in SA and fatalities can occur. The most significant immediate clinical risk is early cardiovascular collapse leading to cardiac arrest. Australian native snake venom can also cause paralysis, muscle breakdown, renal damage and affect the blood's ability to clot." },
-      { box: { title: "Why pressure bandaging works", text: "Venom is thought to travel mainly through the lymphatic vessels. A pressure bandage compresses them and delays symptom onset. Muscle movement pushes lymph back towards the central circulation, so keep the bitten limb and the whole patient as still as possible, and keep the bitten area below the level of the heart where practical." } },
+      { box: { title: "Why pressure bandaging works", check: { q: "Why keep the patient and the bitten limb still?", a: "Muscle movement pushes lymph, and the venom in it, back towards the central circulation." }, text: "Venom is thought to travel mainly through the lymphatic vessels. A pressure bandage compresses them and delays symptom onset. Muscle movement pushes lymph back towards the central circulation, so keep the bitten limb and the whole patient as still as possible, and keep the bitten area below the level of the heart where practical." } },
       { box: { title: "Precautions", items: [
         "Be continuously alert for airway and cardiovascular collapse, hypoventilation and apnoea",
         "Be prepared to intervene with BVM ventilation and/or advanced airway management",
@@ -107,7 +108,7 @@ window.MODULE = {
 
     { title: "Pressure bandaging", blocks: [
       { video: { src: "https://www.youtube.com/embed/jSDZbZcWAdQ?si=OizX4q7Sr3myOuHp", title: "Pressure immobilisation technique" } },
-      { box: { title: "When to apply", items: [
+      { box: { title: "When to apply", check: { q: "A large black spider bit the patient 2 hours ago. Pressure bandage?", a: "Yes. Apply it for a large (> 2cm body length) dark or black spider bite less than 4 hours ago, and/or with signs of systemic envenoming." }, items: [
         "Suspected bite from an Australian native snake or blue-ringed octopus, whether or not they show signs of envenoming",
         "Bite from a large (> 2cm body length) dark or black spider less than 4 hours ago, and/or signs of systemic envenoming"] } },
       { checklist: { title: "Practise the steps", intro: "Tick off each step as you practise it.", items: [
@@ -184,7 +185,7 @@ window.MODULE = {
         "Immobilise with the head elevated about 20-30°, keeping the bitten area below the heart",
         "Have cardiac monitoring and defibrillation available, and be ready to ventilate",
         "Provide transport and notify the receiving facility"] } },
-      { box: { title: "Do not", tone: "no", items: [
+      { box: { title: "Do not", tone: "no", check: { q: "The patient arrives with a pressure bandage already on. Do you take it off to check the bite?", a: "No. Do not remove pressure bandages or tourniquets already applied. Consult the EOC Clinician instead." }, items: [
         "Apply a tourniquet",
         "Wash or clean the bite site (swabbing for venom identification is highly sensitive to venom on the skin)",
         "Elevate a bitten limb",

@@ -3,6 +3,7 @@
    procedures CPPRO-008 Medication Checks and CPPRO-009 Oral Medication Administration (each v1.0, effective
    05/07/2017). Nothing here goes beyond those documents. */
 window.MODULE = {
+  flow: true,                         // open sections that fade in and a few quick checks (see ../README.md)
   draft: false,                       // true shows "coming soon" boxes for empty video/podcast slots
   title: "Chest pain",
   subtitle: "Ambulance Officer microlearning",
@@ -40,13 +41,13 @@ window.MODULE = {
 
   keyPointsTitle: "Key points",
   keyPoints: [
-    { title: "First, for every patient", steps: [
+    { title: "First, for every patient", check: { q: "Who gets oral aspirin 300 mg?", a: "Every patient, unless they are allergic." }, steps: [
       { t: "Basic care including ECG monitoring" },
       { t: "Monitor vital signs every 5 minutes" },
       { t: "Consider clinical support" },
       { t: "Oral aspirin 300 mg", text: "Unless the patient is allergic. SAAS aspirin is chewed by the patient before it is swallowed (CPPRO-009)." }
     ] },
-    { title: "GTN limits: ALL must apply", tone: "warn", items: [
+    { title: "GTN limits: ALL must apply", tone: "warn", check: { q: "GTN is prescribed. Systolic 95, pulse 80. Can you give GTN?", a: "No. The systolic must be 100 mmHg or more." }, items: [
       "Systolic BP 100 mmHg or more if GTN was prescribed to the patient, and above 100 mmHg if it was not",
       "Pulse rate 60 to 120",
       "No use of a PDE-5 inhibitor within 24 hours (sildenafil, vardenafil, avanafil) or 48 hours (tadalafil)"
@@ -69,6 +70,7 @@ window.MODULE = {
   ],
 
   tool: {
+    check: { q: "The patient took tadalafil 30 hours ago. Can you give GTN?", a: "No. No GTN within 48 hours of tadalafil (24 hours for sildenafil, vardenafil or avanafil)." },
     title: "GTN checker",
     intro: "Answer the questions about your patient and the protocol pathway is shown. It follows CPP-007-AO version 4.2. Aspirin and basic care come first for every patient.",
     fields: [

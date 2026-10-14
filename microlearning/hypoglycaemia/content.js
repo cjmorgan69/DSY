@@ -3,6 +3,7 @@
    procedures CPPRO-008 Medication Checks, CPPRO-009 Oral Medication Administration and CPPRO-011 Intramuscular
    Injection (each v1.0, effective 05/07/2017). Nothing here goes beyond those documents. */
 window.MODULE = {
+  flow: true,                         // open sections that fade in and a few quick checks (see ../README.md)
   draft: false,                       // true shows "coming soon" boxes for empty video/podcast slots
   title: "Hypoglycaemia",
   subtitle: "Ambulance Officer microlearning",
@@ -40,12 +41,12 @@ window.MODULE = {
 
   keyPointsTitle: "Key points",
   keyPoints: [
-    { title: "When the protocol applies", items: [
+    { title: "When the protocol applies", check: { q: "Below what BGL does this protocol apply?", a: "Below 3.5 mmol/L." }, items: [
       "BGL below 3.5 mmol/L",
       "Normal range: usually above 3.5 mmol/L for adults and children, above 2.5 mmol/L for neonates",
       "Measure BGL on every patient with an altered conscious state or altered cerebral function, including trauma and seizures, and particularly in children"
     ] },
-    { title: "Patients 2 years and over, BGL below 3.5 mmol/L", steps: [
+    { title: "Patients 2 years and over, BGL below 3.5 mmol/L", check: { q: "A 4 year old cannot swallow the glucose paste. What now?", a: "Consult the EOC Clinician, who may advise IM glucagon. An AO does not decide on glucagon alone." }, steps: [
       { t: "Basic care and life support" },
       { t: "Oral glucose, up to 15 g", text: "If the patient has an adequate GCS to swallow the paste (a cough is a good indicator)." },
       { t: "Request clinical support", text: "As appropriate." },
@@ -62,6 +63,7 @@ window.MODULE = {
   ],
 
   tool: {
+    check: { q: "If the EOC Clinician advises IM glucagon for a 7 year old weighing 30 kg, what is the dose?", a: "1 mg (6 years or older, or 25 kg or more)." },
     title: "Treatment checker",
     intro: "Answer the questions about your patient and the protocol pathway is shown. It follows CPP-009-AO version 4.1.",
     fields: [

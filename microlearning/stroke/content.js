@@ -2,6 +2,7 @@
    Source: SAAS CPP-016-AO Stroke - AO, version 6.0 (25 June 2026), exported 31.08.2026.
    Nothing here goes beyond that text. */
 window.MODULE = {
+  flow: true,                         // open sections that fade in, one tile row and a few quick checks (see ../README.md)
   draft: false,                       // true shows "coming soon" boxes for empty video/podcast slots
   title: "Stroke",
   subtitle: "Ambulance Officer microlearning",
@@ -40,19 +41,19 @@ window.MODULE = {
       "Code Stroke eligibility for ROSIER positive patients is extended to up to 9 hours from symptom onset. It was 4 hours.",
       "Naracoorte STS hours are updated (see the facilities list)."
     ], note: "From the protocol's version history. If you learned the 4 hour window, it no longer applies." },
-    { title: "First: basic care", items: [
+    { title: "First: basic care", check: { q: "What do you check before the ROSIER assessment?", a: "The BGL. If it is below 3.5 mmol/L, treat as per CPP-009-AO Hypoglycaemia and reassess after treatment." }, items: [
       "Measure BGL to exclude hypoglycaemia",
       "If BGL is below 3.5 mmol/L, treat as per CPP-009-AO Hypoglycaemia and reassess the patient after treatment",
       "Undertake a ROSIER assessment"
     ] },
-    { title: "Code Stroke: eligible for thrombolysis only if ALL apply", tone: "warn", items: [
+    { title: "Code Stroke: eligible for thrombolysis only if ALL apply", tone: "warn", check: { q: "Suspected stroke, ROSIER positive, independent before, 5 hours from onset, but 75 minutes from the CSU/STS. Code Stroke?", a: "Not as it stands: every criterion must apply. Consult the EOC Clinician to discuss transport and destination options." }, items: [
       "Stroke is clinically suspected",
       "ROSIER score is positive",
       "Independent pre-morbid functioning",
       "Less than 9 hours from symptom onset to arrival at the CSU/STS",
       "Less than 60 minutes travel time to the CSU/STS"
     ] },
-    { title: "What to do for a Code Stroke patient", steps: [
+    { title: "What to do for a Code Stroke patient", tiles: true, steps: [
       { t: "Consult the EOC Clinician", text: "Ask for authorisation to transport directly to the closest CSU/STS hospital, for consideration for thrombolysis." },
       { t: "Request clinical support", text: "If the patient is unstable or transport times are likely to be over 20 minutes." },
       { t: "Confirm patient details", text: "Patient identification, and phone contact for their substitute decision maker, close relative or carer." },
@@ -68,6 +69,7 @@ window.MODULE = {
   ],
 
   tool: {
+    check: { q: "Which local hospitals are listed as Stroke Thrombolysis Services?", a: "Port Lincoln, Whyalla and Port Augusta." },
     title: "Eligibility checker",
     intro: "Answer the questions about your patient and the protocol pathway is shown. It follows CPP-016-AO version 6.0. Complete the BGL and ROSIER steps first.",
     fields: [
