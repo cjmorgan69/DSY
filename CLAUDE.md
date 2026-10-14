@@ -58,7 +58,7 @@ Microlearning modules live: stroke, envenomation, hypoglycaemia, chest pain, ana
 all but envenomation narrated by Lee). Each is a Supabase lesson.
 
 Walk-through scenarios: asthma-ao rebuilt and linked with the asthma module (lesson added). Chest pain
-(`/modules/chest-pain/`, Graham 62) rebuilt and linked with the chest pain module (PR open, no lesson yet). Owner's
+(`/modules/chest-pain/`, Graham 62) rebuilt and linked with the chest pain module (live, lesson added). Owner's
 chest pain guidance: GTN 300 microg tablet or 400 microg spray both acceptable (SAAS changing back to spray; protocol
 still says 300 microg); patient who used own GTN: crew may give the first dose if BP and HR are in limits, then consult
 the EOC Clinician for a plan; adequate oxygenation = SpO2 above 94% on air, else nasal cannula to bring it above 94%;
