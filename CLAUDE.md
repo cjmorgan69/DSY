@@ -64,6 +64,9 @@ still says 300 microg); patient who used own GTN: crew may give the first dose i
 the EOC Clinician for a plan; adequate oxygenation = SpO2 above 94% on air, else nasal cannula to bring it above 94%;
 no CPR detail in scenarios. Envenomation (`/modules/envenomation/`, Greg 52, brown snake) rebuilt and linked with
 the envenomation module (live, lesson added); owner: longboard or carry chair both fine, chosen by helpers and
-distance, as long as movement is minimal and timely. Next, in this order: anaphylaxis (`/modules/anaphylaxis/`), stroke
+distance, as long as movement is minimal and timely. Anaphylaxis (`/modules/anaphylaxis/`, David 54, bee sting) rebuilt from the paramedic CPG onto
+CPP-003-AO and linked with the module (PR open, no lesson yet); owner: driver calls the EOC Clinician as soon as
+possible; if the patient looks really sick use an expired EpiPen immediately, otherwise follow EOC directions; the Red
+Kit carries adrenaline 1000 microg in 1 mL. Next, in this order: stroke
 (`/modules/stroke-AO/`) and hypoglycaemia (the AO page links both `/modules/hypo/` and `/modules/hypoglycaemia`:
 ask which to keep). Update this list as work is done.
