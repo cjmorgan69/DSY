@@ -52,15 +52,20 @@ Reference modules: `microlearning/stroke/` (shorthand keys, decision aid, narrat
    - Serve the repo (`python3 -m http.server`), open the page with Playwright at phone width, open every panel,
      run the tool, scenarios and quiz, confirm no console errors and no sideways scroll.
    - Compare against the protocol text one more time: every number, threshold and agency name.
-5. **Video script.** Write one paragraph per scene, only protocol facts, spell letters out (`C S U`, `E O C`, `E T A`,
-   `G R N`), spell hard words phonetically (`Rosier`, `Iz-bar`), and show it to the user in ONE plain code block with
-   blank lines between scenes and **no numbers** (numbers get read aloud). Aim for about 3 minutes (about 155 words a
-   minute over a long script, about 110 for a very short one). Say what each scene will show. The user reads the script
-   in your reply (it is clinical content): unless they asked you to wait, carry straight on to step 6.
+5. **Video script.** Write one paragraph per scene, only protocol facts, in a spoken, conversational style: short
+   sentences (one idea each), contractions ("don't", "they're"), the occasional question to open a scene ("No
+   auto-injector? Call the EOC Clinician."), and lists broken into separate short sentences rather than one long one.
+   Long list sentences and colons are what make the voice sound machine-read. Plain-English wording is fine where it
+   keeps the meaning ("swelling in the airway" for angioedema), but keep the protocol's terms on screen. Spell letters
+   out in the text sent to the voice (`E O C`, `C S U`, `E T A`, `G R N`) but keep `EOC` etc. in `script.json` captions.
+   Numbers can be digits for `eleven_v4`. Spell hard words phonetically. Show the script to the user in ONE plain code
+   block with blank lines between scenes. Aim for about 2 to 3 minutes. Say what each scene will show. The user reads
+   the script in your reply (it is clinical content): unless they asked you to wait, carry straight on to step 6.
 6. **Narration.** Use the ElevenLabs connector (load it with ToolSearch: `creative_generate_speech`,
    `creative_get_flow_run_status`, `creative_list_voices`). The voice is in `microlearning/tools/video/voice.json`
-   (currently Roger, premade, `eleven_multilingual_v2`); the user may change it later, so always read the file and never
-   hard-code a voice id. Generate the WHOLE script as one take (`generations_count: 1`, blank lines between scenes), poll
+   (currently Lee on `eleven_v4`, with the `prompt_prefix` tag `[calmly] ` put before the first line); the user may change it,
+   so always read the file and never hard-code a voice id. Generate the WHOLE script as one take (`generations_count: 1`,
+   blank lines between scenes), poll
    until `all_completed`, then download the signed `content_url` from the status result with `curl -o narration.mp3` straight
    into the scratchpad (never commit or paste the signed URL). Costs about 1 credit per character (a 3 minute script is
    about 2,600 credits): do not regenerate, or generate extra takes, without the user's say-so. Do a 1 sentence test first if
@@ -75,7 +80,9 @@ Reference modules: `microlearning/stroke/` (shorthand keys, decision aid, narrat
    `scene.html` (one visual per scene; keep the header, progress bar and caption code). Then:
    `PY=<python with pocketsphinx> microlearning/tools/video/make.sh microlearning/<name>/video-src narration.mp3 microlearning/<name>/intro.mp4`
    Read the alignment table it prints. A boundary marked CHECK, or one whose sentence does not match the words
-   around it, needs an entry in `overrides.json`. Look at a still of every scene (render a few frames with
+   around it, needs an entry in `overrides.json`. With `eleven_v4` the automatic match usually drifts (it pauses at
+   commas too): list every pause with the words between pauses (pocketsphinx over each chunk), then set the end pause
+   of every sentence in `overrides.json`, as in `anaphylaxis/video-src/overrides.json`. Look at a still of every scene (render a few frames with
    `node tools/video/render.js <workdir> 24 t1,t2,...`) for overlapping or cut-off text before the full render
    (about 3.5 minutes of rendering for 165 seconds of video). Install pocketsphinx in a throwaway venv if needed
    (`python3 -m venv v && v/bin/pip install pocketsphinx`); other speech models cannot be downloaded here.
