@@ -533,7 +533,10 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         const ROSTER_START_HOUR = 8;
 
         const CLINICAL_LEVELS = ["PARA", "AO", "AR", "AA", "REC"];
-        const FLEXIBILITY_CODES = ["N", "A", "B", "C"];
+        // Z flexibility is being trialled on teams with the "flexZ" feature.
+        const FLEXIBILITY_CODES = TEAM_FEATURES.has("flexZ")
+            ? ["N", "A", "B", "C", "Z"]
+            : ["N", "A", "B", "C"];
 
         const USER_STORAGE_KEY =
             `crew-roster-user-${TEAM_NAME.toLowerCase()}`;
@@ -548,7 +551,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
          * REC still occupies a booking place under MAX_CREW.
          *
          * No non-recruit crew: NC
-         * One AR: D
+         * One AR: D, or Z if that AR chose Z flexibility
          * Two or more AR, or AR with AA, without AO/PARA: E
          * AA-only operational crew: Z
          *
@@ -593,6 +596,14 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             document.getElementById("finishTimeSelect");
         const restrictionSelect =
             document.getElementById("restrictionSelect");
+
+        if (FLEXIBILITY_CODES.includes("Z")) {
+            restrictionSelect.add(new Option("Z", "Z"));
+            document.getElementById("restrictionHelp").textContent =
+                "Optional: leave N selected for no restriction, " +
+                "or choose A, B, C or Z. Operational restrictions " +
+                "are calculated separately (a single AR on Z shows Z).";
+        }
         const bookingSummary =
             document.getElementById("bookingSummary");
         const bookButton =
@@ -1365,7 +1376,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                     );
 
                 const hasUnknownFlexibility = flexibilityCodes.some(code =>
-                    !["N", "A", "B", "C"].includes(code)
+                    !["N", "A", "B", "C", "Z"].includes(code)
                 );
 
                 if (hasUnknownFlexibility) {
@@ -1416,6 +1427,26 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
             // One AR, with or without recruits.
             if (arCount === 1 && aaCount === 0) {
+                const arBooking = bookings.find(booking =>
+                    String(booking.clinicalLevel || "")
+                        .trim()
+                        .toUpperCase() === "AR"
+                );
+
+                const arFlexibility = String(
+                    (arBooking && arBooking.restriction) || ""
+                ).trim().toUpperCase();
+
+                if (arFlexibility === "Z") {
+                    return {
+                        code: "Z",
+                        review: false,
+                        reason:
+                            "One AR is available and chose Z flexibility. " +
+                            "Recruits are observers."
+                    };
+                }
+
                 return {
                     code: "D",
                     review: false,
@@ -2909,6 +2940,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                             <option value="A">A</option>
                             <option value="B">B</option>
                             <option value="C">C</option>
+                            ${FLEXIBILITY_CODES.includes("Z") ? '<option value="Z">Z</option>' : ""}
                         </select>
                     </label>
                 </div>
@@ -5186,7 +5218,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                                         .toUpperCase() || "N";
 
                                 flexibilityCell.textContent =
-                                    ["N", "A", "B", "C"].includes(code)
+                                    ["N", "A", "B", "C", "Z"].includes(code)
                                         ? code
                                         : "Legacy: " + code;
                             }

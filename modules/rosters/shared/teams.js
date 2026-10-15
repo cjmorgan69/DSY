@@ -26,6 +26,8 @@ const WESTCOAST_API =
  * - loadingMessages: quote or tip while the roster loads
  * - reliableCancel:  cancel shows at once and retries until confirmed
  * - editBooking:     Edit button in My bookings (needs Apps Script v4)
+ * - flexZ:           Z in the flexibility list; a single AR on Z
+ *                    shows operational Z instead of D (test only)
  * To try a new feature on one team first, give that team its own
  * "features" list instead.
  */
@@ -41,7 +43,8 @@ const ROSTER_TEAM_LIST = {
     test: {
         name: "Summer Bay",
         cluster: "Lower Eyre",
-        apiUrl: TEST_API
+        apiUrl: TEST_API,
+        features: [...STANDARD_FEATURES, "flexZ"]
     },
     tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
