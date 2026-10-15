@@ -27,7 +27,9 @@ const WESTCOAST_API =
  * - reliableCancel:  cancel shows at once and retries until confirmed
  * - editBooking:     Edit button in My bookings (needs Apps Script v4)
  * - flexZ:           Z in the flexibility list; a single AR on Z
- *                    shows operational Z instead of D (test only)
+ *                    shows operational Z instead of D (test roster
+ *                    and Lower Eyre; needs Z allowed in that
+ *                    cluster's Apps Script)
  * To try a new feature on one team first, give that team its own
  * "features" list instead.
  */
@@ -38,18 +40,20 @@ const STANDARD_FEATURES = [
     "editBooking"
 ];
 
+const FLEX_Z_FEATURES = [...STANDARD_FEATURES, "flexZ"];
+
 const ROSTER_TEAM_LIST = {
     // Lower Eyre (plus the test roster)
     test: {
         name: "Summer Bay",
         cluster: "Lower Eyre",
         apiUrl: TEST_API,
-        features: [...STANDARD_FEATURES, "flexZ"]
+        features: FLEX_Z_FEATURES
     },
-    tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
-    portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
-    cummins: { name: "Cummins", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
-    coffinbay: { name: "Coffin Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
+    tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API, features: FLEX_Z_FEATURES },
+    portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API, features: FLEX_Z_FEATURES },
+    cummins: { name: "Cummins", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API, features: FLEX_Z_FEATURES },
+    coffinbay: { name: "Coffin Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API, features: FLEX_Z_FEATURES },
 
     // Central Eyre
     cleve: { name: "Cleve", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API },
