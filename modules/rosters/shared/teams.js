@@ -27,9 +27,9 @@ const WESTCOAST_API =
  * - reliableCancel:  cancel shows at once and retries until confirmed
  * - editBooking:     Edit button in My bookings (needs Apps Script v4)
  * - flexZ:           Z in the flexibility list; a single AR on Z
- *                    shows operational Z instead of D (test roster
- *                    and Lower Eyre; needs Z allowed in that
- *                    cluster's Apps Script)
+ *                    shows operational Z instead of D (test roster,
+ *                    Lower Eyre and West Coast; needs Z allowed in
+ *                    that cluster's Apps Script)
  * To try a new feature on one team first, give that team its own
  * "features" list instead.
  */
@@ -62,10 +62,10 @@ const ROSTER_TEAM_LIST = {
     lock: { name: "Lock", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API },
 
     // West Coast
-    kimba: { name: "Kimba", cluster: "West Coast", apiUrl: WESTCOAST_API },
-    port_kenny: { name: "Port Kenny", cluster: "West Coast", apiUrl: WESTCOAST_API },
-    streakybay: { name: "Streaky Bay", cluster: "West Coast", apiUrl: WESTCOAST_API },
-    wudinna: { name: "Wudinna", cluster: "West Coast", apiUrl: WESTCOAST_API }
+    kimba: { name: "Kimba", cluster: "West Coast", apiUrl: WESTCOAST_API, features: FLEX_Z_FEATURES },
+    port_kenny: { name: "Port Kenny", cluster: "West Coast", apiUrl: WESTCOAST_API, features: FLEX_Z_FEATURES },
+    streakybay: { name: "Streaky Bay", cluster: "West Coast", apiUrl: WESTCOAST_API, features: FLEX_Z_FEATURES },
+    wudinna: { name: "Wudinna", cluster: "West Coast", apiUrl: WESTCOAST_API, features: FLEX_Z_FEATURES }
 };
 
 window.DSY_ROSTER_TEAMS = Object.freeze(
