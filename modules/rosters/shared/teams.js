@@ -27,9 +27,8 @@ const WESTCOAST_API =
  * - reliableCancel:  cancel shows at once and retries until confirmed
  * - editBooking:     Edit button in My bookings (needs Apps Script v4)
  * - flexZ:           Z in the flexibility list; a single AR on Z
- *                    shows operational Z instead of D (test roster,
- *                    Lower Eyre and West Coast; needs Z allowed in
- *                    that cluster's Apps Script)
+ *                    shows operational Z instead of D (needs Z
+ *                    allowed in the cluster's Apps Script)
  * To try a new feature on one team first, give that team its own
  * "features" list instead.
  */
@@ -37,23 +36,21 @@ const STANDARD_FEATURES = [
     "savedRoster",
     "loadingMessages",
     "reliableCancel",
-    "editBooking"
+    "editBooking",
+    "flexZ"
 ];
-
-const FLEX_Z_FEATURES = [...STANDARD_FEATURES, "flexZ"];
 
 const ROSTER_TEAM_LIST = {
     // Lower Eyre (plus the test roster)
     test: {
         name: "Summer Bay",
         cluster: "Lower Eyre",
-        apiUrl: TEST_API,
-        features: FLEX_Z_FEATURES
+        apiUrl: TEST_API
     },
-    tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API, features: FLEX_Z_FEATURES },
-    portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API, features: FLEX_Z_FEATURES },
-    cummins: { name: "Cummins", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API, features: FLEX_Z_FEATURES },
-    coffinbay: { name: "Coffin Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API, features: FLEX_Z_FEATURES },
+    tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
+    portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
+    cummins: { name: "Cummins", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
+    coffinbay: { name: "Coffin Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
 
     // Central Eyre
     cleve: { name: "Cleve", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API },
@@ -62,10 +59,10 @@ const ROSTER_TEAM_LIST = {
     lock: { name: "Lock", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API },
 
     // West Coast
-    kimba: { name: "Kimba", cluster: "West Coast", apiUrl: WESTCOAST_API, features: FLEX_Z_FEATURES },
-    port_kenny: { name: "Port Kenny", cluster: "West Coast", apiUrl: WESTCOAST_API, features: FLEX_Z_FEATURES },
-    streakybay: { name: "Streaky Bay", cluster: "West Coast", apiUrl: WESTCOAST_API, features: FLEX_Z_FEATURES },
-    wudinna: { name: "Wudinna", cluster: "West Coast", apiUrl: WESTCOAST_API, features: FLEX_Z_FEATURES }
+    kimba: { name: "Kimba", cluster: "West Coast", apiUrl: WESTCOAST_API },
+    port_kenny: { name: "Port Kenny", cluster: "West Coast", apiUrl: WESTCOAST_API },
+    streakybay: { name: "Streaky Bay", cluster: "West Coast", apiUrl: WESTCOAST_API },
+    wudinna: { name: "Wudinna", cluster: "West Coast", apiUrl: WESTCOAST_API }
 };
 
 window.DSY_ROSTER_TEAMS = Object.freeze(
