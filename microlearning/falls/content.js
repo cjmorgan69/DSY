@@ -42,7 +42,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "", title: "Falls: what AOs need to know", notes: "Narrated intro video" } },
+      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Falls: what AOs need to know" } },
       { text: "A fall is an event which results in a person coming to rest inadvertently on the ground or floor or other lower level. A fall may or may not result in injury." },
       { text: "Apart from medical causes such as syncope or dizziness, many things contribute to a fall: cognitive impairment, medications, declining balance and mobility, continence problems, feet and footwear, vision and the environment." },
       { text: "You are often the first health care professional in a person's home. It is a chance to see how they are managing and to spot risks for further falls. A fall is itself a strong risk factor for future falls and fall injuries." },
