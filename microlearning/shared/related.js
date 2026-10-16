@@ -3,7 +3,8 @@
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
   "CPP-001-AO": [
-    { kind: "Microlearning module", title: "Acute cardiogenic pulmonary oedema", href: "/microlearning/acpo/", text: "Posture, high-flow oxygen, clinical support and the GTN checker (SBP, heart rate, PDE-5 inhibitors)." }
+    { kind: "Microlearning module", title: "Acute cardiogenic pulmonary oedema", href: "/microlearning/acpo/", text: "Posture, high-flow oxygen, clinical support and the GTN checker (SBP, heart rate, PDE-5 inhibitors)." },
+    { kind: "Walk-through scenario", title: "ACPO - AO: Kevin, 72", href: "/modules/APO/", text: "Two-person AO crew at 3am: posture, high-flow oxygen, the PDE-5 question and GTN spray on EOC Clinician advice. Facilitator and student versions." }
   ],
   "CPP-013-AO": [
     { kind: "Microlearning module", title: "Pain management", href: "/microlearning/pain/", text: "Multimodal analgesia, the sedation score, the IN fentanyl checker and sublingual ketamine for authorised AOs." },
