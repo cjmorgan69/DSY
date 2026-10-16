@@ -54,7 +54,7 @@ function chrome(t,i){
     const fs=s.text.length>150?25:(s.text.length>125?28:32);
     txt(s.text.slice(0,cut),{x:640,y:620,"text-anchor":"middle","font-size":fs,"font-weight":600},g);
     txt(s.text.slice(cut+1),{x:640,y:664,"text-anchor":"middle","font-size":fs,"font-weight":600},g);}
-  txt("SAAS CPP-001-AO",{x:1210,y:704,"text-anchor":"end","font-size":15,opacity:.5,"letter-spacing":"1.5"});
+  txt("SAAS CPG-144-P",{x:1210,y:704,"text-anchor":"end","font-size":15,opacity:.5,"letter-spacing":"1.5"});
 }
 
 function scene(t,i){
@@ -71,52 +71,76 @@ function scene(t,i){
       txt(p[1],{x:x+135,y:y+113,"text-anchor":"middle","font-size":27,"font-weight":800,fill:hi?C.ink:"#fff"},gg);txt(p[2],{x:x+135,y:y+147,"text-anchor":"middle","font-size":24,fill:hi?C.ink:"#cfe7da"},gg)});
 
   if(i===0){
-    txt("ACPO",{x:640,y:320,"text-anchor":"middle","font-size":140,"font-weight":800,"letter-spacing":"-4",opacity:rv(T,S[0].s,0.5)},g);
+    txt("TBI",{x:640,y:320,"text-anchor":"middle","font-size":150,"font-weight":800,"letter-spacing":"-4",opacity:rv(T,S[0].s,0.5)},g);
     el("rect",{x:640-200*rv(T,S[0].s+0.2,0.7),y:352,width:400*rv(T,S[0].s+0.2,0.7),height:7,rx:3.5,fill:C.gold},g);
-    txt("Acute cardiogenic pulmonary oedema",{x:640,y:420,"text-anchor":"middle","font-size":38,fill:"#dff1e7",opacity:rv(T,S[0].s+0.4,0.5)},g);
-    badge(g,"What every Ambulance Officer needs to know",640,500,rv(T,S[1].s,0.5),"rgba(63,174,116,.55)");
+    txt("Traumatic or hypoxic brain injury",{x:640,y:420,"text-anchor":"middle","font-size":38,fill:"#dff1e7",opacity:rv(T,S[0].s+0.4,0.5)},g);
+    badge(g,"Preventing the second insult",640,500,rv(T,S[1].s,0.5),"rgba(63,174,116,.55)");
   }
 
   if(i===1){
-    badge(g,"Oxygen and posture first",640,170,rv(T,S[0].s,0.5),"rgba(227,167,18,.5)");
-    tiles([["1","Sit them","up"],["2","High-flow O2","non-rebreather"],["3","Request","clinical support"]],[S[1].s,S[2].s,S[3].s],215,false);
+    row(g,70,160,1140,96,"Primary injury","Already happened. You can't change it.",rv(T,S[0].s),"rgba(255,255,255,.5)");
+    txt("Secondary brain insults",{x:70,y:300,"font-size":28,"font-weight":700,fill:C.gold,opacity:rv(T,S[3].s,0.4)},g);
+    chips(["Hypoxaemia","Hypercarbia","Hypotension","Ischaemia","Hypoglycaemia","Bleeding","Cerebral oedema","Seizures"],70,320,
+      [frac(4,0.1),frac(4,0.6),frac(5,0.1),frac(5,0.6),frac(6,0.05),frac(6,0.35),frac(6,0.55),frac(6,0.85)],"rgba(0,0,0,.32)",1210);
+    const a=rv(T,S[8].s,0.5); if(a>0){const gg=grp(g,a);card(gg,70,450,1140,96,"rgba(226,87,76,.28)","rgba(226,87,76,.7)");
+      txt("Predict poor outcome: hypoxia/hypercarbia, hypotension",{x:104,y:510,"font-size":32,"font-weight":800},gg)}
   }
 
   if(i===2){
-    row(g,70,165,1140,86,"Consult the EOC Clinician",null,rv(T,S[0].s),C.gold);
-    row(g,70,265,1140,86,"They may advise sublingual GTN",null,rv(T,S[1].s),C.mint);
-    row(g,70,365,560,86,"300 microg tablet",null,rv(T,frac(2,0.2)),C.mint);
-    row(g,650,365,560,86,"or 1 x 400 microg spray",null,rv(T,frac(2,0.6)),C.mint);
-    badge(g,"Only if the numbers allow",640,505,rv(T,S[3].s,0.5),"rgba(226,87,76,.55)");
+    badge(g,"Maintain cerebral perfusion",640,170,rv(T,S[0].s,0.5),"rgba(227,167,18,.5)");
+    row(g,70,215,1140,80,"Adequate ventilation",null,rv(T,S[1].s),C.mint);
+    row(g,70,305,1140,80,"Adequate blood pressure, avoid hypotension",null,rv(T,S[2].s),C.mint);
+    row(g,70,395,1140,80,"Prevent rises in intracranial pressure",null,rv(T,S[3].s),C.mint);
+    badge(g,"Autoregulation may be lost: your BP matters",640,525,rv(T,S[4].s,0.5),"rgba(226,87,76,.55)");
   }
 
   if(i===3){
-    const a0=rv(T,S[0].s,0.5); if(a0>0){const gg=grp(g,a0);card(gg,70,165,1140,96,"rgba(63,174,116,.25)","rgba(139,224,177,.6)");
-      txt("Systolic over 100 mmHg",{x:104,y:225,"font-size":38,"font-weight":800},gg)}
-    badge(g,"Exactly 100 isn't enough",640,300,rv(T,S[1].s,0.5),"rgba(226,87,76,.55)");
-    const a2=rv(T,S[2].s,0.5); if(a2>0){const gg=grp(g,a2);card(gg,70,340,1140,96,"rgba(63,174,116,.25)","rgba(139,224,177,.6)");
-      txt("Heart rate 60 to 120",{x:104,y:400,"font-size":38,"font-weight":800},gg)}
-    row(g,70,455,1140,80,"No PDE-5 inhibitors",null,rv(T,S[3].s),C.red);
+    tiles([["1","GCS, ECG","and BGL"],["2","SpO2","above 94%"],["3","EtCO2","use with care"]],[S[0].s,S[1].s,S[2].s],180,false);
+    badge(g,"Spontaneously breathing: EtCO2 may be unreliable",640,440,rv(T,S[3].s,0.5),"rgba(226,87,76,.55)");
   }
 
   if(i===4){
-    txt("Mostly for erectile dysfunction",{x:70,y:165,"font-size":26,fill:"#cfe7da",opacity:rv(T,S[0].s,0.4)},g);
-    row(g,70,190,1140,96,"Sildenafil, vardenafil, avanafil","within 24 hours: no GTN",rv(T,S[1].s),C.red);
-    row(g,70,300,1140,96,"Tadalafil","within 48 hours: no GTN",rv(T,S[2].s),C.red);
-    badge(g,"Together: life-threatening hypotension",640,440,rv(T,S[3].s,0.5),"rgba(226,87,76,.6)");
-    badge(g,"Ask by name, and kindly",640,520,rv(T,S[4].s,0.5),"rgba(63,174,116,.55)");
+    badge(g,"IV access, IV saline",640,165,rv(T,S[0].s,0.5),"rgba(227,167,18,.5)");
+    const col=(x,head,lines,st)=>{const a=rv(T,st,0.5);if(a<=0)return;const gg=grp(g,a);card(gg,x,205,560,300);
+      el("rect",{x,y:205,width:8,height:300,rx:4,fill:C.gold},gg);
+      txt(head,{x:x+34,y:262,"font-size":34,"font-weight":800,fill:C.gold},gg);
+      lines.forEach((ln,k)=>{const b=rv(T,ln[1],0.4);txt(ln[0],{x:x+34,y:325+k*62,"font-size":29,"font-weight":600,opacity:b},gg)})};
+    col(70,"14 years and over",[["250 mL aliquots",frac(2,0.1)],["Up to 20 mL/kg",frac(2,0.6)],["MAP ≥ 90 or SBP ≥ 110",S[3].s]],S[1].s);
+    col(650,"Under 14 years",[["10 mL/kg (max 250 mL)",S[5].s],["Up to 20 mL/kg",S[6].s],["Normal SBP for age (RDR)",S[7].s]],S[4].s);
   }
 
   if(i===5){
-    row(g,70,170,1140,90,"Vital signs every 3 to 5 minutes",null,rv(T,S[0].s),C.gold);
-    row(g,70,275,1140,90,"Repeat GTN only as directed",null,rv(T,S[1].s),C.mint);
-    const a2=rv(T,S[2].s,0.5); if(a2>0){const gg=grp(g,a2);card(gg,70,385,1140,96,"rgba(226,87,76,.28)","rgba(226,87,76,.7)");
-      txt("Outside the limits: stop and consult",{x:104,y:445,"font-size":36,"font-weight":800},gg)}
+    badge(g,"Straining and gagging raise ICP",640,170,rv(T,S[1].s,0.5),"rgba(226,87,76,.55)");
+    badge(g,"So does restricted venous drainage",640,240,rv(T,S[2].s,0.5),"rgba(0,0,0,.35)");
+    tiles([["1","Head up","30 degrees"],["2","Neck","position"],["3","Collars","and clothing"],["4","Airway","ties"]],[S[3].s,S[4].s,S[5].s,S[6].s],300,false);
   }
 
   if(i===6){
-    row(g,70,190,1140,90,"Prompt transport, notify",null,rv(T,S[0].s),C.gold);
-    tiles([["1","Sit","them up"],["2","High-flow","oxygen"],["3","GTN if","the numbers allow"]],[frac(1,0.1),frac(1,0.35),frac(1,0.6)],300,true);
+    txt("Exclude other causes first",{x:70,y:168,"font-size":28,"font-weight":700,fill:C.gold,opacity:rv(T,S[2].s,0.4)},g);
+    chips(["Hypovolaemia","Hypoglycaemia","Alcohol or psychostimulants","Psychosis"],70,186,[S[3].s,S[4].s,S[5].s,S[6].s],"rgba(0,0,0,.32)",1210);
+    row(g,70,258,1140,86,"Early clinical support: potential sedation",null,rv(T,S[7].s),C.gold);
+    row(g,70,354,1140,100,"Nasal capnography","Detects hypoventilation before hypoxia shows",rv(T,S[8].s),C.mint);
+    badge(g,"Sedatives + opiates: synergistic. Use judiciously",640,500,rv(T,S[10].s,0.5),"rgba(226,87,76,.6)");
+  }
+
+  if(i===7){
+    row(g,70,165,1140,86,"Sudden-onset hypoxic brain injury",null,rv(T,S[0].s),C.mint);
+    chips(["CVA","Intracerebral bleed","Post drowning","Post hanging"],70,280,[frac(1,0.1),frac(1,0.3),frac(1,0.6),frac(1,0.8)],"rgba(0,0,0,.32)",1210);
+    const a=rv(T,S[2].s,0.5); if(a>0){const gg=grp(g,a);card(gg,70,380,1140,110,"rgba(227,167,18,.25)","rgba(227,167,18,.7)");
+      txt("Strongly consider consulting",{x:104,y:425,"font-size":28,fill:"#f2e3b8"},gg);
+      txt("the SAAS Medical Practitioner",{x:104,y:466,"font-size":36,"font-weight":800},gg)}
+  }
+
+  if(i===8){
+    row(g,70,160,1140,86,"Clinical support: ICP or MedSTAR",null,rv(T,S[0].s),C.mint);
+    row(g,70,256,1140,86,"EOC Clinician: treatment plan",null,rv(T,S[2].s),C.mint);
+    row(g,70,352,1140,86,"Rapid transport, notify: MTT or DTT",null,rv(T,S[3].s),C.gold);
+    row(g,70,448,560,86,"Local hospital or trauma bypass",null,rv(T,S[5].s),C.gold);
+    row(g,650,448,560,86,"MedSTAR via the EOC",null,rv(T,S[6].s),C.gold);
+  }
+
+  if(i===9){
+    tiles([["1","Oxygen","SpO2 above 94%"],["2","Blood pressure","MAP 90 / SBP 110"],["3","Head up","neck clear"],["4","Prevent","the second insult"]],[S[0].s,S[1].s,S[2].s,S[3].s],230,true);
   }
 }
 function badge(g,s,x,y,a,col){
@@ -132,7 +156,7 @@ function render(t){
   const last=TL.lines[TL.lines.length-1].end;
   if(t>last+0.3){const a=eo(pr(t,last+0.3,last+0.9));
     el("rect",{x:0,y:0,width:1280,height:720,fill:C.ink,opacity:a*.94});
-    txt("ACPO",{x:640,y:330,"text-anchor":"middle","font-size":64,"font-weight":800,opacity:a});
-    txt("SAAS CPP-001-AO  ·  DSY Training",{x:640,y:385,"text-anchor":"middle","font-size":26,opacity:a*.75});}
+    txt("Traumatic brain injury",{x:640,y:330,"text-anchor":"middle","font-size":64,"font-weight":800,opacity:a});
+    txt("SAAS CPG-144-P  ·  DSY Training",{x:640,y:385,"text-anchor":"middle","font-size":26,opacity:a*.75});}
 }
 </script>
