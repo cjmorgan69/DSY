@@ -3,7 +3,8 @@
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
   "CPP-047-AO": [
-    { kind: "Microlearning module", title: "Nausea and vomiting", href: "/microlearning/nausea/", text: "Ondansetron ODT: indications, contraindications and precautions, doses by age, and when to consult." }
+    { kind: "Microlearning module", title: "Nausea and vomiting", href: "/microlearning/nausea/", text: "Ondansetron ODT: indications, contraindications and precautions, doses by age, and when to consult." },
+    { kind: "Walk-through scenario", title: "Nausea and Vomiting - AO: Helen, 62", href: "/modules/nausea-vomiting/", text: "Two-person AO crew near Cummins: 8 hours of vomiting, AF as one precaution, a second ondansetron dose on EOC Clinician advice, and watching the BGL. Facilitator and student versions." }
   ],
   "CPP-061-AO": [
     { kind: "Microlearning module", title: "Headache", href: "/microlearning/headache/", text: "The ten red flags, when to manage as stroke or sepsis, pain relief and ondansetron, with a red flag checker." },
