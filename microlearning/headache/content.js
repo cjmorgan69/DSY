@@ -44,7 +44,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "", title: "Headache: what AOs need to know" } },
+      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Headache: what AOs need to know" } },
       { text: "Headaches fall into two groups by their cause. Primary headaches are more common and benign: mostly migraine, tension-type and cluster headaches." },
       { text: "Secondary headaches are about 5% of headaches and have a serious, life-threatening cause needing immediate medical attention: subarachnoid haemorrhage, head injury, raised intracranial pressure, space-occupying lesions, venous sinus thrombosis, giant cell arteritis, and meningitis or systemic infection." },
       { text: "SAAS clinicians aren't trying to diagnose a headache. Focus on spotting the warning signs, managing symptoms, and transport for further assessment. And remember: relief from good analgesia is not evidence of a benign cause." }
