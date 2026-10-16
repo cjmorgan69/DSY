@@ -34,7 +34,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "", title: "ACPO: what AOs need to know" } },
+      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "ACPO: what AOs need to know" } },
       { text: "Acute cardiogenic pulmonary oedema (ACPO) is best treated by attention to oxygenation and posture. Glyceryl trinitrate (GTN) is beneficial if there is adequate blood pressure." },
       { text: "A phosphodiesterase-5 (PDE-5) inhibitor is a drug most commonly used to treat erectile dysfunction and pulmonary hypertension. GTN is contraindicated for patients taking PDE-5 medications, because using them together can lead to life-threatening hypotension." }
     ] },
