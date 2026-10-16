@@ -6,7 +6,7 @@
    and MedSTAR is notified via the EOC. Nothing clinical here goes beyond those. */
 var M = window.MODULE = {
   flow: true,                         // open sections that fade in, one tile row and a few quick checks (see ../README.md)
-  draft: true,
+  draft: false,
   title: "Traumatic or hypoxic brain injury",
   subtitle: "Paramedic microlearning",
   headline: "The first hit is done. Your job is to stop the second one",
@@ -32,7 +32,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "", title: "Brain injury: preventing the second insult" } },
+      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Brain injury: preventing the second insult" } },
       { text: "After the initial primary impact and brain injury, secondary brain insults can occur. Causes include hypoxaemia or hypercarbia, hypotension and ischaemia, hypoglycaemia, bleeding, cerebral oedema and seizures." },
       { text: "Hypoxia or hypercarbia, and hypotension, in particular, are predictors of poor outcome." },
       { text: "Maintaining cerebral perfusion is critical. That means adequate ventilation, an adequate blood pressure, avoiding hypotension, and preventing rises in intracranial pressure. The target blood pressure should take into account the potential loss of cerebral autoregulation." }
