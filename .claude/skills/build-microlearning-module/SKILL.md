@@ -70,7 +70,10 @@ Reference modules: `microlearning/stroke/` (shorthand keys, decision aid, narrat
    into the scratchpad (never commit or paste the signed URL). Costs about 1 credit per character (a 3 minute script is
    about 2,600 credits): do not regenerate, or generate extra takes, without the user's say-so. Do a 1 sentence test first if
    it is the first generation of the session. Then check the file before building: duration against the word count, and the
-   alignment table from step 7, which recognises the first words of every sentence. Tell the user plainly if it is wrong.
+   alignment table from step 7, which recognises the first words of every sentence. Also check the noise floor (the quietest
+   0.1 s in each 10 s should stay near -60 dB or lower): Lee on `eleven_v4` has developed rising hiss or distortion late in
+   long takes (pain, TBI). If a stretch is bad, tell the user, offer to re-take only that part, and join the takes at pauses
+   with matched loudness (as `tbi/video-src/overrides.json` notes). Tell the user plainly if it is wrong.
    If generation is refused (plan limits, account activity messages), do not retry or switch voices over and over: tell the
    user, and fall back to the old route: they record the script in the ElevenLabs app (the voice in voice.json, stability 50,
    similarity 75, speed 1.0) and upload the mp3. Uploads have repeatedly been the wrong or an old file: `cmp` it against
