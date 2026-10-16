@@ -54,7 +54,7 @@ function chrome(t,i){
     const fs=s.text.length>150?25:(s.text.length>125?28:32);
     txt(s.text.slice(0,cut),{x:640,y:620,"text-anchor":"middle","font-size":fs,"font-weight":600},g);
     txt(s.text.slice(cut+1),{x:640,y:664,"text-anchor":"middle","font-size":fs,"font-weight":600},g);}
-  txt("SAAS CPP-013-AO",{x:1210,y:704,"text-anchor":"end","font-size":15,opacity:.5,"letter-spacing":"1.5"});
+  txt("SAAS CPP-001-AO",{x:1210,y:704,"text-anchor":"end","font-size":15,opacity:.5,"letter-spacing":"1.5"});
 }
 
 function scene(t,i){
@@ -71,74 +71,52 @@ function scene(t,i){
       txt(p[1],{x:x+135,y:y+113,"text-anchor":"middle","font-size":27,"font-weight":800,fill:hi?C.ink:"#fff"},gg);txt(p[2],{x:x+135,y:y+147,"text-anchor":"middle","font-size":24,fill:hi?C.ink:"#cfe7da"},gg)});
 
   if(i===0){
-    txt("Pain",{x:640,y:320,"text-anchor":"middle","font-size":140,"font-weight":800,"letter-spacing":"-4",opacity:rv(T,S[0].s,0.5)},g);
+    txt("ACPO",{x:640,y:320,"text-anchor":"middle","font-size":140,"font-weight":800,"letter-spacing":"-4",opacity:rv(T,S[0].s,0.5)},g);
     el("rect",{x:640-200*rv(T,S[0].s+0.2,0.7),y:352,width:400*rv(T,S[0].s+0.2,0.7),height:7,rx:3.5,fill:C.gold},g);
-    txt("What every Ambulance Officer needs to know",{x:640,y:430,"text-anchor":"middle","font-size":38,fill:"#dff1e7",opacity:rv(T,S[1].s,0.5)},g);
-    badge(g,"Comfortable. Tolerable. Safe.",640,505,rv(T,S[1].s+0.5,0.5),"rgba(63,174,116,.55)");
+    txt("Acute cardiogenic pulmonary oedema",{x:640,y:420,"text-anchor":"middle","font-size":38,fill:"#dff1e7",opacity:rv(T,S[0].s+0.4,0.5)},g);
+    badge(g,"What every Ambulance Officer needs to know",640,500,rv(T,S[1].s,0.5),"rgba(63,174,116,.55)");
   }
 
   if(i===1){
-    row(g,70,165,1140,86,"A fundamental human right",null,rv(T,S[0].s),C.gold);
-    row(g,70,265,1140,86,"Start as soon as clinically appropriate",null,rv(T,S[1].s),C.mint);
-    chips(["Reassurance","Distraction","Splinting","Posture"],70,375,[frac(3,0.1),frac(3,0.35),frac(3,0.6),frac(3,0.8)],"rgba(63,174,116,.45)",1210);
-    badge(g,"Aim: comfortable, tolerable. Not zero.",640,500,rv(T,S[4].s,0.5),"rgba(227,167,18,.5)");
+    badge(g,"Oxygen and posture first",640,170,rv(T,S[0].s,0.5),"rgba(227,167,18,.5)");
+    tiles([["1","Sit them","up"],["2","High-flow O2","non-rebreather"],["3","Request","clinical support"]],[S[1].s,S[2].s,S[3].s],215,false);
   }
 
   if(i===2){
-    row(g,70,165,1140,86,"Pain score before and after",null,rv(T,S[0].s),C.gold);
-    row(g,70,265,560,86,"Can talk","rate it (NRS, FPS-R)",rv(T,S[1].s),C.mint);
-    row(g,650,265,560,86,"Can't talk","FLACC, r-FLACC, PAINAD",rv(T,S[2].s),C.mint);
-    badge(g,"Watch the trend",640,430,rv(T,S[3].s,0.5),"rgba(0,0,0,.4)");
+    row(g,70,165,1140,86,"Consult the EOC Clinician",null,rv(T,S[0].s),C.gold);
+    row(g,70,265,1140,86,"They may advise sublingual GTN",null,rv(T,S[1].s),C.mint);
+    row(g,70,365,560,86,"300 microg tablet",null,rv(T,frac(2,0.2)),C.mint);
+    row(g,650,365,560,86,"or 1 x 400 microg spray",null,rv(T,frac(2,0.6)),C.mint);
+    badge(g,"Only if the numbers allow",640,505,rv(T,S[3].s,0.5),"rgba(226,87,76,.55)");
   }
 
   if(i===3){
-    txt("Multimodal analgesia",{x:70,y:160,"font-size":24,fill:"#cfe7da",opacity:rv(T,S[0].s,0.4)},g);
-    row(g,70,175,1140,82,"Paracetamol 1000 mg","none in the past 4 hours",rv(T,S[1].s),C.gold);
-    row(g,70,270,1140,82,"Ibuprofen 400 mg","no NSAIDs in the past 6 hours",rv(T,S[2].s),C.gold);
-    badge(g,"Any doubt? Withhold ibuprofen",640,400,rv(T,S[3].s,0.5),"rgba(226,87,76,.55)");
-    row(g,70,440,1140,82,"Methoxyflurane 3 mL","repeat once; max 2 in 24 h, 15 mL a week",rv(T,S[4].s),C.mint);
+    const a0=rv(T,S[0].s,0.5); if(a0>0){const gg=grp(g,a0);card(gg,70,165,1140,96,"rgba(63,174,116,.25)","rgba(139,224,177,.6)");
+      txt("Systolic over 100 mmHg",{x:104,y:225,"font-size":38,"font-weight":800},gg)}
+    badge(g,"Exactly 100 isn't enough",640,300,rv(T,S[1].s,0.5),"rgba(226,87,76,.55)");
+    const a2=rv(T,S[2].s,0.5); if(a2>0){const gg=grp(g,a2);card(gg,70,340,1140,96,"rgba(63,174,116,.25)","rgba(139,224,177,.6)");
+      txt("Heart rate 60 to 120",{x:104,y:400,"font-size":38,"font-weight":800},gg)}
+    row(g,70,455,1140,80,"No PDE-5 inhibitors",null,rv(T,S[3].s),C.red);
   }
 
   if(i===4){
-    badge(g,"Authorised AOs only",640,165,rv(T,S[0].s,0.5),"rgba(0,0,0,.4)");
-    row(g,70,200,1140,80,"Consult the EOC Clinician first",null,rv(T,S[1].s),C.gold);
-    row(g,70,292,560,86,"Uncontrolled or","severe pain",rv(T,frac(2,0.2)),C.mint);
-    row(g,650,292,560,86,"Sedation score","less than 2",rv(T,frac(2,0.6)),C.mint);
-    const a3=rv(T,S[3].s,0.5); if(a3>0){const gg=grp(g,a3);
-      card(gg,70,392,1140,80,"rgba(63,174,116,.25)","rgba(139,224,177,.6)");
-      txt("Adults: SBP 100 mmHg or more",{x:104,y:443,"font-size":32,"font-weight":800},gg)}
-    badge(g,"Children: the EOC Clinician advises the dose",640,520,rv(T,S[4].s,0.5),"rgba(227,167,18,.5)");
+    txt("Mostly for erectile dysfunction",{x:70,y:165,"font-size":26,fill:"#cfe7da",opacity:rv(T,S[0].s,0.4)},g);
+    row(g,70,190,1140,96,"Sildenafil, vardenafil, avanafil","within 24 hours: no GTN",rv(T,S[1].s),C.red);
+    row(g,70,300,1140,96,"Tadalafil","within 48 hours: no GTN",rv(T,S[2].s),C.red);
+    badge(g,"Together: life-threatening hypotension",640,440,rv(T,S[3].s,0.5),"rgba(226,87,76,.6)");
+    badge(g,"Ask by name, and kindly",640,520,rv(T,S[4].s,0.5),"rgba(63,174,116,.55)");
   }
 
   if(i===5){
-    const lv=[["0","Awake, alert","rgba(63,174,116,.3)"],["1","Easy to rouse","rgba(63,174,116,.2)"],["2","Can't stay awake","rgba(226,87,76,.35)"],["3","Hard to rouse","rgba(226,87,76,.5)"]];
-    lv.forEach((p,k)=>{const a=rv(T,S[k].s,0.4), x=70+k*290; if(a>0){const gg=grp(g,a);card(gg,x,175,270,170,p[2]);
-      txt(p[0],{x:x+135,y:258,"text-anchor":"middle","font-size":64,"font-weight":800,fill:k>=2?"#ff8c82":C.mint},gg);
-      txt(p[1],{x:x+135,y:310,"text-anchor":"middle","font-size":26,"font-weight":700},gg)}});
-    const a4=rv(T,S[4].s,0.5); if(a4>0){const gg=grp(g,a4);
-      card(gg,70,375,1140,110,"rgba(226,87,76,.28)","rgba(226,87,76,.7)");
-      txt("Score 2 or more, or SBP below the limit",{x:104,y:422,"font-size":32,"font-weight":800},gg);
-      txt("stop the fentanyl and consult the EOC Clinician",{x:104,y:462,"font-size":26,fill:"#ff8c82"},gg)}
+    row(g,70,170,1140,90,"Vital signs every 3 to 5 minutes",null,rv(T,S[0].s),C.gold);
+    row(g,70,275,1140,90,"Repeat GTN only as directed",null,rv(T,S[1].s),C.mint);
+    const a2=rv(T,S[2].s,0.5); if(a2>0){const gg=grp(g,a2);card(gg,70,385,1140,96,"rgba(226,87,76,.28)","rgba(226,87,76,.7)");
+      txt("Outside the limits: stop and consult",{x:104,y:445,"font-size":36,"font-weight":800},gg)}
   }
 
   if(i===6){
-    tiles([["1","1 mL luer-lock","+ MAD"],["2","Prime","left = the dose"],["3","Up and out","to the top of the ear"],["4","Over 0.3 mL","split nostrils"]],
-      [S[0].s,S[1].s,S[2].s,S[3].s],190,false);
-    row(g,70,400,1140,86,"Obs every 5 minutes","and keep checking the sedation score",rv(T,S[4].s),C.gold);
-  }
-
-  if(i===7){
-    badge(g,"Authorised AOs only",640,165,rv(T,S[0].s,0.5),"rgba(0,0,0,.4)");
-    chips(["Pain 7 to 10","GCS 15 or normal","Aged 16 to 64"],70,205,[frac(1,0.1),frac(1,0.45),frac(1,0.8)],"rgba(63,174,116,.5)",1210);
-    row(g,70,285,1140,96,"25 mg wafer, sublingual","may repeat once after 15 minutes",rv(T,S[2].s),C.gold);
-    row(g,70,395,1140,80,"Not for psychiatric presentations",null,rv(T,S[3].s),C.red);
-  }
-
-  if(i===8){
-    row(g,70,165,1140,86,"Opioids can slow breathing",null,rv(T,S[0].s),C.red);
-    row(g,70,265,1140,86,"Ineffective breathing: IPPV",null,rv(T,S[1].s),C.gold);
-    row(g,70,365,1140,86,"EOC Clinician may advise IM naloxone 400 microg",null,rv(T,S[2].s),C.gold);
-    badge(g,"Lowest effective dose, every time",640,520,rv(T,S[3].s,0.5),"rgba(63,174,116,.6)");
+    row(g,70,190,1140,90,"Prompt transport, notify",null,rv(T,S[0].s),C.gold);
+    tiles([["1","Sit","them up"],["2","High-flow","oxygen"],["3","GTN if","the numbers allow"]],[frac(1,0.1),frac(1,0.35),frac(1,0.6)],300,true);
   }
 }
 function badge(g,s,x,y,a,col){
@@ -154,7 +132,7 @@ function render(t){
   const last=TL.lines[TL.lines.length-1].end;
   if(t>last+0.3){const a=eo(pr(t,last+0.3,last+0.9));
     el("rect",{x:0,y:0,width:1280,height:720,fill:C.ink,opacity:a*.94});
-    txt("Pain management",{x:640,y:330,"text-anchor":"middle","font-size":64,"font-weight":800,opacity:a});
-    txt("SAAS CPP-013-AO  ·  DSY Training",{x:640,y:385,"text-anchor":"middle","font-size":26,opacity:a*.75});}
+    txt("ACPO",{x:640,y:330,"text-anchor":"middle","font-size":64,"font-weight":800,opacity:a});
+    txt("SAAS CPP-001-AO  ·  DSY Training",{x:640,y:385,"text-anchor":"middle","font-size":26,opacity:a*.75});}
 }
 </script>
