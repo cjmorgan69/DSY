@@ -2,6 +2,9 @@
    codes in its relatedCodes). Each page lists the others under "Built on the same protocol" and leaves itself out.
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
+  "CPG-144-P": [
+    { kind: "Microlearning module", title: "Traumatic or hypoxic brain injury", href: "/microlearning/tbi/", text: "Secondary brain insults, SpO2 and blood pressure targets, the saline aliquot checker, venous return and the agitated patient." }
+  ],
   "CPP-047-AO": [
     { kind: "Microlearning module", title: "Nausea and vomiting", href: "/microlearning/nausea/", text: "Ondansetron ODT: indications, contraindications and precautions, doses by age, and when to consult." },
     { kind: "Walk-through scenario", title: "Nausea and Vomiting - AO: Helen, 62", href: "/modules/nausea-vomiting/", text: "Two-person AO crew near Cummins: 8 hours of vomiting, AF as one precaution, a second ondansetron dose on EOC Clinician advice, and watching the BGL. Facilitator and student versions." }
