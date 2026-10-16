@@ -27,7 +27,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "", title: "Nausea and vomiting: what AOs need to know" } },
+      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Nausea and vomiting: what AOs need to know" } },
       { text: "Nausea and vomiting can indicate significant underlying illness. Controlling it may help the patient's comfort and make transport safer." },
       { text: "Ondansetron as an orally disintegrating tablet (ODT) is safe and convenient, especially for children and when the oral route is preferred. It isn't effective for preventing motion sickness, and it isn't given where gastric emptying is beneficial to the patient." },
       { text: "It may be given for uncontrolled nausea and vomiting, or before transport in patients with head, spine or eye trauma, where vomiting carries a high risk of complications." }
