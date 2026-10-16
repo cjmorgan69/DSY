@@ -59,7 +59,7 @@ Microlearning modules live: stroke, envenomation, hypoglycaemia, chest pain, ana
 all but envenomation narrated by Lee). Each is a Supabase lesson. Sepsis (`/microlearning/sepsis/`, CPP-062-AO v1.0,
 assumes the crew carries ceftriaxone, narrated by Lee, Khan Academy septic shock video embedded) is live, lesson added. Sepsis for rural nursing staff (`/microlearning/sepsis-nursing/`, navy theme, from the NSW CEC
 Adult Sepsis Pathway SMR060.400 and ACI ECAT A3.4 "Sepsis (suspected)"; ECAT review date Jan 2026 has passed; ECAT
-page is behind Cloudflare, the owner pasted its HTML) is live and listed on the RN page; the owner did not want it added as a lesson. Falls (`/microlearning/falls/`, CPP-045-AO v1.0 with CTL-003 FROP, CTL-010 Braden, CPPRO-001/002/003, all CPPROs past their Dec 2019 review date; Country SA referral (CRU) only, as the owner asked; narrated by Lee) is on the session branch, not yet merged.
+page is behind Cloudflare, the owner pasted its HTML) is live and listed on the RN page; the owner did not want it added as a lesson. Falls (`/microlearning/falls/`, CPP-045-AO v1.0 with CTL-003 FROP, CTL-010 Braden, CPPRO-001/002/003, all CPPROs past their Dec 2019 review date; Country SA referral (CRU) only, as the owner asked; narrated by Lee, Resus Room hip fracture episode linked) is live.
 
 Walk-through scenarios: asthma-ao rebuilt and linked with the asthma module (lesson added). Chest pain
 (`/modules/chest-pain/`, Graham 62) rebuilt and linked with the chest pain module (live, lesson added). Owner's
