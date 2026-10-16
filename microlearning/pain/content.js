@@ -38,7 +38,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "", title: "Pain management: what AOs need to know" } },
+      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Pain management: what AOs need to know" } },
       { text: "Pain is an unpleasant and emotional experience, a product of the brain's interpretation of a stimulus. It is shaped by culture, environment, social factors and past experience, so it is unique to each person." },
       { text: "Pain management is a fundamental human right. Start it as soon as it's clinically appropriate, and don't rely only on medicines. Reassurance, distraction, temperature control, splinting and posture all help. So do validation, empathy, active listening and setting expectations: they can reduce the medicine a patient needs." },
       { text: "The aim is to reduce pain to a comfortable or tolerable level, not to take it away completely." }
