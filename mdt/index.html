@@ -181,13 +181,13 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 .lgrid select{appearance:none;-webkit-appearance:none;background:#d9dcdf url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='46'%3E%3Crect width='52' height='46' fill='%23233b5c'/%3E%3Cpath d='M12 16h28L26 32z' fill='%23fff'/%3E%3C/svg%3E") no-repeat right center;padding-right:60px}
 .lgrid .span2{grid-column:2/4}
 .lmsg{margin-top:14px;color:#ff8a8a;font-size:20px;min-height:26px}
-.kb{position:absolute;left:110px;right:40px;bottom:46px;background:#dedfe1;border:1px solid #aaa;z-index:8;color:#111;padding:6px 8px 8px;box-shadow:0 -6px 20px rgba(0,0,0,.4)}
-.kb .kbtop{cursor:move;touch-action:none;user-select:none;-webkit-user-select:none;display:flex;justify-content:space-between;align-items:center;font-size:22px;padding:2px 10px 6px;color:#333}
-.kb .kbtop button{border:0;background:none;font-size:30px;color:#333}
-.kb .r{display:flex;gap:4px;margin-top:4px}
-.kb .r button{flex:1 1 0;height:58px;border:0;background:#f7f7f7;color:#111;font-size:24px;border-radius:2px;position:relative}
-.kb .r button small{position:absolute;left:6px;top:2px;font-size:14px;color:#555}
-.kb .r button.fn{background:#e9e9ea;font-size:19px}
+.kb{position:absolute;left:110px;right:40px;bottom:46px;background:#dedfe1;border:1px solid #aaa;z-index:8;color:#111;padding:4px 8px 6px;box-shadow:0 -6px 20px rgba(0,0,0,.4)}
+.kb .kbtop{cursor:move;touch-action:none;user-select:none;-webkit-user-select:none;display:flex;justify-content:space-between;align-items:center;font-size:18px;padding:0 8px 2px;height:30px;color:#333}
+.kb .kbtop button{border:0;background:none;font-size:24px;color:#333;padding:0 6px}
+.kb .r{display:flex;gap:4px;margin-top:3px}
+.kb .r button{flex:1 1 0;height:40px;border:0;background:#f7f7f7;color:#111;font-size:20px;border-radius:2px;position:relative}
+.kb .r button small{position:absolute;left:5px;top:1px;font-size:11px;color:#555}
+.kb .r button.fn{background:#e9e9ea;font-size:16px}
 .kb .r button.on{background:#c7d7f2}
 .kb .r button.sp{flex:5 1 0}
 .kb .r button.wide{flex:1.6 1 0}
@@ -803,7 +803,7 @@ function logonView(){
         <button class="lb btn" data-a="focusField" data-v="callsign">*Callsign...</button>${inp('callsign')}<span></span><span></span>
         <span class="lb">*Clin. Status</span>${sel('clin', CLIN_OPTS, 'span2')}<span></span>
         <span class="lb">*Crew ID 1</span>${inp('crew1')}<span class="lb">Crew ID 3</span>${inp('crew3')}
-        <button class="lb btn" data-a="focusField" data-v="crew2">*Crew ID 2</button>${inp('crew2')}<span class="lb">Observer</span>${inp('observer')}
+        <button class="lb btn" data-a="crewNone">*Crew ID 2</button>${inp('crew2')}<span class="lb">Observer</span>${inp('observer')}
         <span class="lb">*Mobile</span>${inp('mobile')}<span class="lb">*Odometer</span>${inp('odometer')}
         <span class="lb">Equipment</span>${sel('eq1', EQUIP_OPTS)}<span></span>${sel('eq2', EQUIP_OPTS)}
         <span></span>${sel('eq3', EQUIP_OPTS)}<span></span>${sel('eq4', EQUIP_OPTS)}
@@ -878,6 +878,8 @@ Object.assign(act, {
   kbToggle(){ S.kb=!S.kb; render(); },
   key(v){ typeKey(v); },
   focusField(n){ S.focus=n; if (!S.kb) S.kb=true; render(); },
+  // The *Crew ID 2 button fills the field with NONE (single crew), as on the real terminal
+  crewNone(){ S.login.crew2='NONE'; S.focus='crew2'; logIt('Logon: Crew ID 2 set to NONE'); render(); },
   logonClear(){ S.login={}; S.bad=[]; S.lmsg=''; S.focus='callsign'; logIt('Logon: Clear pressed'); render(); },
   logonSubmit(){
     const L = S.login;
