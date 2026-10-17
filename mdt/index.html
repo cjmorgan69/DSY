@@ -158,6 +158,34 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 .logcard td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}
 .logcard td:first-child{width:64px;font-variant-numeric:tabular-nums;color:var(--muted)}
 .logcard ul{padding-left:20px;margin:8px 0 14px}
+
+/* ---------- Logon ---------- */
+.logon{flex:1;display:flex;gap:14px;padding:4px 0 8px;min-height:0}
+.lside{width:150px;display:flex;flex-direction:column;gap:18px;padding-top:44px}
+.lside button{height:62px;border:0;border-radius:4px;color:#fff;font-size:18px;font-weight:600}
+.lside .sub{background:linear-gradient(#4f9a4a,#2f6e2c)}.lside .clr{background:#2e4258}.lside .dis{background:#1a2632;color:#c9d1da}.lside .kbd{background:#1f50e0;font-size:20px;margin-top:20px}
+.lform{flex:1;border:1px solid #2e3a46;border-radius:4px;background:#132030;padding:12px 20px}
+.lform h2{margin:0 0 12px;font-size:32px}
+.lgrid{display:grid;grid-template-columns:190px 1fr 160px 1fr;gap:12px 10px;align-items:center}
+.lgrid .lb{text-align:right;font-size:24px;font-weight:600}
+.lgrid .lb.btn{background:#e8e8e8;color:#111;border:0;padding:6px 8px;font-size:24px;font-weight:600}
+.lgrid input,.lgrid select{width:100%;height:50px;font-size:24px;font-family:inherit;background:#d9dcdf;color:#111;border:2px solid #d9dcdf;border-radius:0;padding:0 10px}
+.lgrid input:focus{outline:none}
+.lgrid input.focus{border-color:#3fd23f !important;background:#eef0f1}
+.lgrid .bad{border-color:#e33 !important}
+.lgrid select{appearance:none;-webkit-appearance:none;background:#d9dcdf url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='46'%3E%3Crect width='52' height='46' fill='%23233b5c'/%3E%3Cpath d='M12 16h28L26 32z' fill='%23fff'/%3E%3C/svg%3E") no-repeat right center;padding-right:60px}
+.lgrid .span2{grid-column:2/4}
+.lmsg{margin-top:14px;color:#ff8a8a;font-size:20px;min-height:26px}
+.kb{position:absolute;left:110px;right:40px;bottom:46px;background:#dedfe1;border:1px solid #aaa;z-index:8;color:#111;padding:6px 8px 8px;box-shadow:0 -6px 20px rgba(0,0,0,.4)}
+.kb .kbtop{display:flex;justify-content:space-between;align-items:center;font-size:22px;padding:2px 10px 6px;color:#333}
+.kb .kbtop button{border:0;background:none;font-size:30px;color:#333}
+.kb .r{display:flex;gap:4px;margin-top:4px}
+.kb .r button{flex:1 1 0;height:58px;border:0;background:#f7f7f7;color:#111;font-size:24px;border-radius:2px;position:relative}
+.kb .r button small{position:absolute;left:6px;top:2px;font-size:14px;color:#555}
+.kb .r button.fn{background:#e9e9ea;font-size:19px}
+.kb .r button.on{background:#c7d7f2}
+.kb .r button.sp{flex:5 1 0}
+.kb .r button.wide{flex:1.6 1 0}
 </style>
 </head>
 <body>
@@ -187,6 +215,8 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
       <div class="grid">
         <label>Call sign<input name="callsign"></label>
         <label>Crew type<input name="crewType"></label>
+        <label>Fleet number (logon screen)<input name="fleet"></label>
+        <label>Start with the logon screen<select name="logon"><option value="yes">Yes</option><option value="no">No</option></select></label>
         <label class="wide">Unit location when dispatched<input name="unitLoc"></label>
       </div>
     </fieldset>
@@ -336,7 +366,7 @@ const pad = n => String(n).padStart(2,'0');
 
 function example(){
   return {
-    callsign:'TB85', crewType:'TL-PR', unitLoc:'BRIDGE ST/NORTH TCE, TUMBY BAY',
+    callsign:'TB85', crewType:'TL-PR', fleet:String(rint(100,999)), logon:'yes', unitLoc:'BRIDGE ST/NORTH TCE, TUMBY BAY',
     priority:'4', dcode:'D0'+rint(100,999), eventNo:'A00'+rint(10,99)+'-'+rint(10000,99999),
     startTime: pad(new Date().getHours())+':'+pad(new Date().getMinutes()),
     typeCode:'RTVL', typeName:'Retrieval', subCode:'RT1', subName:'FIXED',
@@ -422,10 +452,9 @@ let S, C, clockTimer, toastTimer;
 function startSim(c){
   C = c;
   const [hh,mm] = (c.startTime||'14:20').split(':').map(Number);
-  S = { st:0, view:'event', tab:'EVENT', popup:true, seen:{}, filter:'All', pending:null, dest:null,
+  S = { st:0, view: c.logon==='no' ? 'event' : 'logon', login:{}, kb:false, focus:'callsign', shift:false, caps:false, tab:'EVENT', popup:true, seen:{}, filter:'All', pending:null, dest:null,
         realStart:Date.now(), simStart:(hh*60+(mm||0))*60, log:[], stTimes:[], phCount:0, direct:false };
-  S.stTimes[0] = clock();
-  logIt('Dispatched to ' + titleText());
+  if (S.view==='logon') logIt('Logon screen'); else dispatchNow();
   document.getElementById('setup').hidden = true;
   document.getElementById('sim').hidden = false;
   history.replaceState(null,'',location.pathname + '#sim=' + b64e(JSON.stringify(c)));
@@ -433,6 +462,8 @@ function startSim(c){
   clearInterval(clockTimer);
   clockTimer = setInterval(()=>document.querySelectorAll('[data-clock]').forEach(e=>e.textContent=clock()), 1000);
 }
+function dispatchNow(){ S.stTimes[0] = clock(); logIt('Dispatched to ' + titleText()); }
+const cs = () => S.cs || C.callsign;
 function simSecs(){ return S.simStart + Math.floor((Date.now()-S.realStart)/1000); }
 function clock(){ const t = simSecs() % 86400; return pad(Math.floor(t/3600))+':'+pad(Math.floor(t/60)%60); }
 function dateStr(){ const d = new Date(); return pad(d.getDate())+'/'+pad(d.getMonth()+1); }
@@ -444,9 +475,10 @@ const withCode = (name, code) => name ? name + (code ? ` (${code})` : '') : '';
 function typeLine(){ return [withCode(C.typeName, C.typeCode), withCode(C.subName, C.subCode)].filter(Boolean).join(' / '); }
 function statusLine(){
   const st = ST[S.st].s;
-  if (S.st === 6) return `${C.callsign} ${st}`;
-  if (S.st === 5) return `${C.callsign} ${st} ${S.dest}`;
-  return `${C.callsign} ${st} ${titleText()}`;
+  if (S.view === 'logon') return 'UNKNOWN SIGNED OFF';
+  if (S.st === 6) return `${cs()} ${st}`;
+  if (S.st === 5) return `${cs()} ${st} ${S.dest}`;
+  return `${cs()} ${st} ${titleText()}`;
 }
 function toast(msg){
   const sc = document.getElementById('screen');
@@ -493,6 +525,7 @@ const act = {
     render();
   },
   back(){
+    if (S.view==='logon') return;
     if (S.view==='dest') return act.destCancel();
     if (S.view==='confirmScene') return act.sceneNo();
     if (S.view==='confirmMobile') return act.mobileNo();
@@ -500,7 +533,7 @@ const act = {
     if (S.st===6){ S.view = S.view==='menu' ? 'list' : 'menu'; return render(); }
     S.view='event'; render();
   },
-  menu(){ S.view = S.view==='menu' ? (S.st===6?'list':'event') : 'menu'; render(); },
+  menu(){ if (S.view==='logon') return; S.view = S.view==='menu' ? (S.st===6?'list':'event') : 'menu'; render(); },
   view(v){ S.view=v; render(); },
   notUsed(){ toast('Not used in the simulator'); }
 };
@@ -517,7 +550,7 @@ function sortedHospitals(){
 }
 
 function topbar(){
-  const f6 = ST[S.st].f6;
+  const f6 = S.view==='logon' ? '' : ST[S.st].f6;
   return `<div class="topbar">
     <button class="k back" data-a="back"><i>Alt+ ←</i>Back</button>
     <button class="k menu" data-a="menu"><i>F2</i>Menu</button>
@@ -525,12 +558,12 @@ function topbar(){
     ${S.st===4 ? `<button class="k ph" data-a="ph">P.H.</button>` : ''}
     <div class="grow"></div>
     <div class="clock" data-clock>${clock()}</div>
-    <button class="k f6" data-a="f6" ${f6&&!S.view.startsWith('confirm')&&S.view!=='dest'?'':'disabled'}><i>F6</i>${f6}</button>
+    ${S.view==='logon' ? '' : `<button class="k f6" data-a="f6" ${f6&&!S.view.startsWith('confirm')&&S.view!=='dest'?'':'disabled'}><i>F6</i>${f6}</button>`}
   </div>`;
 }
 function footer(){
   return `<div class="foot">
-    ${S.st<6 ? '<span class="active">Active Event</span>' : ''}
+    ${S.st<6 && S.view!=='logon' ? '<span class="active">Active Event</span>' : ''}
     <span class="stat">${esc(statusLine())}</span>
     <span class="sys">Outbox 0 | Rx Tx Er <span class="dot"></span><b>SACAD</b> | <b data-clock>${clock()}</b></span>
   </div>`;
@@ -561,7 +594,7 @@ function remarksTab(){
 }
 function unitsTab(){
   const loc = S.st<3 ? C.unitLoc : S.st<5 ? address() : S.dest;
-  const own = `<div class="urow"><span class="ok">${esc(C.callsign)}* ${esc(C.crewType)}</span><span></span><span class="er">${ST[S.st].code}</span><span class="ok">${esc(loc)}</span><span>${S.stTimes[S.st]}</span><span>${dateStr()}</span></div>`;
+  const own = `<div class="urow"><span class="ok">${esc(cs())}* ${esc(C.crewType)}</span><span></span><span class="er">${ST[S.st].code}</span><span class="ok">${esc(loc)}</span><span>${S.stTimes[S.st]}</span><span>${dateStr()}</span></div>`;
   const others = (C.units||'').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
     const p = l.split(/\s+/); const cs=p[0]||'', ct=p[1]||'', code=p[2]||'', where=p.slice(3).join(' ');
     return `<div class="urow"><span>${esc(cs)} ${esc(ct)}</span><span></span><span class="er">${esc(code)}</span><span class="er">${esc(where)}</span><span>${S.stTimes[0]}</span><span>${dateStr()}</span></div>`;
@@ -631,7 +664,7 @@ function menuView(){
       ${b('Notifications &amp;<br>Diversions')}${b('Change<br>Crew ID...')}<span></span><span></span>
       ${b('Fetch Crew<br>Events')}${b('Fetch Crew<br>Crib Breaks')}<span></span><span></span>
       <span></span><span></span>${b('Reference<br>Information')}<span></span>
-      ${b('🚑 Driver is<br>Other')}${b('🚑 Driver is<br>'+esc(C.callsign))}<span></span><span></span>
+      ${b('🚑 Driver is<br>Other')}${b('🚑 Driver is<br>'+esc(cs()))}<span></span><span></span>
     </div></div>`;
 }
 function listView(){
@@ -654,7 +687,9 @@ function render(){
   else if (v==='list') main = listView();
   else if (v==='inbox') main = inboxView();
   else if (v==='history') main = historyView();
+  else if (v==='logon') main = logonView();
   document.getElementById('screen').innerHTML = topbar() + `<div class="main">${main}</div>` + footer();
+  if (v==='logon') afterLogonRender();
 }
 
 document.getElementById('screen').addEventListener('click', e=>{
@@ -662,6 +697,101 @@ document.getElementById('screen').addEventListener('click', e=>{
   const a = el.dataset.a, v = el.dataset.v;
   if (a==='view' && v==='event' && S.st===6) return act.view('list');
   act[a] && act[a](v);
+});
+
+// ---------- logon screen ----------
+const LOGON_TEXT = ['callsign','crew1','crew2','mobile','crew3','observer','odometer'];
+const LOGON_REQ = ['callsign','clin','crew1','crew2','mobile','odometer'];
+// Clin. Status: the owner chose N - No restrictions only (other options don't apply to volunteers).
+// Equipment list is a placeholder.
+const CLIN_OPTS = ['','N - NO RESTRICTIONS'];
+const EQUIP_OPTS = ['','NIL'];
+function logonView(){
+  const L = S.login, bad = S.bad || [];
+  const inp = (n, extra='') => `<input name="${n}" inputmode="none" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${esc(L[n]||'')}" class="${bad.includes(n)?'bad':''}" ${extra}>`;
+  const sel = (n, opts, cls='') => `<select name="${n}" class="${cls} ${bad.includes(n)?'bad':''}">${opts.map(o=>`<option ${L[n]===o?'selected':''}>${o}</option>`).join('')}</select>`;
+  const kbRow = keys => `<div class="r">${keys.map(k=>{
+    const [lab,val,cls,top] = Array.isArray(k) ? k : [k,k,'',''];
+    const shown = (S.shift!==S.caps && /^[a-z]$/.test(lab)) ? lab.toUpperCase() : lab;
+    return `<button class="${cls||''}" data-a="key" data-v="${esc(val)}">${top?`<small>${esc(top)}</small>`:''}${esc(shown)}</button>`;}).join('')}</div>`;
+  const kb = S.kb ? `<div class="kb"><div class="kbtop"><span>⌨ &nbsp; 🎤 &nbsp; 📋</span><button data-a="key" data-v="ESC">✕</button></div>
+    ${kbRow([['Esc','ESC','fn'],['`','`','','~'],['1','1','','!'],['2','2','','@'],['3','3','','#'],['4','4','','$'],['5','5','','%'],['6','6','','^'],['7','7','','&'],['8','8','','*'],['9','9','','('],['0','0','',')'],['-','-','','_'],['=','=','','+'],['⌫','BS','fn wide']])}
+    ${kbRow([['Tab','TAB','fn wide'],'q','w','e','r','t','y','u','i','o','p',['[','[','','{'],[']',']','','}'],['\\','\\','','|'],['Del','DEL','fn']])}
+    ${kbRow([['Caps','CAPS','fn wide'+(S.caps?' on':'')],'a','s','d','f','g','h','j','k','l',[';',';','',':'],["'","'",'','"'],['Enter','ENTER','fn wide']])}
+    ${kbRow([['Shift','SHIFT','fn wide'+(S.shift?' on':'')],'z','x','c','v','b','n','m',[',',',','','<'],['.','.','','>'],['/','/','','?'],['^','UP','fn'],['Shift','SHIFT','fn'+(S.shift?' on':'')]])}
+    ${kbRow([['Fn','NOOP','fn'],['☺','NOOP','fn'],['Ctrl','NOOP','fn'],['⊞','NOOP','fn'],['Alt','NOOP','fn'],[' ','SPACE','sp'],['Alt','NOOP','fn'],['Ctrl','NOOP','fn'],['<','LEFT','fn'],['v','DOWN','fn'],['>','RIGHT','fn'],['ENG','NOOP','fn']])}
+  </div>` : '';
+  return `<div class="logon"><div class="lside">
+      <button class="sub" data-a="logonSubmit">Submit</button>
+      <button class="clr" data-a="logonClear">Clear</button>
+      <button class="dis" data-a="notUsed">Dismiss</button>
+      <button class="kbd" data-a="kbToggle">Keyboard</button>
+    </div><div class="lform"><h2>SACAD Logon - Fleet ${esc(C.fleet||'')}</h2>
+      <div class="lgrid">
+        <button class="lb btn" data-a="focusField" data-v="callsign">*Callsign...</button>${inp('callsign')}<span></span><span></span>
+        <span class="lb">*Clin. Status</span>${sel('clin', CLIN_OPTS, 'span2')}<span></span>
+        <span class="lb">*Crew ID 1</span>${inp('crew1')}<span class="lb">Crew ID 3</span>${inp('crew3')}
+        <button class="lb btn" data-a="focusField" data-v="crew2">*Crew ID 2</button>${inp('crew2')}<span class="lb">Observer</span>${inp('observer')}
+        <span class="lb">*Mobile</span>${inp('mobile')}<span class="lb">*Odometer</span>${inp('odometer')}
+        <span class="lb">Equipment</span>${sel('eq1', EQUIP_OPTS)}<span></span>${sel('eq2', EQUIP_OPTS)}
+        <span></span>${sel('eq3', EQUIP_OPTS)}<span></span>${sel('eq4', EQUIP_OPTS)}
+      </div>
+      <div class="lmsg">${esc(S.lmsg||'')}</div>
+    </div></div>${kb}`;
+}
+function afterLogonRender(){
+  const sc = document.getElementById('screen');
+  sc.querySelectorAll('.lgrid input, .lgrid select').forEach(el=>{
+    el.addEventListener('focus', ()=>{ if (el.tagName==='INPUT'){ S.focus = el.name; markFocus(); } });
+    el.addEventListener('input', ()=>{ S.login[el.name] = el.tagName==='INPUT' ? el.value.toUpperCase() : el.value; if (el.tagName==='INPUT') el.value = S.login[el.name]; markFocus(); });
+  });
+  markFocus();
+  const f = sc.querySelector(`.lgrid input[name="${S.focus}"]`);
+  if (f && !S.kb) { try{ f.focus({preventScroll:true}); }catch(e){} }
+}
+function markFocus(){
+  if (S.bad) S.bad = S.bad.filter(n=>!(S.login[n]||'').trim());
+  document.querySelectorAll('.lgrid .bad').forEach(el=>{ if ((S.login[el.name]||'').trim()) el.classList.remove('bad'); });
+  document.querySelectorAll('.lgrid input').forEach(el=>el.classList.toggle('focus', el.name===S.focus));
+}
+function moveFocus(step){
+  const i = LOGON_TEXT.indexOf(S.focus);
+  S.focus = LOGON_TEXT[(i + step + LOGON_TEXT.length) % LOGON_TEXT.length]; markFocus();
+}
+function typeKey(v){
+  const L = S.login, f = S.focus, cur = L[f] || '';
+  const SHIFTED = {'`':'~','1':'!','2':'@','3':'#','4':'$','5':'%','6':'^','7':'&','8':'*','9':'(','0':')','-':'_','=':'+','[':'{',']':'}','\\':'|',';':':',"'":'"',',':'<','.':'>','/':'?'};
+  switch (v){
+    case 'ESC': S.kb=false; return render();
+    case 'BS': case 'DEL': L[f] = cur.slice(0,-1); break;
+    case 'TAB': case 'ENTER': case 'DOWN': case 'RIGHT': moveFocus(1); break;
+    case 'UP': case 'LEFT': moveFocus(-1); break;
+    case 'CAPS': S.caps=!S.caps; return render();
+    case 'SHIFT': S.shift=!S.shift; return render();
+    case 'SPACE': L[f] = cur + ' '; break;
+    case 'NOOP': return;
+    default: {
+      const ch = S.shift ? (SHIFTED[v] || v.toUpperCase()) : v;
+      L[f] = (cur + ch).toUpperCase();
+      if (S.shift){ S.shift=false; return render(); }
+    }
+  }
+  const el = document.querySelector(`.lgrid input[name="${f}"]`); if (el) el.value = L[f] || '';
+  markFocus();
+}
+Object.assign(act, {
+  kbToggle(){ S.kb=!S.kb; render(); },
+  key(v){ typeKey(v); },
+  focusField(n){ S.focus=n; if (!S.kb) S.kb=true; render(); },
+  logonClear(){ S.login={}; S.bad=[]; S.lmsg=''; S.focus='callsign'; logIt('Logon: Clear pressed'); render(); },
+  logonSubmit(){
+    const L = S.login;
+    S.bad = LOGON_REQ.filter(n=>!(L[n]||'').trim());
+    if (S.bad.length){ S.lmsg = 'Complete every field marked *'; logIt('Logon: Submit with ' + S.bad.length + ' required field(s) empty'); return render(); }
+    S.cs = L.callsign.trim();
+    logIt(`Logged on as ${S.cs}` + (S.cs!==C.callsign ? ` (instructor set ${C.callsign})` : '') + ` - crew ${L.crew1}, ${L.crew2}${L.crew3?', '+L.crew3:''} - ${L.clin} - odometer ${L.odometer}`);
+    S.view='event'; S.kb=false; dispatchNow(); render();
+  }
 });
 
 // ---------- run log ----------
@@ -675,7 +805,7 @@ function showLog(){
     `P.H. pressed: ${S.phCount ? S.phCount + ' time(s)' : 'no'}`,
     ...(C.expected ? [`Expected destination: ${C.expected}`] : []),
   ];
-  document.getElementById('logCard').innerHTML = `<h2>Run log: ${esc(C.callsign)} ${esc(C.dcode)}</h2>
+  document.getElementById('logCard').innerHTML = `<h2>Run log: ${esc(cs())} ${esc(C.dcode)}</h2>
     <ul>${checks.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
     <table>${S.log.map(l=>`<tr><td>${l.t}</td><td>${esc(l.text)}</td></tr>`).join('')}</table>
     <div class="actions"><button class="btn primary" id="logClose">Close</button></div>`;
