@@ -597,7 +597,9 @@ function eventTab(){
 }
 function remarksTab(){
   if (!S.remarks.length) return '<div class="empty">No remarks</div>';
-  return '<div class="rm">' + S.remarks.map(r=>`<span>${hm(r.t)}</span><span>${esc(r.text)}</span>`).join('') + '</div>';
+  // Newest at the top, as on the real terminal
+  const list = S.remarks.map((r,i)=>({...r,i})).sort((a,b)=>b.t-a.t || b.i-a.i);
+  return '<div class="rm">' + list.map(r=>`<span>${hm(r.t)}</span><span>${esc(r.text)}</span>`).join('') + '</div>';
 }
 // Remarks: "HH:MM text" = fixed time; "+M text" or "+M:SS text" = arrives live that long after dispatch;
 // plain lines are spread between call received and dispatch.
