@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MDT Sim">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
 <title>MDT Simulator - DSY Training</title>
 <meta name="description" content="Practise the vehicle data terminal (MDT) status workflow with a fictional job set up by the instructor.">
 <style>
@@ -209,6 +214,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
     <div class="actions" style="margin:10px 0 0"><button class="btn" id="loadJobBtn">Load job</button><a id="scenLink" class="btn" target="_blank" hidden>Open the walk-through</a></div>
   </fieldset>
   <input id="shareOut" readonly hidden>
+  <p class="hint" style="margin:-6px 0 14px">Tip for the iPad: in Safari tap Share, then <b>Add to Home Screen</b>. Opened from that icon, the simulator always fills the whole screen.</p>
   <div class="note" id="fromNote" hidden style="border-left-color:var(--accent)"></div>
 
   <form id="form" autocomplete="off">
@@ -287,6 +293,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 <div class="sim" id="sim" hidden>
   <div class="simbar">
     <span>DSY Training · MDT simulator · fictional data</span><span class="sp"></span>
+    <button id="fsBtn" hidden>Full screen</button>
     <button id="logBtn">Run log</button>
     <button id="restartBtn">Restart job</button>
     <button id="setupBtn">Instructor setup</button>
@@ -463,7 +470,19 @@ function fromCustomiser(hash){
   history.replaceState(null,'',location.pathname);
   return true;
 }
-document.getElementById('startBtn').onclick = ()=>{ const c = readForm(); save(c); startSim(c); };
+// Full screen: browsers only allow it after a tap, so Start goes full screen where the browser supports it.
+// Opened from the Home Screen (Share > Add to Home Screen) it is always full screen.
+const fsEl = document.documentElement;
+const fsReq = fsEl.requestFullscreen || fsEl.webkitRequestFullscreen;
+const fsOn = () => document.fullscreenElement || document.webkitFullscreenElement;
+const standalone = () => navigator.standalone || matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches;
+function goFull(){ if (fsReq && !fsOn() && !standalone()) { try { const r = fsReq.call(fsEl); if (r && r.catch) r.catch(()=>{}); } catch(e){} } }
+function fsButton(){ const b = document.getElementById('fsBtn'); b.hidden = !fsReq || standalone(); b.textContent = fsOn() ? 'Exit full screen' : 'Full screen'; }
+document.getElementById('fsBtn').onclick = ()=>{
+  if (fsOn()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } else goFull();
+};
+['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev, ()=>{ fsButton(); setTimeout(fit, 100); }));
+document.getElementById('startBtn').onclick = ()=>{ const c = readForm(); save(c); goFull(); startSim(c); fsButton(); };
 
 // ---------- simulation ----------
 let S, C, clockTimer, toastTimer;
