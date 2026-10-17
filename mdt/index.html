@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>MDT Simulator - DSY Training</title>
+<meta name="description" content="Practise the vehicle data terminal (MDT) status workflow with a fictional job set up by the instructor.">
+<style>
+:root{
+  --bg:#f4f5f7; --card:#fff; --ink:#1b2430; --muted:#5b6675; --line:#d6dbe2; --accent:#1f5fa8; --accent-ink:#fff; --warn:#a33;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#12161c; --card:#1b222b; --ink:#e7ebf0; --muted:#9aa5b3; --line:#2e3946; --accent:#4a8fdc; --accent-ink:#fff; --warn:#e07070; }
+}
+:root[data-theme="dark"]{ --bg:#12161c; --card:#1b222b; --ink:#e7ebf0; --muted:#9aa5b3; --line:#2e3946; --accent:#4a8fdc; --accent-ink:#fff; --warn:#e07070; }
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+button{font:inherit;cursor:pointer}
+
+/* ---------- Instructor setup ---------- */
+.setup{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+.setup h1{font-size:26px;margin:0 0 4px}
+.setup .lead{color:var(--muted);margin:0 0 16px}
+.setup .note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--warn);padding:10px 12px;border-radius:6px;font-size:14px;margin-bottom:16px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 16px;border-radius:8px;font-weight:600}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+fieldset{border:1px solid var(--line);background:var(--card);border-radius:10px;margin:0 0 14px;padding:12px 14px 14px}
+legend{font-weight:700;padding:0 6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px 14px}
+label{display:flex;flex-direction:column;font-size:13px;color:var(--muted);gap:4px}
+label.wide{grid-column:1/-1}
+input,select,textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px}
+textarea{min-height:96px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px}
+.check{flex-direction:row;align-items:center;gap:8px;font-size:15px;color:var(--ink)}
+details summary{cursor:pointer;font-weight:600;margin:6px 0}
+.divlist{columns:3 220px;font-size:14px}
+.divlist label{flex-direction:row;align-items:center;gap:6px;color:var(--ink);font-size:14px;break-inside:avoid;padding:2px 0}
+.hint{font-size:12px;color:var(--muted);grid-column:1/-1;margin:-4px 0 0}
+#shareOut{width:100%;margin-top:6px}
+
+/* ---------- Simulator shell ---------- */
+.sim{position:fixed;inset:0;background:#2a2f35;display:flex;flex-direction:column}
+.simbar{display:flex;gap:8px;padding:6px 10px;align-items:center;justify-content:flex-end;color:#cfd6de;font-size:13px}
+.simbar .sp{flex:1}
+.simbar button{background:#3a424c;color:#e8edf2;border:1px solid #4d5763;border-radius:6px;padding:6px 10px;font-size:13px}
+.stage{flex:1;position:relative;overflow:hidden}
+.device{position:absolute;left:50%;top:50%;width:1200px;height:840px;transform-origin:center center;
+  background:linear-gradient(#d4d8db,#a9afb4);border-radius:60px;box-shadow:0 10px 40px rgba(0,0,0,.5), inset 0 2px 0 #eef1f3}
+.device .brand{position:absolute;left:70px;top:22px;font:700 26px/1 "Segoe UI",Arial,sans-serif;color:#333;letter-spacing:.5px}
+.device .brand small{font-weight:400;font-size:16px;margin-left:10px;color:#555}
+.device .cam{position:absolute;left:50%;top:22px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:#222}
+.device .side{position:absolute;top:120px;bottom:120px;width:26px;background:#eceeef;color:#333;font:12px/26px monospace;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;letter-spacing:1px}
+.device .side.l{left:16px}.device .side.r{right:16px;transform:none}
+.device .hw{position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:26px}
+.device .hw span{width:56px;height:44px;border-radius:50%;background:linear-gradient(#e8eaec,#b8bec3);box-shadow:inset 0 -2px 3px rgba(0,0,0,.25);font:600 15px/44px Arial;color:#444;text-align:center}
+.bezel{position:absolute;left:52px;right:52px;top:62px;bottom:72px;background:#111;border-radius:16px;padding:12px}
+
+/* ---------- MDT screen ---------- */
+.screen{position:relative;width:100%;height:100%;background:#0f1923;color:#fff;display:flex;flex-direction:column;overflow:hidden;font-family:"Segoe UI",Tahoma,Arial,sans-serif;user-select:none;-webkit-user-select:none}
+.topbar{display:flex;align-items:stretch;gap:8px;padding:8px 10px 6px;height:88px;flex:none}
+.k{position:relative;width:150px;border:0;border-radius:3px;color:#fff;font-weight:600;font-size:22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
+.k i{position:absolute;right:10px;top:4px;font-style:normal;font-size:12px;border-bottom:1px solid #fff;padding:0 2px}
+.k.back{background:#2c3743}.k.menu{background:#8b7c3e}.k.display{background:#2f4e72}.k.ph{background:#b9332f}
+.k:active,.k.pressed{filter:brightness(1.35)}
+.topbar .grow{flex:1}
+.clock{font-size:58px;font-weight:700;color:#e6e6e6;align-self:center;letter-spacing:1px;padding-right:6px}
+.k.f6{width:180px;background:#26313c;border:2px solid #56626f;font-size:21px;letter-spacing:.5px}
+.k.f6:disabled{opacity:1;cursor:default}
+.main{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 12px}
+.foot{flex:none;height:62px;display:flex;align-items:center;gap:12px;padding:0 14px;font-size:19px;color:#e0e0e0}
+.foot .active{background:#3f6b3c;color:#e8f2e6;padding:5px 12px;border-radius:3px;font-weight:600;flex:none;align-self:flex-start;margin-top:2px}
+.foot .stat{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;font-weight:600}
+.foot .sys{flex:none;font-size:16px;color:#7e8996;display:flex;gap:10px;align-items:center}
+.foot .sys b{color:#e8e8e8;font-weight:600}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#3cba54}
+
+.dtabs{display:flex;gap:4px;flex:none}
+.dtabs button{background:#16212c;color:#cfd6de;border:0;padding:10px 22px;font-size:18px;font-weight:600;border-radius:4px 4px 0 0}
+.dtabs button.on{background:#25313d;color:#fff}
+.panel{flex:1;min-height:0;background:#d8d9da;color:#111;display:flex;flex-direction:column;padding:8px 10px 10px;border-top:3px solid #25313d}
+.prow{display:flex;align-items:flex-start;gap:10px;flex:none}
+.showlist{background:#e9e9e9;border:1px solid #9aa;padding:8px 16px 8px 24px;font-size:16px;clip-path:polygon(14px 0,100% 0,100% 100%,14px 100%,0 50%)}
+.notice{flex:1;color:#d42020;font-weight:700;font-size:19px;text-align:center;line-height:1.25}
+.pbtn{background:#e9e9e9;border:1px solid #aab;padding:9px 14px;font-size:16px;color:#333}
+.titlerow{display:flex;align-items:baseline;gap:10px;margin-top:2px;flex:none}
+.title{flex:1;font-weight:700;font-size:22px;text-decoration:underline;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase}
+.dcode{font-weight:700;font-size:22px;color:#333}
+.typeline{font-size:20px;margin:2px 0 4px;flex:none}
+.etabs{display:flex;gap:3px;flex:none}
+.etabs button{position:relative;background:#c4c6c8;border:1px solid #9a9c9f;border-bottom:0;padding:9px 16px;font-size:16px;font-weight:600;color:#333;letter-spacing:.5px}
+.etabs button.on{background:#f3f3f3;color:#000}
+.etabs button.alert{background:#a3242c;color:#fff}
+.etabs button.alert.on{background:#7e1c22}
+.etabs button:disabled{color:#a8aaad;background:#cfd1d3}
+.etabs .flag{position:absolute;right:2px;top:-2px;width:0;height:0;border-left:16px solid transparent;border-top:16px solid #d42020}
+.ebox{flex:1;min-height:0;overflow:auto;background:#f3f3f3;border:1px solid #9a9c9f;padding:12px 18px;font-family:Consolas,"Lucida Console",ui-monospace,monospace;font-size:22px}
+.f{display:grid;grid-template-columns:1fr 1fr;column-gap:20px}
+.f>div{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid #c9ccd0;padding:6px 0;align-items:start}
+.f>div.full{grid-column:1/-1;grid-template-columns:160px 1fr}
+.f b{font-weight:700;color:#222}
+.f span{color:#2b3a8a;text-transform:uppercase;white-space:pre-wrap;word-break:break-word}
+.rm{display:grid;grid-template-columns:90px 1fr;gap:4px 10px;text-transform:uppercase}
+.urow{display:grid;grid-template-columns:200px 90px 60px 1fr 80px 80px;gap:8px;font-weight:700;text-transform:uppercase;padding:4px 0}
+.urow .ok{color:#2f6b2f}.urow .er{color:#c62828}
+.empty{color:#666;font-style:italic;text-transform:none}
+
+.popup{position:absolute;left:250px;top:240px;width:620px;background:#f2f2f2;border:2px solid #8a8f96;box-shadow:0 8px 30px rgba(0,0,0,.5);color:#111;z-index:5}
+.popup .ph{display:flex;align-items:center;gap:8px;background:#e1e3e6;padding:4px 10px;font-size:15px;color:#333}
+.popup .ph .x{margin-left:auto;border:0;background:none;font-size:20px;color:#666}
+.popup .pb{position:relative;padding:8px 14px 26px;font-family:Consolas,"Lucida Console",ui-monospace,monospace;font-size:24px}
+.popup .pl{white-space:nowrap;overflow:hidden;text-overflow:clip;text-transform:uppercase;margin-right:130px}
+.popup .ack{position:absolute;right:14px;top:8px;width:116px;height:70px;background:#3f7d44;color:#fff;border:1px solid #2c5a30;font-size:18px;font-family:"Segoe UI",Arial}
+.popup table{margin:10px 0 0 30px;border-collapse:collapse}
+.popup td{padding:3px 12px;border-bottom:1px solid #c6ccd3}
+.popup td:first-child{font-weight:700;text-align:right}
+.popup td:last-child{color:#9a1f1f;text-transform:uppercase}
+
+.confirm{flex:1;margin:4px 0 8px;background:#121e2a;border:1px solid #2a3846;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;text-align:center}
+.confirm h2{font-size:30px;margin:0;font-weight:600;line-height:1.4}
+.confirm .row{display:flex;gap:300px}
+.confirm .cb{width:260px;height:108px;border:0;border-radius:3px;color:#fff;font-size:24px;font-weight:600}
+.cb.go{background:linear-gradient(#5f9a4a,#3e7330)}.cb.no{background:linear-gradient(#5568b5,#3b4c93)}
+.confirm .tick{display:flex;align-items:center;gap:14px;font-size:30px;font-weight:600}
+.confirm .tick span{width:52px;height:52px;background:#f2f2f2;display:inline-flex;align-items:center;justify-content:center;color:#111;font-size:40px}
+
+.dest{flex:1;min-height:0;display:flex;gap:12px;padding:4px 0 6px}
+.dside{display:flex;flex-direction:column;gap:22px;width:150px;padding-top:4px}
+.dside button{height:78px;border:0;border-radius:4px;background:#2742a8;color:#fff;font-size:20px;font-weight:600;line-height:1.2}
+.dside button.cancel{background:#d93038}
+.dside button.on{outline:3px solid #fff}
+.dgrid{flex:1;overflow:auto;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:104px;gap:6px;align-content:start;padding-right:6px}
+.dgrid button{border:1px solid #1b4d1d;background:#2e7d32;color:#fff;font-size:21px;text-transform:uppercase;padding:4px 10px;line-height:1.25}
+.dgrid button.div{background:#e9a53c;color:#fff}
+.dgrid button.div em{display:block;font-size:18px}
+.dgrid button.book{background:#e3e0ef;color:#111;text-transform:none}
+.dgrid .none{grid-column:1/-1;color:#cfd6de;font-size:22px;padding:30px}
+
+.menuv{flex:1;margin:0 0 8px;display:flex;flex-direction:column}
+.mtabs{display:flex;gap:0;background:#1d2833;padding:6px 10px 0}
+.mtabs span{padding:8px 26px;font-size:22px;font-weight:600;color:#fff}
+.mtabs span.on{background:#3b4652;border-radius:4px 4px 0 0;color:#cfd6de}
+.mgrid{flex:1;border:1px solid #2e3a46;background:#121e2a;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:24px 60px;padding:36px 70px}
+.mgrid button{border:0;border-radius:4px;background:linear-gradient(#5266a6,#2c3b6e);color:#fff;font-size:22px;font-weight:600;line-height:1.3}
+.listv{flex:1;background:#d8d9da;color:#111;margin-bottom:8px;padding:12px;overflow:auto}
+.listv .ev{display:block;width:100%;text-align:left;background:#f3f3f3;border:1px solid #999;padding:12px;font-size:20px;font-family:Consolas,monospace;text-transform:uppercase}
+.listv h3{margin:0 0 10px;font-size:20px}
+.toast{position:absolute;left:50%;bottom:80px;transform:translateX(-50%);background:rgba(20,28,36,.95);border:1px solid #56626f;color:#fff;padding:12px 22px;font-size:19px;border-radius:6px;z-index:9;pointer-events:none}
+
+/* ---------- Run log ---------- */
+.logwrap{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.logcard{background:var(--card);color:var(--ink);border-radius:12px;max-width:640px;width:100%;max-height:90vh;overflow:auto;padding:18px 20px}
+.logcard h2{margin:0 0 8px;font-size:20px}
+.logcard table{width:100%;border-collapse:collapse;font-size:15px}
+.logcard td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+.logcard td:first-child{width:64px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.logcard ul{padding-left:20px;margin:8px 0 14px}
+</style>
+</head>
+<body>
+
+<!-- ================= Instructor setup ================= -->
+<div class="setup" id="setup">
+  <h1>MDT Simulator: instructor setup</h1>
+  <p class="lead">Set up a job, then hand the iPad to the student. They work through the status buttons from dispatch to clear.</p>
+  <div class="note"><b>Fictional data only.</b> Never enter real patient, caller or event details. "New fake job" makes up names, ages and event numbers every time. The example remarks were written by DSY for practice; they are not a real job.</div>
+
+  <div class="actions">
+    <button class="btn primary" id="startBtn">Start simulation ▶</button>
+    <button class="btn" id="fakeBtn">New fake job</button>
+    <button class="btn" id="shareBtn">Copy student link</button>
+    <button class="btn" id="resetBtn">Reset to example</button>
+  </div>
+  <input id="shareOut" readonly hidden>
+
+  <form id="form" autocomplete="off">
+    <fieldset><legend>Unit</legend>
+      <div class="grid">
+        <label>Call sign<input name="callsign"></label>
+        <label>Crew type<input name="crewType"></label>
+        <label class="wide">Unit location when dispatched<input name="unitLoc"></label>
+      </div>
+    </fieldset>
+
+    <fieldset><legend>Event</legend>
+      <div class="grid">
+        <label>Priority<select name="priority"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+        <label>Dispatch number<input name="dcode"></label>
+        <label>Event number<input name="eventNo"></label>
+        <label>Dispatch time (sim clock)<input name="startTime" type="time"></label>
+        <label>Type code<input name="typeCode"></label>
+        <label>Type name<input name="typeName"></label>
+        <label>Subtype code<input name="subCode"></label>
+        <label>Subtype name<input name="subName"></label>
+      </div>
+    </fieldset>
+
+    <fieldset><legend>Location</legend>
+      <div class="grid">
+        <label>Street address<input name="street"></label>
+        <label>Town<select name="town" id="townSel"></select></label>
+        <label>Location code (optional)<input name="locCode" placeholder="@TBAF"></label>
+        <label>Job note (end of title line)<input name="note"></label>
+        <label>Landmark<input name="landmark"></label>
+        <label>Cross street 1<input name="xs1"></label>
+        <label>Cross street 2<input name="xs2"></label>
+        <label>Instructions<input name="instructions"></label>
+      </div>
+    </fieldset>
+
+    <fieldset><legend>Patient and caller</legend>
+      <div class="grid">
+        <label>Patient name<input name="patient"></label>
+        <label>Age<input name="age"></label>
+        <label>Weight (kg)<input name="weight"></label>
+        <label>Caller name<input name="caller"></label>
+        <label>Caller number<input name="callerNo"></label>
+      </div>
+    </fieldset>
+
+    <fieldset><legend>Remarks, alerts and other units</legend>
+      <div class="grid">
+        <label class="wide">Remarks (one per line; start a line with a time like 13:09 or it uses 10 minutes before dispatch)<textarea name="remarks"></textarea></label>
+        <label class="wide">Alerts (leave empty for none; the Alerts tab shows red until opened)<textarea name="alerts" style="min-height:60px"></textarea></label>
+        <label class="wide">Other units (one per line: CALLSIGN CREWTYPE STATUS LOCATION)<textarea name="units" style="min-height:60px"></textarea></label>
+        <label class="wide">Priors (optional)<input name="priors"></label>
+        <label class="wide">Inbox message (optional)<input name="inbox"></label>
+        <label class="wide">Red notice above the job<input name="notice"></label>
+      </div>
+    </fieldset>
+
+    <fieldset><legend>Destination</legend>
+      <div class="grid">
+        <label class="wide">Booked destination (top tile when Mobile is pressed)<select name="booked" id="bookedSel"></select></label>
+        <p class="hint">"Closest" sorts hospitals by straight-line distance from the town above.</p>
+      </div>
+      <details><summary>Hospitals on diversion (orange tiles)</summary><div class="divlist" id="divList"></div></details>
+    </fieldset>
+  </form>
+</div>
+
+<!-- ================= Simulator ================= -->
+<div class="sim" id="sim" hidden>
+  <div class="simbar">
+    <span>DSY Training · MDT simulator · fictional data</span><span class="sp"></span>
+    <button id="logBtn">Run log</button>
+    <button id="restartBtn">Restart job</button>
+    <button id="setupBtn">Instructor setup</button>
+  </div>
+  <div class="stage" id="stage">
+    <div class="device" id="device">
+      <div class="brand">TRAINING MDT<small>simulator</small></div>
+      <div class="cam"></div>
+      <div class="side l">DSY TRAINING · MDT SIMULATOR</div>
+      <div class="side r">FICTIONAL DATA ONLY</div>
+      <div class="bezel"><div class="screen" id="screen"></div></div>
+      <div class="hw"><span>A1</span><span>A2</span><span>◂)</span><span>)▸</span><span>⊞</span><span>⏻</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="logwrap" id="logWrap" hidden><div class="logcard" id="logCard"></div></div>
+
+<script>
+'use strict';
+// [name, lat, lon, group] group: M = major metro, V = virtual
+const HOSPITALS = [
+  ['ANGASTON AND DISTRICT HOSPITAL',-34.50,139.05],['ARDROSSAN HOSPITAL',-34.42,137.92],
+  ['ASHFORD HOSPITAL',-34.95,138.57],['BALAKLAVA DISTRICT HOSPITAL',-34.15,138.41],
+  ['BARMERA HOSPITAL',-34.25,140.46],['BOOLEROO CENTRE DISTRICT HOSPITAL',-32.88,138.35],
+  ['BORDERTOWN MEMORIAL HOSPITAL',-36.31,140.77],['BROKEN HILL HOSPITAL (NSW)',-31.95,141.47],
+  ['BURRA HOSPITAL',-33.68,138.93],['CALVARY ADELAIDE HOSPITAL - ANGAS ST',-34.93,138.61],
+  ['CAVUCS (VIRTUAL)',null,null,'V'],['CEDUNA HOSPITAL',-32.13,133.68],
+  ['CLARE AND DISTRICT HOSPITAL',-33.83,138.61],['CLEVE HOSPITAL',-33.70,136.49],
+  ['COOBER PEDY HOSPITAL',-29.01,134.75],['COWELL HOSPITAL',-33.68,136.92],
+  ['CRYSTAL BROOK HOSPITAL',-33.35,138.21],['CUMMINS HOSPITAL',-34.26,135.73],
+  ['ELLISTON HOSPITAL',-33.65,134.89],['FLINDERS MEDICAL CENTRE',-35.02,138.57,'M'],
+  ['GAWLER HOSPITAL',-34.60,138.75],['HAWKER HOSPITAL',-31.89,138.42],
+  ['JAMESTOWN HOSPITAL',-33.20,138.60],['KANGAROO ISLAND HOSPITAL',-35.66,137.64],
+  ['KIMBA HOSPITAL',-33.14,136.42],['KINGSTON SOLDIERS MEMORIAL HOSPITAL',-36.83,139.85],
+  ['LEIGH CREEK HOSPITAL',-30.59,138.40],['LOXTON HOSPITAL',-34.45,140.57],
+  ['LYELL MCEWIN HOSPITAL',-34.71,138.67,'M'],['MAITLAND HOSPITAL',-34.37,137.67],
+  ['MILLICENT HOSPITAL',-37.59,140.35],['MODBURY HOSPITAL',-34.83,138.69],
+  ['MOUNT BARKER HOSPITAL',-35.07,138.86],['MOUNT GAMBIER HOSPITAL',-37.83,140.78],
+  ['MURRAY BRIDGE HOSPITAL',-35.12,139.27],['NARACOORTE HOSPITAL',-36.96,140.74],
+  ['NOARLUNGA HOSPITAL',-35.14,138.50],['PETERBOROUGH HOSPITAL',-32.97,138.84],
+  ['PORT AUGUSTA HOSPITAL',-32.49,137.77],['PORT LINCOLN HOSPITAL',-34.72,135.86],
+  ['PORT PIRIE HOSPITAL',-33.19,138.02],['QUEEN ELIZABETH HOSPITAL',-34.89,138.53,'M'],
+  ['QUORN HOSPITAL',-32.35,138.04],['RENMARK HOSPITAL',-34.17,140.75],
+  ['RIVERLAND GENERAL HOSPITAL (BERRI)',-34.28,140.60],['ROXBY DOWNS HEALTH SERVICE',-30.56,136.89],
+  ['ROYAL ADELAIDE HOSPITAL',-34.92,138.59,'M'],['SOUTH COAST DISTRICT HOSPITAL',-35.55,138.62],
+  ['STREAKY BAY HOSPITAL',-32.80,134.21],['TUMBY BAY HOSPITAL',-34.375,136.10],
+  ['WAIKERIE HOSPITAL',-34.18,139.98],['WALLAROO HOSPITAL',-33.93,137.63],
+  ['WHYALLA HOSPITAL',-33.03,137.58],['WOMENS AND CHILDRENS HOSPITAL',-34.91,138.60,'M'],
+  ['WUDINNA HOSPITAL',-33.05,135.46],['YORKETOWN HOSPITAL',-35.02,137.60]
+].map(([name,lat,lon,g])=>({name,lat,lon,g:g||''}));
+
+const TOWNS = [
+  ['Tumby Bay',-34.375,136.10],['Port Lincoln',-34.72,135.86],['Cummins',-34.26,135.73],
+  ['Coffin Bay',-34.62,135.47],['Port Neill',-34.12,136.35],['Arno Bay',-33.92,136.57],
+  ['Cleve',-33.70,136.49],['Cowell',-33.68,136.92],['Lock',-33.57,135.76],['Kimba',-33.14,136.42],
+  ['Wudinna',-33.05,135.46],['Elliston',-33.65,134.89],['Streaky Bay',-32.80,134.21],
+  ['Ceduna',-32.13,133.68],['Whyalla',-33.03,137.58],['Port Augusta',-32.49,137.77]
+];
+
+// Status sequence. F6 shows the next action; the status bar shows the last status sent.
+// Unit codes from the owner: AK acknowledged, ER responding, TS time scene, TM time mobile, TD time destination.
+// DP and AV are placeholders (not confirmed).
+const ST = [
+  {s:'DISPATCHED',  code:'DP', f6:'ACK'},
+  {s:'ACKNOWLEDGE', code:'AK', f6:'ENROUTE'},
+  {s:'ENROUTE',     code:'ER', f6:'TIME SCENE'},
+  {s:'ARRIVE',      code:'TS', f6:'MOBILE'},
+  {s:'MOBILE',      code:'TM', f6:'ARRIVE DEST'},
+  {s:'ARRIVE DEST.',code:'TD', f6:'CLEAR'},
+  {s:'AVAILABLE',   code:'AV', f6:''}
+];
+
+const FIRST = ['James','Olivia','Noah','Mia','Lucas','Ruby','Jack','Ava','Leo','Grace','Harry','Chloe','Oscar','Isla','Tom','Zoe','Ben','Lily','Sam','Ella','Max','Evie','Ryan','Holly','Dylan','Kate','Joel','Amy','Luke','Tessa'];
+const LAST = ['Hartley','Bennett','Fraser','Whitlock','Carmody','Pryor','Lindqvist','Ashby','Dunmore','Kessler','Rowntree','Tasker','Marlow','Penhall','Quill','Rudd','Sorensen','Tolley','Vance','Wexford','Yardley','Brennock','Calloway','Daintree','Ellery','Fenwick','Gorman','Hollis','Ingram','Jessop'];
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const rint = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+const pad = n => String(n).padStart(2,'0');
+
+function example(){
+  return {
+    callsign:'TB85', crewType:'TL-PR', unitLoc:'BRIDGE ST/NORTH TCE, TUMBY BAY',
+    priority:'4', dcode:'D0'+rint(100,999), eventNo:'A00'+rint(10,99)+'-'+rint(10000,99999),
+    startTime: pad(new Date().getHours())+':'+pad(new Date().getMinutes()),
+    typeCode:'RTVL', typeName:'Retrieval', subCode:'RT1', subName:'FIXED',
+    street:'AIRPORT RD', town:'Tumby Bay', locCode:'@TBAF', note:'RFDS ETA 30 MIN > RFDS - ADULT',
+    landmark:'ED CM '+rint(100000,999999)+' PW', xs1:'LIPSON RD', xs2:'DEAD END', instructions:'',
+    patient: pick(LAST).toUpperCase()+', '+pick(FIRST).toUpperCase(), age: rint(55,85)+'Y', weight: String(rint(60,105)),
+    caller:'DR '+pick(LAST).toUpperCase()+' GP', callerNo:'',
+    remarks:'RFDS FLIGHT BOOKED - FIXED WING\nCHEST PAIN FOR TRANSFER TO FMC\nIVC INSITU\nCREW TO MEET AIRCRAFT AND CONVEY RFDS TEAM TO HOSPITAL\nPATIENT AT TUMBY BAY HOSPITAL',
+    alerts:'TRAINING ALERT: GATE CODE REQUIRED AT AIRFIELD - ASK EOC',
+    units:'TB81 EME_A ER LIPSON RD/AIRPORT RD, TUMBY BAY',
+    priors:'', inbox:'Welcome to the MDT simulator. This message is fictional.',
+    notice:'TRAINING ONLY - ALL EVENT DATA IS FICTIONAL',
+    booked:'TUMBY BAY HOSPITAL', diversions:['ASHFORD HOSPITAL','CALVARY ADELAIDE HOSPITAL - ANGAS ST']
+  };
+}
+function fakeOver(c){
+  c.patient = pick(LAST).toUpperCase()+', '+pick(FIRST).toUpperCase();
+  c.age = rint(18,92)+'Y'; c.weight = String(rint(55,115));
+  c.caller = pick(FIRST).toUpperCase()+' '+pick(LAST).toUpperCase();
+  c.callerNo = '04'+rint(10,99)+' '+rint(100,999)+' '+rint(100,999);
+  c.dcode = 'D0'+rint(100,999); c.eventNo = 'A00'+rint(10,99)+'-'+rint(10000,99999);
+  c.landmark = 'ED CM '+rint(100000,999999)+' PW';
+  return c;
+}
+
+// ---------- storage helpers (per-device convenience only) ----------
+const KEY = 'dsy-mdt-sim-config';
+function load(){ try{ const v = localStorage.getItem(KEY); return v ? Object.assign(example(), JSON.parse(v)) : null; }catch(e){ return null; } }
+function save(c){ try{ localStorage.setItem(KEY, JSON.stringify(c)); }catch(e){} }
+const b64e = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const b64d = s => decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/'))));
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+
+// ---------- setup form ----------
+const form = document.getElementById('form');
+document.getElementById('townSel').innerHTML = TOWNS.map(t=>`<option>${t[0]}</option>`).join('');
+document.getElementById('bookedSel').innerHTML = '<option value="">(no booking)</option>' + HOSPITALS.map(h=>`<option>${esc(h.name)}</option>`).join('');
+document.getElementById('divList').innerHTML = HOSPITALS.map(h=>`<label><input type="checkbox" name="div" value="${esc(h.name)}">${esc(h.name)}</label>`).join('');
+
+function fillForm(c){
+  for (const el of form.elements){
+    if (!el.name || el.name==='div') continue;
+    el.value = c[el.name] ?? '';
+  }
+  form.querySelectorAll('input[name=div]').forEach(cb => cb.checked = (c.diversions||[]).includes(cb.value));
+}
+function readForm(){
+  const c = {};
+  for (const el of form.elements){ if (el.name && el.name!=='div') c[el.name] = el.value.trim(); }
+  c.diversions = [...form.querySelectorAll('input[name=div]:checked')].map(cb=>cb.value);
+  return c;
+}
+form.addEventListener('input', ()=>save(readForm()));
+document.getElementById('fakeBtn').onclick = ()=>{ const c = fakeOver(readForm()); fillForm(c); save(c); };
+document.getElementById('resetBtn').onclick = ()=>{ const c = example(); fillForm(c); save(c); };
+document.getElementById('shareBtn').onclick = async ()=>{
+  const url = location.href.split('#')[0] + '#sim=' + b64e(JSON.stringify(readForm()));
+  const out = document.getElementById('shareOut');
+  out.hidden = false; out.value = url;
+  try{ await navigator.clipboard.writeText(url); out.value = 'Copied: ' + url; }catch(e){ out.select(); }
+};
+document.getElementById('startBtn').onclick = ()=>{ const c = readForm(); save(c); startSim(c); };
+
+// ---------- simulation ----------
+let S, C, clockTimer, toastTimer;
+
+function startSim(c){
+  C = c;
+  const [hh,mm] = (c.startTime||'14:20').split(':').map(Number);
+  S = { st:0, view:'event', tab:'EVENT', popup:true, seen:{}, filter:'All', pending:null, dest:null,
+        realStart:Date.now(), simStart:(hh*60+(mm||0))*60, log:[], stTimes:[], phCount:0, direct:false };
+  S.stTimes[0] = clock();
+  logIt('Dispatched to ' + titleText());
+  document.getElementById('setup').hidden = true;
+  document.getElementById('sim').hidden = false;
+  history.replaceState(null,'',location.pathname + '#sim=' + b64e(JSON.stringify(c)));
+  fit(); render();
+  clearInterval(clockTimer);
+  clockTimer = setInterval(()=>document.querySelectorAll('[data-clock]').forEach(e=>e.textContent=clock()), 1000);
+}
+function simSecs(){ return S.simStart + Math.floor((Date.now()-S.realStart)/1000); }
+function clock(){ const t = simSecs() % 86400; return pad(Math.floor(t/3600))+':'+pad(Math.floor(t/60)%60); }
+function dateStr(){ const d = new Date(); return pad(d.getDate())+'/'+pad(d.getMonth()+1); }
+function logIt(text){ S.log.push({t:clock(), text}); }
+
+function address(){ return (C.street ? C.street+', ' : '') + (C.town||'').toUpperCase(); }
+function titleText(){ return [address(), C.locCode, C.note].filter(Boolean).join(': '); }
+function typeLine(){ return `${C.typeName} (${C.typeCode}) / ${C.subName} (${C.subCode})`; }
+function statusLine(){
+  const st = ST[S.st].s;
+  if (S.st === 6) return `${C.callsign} ${st}`;
+  if (S.st === 5) return `${C.callsign} ${st} ${S.dest}`;
+  return `${C.callsign} ${st} ${titleText()}`;
+}
+function toast(msg){
+  const sc = document.getElementById('screen');
+  let t = sc.querySelector('.toast');
+  if (!t){ t = document.createElement('div'); t.className='toast'; sc.appendChild(t); }
+  t.textContent = msg; clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.remove(), 1800);
+}
+
+function setStatus(i){ S.st = i; S.stTimes[i] = clock(); logIt('Status: ' + ST[i].s); }
+
+// F6 and dialog actions
+const act = {
+  f6(){
+    switch (S.st){
+      case 0: act.ack(); break;
+      case 1: setStatus(2); break;                       // ENROUTE: no confirmation
+      case 2: S.view='confirmScene'; break;
+      case 3: S.view='dest'; S.filter='All'; logIt('Opened destination list'); break;
+      case 4: setStatus(5); S.view='event'; break;       // ARRIVE DEST: no confirmation
+      case 5: S.view='confirmClear'; S.direct=false; break;
+    }
+    render();
+  },
+  ack(){ if (S.st===0){ setStatus(1); S.popup=false; } render(); },
+  closePopup(){ S.popup=false; render(); },
+  sceneYes(){ setStatus(3); S.view='event'; render(); },
+  sceneNo(){ logIt('Cancelled Time Scene'); S.view='event'; render(); },
+  filter(f){ S.filter=f; logIt('Destination list: ' + f); render(); },
+  destCancel(){ logIt('Cancelled destination list'); S.view='event'; render(); },
+  pickDest(name){ S.pending=name; S.view='confirmMobile'; render(); },
+  mobileYes(){
+    S.dest = S.pending; setStatus(4);
+    logIt('Mobile to ' + S.dest + (S.dest===C.booked ? ' (booked destination)' : C.booked ? ' (NOT the booked destination: ' + C.booked + ')' : ''));
+    S.view='event'; render();
+  },
+  mobileNo(){ logIt('Cancelled Mobile to ' + S.pending); S.view='dest'; render(); },
+  ph(){ S.phCount++; logIt('P.H. pressed (priority to hospital notified)'); render(); },
+  toggleDirect(){ S.direct=!S.direct; render(); },
+  clearYes(){ logIt('Clear confirmed' + (S.direct ? ' - direct admission to ward ticked' : '')); setStatus(6); S.view='menu'; render(); },
+  clearNo(){ logIt('Cancelled Clear'); S.view='event'; render(); },
+  tab(t){
+    S.tab=t;
+    if (!S.seen[t]){ S.seen[t] = {time:clock(), st:S.st}; logIt('Opened ' + t + ' tab'); }
+    render();
+  },
+  back(){
+    if (S.view==='dest') return act.destCancel();
+    if (S.view==='confirmScene') return act.sceneNo();
+    if (S.view==='confirmMobile') return act.mobileNo();
+    if (S.view==='confirmClear') return act.clearNo();
+    if (S.st===6){ S.view = S.view==='menu' ? 'list' : 'menu'; return render(); }
+    S.view='event'; render();
+  },
+  menu(){ S.view = S.view==='menu' ? (S.st===6?'list':'event') : 'menu'; render(); },
+  view(v){ S.view=v; render(); },
+  notUsed(){ toast('Not used in the simulator'); }
+};
+
+function sortedHospitals(){
+  const t = TOWNS.find(x=>x[0]===C.town) || TOWNS[0];
+  const dist = h => h.lat==null ? 1e9 : Math.hypot(h.lat-t[1], (h.lon-t[2])*Math.cos(t[1]*Math.PI/180));
+  let list = HOSPITALS.slice();
+  if (S.filter==='Closest') list = list.filter(h=>h.lat!=null).sort((a,b)=>dist(a)-dist(b));
+  if (S.filter==='Major') list = list.filter(h=>h.g==='M');
+  if (S.filter==='Virtual') list = list.filter(h=>h.g==='V');
+  if (S.filter==='Care Pathways') list = [];
+  return list;
+}
+
+function topbar(){
+  const f6 = ST[S.st].f6;
+  return `<div class="topbar">
+    <button class="k back" data-a="back"><i>Alt+ ←</i>Back</button>
+    <button class="k menu" data-a="menu"><i>F2</i>Menu</button>
+    <button class="k display" data-a="notUsed"><i>F3</i>Display</button>
+    ${S.st===4 ? `<button class="k ph" data-a="ph">P.H.</button>` : ''}
+    <div class="grow"></div>
+    <div class="clock" data-clock>${clock()}</div>
+    <button class="k f6" data-a="f6" ${f6&&!S.view.startsWith('confirm')&&S.view!=='dest'?'':'disabled'}><i>F6</i>${f6}</button>
+  </div>`;
+}
+function footer(){
+  return `<div class="foot">
+    ${S.st<6 ? '<span class="active">Active Event</span>' : ''}
+    <span class="stat">${esc(statusLine())}</span>
+    <span class="sys">Outbox 0 | Rx Tx Er <span class="dot"></span><b>SACAD</b> | <b data-clock>${clock()}</b></span>
+  </div>`;
+}
+function dispatchTabs(){
+  const n = C.inbox ? 1 : 0;
+  return `<div class="dtabs"><button class="${S.view!=='inbox'?'on':''}" data-a="view" data-v="event">My Dispatches</button><button class="${S.view==='inbox'?'on':''}" data-a="view" data-v="inbox">My Inbox (${n})</button></div>`;
+}
+function eventTab(){
+  return `<div class="f">
+    <div class="full"><b>Address</b><span>${esc(titleText())}</span></div>
+    <div><b>Priority</b><span>${esc(C.priority)}</span></div><div><b>Event</b><span>${esc(C.eventNo)}/${esc(C.dcode)}</span></div>
+    <div><b>Patient Name</b><span>${esc(C.patient)}</span></div><div><b>Age</b><span>${esc(C.age)}</span></div>
+    <div><b>Weight</b><span>${esc(C.weight)}</span></div><div><b>Landmark</b><span>${esc(C.landmark)}</span></div>
+    <div class="full"><b>Instructions</b><span>${esc(C.instructions)}</span></div>
+    <div><b>Xstreet 1</b><span>${esc(C.xs1)}</span></div><div><b>Xstreet 2</b><span>${esc(C.xs2)}</span></div>
+    <div><b>Metro UBD</b><span></span></div><div><b>Country UBD</b><span></span></div>
+    <div><b>Caller Name</b><span>${esc(C.caller)}</span></div><div></div>
+    <div><b>Caller Number</b><span>${esc(C.callerNo)}</span></div><div></div>
+  </div>`;
+}
+function remarksTab(){
+  const [hh,mm] = (C.startTime||'14:20').split(':').map(Number);
+  const m = ((hh*60+(mm||0)-10)+1440)%1440, def = pad(Math.floor(m/60))+':'+pad(m%60);
+  const lines = (C.remarks||'').split('\n').map(l=>l.trim()).filter(Boolean);
+  if (!lines.length) return '<div class="empty">No remarks</div>';
+  return '<div class="rm">' + lines.map(l=>{ const x = l.match(/^(\d{1,2}:\d{2})\s+(.*)$/); return `<span>${x?x[1]:def}</span><span>${esc(x?x[2]:l)}</span>`; }).join('') + '</div>';
+}
+function unitsTab(){
+  const loc = S.st<3 ? C.unitLoc : S.st<5 ? address() : S.dest;
+  const own = `<div class="urow"><span class="ok">${esc(C.callsign)}* ${esc(C.crewType)}</span><span></span><span class="er">${ST[S.st].code}</span><span class="ok">${esc(loc)}</span><span>${S.stTimes[S.st]}</span><span>${dateStr()}</span></div>`;
+  const others = (C.units||'').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
+    const p = l.split(/\s+/); const cs=p[0]||'', ct=p[1]||'', code=p[2]||'', where=p.slice(3).join(' ');
+    return `<div class="urow"><span>${esc(cs)} ${esc(ct)}</span><span></span><span class="er">${esc(code)}</span><span class="er">${esc(where)}</span><span>${S.stTimes[0]}</span><span>${dateStr()}</span></div>`;
+  }).join('');
+  return own + others;
+}
+function alertsTab(){ return C.alerts ? `<div class="rm" style="grid-template-columns:1fr"><span>${esc(C.alerts).replace(/\n/g,'<br>')}</span></div>` : '<div class="empty">No alerts</div>'; }
+
+function eventView(){
+  const tabs = ['EVENT','REMARKS','Units','Alerts','IPLAN','NEARBY','PRIORS','CALLDIRECT'];
+  const off = ['IPLAN','NEARBY','CALLDIRECT'];
+  const nUnits = 1 + (C.units||'').split('\n').filter(l=>l.trim()).length;
+  const tabBtns = tabs.map(t=>{
+    const cls = [S.tab===t?'on':'', t==='Alerts'&&C.alerts&&!S.seen.Alerts?'alert':''].join(' ');
+    const label = t==='Units' ? `Units (${nUnits})` : t;
+    return `<button class="${cls}" ${off.includes(t)?'disabled':`data-a="tab" data-v="${t}"`}>${label}${t==='Units'?'<span class="flag"></span>':''}</button>`;
+  }).join('');
+  const body = {EVENT:eventTab, REMARKS:remarksTab, Units:unitsTab, Alerts:alertsTab, PRIORS:()=>C.priors?`<div class="rm" style="grid-template-columns:1fr"><span>${esc(C.priors)}</span></div>`:'<div class="empty">No prior events</div>'}[S.tab]();
+  const popup = (S.st===0 && S.popup) ? `<div class="popup">
+      <div class="ph">▣ Dispatch <button class="x" data-a="closePopup">×</button></div>
+      <div class="pb"><button class="ack" data-a="ack">Ack</button>
+        <div class="pl">P${esc(C.priority)} &nbsp; — &nbsp; ${esc(C.dcode)}</div>
+        <div class="pl">${esc(titleText())}</div>
+        <table>
+          <tr><td>Landmark</td><td>${esc(C.landmark)}</td></tr>
+          <tr><td>Alerts:</td><td>${C.alerts?'Yes':'No'}</td></tr>
+          <tr><td>Type:</td><td>${esc(C.typeCode+' '+C.typeName)}</td></tr>
+          <tr><td>SubType:</td><td>${esc(C.subCode+' '+C.subName)}</td></tr>
+          <tr><td>Event:</td><td>${esc(C.eventNo.replace('-',''))}</td></tr>
+        </table></div></div>` : '';
+  return `${dispatchTabs()}<div class="panel">
+      <div class="prow"><button class="showlist" data-a="view" data-v="list">Show List</button>
+        <div class="notice">${esc(C.notice)}</div>
+        <button class="pbtn" data-a="view" data-v="history">History</button><button class="pbtn" data-a="notUsed">Navigate</button></div>
+      <div class="titlerow"><div class="title">${esc(titleText())}</div><div class="dcode">${esc(C.dcode)}</div></div>
+      <div class="typeline">${esc(typeLine())}</div>
+      <div class="etabs">${tabBtns}</div>
+      <div class="ebox">${body}</div>
+    </div>${popup}`;
+}
+function destView(){
+  const list = sortedHospitals();
+  const filters = ['Closest','All','Major','Virtual','Care Pathways'];
+  let tiles = '';
+  if (C.booked && S.filter!=='Care Pathways') tiles += `<button class="book" data-a="pickDest" data-v="${esc(C.booked)}">Booking:${esc(C.booked)}</button>`;
+  tiles += list.map(h=>{
+    const div = (C.diversions||[]).includes(h.name);
+    return `<button class="${div?'div':''}" data-a="pickDest" data-v="${esc(h.name)}">${esc(h.name)}${div?' <em>Diversion:CONSULT ALL</em>':''}</button>`;
+  }).join('');
+  if (!list.length) tiles += '<div class="none">No care pathways for this event.</div>';
+  return `<div class="dest"><div class="dside">
+      <button class="cancel" data-a="destCancel">Cancel</button>
+      ${filters.map(f=>`<button class="${S.filter===f?'on':''}" data-a="filter" data-v="${f}">${f.replace(' ','<br>')}</button>`).join('')}
+    </div><div class="dgrid" id="dgrid">${tiles}</div></div>`;
+}
+function confirmView(kind){
+  if (kind==='confirmScene') return `<div class="confirm"><h2>Please confirm you are Time Scene</h2><div class="row"><button class="cb go" data-a="sceneYes">Confirm</button><button class="cb no" data-a="sceneNo">Cancel</button></div></div>`;
+  if (kind==='confirmMobile') return `<div class="confirm"><h2>Please confirm you are Mobile to<br>${esc(S.pending)}</h2><div class="row"><button class="cb go" data-a="mobileYes">Confirm</button><button class="cb no" data-a="mobileNo">Cancel</button></div></div>`;
+  return `<div class="confirm"><h2>Clear Event<br>Confirm</h2>
+    <div class="tick" data-a="toggleDirect"><span>${S.direct?'✓':''}</span>Patient was a Direct Admission to Ward</div>
+    <div class="row"><button class="cb go" data-a="clearYes">Confirm</button><button class="cb no" data-a="clearNo">Cancel</button></div></div>`;
+}
+function menuView(){
+  const b = t => `<button data-a="notUsed">${t}</button>`;
+  return `<div class="menuv"><div class="mtabs"><span class="on">Main</span><span>Team Leader</span></div>
+    <div class="mgrid">
+      ${b('Notifications &amp;<br>Diversions')}${b('Change<br>Crew ID...')}${b('Map')}${b('Logoff...')}
+      ${b('Fetch Crew<br>Events')}${b('Fetch Crew<br>Crib Breaks')}<span></span><span></span>
+      <span></span><span></span>${b('Reference<br>Information')}<span></span>
+      ${b('🚑 Driver is<br>Other')}${b('🚑 Driver is<br>'+esc(C.callsign))}<span></span><span></span>
+    </div></div>`;
+}
+function listView(){
+  const row = S.st<6 ? `<button class="ev" data-a="view" data-v="event">P${esc(C.priority)} ${esc(C.dcode)} &nbsp; ${esc(titleText())}</button>` : '<div class="empty">No dispatches</div>';
+  return `${dispatchTabs()}<div class="listv"><h3>My Dispatches</h3>${row}</div>`;
+}
+function inboxView(){ return `${dispatchTabs()}<div class="listv"><h3>My Inbox</h3>${C.inbox?`<div class="ev">${esc(C.inbox)}</div>`:'<div class="empty">No messages</div>'}</div>`; }
+function historyView(){
+  const rows = ST.map((x,i)=>S.stTimes[i]?`<div class="ev">${S.stTimes[i]} &nbsp; ${x.s}</div>`:'').join('');
+  return `${dispatchTabs()}<div class="listv"><h3>Event history: ${esc(C.dcode)}</h3>${rows}<p><button class="pbtn" data-a="view" data-v="event">Back to event</button></p></div>`;
+}
+
+function render(){
+  const v = S.view;
+  let main;
+  if (v==='event') main = eventView();
+  else if (v==='dest') main = destView();
+  else if (v.startsWith('confirm')) main = confirmView(v);
+  else if (v==='menu') main = menuView();
+  else if (v==='list') main = listView();
+  else if (v==='inbox') main = inboxView();
+  else if (v==='history') main = historyView();
+  document.getElementById('screen').innerHTML = topbar() + `<div class="main">${main}</div>` + footer();
+}
+
+document.getElementById('screen').addEventListener('click', e=>{
+  const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
+  const a = el.dataset.a, v = el.dataset.v;
+  if (a==='view' && v==='event' && S.st===6) return act.view('list');
+  act[a] && act[a](v);
+});
+
+// ---------- run log ----------
+function showLog(){
+  const seen = t => S.seen[t] ? `${S.seen[t].time} (while ${ST[S.seen[t].st].s})` : 'not opened';
+  const checks = [
+    `Remarks tab: ${seen('REMARKS')}`,
+    C.alerts ? `Alerts tab: ${seen('Alerts')}` : 'No alerts were set',
+    `Units tab: ${seen('Units')}`,
+    S.dest ? `Destination: ${S.dest}${C.booked ? (S.dest===C.booked ? ' (matches the booking)' : ' — booking was ' + C.booked) : ''}` : 'Destination: not chosen yet',
+    `P.H. pressed: ${S.phCount ? S.phCount + ' time(s)' : 'no'}`,
+  ];
+  document.getElementById('logCard').innerHTML = `<h2>Run log: ${esc(C.callsign)} ${esc(C.dcode)}</h2>
+    <ul>${checks.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
+    <table>${S.log.map(l=>`<tr><td>${l.t}</td><td>${esc(l.text)}</td></tr>`).join('')}</table>
+    <div class="actions"><button class="btn primary" id="logClose">Close</button></div>`;
+  document.getElementById('logWrap').hidden = false;
+  document.getElementById('logClose').onclick = ()=>document.getElementById('logWrap').hidden = true;
+}
+document.getElementById('logBtn').onclick = showLog;
+document.getElementById('restartBtn').onclick = ()=>{ if (confirm('Restart this job from dispatch?')) startSim(C); };
+document.getElementById('setupBtn').onclick = ()=>{
+  if (!confirm('Leave the simulation and go to instructor setup?')) return;
+  clearInterval(clockTimer);
+  document.getElementById('sim').hidden = true; document.getElementById('setup').hidden = false;
+  history.replaceState(null,'',location.pathname);
+  fillForm(C);
+};
+
+// ---------- scale the device to fit the screen ----------
+function fit(){
+  const st = document.getElementById('stage'), d = document.getElementById('device');
+  const s = Math.min(st.clientWidth/1220, st.clientHeight/860);
+  d.style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+addEventListener('resize', fit);
+
+// ---------- boot ----------
+(function(){
+  const m = location.hash.match(/^#sim=(.+)$/);
+  if (m){ try{ const c = Object.assign(example(), JSON.parse(b64d(m[1]))); fillForm(c); startSim(c); return; }catch(e){} }
+  fillForm(load() || example());
+})();
+</script>
+</body>
+</html>
