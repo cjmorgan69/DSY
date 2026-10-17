@@ -44,4 +44,7 @@ All text reaches the page through `textContent`, so typed values cannot add HTML
 3. Any new wording in a branch (`{{#closer=backup}}...`) is written by DSY and must be checked by the owner.
 4. Insert the row into `public.scenarios`. Then read it back and compare it with the generated JSON.
 
+5. If the scenario has a job in the MDT simulator, add `customSlug`, `customDefaults` and `custom()` to it in
+   `mdt/jobs.js` and add the slug to the `Open in MDT simulator` list in `index.html`.
+
 The original `/modules/<name>/` page stays as it is. If it is changed, regenerate and reload the template.
