@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSY Training — Clinical Training Hub</title>
+    <meta property="og:title" content="DSY Training — Clinical Training Hub">
+    <meta property="og:description" content="Scenario-based microlearning for pre-hospital and rural emergency clinicians.">
+    <meta property="og:image" content="https://cdn.simtheory.ai/image/upload/v1771833608/u0223080005_image_vlkdfa.png">
+    <link rel="icon" href="https://cdn.simtheory.ai/image/upload/v1771833608/u0223080005_image_vlkdfa.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg-darkest: #0a1a0a;
+            --bg-dark: #0f250f;
+            --bg-card: #142814;
+            --bg-card-hover: #1a3319;
+            --accent: #34d058;
+            --accent-glow: #4ae86e;
+            --accent-dim: #2ea04e;
+            --text-primary: #eaf0ea;
+            --text-secondary: #b0ccb0;
+            --text-muted: #708a70;
+            --border: #243824;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow: 0 2px 16px rgba(0,0,0,0.3);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-darkest);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 2.5rem 1.5rem 1.75rem;
+            background: radial-gradient(ellipse at 50% 0%, rgba(52,208,88,0.08) 0%, transparent 70%);
+        }
+        .hero-logo {
+            width: 110px; height: 110px; border-radius: 50%;
+            border: 2px solid var(--border); margin: 0 auto 1rem;
+            overflow: hidden; background: var(--bg-dark);
+            box-shadow: 0 0 40px rgba(52,208,88,0.1);
+        }
+        .hero-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .hero h1 {
+            font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            margin-bottom: 0.2rem;
+        }
+        .hero-tag {
+            font-size: 0.82rem; font-weight: 600; color: var(--accent-dim);
+            margin-bottom: 0.5rem;
+        }
+        .hero-sub {
+            font-size: 0.82rem; color: var(--text-muted); max-width: 420px;
+            margin: 0 auto; line-height: 1.55;
+        }
+
+        /* GRID */
+        .wrap {
+            max-width: 520px; margin: 0 auto; padding: 1.25rem 1rem 3rem;
+        }
+        .section-label {
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.12em; color: var(--text-muted); margin-bottom: 0.75rem;
+        }
+        .cat-grid {
+            display: flex; flex-direction: column; gap: 0.75rem;
+        }
+
+        /* CARDS */
+        .cat-card {
+            display: flex; align-items: center; gap: 1rem;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1.1rem 1rem;
+            text-decoration: none; color: inherit;
+            transition: var(--transition); box-shadow: var(--shadow);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .cat-card:hover, .cat-card:active {
+            border-color: var(--accent-dim); background: var(--bg-card-hover);
+            transform: translateY(-1px);
+        }
+
+        .card-icon {
+            flex-shrink: 0; width: 52px; height: 52px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+        }
+        .icon-ao { background: rgba(52,208,88,0.12); border: 1px solid rgba(52,208,88,0.2); }
+        .icon-para { background: rgba(168,130,255,0.10); border: 1px solid rgba(168,130,255,0.2); }
+        .icon-ed { background: rgba(80,180,255,0.10); border: 1px solid rgba(80,180,255,0.2); }
+
+        .card-body { flex: 1; min-width: 0; }
+        .card-title {
+            font-size: 0.95rem; font-weight: 700; color: var(--text-primary);
+            margin-bottom: 0.15rem; display: flex; align-items: center; gap: 0.4rem;
+        }
+        .card-count {
+            font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.45rem;
+            border-radius: 4px; white-space: nowrap;
+        }
+        .count-live {
+            background: rgba(52,208,88,0.15); color: var(--accent);
+            border: 1px solid rgba(52,208,88,0.25);
+        }
+        .count-dev {
+            background: rgba(255,170,0,0.12); color: #e6a700;
+            border: 1px solid rgba(255,170,0,0.2);
+        }
+        .card-desc {
+            font-size: 0.78rem; color: var(--text-muted); line-height: 1.45;
+        }
+        .card-modules {
+            display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.45rem;
+        }
+        .mod-tag {
+            font-size: 0.65rem; font-weight: 600; color: var(--text-secondary);
+            background: var(--bg-dark); border: 1px solid var(--border);
+            padding: 0.15rem 0.5rem; border-radius: 6px; white-space: nowrap;
+        }
+
+        .card-arrow {
+            flex-shrink: 0; font-size: 1.1rem; color: var(--text-muted);
+            transition: var(--transition);
+        }
+        .cat-card:hover .card-arrow { color: var(--accent); transform: translateX(2px); }
+
+        /* FADE */
+        .fade-s {
+            opacity: 0; transform: translateY(16px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .fade-s.vis { opacity: 1; transform: translateY(0); }
+
+        /* FOOTER */
+        .hub-footer {
+            text-align: center; padding: 1rem 1rem 0.5rem;
+            font-size: 0.68rem; color: var(--text-muted);
+            border-top: 1px solid var(--border); margin-top: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .hero { padding: 2rem 1rem 1.25rem; }
+            .hero-logo { width: 100px; height: 100px; }
+            .hero h1 { font-size: 1.4rem; }
+            .wrap { padding: 1rem 0.75rem 2.5rem; }
+            .cat-card { padding: 1rem 0.85rem; gap: 0.8rem; }
+            .card-icon { width: 46px; height: 46px; font-size: 1.3rem; border-radius: 12px; }
+            .card-title { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="hero-logo">
+        <img src="https://cdn.simtheory.ai/image/upload/v1771833608/u0223080005_image_vlkdfa.png" alt="DSY Training">
+    </div>
+    <h1>DSY Training</h1>
+    <div class="hero-tag">Clinical Training Hub</div>
+    <div class="hero-sub">Microlearning modules for pre-hospital and rural emergency clinicians.</div>
+</div>
+
+<div class="wrap">
+
+<div class="section-label fade-s">Training Streams</div>
+
+<div class="cat-grid">
+
+<!-- AO -->
+<a class="cat-card fade-s" href="/ao/">
+    <div class="card-icon icon-ao">&#x1F691;</div>
+    <div class="card-body">
+        <div class="card-title">
+            Ambulance Officer
+            <span class="card-count count-live">18 Live</span>
+        </div>
+        <div class="card-desc">Scenario walk-throughs for 2-person Volunteer AO crews.</div>
+        <div class="card-modules">
+            <span class="mod-tag">Sepsis</span>
+            <span class="mod-tag"> Hypoglycaemia</span>
+            <span class="mod-tag">Chest Pain</span>
+            <span class="mod-tag">N&amp;V</span>
+            <span class="mod-tag">MVA</span>
+            <span class="mod-tag">Observations</span>
+            <span class="mod-tag">Narcotic OD</span>
+            <span class="mod-tag">APO</span>
+            <span class="mod-tag">Childbirth</span>
+        </div>
+    </div>
+    <span class="card-arrow">&rsaquo;</span>
+</a>
+
+<!-- Paramedic -->
+<a class="cat-card fade-s" href="/paramedic/">
+    <div class="card-icon icon-para">&#x1FA7A;</div>
+    <div class="card-body">
+        <div class="card-title">
+            Paramedic
+            <span class="card-count count-live">3 Live</span>
+        </div>
+        <div class="card-desc">Complex clinical scenarios for 2-paramedic crews.</div>
+        <div class="card-modules">
+            <span class="mod-tag">Headache</span>
+            <span class="mod-tag">Multi-Trauma</span>
+        </div>
+    </div>
+    <span class="card-arrow">&rsaquo;</span>
+</a>
+
+<!-- Rural ED -->
+<a class="cat-card fade-s" href="/rural-ed/">
+    <div class="card-icon icon-ed">&#x1F3E5;</div>
+    <div class="card-body">
+        <div class="card-title">
+            Rural ED
+            <span class="card-count count-live">3 Live</span>
+            <span class="card-count count-dev">4 In Dev</span>
+        </div>
+        <div class="card-desc">Team-based modules for rural Emergency Departments.</div>
+        <div class="card-modules">
+            <span class="mod-tag">ACS</span>
+            <span class="mod-tag">Trauma</span>
+            <span class="mod-tag">Stroke</span>
+            <span class="mod-tag">Mental Health</span>
+            <span class="mod-tag">Paeds</span>
+        </div>
+    </div>
+    <span class="card-arrow">&rsaquo;</span>
+
+    <!-- GP Clinic -->
+<a class="cat-card fade-s" href="/gp-clinic/">
+    <div class="card-icon icon-gp">🏥</div>
+    <div class="card-body">
+        <div class="card-title">
+            GP Clinic
+            <span class="card-count count-live">3 Live</span>
+            <span class="card-count count-dev">4 In Dev</span>
+        </div>
+        <div class="card-desc">Team-based modules for General Practice Clinics.</div>
+        <div class="card-modules">
+            <span class="mod-tag">Diabetes</span>
+            <span class="mod-tag">Hypertension</span>
+            <span class="mod-tag">COPD</span>
+            <span class="mod-tag">Heart Disease</span>
+            <span class="mod-tag">Asthma</span>
+        </div>
+    </div>
+    <span class="card-arrow">&rsaquo;</span>
+</a>
+</a>
+
+</div>
+
+<div class="hub-footer fade-s">
+    DSY Training &bull; LEP Prehospital Education &bull; Eyre Peninsula, SA
+</div>
+
+</div>
+
+<script>
+var fs = document.querySelectorAll('.fade-s');
+var ob = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('vis'); ob.unobserve(e.target); }
+    });
+}, { threshold: 0.1 });
+fs.forEach(function(s) { ob.observe(s); });
+</script>
+
+</body>
+</html>
