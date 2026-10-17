@@ -174,6 +174,12 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
     <button class="btn" id="shareBtn">Copy student link</button>
     <button class="btn" id="resetBtn">Reset to example</button>
   </div>
+  <fieldset><legend>Job library</legend>
+    <div class="grid">
+      <label class="wide">One job for each walk-through scenario. Loading a job keeps your unit and notice settings and makes new event numbers.<select id="jobSel"></select></label>
+    </div>
+    <div class="actions" style="margin:10px 0 0"><button class="btn" id="loadJobBtn">Load job</button><a id="scenLink" class="btn" target="_blank" hidden>Open the walk-through</a></div>
+  </fieldset>
   <input id="shareOut" readonly hidden>
 
   <form id="form" autocomplete="off">
@@ -223,7 +229,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 
     <fieldset><legend>Remarks, alerts and other units</legend>
       <div class="grid">
-        <label class="wide">Remarks (one per line; start a line with a time like 13:09 or it uses 10 minutes before dispatch)<textarea name="remarks"></textarea></label>
+        <label class="wide">Remarks (one per line; start a line with a time like 13:09 or it uses 3 minutes before dispatch)<textarea name="remarks"></textarea></label>
         <label class="wide">Alerts (leave empty for none; the Alerts tab shows red until opened)<textarea name="alerts" style="min-height:60px"></textarea></label>
         <label class="wide">Other units (one per line: CALLSIGN CREWTYPE STATUS LOCATION)<textarea name="units" style="min-height:60px"></textarea></label>
         <label class="wide">Priors (optional)<input name="priors"></label>
@@ -235,7 +241,9 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
     <fieldset><legend>Destination</legend>
       <div class="grid">
         <label class="wide">Booked destination (top tile when Mobile is pressed)<select name="booked" id="bookedSel"></select></label>
-        <p class="hint">"Closest" sorts hospitals by straight-line distance from the town above.</p>
+        <label class="wide">Expected destination (instructor only, shown in the run log)<input name="expected"></label>
+        <input type="hidden" name="scenario">
+        <p class="hint">Emergency jobs usually have no booking: leave it empty so the student chooses. "Closest" sorts hospitals by straight-line distance from the town above.</p>
       </div>
       <details><summary>Hospitals on diversion (orange tiles)</summary><div class="divlist" id="divList"></div></details>
     </fieldset>
@@ -264,6 +272,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 
 <div class="logwrap" id="logWrap" hidden><div class="logcard" id="logCard"></div></div>
 
+<script src="jobs.js?v=1"></script>
 <script>
 'use strict';
 // [name, lat, lon, group] group: M = major metro, V = virtual
@@ -300,7 +309,7 @@ const HOSPITALS = [
 
 const TOWNS = [
   ['Tumby Bay',-34.375,136.10],['Port Lincoln',-34.72,135.86],['Cummins',-34.26,135.73],
-  ['Coffin Bay',-34.62,135.47],['Port Neill',-34.12,136.35],['Arno Bay',-33.92,136.57],
+  ['Coffin Bay',-34.62,135.47],['Wangary',-34.55,135.49],['Port Neill',-34.12,136.35],['Arno Bay',-33.92,136.57],
   ['Cleve',-33.70,136.49],['Cowell',-33.68,136.92],['Lock',-33.57,135.76],['Kimba',-33.14,136.42],
   ['Wudinna',-33.05,135.46],['Elliston',-33.65,134.89],['Streaky Bay',-32.80,134.21],
   ['Ceduna',-32.13,133.68],['Whyalla',-33.03,137.58],['Port Augusta',-32.49,137.77]
@@ -389,6 +398,22 @@ document.getElementById('shareBtn').onclick = async ()=>{
   out.hidden = false; out.value = url;
   try{ await navigator.clipboard.writeText(url); out.value = 'Copied: ' + url; }catch(e){ out.select(); }
 };
+const JOBS = window.MDT_JOBS || [];
+const jobSel = document.getElementById('jobSel'), scenLink = document.getElementById('scenLink');
+jobSel.innerHTML = JOBS.map(j=>`<option value="${j.id}">${esc(j.label)}</option>`).join('');
+function showScenLink(c){ scenLink.hidden = !c.scenario; if (c.scenario) scenLink.href = c.scenario; }
+document.getElementById('loadJobBtn').onclick = ()=>{
+  const j = JOBS.find(x=>x.id===jobSel.value); if (!j) return;
+  const cur = readForm();
+  const c = Object.assign({}, cur, {
+    typeCode:'', subCode:'', subName:'', locCode:'', xs1:'', xs2:'', instructions:'', alerts:'', units:'', priors:'', booked:'',
+    unitLoc: (j.town||'').toUpperCase() + ' AMBULANCE STATION'
+  }, j);
+  delete c.id; delete c.label;
+  fakeOver(c);
+  c.patient = j.patient; c.age = j.age; c.weight = j.weight; c.caller = j.caller;
+  fillForm(c); save(c); showScenLink(c);
+};
 document.getElementById('startBtn').onclick = ()=>{ const c = readForm(); save(c); startSim(c); };
 
 // ---------- simulation ----------
@@ -415,7 +440,8 @@ function logIt(text){ S.log.push({t:clock(), text}); }
 
 function address(){ return (C.street ? C.street+', ' : '') + (C.town||'').toUpperCase(); }
 function titleText(){ return [address(), C.locCode, C.note].filter(Boolean).join(': '); }
-function typeLine(){ return `${C.typeName} (${C.typeCode}) / ${C.subName} (${C.subCode})`; }
+const withCode = (name, code) => name ? name + (code ? ` (${code})` : '') : '';
+function typeLine(){ return [withCode(C.typeName, C.typeCode), withCode(C.subName, C.subCode)].filter(Boolean).join(' / '); }
 function statusLine(){
   const st = ST[S.st].s;
   if (S.st === 6) return `${C.callsign} ${st}`;
@@ -528,7 +554,7 @@ function eventTab(){
 }
 function remarksTab(){
   const [hh,mm] = (C.startTime||'14:20').split(':').map(Number);
-  const m = ((hh*60+(mm||0)-10)+1440)%1440, def = pad(Math.floor(m/60))+':'+pad(m%60);
+  const m = ((hh*60+(mm||0)-3)+1440)%1440, def = pad(Math.floor(m/60))+':'+pad(m%60);
   const lines = (C.remarks||'').split('\n').map(l=>l.trim()).filter(Boolean);
   if (!lines.length) return '<div class="empty">No remarks</div>';
   return '<div class="rm">' + lines.map(l=>{ const x = l.match(/^(\d{1,2}:\d{2})\s+(.*)$/); return `<span>${x?x[1]:def}</span><span>${esc(x?x[2]:l)}</span>`; }).join('') + '</div>';
@@ -562,8 +588,8 @@ function eventView(){
         <table>
           <tr><td>Landmark</td><td>${esc(C.landmark)}</td></tr>
           <tr><td>Alerts:</td><td>${C.alerts?'Yes':'No'}</td></tr>
-          <tr><td>Type:</td><td>${esc(C.typeCode+' '+C.typeName)}</td></tr>
-          <tr><td>SubType:</td><td>${esc(C.subCode+' '+C.subName)}</td></tr>
+          <tr><td>Type:</td><td>${esc([C.typeCode,C.typeName].filter(Boolean).join(' '))}</td></tr>
+          ${C.subName ? `<tr><td>SubType:</td><td>${esc([C.subCode,C.subName].filter(Boolean).join(' '))}</td></tr>` : ''}
           <tr><td>Event:</td><td>${esc(C.eventNo.replace('-',''))}</td></tr>
         </table></div></div>` : '';
   return `${dispatchTabs()}<div class="panel">
@@ -647,6 +673,7 @@ function showLog(){
     `Units tab: ${seen('Units')}`,
     S.dest ? `Destination: ${S.dest}${C.booked ? (S.dest===C.booked ? ' (matches the booking)' : ' — booking was ' + C.booked) : ''}` : 'Destination: not chosen yet',
     `P.H. pressed: ${S.phCount ? S.phCount + ' time(s)' : 'no'}`,
+    ...(C.expected ? [`Expected destination: ${C.expected}`] : []),
   ];
   document.getElementById('logCard').innerHTML = `<h2>Run log: ${esc(C.callsign)} ${esc(C.dcode)}</h2>
     <ul>${checks.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
@@ -677,7 +704,7 @@ addEventListener('resize', fit);
 (function(){
   const m = location.hash.match(/^#sim=(.+)$/);
   if (m){ try{ const c = Object.assign(example(), JSON.parse(b64d(m[1]))); fillForm(c); startSim(c); return; }catch(e){} }
-  fillForm(load() || example());
+  const c0 = load() || example(); fillForm(c0); showScenLink(c0);
 })();
 </script>
 </body>
