@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn on your own - DSY Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261017a">
+<link rel="stylesheet" href="../../hub/hub.css?v=1">
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <a class="brand" href="../../hub/" style="text-decoration:none;color:inherit"><div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>
+      <div><h1>DSY Training</h1><p>Learn on your own</p></div></a>
+  </header>
+  <p class="draft"><b>Draft.</b> This page is not linked from the main site yet. The session guide wording is written by DSY for review.</p>
+  <section class="stack">
+    <p>Each topic has three steps. Do them in order, at your own pace. Your ticks are saved on this phone only.</p>
+    <div class="row small muted"><span id="count"></span></div>
+    <div class="progress"><i id="bar"></i></div>
+  </section>
+  <section class="stack" id="list"></section>
+  <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
+</main>
+<script src="../topics.js?v=1"></script>
+<script>
+(function () {
+  var KEY = "dsy-hub-progress", done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {} }
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  var list = document.getElementById("list");
+  function steps(t) {
+    return [
+      { key: "learn", n: 1, label: "Learn", sub: "Video, key points and quiz", href: "../../microlearning/" + t.module + "/" },
+      { key: "practise", n: 2, label: "Practise the call", sub: t.walk ? t.patient : "Walk-through coming", href: t.walk ? ".." + "/.." + t.walk + "?mode=student" : null },
+      { key: "mdt", n: 3, label: "Drill the MDT", sub: t.mdt ? "Data terminal, dispatch to clear" : "Coming", href: t.mdt ? "../../mdt/#job=" + t.mdt + "&self=1" : null }
+    ];
+  }
+  function render() {
+    list.textContent = "";
+    var total = 0, got = 0, full = 0;
+    window.DSY_TOPICS.forEach(function (t) {
+      var card = el("article", "panel topic"), head = el("header");
+      head.appendChild(el("h3", null, t.title)); head.appendChild(el("span", "chip hi", t.protocol));
+      card.appendChild(head);
+      var grid = el("div", "steps"), mine = 0, avail = 0;
+      steps(t).forEach(function (s) {
+        var id = t.id + ":" + s.key, a = el("a", "step" + (done[id] ? " done" : "") + (s.href ? "" : " off"));
+        if (s.href) { a.href = s.href; avail++; total++; if (done[id]) { mine++; got++; } }
+        a.appendChild(el("span", "n", done[id] ? "✓" : String(s.n)));
+        var txt = el("span"); txt.appendChild(el("b", null, s.label)); txt.appendChild(el("small", null, s.sub)); a.appendChild(txt);
+        a.addEventListener("click", function () { done[id] = Date.now(); save(); setTimeout(render, 300); });
+        grid.appendChild(a);
+      });
+      if (avail && mine === avail) full++;
+      card.appendChild(grid);
+      list.appendChild(card);
+    });
+    document.getElementById("count").textContent = full + " of " + window.DSY_TOPICS.length + " topics complete · " + got + " of " + total + " steps";
+    document.getElementById("bar").style.width = (total ? 100 * got / total : 0) + "%";
+  }
+  render();
+})();
+</script>
+</body>
+</html>
