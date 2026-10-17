@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Customise a scenario - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../training/theme.css?v=20261017a">
+<link rel="stylesheet" href="../microlearning/shared/module.css?v=20261017a">
+<style>
+  fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .8rem; }
+  legend { padding: 0; margin-bottom: .2rem; }
+  .help { font-weight: 400; font-size: .8rem; }
+  .preview { padding: 1rem 1.15rem; border-radius: 12px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+  .preview h2 { font-size: 1.15rem; margin-top: .25rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-icon"><img src="../microlearning/shared/dsy-logo.png" alt="DSY Training" width="40" height="40"></div>
+      <div><h1>Customise a scenario</h1><p>Walk-through scenarios with your own local details</p></div>
+    </div>
+  </header>
+
+  <section class="stack">
+    <p class="muted">Pick a walk-through scenario, then change the names, places and times to suit your station. Only those details change: the observations, treatment, doses and decisions stay exactly as approved.</p>
+    <label>Scenario <select id="pick" disabled><option>Loading…</option></select></label>
+    <p class="small muted" id="summary"></p>
+  </section>
+
+  <form id="form" class="stack" hidden></form>
+
+  <section class="stack" id="out" hidden>
+    <div class="preview">
+      <span class="eyebrow">Preview</span>
+      <h2 id="headline"></h2>
+      <p class="small muted" id="changed"></p>
+    </div>
+    <div class="row">
+      <a class="btn" id="openF" target="_blank" rel="noopener">Open facilitator version</a>
+      <a class="btn ghost" id="openS" target="_blank" rel="noopener">Open student version</a>
+    </div>
+    <div class="row">
+      <button type="button" class="btn ghost small" id="share">Share student link</button>
+      <button type="button" class="btn ghost small" id="reset">Back to the original details</button>
+    </div>
+    <p class="small muted" id="note" aria-live="polite"></p>
+  </section>
+
+  <footer class="foot small muted">
+    <span>The customised versions are made from the DSY walk-through scenarios stored in the training database. Names, places and times are swapped in; the story around them uses wording written and checked by DSY.</span>
+    <span>Training resource only. It does not replace the protocol or advice from the EOC Clinician.</span>
+    <span>© DSY Productions | LEP Training</span>
+  </footer>
+</div>
+<script src="../training/config.js?v=20261017a"></script>
+<script src="render.js?v=20261017a"></script>
+<script>
+(function () {
+  "use strict";
+  var pick = document.getElementById("pick"), form = document.getElementById("form"), out = document.getElementById("out");
+  var rows = [], row = null, start = SCENARIO.fromHash(location.hash);
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  SCENARIO.fetchScenarios("slug,title,summary,fields,template").then(function (r) {
+    rows = r; pick.textContent = "";
+    if (!rows.length) { pick.appendChild(el("option", null, "No scenarios yet")); return; }
+    rows.forEach(function (s) { var o = el("option", null, s.title); o.value = s.slug; pick.appendChild(o); });
+    if (start.s && rows.some(function (s) { return s.slug === start.s; })) pick.value = start.s;
+    pick.disabled = rows.length < 2;
+    choose(pick.value, start);
+  }).catch(function (e) { pick.textContent = ""; pick.appendChild(el("option", null, "Could not load scenarios")); document.getElementById("summary").textContent = e.message; });
+
+  pick.addEventListener("change", function () { choose(pick.value, {}); });
+
+  function choose(slug, values) {
+    row = rows.filter(function (s) { return s.slug === slug; })[0];
+    document.getElementById("summary").textContent = row.summary || "";
+    form.textContent = "";
+    var groups = {};
+    row.fields.forEach(function (f) {
+      if (!groups[f.group]) { groups[f.group] = el("fieldset"); groups[f.group].appendChild(el("legend", "eyebrow", f.group)); groups[f.group].appendChild(el("div", "grid2")); form.appendChild(groups[f.group]); }
+      var lab = el("label", null, f.label), inp;
+      if (f.type === "choice") {
+        inp = el("select"); f.options.forEach(function (o) { var op = el("option", null, o.label); op.value = o.value; inp.appendChild(op); });
+      } else {
+        inp = el("input");
+        inp.type = f.type === "number" ? "number" : f.type === "time" ? "time" : "text";
+        if (f.type === "number") { inp.min = f.min; inp.max = f.max; inp.inputMode = "numeric"; }
+        if (f.type === "text") { inp.maxLength = f.max || 30; inp.autocapitalize = "words"; }
+        if (f.placeholder) inp.placeholder = f.placeholder;
+      }
+      inp.name = f.key;
+      inp.value = values[f.key] != null ? values[f.key] : (f.default != null ? f.default : "");
+      lab.appendChild(inp);
+      if (f.help) lab.appendChild(el("span", "help", f.help));
+      groups[f.group].lastChild.appendChild(lab);
+    });
+    form.hidden = false; out.hidden = false;
+    update();
+  }
+
+  function current() { var v = {}; row.fields.forEach(function (f) { v[f.key] = form.elements[f.key].value; }); return SCENARIO.clean(row.fields, v); }
+
+  function update() {
+    var v = current(), M = SCENARIO.build(row, v), hash = SCENARIO.toHash(row.slug, row.fields, v);
+    document.getElementById("headline").textContent = M.headline;
+    var changed = row.fields.filter(function (f) { return String(v[f.key]) !== String(f.default != null ? f.default : ""); });
+    document.getElementById("changed").textContent = changed.length ? "Changed: " + changed.map(function (f) { return f.label; }).join("; ") + "." : "The original scenario, as approved.";
+    document.getElementById("openF").href = "view/" + hash;
+    document.getElementById("openS").href = "view/?mode=student" + hash;
+    if (history.replaceState) history.replaceState(null, "", location.pathname + hash);
+  }
+  form.addEventListener("input", update);
+  form.addEventListener("change", update);
+  form.addEventListener("submit", function (e) { e.preventDefault(); });
+
+  document.getElementById("reset").addEventListener("click", function () { choose(row.slug, {}); });
+  document.getElementById("share").addEventListener("click", function () {
+    var url = new URL(document.getElementById("openS").getAttribute("href"), location.href).href, note = document.getElementById("note");
+    if (navigator.share) { navigator.share({ title: row.title, url: url }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { note.textContent = "Student link copied."; }, function () { note.textContent = url; });
+  });
+})();
+</script>
+</body>
+</html>
