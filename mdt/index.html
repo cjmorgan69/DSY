@@ -227,6 +227,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
         <label>Dispatch number<input name="dcode"></label>
         <label>Event number<input name="eventNo"></label>
         <label>Dispatch time (sim clock)<input name="startTime" type="time"></label>
+        <label>Clock speed<select name="speed"><option value="1">Real time</option><option value="2">2 x faster</option><option value="3">3 x faster</option><option value="5">5 x faster</option></select></label>
         <label>Type code<input name="typeCode"></label>
         <label>Type name<input name="typeName"></label>
         <label>Subtype code<input name="subCode"></label>
@@ -366,7 +367,7 @@ const pad = n => String(n).padStart(2,'0');
 
 function example(){
   return {
-    callsign:'TB85', crewType:'TL-PR', fleet:String(rint(100,999)), logon:'yes', unitLoc:'BRIDGE ST/NORTH TCE, TUMBY BAY',
+    callsign:'TB85', crewType:'TL-PR', fleet:String(rint(100,999)), logon:'yes', speed:'3', unitLoc:'BRIDGE ST/NORTH TCE, TUMBY BAY',
     priority:'4', dcode:'D0'+rint(100,999), eventNo:'A00'+rint(10,99)+'-'+rint(10000,99999),
     startTime: pad(new Date().getHours())+':'+pad(new Date().getMinutes()),
     typeCode:'RTVL', typeName:'Retrieval', subCode:'RT1', subName:'FIXED',
@@ -471,7 +472,7 @@ function dispatchNow(){
 const hm = t => { t = ((t%86400)+86400)%86400; return pad(Math.floor(t/3600))+':'+pad(Math.floor(t/60)%60); };
 const hms = t => hm(t) + ':' + pad(((t%60)+60)%60);
 const cs = () => S.cs || C.callsign;
-function simSecs(){ return S.simStart + Math.floor((Date.now()-S.realStart)/1000); }
+function simSecs(){ return S.simStart + Math.floor((Date.now()-S.realStart)/1000 * (+C.speed || 1)); }
 function clock(){ const t = simSecs() % 86400; return pad(Math.floor(t/3600))+':'+pad(Math.floor(t/60)%60); }
 function dateStr(){ const d = new Date(); return pad(d.getDate())+'/'+pad(d.getMonth()+1); }
 function logIt(text){ S.log.push({t:clock(), text}); }
