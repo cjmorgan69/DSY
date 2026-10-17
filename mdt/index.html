@@ -209,6 +209,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
     <div class="actions" style="margin:10px 0 0"><button class="btn" id="loadJobBtn">Load job</button><a id="scenLink" class="btn" target="_blank" hidden>Open the walk-through</a></div>
   </fieldset>
   <input id="shareOut" readonly hidden>
+  <div class="note" id="fromNote" hidden style="border-left-color:var(--accent)"></div>
 
   <form id="form" autocomplete="off">
     <fieldset><legend>Unit</legend>
@@ -238,7 +239,8 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
     <fieldset><legend>Location</legend>
       <div class="grid">
         <label>Street address<input name="street"></label>
-        <label>Town<select name="town" id="townSel"></select></label>
+        <label>Town<input name="town" list="townList" autocomplete="off"><datalist id="townList"></datalist></label>
+        <input type="hidden" name="station">
         <label>Location code (optional)<input name="locCode" placeholder="@TBAF"></label>
         <label>Job note (end of title line)<input name="note"></label>
         <label>Landmark<input name="landmark"></label>
@@ -303,7 +305,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 
 <div class="logwrap" id="logWrap" hidden><div class="logcard" id="logCard"></div></div>
 
-<script src="jobs.js?v=2"></script>
+<script src="jobs.js?v=3"></script>
 <script>
 'use strict';
 // [name, lat, lon, group] group: M = major metro, V = virtual
@@ -403,7 +405,7 @@ const esc = s => String(s==null?'':s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<'
 
 // ---------- setup form ----------
 const form = document.getElementById('form');
-document.getElementById('townSel').innerHTML = TOWNS.map(t=>`<option>${t[0]}</option>`).join('');
+document.getElementById('townList').innerHTML = TOWNS.map(t=>`<option value="${t[0]}">`).join('');
 document.getElementById('bookedSel').innerHTML = '<option value="">(no booking)</option>' + HOSPITALS.map(h=>`<option>${esc(h.name)}</option>`).join('');
 document.getElementById('divList').innerHTML = HOSPITALS.map(h=>`<label><input type="checkbox" name="div" value="${esc(h.name)}">${esc(h.name)}</label>`).join('');
 
@@ -433,18 +435,34 @@ const JOBS = window.MDT_JOBS || [];
 const jobSel = document.getElementById('jobSel'), scenLink = document.getElementById('scenLink');
 jobSel.innerHTML = JOBS.map(j=>`<option value="${j.id}">${esc(j.label)}</option>`).join('');
 function showScenLink(c){ scenLink.hidden = !c.scenario; if (c.scenario) scenLink.href = c.scenario; }
-document.getElementById('loadJobBtn').onclick = ()=>{
-  const j = JOBS.find(x=>x.id===jobSel.value); if (!j) return;
-  const cur = readForm();
+function jobConfig(j, cur){
   const c = Object.assign({}, cur, {
     typeCode:'', subCode:'', subName:'', locCode:'', xs1:'', xs2:'', instructions:'', alerts:'', units:'', priors:'', booked:'',
     unitLoc: (j.town||'').toUpperCase() + ' AMBULANCE STATION'
   }, j);
   delete c.id; delete c.label;
   fakeOver(c);
-  c.patient = j.patient; c.age = j.age; c.weight = j.weight; c.caller = j.caller;
-  fillForm(c); save(c); showScenLink(c);
+  c.patient = j.patient; c.age = j.age; c.weight = j.weight; c.caller = j.caller; c.station = '';
+  return c;
+}
+document.getElementById('loadJobBtn').onclick = ()=>{
+  const j = JOBS.find(x=>x.id===jobSel.value); if (!j) return;
+  const c = jobConfig(j, readForm());
+  fillForm(c); save(c); showScenLink(c); document.getElementById('fromNote').hidden = true;
 };
+// Opened from the scenario customiser (/scenarios/): "#s=<slug>&field=value..." fills the matching library job
+function fromCustomiser(hash){
+  const q = new URLSearchParams(hash.slice(1)), slug = q.get('s');
+  const j = JOBS.find(x=>x.customSlug===slug && x.custom); if (!j) return false;
+  const v = Object.assign({}, j.customDefaults); q.forEach((val,k)=>{ if (k!=='s') v[k]=val; });
+  const c = Object.assign(jobConfig(j, load() || example()), j.custom(v));
+  c.scenario = '/scenarios/view/' + hash;
+  fillForm(c); save(c); showScenLink(c); jobSel.value = j.id;
+  const n = document.getElementById('fromNote'); n.hidden = false;
+  n.textContent = 'Filled in from your customised ' + j.label.split(':')[0].toLowerCase() + ' scenario. Check the details, then press Start simulation.';
+  history.replaceState(null,'',location.pathname);
+  return true;
+}
 document.getElementById('startBtn').onclick = ()=>{ const c = readForm(); save(c); startSim(c); };
 
 // ---------- simulation ----------
@@ -547,11 +565,13 @@ const act = {
   notUsed(){ toast('Not used in the simulator'); }
 };
 
+const findTown = name => TOWNS.find(x=>x[0].toLowerCase()===String(name||'').trim().toLowerCase());
 function sortedHospitals(){
-  const t = TOWNS.find(x=>x[0]===C.town) || TOWNS[0];
+  // "Closest" measures from the scene town, else the station; unknown places keep the A to Z order
+  const t = findTown(C.town) || findTown(C.station);
   const dist = h => h.lat==null ? 1e9 : Math.hypot(h.lat-t[1], (h.lon-t[2])*Math.cos(t[1]*Math.PI/180));
   let list = HOSPITALS.slice();
-  if (S.filter==='Closest') list = list.filter(h=>h.lat!=null).sort((a,b)=>dist(a)-dist(b));
+  if (S.filter==='Closest') list = list.filter(h=>h.lat!=null); if (S.filter==='Closest' && t) list.sort((a,b)=>dist(a)-dist(b));
   if (S.filter==='Major') list = list.filter(h=>h.g==='M');
   if (S.filter==='Virtual') list = list.filter(h=>h.g==='V');
   if (S.filter==='Care Pathways') list = [];
@@ -889,6 +909,7 @@ addEventListener('resize', fit);
 
 // ---------- boot ----------
 (function(){
+  if (/^#s=/.test(location.hash) && fromCustomiser(location.hash)) return;
   const m = location.hash.match(/^#sim=(.+)$/);
   if (m){ try{ const c = Object.assign(example(), JSON.parse(b64d(m[1]))); fillForm(c); startSim(c); return; }catch(e){} }
   const c0 = load() || example(); fillForm(c0); showScenLink(c0);

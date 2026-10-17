@@ -45,6 +45,7 @@
     <div class="row">
       <a class="btn" id="openF" target="_blank" rel="noopener">Open facilitator version</a>
       <a class="btn ghost" id="openS" target="_blank" rel="noopener">Open student version</a>
+      <a class="btn ghost" id="openM" target="_blank" rel="noopener" hidden>Open in MDT simulator</a>
     </div>
     <div class="row">
       <button type="button" class="btn ghost small" id="share">Share student link</button>
@@ -115,6 +116,10 @@
     document.getElementById("changed").textContent = changed.length ? "Changed: " + changed.map(function (f) { return f.label; }).join("; ") + "." : "The original scenario, as approved.";
     document.getElementById("openF").href = "view/" + hash;
     document.getElementById("openS").href = "view/?mode=student" + hash;
+    // Scenarios with a matching job in the MDT simulator (mdt/jobs.js, customSlug)
+    var mdt = document.getElementById("openM");
+    mdt.hidden = ["chest-pain-ao"].indexOf(row.slug) < 0;
+    mdt.href = "../mdt/" + hash;
     if (history.replaceState) history.replaceState(null, "", location.pathname + hash);
   }
   form.addEventListener("input", update);

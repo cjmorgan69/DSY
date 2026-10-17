@@ -14,7 +14,29 @@ window.MDT_JOBS = [
     priority:'2', startTime:'21:15', typeName:'Chest pain', town:'Arno Bay', street:'FARM 9 KM WEST',
     note:'62M CHEST PAIN - CARDIAC HX', patient:'HOLLOWAY, GRAHAM', age:'62Y', weight:'', caller:'WIFE (ON SCENE)',
     remarks:'CHEST PAIN FOR 30 MINUTES\nKNOWN ANGINA - HAS OWN GTN - PAIN NOT RESOLVING WITH OWN GTN\nWIFE ON SCENE\nSEALED ROAD THEN 2 KM DIRT - GATE OPEN - LIGHTS ON\nNEAREST ICP 55 MINUTES - MEDSTAR TBC\n+4 WIFE ADVISES PAIN UNCHANGED - PT PALE AND SWEATY\n+10 GATE OPEN - LIGHTS ON - WIFE WILL WAIT AT FRONT DOOR',
-    expected:'Regional hospital, about 35 minutes (scenario)' },
+    expected:'Regional hospital, about 35 minutes (scenario)',
+    // Link from the scenario customiser (Supabase public.scenarios, slug chest-pain-ao).
+    // Town-house wording and the remark timing below are DSY-written.
+    customSlug:'chest-pain-ao',
+    customDefaults:{ patient:'Graham', age:'62', partner:'wife', setting:'farm', town:'', station:'', hospital:'',
+      transport:'35', backup_name:'ICP', backup_mins:'55', dispatch:'21:15', response:'17' },
+    custom(v){
+      const U = x => String(x||'').trim().toUpperCase(), P = U(v.partner) || 'WIFE', farm = v.setting !== 'town';
+      const town = String(v.town||'').trim() || 'Arno Bay', drive = Math.max(5, +v.response || 17);
+      const early = Math.max(1, Math.round(drive*0.25)), late = Math.max(early+1, Math.round(drive*0.6));
+      return {
+        patient:'HOLLOWAY, ' + (U(v.patient) || 'GRAHAM'), age:(+v.age || 62) + 'Y', caller:P + ' (ON SCENE)',
+        town, street: farm ? 'FARM 9 KM WEST' : 'HOUSE IN TOWN', station:String(v.station||'').trim(),
+        unitLoc: U(v.station || town) + ' AMBULANCE STATION', startTime:v.dispatch || '21:15',
+        note:(+v.age || 62) + 'M CHEST PAIN - CARDIAC HX',
+        remarks:['CHEST PAIN FOR 30 MINUTES','KNOWN ANGINA - HAS OWN GTN - PAIN NOT RESOLVING WITH OWN GTN', P + ' ON SCENE',
+          farm ? 'SEALED ROAD THEN 2 KM DIRT - GATE OPEN - LIGHTS ON' : 'HOUSE IN TOWN - LIGHTS ON',
+          'NEAREST ' + (U(v.backup_name) || 'ICP') + ' ' + (+v.backup_mins || 55) + ' MINUTES - MEDSTAR TBC',
+          '+' + early + ' ' + P + ' ADVISES PAIN UNCHANGED - PT PALE AND SWEATY',
+          '+' + late + ' ' + (farm ? 'GATE OPEN - ' : '') + 'LIGHTS ON - ' + P + ' WILL WAIT AT FRONT DOOR'].join('\n'),
+        expected:(String(v.hospital||'').trim() || 'Regional hospital') + ', about ' + (+v.transport || 35) + ' minutes (customised scenario)'
+      };
+    } },
   { id:'envenomation', label:'Snake bite: Greg, 52 (Wangary, 1432)', scenario:'/modules/envenomation/',
     priority:'2', startTime:'14:32', typeName:'Snake bite', town:'Wangary', street:'RURAL PROPERTY',
     note:'52M SNAKE BITE', patient:'TREMAYNE, GREG', age:'52Y', weight:'', caller:'WIFE (DENISE)',
