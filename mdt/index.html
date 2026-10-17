@@ -259,7 +259,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 
     <fieldset><legend>Remarks, alerts and other units</legend>
       <div class="grid">
-        <label class="wide">Remarks (one per line; start a line with a time like 13:09 or it uses 3 minutes before dispatch)<textarea name="remarks"></textarea></label>
+        <label class="wide">Remarks (one per line). Plain lines are timed between call received and dispatch. Start with +3 (or +2:30) for a remark that arrives live 3 minutes after dispatch, or 13:09 for a fixed time.<textarea name="remarks"></textarea></label>
         <label class="wide">Alerts (leave empty for none; the Alerts tab shows red until opened)<textarea name="alerts" style="min-height:60px"></textarea></label>
         <label class="wide">Other units (one per line: CALLSIGN CREWTYPE STATUS LOCATION)<textarea name="units" style="min-height:60px"></textarea></label>
         <label class="wide">Priors (optional)<input name="priors"></label>
@@ -302,7 +302,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 
 <div class="logwrap" id="logWrap" hidden><div class="logcard" id="logCard"></div></div>
 
-<script src="jobs.js?v=1"></script>
+<script src="jobs.js?v=2"></script>
 <script>
 'use strict';
 // [name, lat, lon, group] group: M = major metro, V = virtual
@@ -452,17 +452,24 @@ let S, C, clockTimer, toastTimer;
 function startSim(c){
   C = c;
   const [hh,mm] = (c.startTime||'14:20').split(':').map(Number);
-  S = { st:0, view: c.logon==='no' ? 'event' : 'logon', login:{}, kb:false, focus:'callsign', shift:false, caps:false, tab:'EVENT', popup:true, seen:{}, filter:'All', pending:null, dest:null,
-        realStart:Date.now(), simStart:(hh*60+(mm||0))*60, log:[], stTimes:[], phCount:0, direct:false };
+  S = { st:0, remarks:[], live:[], view: c.logon==='no' ? 'event' : 'logon', login:{}, kb:false, focus:'callsign', shift:false, caps:false, tab:'EVENT', popup:true, seen:{}, filter:'All', pending:null, dest:null,
+        realStart:Date.now(), simStart:(hh*60+(mm||0))*60 + rint(0,45), log:[], stTimes:[], phCount:0, direct:false };
   if (S.view==='logon') logIt('Logon screen'); else dispatchNow();
   document.getElementById('setup').hidden = true;
   document.getElementById('sim').hidden = false;
   history.replaceState(null,'',location.pathname + '#sim=' + b64e(JSON.stringify(c)));
   fit(); render();
   clearInterval(clockTimer);
-  clockTimer = setInterval(()=>document.querySelectorAll('[data-clock]').forEach(e=>e.textContent=clock()), 1000);
+  clockTimer = setInterval(()=>{ document.querySelectorAll('[data-clock]').forEach(e=>e.textContent=clock()); checkLive(); }, 1000);
 }
-function dispatchNow(){ S.stTimes[0] = clock(); logIt('Dispatched to ' + titleText()); }
+function dispatchNow(){
+  S.stTimes[0] = clock(); S.dispSec = simSecs();
+  // Call received: P1/P2 within a minute of dispatch, lower priorities several minutes earlier
+  S.recvSec = S.dispSec - (+C.priority <= 2 ? rint(0,60) : rint(180,900));
+  buildRemarks(); logIt('Dispatched to ' + titleText());
+}
+const hm = t => { t = ((t%86400)+86400)%86400; return pad(Math.floor(t/3600))+':'+pad(Math.floor(t/60)%60); };
+const hms = t => hm(t) + ':' + pad(((t%60)+60)%60);
 const cs = () => S.cs || C.callsign;
 function simSecs(){ return S.simStart + Math.floor((Date.now()-S.realStart)/1000); }
 function clock(){ const t = simSecs() % 86400; return pad(Math.floor(t/3600))+':'+pad(Math.floor(t/60)%60); }
@@ -522,6 +529,7 @@ const act = {
   tab(t){
     S.tab=t;
     if (!S.seen[t]){ S.seen[t] = {time:clock(), st:S.st}; logIt('Opened ' + t + ' tab'); }
+    if (t==='REMARKS' && S.newRemarks){ S.newRemarks = false; logIt('Read new remarks'); }
     render();
   },
   back(){
@@ -583,14 +591,36 @@ function eventTab(){
     <div><b>Metro UBD</b><span></span></div><div><b>Country UBD</b><span></span></div>
     <div><b>Caller Name</b><span>${esc(C.caller)}</span></div><div></div>
     <div><b>Caller Number</b><span>${esc(C.callerNo)}</span></div><div></div>
+    <div><b>Received</b><span>${S.recvSec!=null?hms(S.recvSec):''}</span></div><div><b>Dispatched</b><span>${S.dispSec!=null?hms(S.dispSec):''}</span></div>
   </div>`;
 }
 function remarksTab(){
-  const [hh,mm] = (C.startTime||'14:20').split(':').map(Number);
-  const m = ((hh*60+(mm||0)-3)+1440)%1440, def = pad(Math.floor(m/60))+':'+pad(m%60);
+  if (!S.remarks.length) return '<div class="empty">No remarks</div>';
+  return '<div class="rm">' + S.remarks.map(r=>`<span>${hm(r.t)}</span><span>${esc(r.text)}</span>`).join('') + '</div>';
+}
+// Remarks: "HH:MM text" = fixed time; "+M text" or "+M:SS text" = arrives live that long after dispatch;
+// plain lines are spread between call received and dispatch.
+function buildRemarks(){
   const lines = (C.remarks||'').split('\n').map(l=>l.trim()).filter(Boolean);
-  if (!lines.length) return '<div class="empty">No remarks</div>';
-  return '<div class="rm">' + lines.map(l=>{ const x = l.match(/^(\d{1,2}:\d{2})\s+(.*)$/); return `<span>${x?x[1]:def}</span><span>${esc(x?x[2]:l)}</span>`; }).join('') + '</div>';
+  const plain = [], fixed = [], live = [];
+  for (const l of lines){
+    let x;
+    if ((x = l.match(/^\+(\d+)(?::(\d{1,2}))?\s+(.*)$/))) live.push({delay:(+x[1])*60 + (+(x[2]||0)), text:x[3]});
+    else if ((x = l.match(/^(\d{1,2}):(\d{2})\s+(.*)$/))) fixed.push({t:((+x[1])*3600 + (+x[2])*60), text:x[3]});
+    else plain.push(l);
+  }
+  const span = Math.max(0, S.dispSec - S.recvSec);
+  S.remarks = fixed.concat(plain.map((text,i)=>({t:S.recvSec + Math.round(span*(i+1)/(plain.length+1)), text})));
+  S.live = live.sort((a,b)=>a.delay-b.delay);
+}
+function checkLive(){
+  if (!S || S.dispSec==null || S.st>=6 || !S.live || !S.live.length) return;
+  let got = 0;
+  while (S.live.length && simSecs() >= S.dispSec + S.live[0].delay){
+    const r = S.live.shift(); S.remarks.push({t:simSecs(), text:r.text}); got++;
+    logIt('New remark: ' + r.text);
+  }
+  if (got){ S.newRemarks = true; if (['event','list','history','inbox'].includes(S.view)) render(); }
 }
 function unitsTab(){
   const loc = S.st<3 ? C.unitLoc : S.st<5 ? address() : S.dest;
@@ -610,7 +640,7 @@ function eventView(){
   const tabBtns = tabs.map(t=>{
     const cls = [S.tab===t?'on':'', t==='Alerts'&&C.alerts&&!S.seen.Alerts?'alert':''].join(' ');
     const label = t==='Units' ? `Units (${nUnits})` : t;
-    return `<button class="${cls}" ${off.includes(t)?'disabled':`data-a="tab" data-v="${t}"`}>${label}${t==='Units'?'<span class="flag"></span>':''}</button>`;
+    return `<button class="${cls}" ${off.includes(t)?'disabled':`data-a="tab" data-v="${t}"`}>${label}${t==='Units'||(t==='REMARKS'&&S.newRemarks)?'<span class="flag"></span>':''}</button>`;
   }).join('');
   const body = {EVENT:eventTab, REMARKS:remarksTab, Units:unitsTab, Alerts:alertsTab, PRIORS:()=>C.priors?`<div class="rm" style="grid-template-columns:1fr"><span>${esc(C.priors)}</span></div>`:'<div class="empty">No prior events</div>'}[S.tab]();
   const popup = (S.st===0 && S.popup) ? `<div class="popup">
@@ -801,6 +831,7 @@ function showLog(){
     `Remarks tab: ${seen('REMARKS')}`,
     C.alerts ? `Alerts tab: ${seen('Alerts')}` : 'No alerts were set',
     `Units tab: ${seen('Units')}`,
+    ...(S.newRemarks ? ['A new remark was never read'] : []),
     S.dest ? `Destination: ${S.dest}${C.booked ? (S.dest===C.booked ? ' (matches the booking)' : ' — booking was ' + C.booked) : ''}` : 'Destination: not chosen yet',
     `P.H. pressed: ${S.phCount ? S.phCount + ' time(s)' : 'no'}`,
     ...(C.expected ? [`Expected destination: ${C.expected}`] : []),
