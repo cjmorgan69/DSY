@@ -307,14 +307,15 @@ const TOWNS = [
 ];
 
 // Status sequence. F6 shows the next action; the status bar shows the last status sent.
-// Unit codes AK and ER are seen on the real Units tab; the others are placeholders.
+// Unit codes from the owner: AK acknowledged, ER responding, TS time scene, TM time mobile, TD time destination.
+// DP and AV are placeholders (not confirmed).
 const ST = [
   {s:'DISPATCHED',  code:'DP', f6:'ACK'},
   {s:'ACKNOWLEDGE', code:'AK', f6:'ENROUTE'},
   {s:'ENROUTE',     code:'ER', f6:'TIME SCENE'},
-  {s:'ARRIVE',      code:'AR', f6:'MOBILE'},
-  {s:'MOBILE',      code:'MB', f6:'ARRIVE DEST'},
-  {s:'ARRIVE DEST.',code:'AD', f6:'CLEAR'},
+  {s:'ARRIVE',      code:'TS', f6:'MOBILE'},
+  {s:'MOBILE',      code:'TM', f6:'ARRIVE DEST'},
+  {s:'ARRIVE DEST.',code:'TD', f6:'CLEAR'},
   {s:'AVAILABLE',   code:'AV', f6:''}
 ];
 
