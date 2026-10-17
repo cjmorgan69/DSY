@@ -177,7 +177,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 .lgrid .span2{grid-column:2/4}
 .lmsg{margin-top:14px;color:#ff8a8a;font-size:20px;min-height:26px}
 .kb{position:absolute;left:110px;right:40px;bottom:46px;background:#dedfe1;border:1px solid #aaa;z-index:8;color:#111;padding:6px 8px 8px;box-shadow:0 -6px 20px rgba(0,0,0,.4)}
-.kb .kbtop{display:flex;justify-content:space-between;align-items:center;font-size:22px;padding:2px 10px 6px;color:#333}
+.kb .kbtop{cursor:move;touch-action:none;user-select:none;-webkit-user-select:none;display:flex;justify-content:space-between;align-items:center;font-size:22px;padding:2px 10px 6px;color:#333}
 .kb .kbtop button{border:0;background:none;font-size:30px;color:#333}
 .kb .r{display:flex;gap:4px;margin-top:4px}
 .kb .r button{flex:1 1 0;height:58px;border:0;background:#f7f7f7;color:#111;font-size:24px;border-radius:2px;position:relative}
@@ -777,8 +777,31 @@ function afterLogonRender(){
     el.addEventListener('input', ()=>{ S.login[el.name] = el.tagName==='INPUT' ? el.value.toUpperCase() : el.value; if (el.tagName==='INPUT') el.value = S.login[el.name]; markFocus(); });
   });
   markFocus();
+  setupKbDrag(sc);
   const f = sc.querySelector(`.lgrid input[name="${S.focus}"]`);
   if (f && !S.kb) { try{ f.focus({preventScroll:true}); }catch(e){} }
+}
+// Drag the on-screen keyboard by its top bar, like the real one. Position is kept while the keyboard is reopened.
+function setupKbDrag(sc){
+  const kb = sc.querySelector('.kb'); if (!kb) return;
+  const place = (x, y) => {
+    x = Math.max(0, Math.min(x, sc.clientWidth - kb.offsetWidth));
+    y = Math.max(0, Math.min(y, sc.clientHeight - kb.offsetHeight));
+    Object.assign(kb.style, {left:x+'px', top:y+'px', right:'auto', bottom:'auto', width:kb.offsetWidth+'px'});
+    S.kbPos = {x, y};
+  };
+  if (S.kbPos) place(S.kbPos.x, S.kbPos.y);
+  const bar = kb.querySelector('.kbtop');
+  bar.addEventListener('pointerdown', e=>{
+    if (e.target.closest('button')) return;
+    e.preventDefault();
+    const scale = sc.getBoundingClientRect().width / sc.offsetWidth || 1;
+    const x0 = kb.offsetLeft, y0 = kb.offsetTop, px = e.clientX, py = e.clientY;
+    bar.setPointerCapture(e.pointerId);
+    const move = ev => place(x0 + (ev.clientX - px)/scale, y0 + (ev.clientY - py)/scale);
+    const up = () => { bar.removeEventListener('pointermove', move); bar.removeEventListener('pointerup', up); bar.removeEventListener('pointercancel', up); };
+    bar.addEventListener('pointermove', move); bar.addEventListener('pointerup', up); bar.addEventListener('pointercancel', up);
+  });
 }
 function markFocus(){
   if (S.bad) S.bad = S.bad.filter(n=>!(S.login[n]||'').trim());
