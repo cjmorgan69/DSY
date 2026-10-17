@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Run a session - DSY Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261017a">
+<link rel="stylesheet" href="../../hub/hub.css?v=1">
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <a class="brand" href="../../hub/" style="text-decoration:none;color:inherit"><div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>
+      <div><h1>DSY Training</h1><p>Run a session</p></div></a>
+  </header>
+  <p class="draft"><b>Draft.</b> This page is not linked from the main site yet. The session guide wording is written by DSY for review.</p>
+  <details class="panel guide">
+    <summary>How to run a DSY session</summary>
+    <div class="stack">
+      <p class="note">Written by DSY as a suggested shape for a training night. Adjust it to your group.</p>
+      <h3>Before the night</h3>
+      <ol>
+        <li>Pick a topic below and read the facilitator walk-through, including the debrief.</li>
+        <li>If the topic can be customised, set your own town, station, hospital and times.</li>
+        <li>Load the MDT job on the iPad and check the setup screen.</li>
+        <li>Send the students the Learn link so they can do the microlearning first.</li>
+      </ol>
+      <h3>On the night</h3>
+      <ol>
+        <li><b>Page out:</b> hand a pair the iPad. They log on, acknowledge and go en route, and talk through their plan while the live remarks arrive.</li>
+        <li><b>On scene:</b> run the walk-through with its break points, skills practice and decisions.</li>
+        <li><b>Transport:</b> back to the MDT to choose the hospital, go mobile, arrive and clear.</li>
+        <li><b>Debrief:</b> use the scenario's debrief points and the MDT run log (times, remarks read, hospital chosen).</li>
+      </ol>
+      <h3>After</h3>
+      <ol>
+        <li>Log the session in the training app.</li>
+        <li>Send the student links so the crew can revisit the call on their own.</li>
+      </ol>
+    </div>
+  </details>
+  <section class="stack" id="list"></section>
+  <p class="small muted" id="msg" aria-live="polite"></p>
+  <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
+</main>
+<script src="../topics.js?v=1"></script>
+<script>
+(function () {
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function link(text, href, ghost) { var a = el("a", "btn small" + (ghost ? " ghost" : ""), text); a.href = href; a.target = "_blank"; a.rel = "noopener"; return a; }
+  var list = document.getElementById("list"), msg = document.getElementById("msg"), root = new URL("../../", location.href).href;
+  window.DSY_TOPICS.forEach(function (t) {
+    var d = el("details", "panel"), s = el("summary");
+    s.appendChild(document.createTextNode(t.title + " "));
+    var sub = el("span", "small muted", t.walk ? "· " + t.patient : "· microlearning only so far"); s.appendChild(sub);
+    d.appendChild(s);
+    var body = el("div", "stack"), kit = el("div", "kit");
+    if (t.walk) kit.appendChild(link("Facilitator walk-through", "../.." + t.walk));
+    if (t.custom) kit.appendChild(link("Customise for your area", "../../scenarios/#s=" + t.custom, true));
+    if (t.mdt) kit.appendChild(link("Load the MDT job", "../../mdt/#job=" + t.mdt, true));
+    kit.appendChild(link("Microlearning", "../../microlearning/" + t.module + "/", true));
+    body.appendChild(kit);
+    var share = el("button", "btn ghost small", "Copy the student links");
+    share.type = "button";
+    share.addEventListener("click", function () {
+      var text = "DSY Training: " + t.title + "\nLearn: " + root + "microlearning/" + t.module + "/" +
+        (t.walk ? "\nPractise the call: " + root + t.walk.slice(1) + "?mode=student" : "") +
+        (t.mdt ? "\nDrill the MDT: " + root + "mdt/#job=" + t.mdt + "&self=1" : "");
+      if (navigator.share) { navigator.share({ title: "DSY Training: " + t.title, text: text }).catch(function () {}); return; }
+      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Student links for " + t.title + " copied."; }, function () { msg.textContent = text; });
+    });
+    var row = el("div", "kit"); row.appendChild(share); row.appendChild(link("Log the session", "../../training/", true));
+    body.appendChild(row);
+    body.appendChild(el("p", "note", t.protocol + (t.custom ? " · customisable" : "") + (t.mdt ? " · MDT job ready" : "")));
+    d.appendChild(body);
+    list.appendChild(d);
+  });
+})();
+</script>
+</body>
+</html>

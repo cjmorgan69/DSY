@@ -1,0 +1,30 @@
+/* Hub pages: built on /training/theme.css */
+.draft { background: color-mix(in srgb, var(--accent) 22%, var(--surface)); border-radius: var(--radius); padding: .7rem 1rem; font-size: .9rem; }
+.doors { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+.door { display: flex; flex-direction: column; gap: .5rem; padding: 1.3rem 1.4rem; text-decoration: none; color: var(--ink); }
+.door:hover { border-color: var(--brand); }
+.door h2 { color: var(--brand); }
+.door .go { margin-top: auto; font-weight: 600; color: var(--brand); }
+.tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .75rem; }
+.tool { padding: .9rem 1rem; text-decoration: none; color: var(--ink); display: flex; flex-direction: column; gap: .2rem; }
+.tool b { color: var(--brand); }
+.topic { padding: 1.1rem 1.2rem; display: flex; flex-direction: column; gap: .7rem; }
+.topic header { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem .6rem; }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: .5rem; }
+.step { display: flex; align-items: center; gap: .6rem; padding: .6rem .8rem; border: 1px solid var(--line); border-radius: 12px; text-decoration: none; color: var(--ink); background: var(--surface); min-height: 52px; }
+.step .n { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .85rem; background: var(--brand-soft); color: var(--brand); }
+.step.done .n { background: var(--ok); color: #fff; }
+.step span:last-child { display: flex; flex-direction: column; line-height: 1.25; }
+.step small { color: var(--muted); }
+.step.off { opacity: .5; pointer-events: none; }
+.progress { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.progress i { display: block; height: 100%; background: var(--ok); width: 0; transition: width .3s; }
+.guide ol { padding-left: 1.2rem; display: flex; flex-direction: column; gap: .5rem; }
+.guide li { padding-left: .2rem; }
+details.panel > summary { cursor: pointer; padding: 1rem 1.2rem; font-weight: 600; list-style: none; }
+details.panel > summary::-webkit-details-marker { display: none; }
+details.panel > summary::after { content: "+"; float: right; color: var(--muted); }
+details.panel[open] > summary::after { content: "–"; }
+details.panel > div { padding: 0 1.2rem 1.2rem; }
+.kit { display: flex; flex-wrap: wrap; gap: .5rem; }
+.note { font-size: .85rem; color: var(--muted); }

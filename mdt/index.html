@@ -910,6 +910,14 @@ addEventListener('resize', fit);
 // ---------- boot ----------
 (function(){
   if (/^#s=/.test(location.hash) && fromCustomiser(location.hash)) return;
+  // "#job=<id>" fills that library job (from the hub's Run a session page); "&self=1" starts it straight away for a student
+  const jm = location.hash.match(/^#job=([\w-]+)(&self=1)?/), jj = jm && JOBS.find(x=>x.id===jm[1]);
+  if (jj){
+    const c = jobConfig(jj, load() || example()); jobSel.value = jj.id;
+    history.replaceState(null,'',location.pathname);
+    if (jm[2]) { startSim(c); return; }
+    fillForm(c); save(c); showScenLink(c); return;
+  }
   const m = location.hash.match(/^#sim=(.+)$/);
   if (m){ try{ const c = Object.assign(example(), JSON.parse(b64d(m[1]))); fillForm(c); startSim(c); return; }catch(e){} }
   const c0 = load() || example(); fillForm(c0); showScenLink(c0);
