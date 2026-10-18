@@ -11,7 +11,7 @@
 (function () {
   "use strict";
 
-  var SCENE_MINUTES = 14; // arrival to leaving the scene, written into the template's timeline
+  var SCENE_MINUTES = 14; // arrival to leaving the scene, unless the template sets sceneMinutes
 
   function toMinutes(hhmm) { var m = /^(\d{1,2}):?(\d{2})$/.exec(hhmm || ""); return m ? (+m[1] % 24) * 60 + (+m[2] % 60) : null; }
   function clock(min) { min = ((min % 1440) + 1440) % 1440; var h = Math.floor(min / 60), m = min % 60; return (h < 10 ? "0" : "") + h + (m < 10 ? "0" : "") + m; }
@@ -27,32 +27,34 @@
         if (!isNaN(n)) val = Math.min(f.max, Math.max(f.min, n));
       } else if (f.type === "time") {
         var t = toMinutes(raw);
-        if (t != null) val = clock(t).replace(/^(\d\d)/, "$1:");
+        if (t != null) {
+          if (f.min && t < toMinutes(f.min)) t = toMinutes(f.min);
+          if (f.max && t > toMinutes(f.max)) t = toMinutes(f.max);
+          val = clock(t).replace(/^(\d\d)/, "$1:");
+        }
       } else if (f.type === "choice") {
         if (f.options.some(function (o) { return o.value === raw; })) val = raw;
       } else if (raw) {
-        val = raw.replace(/[^A-Za-z0-9 '’.\-()&,]/g, "").replace(/\s+/g, " ").slice(0, f.max || 30).trim();
-      } else if (input && f.key in input) {
-        val = ""; // blank on purpose: use the template's fallback
-      }
+        val = raw.replace(/[^A-Za-z0-9 '’.\-()&,]/g, "").replace(/\s+/g, " ").slice(0, f.max || 30).trim() || val;
+      } // a blank text field keeps its default (often "", which shows the template's fallback)
       v[f.key] = val;
     });
     return v;
   }
 
   /* values worked out from the fields: time of day, daylight, which help is closer */
-  function derive(v) {
+  function derive(v, scene) {
     var d = {}, t0 = toMinutes(v.dispatch) || 0;
     var hr = t0 / 60;
     d.tod = hr >= 6 && hr < 19.5 ? "day" : hr >= 19.5 && hr < 23 ? "evening" : "night";
     var light = v.season === "summer" ? hr >= 6.25 && hr < 20.25 : hr >= 7.25 && hr < 17.5;
     d.dark = light ? "" : "yes";
     d.sky = (v.season || "winter") + "-" + (light ? "light" : "dark");
-    d.Season = v.season === "summer" ? "Summer" : "Winter";
+    d.Season = v.season ? v.season.charAt(0).toUpperCase() + v.season.slice(1) : "Winter";
     d.Partner = v.partner ? v.partner.charAt(0).toUpperCase() + v.partner.slice(1) : "";
     var tr = +v.transport, bk = +v.backup_mins;
     d.closer = tr < bk ? "hospital" : tr > bk ? "backup" : "same";
-    d._t = t0; d._a = t0 + (+v.response || 0); d._h = d._a + SCENE_MINUTES + tr;
+    d._t = t0; d._a = t0 + (+v.response || 0); d._h = d._a + (scene || SCENE_MINUTES) + tr;
     return d;
   }
 
@@ -82,9 +84,10 @@
 
   /* returns the MODULE object for module.js, with a note saying what was changed */
   function build(row, input) {
-    var v = clean(row.fields, input), ctx = derive(v);
+    var v = clean(row.fields, input), ctx = derive(v, row.template.sceneMinutes);
     Object.keys(v).forEach(function (k) { ctx[k] = v[k]; });
     var M = fillDeep(row.template, ctx);
+    delete M.sceneMinutes;
     var changed = row.fields.filter(function (f) { return String(v[f.key]) !== String(f.default != null ? f.default : ""); });
     if (changed.length) {
       M.footerNotes = (M.footerNotes || []).concat(["Customised version: " + changed.map(function (f) { return f.label; }).join("; ") +

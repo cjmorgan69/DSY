@@ -42,7 +42,25 @@ window.MDT_JOBS = [
     note:'52M SNAKE BITE', patient:'TREMAYNE, GREG', age:'52Y', weight:'', caller:'WIFE (DENISE)',
     unitLoc:'PORT LINCOLN AMBULANCE STATION',
     remarks:'BITTEN RIGHT LOWER LEG ABOUT 15 MIN AGO - BROWN SNAKE ABOUT 1.5 M\nCONSCIOUS - BREATHING - AMBULANT\nNOW SITTING ON BACK VERANDAH\nGRAVEL DRIVEWAY 200 M TO HOMESTEAD\nDOGS WILL BE SECURED\n+6 PT REMAINS CONSCIOUS - SITTING ON BACK VERANDAH\n+15 DOG NOW PENNED - SNAKE NOT SIGHTED SINCE',
-    expected:'PORT LINCOLN HOSPITAL (scenario)' },
+    expected:'PORT LINCOLN HOSPITAL (scenario)',
+    // Link from the scenario customiser (Supabase public.scenarios, slug envenomation-ao). Remark timing is DSY-written.
+    customSlug:'envenomation-ao',
+    customDefaults:{ patient:'Greg', age:'52', partner:'wife', partner_name:'Denise', town:'Wangary', station:'Port Lincoln',
+      hospital_town:'Port Lincoln', transport:'30', dispatch:'14:32', response:'25' },
+    custom(v){
+      const U = x => String(x||'').trim().toUpperCase(), P = U(v.partner) || 'WIFE', drive = Math.max(5, +v.response || 25);
+      const early = Math.max(1, Math.round(drive*0.25)), late = Math.max(early+1, Math.round(drive*0.6));
+      const town = String(v.town||'').trim(), station = String(v.station||'').trim() || 'Port Lincoln';
+      return {
+        patient:'TREMAYNE, ' + (U(v.patient) || 'GREG'), age:(+v.age || 52) + 'Y', caller:P + ' (' + (U(v.partner_name) || 'DENISE') + ')',
+        town: town || 'Wangary', street:'RURAL PROPERTY', station, unitLoc:U(station) + ' AMBULANCE STATION', startTime:v.dispatch || '14:32',
+        note:(+v.age || 52) + 'M SNAKE BITE',
+        remarks:['BITTEN RIGHT LOWER LEG ABOUT 15 MIN AGO - BROWN SNAKE ABOUT 1.5 M','CONSCIOUS - BREATHING - AMBULANT','NOW SITTING ON BACK VERANDAH',
+          'GRAVEL DRIVEWAY 200 M TO HOMESTEAD','DOGS WILL BE SECURED','+' + early + ' PT REMAINS CONSCIOUS - SITTING ON BACK VERANDAH',
+          '+' + late + ' DOG NOW PENNED - SNAKE NOT SIGHTED SINCE'].join('\n'),
+        expected:U(v.hospital_town || 'Port Lincoln') + ' HOSPITAL, about ' + (+v.transport || 30) + ' minutes (customised scenario)'
+      };
+    } },
   { id:'anaphylaxis', label:'Anaphylaxis: David, 54 (bee sting, 1430)', scenario:'/modules/anaphylaxis/',
     priority:'1', startTime:'14:30', typeName:'Allergic reaction', town:'Cowell', street:'RURAL PROPERTY 10 KM SOUTH',
     note:'54M ALLERGIC REACTION - DIFF BREATHING', patient:'ROWLEY, DAVID', age:'54Y', weight:'', caller:'WIFE (ON SCENE)',
