@@ -118,7 +118,7 @@
     document.getElementById("openS").href = "view/?mode=student" + hash;
     // Scenarios with a matching job in the MDT simulator (mdt/jobs.js, customSlug)
     var mdt = document.getElementById("openM");
-    mdt.hidden = ["chest-pain-ao", "envenomation-ao"].indexOf(row.slug) < 0;
+    mdt.hidden = ["chest-pain-ao", "envenomation-ao", "anaphylaxis-ao"].indexOf(row.slug) < 0;
     mdt.href = "../mdt/" + hash;
     if (history.replaceState) history.replaceState(null, "", location.pathname + hash);
   }

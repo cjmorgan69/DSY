@@ -8,7 +8,7 @@ window.DSY_TOPICS = [
   { id:'asthma', title:'Asthma', protocol:'CPP-050-AO', patient:'Karen, 45: more severe asthma at 2 am',
     module:'asthma', walk:'/modules/asthma-ao/', mdt:'asthma' },
   { id:'anaphylaxis', title:'Anaphylaxis', protocol:'CPP-003-AO', patient:'David, 54: bee sting and an expired EpiPen',
-    module:'anaphylaxis', walk:'/modules/anaphylaxis/', mdt:'anaphylaxis' },
+    module:'anaphylaxis', walk:'/modules/anaphylaxis/', mdt:'anaphylaxis', custom:'anaphylaxis-ao' },
   { id:'stroke', title:'Stroke', protocol:'CPP-016-AO', patient:'Frank, 78: weakness and slurred speech at morning tea',
     module:'stroke', walk:'/modules/stroke-AO/', mdt:'stroke' },
   { id:'envenomation', title:'Snake bite', protocol:'CPP-008-AO', patient:'Greg, 52: brown snake bite to the leg',

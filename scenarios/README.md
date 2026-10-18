@@ -10,7 +10,7 @@ scenarios/
   index.html          the form: pick a scenario, fill in the details, open or share the link
   view/index.html     the scenario page: reads the details from the link (after #), builds the page with module.js
   render.js           fills a template; also used by Node for the checks
-  tools/convert-*.js  how each template was made from its /modules/<name>/content.js (chest pain, envenomation)
+  tools/convert-*.js  how each template was made from its /modules/<name>/content.js (chest pain, envenomation, anaphylaxis)
 ```
 
 ## Where the content lives
@@ -46,7 +46,7 @@ All text reaches the page through `textContent`, so typed values cannot add HTML
    original page), and the stress inputs must leave no `{{` behind.
 3. Any new wording in a branch (`{{#closer=backup}}...`) is written by DSY and must be checked by the owner.
 4. Insert the row into `public.scenarios` with `published` false. Then compare `md5(template::text)` with the same
-   checksum worked out from the generated JSON. Set `published` to true once the pages are merged and live.
+   checksum worked out from the generated JSON (`node scenarios/tools/pg-md5.js /tmp/scenario-<name>`). Set `published` to true once the pages are merged and live.
 
 5. If the scenario has a job in the MDT simulator, add `customSlug`, `customDefaults` and `custom()` to it in
    `mdt/jobs.js` and add the slug to the `Open in MDT simulator` list in `index.html`.
