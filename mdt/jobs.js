@@ -65,7 +65,25 @@ window.MDT_JOBS = [
     priority:'1', startTime:'14:30', typeName:'Allergic reaction', town:'Cowell', street:'RURAL PROPERTY 10 KM SOUTH',
     note:'54M ALLERGIC REACTION - DIFF BREATHING', patient:'ROWLEY, DAVID', age:'54Y', weight:'', caller:'WIFE (ON SCENE)',
     remarks:'STUNG BY A BEE - KNOWN BEE ALLERGY\nINCREASING DIFFICULTY BREATHING\nHAS AN EPIPEN - NOT USED\n+2 WIFE: SWELLING TO LIPS AND AROUND EYES\n+5 EPIPEN EXPIRED LAST YEAR - HAS TAKEN AN ANTIHISTAMINE TABLET\n+8 WIFE REPORTS BREATHING WORSE - AUDIBLE WHEEZE',
-    expected:'Nearest hospital, about 25 minutes (scenario)' },
+    expected:'Nearest hospital, about 25 minutes (scenario)',
+    // Link from the scenario customiser (Supabase public.scenarios, slug anaphylaxis-ao). Remark timing is DSY-written.
+    customSlug:'anaphylaxis-ao',
+    customDefaults:{ patient:'David', age:'54', partner:'wife', town:'', station:'', hospital:'', transport:'25', dispatch:'14:30', response:'12' },
+    custom(v){
+      const U = x => String(x||'').trim().toUpperCase(), P = U(v.partner) || 'WIFE', drive = Math.max(5, +v.response || 12);
+      const a = Math.max(1, Math.round(drive*0.17)), b = Math.max(a+1, Math.round(drive*0.42)), c = Math.max(b+1, Math.round(drive*0.67));
+      const station = String(v.station||'').trim(), out = {
+        patient:'ROWLEY, ' + (U(v.patient) || 'DAVID'), age:(+v.age || 54) + 'Y', caller:P + ' (ON SCENE)',
+        town:String(v.town||'').trim() || 'Cowell', station, startTime:v.dispatch || '14:30',
+        note:(+v.age || 54) + 'M ALLERGIC REACTION - DIFF BREATHING',
+        remarks:['STUNG BY A BEE - KNOWN BEE ALLERGY','INCREASING DIFFICULTY BREATHING','HAS AN EPIPEN - NOT USED',
+          '+' + a + ' ' + P + ': SWELLING TO LIPS AND AROUND EYES','+' + b + ' EPIPEN EXPIRED LAST YEAR - HAS TAKEN AN ANTIHISTAMINE TABLET',
+          '+' + c + ' ' + P + ' REPORTS BREATHING WORSE - AUDIBLE WHEEZE'].join('\n'),
+        expected:(String(v.hospital||'').trim() || 'Nearest hospital') + ', about ' + (+v.transport || 25) + ' minutes (customised scenario)'
+      };
+      if (station) out.unitLoc = U(station) + ' AMBULANCE STATION';
+      return out;
+    } },
   { id:'stroke', label:'Stroke: Frank, 78 (Coffin Bay, mid-morning)', scenario:'/modules/stroke-AO/',
     priority:'2', startTime:'10:20', typeName:'Possible stroke', town:'Coffin Bay', street:'HOUSE, ESPLANADE',
     note:'78M POSSIBLE STROKE', patient:'ABERNETHY, FRANK', age:'78Y', weight:'', caller:'WIFE (MARGARET, DISTRESSED)',
