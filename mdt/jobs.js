@@ -120,3 +120,51 @@ window.MDT_JOBS = [
     remarks:'VOMITING FOR 8 HOURS - CANT KEEP FLUIDS DOWN\nNEARLY FAINTED WALKING FROM THE BATHROOM\nSEALED ROAD THEN 200 M GRAVEL DRIVEWAY\nGATE OPEN - LIGHTS ON\n+2 HUSBAND: STILL VOMITING - NOW ON BATHROOM FLOOR\n+5 SYMPTOMS STARTED AROUND LUNCHTIME AFTER LEFTOVER CHICKEN',
     expected:'CUMMINS HOSPITAL, about 7 minutes (scenario)' }
 ];
+
+/* Links from the scenario customiser (Supabase public.scenarios) for the jobs that have no custom() of their own.
+   The job's own text is reused: the patient's first name and age, the person with them (WIFE, HUSBAND or PARTNER and
+   their name), the town, the station, the page time and the hospital are swapped in, and the live remark times are
+   scaled to the customised drive time. This mapping is DSY-written. */
+(function () {
+  const U = x => String(x || '').trim().toUpperCase();
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const link = (id, slug, defaults, hospital) => {
+    const j = window.MDT_JOBS.find(x => x.id === id); if (!j || j.custom) return;
+    j.customSlug = slug; j.customDefaults = defaults;
+    j.custom = v => {
+      const d = defaults, swap = (s, from, to) => from && to && from !== to ? s.replace(new RegExp('\\b' + esc(from) + '\\b', 'g'), to) : s;
+      let text = [j.caller, j.remarks];
+      if (d.partner) text = text.map(s => swap(s, U(d.partner), U(v.partner)));
+      if (d.partner_name) text = text.map(s => swap(s, U(d.partner_name), U(v.partner_name)));
+      const drive = +v.response || +d.response, base = +d.response;
+      let last = 0;
+      const remarks = text[1].split('\n').map(line => line.replace(/^\+(\d+)/, (_, m) => {
+        last = Math.max(last + 1, Math.round(+m * (base ? drive / base : 1))); return '+' + last;
+      })).join('\n');
+      const first = U(v.patient) || U(d.patient), age = +v.age || +d.age, station = String(v.station || '').trim();
+      const out = { patient: j.patient.split(',')[0] + ', ' + first, age: age + 'Y', caller: text[0], remarks,
+        note: j.note.replace(/^\d+/, age), town: String(v.town || '').trim() || j.town,
+        expected: hospital(v) + ', about ' + (+v.transport || +d.transport) + ' minutes (customised scenario)' };
+      if (v.dispatch) out.startTime = v.dispatch;
+      if (station) { out.station = station; out.unitLoc = U(station) + ' AMBULANCE STATION'; }
+      return out;
+    };
+  };
+  const town = (key, d) => v => U(v[key] || d) + ' HOSPITAL';
+  link('asthma', 'asthma-ao', { patient:'Karen', age:'45', partner:'husband', response:'12', transport:'30', dispatch:'02:15' },
+    v => String(v.hospital || '').trim() || 'Country hospital ED');
+  link('stroke', 'stroke-ao', { patient:'Frank', age:'78', partner:'wife', partner_name:'Margaret', town:'Coffin Bay', station:'Coffin Bay', sts:'Port Lincoln', transport:'35' },
+    v => U(v.sts || 'Port Lincoln') + ' HOSPITAL (STS)');
+  link('hypo', 'hypoglycaemia-ao', { patient:'Ron', age:'67', partner:'wife', partner_name:'Lyn', town:'Cummins', station:'Cummins', hospital_town:'Cummins', response:'10', transport:'10', dispatch:'17:15' },
+    town('hospital_town', 'Cummins'));
+  link('sepsis', 'sepsis-ao', { patient:'Robert', age:'71', partner:'wife', partner_name:'Jean', town:'Tumby Bay', station:'Tumby Bay', hospital_town:'Tumby Bay', response:'10', transport:'15', dispatch:'21:15' },
+    town('hospital_town', 'Tumby Bay'));
+  link('pain', 'pain-ao', { patient:'Gary', age:'58', partner:'wife', partner_name:'Margaret', town:'Cummins', station:'Cummins', response:'10', transport:'30', dispatch:'18:45' },
+    v => String(v.hospital || '').trim() || 'Nearest country hospital');
+  link('acpo', 'acpo-ao', { patient:'Kevin', age:'72', partner:'wife', partner_name:'Joan', response:'13', transport:'30', dispatch:'02:47' },
+    v => String(v.hospital || '').trim() || 'Nearest hospital');
+  link('headache', 'headache-ao', { patient:'Ian', age:'62', partner:'wife', partner_name:'Sandra', town:'Coffin Bay', station:'Coffin Bay', hospital_town:'Port Lincoln', response:'8', transport:'35', dispatch:'14:23' },
+    town('hospital_town', 'Port Lincoln'));
+  link('nausea', 'nausea-ao', { patient:'Helen', age:'62', partner:'husband', partner_name:'David', town:'Cummins', station:'Cummins', response:'8', transport:'7', dispatch:'20:35' },
+    v => U(v.hospital || 'Cummins District Hospital'));
+})();

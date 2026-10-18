@@ -10,7 +10,9 @@ scenarios/
   index.html          the form: pick a scenario, fill in the details, open or share the link
   view/index.html     the scenario page: reads the details from the link (after #), builds the page with module.js
   render.js           fills a template; also used by Node for the checks
-  tools/convert-*.js  how each template was made from its /modules/<name>/content.js (chest pain, envenomation, anaphylaxis)
+  tools/convert.js    shared steps for making a template (swaps, round-trip check, odd inputs, JSON out)
+  tools/convert-*.js  one per scenario: its swaps and fields (all 11 converted walk-throughs)
+  tools/pg-md5.js     checksums to compare a loaded row with the generated JSON
 ```
 
 ## Where the content lives
@@ -29,19 +31,22 @@ original value are left out of the link.
   the page time plus the drive), or relative to arriving at hospital (h, which is arrival + 14 min on scene + the
   transport time; a template can set `sceneMinutes` to match its own timeline, as envenomation does with 38).
 - `{{#town}}...{{/town}}` is shown only when the field is filled in, and `{{^dark}}...{{/dark}}` only when it is
-  blank. `{{#setting=farm}}...{{/setting}}` is shown when the value matches. Sections can be nested.
+  blank. `{{#setting=farm}}...{{/setting}}` is shown when the value matches (the value may contain spaces, as in
+  `{{#hospital_town=Port Lincoln}}`). Sections can be nested.
 - These values are worked out from the fields: `tod` (day 0600 to 1930, evening to 2300, night), `dark` and `sky`
-  (`winter-dark`, `summer-light` and so on), `Season`, `Partner`, and `closer` (`hospital`, `backup` or `same`).
+  (`winter-dark`, `summer-light` and so on), `Season`, `Partner`, `closer` (`hospital`, `backup` or `same`) and
+  `transport_hi` (transport + 5, for "about 35 to 40 minutes").
 
 A `time` field can set `min` and `max` (for example envenomation allows only 07:00 to 18:30, because the story is set
-in daylight). A blank text field keeps its default.
+in daylight). If `min` is later than `max` the range crosses midnight (asthma and ACPO: 22:00 to 05:00). A blank text field keeps its default.
 
 All text reaches the page through `textContent`, so typed values cannot add HTML.
 
 ## Adding another scenario
 
-1. Copy `tools/convert-chest-pain.js` and write the swaps for that scenario (exact text, then the template text).
-   Put the time and name swaps last.
+1. Copy one of the small `tools/convert-*.js` files (for example `convert-nausea.js`) and write the swaps for that
+   scenario (exact text, then the template text). Put the time and name swaps last. Check for ages, spelled-out
+   times ("Thirty-five minutes"), pronouns for the person with the patient, and places in the MDT display.
 2. Run it. It must report only the differences you intend (with the default values, the template has to give back the
    original page), and the stress inputs must leave no `{{` behind.
 3. Any new wording in a branch (`{{#closer=backup}}...`) is written by DSY and must be checked by the owner.

@@ -28,8 +28,14 @@
       } else if (f.type === "time") {
         var t = toMinutes(raw);
         if (t != null) {
-          if (f.min && t < toMinutes(f.min)) t = toMinutes(f.min);
-          if (f.max && t > toMinutes(f.max)) t = toMinutes(f.max);
+          var lo = f.min ? toMinutes(f.min) : null, hi = f.max ? toMinutes(f.max) : null;
+          if (lo != null && hi != null && lo > hi) {
+            // a range across midnight (for example 22:00 to 05:00): outside it, move to the nearer end
+            if (t < lo && t > hi) t = (t - hi) < (lo - t) ? hi : lo;
+          } else {
+            if (lo != null && t < lo) t = lo;
+            if (hi != null && t > hi) t = hi;
+          }
           val = clock(t).replace(/^(\d\d)/, "$1:");
         }
       } else if (f.type === "choice") {
@@ -54,13 +60,14 @@
     d.Partner = v.partner ? v.partner.charAt(0).toUpperCase() + v.partner.slice(1) : "";
     var tr = +v.transport, bk = +v.backup_mins;
     d.closer = tr < bk ? "hospital" : tr > bk ? "backup" : "same";
+    d.transport_hi = tr + 5; // for "about 35 to 40 minutes"
     d._t = t0; d._a = t0 + (+v.response || 0); d._h = d._a + (scene || SCENE_MINUTES) + tr;
     return d;
   }
 
   function fillString(s, ctx) {
     if (s.indexOf("{{") < 0) return s;
-    var section = /\{\{([#^])(\w+)(?:=([\w-]+))?\}\}((?:(?!\{\{[#^])[\s\S])*?)\{\{\/\2\}\}/;
+    var section = /\{\{([#^])(\w+)(?:=([^}]+?))?\}\}((?:(?!\{\{[#^])[\s\S])*?)\{\{\/\2\}\}/;
     for (var guard = 0; section.test(s) && guard < 200; guard++) {
       s = s.replace(section, function (_, kind, key, eq, body) {
         var val = ctx[key] == null ? "" : String(ctx[key]);
