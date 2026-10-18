@@ -9,19 +9,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../training/theme.css?v=20261017a">
-<link rel="stylesheet" href="../../microlearning/shared/module.css?v=20261017a">
+<link rel="stylesheet" href="../../training/theme.css?v=20261018a">
+<link rel="stylesheet" href="../../microlearning/shared/module.css?v=20261018a">
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted" id="status">Loading the scenario…</p></div>
-<script src="../../training/config.js?v=20261017a"></script>
-<script src="../render.js?v=20261017a"></script>
+<script src="../../training/config.js?v=20261018a"></script>
+<script src="../render.js?v=20261018a"></script>
 <script>
 /* A customised walk-through scenario: the link carries the scenario and the local details after the #
    (for example #s=chest-pain-ao&patient=Ron&town=Cummins). The template comes from Supabase (public.scenarios),
    is filled in by ../render.js, then drawn by the shared module.js like any other scenario page. */
 (function () {
-  var V = "20261017a", status = document.getElementById("status");
+  var V = "20261018a", status = document.getElementById("status");
   function load(src) { return new Promise(function (ok, fail) { var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = fail; document.body.appendChild(s); }); }
   var input = SCENARIO.fromHash(location.hash);
   if (!input.s) { status.innerHTML = 'No scenario chosen. <a href="../">Customise a scenario</a>.'; return; }

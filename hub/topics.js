@@ -12,7 +12,7 @@ window.DSY_TOPICS = [
   { id:'stroke', title:'Stroke', protocol:'CPP-016-AO', patient:'Frank, 78: weakness and slurred speech at morning tea',
     module:'stroke', walk:'/modules/stroke-AO/', mdt:'stroke' },
   { id:'envenomation', title:'Snake bite', protocol:'CPP-008-AO', patient:'Greg, 52: brown snake bite to the leg',
-    module:'envenomation', walk:'/modules/envenomation/', mdt:'envenomation' },
+    module:'envenomation', walk:'/modules/envenomation/', mdt:'envenomation', custom:'envenomation-ao' },
   { id:'hypoglycaemia', title:'Hypoglycaemia', protocol:'CPP-009-AO', patient:'Ron, 67: confused and sweaty in the shed',
     module:'hypoglycaemia', walk:'/modules/hypoglycaemia-ao/', mdt:'hypo' },
   { id:'sepsis', title:'Sepsis', protocol:'CPP-062-AO', patient:'Robert, 71: hot, confused and hard to rouse',
