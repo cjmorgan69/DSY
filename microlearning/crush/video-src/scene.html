@@ -1,0 +1,158 @@
+<!doctype html><meta charset="utf-8">
+<style>
+*{margin:0;box-sizing:border-box}
+body{width:1280px;height:720px;overflow:hidden;background:radial-gradient(120% 90% at 30% 20%,#25694e,#123d2c);color:#fff;font-family:"Helvetica Neue",Arial,sans-serif}
+svg{position:absolute;inset:0}
+</style>
+<svg id="v" width="1280" height="720" viewBox="0 0 1280 720"></svg>
+<script>
+const TL=TIMELINE, NS="http://www.w3.org/2000/svg";
+const C={gold:"#e3a712",red:"#e2574c",mint:"#8be0b1",ink:"#123d2c",card:"rgba(0,0,0,.30)",cardLine:"rgba(255,255,255,.16)",ok:"#3fae74"};
+const cl=t=>Math.max(0,Math.min(1,t)), eo=t=>1-Math.pow(1-cl(t),3);
+const pr=(t,a,b)=>cl((t-a)/(b-a));
+function el(tag,a,p){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);(p||v).appendChild(e);return e}
+function txt(s,a,p){const e=el("text",Object.assign({fill:"#fff","font-family":"Helvetica Neue,Arial,sans-serif"},a),p);e.textContent=s;return e}
+function defs(){const d=el("defs",{});const sh=el("filter",{id:"sh",x:"-20%",y:"-20%",width:"140%",height:"140%"},d);
+  el("feDropShadow",{dx:0,dy:6,stdDeviation:8,"flood-color":"#000","flood-opacity":.28},sh)}
+/* reveal: fade/slide in starting at time s */
+function rv(t,s,d){return eo(pr(t,s,s+(d||0.5)))}
+function grp(p,a){return el("g",{opacity:a,transform:`translate(0 ${(1-a)*16})`},p)}
+function card(g,x,y,w,h,fill,stroke){return el("rect",{x,y,width:w,height:h,rx:22,fill:fill||C.card,stroke:stroke||C.cardLine,"stroke-width":2},g)}
+function badgeNum(g,x,y,n,col){el("circle",{cx:x,cy:y,r:24,fill:col||C.gold},g);txt(String(n),{x,y:y+10,"text-anchor":"middle","font-size":28,"font-weight":800,fill:C.ink},g)}
+function tick(g,x,y,a,r){r=r||20;el("circle",{cx:x,cy:y,r,fill:a>0?C.ok:"rgba(255,255,255,.15)"},g);
+  if(a>0)el("path",{d:`M${x-r*.45} ${y} L${x-r*.1} ${y+r*.38} L${x+r*.5} ${y-r*.35}`,fill:"none",stroke:"#fff","stroke-width":r*.28,"stroke-linecap":"round","stroke-linejoin":"round","stroke-dasharray":60,"stroke-dashoffset":60*(1-a)},g)}
+function row(g,x,y,w,h,title,sub,a,col){
+  const gg=grp(g,a);card(gg,x,y,w,h);
+  el("rect",{x,y,width:8,height:h,rx:4,fill:col||C.gold},gg);
+  txt(title,{x:x+34,y:y+(sub?(Array.isArray(sub)?h*.32:h*.42):h*.62),"font-size":32,"font-weight":700},gg);
+  if(Array.isArray(sub))sub.forEach((ln,k)=>txt(ln,{x:x+34,y:y+h*.62+k*30,"font-size":23,fill:"#cfe7da"},gg));
+  else if(sub)txt(sub,{x:x+34,y:y+h*.76,"font-size":23,fill:"#cfe7da"},gg);
+  return gg}
+function bullets(g,x,y,items,t,starts,col){items.forEach((s,i)=>{const a=rv(t,starts[i]);const gg=grp(g,a);
+  el("circle",{cx:x,cy:y+i*50-9,r:7,fill:col||C.gold},gg);txt(s,{x:x+24,y:y+i*50,"font-size":28},gg)})}
+
+function lineAt(t){let i=0;TL.lines.forEach((l,k)=>{if(t>=l.start-0.45)i=k});return i}
+function sentAt(t,l){let j=0;l.s.forEach((s,k)=>{if(t>=s.s-0.15)j=k});return j}
+
+function chrome(t,i){
+  const l=TL.lines[i], n=TL.lines.length;
+  txt("DSY TRAINING",{x:70,y:62,"font-size":17,"font-weight":700,"letter-spacing":"3",opacity:.65});
+  txt(l.head,{x:70,y:112,"font-size":46,"font-weight":800,"letter-spacing":"-1"});
+  for(let k=0;k<n;k++){const w=32,x=1210-(n-k)*(w+7);
+    el("rect",{x,y:52,width:w,height:7,rx:3.5,fill:"rgba(255,255,255,.22)"});
+    const f=k<i?1:k>i?0:pr(t,l.start,l.end);
+    if(f>0)el("rect",{x,y:52,width:w*f,height:7,rx:3.5,fill:C.gold});}
+  const j=sentAt(t,l), s=l.s[j];
+  const a=Math.min(cl((t-(s.s-0.15))/0.2), t>l.end+0.35?cl(1-(t-l.end-0.35)/0.25):1);
+  const g=el("g",{opacity:a});
+  const long=s.text.length>70;
+  el("rect",{x:70,y:long?570:590,width:1140,height:long?112:84,rx:22,fill:"rgba(0,0,0,.34)"},g);
+  if(!long) txt(s.text,{x:640,y:644,"text-anchor":"middle","font-size":s.text.length>62?30:34,"font-weight":600},g);
+  else{ // wrap into two lines at the nearest space to the middle
+    let m=Math.floor(s.text.length/2), L=s.text.lastIndexOf(" ",m), R=s.text.indexOf(" ",m);
+    const cut=(m-L<R-m||R<0)?L:R;
+    const fs=s.text.length>150?25:(s.text.length>125?28:32);
+    txt(s.text.slice(0,cut),{x:640,y:620,"text-anchor":"middle","font-size":fs,"font-weight":600},g);
+    txt(s.text.slice(cut+1),{x:640,y:664,"text-anchor":"middle","font-size":fs,"font-weight":600},g);}
+  txt("SAAS CPG-135-P",{x:1210,y:704,"text-anchor":"end","font-size":15,opacity:.5,"letter-spacing":"1.5"});
+}
+
+function scene(t,i){
+  const l=TL.lines[i], S=l.s, T=t;
+  const fade=Math.min(cl((t-(l.start-0.45))/0.35), i<TL.lines.length-1?cl((TL.lines[i+1].start-0.45-t)/0.3):1);
+  const g=el("g",{opacity:fade});
+  const frac=(k,f)=>S[k].s+(S[k].e-S[k].s)*f;
+  const chips=(items,x0,y,starts,fill,maxX)=>{let x=x0,yy=y;items.forEach((c,k)=>{const w=c.length*13.2+40;if(x+w>maxX){x=x0;yy+=62}
+      const a=rv(T,starts[k],0.35);if(a>0){const g2=grp(g,a);el("rect",{x,y:yy,width:w,height:48,rx:24,fill},g2);txt(c,{x:x+w/2,y:yy+31,"text-anchor":"middle","font-size":22,"font-weight":700},g2)}x+=w+10})};
+  const tiles=(labels,starts,y,hiLast)=>labels.forEach((p,k)=>{const a=rv(T,starts[k],0.4), w=270, x=70+k*290;
+      const hi=hiLast&&k===labels.length-1;
+      const gg=grp(g,a);el("rect",{x,y,width:w,height:170,rx:26,fill:hi?C.gold:"rgba(0,0,0,.32)",stroke:C.cardLine,"stroke-width":2},gg);
+      badgeNum(gg,x+46,y+50,p[0],hi?"#fff":C.gold);
+      txt(p[1],{x:x+135,y:y+113,"text-anchor":"middle","font-size":27,"font-weight":800,fill:hi?C.ink:"#fff"},gg);txt(p[2],{x:x+135,y:y+147,"text-anchor":"middle","font-size":24,fill:hi?C.ink:"#cfe7da"},gg)});
+
+  if(i===0){
+    txt("CRUSH",{x:640,y:320,"text-anchor":"middle","font-size":150,"font-weight":800,"letter-spacing":"-4",opacity:rv(T,S[0].s,0.5)},g);
+    el("rect",{x:640-200*rv(T,S[0].s+0.2,0.7),y:352,width:400*rv(T,S[0].s+0.2,0.7),height:7,rx:3.5,fill:C.gold},g);
+    txt("Crush syndrome",{x:640,y:420,"text-anchor":"middle","font-size":38,fill:"#dff1e7",opacity:rv(T,S[0].s+0.4,0.5)},g);
+    badge(g,"Before and after the release",640,500,rv(T,S[1].s,0.5),"rgba(63,174,116,.55)");
+  }
+
+  if(i===1){
+    chips(["Vehicle entrapment","Falling debris","Machinery","Immobile, on their own body"],70,160,[frac(0,0.1),frac(0,0.45),frac(0,0.8),S[1].s],"rgba(0,0,0,.32)",1210);
+    row(g,70,250,1140,96,"Release → reperfusion","Crush syndrome: traumatic rhabdomyolysis",rv(T,S[2].s),C.gold);
+    txt("Potentially reversible causes of death",{x:70,y:400,"font-size":28,"font-weight":700,fill:C.gold,opacity:rv(T,S[4].s,0.4)},g);
+    const box=(x,w,s,st)=>{const a=rv(T,st,0.4);if(a<=0)return;const gg=grp(g,a);card(gg,x,420,w,100,"rgba(226,87,76,.28)","rgba(226,87,76,.7)");
+      txt(s,{x:x+w/2,y:483,"text-anchor":"middle","font-size":32,"font-weight":800},gg)};
+    box(70,360,"Hypotension",frac(5,0.05));box(460,360,"Acute kidney injury",frac(5,0.35));box(850,360,"Hyperkalaemia",frac(5,0.75));
+  }
+
+  if(i===2){
+    badge(g,"Not every crush leads to crush syndrome",640,170,rv(T,S[0].s,0.5),"rgba(0,0,0,.35)");
+    tiles([["1","> 60 minutes","prolonged crush"],["2","≥ 18%","body surface area"],["3","Significant","muscle mass"]],[S[1].s,S[2].s,S[3].s],230,false);
+  }
+
+  if(i===3){
+    tiles([["1","EOC Clinician","SAAS Med. Pract."],["2","Clinical","support"],["3","2 large bore","IVs if possible"],["4","Saline","before release"]],[S[1].s,S[2].s,S[3].s,S[4].s],150,false);
+    const col=(x,head,lines,st)=>{const a=rv(T,st,0.5);if(a<=0)return;const gg=grp(g,a);card(gg,x,345,560,200);
+      el("rect",{x,y:345,width:8,height:200,rx:4,fill:C.gold},gg);
+      txt(head,{x:x+34,y:398,"font-size":32,"font-weight":800,fill:C.gold},gg);
+      lines.forEach((ln,k)=>{const b=rv(T,ln[1],0.4);txt(ln[0],{x:x+34,y:452+k*54,"font-size":29,"font-weight":600,opacity:b},gg)})};
+    col(70,"16 years and over",[["250 mL aliquots",frac(6,0.1)],["Up to 20 mL/kg",frac(6,0.6)]],S[5].s);
+    col(650,"Under 16 years",[["10 mL/kg (max 250 mL)",frac(8,0.1)],["Up to 20 mL/kg",frac(8,0.7)]],S[7].s);
+  }
+
+  if(i===4){
+    row(g,70,160,1140,86,"Early transport, short scene time",null,rv(T,S[1].s),C.gold);
+    row(g,70,256,1140,100,"Saline: 10 mL/kg aliquots (max 250 mL)","Up to 20 mL/kg, all ages",rv(T,S[3].s),C.mint);
+    row(g,70,366,1140,86,"Children: low end of normal SBP for age (RDR)",null,rv(T,S[4].s),C.mint);
+    const a=rv(T,S[5].s,0.5); if(a>0){const gg=grp(g,a);card(gg,70,462,1140,96,"rgba(226,87,76,.28)","rgba(226,87,76,.7)");
+      txt("Fluid overload? JVD, pulmonary congestion",{x:104,y:504,"font-size":28,"font-weight":700},gg);
+      txt("Stop the saline",{x:104,y:541,"font-size":28,"font-weight":800,fill:"#ffd2cc",opacity:rv(T,S[7].s,0.4)},gg)}
+  }
+
+  if(i===5){
+    // ECG strip: normal beats, then peaked T waves, then a wide QRS
+    const a=rv(T,S[0].s,0.5); if(a>0){const gg=grp(g,a);card(gg,70,150,1140,250);
+      const y0=330, beat=(x,peak,wide)=>{const q=wide?40:10;
+        return `L${x} ${y0} L${x+20} ${y0-8} L${x+34} ${y0} L${x+44} ${y0} L${x+44+q*.3} ${y0+14} L${x+44+q} ${y0-110} L${x+44+q*1.8} ${y0+30} L${x+44+q*2.4} ${y0} L${x+80+q} ${y0} `+
+          (peak?`L${x+108+q} ${y0-92} L${x+126+q} ${y0}`:`Q${x+112+q} ${y0-36} ${x+140+q} ${y0}`)+` L${x+180} ${y0}`};
+      const kinds=[[0,0],[0,0],[1,0],[1,0],[1,1],[1,1]];
+      const show=[S[0].s,S[0].s,S[1].s,S[1].s,S[2].s,S[2].s];
+      let d=`M100 ${y0}`;kinds.forEach((k,j)=>{if(T>=show[j])d+=beat(100+j*180,k[0],k[1])});
+      el("path",{d,fill:"none",stroke:C.mint,"stroke-width":4,"stroke-linejoin":"round"},gg);
+      txt("Tall, peaked T waves",{x:460,y:185,"text-anchor":"middle","font-size":24,"font-weight":700,fill:C.gold,opacity:rv(T,S[1].s,0.4)},gg);
+      txt("Widening QRS",{x:1000,y:185,"text-anchor":"middle","font-size":24,"font-weight":700,fill:C.gold,opacity:rv(T,S[2].s,0.4)},gg);}
+    badge(g,"May indicate hyperkalaemia",640,445,rv(T,S[3].s,0.5),"rgba(226,87,76,.6)");
+    badge(g,"Consult EOC Clinician: nebulised salbutamol",640,520,rv(T,S[4].s,0.5),"rgba(227,167,18,.5)");
+  }
+
+  if(i===6){
+    badge(g,"ICP: CPG-136-ICP and CPG-179-ICP",640,170,rv(T,S[0].s,0.5),"rgba(0,0,0,.35)");
+    row(g,70,215,1140,80,"Saline IV or IO",null,rv(T,S[1].s),C.mint);
+    row(g,70,305,1140,80,"Hyperkalaemia CPG-179-ICP",null,rv(T,S[2].s),C.mint);
+    row(g,70,395,560,96,"Calcium gluconate","Stabilises the heart",rv(T,S[3].s),C.gold);
+    row(g,650,395,560,96,"Salbutamol 10 mg neb","No consult needed",rv(T,S[4].s),C.gold);
+    badge(g,"Calcium doesn't lower potassium: it buys time",640,535,rv(T,S[5].s,0.5),"rgba(226,87,76,.55)");
+  }
+
+  if(i===7){
+    tiles([["1","Think early","> 60 min, ≥ 18%"],["2","Call","before release"],["3","Saline","on board"],["4","Watch the ECG","and go"]],[S[0].s,S[1].s,S[2].s,S[3].s],230,true);
+  }
+}
+function badge(g,s,x,y,a,col){
+  if(a<=0)return;
+  const gg=grp(g,a), w=s.length*15.5+56;
+  el("rect",{x:x-w/2,y:y-30,width:w,height:56,rx:28,fill:col||"rgba(0,0,0,.35)"},gg);
+  txt(s,{x,y:y+9,"text-anchor":"middle","font-size":26,"font-weight":700},gg);
+}
+function render(t){
+  v.innerHTML=""; defs();
+  const i=lineAt(t);
+  scene(t,i); chrome(t,i);
+  const last=TL.lines[TL.lines.length-1].end;
+  if(t>last+0.3){const a=eo(pr(t,last+0.3,last+0.9));
+    el("rect",{x:0,y:0,width:1280,height:720,fill:C.ink,opacity:a*.94});
+    txt("Crush syndrome",{x:640,y:330,"text-anchor":"middle","font-size":64,"font-weight":800,opacity:a});
+    txt("SAAS CPG-135-P  ·  DSY Training",{x:640,y:385,"text-anchor":"middle","font-size":26,opacity:a*.75});}
+}
+</script>
