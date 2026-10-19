@@ -112,6 +112,9 @@ Set `scenario: true` for the Facilitator / Student switch at the top (the link k
   decisions: [{ q, options: [], answer, why }], cards: [{ q, a }] } }`. Facilitator view: prompts, expected
   reasoning and teaching points. Student view: the prompts as "Think about", then the decision tiles and flash cards.
   The real-job translation shows in both.
+- Every scenario page has a **Print or save as PDF** button under the Facilitator / Student switch. It prints the
+  version shown: all toggles open, no videos, buttons or flash cards, decision tiles as tick boxes (print styles at the end
+  of `module.css`). The customiser's preview pages get it too.
 - `{ decision: {...} }` on its own, and `only: "student"` or `only: "facilitator"` on any block.
 
 `shared/related.js` maps a protocol code to every module and scenario built on it. Each page shows the others under

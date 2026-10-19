@@ -442,7 +442,17 @@
       if (push && window.history && history.replaceState) history.replaceState(null, "", location.pathname + (m === "student" ? "?mode=student" : "") + location.hash);
     };
     intro.appendChild(bar); intro.appendChild(mnote); setMode(cur, false);
+    /* print the version on screen (or save it as a PDF from the print screen) */
+    var prow = el("div", "row print-row"), pbtn = el("button", "btn print-btn", "Print or save as PDF"); pbtn.type = "button";
+    pbtn.addEventListener("click", function () { openForPrint(); window.print(); });
+    prow.appendChild(pbtn); prow.appendChild(el("span", "small muted", "Prints the version shown above. On an iPhone or iPad, tap Print, then the Share button at the top of the print screen to save a PDF."));
+    intro.appendChild(prow);
   }
+  /* printing opens every toggle so nothing is left out, then closes them again */
+  var shut = [];
+  function openForPrint() { app.querySelectorAll("details:not([open])").forEach(function (d) { d.open = true; shut.push(d); }); }
+  window.addEventListener("beforeprint", openForPrint);
+  window.addEventListener("afterprint", function () { shut.forEach(function (d) { d.open = false; }); shut = []; });
 
   /* links to the other pages built on the same protocol (shared/related.js) */
   var relCodes = [P.code].concat(M.relatedCodes || []), rel = [], seen = {};

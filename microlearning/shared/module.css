@@ -173,3 +173,27 @@ body.mode-student .fac-only, body.mode-facilitator .stu-only { display: none !im
   .hub-tile.tone-paramedic { border-top-color: #d77a88; }
   .hub-tile.tone-rn { border-top-color: #6f9be0; }
 }
+
+/* printing (scenario pages have a "Print or save as PDF" button): light colours, everything open and visible,
+   no videos, buttons or swipe controls; tiles wrap; boxes are not split across pages */
+@media print {
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-ink: #fff; --accent: #b7860b; --danger: #b3392b; --ok: #2e7d4f; color-scheme: light; }
+  @page { margin: 14mm; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap { width: 100%; padding: 0; display: block !important; }
+  .stack, .flow { display: block !important; }
+  .wrap > * + *, .stack > * + * { margin-top: .7rem; }
+  .mode-toggle, .print-row, .no-print, .scrollbar, .related, .video, .slot, audio, iframe, video, .quick, .rate, .tilebar, .dots, .hint, button.link { display: none !important; }
+  .reveal-on .reveal { opacity: 1 !important; transform: none !important; }
+  details.panel > summary::after { display: none; }
+  .tiles { display: grid !important; grid-template-columns: repeat(2, 1fr); overflow: visible !important; gap: .5rem; }
+  .tile { width: auto !important; min-width: 0 !important; }
+  .choices { display: block; }
+  .choice { display: block; width: 100%; text-align: left; border: 1px solid var(--line); background: #fff; color: var(--ink); margin: .25rem 0; padding: .35rem .6rem; }
+  .choice::before { content: "\2610  "; }
+  .box { display: block !important; }
+  .box > * + * { margin-top: .5rem; }
+  .tile, .q, .steps li, .points li, .choice, tr { break-inside: avoid; }
+  .flow-head, .bp-head, h2, h3 { break-after: avoid; }
+  a { color: var(--ink); text-decoration: none; }
+}
