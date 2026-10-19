@@ -11,7 +11,7 @@ scenarios/
   view/index.html     the scenario page: reads the details from the link (after #), builds the page with module.js
   render.js           fills a template; also used by Node for the checks
   tools/convert.js    shared steps for making a template (swaps, round-trip check, odd inputs, JSON out)
-  tools/convert-*.js  one per scenario: its swaps and fields (all 11 converted walk-throughs)
+  tools/convert-*.js  one per scenario: its swaps and fields (the 11 original converted walk-throughs, plus burns)
   tools/pg-md5.js     checksums to compare a loaded row with the generated JSON
 ```
 
