@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>MDT Simulator — User Guide</title>
+    <!-- Same look as the roster user guide (userguides/rosters/) -->
+    <meta name="theme-color" content="#1f5b43">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1f5b43;
+            --primary-dark: #174a36;
+            --primary-light: #eaf1ed;
+            --background: #f4f6f1;
+            --surface: #ffffff;
+            --text: #1d2a24;
+            --muted: #5d6b63;
+            --border: #dde3da;
+            --red: #b3392b;
+            --red-light: #f9ecea;
+            --yellow: #9a6700;
+            --yellow-light: #fbf3dc;
+            --green: #2e7d4f;
+            --green-light: #e6f2ea;
+            --blue: #2f6f8f;
+            --blue-light: #e4eff4;
+            --shadow: 0 1px 2px rgba(20, 40, 30, 0.06), 0 6px 16px -8px rgba(20, 40, 30, 0.12);
+            --radius: 14px;
+        --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+        --font-head: "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+    }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding-bottom: 3rem;
+            color: var(--text);
+            background: var(--background);
+            font-family: var(--font-body);
+        }
+
+        .container {
+            width: min(900px, 100%);
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        /* ----- Header (as on the roster) ----- */
+
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1.25rem 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            flex: 0 0 auto;
+            color: white;
+            border-radius: 12px;
+            background: var(--primary);
+            box-shadow: 0 4px 12px rgba(31, 91, 67, 0.3);
+            font-size: 1.25rem;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 1.35rem;
+        }
+
+        .brand p {
+            margin: 0.2rem 0 0;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .team-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            color: var(--primary-dark);
+            background: var(--primary-light);
+            font-size: 0.75rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* ----- Contents ----- */
+
+        .card {
+            margin-bottom: 1.5rem;
+            padding: 1.25rem 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            margin: 0 0 0.35rem;
+            font-size: 1.15rem;
+        }
+
+        .card > p {
+            margin: 0 0 1rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .contents {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .contents h3 {
+            margin: 0 0 0.5rem;
+            color: var(--muted);
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .contents ol {
+            margin: 0;
+            padding-left: 1.25rem;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .contents a {
+            color: var(--primary-dark);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .contents a:hover,
+        .contents a:focus-visible {
+            text-decoration: underline;
+        }
+
+        /* ----- Part headings ----- */
+
+        .part-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin: 2rem 0 0.85rem;
+            font-size: 1.15rem;
+        }
+
+        .part-heading:first-of-type {
+            margin-top: 0;
+        }
+
+        .part-heading .team-badge {
+            font-size: 0.7rem;
+        }
+
+        /* ----- Collapsible sections ----- */
+
+        .guide-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .guide-section {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            scroll-margin-top: 1rem;
+        }
+
+        .guide-section summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.1rem 1.25rem;
+            cursor: pointer;
+            list-style: none;
+            font-size: 1rem;
+            font-weight: 800;
+            user-select: none;
+        }
+
+        .guide-section summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .guide-section summary:hover {
+            background: #f4f6f1;
+        }
+
+        .guide-section summary:focus-visible {
+            outline: 3px solid rgba(31, 91, 67, 0.35);
+            outline-offset: -3px;
+        }
+
+        .guide-section summary::after {
+            display: grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            flex: 0 0 auto;
+            border-radius: 50%;
+            color: var(--muted);
+            background: var(--background);
+            content: "▼";
+            font-size: 0.7rem;
+            transition: transform 0.25s ease;
+        }
+
+        .guide-section[open] summary {
+            color: var(--primary-dark);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .guide-section[open] summary::after {
+            color: var(--primary);
+            background: var(--primary-light);
+            transform: rotate(180deg);
+        }
+
+        .guide-content {
+            padding: 1.25rem;
+            line-height: 1.6;
+        }
+
+        .guide-content h3 {
+            margin: 1.4rem 0 0.45rem;
+            font-size: 0.98rem;
+        }
+
+        .guide-content > h3:first-child {
+            margin-top: 0;
+        }
+
+        .guide-content p {
+            margin: 0 0 0.85rem;
+        }
+
+        .guide-content ul,
+        .guide-content ol {
+            margin: 0.5rem 0 1rem;
+            padding-left: 1.35rem;
+        }
+
+        .guide-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* ----- Tip, warning and important boxes ----- */
+
+        .instruction-box,
+        .warning-box,
+        .important-box {
+            margin: 1rem 0;
+            padding: 0.9rem 1rem;
+            border-radius: 10px;
+            line-height: 1.5;
+        }
+
+        .instruction-box {
+            border-left: 4px solid var(--primary);
+            color: #166534;
+            background: var(--green-light);
+        }
+
+        .warning-box {
+            border-left: 4px solid var(--yellow);
+            color: #78350f;
+            background: var(--yellow-light);
+        }
+
+        .important-box {
+            border-left: 4px solid var(--red);
+            color: #991b1b;
+            background: var(--red-light);
+        }
+
+        /* ----- Examples of what the roster shows ----- */
+
+        .example-label {
+            margin: 1rem 0 0.35rem;
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .connection-status {
+            margin-bottom: 0.6rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--muted);
+            background: var(--surface);
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .connection-status.connected {
+            color: var(--green);
+            border-color: #cfe0d6;
+            background: var(--green-light);
+        }
+
+        .connection-status.error {
+            color: var(--red);
+            border-color: #fecaca;
+            background: var(--red-light);
+        }
+
+        .saved-roster-notice {
+            margin-bottom: 0.6rem;
+            padding: 0.65rem 1rem;
+            border: 1px dashed #93c5fd;
+            border-radius: 10px;
+            color: #1e3a8a;
+            background: #eff6ff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            line-height: 1.45;
+        }
+
+        .roster-submission-manager {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #f4f6f1;
+        }
+
+        .roster-submission-manager p {
+            margin: 0.3rem 0 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .shift-example {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--background);
+        }
+
+        .shift-time {
+            font-weight: 800;
+        }
+
+        .shift-detail {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .shift-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Buttons drawn exactly like the roster's buttons. */
+        .btn-primary,
+        .btn-secondary,
+        .btn-danger {
+            display: inline-block;
+            margin: 0.1rem 0;
+            padding: 0.4rem 0.7rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            line-height: 1.4;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            color: white;
+            background: var(--primary);
+        }
+
+        .btn-secondary {
+            color: var(--primary-dark);
+            border: 1px solid #d8ddff;
+            background: var(--primary-light);
+        }
+
+        .btn-danger {
+            color: var(--red);
+            border: 1px solid #fecaca;
+            background: var(--red-light);
+        }
+
+        .manager-label {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--muted);
+            background: var(--background);
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        .status-key {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+            margin: 0.75rem 0 1rem;
+        }
+
+        .status-card {
+            padding: 0.85rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--background);
+            font-size: 0.84rem;
+        }
+
+        .status-label {
+            display: inline-block;
+            margin-bottom: 0.35rem;
+            padding: 0.25rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        .status-empty { color: var(--red); background: var(--red-light); }
+        .status-partial { color: var(--yellow); background: var(--yellow-light); }
+        .status-covered { color: var(--green); background: var(--green-light); }
+
+        .settings-table {
+            width: 100%;
+            margin: 0.5rem 0 1rem;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        .settings-table th,
+        .settings-table td {
+            padding: 0.55rem 0.7rem;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .settings-table th {
+            width: 40%;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .phone-number {
+            display: inline-block;
+            padding: 0.25rem 0.55rem;
+            border-radius: 6px;
+            color: #78350f;
+            background: var(--yellow-light);
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+
+        footer {
+            margin-top: 1.5rem;
+            color: var(--muted);
+            text-align: center;
+            font-size: 0.78rem;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .card {
+                padding: 1.1rem;
+            }
+
+            .contents,
+            .status-key {
+                grid-template-columns: 1fr;
+            }
+
+            .guide-section summary {
+                padding: 1rem;
+            }
+
+            .guide-content {
+                padding: 1rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .guide-section summary::after { transition: none; }
+        }
+    
+    h1, h2, h3 { font-family: var(--font-head); letter-spacing: -0.02em; }
+        .shot { display: block; width: 100%; max-width: 760px; height: auto; margin: 0.5rem 0 1rem; border: 1px solid var(--border); border-radius: 10px; }
+        .shot.narrow { max-width: 460px; }
+        .guide-table { width: 100%; border-collapse: collapse; margin: 0.5rem 0 1rem; font-size: 0.95rem; }
+        .guide-table th, .guide-table td { text-align: left; vertical-align: top; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border); }
+        .guide-table th { color: var(--primary-dark); white-space: nowrap; }
+        code { background: var(--primary-light); padding: 0.05rem 0.35rem; border-radius: 4px; font-size: 0.9em; }
+        .footnote { color: var(--muted); font-size: 0.85rem; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <div class="brand-icon">📟</div>
+                <div>
+                    <h1>MDT Simulator</h1>
+                    <p>Practise the vehicle data terminal on an iPad</p>
+                </div>
+            </div>
+            <span class="team-badge">User Guide</span>
+        </header>
+
+        <section class="card" aria-labelledby="contentsTitle">
+            <h2 id="contentsTitle" class="card-title">What's in this guide</h2>
+            <p>
+                The simulator is at <a href="https://dsytraining.com/mdt/">dsytraining.com/mdt</a>.
+                Part 1 is for instructors: setting up a job and reading the run log.
+                Part 2 is for crews: working the job from logon to clear.
+                Tap any heading to open it.
+            </p>
+            <nav class="contents">
+                <div>
+                    <h3>Part 1 · Instructors</h3>
+                    <ol>
+                        <li><a href="#ipad">Setting up the iPad</a></li>
+                        <li><a href="#setup">Setting up a job</a></li>
+                        <li><a href="#remarks-setup">Remarks, alerts and the clock</a></li>
+                        <li><a href="#start">Starting and handing over</a></li>
+                        <li><a href="#runlog">The run log and debrief</a></li>
+                    </ol>
+                </div>
+                <div>
+                    <h3>Part 2 · Crews</h3>
+                    <ol start="6">
+                        <li><a href="#logon">Logging on</a></li>
+                        <li><a href="#job">Reading the job</a></li>
+                        <li><a href="#status">The status buttons</a></li>
+                        <li><a href="#hospital">Choosing the hospital</a></li>
+                        <li><a href="#navigate">P.H. and Navigate</a></li>
+                        <li><a href="#clear">Clearing the job</a></li>
+                        <li><a href="#help">Common questions</a></li>
+                    </ol>
+                </div>
+            </nav>
+        </section>
+
+        <main>
+            <div class="important-box">
+                <strong>Fictional data only.</strong> Never type real patient, caller or event details into the
+                simulator. The jobs in the library are made up, and "New fake job" invents new names and numbers
+                every time.
+            </div>
+
+            <h2 class="part-heading">Part 1 <span class="team-badge">Instructors</span></h2>
+            <div class="guide-list">
+
+                <details class="guide-section" id="ipad" open>
+                    <summary>1. Setting up the iPad</summary>
+                    <div class="guide-content">
+                        <p>The simulator runs in Safari on an iPad held landscape. Nothing to install.</p>
+                        <div class="instruction-box">
+                            <strong>Best: add it to the Home Screen.</strong> Open
+                            <strong>dsytraining.com/mdt</strong> in Safari, tap Share →
+                            <strong>Add to Home Screen</strong>. The <strong>MDT Sim</strong> icon (DSY logo) then
+                            opens the simulator full screen, with no Safari bars, every time.
+                        </div>
+                        <p>
+                            In a normal Safari tab, pressing <strong>Start simulation</strong> goes full screen where
+                            Safari allows it. There is also a <strong>Full screen</strong> button in the grey bar
+                            above the device. Tap the small ✕ in the corner to leave full screen.
+                        </p>
+                        <div class="warning-box">
+                            The Home Screen icon keeps its own saved setup (call sign, last job), separate from Safari.
+                            Set it up once in the icon version. After an update to the simulator, close the icon
+                            and open it again.
+                        </div>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="setup">
+                    <summary>2. Setting up a job</summary>
+                    <div class="guide-content">
+                        <img class="shot" src="img/setup.jpg" alt="The instructor setup screen with the job library and the unit and event fields" loading="lazy">
+                        <h3>Three ways to fill in a job</h3>
+                        <ol>
+                            <li>
+                                <strong>Job library:</strong> pick a job (one for each walk-through scenario, such as
+                                "Chest pain: Graham, 62") and tap <strong>Load job</strong>. Your call sign, crew type
+                                and red notice stay as you set them; the event numbers are new each time.
+                                <strong>Open the walk-through</strong> opens the matching facilitator version.
+                            </li>
+                            <li>
+                                <strong>From the main page:</strong> on <em>Run a session</em>, each topic has
+                                <strong>Load the MDT job</strong>.
+                            </li>
+                            <li>
+                                <strong>From the scenario customiser:</strong> after changing names, town, station
+                                and times, tap <strong>Open in MDT simulator</strong>. The job arrives with your
+                                details and a note asking you to check them.
+                            </li>
+                        </ol>
+                        <p>You can change any field afterwards. <strong>New fake job</strong> swaps in new made-up
+                            names, ages and numbers; <strong>Reset to example</strong> goes back to the practice job.</p>
+
+                        <h3>The fields</h3>
+                        <table class="guide-table">
+                            <tr><th>Unit</th><td>Call sign, crew type, fleet number (shown on the logon screen), where the unit is when paged, and whether to start with the logon screen.</td></tr>
+                            <tr><th>Event</th><td>Priority, dispatch and event numbers, the dispatch time on the simulator clock, the clock speed, and the job type.</td></tr>
+                            <tr><th>Location</th><td>Street, town, location code, the note at the end of the title line, landmark, cross streets and instructions. The town decides the "Closest" hospital list.</td></tr>
+                            <tr><th>Map location</th><td>Optional. Where <strong>Navigate</strong> sends the crew before they go mobile: an address, "lat,long" or a Google Maps link. Use a public place, such as the training venue or the oval, never a real patient's address. Blank = the town centre.</td></tr>
+                            <tr><th>Patient and caller</th><td>Name, age, weight, caller and number. All made up.</td></tr>
+                            <tr><th>Destination</th><td>A booked destination shows as the top tile when the crew presses Mobile. Emergency jobs usually have none, so the crew chooses. The <strong>expected destination</strong> is for you only and appears in the run log. Tick hospitals <strong>on diversion</strong> to show them orange.</td></tr>
+                        </table>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="remarks-setup">
+                    <summary>3. Remarks, alerts and the clock</summary>
+                    <div class="guide-content">
+                        <h3>Remarks</h3>
+                        <p>One remark per line:</p>
+                        <ul>
+                            <li><strong>Plain lines</strong> are what the call-taker typed: they get times between
+                                the call being received and dispatch.</li>
+                            <li><strong>Lines starting <code>+3</code></strong> (or <code>+2:30</code>) arrive
+                                <em>live</em> that long after dispatch, while the crew is driving. For example
+                                <code>+4 WIFE ADVISES PAIN UNCHANGED</code>.</li>
+                            <li><strong>Lines starting with a time</strong> such as <code>13:09</code> keep that time.</li>
+                        </ul>
+                        <p>Each library job already has 2 or 3 live remarks (stable, worse, or access details).
+                            Edit them to make the patient worse sooner, or add your own.</p>
+
+                        <h3>Alerts</h3>
+                        <p>Anything typed in <strong>Alerts</strong> makes the Alerts tab show red until the crew opens it,
+                            and the dispatch pop-up shows "Alerts: Yes".</p>
+
+                        <h3>Clock speed</h3>
+                        <p>The simulator clock runs <strong>3 times faster</strong> than real time by default, so a
+                            3-minute en-route discussion covers 9 minutes of driving and the live remarks arrive.
+                            You can choose real time, 2 x, 3 x or 5 x. All times on the screen and in the run log
+                            follow the simulator clock.</p>
+                        <p>The event tab shows <strong>Received</strong> and <strong>Dispatched</strong> times
+                            (to the second). For P1 and P2 they are within a minute of each other; for lower
+                            priorities, a few minutes apart.</p>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="start">
+                    <summary>4. Starting and handing over</summary>
+                    <div class="guide-content">
+                        <ol>
+                            <li>Tap <strong>Start simulation ▶</strong>. The device screen appears on the logon screen
+                                (or straight at the dispatch, if you switched the logon off).</li>
+                            <li>Hand the iPad to the crew.</li>
+                        </ol>
+                        <p>The grey bar above the device has:</p>
+                        <ul>
+                            <li><strong>Full screen</strong> on or off.</li>
+                            <li><strong>Run log</strong>: what the crew has done so far (see section 5).</li>
+                            <li><strong>Restart job</strong>: the same job again from the start.</li>
+                            <li><strong>Instructor setup</strong>: back to the setup screen (it asks first).</li>
+                        </ul>
+                        <div class="instruction-box">
+                            <strong>Copy student link</strong> on the setup screen makes a link with the whole job in it,
+                            so a student can run it on their own device.
+                        </div>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="runlog">
+                    <summary>5. The run log and debrief</summary>
+                    <div class="guide-content">
+                        <img class="shot narrow" src="img/runlog.jpg" alt="The run log with a summary and a timed list of every action" loading="lazy">
+                        <p>The summary at the top shows:</p>
+                        <ul>
+                            <li>when the crew first opened the Remarks, Alerts and Units tabs, and what status they were on;</li>
+                            <li>whether a new live remark was never read;</li>
+                            <li>the hospital chosen, and the expected destination you set;</li>
+                            <li>how many times P.H. was pressed.</li>
+                        </ul>
+                        <p>Below it, every action with its simulator time: logon, each status, each remark arriving and
+                            being read, Navigate, the hospital list and filter used, any cancelled confirmations, and Clear.</p>
+                        <div class="instruction-box">
+                            Good debrief questions: did they read the remarks before arriving? Did they use
+                            <strong>Closest</strong>? Was the hospital the right one, and did they confirm it?
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <h2 class="part-heading">Part 2 <span class="team-badge">Crews</span></h2>
+            <div class="guide-list">
+
+                <details class="guide-section" id="logon">
+                    <summary>6. Logging on</summary>
+                    <div class="guide-content">
+                        <img class="shot" src="img/logon.jpg" alt="The logon screen with the on-screen keyboard open" loading="lazy">
+                        <p>Fill in every field marked <strong>*</strong>, then tap <strong>Submit</strong>:</p>
+                        <ul>
+                            <li><strong>Callsign</strong> (your instructor will tell you which).</li>
+                            <li><strong>Clin. Status</strong>: choose <strong>N - No restrictions</strong>.</li>
+                            <li><strong>Crew ID 1</strong> and <strong>Crew ID 2</strong>. Single officer? Tap the shaded
+                                <strong>*Crew ID 2</strong> button and it fills in <strong>NONE</strong>.</li>
+                            <li><strong>Mobile</strong> and <strong>Odometer</strong> (any practice numbers).</li>
+                        </ul>
+                        <p>Crew ID 3, Observer and Equipment are optional. Any empty * field turns red when you submit.</p>
+                        <h3>Typing</h3>
+                        <p>Tap the blue <strong>Keyboard</strong> button for the on-screen keyboard, or use a Bluetooth
+                            keyboard. <strong>Hold the grey bar along the top of the keyboard and drag</strong> to move it
+                            out of the way of the field you're filling in. Tab or Enter moves to the next field;
+                            ✕ or Esc closes the keyboard.</p>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="job">
+                    <summary>7. Reading the job</summary>
+                    <div class="guide-content">
+                        <img class="shot" src="img/dispatch.jpg" alt="The dispatch pop-up with the Ack button" loading="lazy">
+                        <p>The job arrives as a <strong>Dispatch</strong> pop-up: priority, dispatch number, address,
+                            landmark, alerts and type. Tap <strong>Ack</strong> (or the ACK button top right).</p>
+                        <h3>The tabs</h3>
+                        <table class="guide-table">
+                            <tr><th>EVENT</th><td>Address, priority, event number, patient, age, weight, landmark, cross streets, caller, and (scroll down) the <strong>Received</strong> and <strong>Dispatched</strong> times.</td></tr>
+                            <tr><th>REMARKS</th><td>Everything the call-taker typed, <strong>newest at the top</strong>. A small red flag on the tab means a new remark has come in: open it.</td></tr>
+                            <tr><th>Units</th><td>Your unit and any others on the job, with their status codes.</td></tr>
+                            <tr><th>Alerts</th><td>Red until you open it when there's an alert.</td></tr>
+                            <tr><th>PRIORS</th><td>Previous events at the address, if any.</td></tr>
+                        </table>
+                        <img class="shot" src="img/remarks.jpg" alt="The Remarks tab with a new live remark at the top" loading="lazy">
+                        <p>Keep checking the remarks while you drive: updates on the patient arrive on the way.</p>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="status">
+                    <summary>8. The status buttons</summary>
+                    <div class="guide-content">
+                        <p>The button at the top right (F6) always shows the <strong>next</strong> status.
+                            The bar along the bottom shows your call sign and the <strong>last</strong> status sent.</p>
+                        <table class="guide-table">
+                            <tr><th>Button</th><th>What happens</th><th>Status sent</th><th>Code</th></tr>
+                            <tr><td>ACK</td><td>Acknowledges the job</td><td>ACKNOWLEDGE</td><td>AK</td></tr>
+                            <tr><td>ENROUTE</td><td>Straight away, no question</td><td>ENROUTE</td><td>ER</td></tr>
+                            <tr><td>TIME SCENE</td><td>"Please confirm you are Time Scene": Confirm</td><td>ARRIVE</td><td>TS</td></tr>
+                            <tr><td>MOBILE</td><td>Opens the hospital list (section 9)</td><td>MOBILE</td><td>TM</td></tr>
+                            <tr><td>ARRIVE DEST</td><td>Straight away, no question</td><td>ARRIVE DEST.</td><td>TD</td></tr>
+                            <tr><td>CLEAR</td><td>Clear Event Confirm (section 11)</td><td>AVAILABLE</td><td></td></tr>
+                        </table>
+                        <img class="shot" src="img/timescene.jpg" alt="The Time Scene confirmation" loading="lazy">
+                        <p><strong>Back</strong> cancels a confirmation or the hospital list. <strong>Menu</strong> (F2)
+                            shows the main menu; <strong>History</strong> lists your status times.</p>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="hospital">
+                    <summary>9. Choosing the hospital</summary>
+                    <div class="guide-content">
+                        <img class="shot" src="img/destination.jpg" alt="The hospital list sorted by Closest" loading="lazy">
+                        <p>Pressing <strong>MOBILE</strong> opens the hospital list:</p>
+                        <ul>
+                            <li>A pale <strong>Booking</strong> tile at the top, if the job has a booked destination.</li>
+                            <li>Green tiles are open; <strong>orange</strong> tiles are on diversion (CONSULT ALL).</li>
+                            <li>Down the left: <strong>Closest</strong> (nearest first), All (A to Z), Major,
+                                Virtual and Care Pathways. <strong>Cancel</strong> goes back.</li>
+                        </ul>
+                        <div class="warning-box">
+                            <strong>Use Closest.</strong> The full list is alphabetical across the whole state:
+                            it's easy to tap a hospital hundreds of kilometres away.
+                        </div>
+                        <p>Tap a hospital, then <strong>Confirm</strong> "Please confirm you are Mobile to …".
+                            Check the name before you confirm.</p>
+                        <img class="shot" src="img/confirm-mobile.jpg" alt="The Mobile to hospital confirmation" loading="lazy">
+                    </div>
+                </details>
+
+                <details class="guide-section" id="navigate">
+                    <summary>10. P.H. and Navigate</summary>
+                    <div class="guide-content">
+                        <h3>P.H.</h3>
+                        <p>While mobile, a red <strong>P.H.</strong> button appears. Press it if you're driving to
+                            hospital under priority. It tells the EOC and is recorded; nothing else changes on screen.</p>
+                        <img class="shot" src="img/mobile.jpg" alt="Mobile status with the red P.H. button" loading="lazy">
+                        <h3>Navigate</h3>
+                        <p><strong>Navigate</strong> (top right of the job) opens directions:</p>
+                        <ul>
+                            <li>before you go mobile, to the <strong>scene</strong>;</li>
+                            <li>after, to the <strong>hospital you chose</strong>.</li>
+                        </ul>
+                        <p>Tap <strong>Open in Google Maps</strong>, or scan the code with your phone to open the
+                            directions there.</p>
+                        <img class="shot" src="img/navigate.jpg" alt="The Navigate panel with the Google Maps button and a QR code" loading="lazy">
+                    </div>
+                </details>
+
+                <details class="guide-section" id="clear">
+                    <summary>11. Clearing the job</summary>
+                    <div class="guide-content">
+                        <img class="shot" src="img/clear.jpg" alt="Clear Event Confirm with the direct admission tick box" loading="lazy">
+                        <p>At the hospital, after <strong>ARRIVE DEST</strong>, press <strong>CLEAR</strong>.
+                            Tick <strong>Patient was a Direct Admission to Ward</strong> if that applies, then
+                            <strong>Confirm</strong>. The unit shows <strong>AVAILABLE</strong> and the main menu.</p>
+                    </div>
+                </details>
+
+                <details class="guide-section" id="help">
+                    <summary>12. Common questions</summary>
+                    <div class="guide-content">
+                        <h3>Submit doesn't work on the logon screen</h3>
+                        <p>A field marked * is empty: it shows in red. Clin. Status has to be chosen from the list.</p>
+                        <h3>The keyboard is covering the field</h3>
+                        <p>Drag it by the grey bar along its top, or close it with ✕ and reopen it.</p>
+                        <h3>No live remarks came in</h3>
+                        <p>They arrive a few minutes (simulator time) after dispatch. If you press Time Scene straight
+                            away they arrive after you're on scene. Talk through your plan en route first.</p>
+                        <h3>The page isn't full screen</h3>
+                        <p>Tap <strong>Full screen</strong> above the device, or open it from the Home Screen icon (section 1).</p>
+                        <h3>I need to start again</h3>
+                        <p><strong>Restart job</strong> above the device starts the same job from the dispatch (or the logon).</p>
+                        <h3>Something looks wrong after an update</h3>
+                        <p>Close Safari's tab (or the Home Screen icon) and open it again.</p>
+                    </div>
+                </details>
+            </div>
+        </main>
+
+        <p class="footnote">Training resource only. It is a simulator of the workflow, not the real terminal,
+            and does not replace SAAS procedures. DSY Training · <a href="https://dsytraining.com/">dsytraining.com</a></p>
+    </div>
+</body>
+</html>

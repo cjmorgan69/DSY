@@ -204,7 +204,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 <!-- ================= Instructor setup ================= -->
 <div class="setup" id="setup">
   <h1>MDT Simulator: instructor setup</h1>
-  <p class="lead">Set up a job, then hand the iPad to the student. They work through the status buttons from dispatch to clear.</p>
+  <p class="lead">Set up a job, then hand the iPad to the student. They work through the status buttons from dispatch to clear. <a href="../userguides/mdt/" target="_blank" rel="noopener">User guide</a></p>
   <div class="note"><b>Fictional data only.</b> Never enter real patient, caller or event details. "New fake job" makes up names, ages and event numbers every time. The example remarks were written by DSY for practice; they are not a real job.</div>
 
   <div class="actions">
@@ -982,6 +982,7 @@ addEventListener('resize', fit);
   const m = location.hash.match(/^#sim=(.+)$/);
   if (m){ try{ const c = Object.assign(example(), JSON.parse(b64d(m[1]))); fillForm(c); startSim(c); return; }catch(e){} }
   const c0 = load() || example(); fillForm(c0); showScenLink(c0);
+  const j0 = JOBS.find(j=>j.scenario && j.scenario===c0.scenario); if (j0) jobSel.value = j0.id;
 })();
 </script>
 </body>
