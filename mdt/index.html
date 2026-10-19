@@ -42,6 +42,10 @@ input,select,textarea{font:inherit;font-size:15px;color:var(--ink);background:va
 textarea{min-height:96px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px}
 .check{flex-direction:row;align-items:center;gap:8px;font-size:15px;color:var(--ink)}
 details summary{cursor:pointer;font-weight:600;margin:6px 0}
+.queue{margin:4px 0 0;padding-left:22px;font-size:15px}
+.queue li{padding:4px 0;border-bottom:1px solid var(--line)}
+.queue li button{margin-left:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:2px 8px}
+.queue:empty::before{content:'No jobs queued.';color:var(--muted);margin-left:-22px}
 .divlist{columns:3 220px;font-size:14px}
 .divlist label{flex-direction:row;align-items:center;gap:6px;color:var(--ink);font-size:14px;break-inside:avoid;padding:2px 0}
 .hint{font-size:12px;color:var(--muted);grid-column:1/-1;margin:-4px 0 0}
@@ -219,6 +223,23 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
     </div>
     <div class="actions" style="margin:10px 0 0"><button class="btn" id="loadJobBtn">Load job</button><a id="scenLink" class="btn" target="_blank" hidden>Open the walk-through</a></div>
   </fieldset>
+  <fieldset><legend>Saved jobs and job queue</legend>
+    <div class="grid">
+      <label class="wide">Saved jobs (kept on this device)<select id="savedSel"></select></label>
+    </div>
+    <div class="actions" style="margin:8px 0 14px">
+      <button class="btn" id="saveJobBtn" type="button">Save this job…</button>
+      <button class="btn" id="loadSavedBtn" type="button">Load</button>
+      <button class="btn" id="delSavedBtn" type="button">Delete</button>
+    </div>
+    <p class="hint" style="margin:0 0 6px">Job queue: the job on this screen runs first. When the crew clears it, the next job in the queue is dispatched to them.</p>
+    <ol id="queueList" class="queue"></ol>
+    <div class="actions" style="margin:8px 0 0;align-items:center">
+      <button class="btn" id="queueAddBtn" type="button">Add this job to the queue</button>
+      <button class="btn" id="queueClearBtn" type="button">Clear queue</button>
+      <label class="check" style="font-size:14px">Next job after<select id="gapSel"><option value="0">a few seconds</option><option value="2">2 min</option><option value="5">5 min</option><option value="10">10 min</option></select>(sim clock)</label>
+    </div>
+  </fieldset>
   <input id="shareOut" readonly hidden>
   <p class="hint" style="margin:-6px 0 14px">Tip for the iPad: in Safari tap Share, then <b>Add to Home Screen</b>. Opened from that icon, the simulator always fills the whole screen.</p>
   <div class="note" id="fromNote" hidden style="border-left-color:var(--accent)"></div>
@@ -301,6 +322,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
   <div class="simbar">
     <span>DSY Training · MDT simulator · fictional data</span><span class="sp"></span>
     <button id="fsBtn" hidden>Full screen</button>
+    <span id="queueInfo"></span>
     <button id="logBtn">Run log</button>
     <button id="restartBtn">Restart job</button>
     <button id="setupBtn">Instructor setup</button>
@@ -441,7 +463,8 @@ form.addEventListener('input', ()=>save(readForm()));
 document.getElementById('fakeBtn').onclick = ()=>{ const c = fakeOver(readForm()); fillForm(c); save(c); };
 document.getElementById('resetBtn').onclick = ()=>{ const c = example(); fillForm(c); save(c); };
 document.getElementById('shareBtn').onclick = async ()=>{
-  const url = location.href.split('#')[0] + '#sim=' + b64e(JSON.stringify(readForm()));
+  const c = readForm(); c.queue = Q.items.map(i=>i.cfg); c.gap = Q.gap;
+  const url = location.href.split('#')[0] + '#sim=' + b64e(JSON.stringify(c));
   const out = document.getElementById('shareOut');
   out.hidden = false; out.value = url;
   try{ await navigator.clipboard.writeText(url); out.value = 'Copied: ' + url; }catch(e){ out.select(); }
@@ -490,23 +513,25 @@ document.getElementById('fsBtn').onclick = ()=>{
   if (fsOn()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } else goFull();
 };
 ['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev, ()=>{ fsButton(); setTimeout(fit, 100); }));
-document.getElementById('startBtn').onclick = ()=>{ const c = readForm(); save(c); goFull(); startSim(c); fsButton(); };
+document.getElementById('startBtn').onclick = ()=>{ const c = readForm(); save(c); c.queue = Q.items.map(i=>i.cfg); c.gap = Q.gap; goFull(); startSim(c); fsButton(); };
 
 // ---------- simulation ----------
 let S, C, clockTimer, toastTimer;
 
 function startSim(c){
-  C = c;
+  ORIG = c; C = Object.assign({}, c); delete C.queue;
   const [hh,mm] = (c.startTime||'14:20').split(':').map(Number);
   S = { st:0, remarks:[], live:[], view: c.logon==='no' ? 'event' : 'logon', login:{}, kb:false, focus:'callsign', shift:false, caps:false, tab:'EVENT', popup:true, seen:{}, filter:'All', pending:null, dest:null,
-        realStart:Date.now(), simStart:(hh*60+(mm||0))*60 + rint(0,45), log:[], stTimes:[], phCount:0, direct:false };
+        realStart:Date.now(), simStart:(hh*60+(mm||0))*60 + rint(0,45), log:[], stTimes:[], phCount:0, direct:false,
+        queue:(c.queue||[]).map(q=>Object.assign({}, q)), gap:+c.gap||0, jobNo:1, done:[], nextAt:null };
+  queueInfo();
   if (S.view==='logon') logIt('Logon screen'); else dispatchNow();
   document.getElementById('setup').hidden = true;
   document.getElementById('sim').hidden = false;
   history.replaceState(null,'',location.pathname + '#sim=' + b64e(JSON.stringify(c)));
   fit(); render();
   clearInterval(clockTimer);
-  clockTimer = setInterval(()=>{ document.querySelectorAll('[data-clock]').forEach(e=>e.textContent=clock()); checkLive(); }, 1000);
+  clockTimer = setInterval(()=>{ document.querySelectorAll('[data-clock]').forEach(e=>e.textContent=clock()); checkLive(); checkNext(); }, 1000);
 }
 function dispatchNow(){
   S.stTimes[0] = clock(); S.dispSec = simSecs();
@@ -570,7 +595,13 @@ const act = {
   mobileNo(){ logIt('Cancelled Mobile to ' + S.pending); S.view='dest'; render(); },
   ph(){ S.phCount++; logIt('P.H. pressed (priority to hospital notified)'); render(); },
   toggleDirect(){ S.direct=!S.direct; render(); },
-  clearYes(){ logIt('Clear confirmed' + (S.direct ? ' - direct admission to ward ticked' : '')); setStatus(6); S.view='menu'; render(); },
+  clearYes(){
+    logIt('Clear confirmed' + (S.direct ? ' - direct admission to ward ticked' : '')); setStatus(6); S.view='menu';
+    S.done.push({no:S.jobNo, title:titleText(), dcode:C.dcode, checks:jobChecks()});
+    // Queued job: dispatched after the gap (at least a few seconds, so the crew sees AVAILABLE)
+    if (S.queue.length) S.nextAt = simSecs() + Math.max(S.gap*60, 4*(+C.speed||1));
+    render();
+  },
   clearNo(){ logIt('Cancelled Clear'); S.view='event'; render(); },
   tab(t){
     S.tab=t;
@@ -931,10 +962,69 @@ function navPanel(){
     </div><div class="qr" id="navQr"></div></div>`;
 }
 
+// ---------- Saved jobs and the job queue (kept on this device) ----------
+// A job is every setup field except the unit settings, which stay as the instructor set them.
+const UNIT_KEYS = ['callsign','crewType','fleet','logon','speed','notice','inbox'];
+const jobPart = c => { const o = Object.assign({}, c); UNIT_KEYS.forEach(k=>delete o[k]); delete o.queue; delete o.gap; return o; };
+const jobLabel = c => `${c.typeName || 'Job'}: ${c.patient || 'patient'}, ${c.age || ''} (${c.town || ''})`.replace(/\s+/g,' ');
+let ORIG, SAVED = [], Q = {items:[], gap:'0'};
+try { SAVED = JSON.parse(localStorage.getItem('dsy-mdt-saved') || '[]'); } catch(e){}
+try { Q = Object.assign(Q, JSON.parse(localStorage.getItem('dsy-mdt-queue') || '{}')); } catch(e){}
+const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+function drawSaved(){
+  document.getElementById('savedSel').innerHTML = SAVED.length
+    ? SAVED.map((j,i)=>`<option value="${i}">${esc(j.name)}</option>`).join('') : '<option value="">No saved jobs yet</option>';
+}
+function drawQueue(){
+  document.getElementById('queueList').innerHTML = Q.items.map((j,i)=>`<li>${esc(j.label)}
+    ${i ? `<button type="button" data-q="up" data-i="${i}" aria-label="Move up">▲</button>` : ''}<button type="button" data-q="del" data-i="${i}" aria-label="Remove">✕</button></li>`).join('');
+  document.getElementById('gapSel').value = Q.gap;
+  store('dsy-mdt-queue', Q);
+}
+document.getElementById('saveJobBtn').onclick = ()=>{
+  const c = jobPart(readForm()), name = prompt('Name for this saved job:', jobLabel(c));
+  if (!name) return;
+  SAVED.push({name:name.trim(), cfg:c}); store('dsy-mdt-saved', SAVED); drawSaved();
+  document.getElementById('savedSel').value = String(SAVED.length-1);
+};
+document.getElementById('loadSavedBtn').onclick = ()=>{
+  const j = SAVED[+document.getElementById('savedSel').value]; if (!j) return;
+  const c = Object.assign(readForm(), j.cfg); fakeOver(c); Object.assign(c, {patient:j.cfg.patient, age:j.cfg.age, weight:j.cfg.weight, caller:j.cfg.caller});
+  fillForm(c); save(c); showScenLink(c);
+};
+document.getElementById('delSavedBtn').onclick = ()=>{
+  const i = +document.getElementById('savedSel').value; if (!SAVED[i] || !confirm('Delete "' + SAVED[i].name + '"?')) return;
+  SAVED.splice(i,1); store('dsy-mdt-saved', SAVED); drawSaved();
+};
+document.getElementById('queueAddBtn').onclick = ()=>{
+  const c = jobPart(readForm()); c.dcode = 'D0'+rint(100,999); c.eventNo = 'A00'+rint(10,99)+'-'+rint(10000,99999);
+  Q.items.push({label:jobLabel(c), cfg:c}); drawQueue();
+};
+document.getElementById('queueClearBtn').onclick = ()=>{ if (Q.items.length && confirm('Remove all queued jobs?')) { Q.items = []; drawQueue(); } };
+document.getElementById('gapSel').onchange = e=>{ Q.gap = e.target.value; drawQueue(); };
+document.getElementById('queueList').onclick = e=>{
+  const b = e.target.closest('[data-q]'); if (!b) return; const i = +b.dataset.i;
+  if (b.dataset.q==='del') Q.items.splice(i,1); else [Q.items[i-1], Q.items[i]] = [Q.items[i], Q.items[i-1]];
+  drawQueue();
+};
+drawSaved(); drawQueue();
+
+function queueInfo(){ const n = S.queue.length; document.getElementById('queueInfo').textContent = n ? `Job ${S.jobNo} · ${n} more queued` : (S.jobNo > 1 ? `Job ${S.jobNo}` : ''); }
+function checkNext(){ if (S && S.nextAt != null && simSecs() >= S.nextAt) { S.nextAt = null; nextJob(); } }
+// Dispatch the next queued job: same crew and clock, the unit starts where the last job ended
+function nextJob(){
+  const q = S.queue.shift(); if (!q) return;
+  const unit = {}; UNIT_KEYS.forEach(k=>unit[k]=C[k]);
+  C = Object.assign({}, q, unit, {unitLoc: S.dest || C.unitLoc});
+  Object.assign(S, { st:0, view:'event', tab:'EVENT', popup:true, seen:{}, filter:'All', pending:null, dest:null, stTimes:[],
+    phCount:0, direct:false, nav:false, remarks:[], live:[], newRemarks:false, jobNo:S.jobNo+1 });
+  logIt('--- Job ' + S.jobNo + ' ---'); dispatchNow(); queueInfo(); render();
+}
+
 // ---------- run log ----------
-function showLog(){
+function jobChecks(){
   const seen = t => S.seen[t] ? `${S.seen[t].time} (while ${ST[S.seen[t].st].s})` : 'not opened';
-  const checks = [
+  return [
     `Remarks tab: ${seen('REMARKS')}`,
     C.alerts ? `Alerts tab: ${seen('Alerts')}` : 'No alerts were set',
     `Units tab: ${seen('Units')}`,
@@ -943,15 +1033,21 @@ function showLog(){
     `P.H. pressed: ${S.phCount ? S.phCount + ' time(s)' : 'no'}`,
     ...(C.expected ? [`Expected destination: ${C.expected}`] : []),
   ];
-  document.getElementById('logCard').innerHTML = `<h2>Run log: ${esc(cs())} ${esc(C.dcode)}</h2>
-    <ul>${checks.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
+}
+function showLog(){
+  const jobs = S.done.slice();
+  if (S.st < 6 && S.dispSec != null) jobs.push({no:S.jobNo, title:titleText(), dcode:C.dcode, checks:jobChecks()});
+  const many = jobs.length > 1 || S.queue.length;
+  document.getElementById('logCard').innerHTML = `<h2>Run log: ${esc(cs())}${many ? '' : ' ' + esc(C.dcode)}</h2>
+    ${jobs.map(j=>`${many ? `<h3 style="margin:12px 0 0;font-size:16px">Job ${j.no}: ${esc(j.dcode)} ${esc(j.title)}</h3>` : ''}<ul>${j.checks.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>`).join('')}
+    ${S.queue.length ? `<p class="hint">${S.queue.length} more job(s) in the queue.</p>` : ''}
     <table>${S.log.map(l=>`<tr><td>${l.t}</td><td>${esc(l.text)}</td></tr>`).join('')}</table>
     <div class="actions"><button class="btn primary" id="logClose">Close</button></div>`;
   document.getElementById('logWrap').hidden = false;
   document.getElementById('logClose').onclick = ()=>document.getElementById('logWrap').hidden = true;
 }
 document.getElementById('logBtn').onclick = showLog;
-document.getElementById('restartBtn').onclick = ()=>{ if (confirm('Restart this job from dispatch?')) startSim(C); };
+document.getElementById('restartBtn').onclick = ()=>{ if (confirm(ORIG.queue && ORIG.queue.length ? 'Restart from the first job?' : 'Restart this job from dispatch?')) startSim(ORIG); };
 document.getElementById('setupBtn').onclick = ()=>{
   if (!confirm('Leave the simulation and go to instructor setup?')) return;
   clearInterval(clockTimer);
