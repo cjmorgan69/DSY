@@ -38,7 +38,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Crush syndrome: before and after release" } },
+      { video: { src: "intro.mp4?v=2", poster: "intro-poster.jpg?v=2", title: "Crush syndrome: before and after release" } },
       { text: "Crush injuries come from vehicle entrapment, falling debris, industrial accidents, or prolonged pressure on part of the body from the person's own weight when they can't move." },
       { text: "Crush syndrome, or traumatic rhabdomyolysis, is the systemic effect. It can develop rapidly after skeletal muscle is released from prolonged pressure." },
       { text: "Hypotension, acute kidney injury (AKI) and hyperkalaemia are the potentially reversible causes of death." }
