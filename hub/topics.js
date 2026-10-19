@@ -27,5 +27,5 @@ window.DSY_TOPICS = [
     module:'nausea', walk:'/modules/nausea-vomiting/', mdt:'nausea', custom:'nausea-ao' },
   { id:'falls', title:'Falls', protocol:'CPP-045-AO', module:'falls' },
   { id:'burns', title:'Burns', protocol:'CPP-006-AO', patient:'Daniel, 42: diesel flash burn to the face',
-    module:'burns', walk:'/modules/burns/' }
+    module:'burns', walk:'/modules/burns/', custom:'burns-ao' }
 ];

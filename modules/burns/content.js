@@ -204,7 +204,7 @@ window.MODULE = {
         { t: "Keep warm", text: "Pat dry around the burn, blanket on, out of the wind." },
         { t: "Cool over the cover", text: "Continue cooling over the cling wrap as needed." }
       ] } },
-      { text: "AO2 calls the EOC. The EOC Clinician (story): \"Agree, suspected airway burn. I've requested the paramedic crew and they'll meet you on the way. Go to Tumby Bay and I'll let them know. Call me straight back if his voice changes.\"" },
+      { text: "AO2 calls the EOC. The EOC Clinician (story): \"Agree, suspected airway burn. I've requested the paramedic crew and they'll meet you on the way. Go to Tumby Bay Hospital and I'll let them know. Call me straight back if his voice changes.\"" },
       { breakpoint: { title: "Treatment and medication safety", type: "Practical skill",
         prompts: ["Show me how you cover his face. What is the rule?", "What pain relief can you give, and what do you check first?", "Demonstrate setting up the Penthrox and coaching him.", "What do you tell the EOC Clinician?"],
         expected: [
