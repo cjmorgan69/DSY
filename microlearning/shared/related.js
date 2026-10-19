@@ -2,6 +2,9 @@
    codes in its relatedCodes). Each page lists the others under "Built on the same protocol" and leaves itself out.
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
+  "CPG-135-P": [
+    { kind: "Microlearning module", title: "Crush syndrome", href: "/microlearning/crush/", text: "Who to worry about, saline before and after release, the ECG and hyperkalaemia, and what the ICP adds." }
+  ],
   "CPG-144-P": [
     { kind: "Microlearning module", title: "Traumatic or hypoxic brain injury", href: "/microlearning/tbi/", text: "Secondary brain insults, SpO2 and blood pressure targets, the saline aliquot checker, venous return and the agitated patient." }
   ],

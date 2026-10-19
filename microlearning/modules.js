@@ -3,7 +3,7 @@
    ao: /microlearning/ao/   paramedic: /microlearning/paramedic/   rn: /microlearning/rn/ (navy theme) */
 window.MODULE_LISTS = {
   ao: ["stroke", "envenomation", "hypoglycaemia", "chest-pain", "anaphylaxis", "asthma", "sepsis", "falls", "pain", "acpo", "headache", "nausea"],
-  paramedic: ["tbi"],
+  paramedic: ["tbi", "crush"],
   rn: ["sepsis-nursing"]
 };
 window.MODULE_LIST = window.MODULE_LISTS.ao;
