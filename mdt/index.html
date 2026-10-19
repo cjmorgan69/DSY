@@ -191,6 +191,12 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 .kb .r button.on{background:#c7d7f2}
 .kb .r button.sp{flex:5 1 0}
 .kb .r button.wide{flex:1.6 1 0}
+.navp{position:absolute;left:230px;top:150px;width:660px;background:#f2f2f2;border:2px solid #8a8f96;box-shadow:0 8px 30px rgba(0,0,0,.5);color:#111;z-index:6;padding:18px 22px;display:flex;gap:22px;align-items:center}
+.navp h3{margin:0 0 6px;font-size:22px}.navp p{margin:0 0 14px;font-size:18px;text-transform:uppercase}
+.navp .go{display:inline-block;background:#2b6fd6;color:#fff;text-decoration:none;font-size:20px;font-weight:600;padding:14px 18px;border-radius:4px}
+.navp .cl{margin-left:10px;font-size:18px;padding:13px 16px;border:1px solid #999;background:#e4e4e4}
+.navp .qr{flex:none;width:190px;height:190px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;word-break:break-all;padding:5px}
+.navp small{display:block;color:#555;font-size:14px;margin-top:10px}
 </style>
 </head>
 <body>
@@ -253,6 +259,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
         <label>Cross street 1<input name="xs1"></label>
         <label>Cross street 2<input name="xs2"></label>
         <label>Instructions<input name="instructions"></label>
+        <label class="wide">Map location for Navigate (optional): an address, "lat,long" or a Google Maps link. Use a public place, never a real patient's address. Blank = the town centre.<input name="mapLoc" placeholder="e.g. Tumby Bay Oval, Tumby Bay SA"></label>
       </div>
     </fieldset>
 
@@ -312,6 +319,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 
 <div class="logwrap" id="logWrap" hidden><div class="logcard" id="logCard"></div></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="jobs.js?v=6"></script>
 <script>
 'use strict';
@@ -581,7 +589,10 @@ const act = {
   },
   menu(){ if (S.view==='logon') return; S.view = S.view==='menu' ? (S.st===6?'list':'event') : 'menu'; render(); },
   view(v){ S.view=v; render(); },
-  notUsed(){ toast('Not used in the simulator'); }
+  notUsed(){ toast('Not used in the simulator'); },
+  navOpen(){ S.nav = true; const t = navTarget(); logIt('Navigate: ' + t.label); render(); },
+  navClose(){ S.nav = false; render(); },
+  navGo(){ logIt('Opened Google Maps: ' + navTarget().label); }
 };
 
 const findTown = name => TOWNS.find(x=>x[0].toLowerCase()===String(name||'').trim().toLowerCase());
@@ -700,12 +711,12 @@ function eventView(){
   return `${dispatchTabs()}<div class="panel">
       <div class="prow"><button class="showlist" data-a="view" data-v="list">Show List</button>
         <div class="notice">${esc(C.notice)}</div>
-        <button class="pbtn" data-a="view" data-v="history">History</button><button class="pbtn" data-a="notUsed">Navigate</button></div>
+        <button class="pbtn" data-a="view" data-v="history">History</button><button class="pbtn" data-a="navOpen">Navigate</button></div>
       <div class="titlerow"><div class="title">${esc(titleText())}</div><div class="dcode">${esc(C.dcode)}</div></div>
       <div class="typeline">${esc(typeLine())}</div>
       <div class="etabs">${tabBtns}</div>
       <div class="ebox">${body}</div>
-    </div>${popup}`;
+    </div>${popup}${S.nav ? navPanel() : ''}`;
 }
 function destView(){
   const list = sortedHospitals();
@@ -890,6 +901,35 @@ Object.assign(act, {
     S.view='event'; S.kb=false; dispatchNow(); render();
   }
 });
+
+// ---------- Navigate: Google Maps link and QR code ----------
+// Before Mobile: the scene (instructor's map location, else the town). After Mobile: the chosen hospital.
+function navTarget(){
+  if (S.st >= 4 && S.dest){
+    // Search by name: the stored positions are approximate town centres, Google finds the hospital itself
+    return {label:S.dest, dest: S.dest.replace(/[()]/g, '') + (/\(NSW\)/.test(S.dest) ? '' : ', South Australia')};
+  }
+  const m = String(C.mapLoc||'').trim();
+  if (/^https?:\/\//i.test(m)) return {label:'Scene (map link)', url:m};
+  if (m) return {label:m, dest:m};
+  const t = findTown(C.town) || findTown(C.station);
+  return {label:(C.town||'') + ' (town centre)', dest: t ? t[1]+','+t[2] : (C.town||'') + ', South Australia'};
+}
+function navUrl(t){ return t.url || 'https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=' + encodeURIComponent(t.dest); }
+function navPanel(){
+  const t = navTarget(), url = navUrl(t);
+  setTimeout(()=>{
+    const q = document.getElementById('navQr'); if (!q) return;
+    if (window.QRCode) { q.textContent=''; new QRCode(q, {text:url, width:180, height:180, correctLevel:QRCode.CorrectLevel.M}); }
+    else q.textContent = url;
+  }, 0);
+  return `<div class="navp"><div style="flex:1">
+      <h3>Navigate to ${S.st >= 4 && S.dest ? 'destination' : 'scene'}</h3>
+      <p>${esc(t.label)}</p>
+      <a class="go" href="${esc(url)}" target="_blank" rel="noopener" data-a="navGo">Open in Google Maps</a><button class="cl" data-a="navClose">Close</button>
+      <small>Or scan the code with a phone to open the directions there.</small>
+    </div><div class="qr" id="navQr"></div></div>`;
+}
 
 // ---------- run log ----------
 function showLog(){
