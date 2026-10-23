@@ -27,7 +27,7 @@ const WESTCOAST_API =
  * - reliableCancel:  cancel shows at once and retries until confirmed
  * - editBooking:     Edit button in My bookings (needs Apps Script v4)
  * - messageBadge:    count of new team messages on the Team
- *                    messages button (test roster first)
+ *                    messages button
  * - flexZ:           Z in the flexibility list; a single AR on Z
  *                    shows operational Z instead of D (needs Z
  *                    allowed in the cluster's Apps Script)
@@ -39,7 +39,8 @@ const STANDARD_FEATURES = [
     "loadingMessages",
     "reliableCancel",
     "editBooking",
-    "flexZ"
+    "flexZ",
+    "messageBadge"
 ];
 
 const ROSTER_TEAM_LIST = {
@@ -47,8 +48,7 @@ const ROSTER_TEAM_LIST = {
     test: {
         name: "Summer Bay",
         cluster: "Lower Eyre",
-        apiUrl: TEST_API,
-        features: [...STANDARD_FEATURES, "messageBadge"]
+        apiUrl: TEST_API
     },
     tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
