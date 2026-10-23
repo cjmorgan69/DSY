@@ -50,7 +50,7 @@
 
   /* ---------- Questions ---------- */
   var MODS = {};          // slug -> { title, code, questions }
-  var chosen = {}, answerTime = 5;
+  var chosen = {}, answerTime = 12;
 
   function load(slug) {
     return new Promise(function (resolve) {
@@ -85,7 +85,7 @@
     var lists = window.MODULE_LISTS || { ao: [] }, all = [];
     GROUPS.forEach(function (g) { (lists[g.key] || []).forEach(function (s) { all.push(s); }); });
     var pre = (params.get("m") || "").split(",").filter(Boolean);
-    var t = parseInt(params.get("t") || store("dsy-chase-time"), 10);
+    var t = parseInt(params.get("t") || store("dsy-chase-secs"), 10);
     if (TIMES.indexOf(t) >= 0) answerTime = t;
 
     loadAll(all).then(function () {
@@ -120,7 +120,7 @@
     TIMES.forEach(function (n) {
       var c = el("button", "chip", n + " seconds");
       c.type = "button"; c.dataset.t = n;
-      c.onclick = function () { answerTime = n; store("dsy-chase-time", String(n)); renderTimes(); };
+      c.onclick = function () { answerTime = n; store("dsy-chase-secs", String(n)); renderTimes(); };
       tb.appendChild(c);
     });
     renderTimes();

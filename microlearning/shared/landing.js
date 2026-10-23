@@ -1,5 +1,6 @@
 /* Landing pages. window.LANDING configures the page (all keys optional):
-     hub: [{ href, eyebrow, title, text, list, tone, soon }]  shows group tiles instead of a module list
+     hub: [{ href, eyebrow, title, text, list, tone, soon, chip, go }]  shows group tiles instead of a module list
+       (chip and go replace the module count and the "Open" label, for a tile that is not a module group)
      modules: ["slug", ...]   the modules to list (default window.MODULE_LIST); base: path prefix to the module folders
      title, subtitle, intro, logo, back: { href, label }, empty, footer: ["line", ...]
    A module list is built by loading each module's content.js. */
@@ -85,9 +86,9 @@
       a.appendChild(el("h2", null, h.title));
       if (h.text) a.appendChild(el("p", "muted", h.text));
       var chips = el("div", "row"), n = (h.list || []).length;
-      chips.appendChild(el("span", "chip" + (n ? " hi" : ""), h.soon || !n ? "Coming soon" : n + (n === 1 ? " module" : " modules")));
+      chips.appendChild(el("span", "chip" + (n || h.chip ? " hi" : ""), h.chip || (h.soon || !n ? "Coming soon" : n + (n === 1 ? " module" : " modules"))));
       a.appendChild(chips);
-      a.appendChild(el("span", "go", h.soon || !n ? "Have a look" : "Open"));
+      a.appendChild(el("span", "go", h.go || (h.soon || !n ? "Have a look" : "Open")));
       tiles.appendChild(a);
     });
     footer();
