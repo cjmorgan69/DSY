@@ -155,6 +155,12 @@
                     type="button"
                 >
                     Team messages
+                    <span
+                        id="messagesBadge"
+                        class="messages-badge"
+                        aria-hidden="true"
+                        hidden
+                    ></span>
                 </button>
 
                 <button
@@ -659,6 +665,20 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
         const MESSAGE_DELETE_TOKENS_STORAGE_KEY =
             `crew-roster-message-delete-tokens-${TEAM_NAME.toLowerCase()}`;
+
+        /*
+         * New-message badge (feature "messageBadge").
+         * This device remembers when the messages were last opened;
+         * later notes from other people are counted on the button.
+         * On a first visit, notes from the last few days count as new.
+         */
+        const MESSAGES_SEEN_STORAGE_KEY =
+            `crew-roster-messages-seen-${TEAM_NAME.toLowerCase()}`;
+
+        const NEW_MESSAGE_FIRST_VISIT_DAYS = 7;
+
+        const messagesBadge =
+            document.getElementById("messagesBadge");
 
         /*
          * Shown while the roster loads (feature "loadingMessages").
@@ -1641,6 +1661,8 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 await loadBookingsAfterSave();
 
                 showLoadedConnectionStatus();
+
+                void checkForNewMessages();
             } catch (error) {
                 console.error("Roster refresh failed:", error);
                 setConnectionStatus(error.message, "error");
@@ -3825,6 +3847,107 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 .filter(isValidMessage);
 
             renderMessages();
+
+            if (messagesModal.classList.contains("active")) {
+                markMessagesSeen(messages);
+            }
+        }
+
+        /* ----- New-message badge (feature "messageBadge") ----- */
+        function messageTime(message) {
+            return Date.parse(message.createdAt || message.timestamp);
+        }
+
+        function readMessagesSeenAt() {
+            try {
+                const value = Number(
+                    localStorage.getItem(MESSAGES_SEEN_STORAGE_KEY)
+                );
+
+                return Number.isFinite(value) && value > 0 ? value : null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function markMessagesSeen(list) {
+            if (!TEAM_FEATURES.has("messageBadge")) return;
+
+            const newest = Math.max(
+                Date.now(),
+                ...list.map(messageTime).filter(Number.isFinite)
+            );
+
+            try {
+                localStorage.setItem(
+                    MESSAGES_SEEN_STORAGE_KEY,
+                    String(newest)
+                );
+            } catch (error) {
+                // Private browsing: the badge simply shows again next visit.
+            }
+
+            setMessagesBadge(0);
+        }
+
+        function countNewMessages(list) {
+            const seenAt =
+                readMessagesSeenAt() ??
+                Date.now() - NEW_MESSAGE_FIRST_VISIT_DAYS * 86400000;
+
+            return list.filter(message =>
+                messageTime(message) > seenAt &&
+                normaliseName(message.author) !== normaliseName(currentUser)
+            ).length;
+        }
+
+        function setMessagesBadge(count) {
+            messagesBadge.hidden = count === 0;
+            messagesBadge.textContent = count > 9 ? "9+" : String(count);
+
+            if (count === 0) {
+                messagesButton.removeAttribute("aria-label");
+            } else {
+                messagesButton.setAttribute(
+                    "aria-label",
+                    `Team messages, ${count} new`
+                );
+            }
+        }
+
+        async function checkForNewMessages() {
+            if (
+                !TEAM_FEATURES.has("messageBadge") ||
+                messagesModal.classList.contains("active")
+            ) {
+                return;
+            }
+
+            try {
+                const data = await callRosterApi(
+                    "getMessages",
+                    {},
+                    { timeoutMs: 30000 }
+                );
+
+                if (
+                    !data ||
+                    data.success !== true ||
+                    !Array.isArray(data.messages) ||
+                    messagesModal.classList.contains("active")
+                ) {
+                    return;
+                }
+
+                setMessagesBadge(countNewMessages(
+                    data.messages
+                        .map(normaliseMessage)
+                        .filter(isValidMessage)
+                ));
+            } catch (error) {
+                // The badge is a convenience: never interrupt the roster.
+                console.warn("New-message check failed:", error);
+            }
         }
 
         async function loadMessages() {
