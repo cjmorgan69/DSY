@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Protocol Chase - DSY Training</title>
+<meta name="theme-color" content="#0b1410">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261023a">
+<link rel="stylesheet" href="game.css?v=20261023a">
+</head>
+<body>
+<!-- Menu: pick protocols and the answer time -->
+<main id="menu" class="screen">
+  <header class="top">
+    <a href="../" class="back">&larr; Microlearning</a>
+    <img src="../shared/dsy-logo.png" alt="DSY" class="logo">
+  </header>
+  <h1>Protocol Chase</h1>
+  <p class="lead">Eat the dots, dodge the ghosts. When a ghost catches you, answer a protocol question in time to keep your life.</p>
+  <ul class="rules">
+    <li><b>Ghost catches you:</b> answer correctly for immunity, and your dots score double for 10 seconds.</li>
+    <li><b>Power dot:</b> answer correctly to power up. Then chase the ghosts, with dots scoring double while it lasts.</li>
+    <li><b>Wrong or too slow:</b> you lose a life (ghost) or the power-up (power dot). The right answer and the reason are shown.</li>
+    <li><b>Controls:</b> swipe anywhere on the maze, or use the arrow buttons.</li>
+  </ul>
+  <section class="box">
+    <h2>Protocols</h2>
+    <div id="topics"><p class="muted">Loading questions...</p></div>
+  </section>
+  <section class="box">
+    <h2>Time to answer</h2>
+    <div class="chips" id="times"></div>
+  </section>
+  <button id="start" class="go" disabled>Start</button>
+  <p class="muted small" id="best"></p>
+  <p class="muted small">Questions are the Knowledge check questions from each DSY microlearning module, written from the SAAS
+    protocol named on each question. The game itself (rules and scoring) is DSY-written. Training only: it does not replace the
+    current protocol.</p>
+</main>
+
+<!-- Game -->
+<main id="game" class="screen" hidden>
+  <div class="hud">
+    <div><span class="lbl">Score</span><b id="score">0</b></div>
+    <div id="mult" class="mult" hidden>x2 <span id="multT"></span></div>
+    <div><span class="lbl">Level</span><b id="level">1</b></div>
+    <div id="lives" class="lives" aria-label="Lives"></div>
+    <button id="pause" class="pausebtn" aria-label="Pause">II</button>
+  </div>
+  <div id="stage"><canvas id="cv"></canvas></div>
+  <div class="pad" id="pad">
+    <button data-d="3" aria-label="Up">&#9650;</button>
+    <button data-d="2" aria-label="Left">&#9664;</button>
+    <button data-d="0" aria-label="Right">&#9654;</button>
+    <button data-d="1" aria-label="Down">&#9660;</button>
+  </div>
+
+  <div id="quiz" class="overlay" hidden>
+    <div class="card">
+      <p class="kind" id="qKind"></p>
+      <div class="bar"><i id="qBar"></i></div>
+      <p class="topic" id="qTopic"></p>
+      <p class="qtext" id="qText"></p>
+      <div class="opts" id="qOpts"></div>
+      <p class="result" id="qResult" hidden></p>
+      <p class="why" id="qWhy" hidden></p>
+      <button class="go" id="qGo" hidden>Continue</button>
+    </div>
+  </div>
+
+  <div id="paused" class="overlay" hidden>
+    <div class="card center">
+      <h2>Paused</h2>
+      <button class="go" id="resume">Resume</button>
+      <button class="ghostbtn" id="quit">End game</button>
+    </div>
+  </div>
+
+  <div id="over" class="overlay scroll" hidden>
+    <div class="card">
+      <h2 id="oTitle">Game over</h2>
+      <p class="final" id="oScore"></p>
+      <p id="oStats"></p>
+      <div id="oMissed"></div>
+      <button class="go" id="again">Play again</button>
+      <button class="ghostbtn" id="toMenu">Change protocols</button>
+    </div>
+  </div>
+</main>
+<script>window.ASSET_VERSION = "20261023a";</script>
+<script src="../modules.js?v=20261023a"></script>
+<script src="game.js?v=20261023a"></script>
+</body>
+</html>
