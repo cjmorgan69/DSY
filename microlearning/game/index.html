@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../training/theme.css?v=20261024a">
-<link rel="stylesheet" href="game.css?v=20261024a">
+<link rel="stylesheet" href="../../training/theme.css?v=20261024b">
+<link rel="stylesheet" href="game.css?v=20261024b">
 </head>
 <body>
 <!-- Menu: pick protocols and the answer time -->
@@ -37,6 +37,10 @@
   </section>
   <button id="start" class="go" disabled>Start</button>
   <p class="muted small" id="best"></p>
+  <section class="box board-box">
+    <h2>Leaderboard</h2>
+    <div id="board"><p class="muted">Loading...</p></div>
+  </section>
   <p class="muted small">Questions are the Knowledge check questions from each DSY microlearning module, written from the SAAS
     protocol named on each question. The game itself (rules and scoring) is DSY-written. Training only: it does not replace the
     current protocol.</p>
@@ -85,14 +89,22 @@
       <h2 id="oTitle">Game over</h2>
       <p class="final" id="oScore"></p>
       <p id="oStats"></p>
+      <div id="oSave" class="save">
+        <label for="oName">Your name or nickname (shown to everyone)</label>
+        <div class="save-row"><input id="oName" maxlength="24" autocomplete="nickname" enterkeyhint="done">
+          <button class="go" id="oSaveBtn" type="button">Add to leaderboard</button></div>
+        <p class="muted" id="oSaveMsg"></p>
+        <div id="oBoard"></div>
+      </div>
       <div id="oMissed"></div>
       <button class="go" id="again">Play again</button>
       <button class="ghostbtn" id="toMenu">Change protocols</button>
     </div>
   </div>
 </main>
-<script>window.ASSET_VERSION = "20261024a";</script>
-<script src="../modules.js?v=20261024a"></script>
-<script src="game.js?v=20261024a"></script>
+<script>window.ASSET_VERSION = "20261024b";</script>
+<script src="../../training/config.js?v=20261024b"></script>
+<script src="../modules.js?v=20261024b"></script>
+<script src="game.js?v=20261024b"></script>
 </body>
 </html>
