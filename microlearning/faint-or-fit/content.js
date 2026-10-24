@@ -36,7 +36,7 @@ function ffValues(yes) {                // a scenario's answers: every question 
 
 var M = window.MODULE = {
   flow: true,                         // open sections that fade in, one tile row and a few quick checks (see ../README.md)
-  draft: true,
+  draft: false,
   title: "Faint or fit?",
   subtitle: "Paramedic microlearning",
   headline: "A collapse with jerking: the history tells you which, the ECG tells you what you can't miss",
@@ -69,7 +69,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "", poster: "", title: "Faint or fit?" } },
+      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Faint or fit? Collapse with jerking in a young person" } },
       { text: "A seizure is a sudden, brief change in neurological function caused by abnormal neuronal activity in the brain. It's a symptom of an underlying disease process. Reversible causes include hypoglycaemia, hypoxia, head trauma and hyperthermia (CPG-022-P)." },
       { text: "Syncope is a brief and sudden loss of consciousness with loss of postural tone and spontaneous recovery. About 15% of children faint before the end of adolescence. Most paediatric syncope is benign: vasovagal or orthostatic (RCH)." },
       { text: "Here's the catch. A faint can cause brief jerking, especially if the person stays unconscious a little longer (a syncopal or anoxic seizure). And a seizure can be the cause, or the result, of an arrhythmia (RCH)." },
