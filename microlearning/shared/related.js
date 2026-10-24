@@ -9,6 +9,9 @@ window.RELATED = {
   "CPG-135-P": [
     { kind: "Microlearning module", title: "Crush syndrome", href: "/microlearning/crush/", text: "Who to worry about, saline before and after release, the ECG and hyperkalaemia, and what the ICP adds." }
   ],
+  "CPG-022-P": [
+    { kind: "Microlearning module", title: "Faint or fit?", href: "/microlearning/faint-or-fit/", text: "Collapse with jerking in a child or teenager: the faint-versus-seizure history, cardiac and seizure red flags, the 12-lead, treat and refer and consent." }
+  ],
   "CPG-144-P": [
     { kind: "Microlearning module", title: "Traumatic or hypoxic brain injury", href: "/microlearning/tbi/", text: "Secondary brain insults, SpO2 and blood pressure targets, the saline aliquot checker, venous return and the agitated patient." }
   ],
