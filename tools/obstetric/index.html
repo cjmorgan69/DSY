@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Obstetric emergencies - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261024b">
+<style>
+/* Obstetric emergencies companion: shoulder dystocia (with timer), cord prolapse, breech birth.
+   Content: SAAS CTL-128 Obstetric Aide-memoire v1.0 (22 January 2025), reverse side, as photographed by the owner. */
+:root { --sd: #b3392b; --warnbg: color-mix(in srgb, var(--accent) 22%, var(--surface)); --okbg: color-mix(in srgb, var(--ok) 13%, var(--surface));
+  --bluebg: color-mix(in srgb, #3b6fb6 14%, var(--surface)); --redbg: color-mix(in srgb, var(--danger) 14%, var(--surface)); }
+.wrap { gap: 1rem; padding-bottom: 6rem; }
+.top a { color: inherit; text-decoration: none; }
+.back { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: .45rem .9rem; font-weight: 600; }
+.home { display: grid; gap: .8rem; }
+.door { display: block; width: 100%; text-align: left; border: 1px solid var(--line); border-left: 8px solid var(--brand); background: var(--surface);
+  color: var(--ink); border-radius: var(--radius); padding: 1rem 1.1rem; }
+.door h2 { font-size: 1.35rem; } .door p { color: var(--muted); margin-top: .25rem; font-size: .92rem; }
+.door.sd { border-left-color: var(--sd); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: var(--warnbg); border-color: color-mix(in srgb, var(--accent) 60%, var(--line)); }
+.card.ok { background: var(--okbg); }
+.card.blue { background: var(--bluebg); }
+.card.red { background: var(--danger); color: #fff; border-color: var(--danger); font-weight: 700; text-align: center; }
+.card.red p { color: #fff; }
+.card.grey { background: color-mix(in srgb, var(--muted) 12%, var(--surface)); }
+.card.dark { background: var(--ink); color: var(--bg); text-align: center; font-weight: 700; }
+.trigger { font-weight: 700; }
+ul.ticks { display: flex; flex-direction: column; gap: .4rem; }
+ul.ticks li label { display: flex; flex-direction: row; gap: .65rem; align-items: flex-start; padding: .35rem 0; font-size: 1rem; font-weight: 400; color: var(--ink); }
+.card.warn ul.ticks li label { font-weight: 700; }
+ul.ticks input { width: 1.35rem; height: 1.35rem; flex: none; margin-top: .1rem; accent-color: var(--brand); }
+ul.ticks .at { margin-left: auto; color: var(--muted); font-size: .8rem; white-space: nowrap; padding-left: .5rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; } ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; }
+.btn { display: block; width: 100%; border: 0; border-radius: 999px; padding: .95rem 1rem; font-weight: 700; font-size: 1.05rem; background: var(--brand); color: var(--brand-ink); }
+.btn.alt { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+.btn.danger { background: var(--danger); color: #fff; }
+.btn.gold { background: var(--accent); color: #1d2a24; }
+.btns { display: grid; gap: .6rem; } .btns.two { grid-template-columns: 1fr 1fr; }
+.q { font-weight: 700; font-size: 1.15rem; }
+.q small { display: block; font-weight: 400; color: var(--muted); font-size: .88rem; }
+.flow > * + * { position: relative; }
+.arrow { text-align: center; color: var(--danger); font-weight: 800; line-height: 1; margin: -.3rem 0; }
+.answer { font-size: .85rem; color: var(--muted); }
+/* shoulder dystocia timer */
+.clock { position: sticky; top: 0; z-index: 5; background: var(--ink); color: var(--bg); border-radius: var(--radius); padding: .75rem 1rem;
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .2rem 1rem; box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+.clock .tbig { font-family: var(--font-head); font-size: 2.6rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.clock .lab { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; opacity: .75; }
+.clock .phase { text-align: right; }
+.clock .phase .tbig { font-size: 2rem; color: var(--accent); }
+.clock.alarm { background: var(--danger); color: #fff; }
+.mano { border-left: 8px solid var(--sd); }
+.mano.done { opacity: .55; border-left-color: var(--line); }
+.mano.now { box-shadow: 0 0 0 3px var(--accent); }
+.mano .head { display: flex; justify-content: space-between; gap: .5rem; align-items: baseline; }
+.mano .tag { font-size: .78rem; font-weight: 700; color: var(--sd); white-space: nowrap; }
+.bar { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); width: 0; }
+.keep { font-size: .85rem; color: var(--muted); }
+.consult { color: var(--danger); font-weight: 700; }
+.log { font-size: .85rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; }
+.toggle { display: flex; flex-direction: row; margin: 0; align-items: center; gap: .5rem; font-size: .9rem; }
+.toggle input { width: 1.2rem; height: 1.2rem; flex: none; margin: 0; accent-color: var(--brand); }
+.foot { font-size: .8rem; color: var(--muted); }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+/* Obstetric emergencies companion. Source: SAAS CTL-128 Obstetric Aide-memoire v1.0 (22 January 2025), reverse side
+   (shoulder dystocia, cord prolapse, breech birth). Nothing clinical here goes beyond that card. Routes: #sd, #cord, #breech. */
+(function () {
+  var app = document.getElementById("app");
+  var SOURCE = "SAAS CTL-128 Obstetric Aide-memoire v1.0 (22 January 2025)";
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function add(p) { for (var i = 1; i < arguments.length; i++) if (arguments[i]) p.appendChild(arguments[i]); return p; }
+  function card(cls, title, items, dots) {
+    var c = el("div", "card" + (cls ? " " + cls : ""));
+    if (title) c.appendChild(el("h3", null, title));
+    if (items) { var u = el("ul", dots === false ? null : "dots"); items.forEach(function (t) { u.appendChild(typeof t === "string" ? el("li", null, t) : t); }); c.appendChild(u); }
+    return c;
+  }
+  function arrow() { return el("div", "arrow", "↓"); }
+  function hhmmss(d) { return d.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }); }
+  function mmss(ms) { var s = Math.max(0, Math.floor(ms / 1000)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+  /* tick list: each tick shows the clock time it was ticked */
+  function ticks(items, onTick) {
+    var u = el("ul", "ticks");
+    items.forEach(function (t) {
+      var li = el("li"), lab = el("label"), cb = el("input"), at = el("span", "at");
+      cb.type = "checkbox";
+      cb.addEventListener("change", function () { at.textContent = cb.checked ? hhmmss(new Date()) : ""; if (onTick) onTick(t, cb.checked); });
+      add(lab, cb, el("span", null, t), at); li.appendChild(lab); u.appendChild(li);
+    });
+    return u;
+  }
+  function footer() {
+    return el("p", "foot", "From " + SOURCE + ". A quick-reference and training aid: it does not replace the protocol, the SAAS Clinical app or the EOC Clinician.");
+  }
+  function header(title, sub, backBtn) {
+    var top = el("header", "top"), b = el("div", "brand"), ic = el("span", "brand-icon", "D"), t = el("div");
+    add(t, el("h1", null, title), el("p", null, sub)); add(b, ic, t); top.appendChild(b);
+    if (backBtn) { var bk = el("button", "back", "‹ All"); bk.type = "button"; bk.addEventListener("click", function () { go(""); }); top.appendChild(bk); }
+    return top;
+  }
+
+  /* ---------- audio, speech, wake lock (shoulder dystocia) ---------- */
+  var actx = null, sound = true, wake = null;
+  function unlockAudio() {
+    try { if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === "suspended") actx.resume(); } catch (e) {}
+    try { if ("speechSynthesis" in window) { var u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); } } catch (e) {}
+  }
+  function beep(n) {
+    if (!sound || !actx) return;
+    for (var i = 0; i < (n || 1); i++) {
+      var o = actx.createOscillator(), g = actx.createGain(), t0 = actx.currentTime + i * 0.28;
+      o.frequency.value = 880; o.connect(g); g.connect(actx.destination);
+      g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.4, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.22);
+      o.start(t0); o.stop(t0 + 0.24);
+    }
+    try { if (navigator.vibrate) navigator.vibrate(n > 1 ? [200, 100, 200] : 200); } catch (e) {}
+  }
+  function say(text) {
+    if (!sound || !("speechSynthesis" in window)) return;
+    try { var u = new SpeechSynthesisUtterance(text); u.lang = "en-AU"; u.rate = 1; speechSynthesis.speak(u); } catch (e) {}
+  }
+  function keepAwake(on) {
+    try {
+      if (on && "wakeLock" in navigator && !wake) navigator.wakeLock.request("screen").then(function (w) { wake = w; w.addEventListener("release", function () { wake = null; }); }).catch(function () {});
+      if (!on && wake) { wake.release(); wake = null; }
+    } catch (e) {}
+  }
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible" && SD.head && !SD.ended) keepAwake(true); });
+  function spokenTime(s) { var m = Math.floor(s / 60), r = s % 60; return (m ? m + (m === 1 ? " minute" : " minutes") : "") + (m && r ? " " : "") + (r ? r + " seconds" : ""); }
+
+  /* ---------- home ---------- */
+  function home() {
+    app.textContent = "";
+    app.appendChild(header("Obstetric emergencies", "Companion to the SAAS Obstetric Aide-memoire (CTL-128)", false));
+    var h = el("div", "home");
+    [["sd", "sd", "Shoulder dystocia", "Fetal body not delivered within 60 seconds of the head. Timer with 30-second prompts."],
+     ["cord", "", "Cord prolapse", "Cord seen at, or outside, the vaginal opening."],
+     ["breech", "", "Breech birth", "Complete, footling or frank breech: step-by-step decisions."]].forEach(function (d) {
+      var b = el("button", "door " + d[1]); b.type = "button"; add(b, el("h2", null, d[2]), el("p", null, d[3]));
+      b.addEventListener("click", function () { go(d[0]); }); h.appendChild(b);
+    });
+    app.appendChild(h);
+    app.appendChild(card("dark", null, null)).textContent = "In all cases – early notification to receiving facility";
+    app.appendChild(footer());
+  }
+
+  /* ---------- shoulder dystocia ---------- */
+  var MANO = [
+    { t: "McRoberts manoeuvre", items: ["Patient flat on back, thighs to abdomen (knees to nipples)"],
+      consult: "If directed under consult by a Medical Practitioner: during active contractions, apply gentle axial traction to fetal head in line with spinal plane", say: "McRoberts manoeuvre. Thighs to abdomen." },
+    { t: "ADD: suprapubic pressure", items: ["2nd clinician, on side of birthing parent facing back of fetal head", "Apply sustained pressure with two hands just above symphysis pubis"], say: "Add suprapubic pressure." },
+    { t: "ADD: slow/gentle rocking motion", items: ["Apply a gentle and slow ‘CPR type’ rocking motion", "If nil success, continue below"], say: "Add slow, gentle rocking motion." },
+    { t: "All-fours manoeuvre", items: ["Assist patient to “all-fours” position", "ALWAYS support fetal head when changing position"], say: "All fours manoeuvre. Always support the fetal head." }
+  ];
+  var SD = { head: null, declared: false, phase: -1, phaseStart: 0, ended: null, failed: false, lastAnn: 0, alarm60: false, log: [] };
+  var sdTimer = null, sdUI = {};
+  function sdLog(what) { var now = new Date(); SD.log.push(hhmmss(now) + (SD.head ? "  +" + mmss(now - SD.head) : "") + "  " + what); if (sdUI.log) sdUI.log.textContent = SD.log.join("\n"); }
+  function sdReset() { clearInterval(sdTimer); sdTimer = null; keepAwake(false); SD = { head: null, declared: false, phase: -1, phaseStart: 0, ended: null, failed: false, lastAnn: 0, alarm60: false, log: [] }; }
+
+  function shoulder() {
+    app.textContent = "";
+    app.appendChild(header("Shoulder dystocia", "CTL-128 · 30-second manoeuvre timer", true));
+    var clock = el("div", "clock"), l = el("div"), r = el("div", "phase");
+    sdUI.lab = el("div", "lab", "Since fetal head delivery"); sdUI.big = el("div", "tbig", "0:00");
+    sdUI.plab = el("div", "lab", ""); sdUI.pbig = el("div", "tbig", "");
+    add(l, sdUI.lab, sdUI.big); add(r, sdUI.plab, sdUI.pbig); add(clock, l, r); sdUI.clock = clock;
+    app.appendChild(clock);
+
+    var tg = el("label", "toggle"), cb = el("input"); cb.type = "checkbox"; cb.checked = sound;
+    cb.addEventListener("change", function () { sound = cb.checked; if (sound) unlockAudio(); });
+    add(tg, cb, el("span", null, "Beeps and spoken 30-second prompts (turn the ringer on)"));
+    app.appendChild(tg);
+
+    var trig = card("grey", null, null); trig.appendChild(el("p", "trigger", "Fetal body has not delivered within ≤ 60 seconds after fetal head"));
+    app.appendChild(trig);
+
+    /* stage 1: start */
+    sdUI.start = el("div", "btns");
+    var bStart = el("button", "btn", "Fetal head delivered – start timer"); bStart.type = "button";
+    bStart.addEventListener("click", function () { unlockAudio(); SD.head = Date.now(); sdLog("Fetal head delivered"); keepAwake(true); tick(); paint(); });
+    sdUI.start.appendChild(bStart);
+    var bLate = el("button", "btn alt", "Head delivered earlier: start from 60 seconds"); bLate.type = "button";
+    bLate.addEventListener("click", function () { unlockAudio(); SD.head = Date.now() - 60000; SD.alarm60 = true; sdLog("Timer started late: head delivery taken as 60 s ago (check the actual time)"); keepAwake(true); tick(); paint(); });
+    sdUI.start.appendChild(bLate);
+    app.appendChild(sdUI.start);
+
+    /* stage 2: waiting for body / declare */
+    sdUI.wait = el("div", "btns");
+    var bDeclare = el("button", "btn danger", "Declare “suspected shoulder dystocia”"); bDeclare.type = "button";
+    bDeclare.addEventListener("click", function () { SD.declared = true; sdLog("Suspected shoulder dystocia declared"); say("Suspected shoulder dystocia."); paint(); });
+    sdUI.declareBtn = bDeclare;
+    add(sdUI.wait, bDeclare);
+    app.appendChild(sdUI.wait);
+
+    /* stage 3: declared */
+    sdUI.decl = el("div", "stack");
+    add(sdUI.decl,
+      (function () { var c = card("warn", null, null); c.appendChild(el("p", "trigger", "Verbally declare “suspected shoulder dystocia”")); return c; })(),
+      arrow(),
+      (function () {
+        var c = card("ok", null, null);
+        sdUI.headAt = el("p", "small muted"); c.appendChild(sdUI.headAt);
+        c.appendChild(ticks(["Note time of fetal head delivery", "Request immediate clinical support + MedSTAR Kids", "Consult the EOC Clinician (PAL / Medical Practitioner support)",
+          "Timekeeper to record details and announce 30 sec. intervals", "Discourage active pushing", "Prepare for newborn resuscitation"],
+          function (t, on) { if (on) sdLog("✓ " + t); }));
+        return c;
+      })(),
+      arrow(),
+      (function () { var c = card("red", null, null); c.appendChild(el("p", null, "AOs must not perform manoeuvres unless directed by an EOC Clinician")); return c; })()
+    );
+    var bMano = el("button", "btn gold", "Start manoeuvres (30 seconds each)"); bMano.type = "button";
+    bMano.addEventListener("click", function () { unlockAudio(); startPhase(0); });
+    sdUI.manoBtn = bMano; sdUI.decl.appendChild(bMano);
+    sdUI.manoCards = [];
+    MANO.forEach(function (m, i) {
+      var c = card("mano", null, null), hd = el("div", "head"); add(hd, el("h3", null, m.t), el("span", "tag", "30 seconds"));
+      c.appendChild(hd);
+      if (i > 0 && i < 3) c.appendChild(el("p", "keep", "Keep: " + MANO.slice(0, i).map(function (x) { return x.t.replace("ADD: ", ""); }).join(" + ")));
+      var u = el("ul", "dots"); m.items.forEach(function (t) { u.appendChild(el("li", null, t)); });
+      if (m.consult) { var li = el("li"); add(li, el("span", "consult", "If directed under consult by a Medical Practitioner: "), document.createTextNode(m.consult.replace(/^If directed under consult by a Medical Practitioner: /, ""))); u.appendChild(li); }
+      c.appendChild(u);
+      var bar = el("div", "bar"), fill = el("i"); bar.appendChild(fill); c.appendChild(bar); c._fill = fill;
+      sdUI.manoCards.push(c); sdUI.decl.appendChild(c);
+      if (i < MANO.length - 1) sdUI.decl.appendChild(arrow());
+    });
+    sdUI.failed = card("warn", null, null); sdUI.failed.appendChild(el("p", "trigger", "If all manoeuvres have failed, extricate and rapid transport"));
+    sdUI.decl.appendChild(sdUI.failed);
+    app.appendChild(sdUI.decl);
+
+    /* controls while running */
+    sdUI.run = el("div", "btns two");
+    var bNext = el("button", "btn alt", "Next manoeuvre now"); bNext.type = "button";
+    bNext.addEventListener("click", function () { if (SD.phase >= 0 && SD.phase < MANO.length) startPhase(SD.phase + 1); });
+    var bBody = el("button", "btn", "Body delivered"); bBody.type = "button";
+    bBody.addEventListener("click", function () { SD.ended = Date.now(); sdLog("Fetal body delivered"); say("Body delivered."); keepAwake(false); paint(); });
+    sdUI.nextBtn = bNext; add(sdUI.run, bNext, bBody);
+    app.appendChild(sdUI.run);
+    sdUI.bodyBtn2 = el("button", "btn", "Body delivered"); sdUI.bodyBtn2.type = "button";
+    sdUI.bodyBtn2.addEventListener("click", function () { SD.ended = Date.now(); sdLog("Fetal body delivered (no shoulder dystocia declared)"); keepAwake(false); paint(); });
+    sdUI.wait.appendChild(sdUI.bodyBtn2);
+
+    sdUI.done = card("ok", null, null); sdUI.doneText = el("p", "trigger"); sdUI.done.appendChild(sdUI.doneText);
+    sdUI.done.appendChild(el("p", null, "Newborn care and resuscitation, and post-delivery care: see the front of CTL-128."));
+    app.appendChild(sdUI.done);
+
+    app.appendChild((function () { var c = card("dark", null, null); c.textContent = "In all cases – early notification to receiving facility"; return c; })());
+
+    var lc = card(null, "Record", null); sdUI.log = el("div", "log muted", "Times appear here as you go.");
+    var copy = el("button", "btn alt", "Copy record"); copy.type = "button";
+    copy.addEventListener("click", function () { var t = "Shoulder dystocia record (" + new Date().toLocaleDateString("en-AU") + ")\n" + SD.log.join("\n");
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { copy.textContent = "Copied"; setTimeout(function () { copy.textContent = "Copy record"; }, 1500); }, function () { alert(t); }); });
+    var reset = el("button", "btn alt", "Reset"); reset.type = "button";
+    reset.addEventListener("click", function () { if (!SD.head || confirm("Clear the timer and record?")) { sdReset(); shoulder(); } });
+    add(lc, sdUI.log, el("div", "btns two")); lc.lastChild.appendChild(copy); lc.lastChild.appendChild(reset);
+    app.appendChild(lc);
+    app.appendChild(footer());
+    if (SD.log.length) sdUI.log.textContent = SD.log.join("\n");
+    if (SD.head && !SD.ended && !sdTimer) sdTimer = setInterval(tick, 250);
+    paint();
+  }
+  function startPhase(i) {
+    SD.phase = i; SD.phaseStart = Date.now();
+    if (i < MANO.length) { sdLog("Start: " + MANO[i].t); beep(2); say(MANO[i].say); }
+    else { SD.failed = true; sdLog("All manoeuvres done: extricate and rapid transport"); beep(3); say("If all manoeuvres have failed, extricate and rapid transport."); }
+    paint();
+  }
+  function tick() {
+    if (!sdTimer) sdTimer = setInterval(tick, 250);
+    if (!SD.head || SD.ended) { clearInterval(sdTimer); sdTimer = null; return; }
+    var el_ = Date.now() - SD.head, s = Math.floor(el_ / 1000);
+    if (!SD.alarm60 && el_ >= 60000) { SD.alarm60 = true; if (!SD.declared) { beep(3); say("60 seconds. Suspect shoulder dystocia."); sdLog("60 seconds since head: body not delivered"); } }
+    if (SD.declared && s >= 30 && s % 30 === 0 && s !== SD.lastAnn) {
+      SD.lastAnn = s;
+      var phaseEnds = SD.phase >= 0 && SD.phase < MANO.length && Date.now() - SD.phaseStart >= 29500;
+      if (!phaseEnds) { beep(1); say(spokenTime(s)); }
+    }
+    if (SD.phase >= 0 && SD.phase < MANO.length && Date.now() - SD.phaseStart >= 30000) startPhase(SD.phase + 1);
+    paint();
+  }
+  function paint() {
+    if (!sdUI.big || !document.body.contains(sdUI.big)) return;
+    var running = SD.head && !SD.ended, el_ = SD.head ? (SD.ended || Date.now()) - SD.head : 0;
+    sdUI.big.textContent = mmss(el_);
+    sdUI.clock.classList.toggle("alarm", !!(running && el_ >= 60000 && !SD.declared));
+    sdUI.start.hidden = !!SD.head;
+    sdUI.wait.hidden = !running || SD.declared;
+    sdUI.declareBtn.textContent = el_ >= 60000 ? "60 seconds: declare “suspected shoulder dystocia”" : "Declare “suspected shoulder dystocia”";
+    sdUI.decl.hidden = !SD.declared;
+    if (SD.head) sdUI.headAt.textContent = "Fetal head delivered at " + hhmmss(new Date(SD.head));
+    sdUI.manoBtn.hidden = SD.phase >= 0 || !!SD.ended;
+    sdUI.run.hidden = !running || !SD.declared || SD.phase < 0;
+    sdUI.nextBtn.hidden = SD.phase >= MANO.length;
+    sdUI.failed.hidden = !SD.failed;
+    var inPhase = running && SD.phase >= 0 && SD.phase < MANO.length;
+    var to60 = running && !SD.declared && el_ < 60000;
+    sdUI.plab.textContent = inPhase ? "This manoeuvre" : (to60 ? "To 60 s" : "");
+    sdUI.pbig.textContent = inPhase ? mmss(30000 - (Date.now() - SD.phaseStart) + 999) : (to60 ? mmss(60000 - el_ + 999) : "");
+    sdUI.manoCards.forEach(function (c, i) {
+      c.classList.toggle("now", inPhase && i === SD.phase); c.classList.toggle("done", SD.phase > i);
+      c._fill.style.width = (SD.phase > i ? 100 : inPhase && i === SD.phase ? Math.min(100, (Date.now() - SD.phaseStart) / 300) : 0) + "%";
+    });
+    sdUI.done.hidden = !SD.ended;
+    if (SD.ended) sdUI.doneText.textContent = "Fetal body delivered at " + hhmmss(new Date(SD.ended)) + ", " + mmss(SD.ended - SD.head) + " after the head.";
+    if (inPhase) sdUI.manoCards[SD.phase]._seen !== SD.phase && (sdUI.manoCards[SD.phase]._seen = SD.phase, sdUI.manoCards[SD.phase].scrollIntoView({ behavior: "smooth", block: "center" }));
+  }
+
+  /* ---------- cord prolapse ---------- */
+  function cord() {
+    app.textContent = "";
+    app.appendChild(header("Cord prolapse", "CTL-128", true));
+    var f = el("div", "stack");
+    var t = card("grey", null, null); t.appendChild(el("p", "trigger", "Cord seen at, or outside, vaginal opening")); f.appendChild(t);
+    f.appendChild(arrow());
+    var a = card("warn", null, null); a.appendChild(ticks(["Immediately position patient in “knee-chest” position"])); f.appendChild(a);
+    f.appendChild(arrow());
+    var b = card("ok", null, null); b.appendChild(ticks(["Extricate and urgently transport"])); f.appendChild(b);
+    f.appendChild(arrow());
+    var c = card("ok", null, null); c.appendChild(ticks(["Request immediate clinical support including MedSTAR Kids", "Minimise cord stimulus", "Consult EOC Clinician", "Prepare for newborn resus"])); f.appendChild(c);
+    f.appendChild(arrow());
+    var d = card("ok", null, null); d.appendChild(ticks(["Transport in exaggerated Sims position", "Early notification to receiving facility"])); f.appendChild(d);
+    app.appendChild(f);
+    app.appendChild(footer());
+  }
+
+  /* ---------- breech birth ---------- */
+  var ENROUTE = ["Minimise scene time", "Rapid transport", "Semi-recumbent position", "Monitor progression of birth", "Encourage breathing / panting (do not encourage pushing)"];
+  var B = {
+    imminent: { q: "Birth imminent?", sub: "Breech can be externally identified", yes: "urgent", no: "notImm" },
+    notImm: { box: ["ok", ENROUTE], progress: "Birth now imminent (breech externally identified)", progressTo: "urgent" },
+    urgent: { red: "Request URGENT clinical support and notify MedSTAR Kids", next: "footling" },
+    footling: { q: "Footling breech presentation?", yes: "footYes", no: "able" },
+    footYes: { box: ["ok", ["Extricate and rapid transport", "Consult EOC Clinician"]], also: ENROUTE, anyTime: true },
+    able: { q: "Able to rapidly extricate and transport?", yes: "ableYes", no: "allFours" },
+    ableYes: { box: ["ok", ["Rapidly extricate and transport", "Consult EOC Clinician", "Monitor progression of birth"]], also: ENROUTE, anyTime: true },
+    allFours: { orange: "Position patient in “all-fours”", box: ["ok", ["Consult EOC Clinician", "Birthing parent effort only once breech externally identified", "Anticipate newborn resuscitation and PPH if prolonged labour"]], stop: true }
+  };
+  var bPath = [];
+  function bGo(id) { bPath.push({ id: id }); if (B[id].red) bPath.push({ id: B[id].next }); breech(); }
+  function breech() {
+    app.textContent = "";
+    app.appendChild(header("Breech birth", "CTL-128 · complete, footling or frank breech", true));
+    var f = el("div", "stack"); app.appendChild(f);
+    if (!bPath.length) bPath = [{ id: "imminent" }];
+    bPath.forEach(function (step, k) {
+      var n = B[step.id], last = k === bPath.length - 1;
+      if (k) f.appendChild(arrow());
+      if (n.q) {
+        var c = card("warn", null, null), q = el("p", "q", n.q); if (n.sub) q.appendChild(el("small", null, n.sub)); c.appendChild(q);
+        if (last) {
+          var bs = el("div", "btns two");
+          [["Yes", n.yes], ["No", n.no]].forEach(function (o) { var b = el("button", "btn", o[0]); b.type = "button"; b.addEventListener("click", function () { step.ans = o[0]; bGo(o[1]); }); bs.appendChild(b); });
+          c.appendChild(bs);
+        } else c.appendChild(el("p", "answer", "Answer: " + step.ans));
+        f.appendChild(c); return;
+      }
+      if (n.red) { var r = card("red", null, null); r.appendChild(el("p", null, n.red)); f.appendChild(r); return; }
+      if (n.orange) { var o = card("warn", null, null); o.appendChild(ticks([n.orange])); f.appendChild(o); f.appendChild(arrow()); }
+      if (n.box) { var bx = card(n.box[0], null, null); bx.appendChild(ticks(n.box[1])); f.appendChild(bx); }
+      if (n.also) { var al = card("ok", "And, as for a breech that is not imminent", null); al.appendChild(ticks(n.also.filter(function (t) { return t !== "Rapid transport" && t !== "Minimise scene time" && n.box[1].indexOf(t) < 0; }))); f.appendChild(al); }
+      if (n.stop) {
+        f.appendChild(arrow());
+        var s = card("blue", null, null), h = el("h3", "consult", "STOP – Hands off"); s.appendChild(h);
+        var u = el("ul", "dots"); ["Do not attempt to pull fetus out, or apply traction; birthing parent effort will aid birth", "Encourage pushing with contractions", "If fetus fails to birth despite maternal effort, consult for advice"].forEach(function (t) { u.appendChild(el("li", null, t)); });
+        s.appendChild(u); f.appendChild(s);
+      }
+      if (last && (n.anyTime || n.progress)) {
+        var g = card("grey", null, null);
+        g.appendChild(el("p", null, n.anyTime ? "AT ANY TIME: if birth progresses (further distension of fetus, birthing parent effort increases)" : "If the birth becomes imminent:"));
+        var b = el("button", "btn gold", n.anyTime ? "Birth progressing: position all-fours" : n.progress); b.type = "button";
+        b.addEventListener("click", function () { bGo(n.anyTime ? "allFours" : n.progressTo); });
+        g.appendChild(b); f.appendChild(g);
+      }
+    });
+    var ctl = el("div", "btns two");
+    var back = el("button", "btn alt", "Back a step"); back.type = "button"; back.disabled = bPath.length < 2;
+    back.addEventListener("click", function () { bPath.pop(); if (bPath.length > 1 && B[bPath[bPath.length - 1].id].red) bPath.pop(); while (bPath.length > 1 && B[bPath[bPath.length - 1].id].red) bPath.pop(); var l = bPath[bPath.length - 1]; delete l.ans; breech(); });
+    var again = el("button", "btn alt", "Start again"); again.type = "button"; again.addEventListener("click", function () { bPath = []; breech(); });
+    add(ctl, back, again); app.appendChild(ctl);
+    app.appendChild((function () { var c = card("dark", null, null); c.textContent = "In all cases – early notification to receiving facility"; return c; })());
+    app.appendChild(footer());
+  }
+
+  /* ---------- routing ---------- */
+  function go(r) { if (location.hash.slice(1) !== r) location.hash = r; else route(); }
+  function route() {
+    var r = location.hash.slice(1);
+    window.scrollTo(0, 0);
+    if (r === "sd") shoulder(); else if (r === "cord") cord(); else if (r === "breech") breech(); else home();
+  }
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>
+</body>
+</html>
