@@ -89,6 +89,7 @@
     if (TIMES.indexOf(t) >= 0) answerTime = t;
 
     loadAll(all).then(function () {
+      showBoard($("board"), "all");
       var box = $("topics"); box.textContent = "";
       GROUPS.forEach(function (g) {
         var slugs = (lists[g.key] || []).filter(function (s) { return MODS[s] && MODS[s].questions.length; });
@@ -173,7 +174,8 @@
     Object.keys(chosen).forEach(function (s) { if (chosen[s]) pool = pool.concat(MODS[s].questions); });
     if (!pool.length) return;
     shuffle(pool); poolI = 0;
-    S = { score: 0, lives: LIVES, level: 1, asked: 0, right: 0, missed: [], doubleT: 0, chain: 0 };
+    S = { score: 0, lives: LIVES, level: 1, asked: 0, right: 0, missed: [], doubleT: 0, chain: 0, secs: answerTime,
+      protocols: Object.keys(MODS).filter(function (s) { return chosen[s]; }) };
     $("menu").hidden = true; $("game").hidden = false; $("over").hidden = true;
     window.scrollTo(0, 0);
     fit();
@@ -378,6 +380,10 @@
     $("oTitle").textContent = isBest && S.score ? "New best score!" : "Game over";
     $("oScore").textContent = S.score;
     $("oStats").textContent = "Level " + S.level + ". Questions right: " + S.right + " of " + S.asked + ".";
+    $("oSave").hidden = !S.score || !DB.supabaseUrl;
+    $("oName").value = store("dsy-chase-name") || "";
+    $("oSaveBtn").disabled = false; $("oSaveBtn").textContent = "Add to leaderboard";
+    $("oSaveMsg").textContent = ""; $("oBoard").textContent = "";
     var box = $("oMissed"); box.textContent = "";
     if (S.missed.length) {
       box.appendChild(el("h2", null, "Worth another look"));
@@ -394,6 +400,69 @@
     }
     $("over").hidden = false; $("over").scrollTop = 0;
   }
+
+  /* ---------- Leaderboard (Supabase table public.game_scores: anyone can read and add, nobody can edit) ---------- */
+  var DB = window.TRAINING_APP || {};
+  function api(path, opts) {
+    opts = opts || {};
+    opts.headers = Object.assign({ apikey: DB.supabaseKey, Authorization: "Bearer " + DB.supabaseKey, "Content-Type": "application/json" }, opts.headers || {});
+    return fetch(DB.supabaseUrl + "/rest/v1/" + path, opts).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+  }
+  function fetchBoard(period) {
+    var q = "game_scores?select=id,player,score,level,correct,asked,answer_secs,protocols,created_at&game=eq.protocol-chase&order=score.desc,created_at.asc&limit=20";
+    if (period === "month") { var d = new Date(); q += "&created_at=gte." + encodeURIComponent(new Date(d.getFullYear(), d.getMonth(), 1).toISOString()); }
+    return api(q);
+  }
+  function protocolNames(list) {
+    return list.map(function (s) { return MODS[s] ? MODS[s].title + (MODS[s].code ? " (" + MODS[s].code.replace(/-/g, "\u2011") + ")" : "") : s; }).join(", ");
+  }
+  // box gets All time / This month buttons and the top 20; mine = id of the row to highlight
+  function showBoard(box, period, mine) {
+    if (!DB.supabaseUrl) return;
+    box.textContent = "";
+    var tabs = el("div", "chips board-tabs");
+    [["all", "All time"], ["month", "This month"]].forEach(function (t) {
+      var b = el("button", "chip" + (t[0] === period ? " on" : ""), t[1]);
+      b.type = "button"; b.onclick = function () { showBoard(box, t[0], mine); };
+      tabs.appendChild(b);
+    });
+    box.appendChild(tabs);
+    var list = el("ol", "board"); list.appendChild(el("li", "muted", "Loading...")); box.appendChild(list);
+    fetchBoard(period).then(function (rows) {
+      list.textContent = "";
+      if (!rows.length) list.appendChild(el("li", "muted", "No scores yet. Be the first."));
+      rows.forEach(function (r, i) {
+        var li = el("li", r.id === mine ? "me" : null);
+        var top = el("div", "row1");
+        top.appendChild(el("span", "rank", String(i + 1)));
+        top.appendChild(el("span", "who", r.player));
+        top.appendChild(el("b", null, String(r.score)));
+        li.appendChild(top);
+        li.appendChild(el("p", "meta", "Level " + r.level + " \u00b7 " + r.correct + " of " + r.asked + " right \u00b7 " + r.answer_secs + " s to answer"));
+        li.appendChild(el("p", "protos", protocolNames(r.protocols)));
+        list.appendChild(li);
+      });
+      if (mine && !rows.some(function (r) { return r.id === mine; })) list.appendChild(el("li", "muted", "Your score is saved but not in this top 20 yet."));
+    }).catch(function () { list.textContent = ""; list.appendChild(el("li", "muted", "The leaderboard could not be loaded. Check your connection.")); });
+  }
+  function saveScore() {
+    var name = $("oName").value.replace(/\s+/g, " ").trim().slice(0, 24);
+    if (!name) { $("oSaveMsg").textContent = "Type a name first."; $("oName").focus(); return; }
+    store("dsy-chase-name", name);
+    var btn = $("oSaveBtn"); btn.disabled = true; btn.textContent = "Saving...";
+    api("game_scores", { method: "POST", headers: { Prefer: "return=representation" }, body: JSON.stringify({
+      player: name, score: S.score, level: Math.min(S.level, 99), correct: S.right, asked: S.asked, answer_secs: S.secs, protocols: S.protocols
+    }) }).then(function (rows) {
+      btn.textContent = "Saved"; $("oSaveMsg").textContent = "";
+      showBoard($("oBoard"), "all", rows && rows[0] && rows[0].id);
+      showBoard($("board"), "all");
+    }).catch(function () {
+      btn.disabled = false; btn.textContent = "Add to leaderboard";
+      $("oSaveMsg").textContent = "Could not save. Check your connection and try again.";
+    });
+  }
+  $("oSaveBtn").onclick = saveScore;
+  $("oName").addEventListener("keydown", function (e) { if (e.key === "Enter") saveScore(); });
 
   /* ---------- Drawing ---------- */
   var cv = $("cv"), ctx = cv.getContext("2d"), walls = document.createElement("canvas"), T = 16, dpr = 1;
