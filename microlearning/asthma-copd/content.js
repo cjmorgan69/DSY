@@ -8,7 +8,7 @@
    - CTL-049 Asthma Severity Classification
    - CPPRO-014 Continuous Positive Airway Pressure v1.0 (8 March 2018; review date 1 April 2021 has passed)
    - Doses and scope from the SAAS Clinical app medicine table.
-   The case study is the lead instructor's own job (25 Oct 2026), shared by them. Where the two guidelines differ and
+   The case study is presented as a hypothetical job (owner, 25 Oct 2026). Where the two guidelines differ and
    neither says which wins, the page says so: it does not choose. */
 var AC_TALK = [
   { value: "sentences", label: "Sentences" },
@@ -28,7 +28,7 @@ var M = window.MODULE = {
   title: "Asthma or COPD?",
   subtitle: "Paramedic microlearning",
   headline: "One patient, two guidelines: where each treatment comes from",
-  lead: "A patient with COPD on home oxygen can also have an asthma attack. The SAAS asthma and COPD guidelines then both apply, and they don't always agree. This module grades the asthma, sets the two guidelines side by side, covers CPAP, and walks through a real job.",
+  lead: "A patient with COPD on home oxygen can also have an asthma attack. The SAAS asthma and COPD guidelines then both apply, and they don't always agree. This module grades the asthma, sets the two guidelines side by side, covers CPAP, and walks through a hypothetical job.",
   minutes: 20,
 
   protocol: {
@@ -45,7 +45,7 @@ var M = window.MODULE = {
   footerNotes: [
     "Doses and scope are from the SAAS Clinical app medicine table. Always check the app.",
     "CPPRO-014 (CPAP) had a review date of 1 April 2021, which has passed.",
-    "The case study is a real job shared by the DSY lead instructor. The scenarios, practical and the notes marked \"DSY\" were written for training and should be checked by your lead instructor."
+    "The case study is a hypothetical job. The case study, scenarios, practical and the notes marked \"DSY\" were written for training and should be checked by your lead instructor."
   ],
 
   session: {
@@ -54,7 +54,7 @@ var M = window.MODULE = {
       { t: "Read the introduction", time: "3 min", text: "Then ask: when does a COPD patient's breathlessness belong on the asthma guideline?" },
       { t: "Grade it", time: "4 min", text: "Read the severity table. Which single finding is enough for severe? For life-threatening?" },
       { t: "Two guidelines side by side", time: "5 min", text: "Go row by row. For each difference, say what you would do and who you would call." },
-      { t: "The job", time: "5 min", text: "Read the real job. Would you have done anything differently? Talk about inline nebs and adrenaline." },
+      { t: "The job", time: "5 min", text: "Read the job. Would you have done anything differently? Talk about inline nebs and adrenaline." },
       { t: "Checker and quiz", time: "8 min", text: "Work the checker scenarios, deciding before you press the button. Then everyone does the quiz alone." }
     ]
   },
@@ -144,7 +144,7 @@ var M = window.MODULE = {
     ] },
 
     { title: "The job", blocks: [
-      { text: "A real job from the DSY lead instructor, working with an Intensive Care Paramedic." },
+      { text: "A hypothetical job: a paramedic and an Intensive Care Paramedic working together." },
       { box: { title: "What they found", items: [
         "67-year-old woman with COPD, on home oxygen via a concentrator. Called for shortness of breath",
         "Dry wheeze with a prolonged expiratory phase. Couldn't speak in full sentences",
@@ -273,7 +273,7 @@ var M = window.MODULE = {
             note: "Doses from CPG-113, CPG-115 and the SAAS Clinical app. If signs suggest allergy or anaphylaxis, use the anaphylaxis guideline instead." };
         },
         disclaimer: "Training aid only. Use the current guidelines, the SAAS Clinical app and the EOC Clinician for real patients.",
-        scenariosNote: "Scenario 1 is the real job. The others were written for training by DSY from the guideline criteria. Decide before pressing the button.",
+        scenariosNote: "Scenario 1 is the job above. The scenarios were written for training by DSY from the guideline criteria. Decide before pressing the button.",
         scenarios: [
           { title: "The job", text: "67, COPD on home oxygen. Dry wheeze, can't finish a sentence, RR 40, GCS 15, pink. SpO2 85% on her concentrator, not improving with nebs. ICP on scene.", values: acValues({ talk: "words", wob: true, spo2: 85, on: "oxygen", copd: true, bd: true, icp: "icp" }) },
           { title: "Sports night", text: "24, known asthmatic, wheezy after netball. Talking in sentences, SpO2 97% in air.", values: acValues({ talk: "sentences", spo2: 97, on: "air", icp: "p" }) },
