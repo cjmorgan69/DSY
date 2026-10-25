@@ -3,7 +3,8 @@
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
   "CPG-113-P": [
-    { kind: "Microlearning module", title: "Asthma or COPD?", href: "/microlearning/asthma-copd/", text: "When both guidelines apply: grading the asthma, oxygen, magnesium, adrenaline and CPAP side by side, and a worked job." }
+    { kind: "Microlearning module", title: "Asthma or COPD?", href: "/microlearning/asthma-copd/", text: "When both guidelines apply: grading the asthma, oxygen, magnesium, adrenaline and CPAP side by side, and a worked job." },
+    { kind: "Microlearning module (rural ED nursing)", title: "Asthma or COPD? In the rural ED", href: "/microlearning/asthma-copd-ed/", text: "The first hour in a rural ED: grading, the 88 to 92% oxygen target, nebs, steroids, magnesium, escalation and the ambulance handover." }
   ],
   "CPP-006-AO": [
     { kind: "Microlearning module", title: "Burns", href: "/microlearning/burns/", text: "Airway burns first, 20 minutes of running water, hydrogel limits, chemical burns, covering and keeping warm, and the rule of nines." },
