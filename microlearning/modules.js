@@ -4,6 +4,6 @@
 window.MODULE_LISTS = {
   ao: ["stroke", "envenomation", "hypoglycaemia", "chest-pain", "anaphylaxis", "asthma", "sepsis", "falls", "pain", "acpo", "headache", "nausea", "burns"],
   paramedic: ["tbi", "crush", "faint-or-fit", "asthma-copd"],
-  rn: ["sepsis-nursing"]
+  rn: ["sepsis-nursing", "asthma-copd-ed"]
 };
 window.MODULE_LIST = window.MODULE_LISTS.ao;
