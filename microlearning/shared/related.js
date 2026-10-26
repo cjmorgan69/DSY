@@ -2,6 +2,9 @@
    codes in its relatedCodes). Each page lists the others under "Built on the same protocol" and leaves itself out.
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
+  "CPP-063-AO": [
+    { kind: "Microlearning module", title: "Baseline obs at a high-speed MVA", href: "/microlearning/mva-baseline/", text: "Why the first complete set matters: obs every 15 minutes, the RDR chart's escalation triggers, the Major Trauma Tool, shock and the cold in the trend, and AO care at the crash." }
+  ],
   "CPG-113-P": [
     { kind: "Microlearning module", title: "Asthma or COPD?", href: "/microlearning/asthma-copd/", text: "When both guidelines apply: grading the asthma, oxygen, magnesium, adrenaline and CPAP side by side, and a worked job." },
     { kind: "Microlearning module (rural ED nursing)", title: "Asthma or COPD? In the rural ED", href: "/microlearning/asthma-copd-ed/", text: "The first hour in a rural ED: grading, the 88 to 92% oxygen target, nebs, steroids, magnesium, escalation and the ambulance handover." }
