@@ -5,10 +5,13 @@ window.DRIVE_SECTIONS = [];
   var files = [
     'lesson1-human-body.js',
     'lesson2-postures.js',
-    'lesson3-ambulant.js'
-    // , 'lesson4-something.js'
+    'lesson3-ambulant.js',
+    'lesson4b-equipment.js',
+    'lesson5-bariatric.js',
+    'optional-stryker.js'
+    // , 'lesson6-something.js'
   ];
   files.forEach(function (f) {
-    document.write('<script src="data/' + f + '?v=20261028e" charset="utf-8"><\/script>');
+    document.write('<script src="data/' + f + '?v=20261028f" charset="utf-8"><\/script>');
   });
 })();

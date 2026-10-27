@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Manual Tasks presenter view</title>
-<link rel="stylesheet" href="assets/style.css?v=20261028e">
+<link rel="stylesheet" href="assets/style.css?v=20261028f">
 <style>
   html, body { overflow: auto; background: #f1f6f4; color: var(--ink); }
   .wrap { max-width: 1100px; margin: 0 auto; padding: 18px 24px 40px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; }
@@ -45,8 +45,8 @@
   </div>
 </div>
 <p class="small" style="text-align:center">Keep the slide show window open (it is what the group sees). Arrow keys here also move the slides.</p>
-<script src="data/manifest.js?v=20261028e"></script>
-<script src="assets/common.js?v=20261028e"></script>
+<script src="data/manifest.js?v=20261028f"></script>
+<script src="assets/common.js?v=20261028f"></script>
 <script>
 (function () {
   var D = window.DRIVE, E = D.esc, slides = D.flat(), t0 = Date.now();
@@ -54,7 +54,7 @@
   function render(g, step, max) {
     var it = slides[g]; if (!it) return;
     document.getElementById('cur').textContent = D.title(it.s);
-    document.getElementById('meta').textContent = 'Lesson ' + it.sec.number + ' · slide ' + it.n + ' of ' + it.sec.slides.length + (max ? ' · reveal ' + step + ' of ' + max : '');
+    document.getElementById('meta').textContent = '' + D.secName(it.sec) + ' · slide ' + it.n + ' of ' + it.sec.slides.length + (max ? ' · reveal ' + step + ' of ' + max : '');
     document.getElementById('notesBody').innerHTML = D.notesHTML(it.s);
     var nx = max && step < max ? { s: { title: 'Reveal next point on this slide' } } : (slides[g + 1] || null);
     document.getElementById('nextTitle').textContent = nx ? D.title(nx.s) : 'End of the slides';

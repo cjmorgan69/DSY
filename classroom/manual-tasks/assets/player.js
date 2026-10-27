@@ -19,7 +19,7 @@
   function callout(c) {
     return '<div class="callout">' + (c.head ? '<h3>' + E(c.head) + '</h3>' : '') + '<p>' + E(c.text) + '</p></div>';
   }
-  function lab(it) { return '<div class="lab">Manual Tasks  |  Lesson ' + it.sec.number + ': ' + E(it.sec.title) + '</div>'; }
+  function lab(it) { return '<div class="lab">Manual Tasks  |  ' + D.secName(it.sec) + ': ' + E(it.sec.title) + '</div>'; }
 
   var R = {
     title: function (s, it) {
@@ -140,10 +140,10 @@
     applyStep();
     fit();
     // notes
-    document.getElementById('notes').innerHTML = '<h3>' + E(D.title(it.s)) + '</h3><div class="nsec">Lesson ' + it.sec.number + ' · slide ' + it.n + ' of ' + it.sec.slides.length + '</div>' + D.notesHTML(it.s);
+    document.getElementById('notes').innerHTML = '<h3>' + E(D.title(it.s)) + '</h3><div class="nsec">' + D.secName(it.sec) + ' · slide ' + it.n + ' of ' + it.sec.slides.length + '</div>' + D.notesHTML(it.s);
     document.getElementById('notes').scrollTop = 0;
     // chrome
-    document.getElementById('count').textContent = 'Lesson ' + it.sec.number + ' · ' + it.n + ' / ' + it.sec.slides.length;
+    document.getElementById('count').textContent = '' + D.secName(it.sec) + ' · ' + it.n + ' / ' + it.sec.slides.length;
     document.getElementById('progress').style.width = ((cur + 1) / slides.length * 100) + '%';
     document.title = 'Manual Tasks: ' + D.title(it.s);
     if (!ART) history.replaceState(null, '', '#' + it.sec.id + '/' + it.n);
@@ -175,7 +175,7 @@
   /* ---------- menu ---------- */
   var menu = document.getElementById('menu'), mh = '', lastSec = -1;
   slides.forEach(function (it, idx) {
-    if (it.si !== lastSec) { lastSec = it.si; mh += '<h3>Lesson ' + it.sec.number + ': ' + E(it.sec.title) + '</h3>'; }
+    if (it.si !== lastSec) { lastSec = it.si; mh += '<h3>' + D.secName(it.sec) + ': ' + E(it.sec.title) + '</h3>'; }
     mh += '<a href="#' + it.sec.id + '/' + it.n + '" data-g="' + idx + '"><span class="n">' + it.n + '</span><span>' + E(D.title(it.s)) + (it.s.vimeo ? ' <span class="v">&#9654;</span>' : '') + '</span></a>';
   });
   menu.innerHTML = mh;
@@ -190,7 +190,7 @@
     var h = '<button class="gclose" id="gClose">Close guide (Esc)</button><h1>Manual Tasks facilitator guide</h1><p class="small">Slide-by-slide notes. Times are suggestions only.</p>';
     D.sections.forEach(function (sec) {
       var total = 0; sec.slides.forEach(function (s) { total += (s.notes && s.notes.time) || 0; });
-      h += '<h2>Lesson ' + sec.number + ': ' + E(sec.title) + '</h2><p class="small">' + sec.slides.length + ' slides · suggested time about ' + total + ' min</p>';
+      h += '<h2>' + D.secName(sec) + ': ' + E(sec.title) + '</h2><p class="small">' + sec.slides.length + ' slides · suggested time about ' + total + ' min</p>';
       sec.slides.forEach(function (s, i) {
         var n = s.notes || {};
         h += '<div class="gslide"><h3>Slide ' + (i + 1) + ': ' + E(D.title(s)) + (n.time ? ' <span class="gtag">' + n.time + ' min</span>' : '') + '</h3>';
