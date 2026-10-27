@@ -41,6 +41,7 @@ ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 8
 table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
 table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
 table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+@media (max-width: 420px) { table.t th, table.t td { padding: .35rem .3rem; font-size: .86rem; } }
 .ticks { display: flex; flex-direction: column; gap: .2rem; }
 .ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
 .ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
@@ -95,6 +96,8 @@ var SRC = {
   c009: "CPPRO-009 Oral Medication Administration v1.0",
   c010: "CPPRO-010 Drawing Up and Labelling Medications v1.0",
   c011: "CPPRO-011 Intramuscular Injection v1.0",
+  ctl075: "CTL-075 GCS (Glasgow Coma Score)",
+  ctl070: "CTL-070 Adult RDR Chart",
   dsy: "DSY-written for practice: check with your instructor"
 };
 
@@ -262,7 +265,64 @@ var STATIONS = [
       "Swap."
     ] }
   ],
-  checks: ["Recovery position done well", "Chin lift and jaw thrust both shown", "Suction tested, only as far as you can see", "OPA sized and inserted, out at once on gagging"] }
+  checks: ["Recovery position done well", "Chin lift and jaw thrust both shown", "Suction tested, only as far as you can see", "OPA sized and inserted, out at once on gagging"] },
+
+{ id: "s5", n: 5, title: "GCS: score it right", mins: 15,
+  goal: "Score eye, verbal and motor responses separately from CTL-075, for an adult, a young child and a baby, and record E, V and M as well as the total.",
+  kit: ["CTL-075 GCS printed, or the SAAS Clinical app's GCS calculator", "The patient cards below", "A blank PCR or notepad"],
+  blocks: [
+    { h: "Adult (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Obeys commands"],
+      ["5", "", "Orientated", "Purposeful movement"],
+      ["4", "Spontaneous", "Confused conversation", "Withdraws"],
+      ["3", "To speech", "Inappropriate words", "Flexion to pain"],
+      ["2", "To pain", "Incomprehensible sounds", "Extension to pain"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "2 to 4 years (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Obeys commands"],
+      ["5", "", "Appropriate words, smile", "Localises to pain"],
+      ["4", "Spontaneous", "Consolable cry, few words", "Withdraws from pain"],
+      ["3", "To voice", "Inappropriate words, persistent irritable cry", "Flexion to pain"],
+      ["2", "To pain", "Incomprehensible words, agitated, cries only to pain", "Extension to pain"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "Baby (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Normal, spontaneous"],
+      ["5", "", "Alert, coos, babbles", "Withdraws to touch"],
+      ["4", "Spontaneous", "Irritable, consolable cry", "Withdraws from pain"],
+      ["3", "To speech or shout", "Cry to pain", "Flexion responses"],
+      ["2", "To pain", "Cry or moan to pain, restless", "Extensor responses"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "Note on CTL-075", src: ["dsy"], tone: "warn", list: [
+      "CTL-075 heads the baby scale \"≥ 1 year old\", but the scale (coos, babbles) is for babies: it is probably meant to read under 1. It also has no scale for 1 to 2 years. Check with your instructor or the SAAS Clinical app"
+    ] },
+    { h: "Getting it right", src: ["dsy", "ctl070"], list: [
+      "Score each part on its own, then add them up: lowest total 3, highest 15",
+      "Write it as E, V and M with the total (for example E3 V4 M6 = 13). The parts tell the next person more than the total",
+      "Score the best response you see. If one arm is weak (stroke), score the better arm",
+      "Can't speak because of the stroke itself? Score what you see and write why",
+      "On the RDR chart (CTL-070): 15 white, 13 to 14 yellow, 9 to 12 red, 8 or less purple",
+      "Repeat it with every set of obs and compare with the first"
+    ] },
+    { h: "Patient cards", src: ["dsy", "ctl075"], cases: [
+      { who: "A. Frank", text: "Eyes open when you speak to him. Thinks he's at home when he's at the club. Squeezes your hand when asked.", answer: "E3 V4 M6 = 13." },
+      { who: "B. Ron, very low sugar", text: "Eyes closed, open only to pain. Moans, no words. Pulls his hand away from the pain.", answer: "E2 V2 M4 = 8." },
+      { who: "C. Can't find the words", text: "Eyes open on their own. Says random, wrong words. Doesn't follow commands but reaches up and pushes your hand away from the pain.", answer: "E4 V3 M5 = 12. Purposeful movement is 5." },
+      { who: "D. No speech since the stroke", text: "Eyes open on their own. Can't make any words since the stroke started. Obeys commands with the left hand.", answer: "E4 V1 M6 = 11. Record why: no speech from the stroke, obeys commands." },
+      { who: "E. Deeply unconscious", text: "No eye opening, no sounds. To pain, both arms bend in at the elbows.", answer: "E1 V1 M3 = 5. Purple zone on the RDR chart: protect the airway, consult the EOC Clinician." },
+      { who: "F. Child, 3", text: "Eyes open when you call her name. Crying but settles with mum, says a few words. Does what you ask.", answer: "2 to 4 years scale: E3 V4 M6 = 13." },
+      { who: "G. Baby, 8 months", text: "Eyes open, watching you. Irritable but settles when held. Pulls away when you touch the foot.", answer: "Baby scale: E4 V4 M5 = 13." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person reads a card aloud. Everyone writes E, V and M on their own before anyone says the answer.",
+      "Compare, then open the answer. Check any disagreement against CTL-075 or the app's calculator.",
+      "Then act a few out: one person is the patient, the other scores without the card."
+    ] }
+  ],
+  checks: ["Scored E, V and M separately", "Wrote E V M and the total", "Used the right scale for the child and the baby", "Scored the best response", "Named the RDR zone for the total"] }
+
 ];
 
 var END = { title: "Finish together", mins: 25,
@@ -413,8 +473,8 @@ function setupPage(print) {
   f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
     ["Before", "Everyone does the microlearning \"Hypoglycaemia\" (about 20 min). Send the link a few days ahead."],
     ["0:00", "Read the safety boxes together (finger pricks only with consent; training paste and glucagon kits are never given to anyone; injections into a pad). Split into pairs or threes."],
-    ["0:05", "Rotate through stations 1 to 4 (15 to 20 min each). Partners tick the checks on the phone."],
-    ["about 1:20", "Finish together: Ron's walk-through as one crew, then the knowledge check."],
+    ["0:05", "Rotate through stations 1 to 5 (15 to 20 min each). Partners tick the checks on the phone."],
+    ["about 1:35", "Finish together: Ron's walk-through as one crew, then the knowledge check."],
     ["End", "Share the record with the instructor. Pack up and reset."]
   ] } }));
   var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
@@ -426,6 +486,7 @@ function setupPage(print) {
     "Station 2: expired glucose paste labelled TRAINING, the cards.",
     "Station 3: expired glucagon kits labelled TRAINING and kept apart from operational stock, syringes, blunt fill and IM needles, injection pad, sharps container.",
     "Station 4: airway manikin, portable suction charged, Y-catheters and suction handle, OPAs, a mat.",
+    "Station 5: printed CTL-075 GCS tables or the SAAS Clinical app, pens and paper.",
     "Leave this page open on one phone so the group can find the finish."
   ] }));
   f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
@@ -449,7 +510,7 @@ function home() {
   var f = document.createDocumentFragment();
   f.appendChild(header("A practical night you can run as a team"));
   var i = el("section", "stack");
-  i.appendChild(el("p", null, "Four stations to practise the hands-on parts of a hypoglycaemia job, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  i.appendChild(el("p", null, "Five stations to practise the hands-on parts of a hypoglycaemia job, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
   var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
   pre.appendChild(el("p", null, "Everyone does the microlearning \"Hypoglycaemia\" first (about 20 minutes)."));
   var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/hypoglycaemia/", "btn small")); pre.appendChild(pb);
@@ -464,7 +525,7 @@ function home() {
   f.appendChild(list);
   var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
   f.appendChild(ins);
-  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cpp009, SRC.c008, SRC.c009, SRC.c010, SRC.c011, SRC.cssg].join(", ") +
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cpp009, SRC.c008, SRC.c009, SRC.c010, SRC.c011, SRC.ctl075, SRC.cssg].join(", ") +
     ". The review dates of CPPRO-008 to CPPRO-011 (June 2020) have passed. The glucagon mixing steps are CPPRO-010's general steps for a dry powder: check them against your kit. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
   return f;
 }
