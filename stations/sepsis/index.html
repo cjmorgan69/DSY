@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sepsis skills stations - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261027c">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+@media (max-width: 420px) { table.t th, table.t td { padding: .35rem .3rem; font-size: .86rem; } }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Sepsis skills stations (AO). Built 27 Oct 2026 for a group training night without the instructor present, to go with the
+   module /microlearning/sepsis/ and the walk-through /modules/sepsis/ (Robert, 71).
+   Sources: CPP-062-AO Sepsis v1.0 (Dec 2025) and CTL-062 NEWS2 Adult Sepsis Screening Tool v1.1, as checked for the module
+   (written for crews who have done the 2025 sepsis training and carry ceftriaxone, as the owner asked); CPPRO-008 Medication
+   Checks, CPPRO-010 Drawing Up and Labelling Medications and CPPRO-011 Intramuscular Injection (v1.0, review June 2020
+   passed); CTL-075 GCS and CTL-070 Adult RDR Chart; SAAS Clinical Skills Study Guide v3.2 (released Oct 2026; owner's scanned
+   copy, not stored in the repo), read for tympanic temperature. The NEWS2 points table itself is not reproduced: crews use
+   the SAAS app's NEWS2 Sepsis Scoring Calculator. Patient cards and how-to-run notes are DSY-written and marked as such. */
+var SRC = {
+  cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
+  cpp062: "CPP-062-AO Sepsis v1.0",
+  ctl062: "CTL-062 NEWS2 Adult Sepsis Screening Tool v1.1",
+  c008: "CPPRO-008 Medication Checks v1.0",
+  c010: "CPPRO-010 Drawing Up and Labelling Medications v1.0",
+  c011: "CPPRO-011 Intramuscular Injection v1.0",
+  ctl075: "CTL-075 GCS (Glasgow Coma Score)",
+  ctl070: "CTL-070 Adult RDR Chart",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "Obs, temperature and NEWS2", mins: 20,
+  goal: "Take a full set of obs including a tympanic temperature, score it with the SAAS app's NEWS2 calculator, and apply the CTL-062 band.",
+  kit: ["Braun ThermoScan and probe covers", "BP cuff and stethoscope, watch, Corpuls3 with SpO2", "A phone with the SAAS Clinical app (NEWS2 Sepsis Scoring Calculator)", "PPE"],
+  blocks: [
+    { h: "Every patient with a suspected infection (CPP-062-AO)", src: ["cpp062"], steps: [
+      "Wear appropriate PPE.",
+      "Basic care and life support. SpO2 below 94%: high-flow oxygen. Suspected or known chronic lung disease: consult the EOC Clinician immediately about oxygen.",
+      "Adults: NEWS2 Sepsis Scoring Calculator with the NEWS2 Adult Sepsis Screening Tool (CTL-062).",
+      "Request clinical support."
+    ] },
+    { h: "Tympanic temperature (study guide)", src: ["cssg"], steps: [
+      "PPE. Press the probe firmly into a new cover: it turns on. Wait for the ready beep.",
+      "Fit the probe snugly in the ear canal, not forcefully or deep. Keep the patient still.",
+      "Press and release start. A long beep and the ExacTemp light: read it. Short beeps and POS: not positioned right, try again.",
+      "Eject the cover into the bin. It turns off after 60 seconds.",
+      "Not with blood or drainage in the ear canal. Hearing aids out and wait 20 minutes. Lying on that ear, covered ears, very hot or cold surroundings or a recent swim can change the reading."
+    ] },
+    { h: "CTL-062 bands (adults)", src: ["ctl062"], table: { head: ["NEWS2", "Risk", "Do"], rows: [
+      ["7 or more", "Very high", "Manage as per the sepsis CPP; clinical support if required; rapid transport with a GRN notification; say \"suspected sepsis\" at handover. Obs and NEWS2 every 15 min"],
+      ["5 to 6, or any single 3", "High", "Consider the sepsis CPP and clinical support; transport; say \"suspected sepsis\". Obs and NEWS2 every 15 min"],
+      ["3 to 4", "Moderate", "Consider transport, or treat and refer; say \"suspected sepsis\" at handover. Obs and NEWS2 every 15 min"],
+      ["0 to 2, no risk factors", "Low", "Consider treat and discharge or refer; transport if any concern. At least two sets of obs including a NEWS2"]
+    ] } },
+    { h: "Risk factors and limits (CTL-062)", src: ["ctl062", "cpp062"], list: [
+      "Elderly and frail; Aboriginal or Torres Strait Islander; severe obesity; recent surgery; an indwelling device; diabetes; complex chronic disease; risk of neutropenia; clinician or carer concern",
+      "NEWS2 is not used in pregnancy over 20 weeks",
+      "Children: no screening tool. Use clinical judgement, the Paediatric Assessment Triangle and the RDR chart"
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Take a real full set on your partner, including a tympanic temperature.",
+      "Your partner then 'adds' a fever of 39.0 and confusion. Put the new numbers through the app's NEWS2 calculator.",
+      "Say the band and what CTL-062 asks you to do. Swap."
+    ] }
+  ],
+  checks: ["PPE first", "Tympanic: new cover, ready beep, snug not deep, POS handled", "Full set: RR counted, BP, pulse, SpO2, temp, GCS", "NEWS2 calculated in the app", "Named the band and its actions"] },
+
+{ id: "s2", n: 2, title: "Which pathway, and the call", mins: 15,
+  goal: "Once sepsis is suspected, pick the pathway from the systolic BP, spot the meningococcal trigger, and make the call with the right words.",
+  kit: ["The patient cards below", "A phone for the role-play"],
+  blocks: [
+    { h: "The blood pressure sets the pathway (CPP-062-AO)", src: ["cpp062"], tone: "warn", table: { head: ["", "Suspected sepsis, SBP above 100", "Suspected septic shock, SBP 100 or less"], rows: [
+      ["Support", "Request clinical support", "Request early clinical support, saying \"suspected septic shock\""],
+      ["Oxygen", "High flow if SpO2 below 94%", "High-flow oxygen"],
+      ["Transport", "Priority transport; consult for ongoing management", "Don't let treatment delay extrication or transport; meet clinical support en route if needed"],
+      ["Notify", "\"Suspected sepsis\"", "\"Suspected septic shock\""]
+    ] } },
+    { h: "Suspected meningococcal septicaemia", src: ["cpp062"], tone: "red", list: [
+      "Febrile with an altered conscious state, with or without a petechial or purpuric rash: consult the EOC Clinician about ceftriaxone",
+      "The rash is a late sign: no rash doesn't rule it out",
+      "Cephalosporin hypersensitivity or a severe allergy: consult via the EOC Clinician for SAAS Medical Practitioner advice"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp062"], cases: [
+      { who: "A. Robert, 71", text: "Fever 39.4, GCS 9 (E3 V2 M4), BP 92/58, SpO2 91%, no rash. Two days of urinary symptoms.", answer: "Septic shock pathway (SBP 100 or less): early clinical support saying \"suspected septic shock\", high-flow oxygen, priority transport. Febrile and altered conscious state: consult the EOC Clinician about ceftriaxone." },
+      { who: "B. Exactly 100", text: "Suspected chest infection, BP 100/70, SpO2 92%.", answer: "100 or less is septic shock: that pathway. High-flow oxygen." },
+      { who: "C. COPD", text: "Suspected sepsis, BP 128/80, SpO2 89%, COPD on home oxygen.", answer: "Sepsis pathway. Chronic lung disease: consult the EOC Clinician immediately about oxygen." },
+      { who: "D. Spots", text: "19, fever, confused, purple spots on the legs.", answer: "Suspected meningococcal septicaemia: consult the EOC Clinician about IM ceftriaxone (station 3). Priority transport." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: ["Read a card; say the pathway and why.", "For card A, make the call to the EOC Clinician (your partner) and say \"suspected septic shock\".", "Swap."] }
+  ],
+  checks: ["Used SBP 100 or less for septic shock", "Oxygen rule including chronic lung disease", "Spotted the meningococcal trigger", "Said \"suspected sepsis\" or \"suspected septic shock\" in the call"] },
+
+{ id: "s3", n: 3, title: "Ceftriaxone: dose, mix, give", mins: 25,
+  goal: "As if the EOC Clinician has advised it: work out the dose and volume, reconstitute the ceftriaxone, and give it IM into a pad, splitting the sites.",
+  kit: ["Ceftriaxone 1 g vials (expired, labelled TRAINING)", "Sodium chloride 0.9% ampoules", "5 mL and 10 mL syringes, blunt fill needles, IM needles", "Alcohol swabs, gauze, sharps container, injection pad", "A calculator"],
+  blocks: [
+    { h: "Safety", src: ["dsy", "c008"], tone: "red", list: ["Expired vials labelled TRAINING only, apart from operational stock (CPPRO-008). Inject into the pad, never a person. Needles straight into the sharps, never recapped"] },
+    { h: "Dose and volume (CPP-062-AO)", src: ["cpp062"], list: [
+      "IM ceftriaxone 50 mg/kg, single maximum 2 g: on EOC Clinician advice, repeated back",
+      "Each 1 g vial: add 3.5 mL sodium chloride 0.9% to make 4 mL (250 mg/mL)",
+      "Volume = dose in mg ÷ 250. Maximum 1 g (4 mL) per IM site"
+    ] },
+    { h: "By weight", src: ["cpp062"], table: { head: ["Weight", "Dose", "Volume", "Sites"], rows: [
+      ["10 kg", "500 mg", "2 mL", "1"], ["14 kg", "700 mg", "2.8 mL", "1"], ["20 kg", "1 g", "4 mL", "1"],
+      ["25 kg", "1.25 g", "5 mL", "2"], ["30 kg", "1.5 g", "6 mL", "2"], ["40 kg or more", "2 g", "8 mL", "2"]
+    ] } },
+    { h: "Reconstitute (CPPRO-010)", src: ["c010", "c008"], steps: [
+      "Medication check with your partner: name, expiry, dose. Hand hygiene, clean area.",
+      "Draw up 3.5 mL sodium chloride 0.9% from the plastic ampoule with a blunt fill needle.",
+      "Cap off the vial, scrub the stopper with an alcohol swab and let it dry.",
+      "Needle through the stopper without touching key parts; inject the 3.5 mL.",
+      "Keep the needle and syringe in and swirl until it's visibly mixed.",
+      "Turn the vial upside down and draw up the dose volume. For 2 g, do the second vial the same way.",
+      "Blunt fill needle into the sharps. IM needle on, prime to the dose, no air. Any doubt: discard and start again."
+    ] },
+    { h: "Give it (CPPRO-011)", src: ["c011"], steps: [
+      "Five rights with your partner.",
+      "Mid anterior-lateral thigh. Alcohol swab, let it dry. 90 degrees, about two-thirds of the needle, push slowly. No need to draw back.",
+      "More than 4 mL: split it, the second half into the other thigh.",
+      "Out in one movement, into the sharps. Gauze. Record the dose, both sites and the time."
+    ] },
+    { h: "Cards", src: ["dsy", "cpp062"], cases: [
+      { who: "A. Adult, 70 kg", text: "EOC Clinician advises ceftriaxone.", answer: "70 × 50 = 3500 mg, so the 2 g maximum. Two vials, 8 mL, two sites (4 mL each thigh)." },
+      { who: "B. Child, 14 kg", text: "EOC Clinician advises ceftriaxone.", answer: "700 mg = 2.8 mL from one vial, one site." },
+      { who: "C. Child, 25 kg", text: "EOC Clinician advises ceftriaxone.", answer: "1.25 g = 5 mL: two vials, two sites (no more than 4 mL in one)." },
+      { who: "D. Allergy", text: "Had a severe reaction to cephalexin.", answer: "Severe cephalosporin allergy: consult via the EOC Clinician for SAAS Medical Practitioner advice." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: ["Role-play the EOC Clinician advice and repeat it back.", "Work out the dose for card A, then reconstitute and draw up both training vials.", "Give it into the pad in two sites. Swap and do card C."] }
+  ],
+  checks: ["Repeated the order back", "Dose by weight, 2 g maximum", "3.5 mL saline per vial, swirled till mixed", "Volume = mg ÷ 250", "No more than 4 mL per site", "90 degrees into the thigh", "Both sites and the time recorded"] },
+
+{ id: "s4", n: 4, title: "GCS: score it right", mins: 15,
+  goal: "Score eye, verbal and motor responses separately from CTL-075, for an adult, a young child and a baby, and record E, V and M as well as the total.",
+  kit: ["CTL-075 GCS printed, or the SAAS Clinical app's GCS calculator", "The patient cards below", "A blank PCR or notepad"],
+  blocks: [
+    { h: "Adult (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Obeys commands"],
+      ["5", "", "Orientated", "Purposeful movement"],
+      ["4", "Spontaneous", "Confused conversation", "Withdraws"],
+      ["3", "To speech", "Inappropriate words", "Flexion to pain"],
+      ["2", "To pain", "Incomprehensible sounds", "Extension to pain"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "2 to 4 years (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Obeys commands"],
+      ["5", "", "Appropriate words, smile", "Localises to pain"],
+      ["4", "Spontaneous", "Consolable cry, few words", "Withdraws from pain"],
+      ["3", "To voice", "Inappropriate words, persistent irritable cry", "Flexion to pain"],
+      ["2", "To pain", "Incomprehensible words, agitated, cries only to pain", "Extension to pain"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "Baby (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Normal, spontaneous"],
+      ["5", "", "Alert, coos, babbles", "Withdraws to touch"],
+      ["4", "Spontaneous", "Irritable, consolable cry", "Withdraws from pain"],
+      ["3", "To speech or shout", "Cry to pain", "Flexion responses"],
+      ["2", "To pain", "Cry or moan to pain, restless", "Extensor responses"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "Note on CTL-075", src: ["dsy"], tone: "warn", list: [
+      "CTL-075 heads the baby scale \"≥ 1 year old\", but the scale (coos, babbles) is for babies: it is probably meant to read under 1. It also has no scale for 1 to 2 years. Check with your instructor or the SAAS Clinical app"
+    ] },
+    { h: "Getting it right", src: ["dsy", "ctl070"], list: [
+      "Score each part on its own, then add them up: lowest total 3, highest 15",
+      "Write it as E, V and M with the total (for example E3 V4 M6 = 13). The parts tell the next person more than the total",
+      "Score the best response you see. If one arm is weak (stroke), score the better arm",
+      "Can't speak because of the stroke itself? Score what you see and write why",
+      "On the RDR chart (CTL-070): 15 white, 13 to 14 yellow, 9 to 12 red, 8 or less purple",
+      "Repeat it with every set of obs and compare with the first"
+    ] },
+    { h: "Patient cards", src: ["dsy", "ctl075"], cases: [
+      { who: "A. Frank", text: "Eyes open when you speak to him. Thinks he's at home when he's at the club. Squeezes your hand when asked.", answer: "E3 V4 M6 = 13." },
+      { who: "B. Ron, very low sugar", text: "Eyes closed, open only to pain. Moans, no words. Pulls his hand away from the pain.", answer: "E2 V2 M4 = 8." },
+      { who: "C. Can't find the words", text: "Eyes open on their own. Says random, wrong words. Doesn't follow commands but reaches up and pushes your hand away from the pain.", answer: "E4 V3 M5 = 12. Purposeful movement is 5." },
+      { who: "D. No speech since the stroke", text: "Eyes open on their own. Can't make any words since the stroke started. Obeys commands with the left hand.", answer: "E4 V1 M6 = 11. Record why: no speech from the stroke, obeys commands." },
+      { who: "E. Deeply unconscious", text: "No eye opening, no sounds. To pain, both arms bend in at the elbows.", answer: "E1 V1 M3 = 5. Purple zone on the RDR chart: protect the airway, consult the EOC Clinician." },
+      { who: "F. Child, 3", text: "Eyes open when you call her name. Crying but settles with mum, says a few words. Does what you ask.", answer: "2 to 4 years scale: E3 V4 M6 = 13." },
+      { who: "G. Baby, 8 months", text: "Eyes open, watching you. Irritable but settles when held. Pulls away when you touch the foot.", answer: "Baby scale: E4 V4 M5 = 13." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person reads a card aloud. Everyone writes E, V and M on their own before anyone says the answer.",
+      "Compare, then open the answer. Check any disagreement against CTL-075 or the app's calculator.",
+      "Then act a few out: one person is the patient, the other scores without the card."
+    ] }
+  ],
+  checks: ["Scored E, V and M separately", "Wrote E V M and the total", "Used the right scale for the child and the baby", "Scored the best response", "Named the RDR zone for the total"] }
+
+];
+
+var END = { title: "Finish together", mins: 25,
+  steps: [
+    "Run the student walk-through as one crew: Robert, 71, hot, confused and hard to rouse near Tumby Bay. Use each station's kit as you reach it.",
+    "Then each person does the knowledge check in the sepsis microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-sepsis";
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/sepsis/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Sepsis skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Robert: student walk-through", "../../modules/sepsis/?mode=student", "btn small"));
+  links.appendChild(a("Knowledge check (microlearning)", "../../microlearning/sepsis/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-through: " + root + "modules/sepsis/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY sepsis skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Sepsis skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Sepsis\" (about 25 min). Send the link a few days ahead."],
+    ["0:00", "Read the safety box at station 3 together (training ceftriaxone into a pad only). Split into pairs or threes."],
+    ["0:05", "Rotate through stations 1 to 4 (15 to 25 min each). Partners tick the checks on the phone."],
+    ["about 1:25", "Finish together: Robert's walk-through as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 1: Braun ThermoScan with probe covers, BP cuff, Corpuls3, a phone with the SAAS Clinical app.",
+    "Station 2: the cards and a phone for the role-play.",
+    "Station 3: expired ceftriaxone 1 g vials labelled TRAINING and kept apart from operational stock, sodium chloride 0.9%, syringes, blunt fill and IM needles, injection pad, sharps container, a calculator.",
+    "Station 4: printed CTL-075 GCS tables or the SAAS Clinical app, pens and paper.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Sharps container closed. Used vials, ampoules and swabs in the bin.",
+    "Remaining training ceftriaxone back in its labelled TRAINING box, apart from operational stock.",
+    "Thermometer back with a supply of probe covers. Corpuls on charge.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Four stations to practise the hands-on parts of a sepsis job, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Sepsis\" first (about 25 minutes)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/sepsis/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Robert's walk-through, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cpp062, SRC.ctl062, SRC.c008, SRC.c010, SRC.c011, SRC.ctl075, SRC.cssg].join(", ") +
+    ". Written for crews who have done the 2025 sepsis training and carry ceftriaxone. The review dates of CPPRO-008, CPPRO-010 and CPPRO-011 (June 2020) have passed. NEWS2 scores come from the SAAS app's calculator. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>
