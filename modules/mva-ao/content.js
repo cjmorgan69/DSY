@@ -196,7 +196,7 @@ window.MODULE = {
     ] },
 
     { title: "Set 2: is anything changing?", blocks: [
-      { text: "1803. Jason is on the stretcher in the ambulance with the heater on, a blanket and a space blanket over him and a thermal cap on. Oxygen is running. He says the ribs still hurt when he breathes in. Police have arrived and are managing traffic." },
+      { text: "1803. Jason is on the stretcher in the ambulance with the heater on, a blanket sandwich over him (blanket, space blanket, blanket) and a thermal cap on. Oxygen is running. He says the ribs still hurt when he breathes in. Police have arrived and are managing traffic." },
       { table: { title: "Obs so far", table: { head: ["", "1748", "1803"], rows: [
         ["RR", "18", "22"], ["SpO2", "97% (air)", "99% (oxygen)"], ["BP", "128/80", "124/82"], ["Pulse", "92", "106"],
         ["Temp", "36.4", "36.0"], ["GCS", "15", "15"], ["Pain", "4/10", "4/10"]
