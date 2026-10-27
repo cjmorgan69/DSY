@@ -118,7 +118,32 @@ window.MDT_JOBS = [
     priority:'2', startTime:'20:35', typeName:'Nausea and vomiting', town:'Cummins', street:'FARM 5 KM WEST',
     note:'62F PERSISTENT N&V', patient:'BRADSHAW, HELEN', age:'62Y', weight:'', caller:'HUSBAND (DAVID)',
     remarks:'VOMITING FOR 8 HOURS - CANT KEEP FLUIDS DOWN\nNEARLY FAINTED WALKING FROM THE BATHROOM\nSEALED ROAD THEN 200 M GRAVEL DRIVEWAY\nGATE OPEN - LIGHTS ON\n+2 HUSBAND: STILL VOMITING - NOW ON BATHROOM FLOOR\n+5 SYMPTOMS STARTED AROUND LUNCHTIME AFTER LEFTOVER CHICKEN',
-    expected:'CUMMINS HOSPITAL, about 7 minutes (scenario)' }
+    expected:'CUMMINS HOSPITAL, about 7 minutes (scenario)' },
+  { id:'mva', label:'MVA rollover: Jason, 34 (Tod Highway near Cummins, 1730)', scenario:'/modules/mva-ao/',
+    priority:'1', startTime:'17:30', typeName:'Motor vehicle accident', town:'Cummins', street:'TOD HWY 9 KM SOUTH OF CUMMINS',
+    note:'34M MVA - SINGLE VEHICLE ROLLOVER', patient:'FIELDING, JASON', age:'34Y', weight:'', caller:'PASSING MOTORIST (ON SCENE)',
+    unitLoc:'CUMMINS AMBULANCE STATION',
+    remarks:'SINGLE VEHICLE ROLLOVER - UTE ON ROOF IN TABLE DRAIN\nONE OCCUPANT - OUT OF VEHICLE AND WALKING\nHOLDING LEFT SIDE\nPOLICE AND CFS NOTIFIED\nNEAREST PARAMEDIC CREW PORT LINCOLN 40 MINUTES IF REQUESTED\n+4 CALLER: PT STILL WALKING AROUND - WONT SIT DOWN\n+9 CALLER PARKED BEHIND VEHICLE - HAZARD LIGHTS ON',
+    expected:'PORT LINCOLN HOSPITAL, about 50 minutes; EOC Clinician arranges retrieval (scenario)',
+    // Link from the scenario customiser (Supabase public.scenarios, slug mva-ao). Remark timing is DSY-written.
+    customSlug:'mva-ao',
+    customDefaults:{ patient:'Jason', age:'34', road:'Tod Highway', town:'Cummins', km:'9', station:'Cummins',
+      backup_town:'Port Lincoln', backup_mins:'40', hospital_town:'Port Lincoln', transport:'50', dispatch:'17:30', response:'12' },
+    custom(v){
+      const U = x => String(x||'').trim().toUpperCase(), drive = Math.max(5, +v.response || 12);
+      const early = Math.max(1, Math.round(drive*0.33)), late = Math.max(early+1, Math.round(drive*0.75));
+      const town = String(v.town||'').trim() || 'Cummins', station = String(v.station||'').trim() || town;
+      const road = U(v.road || 'Tod Highway').replace(/\bHIGHWAY\b/, 'HWY'), km = +v.km || 9;
+      return {
+        patient:'FIELDING, ' + (U(v.patient) || 'JASON'), age:(+v.age || 34) + 'Y', town, station,
+        street:road + ' ' + km + ' KM FROM ' + U(town), unitLoc:U(station) + ' AMBULANCE STATION', startTime:v.dispatch || '17:30',
+        note:(+v.age || 34) + 'M MVA - SINGLE VEHICLE ROLLOVER',
+        remarks:['SINGLE VEHICLE ROLLOVER - UTE ON ROOF IN TABLE DRAIN','ONE OCCUPANT - OUT OF VEHICLE AND WALKING','HOLDING LEFT SIDE','POLICE AND CFS NOTIFIED',
+          'NEAREST PARAMEDIC CREW ' + U(v.backup_town || 'Port Lincoln') + ' ' + (+v.backup_mins || 40) + ' MINUTES IF REQUESTED',
+          '+' + early + ' CALLER: PT STILL WALKING AROUND - WONT SIT DOWN', '+' + late + ' CALLER PARKED BEHIND VEHICLE - HAZARD LIGHTS ON'].join('\n'),
+        expected:U(v.hospital_town || 'Port Lincoln') + ' HOSPITAL, about ' + (+v.transport || 50) + ' minutes; EOC Clinician arranges retrieval (customised scenario)'
+      };
+    } }
 ];
 
 /* Links from the scenario customiser (Supabase public.scenarios) for the jobs that have no custom() of their own.
