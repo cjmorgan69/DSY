@@ -64,6 +64,11 @@
     h += list('say', 'Say', n.say);
     h += list('ask', 'Ask the group', n.ask);
     if (n.activity) h += '<div class="nblock act"><h4>Activity</h4><p>' + D.esc(n.activity) + '</p></div>';
+    if (s.video) {
+      h += '<div class="nblock vid"><h4>Video' + (s.video.length ? ' (' + D.esc(s.video.length) + ')' : '') + '</h4><p class="small">' + D.esc(s.video.file || '') + '</p>';
+      if (s.video.url) h += '<p class="small"><a href="' + D.esc(s.video.url) + '" target="_blank" rel="noopener">Open in the eLearning lesson</a> (saaslearn login needed)</p>';
+      h += '</div>';
+    }
     if (s.vimeo) {
       h += '<div class="nblock vid"><h4>Video' + (s.vimeo.length ? ' (' + D.esc(s.vimeo.length) + ')' : '') + '</h4>';
       if (n.videoSummary && n.videoSummary.length) {

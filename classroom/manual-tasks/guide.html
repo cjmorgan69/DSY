@@ -44,8 +44,8 @@
   <span id="filter"></span>
 </div>
 <div id="out"></div>
-<script src="data/manifest.js?v=20261028a"></script>
-<script src="assets/common.js?v=20261028a"></script>
+<script src="data/manifest.js?v=20261028b"></script>
+<script src="assets/common.js?v=20261028b"></script>
 <script>
 (function () {
   var D = window.DRIVE, E = D.esc;
@@ -79,7 +79,7 @@
       if (n.say && n.say.length) h += '<div class="lbl">Say</div>' + ul(n.say);
       if (n.ask && n.ask.length) h += '<div class="lbl">Ask the group</div>' + ul(n.ask);
       if (n.activity) h += '<div class="act"><strong>Activity:</strong> ' + E(n.activity) + '</div>';
-      if (s.video) h += '<div class="vid"><strong>Video:</strong> ' + E(s.video.length || '') + ' · ' + E(s.video.file || '') + ' (in the eLearning lesson)</div>';
+      if (s.video) h += '<div class="vid"><strong>Video:</strong> ' + E(s.video.length || '') + ' · ' + E(s.video.file || '') + (s.video.url ? ' · <a href="' + E(s.video.url) + '">Open in the eLearning lesson</a> (saaslearn login needed)' : ' (in the eLearning lesson)') + '</div>';
       if (s.vimeo) {
         h += '<div class="vid"><strong>Video:</strong> ' + E(s.vimeo.length || '') + ' · <a href="' + D.vimeoUrl(s.vimeo) + '">' + D.vimeoUrl(s.vimeo) + '</a>';
         if (n.videoSummary && n.videoSummary.length) h += '<div class="lbl">What it covers (from Vimeo auto-captions; check before relying on it)</div>' + ul(n.videoSummary);

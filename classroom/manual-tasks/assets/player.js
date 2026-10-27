@@ -197,7 +197,7 @@
         if (n.say && n.say.length) h += '<h4>Say</h4><ul>' + n.say.map(function (x) { return '<li>' + E(x) + '</li>'; }).join('') + '</ul>';
         if (n.ask && n.ask.length) h += '<h4>Ask the group</h4><ul>' + n.ask.map(function (x) { return '<li>' + E(x) + '</li>'; }).join('') + '</ul>';
         if (n.activity) h += '<p class="gbox"><strong>Activity:</strong> ' + E(n.activity) + '</p>';
-        if (s.video) h += '<p class="gbox"><strong>Video (' + E(s.video.length || 'length not known') + '):</strong> ' + E(s.video.file || '') + ' (in the eLearning lesson)</p>';
+        if (s.video) h += '<p class="gbox"><strong>Video (' + E(s.video.length || 'length not known') + '):</strong> ' + E(s.video.file || '') + (s.video.url ? ' · <a href="' + E(s.video.url) + '" target="_blank" rel="noopener">Open in the eLearning lesson</a> (saaslearn login needed)' : ' (in the eLearning lesson)') + '</p>';
         if (s.vimeo) {
           h += '<p class="gbox"><strong>Video (' + (s.vimeo.length ? E(s.vimeo.length) : 'length not known') + '):</strong> <a href="' + D.vimeoUrl(s.vimeo) + '" target="_blank" rel="noopener">Open on Vimeo</a>';
           if (n.videoSummary && n.videoSummary.length) h += '<ul>' + n.videoSummary.map(function (x) { return '<li>' + E(x) + '</li>'; }).join('') + '</ul>';

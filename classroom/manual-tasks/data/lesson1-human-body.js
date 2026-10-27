@@ -2,9 +2,9 @@
 // eLearning lesson (Articulate Storyline SCORM, "allow a minimum of 15 minutes", version 0.4 211201).
 // Facilitator notes ("notes") are suggestions drafted from the lesson text: edit freely.
 // The videos in this lesson are MP4 files inside the lesson package (not Vimeo) and need a SAAS login, so the video slides are
-// placeholders that say where the video is. The picture questions use photos that were not copied: add your own.
+// placeholders that say where the video is; the notes and guide link to each file (saaslearn login needed). The picture questions use photos that were not copied: add your own.
 (function () {
-  function mp4(length, file) { return { length: length, file: file }; }
+  function mp4(length, file, name) { return { length: length, file: file, url: 'https://saaslearn.com.au/moodle/pluginfile.php/15316/mod_scorm/content/4/story_content/' + name + '.mp4' }; }
 
   DRIVE_SECTIONS.push({
     id: 'lesson1-human-body',
@@ -45,19 +45,19 @@
       {
         type: 'video',
         title: 'What am I going to learn in this course?',
-        video: mp4('1:11', 'Manual Tasks - Host Video 02.mp4'),
+        video: mp4('1:11', 'Manual Tasks - Host Video 02.mp4', 'video_5qseNeD1lA2_22_48_640x360'),
         notes: { time: 2, tip: 'The pairing of the three videos with their questions is from the lesson’s layer order and file names. Confirm it.', videoSummary: null }
       },
       {
         type: 'video',
         title: 'What are hazardous manual tasks?',
-        video: mp4('2:36', 'Manual Tasks - Host Audio 01.mp4'),
+        video: mp4('2:36', 'Manual Tasks - Host Audio 01.mp4', 'video_5y072tMLUey_22_48_640x360'),
         notes: { time: 3, videoSummary: null }
       },
       {
         type: 'video',
         title: 'Why is this important to know as an Ambulance Clinician?',
-        video: mp4('1:02', 'Part2 Why should we care_.mp4'),
+        video: mp4('1:02', 'Part2 Why should we care_.mp4', 'video_5fNGzBT3P0u_22_48_640x360'),
         notes: { time: 2, videoSummary: null }
       },
 
@@ -180,7 +180,7 @@
       {
         type: 'video',
         title: 'Injuries related to non-patient handling',
-        video: mp4('0:30', 'Part 21.mp4'),
+        video: mp4('0:30', 'Part 21.mp4', 'video_6OqTsrKrEaY_22_48_680x384'),
         notes: { time: 1, videoSummary: null }
       },
 
