@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual Tasks facilitator guide</title>
+<style>
+  :root { --g: #00604a; --gd: #005340; --tint: #e3efea; --amber: #f2a900; --ink: #1f2d2a; --mut: #5b6b66; }
+  body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; color: var(--ink); max-width: 860px; margin: 0 auto; padding: 24px 28px 60px; line-height: 1.45; font-size: 15px; }
+  h1 { font-family: Cambria, Georgia, serif; color: var(--gd); font-size: 32px; margin: 0 0 4px; }
+  h2 { font-family: Cambria, Georgia, serif; color: var(--gd); font-size: 24px; margin: 34px 0 10px; border-bottom: 3px solid var(--amber); padding-bottom: 4px; }
+  h3 { margin: 0; font-size: 17px; color: var(--gd); }
+  .sub { color: var(--mut); margin-bottom: 14px; }
+  .toolbar { background: var(--tint); padding: 10px 14px; border-radius: 8px; margin: 14px 0 22px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  button { background: var(--g); color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; font: inherit; cursor: pointer; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0 8px; font-size: 14px; }
+  th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid #d5e3dd; vertical-align: top; }
+  th { background: var(--tint); color: var(--gd); }
+  td.n, th.n { width: 36px; } td.t, th.t { width: 70px; white-space: nowrap; }
+  .slide { border: 1px solid #cfe0d9; border-radius: 10px; padding: 12px 16px 10px; margin: 14px 0; break-inside: avoid; page-break-inside: avoid; }
+  .slide header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  .tag { font-size: 12px; background: var(--tint); color: var(--gd); border-radius: 10px; padding: 2px 10px; font-weight: 600; white-space: nowrap; }
+  .lbl { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--mut); font-weight: 700; margin: 8px 0 2px; }
+  ul { margin: 0; padding-left: 20px; } li { margin-bottom: 2px; }
+  .act, .tip, .vid { background: #fbf7e8; border-radius: 6px; padding: 6px 10px; margin-top: 8px; }
+  .tip { background: var(--tint); } .vid { background: #fff; border: 1px solid #cfe0d9; }
+  .check { display: inline-block; width: 13px; height: 13px; border: 1.5px solid var(--mut); border-radius: 3px; margin-right: 6px; vertical-align: -2px; }
+  .sec { break-before: page; }
+  .sec:first-of-type { break-before: auto; }
+  a { color: var(--g); }
+  @media print {
+    body { padding: 0; max-width: none; font-size: 11.5pt; }
+    .toolbar { display: none; }
+    a { color: inherit; text-decoration: none; }
+    @page { margin: 16mm 14mm; }
+  }
+</style>
+</head>
+<body>
+<h1>Manual Tasks facilitator guide</h1>
+<div class="sub">Slide-by-slide notes for the classroom slide show. Times are suggestions only.</div>
+<div class="toolbar">
+  <button onclick="window.print()">Print or save as PDF</button>
+  <span id="filter"></span>
+</div>
+<div id="out"></div>
+<script src="data/manifest.js?v=20261028b"></script>
+<script src="assets/common.js?v=20261028b"></script>
+<script>
+(function () {
+  var D = window.DRIVE, E = D.esc;
+  var only = (new URLSearchParams(location.search)).get('s');
+  var secs = D.sections.filter(function (s) { return !only || s.id === only; });
+
+  var f = '<strong>Show:</strong> <a href="guide.html">all lessons</a>';
+  D.sections.forEach(function (s) { f += ' · <a href="guide.html?s=' + s.id + '">Lesson ' + s.number + '</a>'; });
+  document.getElementById('filter').innerHTML = f;
+
+  function ul(arr) { return '<ul>' + arr.map(function (x) { return '<li>' + E(x) + '</li>'; }).join('') + '</ul>'; }
+
+  var h = '';
+  secs.forEach(function (sec) {
+    var total = 0, vids = 0;
+    sec.slides.forEach(function (s) { total += (s.notes && s.notes.time) || 0; if (s.vimeo || s.video) vids++; });
+    h += '<div class="sec"><h2>Lesson ' + sec.number + ': ' + E(sec.title) + '</h2>';
+    h += '<div class="sub">' + E(sec.audience || '') + ' · ' + sec.slides.length + ' slides · ' + vids + ' videos · suggested time about ' + total + ' min' +
+         (sec.elearningMinutes ? ' (eLearning version: about ' + sec.elearningMinutes + ' min)' : '') + '</div>';
+    h += '<table><tr><th class="n">#</th><th>Slide</th><th class="t">Time</th></tr>';
+    sec.slides.forEach(function (s, i) {
+      h += '<tr><td class="n">' + (i + 1) + '</td><td>' + E(D.title(s)) + (s.vimeo ? (s.vimeo.length ? ' (video ' + E(s.vimeo.length) + ')' : ' (video)') : '') + '</td><td class="t">' + ((s.notes && s.notes.time) ? s.notes.time + ' min' : '') + '</td></tr>';
+    });
+    h += '</table>';
+    sec.slides.forEach(function (s, i) {
+      var n = s.notes || {};
+      h += '<div class="slide"><header><h3><span class="check"></span>Slide ' + (i + 1) + ': ' + E(D.title(s)) + '</h3><span class="tag">' +
+           (s.vimeo ? 'Video ' + E(s.vimeo.length || '') : s.type) + (n.time ? ' · ' + n.time + ' min' : '') + '</span></header>';
+      var onSlide = D.slideText(s);
+      if (s.type !== 'video' && onSlide.length) h += '<div class="lbl">On the slide</div>' + ul(onSlide);
+      if (n.say && n.say.length) h += '<div class="lbl">Say</div>' + ul(n.say);
+      if (n.ask && n.ask.length) h += '<div class="lbl">Ask the group</div>' + ul(n.ask);
+      if (n.activity) h += '<div class="act"><strong>Activity:</strong> ' + E(n.activity) + '</div>';
+      if (s.video) h += '<div class="vid"><strong>Video:</strong> ' + E(s.video.length || '') + ' · ' + E(s.video.file || '') + (s.video.url ? ' · <a href="' + E(s.video.url) + '">Open in the eLearning lesson</a> (saaslearn login needed)' : ' (in the eLearning lesson)') + '</div>';
+      if (s.vimeo) {
+        h += '<div class="vid"><strong>Video:</strong> ' + E(s.vimeo.length || '') + ' · <a href="' + D.vimeoUrl(s.vimeo) + '">' + D.vimeoUrl(s.vimeo) + '</a>';
+        if (n.videoSummary && n.videoSummary.length) h += '<div class="lbl">What it covers (from Vimeo auto-captions; check before relying on it)</div>' + ul(n.videoSummary);
+        else h += '<div class="lbl">No captions available: preview the video and add the key points here.</div>';
+        h += '</div>';
+      }
+      if (n.tip) h += '<div class="tip"><strong>Tip:</strong> ' + E(n.tip) + '</div>';
+      h += '</div>';
+    });
+    h += '</div>';
+  });
+  document.getElementById('out').innerHTML = h || '<p>No lessons found. Check data/manifest.js.</p>';
+})();
+</script>
+</body>
+</html>
