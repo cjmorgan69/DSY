@@ -4,7 +4,8 @@ window.DRIVE_SECTIONS = [];
 (function () {
   var files = [
     'section2-mindset.js',
-    'section3-vehicles.js'
+    'section3-vehicles.js',
+    'section4-practical.js'
   ];
   files.forEach(function (f) {
     document.write('<script src="data/' + f + '" charset="utf-8"><\/script>');
