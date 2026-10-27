@@ -67,7 +67,7 @@
          (sec.elearningMinutes ? ' (eLearning version: about ' + sec.elearningMinutes + ' min)' : '') + '</div>';
     h += '<table><tr><th class="n">#</th><th>Slide</th><th class="t">Time</th></tr>';
     sec.slides.forEach(function (s, i) {
-      h += '<tr><td class="n">' + (i + 1) + '</td><td>' + E(D.title(s)) + (s.vimeo ? ' (video ' + E(s.vimeo.length || '') + ')' : '') + '</td><td class="t">' + ((s.notes && s.notes.time) ? s.notes.time + ' min' : '') + '</td></tr>';
+      h += '<tr><td class="n">' + (i + 1) + '</td><td>' + E(D.title(s)) + (s.vimeo ? (s.vimeo.length ? ' (video ' + E(s.vimeo.length) + ')' : ' (video)') : '') + '</td><td class="t">' + ((s.notes && s.notes.time) ? s.notes.time + ' min' : '') + '</td></tr>';
     });
     h += '</table>';
     sec.slides.forEach(function (s, i) {
