@@ -136,11 +136,12 @@ var STATIONS = [
 
 { id: "s2", n: 2, title: "Salbutamol by puffer and spacer", mins: 20,
   goal: "Give salbutamol by MDI and spacer the CPPRO-012 way, to an adult and to a young child with a mask, at the right number of puffs.",
-  kit: ["Training salbutamol MDIs (empty or expired, labelled TRAINING)", "Single patient use spacers, and a small face mask for the spacer", "A teddy or child manikin", "The medication check from the chest pain night (CPPRO-008)"],
+  kit: ["Expired salbutamol MDIs, labelled TRAINING", "Single patient use spacers, and a small face mask for the spacer", "A child manikin", "The medication check from the chest pain night (CPPRO-008)"],
   blocks: [
     { h: "Safety", src: ["c008", "dsy"], tone: "red", list: [
-      "Nobody breathes in a real medicine tonight. Use an empty or expired TRAINING inhaler, and spray test puffs into the air",
-      "Keep training stock apart from operational stock (CPPRO-008)"
+      "The expired inhalers still spray real salbutamol: nobody breathes it in. Test puffs go into the air, away from everyone",
+      "Puffs into a spacer go only on the manikin. A partner playing the patient practises the breathing on a spacer with no inhaler fitted",
+      "Expired medicines can be kept for training if they are isolated from operational stock and clearly labelled training stock (CPPRO-008)"
     ] },
     { h: "Doses (CPP-050-AO, mild asthma)", src: ["cpp050"], table: { head: ["Age", "Salbutamol MDI", "Can't use the MDI and spacer"], rows: [
       ["Over 6", "12 puffs (1200 microg)", "Nebulised salbutamol 5 mg"],
@@ -167,8 +168,8 @@ var STATIONS = [
       { who: "D. After 12 puffs", text: "Sam is no better.", answer: "Consult the EOC Clinician, who may advise repeat doses in line with paramedic level treatment." }
     ] },
     { h: "How to run it", src: ["dsy"], steps: [
-      "Partner sits up. Do the medication check aloud, then go through every step with the training inhaler (test puffs into the air).",
-      "Then the teddy: spacer with the face mask, held on the face.",
+      "Partner sits up. Do the medication check aloud, then go through every step with the expired inhaler: test puffs into the air, and your partner breathes through a spacer with no inhaler on it.",
+      "Then the child manikin: inhaler in the spacer with the face mask, held on its face, and give the puffs.",
       "Talk through cards A to D. Swap."
     ] }
   ],
@@ -177,10 +178,10 @@ var STATIONS = [
 
 { id: "s3", n: 3, title: "The nebuliser", mins: 20,
   goal: "Load and run a salbutamol and ipratropium nebuliser at the right dose for an adult and for a child, and keep the crew safe from the mist.",
-  kit: ["Nebuliser bowls with adult and paediatric masks and tubing", "Training ampoules (saline, labelled TRAINING) standing in for salbutamol and ipratropium", "Saline 0.9% ampoules", "Oxygen (Inhalo) or air", "A manikin or teddy"],
+  kit: ["Nebuliser bowls with adult and paediatric masks and tubing", "Training ampoules (saline, labelled TRAINING) standing in for salbutamol and ipratropium", "Saline 0.9% ampoules", "Oxygen (Inhalo) or air", "An adult or child manikin"],
   blocks: [
     { h: "Safety", src: ["dsy", "c012"], tone: "red", list: [
-      "Training saline only, never real salbutamol or ipratropium. Run the mask on a manikin or teddy",
+      "Training saline only, never real salbutamol or ipratropium. Run the mask on a manikin",
       "Oxygen away from naked flames"
     ] },
     { h: "More severe asthma: the first neb (CPP-050-AO)", src: ["cpp050"], table: { head: ["Age", "Salbutamol", "Ipratropium", "Saline"], rows: [
@@ -406,7 +407,7 @@ function setupPage(print) {
   f.appendChild(el("h2", null, "Instructor setup sheet"));
   f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
     ["Before", "Everyone does the microlearning \"Asthma\" (about 20 min). Send the link a few days ahead."],
-    ["0:00", "Read the safety boxes at stations 2 and 3 together (training inhalers and saline only; nobody breathes in a real medicine). Split into pairs or threes."],
+    ["0:00", "Read the safety boxes at stations 2 and 3 together (expired inhalers puff into the air or onto a manikin, saline only in the nebs; nobody breathes in a real medicine). Split into pairs or threes."],
     ["0:05", "Rotate through stations 1 to 4 (15 to 20 min each). Partners tick the checks on the phone."],
     ["about 1:20", "Finish together: Karen's walk-through as one crew, then the knowledge check."],
     ["End", "Share the record with the instructor. Pack up and reset."]
@@ -417,13 +418,13 @@ function setupPage(print) {
   f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
     "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
     "Station 1: the patient cards (printed or on a phone), the Corpuls with SpO2.",
-    "Station 2: empty or expired salbutamol MDIs labelled TRAINING, spacers, a small spacer face mask, a teddy or child manikin.",
+    "Station 2: expired salbutamol MDIs labelled TRAINING and kept apart from operational stock, spacers, a small spacer face mask, a child manikin.",
     "Station 3: nebuliser bowls with adult and paediatric masks, saline ampoules labelled TRAINING, an Inhalo cylinder.",
     "Station 4: an airway manikin, a bag-valve-mask with reservoir and filter, masks in several sizes, oxygen at 15 L/min.",
     "Leave this page open on one phone so the group can find the finish."
   ] }));
   f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
-    "Training inhalers and ampoules counted and back in their labelled TRAINING box, apart from operational stock.",
+    "Expired inhalers and training ampoules counted and back in their labelled TRAINING box, apart from operational stock.",
     "Used spacers, nebuliser bowls and masks binned (single patient use) or replaced.",
     "Bag-valve-mask cleaned and repacked as your station does; manikin wiped.",
     "Oxygen cylinders turned off, flow at 0.",
