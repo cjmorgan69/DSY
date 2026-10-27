@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Asthma skills stations - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261027c">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Asthma skills stations (AO). Built 27 Oct 2026 for a group training night without the instructor present, to go with
+   the module /microlearning/asthma/ and the walk-through /modules/asthma-ao/ (Karen, 45).
+   Sources: CPP-050-AO Asthma v3.1 and CTL-071 AO Asthma Severity and Treatment Table (as checked for the module);
+   CPPRO-012 Inhaled Medication Administration v2.0 (review date Mar 2021 passed); CPPRO-008 Medication Checks v1.0 (review
+   date June 2020 passed); SAAS Clinical Skills Study Guide v3.2 (released Oct 2026; owner's scanned copy, not stored in the
+   repo: see .claude/references/clinical-skills-study-guide.md), read for bag-valve-mask ventilation and oxygen.
+   Patient cards and how-to-run notes are DSY-written and marked as such. */
+var SRC = {
+  cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
+  cpp050: "CPP-050-AO Asthma v3.1",
+  ctl071: "CTL-071 AO Asthma Severity and Treatment Table",
+  c012: "CPPRO-012 Inhaled Medication Administration v2.0",
+  c008: "CPPRO-008 Medication Checks v1.0",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "Anaphylaxis first, then how bad is it?", mins: 15,
+  goal: "Rule out anaphylaxis first, then judge the asthma's severity from how the patient talks, looks and breathes, not from the SpO2.",
+  kit: ["The patient cards below", "Corpuls3 with SpO2 probe (or the SpO2 on a partner)", "A watch to count the breathing"],
+  blocks: [
+    { h: "Every patient first", src: ["cpp050", "ctl071"], list: [
+      "Basic care and life support",
+      "Assess GCS and work of breathing; baseline obs (RR, pulse, monitor, SpO2) and the past medical history",
+      "Could this be allergy or anaphylaxis? Then follow Anaphylaxis CPP-003-AO before treating the asthma, including early clinical support",
+      "Consider the cause, and follow the patient's asthma care plan if appropriate",
+      "Asthma symptoms can happen in people with no asthma history, especially with a chest infection or smoke inhalation",
+      "Becomes unresponsive and isn't breathing normally: start CPR"
+    ] },
+    { h: "Severity (CTL-071)", src: ["cpp050", "ctl071"], tone: "warn", table: { head: ["", "Talks", "Looks"], rows: [
+      ["Mild", "In sentences", "Normal work of breathing; SpO2 usually above 95% on air"],
+      ["More severe", "In phrases or words, or can't speak", "Distressed, visibly short of breath; SpO2 usually below 95%"],
+      ["Life threatening", "Unable to speak", "Drowsy or unconscious, cyanosed, poor respiratory effort or respiratory arrest"]
+    ] } },
+    { h: "Never on SpO2 alone", src: ["cpp050"], list: ["Oxygen saturations should never be used alone to judge severity: only with a thorough patient assessment"] },
+    { h: "Patient cards", src: ["dsy", "cpp050", "ctl071"], cases: [
+      { who: "A. Sam, 28", text: "Wheezy after a run. Talking in full sentences, normal work of breathing. SpO2 97%. Has a spacer.",
+        answer: "Mild asthma. Salbutamol 12 puffs (1200 microg) via MDI and spacer, or his own asthma plan. Consider clinical support, transport." },
+      { who: "B. Karen, 45", text: "Can only say a few words at a time, sitting forward, distressed. SpO2 93%.",
+        answer: "More severe asthma. Early clinical support, nebulised salbutamol 5 mg and ipratropium 500 microg, consult the EOC Clinician, transport." },
+      { who: "C. Lily, 4", text: "Saying single words, distressed, pulling in under the ribs. SpO2 96%.",
+        answer: "More severe asthma, even with SpO2 96%: never judge on SpO2 alone. Early clinical support, nebulised salbutamol 2.5 mg and ipratropium 250 microg with 3 mL saline to 5 mL." },
+      { who: "D. Tom, 17", text: "Known asthma. Sudden breathlessness after eating at a party, lips swelling, itchy rash.",
+        answer: "Think anaphylaxis: follow CPP-003-AO first, with early clinical support, before treating the asthma." },
+      { who: "E. Unable to speak", text: "Adult, can't speak, drowsy, lips blue, breathing weakly.",
+        answer: "Life threatening. High-flow oxygen, early clinical support, assisted ventilation if needed (station 4), consult the EOC Clinician, urgent transport." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person acts out a card: how they talk, sit and breathe. The others don't read it.",
+      "Count the breathing for 30 seconds, look at the work of breathing, put the SpO2 on.",
+      "Say the severity and the first treatment. Then open the answer. Swap."
+    ] }
+  ],
+  checks: ["Asked about allergy or anaphylaxis first", "Counted the breathing and looked at work of breathing", "Judged severity by speech and distress, not SpO2 alone", "Named the right pathway for each card"] },
+
+{ id: "s2", n: 2, title: "Salbutamol by puffer and spacer", mins: 20,
+  goal: "Give salbutamol by MDI and spacer the CPPRO-012 way, to an adult and to a young child with a mask, at the right number of puffs.",
+  kit: ["Expired salbutamol MDIs, labelled TRAINING", "Single patient use spacers, and a small face mask for the spacer", "A child manikin", "The medication check from the chest pain night (CPPRO-008)"],
+  blocks: [
+    { h: "Safety", src: ["c008", "dsy"], tone: "red", list: [
+      "The expired inhalers still spray real salbutamol: nobody breathes it in. Test puffs go into the air, away from everyone",
+      "Puffs into a spacer go only on the manikin. A partner playing the patient practises the breathing on a spacer with no inhaler fitted",
+      "Expired medicines can be kept for training if they are isolated from operational stock and clearly labelled training stock (CPPRO-008)"
+    ] },
+    { h: "Doses (CPP-050-AO, mild asthma)", src: ["cpp050"], table: { head: ["Age", "Salbutamol MDI", "Can't use the MDI and spacer"], rows: [
+      ["Over 6", "12 puffs (1200 microg)", "Nebulised salbutamol 5 mg"],
+      ["1 to 6", "6 puffs (600 microg)", "Nebulised salbutamol 2.5 mg, plus saline to 5 mL"],
+      ["Under 4", "Consider adding a resuscitation mask to the MDI", ""]
+    ] } },
+    { h: "MDI and spacer (CPPRO-012)", src: ["c012"], steps: [
+      "Medication checks, allergies, explain and get consent.",
+      "Sit the patient at more than 45 degrees, or upright. Hand hygiene.",
+      "Canister secure in the holder, cover off, shake well, test spray into the air. Don't breathe it in.",
+      "MDI into the end of the spacer. Prime the spacer with one puff.",
+      "Patient closes their lips around the mouthpiece. A young child who can't: fit a small face mask to the spacer and hold it on their face.",
+      "One puff into the spacer. Breathe in deeply and slowly, hold about 10 seconds if they can. Four breaths per puff.",
+      "Take the spacer off, wait 30 to 60 seconds, repeat to the dose. Record dose, route and time."
+    ] },
+    { h: "Not improving", src: ["cpp050"], tone: "warn", list: [
+      "Mild asthma that fails to improve after salbutamol: consult the EOC Clinician, who may advise repeat doses (salbutamol and ipratropium by MDI and spacer with oxygen 4 L/min by nasal cannula, or by nebuliser)",
+      "Confused or combative patient: a nebuliser is preferred (CPPRO-012)"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp050"], cases: [
+      { who: "A. Adult, mild", text: "Sam, 28, talking in sentences.", answer: "12 puffs, one at a time, 4 breaths each, 30 to 60 seconds apart." },
+      { who: "B. Child, 3", text: "Talking in sentences, won't seal her lips on the mouthpiece.", answer: "6 puffs, with a small face mask on the spacer held on her face (consider a resuscitation mask under 4)." },
+      { who: "C. Exactly 6", text: "A 6-year-old with mild asthma.", answer: "The protocol fits both 12 puffs (6 or older) and 6 puffs (1 to 6). Consult the EOC Clinician." },
+      { who: "D. After 12 puffs", text: "Sam is no better.", answer: "Consult the EOC Clinician, who may advise repeat doses in line with paramedic level treatment." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Partner sits up. Do the medication check aloud, then go through every step with the expired inhaler: test puffs into the air, and your partner breathes through a spacer with no inhaler on it.",
+      "Then the child manikin: inhaler in the spacer with the face mask, held on its face, and give the puffs.",
+      "Talk through cards A to D. Swap."
+    ] }
+  ],
+  checks: ["Medication check and allergies", "Sat the patient up over 45 degrees", "Shook, test sprayed into the air, primed the spacer", "One puff, four slow breaths, 30 to 60 seconds apart",
+    "Right puffs for the age", "Face mask on the spacer for the young child", "Recorded dose, route and time"] },
+
+{ id: "s3", n: 3, title: "The nebuliser", mins: 20,
+  goal: "Load and run a salbutamol and ipratropium nebuliser at the right dose for an adult and for a child, and keep the crew safe from the mist.",
+  kit: ["Nebuliser bowls with adult and paediatric masks and tubing", "Training ampoules (saline, labelled TRAINING) standing in for salbutamol and ipratropium", "Saline 0.9% ampoules", "Oxygen (Inhalo) or air", "An adult or child manikin"],
+  blocks: [
+    { h: "Safety", src: ["dsy", "c012"], tone: "red", list: [
+      "Training saline only, never real salbutamol or ipratropium. Run the mask on a manikin",
+      "Oxygen away from naked flames"
+    ] },
+    { h: "More severe asthma: the first neb (CPP-050-AO)", src: ["cpp050"], table: { head: ["Age", "Salbutamol", "Ipratropium", "Saline"], rows: [
+      ["Over 6", "5 mg (one neb)", "500 microg (one neb)", "None needed"],
+      ["1 to 6", "2.5 mg (about half a neb)", "250 microg (about half a neb)", "3 mL to make 5 mL"]
+    ] } },
+    { h: "Load and run it (CPPRO-012)", src: ["c012"], steps: [
+      "Medication checks, allergies, explain and get consent. Patient at more than 45 degrees, or upright. Hand hygiene.",
+      "Take the nebuliser chamber off the mask and load through the top.",
+      "Plastic ampoule: twist the top off and, without touching the open end, squeeze it into the bowl. A smaller dose: draw up the amount with a syringe.",
+      "Several medicines or saline can go in one bowl. Total no more than 10 mL.",
+      "Connect the chamber firmly to the right size mask and the tubing. Keep the chamber upright so it doesn't leak.",
+      "Tubing to oxygen or air at 6 to 8 L/min for a good mist.",
+      "Mask over the nose and mouth; breathe as normally as possible.",
+      "Tap the bowl now and then, and at the end, to release clinging drops. Hand hygiene. Record dose, route and time."
+    ] },
+    { h: "In the ambulance", src: ["c012"], list: [
+      "The mist reaches the crew too: use the vehicle extraction and fresh-air (not recirculated) ventilation",
+      "Nebulisers can spread droplet and airborne infection: wear the right PPE"
+    ] },
+    { h: "Then", src: ["cpp050"], list: [
+      "Request early clinical support. Consult the EOC Clinician, who may advise further doses: repeat or continuous nebs, MDI and spacer with oxygen 4 L/min, or IM adrenaline",
+      "Transport and notify the receiving facility. Deteriorating at any time: consult the EOC Clinician immediately"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp050"], cases: [
+      { who: "A. Karen, 45", text: "More severe asthma.", answer: "Salbutamol 5 mg and ipratropium 500 microg, one neb of each, in one bowl. 6 to 8 L/min." },
+      { who: "B. Lily, 4", text: "More severe asthma.", answer: "Salbutamol 2.5 mg and ipratropium 250 microg (about half a neb of each), plus 3 mL saline to make 5 mL. Paediatric mask." },
+      { who: "C. Mild, confused", text: "Joan, 70, mild asthma, can't manage the spacer.", answer: "Nebulised salbutamol 5 mg (over 6). A nebuliser is preferred for a confused patient (CPPRO-012)." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Do the medication check aloud. Load the adult neb with training ampoules and run it on the manikin.",
+      "Then the child dose: work out half of each and the saline to 5 mL, with a paediatric mask.",
+      "Swap."
+    ] }
+  ],
+  checks: ["Medication check aloud", "Ampoule opened without touching the open end", "Right adult dose; right child dose with saline to 5 mL", "Total under 10 mL; chamber kept upright",
+    "6 to 8 L/min", "Tapped the bowl", "Mentioned extraction and fresh-air ventilation"] },
+
+{ id: "s4", n: 4, title: "Life threatening: oxygen and the bag-valve-mask", mins: 20,
+  goal: "Give high-flow oxygen, then assist ventilation with a bag-valve-mask on a manikin: a good seal, small breaths, slow and gentle.",
+  kit: ["Adult airway manikin", "Bag-valve-mask with reservoir, extension tubing and bacterial filter, masks in several sizes", "Oxygen with tubing (15 L/min)", "Non-rebreather mask", "OPAs (if you've been trained)"],
+  blocks: [
+    { h: "Life-threatening asthma (CPP-050-AO)", src: ["cpp050", "ctl071"], tone: "warn", list: [
+      "High-flow oxygen and early clinical support",
+      "If assisted ventilation (BVM) is needed: small tidal volumes, slow rates to let the chest deflate (slow and gentle, 4 per minute, CTL-071), gentle squeezes so you don't over-pressurise the lungs",
+      "Consult the EOC Clinician, who may advise continuous salbutamol nebs and/or IM adrenaline 10 microg/kg to a total of 500 microg, repeated as needed",
+      "Urgent transport, notify the receiving facility"
+    ] },
+    { h: "Set up the BVM", src: ["cssg"], steps: [
+      "PPE. Choose the mask: it covers from the bridge of the nose to between the bottom lip and the chin.",
+      "Assemble it. Patient valve unlocked. Reservoir bag fully extended.",
+      "Connect to oxygen at 15 L/min or more and let the reservoir bag inflate.",
+      "Bacterial filter: not for patients under 40 kg. For adults and children over 40 kg, the clinician decides.",
+      "The pressure relief valve can be overridden by pressing and twisting the button a quarter turn."
+    ] },
+    { h: "The seal and the breaths", src: ["cssg"], steps: [
+      "Sit right behind the patient's head. Open the airway with manual manoeuvres or an OPA.",
+      "Nose end of the mask over the bridge of the nose, then roll it down over the mouth, bottom edge on the chin.",
+      "Two operators (preferred): thumbs and index fingers in two semicircles round the connector, other fingers lift the jaw up into the mask. Don't push the mask into the face.",
+      "Solo: a C with the thumb and index finger on the mask, an E with the other fingers lifting the jaw.",
+      "Squeeze about a third of the bag and let go. Watch the chest rise and fall, with little leak.",
+      "Leaking or no chest rise: reassess your technique and think about airway obstruction."
+    ] },
+    { h: "Why slow and gentle", src: ["cssg", "ctl071"], list: [
+      "Too much volume pushes air into the stomach (vomiting and aspiration) and can injure the lungs",
+      "In asthma the air is trapped: slow breaths (4 per minute) let the chest empty between them"
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Fit a non-rebreather at 15 L/min with the bag inflated first.",
+      "The patient 'stops breathing well'. Set up the BVM and do two-person ventilation on the manikin: one holds the seal, one squeezes.",
+      "Count out loud: one breath every 15 seconds (4 a minute). Watch the chest.",
+      "Try solo C-E for a minute, then swap roles."
+    ] }
+  ],
+  checks: ["Right mask size", "Valve unlocked, reservoir extended and inflated, 15 L/min", "Filter decision: none under 40 kg", "Jaw lifted into the mask, not mask pushed onto the face",
+    "About a third of the bag, chest rise seen", "Slow and gentle: about 4 a minute", "Named the EOC Clinician options (continuous nebs, IM adrenaline)"] }
+];
+
+var END = { title: "Finish together", mins: 25,
+  steps: [
+    "Run the student walk-through as one crew: Karen, 45, more severe asthma at 2 am. Use each station's kit as you reach it.",
+    "Then each person does the knowledge check in the asthma microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-asthma";
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/asthma/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Asthma skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Karen: student walk-through", "../../modules/asthma-ao/?mode=student", "btn small"));
+  links.appendChild(a("Knowledge check (microlearning)", "../../microlearning/asthma/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-through: " + root + "modules/asthma-ao/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY asthma skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Asthma skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Asthma\" (about 20 min). Send the link a few days ahead."],
+    ["0:00", "Read the safety boxes at stations 2 and 3 together (expired inhalers puff into the air or onto a manikin, saline only in the nebs; nobody breathes in a real medicine). Split into pairs or threes."],
+    ["0:05", "Rotate through stations 1 to 4 (15 to 20 min each). Partners tick the checks on the phone."],
+    ["about 1:20", "Finish together: Karen's walk-through as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 1: the patient cards (printed or on a phone), the Corpuls with SpO2.",
+    "Station 2: expired salbutamol MDIs labelled TRAINING and kept apart from operational stock, spacers, a small spacer face mask, a child manikin.",
+    "Station 3: nebuliser bowls with adult and paediatric masks, saline ampoules labelled TRAINING, an Inhalo cylinder.",
+    "Station 4: an airway manikin, a bag-valve-mask with reservoir and filter, masks in several sizes, oxygen at 15 L/min.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Expired inhalers and training ampoules counted and back in their labelled TRAINING box, apart from operational stock.",
+    "Used spacers, nebuliser bowls and masks binned (single patient use) or replaced.",
+    "Bag-valve-mask cleaned and repacked as your station does; manikin wiped.",
+    "Oxygen cylinders turned off, flow at 0.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Four stations to practise the hands-on parts of an asthma job, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Asthma\" first (about 20 minutes)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/asthma/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Karen's walk-through, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cpp050, SRC.ctl071, SRC.c012, SRC.c008, SRC.cssg].join(", ") +
+    ". The review dates of CPPRO-012 (Mar 2021) and CPPRO-008 (June 2020) have passed. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>
