@@ -5,7 +5,7 @@
 may be reproduced or stored without written permission, so the guide itself is **not** kept in this repo (the repo
 and the site are public). The owner has a scanned PDF (90 pages, images only, no text layer): ask for it when a page
 needs it, read only the pages needed, and write our own short steps citing "SAAS Clinical Skills Study Guide v3.2
-(Oct 2026), <skill>". First used for the anaphylaxis stations (Oxygen), the high-speed MVA stations, the falls stations, the chest pain and ACPO stations, the asthma stations and the stroke and hypoglycaemia stations.
+(Oct 2026), <skill>". First used for the anaphylaxis stations (Oxygen), the high-speed MVA stations, the falls stations, the chest pain and ACPO stations, the asthma stations, the stroke and hypoglycaemia stations and the AR course Day 6 stations (IV therapy set up line).
 
 Page numbers are the printed numbers, which match the PDF page numbers. The guide's own contents page is about one page
 out (it lists Manual BP at 25; it starts on 24).
@@ -28,7 +28,7 @@ out (it lists Manual BP at 25; it starts on 24).
 | Cardiac monitor (Corpuls): pulse oximetry (probes, pleth wave, poor-signal causes) | 48 to 49 | no / yes / yes |
 | Chest auscultation | 50 | no / no / yes |
 | Chest compressions | 52 | |
-| Eye irrigation with giving set and IV saline bag | 54 | |
+| Eye irrigation with giving set and IV saline bag (500 mL saline bag, medication check, prime the giving set: the same set-up steps as IV therapy) | 54 to 55 | yes / yes / yes |
 | Haemorrhage control (direct pressure) | 56 to 57 | yes / yes / yes |
 | Head to toe examination (basic: look, hear, feel; don't palpate the pelvis) | 58 to 59 | yes / yes / yes |
 | Helmet removal | 60 to 61 | no / yes / yes |
