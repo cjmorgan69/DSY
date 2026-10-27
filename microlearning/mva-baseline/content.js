@@ -1,8 +1,9 @@
 /* Baseline obs at a high-speed MVA - AO microlearning. Content only: the layout lives in ../shared/module.js.
    Replaces the theme of the classic page /modules/rural-mva/ (kept as it is, as the owner asked), without the Shock
    Index or paramedic items (owner, 26 Oct 2026). Sources, all exported 31.08.2026:
-   CPP-063-AO Prolonged Care - AO v1.0 (15 Jan 2026): obs every 15 min, at least two complete sets in the first hour,
-     RDR escalation triggers. CPP-004-AO Basic Care and Life Support - AO v4.0 (8 Dec 2016, no review date shown).
+   CPP-063-AO Prolonged Care - AO v1.0 (15 Jan 2026): obs at least every 15 min, more often when in a trigger zone or as
+     clinically indicated, RDR escalation triggers. The owner chose (27 Oct 2026) not to quote the protocol's "at least two
+     complete sets in the first hour": too few for trauma. The intro video sentence saying it was cut. CPP-004-AO Basic Care and Life Support - AO v4.0 (8 Dec 2016, no review date shown).
    CTL-070 Adult RDR Chart and CTL-042 Major Trauma Tool v1.2 (4 June 2025): read from the chart images.
    CPP-042-AO Amputation and Haemorrhage - AO v4.0 (8 Dec 2016). CPP-018-AO Spinal Injury - AO v5.0 (31 Jul 2020).
    CPP-158-AO Chest Trauma - AO v1.0 (30 May 2023). CPPRO-045 SAM Pelvic Sling II v1.0 (Jan 2025, review Jan 2028).
@@ -91,17 +92,17 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Baseline obs at a high-speed MVA" } },
+      { video: { src: "intro.mp4?v=2", poster: "intro-poster.jpg?v=2", title: "Baseline obs at a high-speed MVA" } },
       { text: "A car has left the highway at speed. Your patient is talking and the first set of obs looks okay. Are they okay? One set can't tell you. A seriously injured patient can look stable for a while, and the change shows up as a trend across several sets." },
       { text: "That's why the first complete set matters so much. It's your baseline. Every later set is compared with it, and the trend is what tells you when to escalate, where the patient should go, and what to hand over." }
     ] },
 
     { title: "Why a baseline?", blocks: [
-      { box: { title: "What the protocols say", check: { q: "You've taken one set of obs at a crash and everything is in the white zone. What does CPP-063-AO say about how many sets you need, and why?", a: "At least two complete sets in the first hour, to establish clinical risk, potential or actual deterioration, or response to treatment. Then keep taking obs at least every 15 minutes in the first hour." }, items: [
+      { box: { title: "What the protocols say", check: { q: "You've taken one set of obs at a crash and everything is in the white zone. When is the next set due?", a: "In 15 minutes at the most, and sooner if you're concerned or any obs moves into a yellow, red or purple zone (CPP-063-AO). One normal set is only your baseline: repeated sets show clinical risk, deterioration, or a response to treatment." }, items: [
         "Gain, measure and record as much information as possible to support treatment decisions (CPP-004-AO)",
         "In the secondary phase: continuous regular monitoring of observations and vital signs, and cardiac rhythm if possible (CPP-004-AO)",
-        "At least two complete sets of observations in the first hour of care, to establish clinical risk, potential or actual deterioration, or response to treatment (CPP-063-AO)",
-        "Observations at least every 15 minutes in the first hour of care (CPP-063-AO)",
+        "Repeated sets establish clinical risk, potential or actual deterioration, or response to treatment (CPP-063-AO)",
+        "Full sets at least every 15 minutes, and more often if you're concerned or as clinically indicated (CPP-063-AO)",
         "Obs in a yellow, red or purple zone: take them more often (CPP-063-AO)",
         "Keep monitoring until you hand the patient over (CPP-063-AO)"
       ] } },
@@ -118,7 +119,7 @@ var M = window.MODULE = {
     ] },
 
     { title: "The RDR chart: zones and escalation", blocks: [
-      { text: "Plot every set on the Adult RDR Chart (CTL-070). Each obs falls in a white, yellow, red or purple zone. The chart asks for a minimum of 2 sets." },
+      { text: "Plot every set on the Adult RDR Chart (CTL-070). Each obs falls in a white, yellow, red or purple zone." },
       { table: { title: "Adult RDR Chart zones (CTL-070)", table: { head: ["Obs", "Zone", "Range"], rows: [
         ["Resp rate (/min)", "White", "11 to 20"],
         ["", "Yellow", "21 to 25"],
@@ -243,7 +244,7 @@ var M = window.MODULE = {
 
           if (esc) actions.push("Escalate: request clinical support and consult the EOC Clinician (CPP-004-AO)");
           if (colour.length || purple.length) actions.push("Obs in yellow, red or purple: take them more often than every 15 minutes (CPP-063-AO)");
-          else actions.push("Keep taking full sets at least every 15 minutes in the first hour (CPP-063-AO)");
+          else actions.push("Keep taking full sets at least every 15 minutes, and more often if you're concerned (CPP-063-AO)");
           if (l1a.length || l1b.length) actions.push("Level 1 (CTL-042): the highest level of trauma service within an ETA under 45 minutes. If the patient is unstable: the closest trauma service or nearest ED, with early notification. Consult the EOC Clinician about destination and retrieval (DSY)");
           if (B.temp !== null && B.temp !== undefined && zb.temp >= 1 && B.temp <= 35.5) actions.push("Temperature " + B.temp + " °C: keep them warm and dry, adjust the vehicle temperature, add blankets (CPP-063-AO)");
           actions.push("Hand over the trend, not just the last set, using ISBAR (CTL-054)");
@@ -338,10 +339,10 @@ var M = window.MODULE = {
     ] },
 
     { title: "Knowledge check", blocks: [{ quiz: { questions: [
-      { q: "How many complete sets of obs does CPP-063-AO ask for in the first hour?", options: ["One, if it's normal", "At least two", "Only at the scene and on arrival"], answer: 1,
-        why: "At least two complete sets of observations should occur within the first hour of care, to establish clinical risk, potential or actual deterioration, or response to treatment." },
-      { q: "In the first hour, how often should obs be taken at a minimum?", options: ["Every 5 minutes", "Every 15 minutes", "Every 30 minutes"], answer: 1,
-        why: "CPP-063-AO: observations every 15 minutes at a minimum in the first hour, and more often if any are in a yellow, red or purple zone." },
+      { q: "Why does CPP-063-AO ask for repeated sets of obs?", options: ["To fill in the PCR", "To establish clinical risk, deterioration, or response to treatment", "Only for patients over 65"], answer: 1,
+        why: "CPP-063-AO: repeated observations establish clinical risk, potential or actual deterioration, or response to treatment." },
+      { q: "How often should a full set of obs be taken, at a minimum?", options: ["Every 15 minutes, and more often if you're concerned", "Every 30 minutes", "Only at the scene and on arrival"], answer: 0,
+        why: "CPP-063-AO: at least every 15 minutes, more often if any obs is in a yellow, red or purple zone, or as clinically indicated." },
       { q: "Which of these is NOT one of CPP-063-AO's escalation triggers?", options: ["Any obs in a purple zone", "3 or more obs in red or yellow zones", "One obs in a yellow zone"], answer: 2,
         why: "Escalate if zones progress from yellow to red or red to purple, any purple zone, or 3 or more red or yellow zones. A single yellow means take obs more often." },
       { q: "On the Adult RDR Chart, which zone is a pulse rate of 124?", options: ["Yellow", "Red", "Purple"], answer: 1,
