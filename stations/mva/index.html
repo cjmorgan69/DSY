@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>High-speed MVA skills stations - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261027b">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* High-speed MVA skills stations (AO). Built 27 Oct 2026 for a group training night without the instructor present, to go
+   with the module /microlearning/mva-baseline/ and the walk-through /modules/mva-ao/ (Jason, 34).
+   Sources: SAAS Clinical Skills Study Guide v3.2 (released Oct 2026; owner's scanned copy, not stored in the repo: see
+   .claude/references/clinical-skills-study-guide.md for the page index), read for manual BP, Corpuls3 NIBP and SpO2,
+   pulse, pupils, tympanic temperature, direct pressure and the vacuum mattress; CPPRO-004 Arterial Tourniquet Application
+   v1.1 (review date Aug 2018 passed); CPPRO-021 Cervical Spine Immobilisation v1.2; CPPRO-045 SAM Pelvic Sling II v1.0
+   (review Jan 2028); CPPRO-028 Femoral Traction Splint v2.0 (CT-6 and Slishman STS Gen 2; review date Apr 2026 passed);
+   CPP-042-AO, CPP-018-AO, CPP-063-AO, CPP-004-AO, CTL-070, CTL-042. Owner's choices (27 Oct 2026): follow CPP-018-AO where the
+   guide's vacuum mattress page says full spinal precautions with a spinal board; tourniquet on a training limb only;
+   CT-6 and Slishman both shown, with a toggle. Patient cards, how-to-run notes and the space blanket and thermal cap lines
+   are DSY-written and marked as such. */
+var SRC = {
+  cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
+  c004: "CPPRO-004 Arterial Tourniquet Application v1.1",
+  c021: "CPPRO-021 Cervical Spine Immobilisation v1.2",
+  c045: "CPPRO-045 SAM Pelvic Sling II v1.0",
+  c028: "CPPRO-028 Femoral Traction Splint v2.0",
+  cpp042: "CPP-042-AO Amputation and Haemorrhage v4.0",
+  cpp018: "CPP-018-AO Spinal Injury v5.0",
+  cpp063: "CPP-063-AO Prolonged Care v1.0",
+  cpp004: "CPP-004-AO Basic Care and Life Support v4.0",
+  ctl070: "CTL-070 Adult RDR Chart",
+  ctl042: "CTL-042 Major Trauma Tool v1.2",
+  lead: "DSY lead instructor",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "Obs in the car", mins: 20,
+  goal: "Take a complete set of obs on a patient sitting in a car, by hand and on the Corpuls. Plot it on the RDR chart, then repeat it and spot the trend.",
+  kit: ["A car: parked, keys out, handbrake on", "BP cuff (sphygmomanometer) and stethoscope", "A watch with a second hand", "Corpuls3 with NIBP cuff and SpO2 probe",
+    "Tympanic thermometer and probe covers", "Penlight", "Printed Adult RDR charts (CTL-070) and a pen", "The facilitator cards below"],
+  blocks: [
+    { h: "Manual BP", src: ["cssg"], steps: [
+      "PPE. Choose an arm. Not an arm with a dialysis fistula, lymphoedema, or a wound or other injury.",
+      "Palm up, elbow slightly bent, the arm at about the level of the heart.",
+      "Check the cuff size: wrapped just above the elbow, the index line must fall inside the range marks. The artery arrow goes over the brachial artery.",
+      "Palpatory (systolic only): feel the radial pulse, inflate until it goes, then deflate slowly. The pressure when it comes back is the systolic.",
+      "Auscultatory (preferred): stethoscope over the brachial pulse, inflate until there's no sound, then deflate slowly. First sound = systolic. Sound gone = diastolic. Deflate fully.",
+      "Use the same arm and the same device each time."
+    ] },
+    { h: "In a car seat", src: ["dsy"], list: [
+      "Rest the arm on your knee or the console so it sits at about heart level",
+      "Kneel or crouch beside the open door. Don't lean across the patient",
+      "Keep the patient still: tell them what you're doing before each step"
+    ] },
+    { h: "Pulse", src: ["cssg", "ctl070"], steps: [
+      "Use the pads of your index and middle fingers, never your thumb.",
+      "Radial pulse: at the base of the thumb, slide about 2 cm into the groove. Press lightly.",
+      "Strength: strong or weak. Rhythm: regular or irregular.",
+      "Count for 15 seconds and multiply by 4. Slow or irregular: count for 30 seconds and multiply by 2.",
+      "On the RDR chart, record the pulse rate you feel, not the ECG heart rate."
+    ] },
+    { h: "Corpuls3: NIBP and SpO2", src: ["cssg"], steps: [
+      "Monitor mode, then NIBP. The first cuff pressure is 180 mmHg.",
+      "After a manual BP you can turn it down (minimum 120): Initial soft key, then the Jog dial, then press it once.",
+      "Auto, then Interval: repeat BPs every 1 to 60 minutes. Turn the cuff pressure down where you can: it hurts.",
+      "Check the 3 stars under the reading. Fewer than 3: confirm with a manual BP. Movement, clothing and an irregular rhythm all reduce accuracy.",
+      "SpO2: nail bed between the sensors, cable over the top of the finger. Check the pleth wave fills the grid. Cold or shocked patients, nail polish, movement and bright light give poor signals."
+    ] },
+    { h: "Temperature and pupils", src: ["cssg"], list: [
+      "Tympanic: new probe cover, fit it snugly in the ear canal, keep the patient still. POS on the display means it wasn't positioned right",
+      "Exposure to very hot or very cold temperatures can affect ear readings: think about this on a cold roadside",
+      "Pupils: ask the patient to look into the distance, shine the light in from the side, then the other eye. Record size and reaction (PEARL)"
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person sits in the driver's seat as the patient.",
+      "AO2 takes a real full set: RR, SpO2, manual BP, felt pulse, temperature, GCS, pupils. Plot it on the RDR chart with the time.",
+      "Put the Corpuls on and compare its BP with your manual one.",
+      "The facilitator reads out sets 2 and 3 below. After each, say which zones changed and whether a CPP-063-AO trigger is met. Then open the answer.",
+      "Swap roles."
+    ] },
+    { h: "Facilitator cards (from the walk-through)", src: ["dsy", "ctl070", "ctl042"], cases: [
+      { who: "Set 2, 15 minutes later", text: "RR 22, SpO2 99% (now on oxygen), BP 124/82, pulse 106, temp 36.0, GCS 15, pain 4/10.",
+        answer: "RR and pulse have moved from white to yellow. BP still white. No escalation trigger yet (two yellows, no red or purple), but obs in a yellow zone: take them more often. The higher SpO2 is the oxygen." },
+      { who: "Set 3, 15 minutes after that", text: "RR 26, SpO2 98% (oxygen), BP 118/84, pulse 124, temp 35.6, GCS 14, pain 3/10.",
+        answer: "RR and pulse have moved from yellow to red, and GCS is yellow: zones progressing and 3 obs in red or yellow, so escalate (CPP-063-AO). Heart rate over 120 is Major Trauma Tool Level 1. The BP is still white: don't be reassured by it." }
+    ] }
+  ],
+  checks: ["Chose a safe arm and the right cuff size", "Manual BP: systolic and diastolic, cuff fully deflated", "Pulse felt with two fingers, not read off the monitor",
+    "Corpuls cuff pressure turned down after the manual BP; stars checked", "Full set recorded with the time and plotted on the RDR chart", "Named the zone changes and whether a trigger was met"] },
+
+{ id: "s2", n: 2, title: "Bleeding and the tourniquet", mins: 15,
+  goal: "Control limb bleeding with direct pressure first, and apply a tourniquet correctly when direct pressure fails.",
+  kit: ["A training limb (tourniquet practice on the training limb only)", "SOF tactical tourniquet (training)", "Dressings in several sizes and roller bandages", "Permanent marker", "A moulage wound or a marked sleeve on a partner for direct pressure"],
+  blocks: [
+    { h: "Safety", src: ["lead"], tone: "red", list: [
+      "The tourniquet goes on the training limb only, never on a person",
+      "Direct pressure and bandaging can be practised on a partner: check their fingers stay pink and warm"
+    ] },
+    { h: "Direct pressure", src: ["cssg", "cpp042"], steps: [
+      "PPE. Expose the wound and judge how bad the bleeding is.",
+      "Pick a dressing that fits the wound: one that's too big hides the bleeding rather than controlling it.",
+      "Press the dressing on the bleeding point, then bandage firmly to keep the pressure on.",
+      "Bleeding through: add a second dressing. Still bleeding: take them all off, find the exact bleeding point, and press over a smaller area.",
+      "Check the distal pulse afterwards: too much pressure acts like a tourniquet.",
+      "Embedded object: don't remove it or press on it. Pad around it and press on the padding.",
+      "Direct pressure and elevation control most external bleeding. Consider clinical support and consult the EOC Clinician."
+    ] },
+    { h: "Tourniquet", src: ["c004", "cpp042"], tone: "warn", steps: [
+      "Only for life-threatening bleeding from a limb that direct pressure won't control.",
+      "Place it proximal to the wound, as close to it as possible. Never over a joint or over the wound.",
+      "Click the buckle into place and pull the strap down tight.",
+      "Turn the windlass until the bleeding stops (distal pulses can no longer be felt). Lock the windlass in the buckle.",
+      "Write the time on the strap label and on the PCR, and hand it over.",
+      "Don't cover it with a bandage or clothing. Don't remove it pre-hospital.",
+      "Advise the EOC Clinician, who may seek specialist advice."
+    ] },
+    { h: "Practice cards", src: ["dsy"], cases: [
+      { who: "A. Forearm laceration", text: "A deep cut on the forearm from broken glass, bleeding steadily. Practise on your partner's arm.",
+        answer: "Direct pressure with a dressing that fits the wound, then a firm bandage. Elevate. Check the fingers and the radial pulse. No tourniquet: the bleeding is controlled." },
+      { who: "B. Thigh wound after a rollover", text: "A large wound on the upper thigh, bleeding heavily through two dressings despite firm pressure. Practise on the training limb.",
+        answer: "Life-threatening bleeding not controlled with direct pressure: tourniquet, proximal to the wound and as close as possible, not over the knee or the wound. Tighten until the bleeding stops and the distal pulse is gone, lock the windlass, write the time on the label and the PCR, leave it uncovered. Advise the EOC Clinician." }
+    ] }
+  ],
+  checks: ["Direct pressure with a dressing that fits the wound", "Second dressing, then reassessed and pressed over a smaller area", "Tourniquet only after direct pressure failed",
+    "Placed proximal and close to the wound, not over a joint or the wound", "Windlass turned until no distal pulse, then locked", "Time written on the label and said aloud; not covered"] },
+
+{ id: "s3", n: 3, title: "Keep them warm, protect the spine", mins: 20,
+  goal: "Stop a walking patient moving, package them on the stretcher with a spinal precaution technique, and keep them warm the whole time.",
+  kit: ["Stretcher", "Towels x 2 and 500 mL saline bags x 2 (training stock)", "Transpore tape and a combine dressing", "Semi-rigid collar", "Vacuum mattress and a suction device", "Blankets, space blanket, thermal cap"],
+  blocks: [
+    { h: "Stop the movement", src: ["cpp018"], list: [
+      "A high-speed collision, rollover or ejection is a risk factor: consider an alternative to self-extrication",
+      "If the patient is already up, stop them moving",
+      "Anyone self-extricating stops and waits to be moved if they get numbness, tingling, weakness, or new or worse spinal pain",
+      "Choose a technique: manual stabilisation (self-splinting), modified towel roll, vacuum mattress, or a correctly fitted semi-rigid collar. Record your decision on the PCR"
+    ] },
+    { h: "Modified towel roll", src: ["c021"], steps: [
+      "Two towels, folded lengthways, across the stretcher where the head will rest.",
+      "Holding the head steady, roll a 500 mL saline bag into the top towel on each side, sitting on its narrow edge.",
+      "Roll the bottom towel up tightly on each side as a smaller support under the big roll.",
+      "Rolls firm against the head and shoulders.",
+      "One length of tape across the forehead from roll to roll, over a combine dressing. Never tape the head to the stretcher."
+    ] },
+    { h: "Semi-rigid collar", src: ["c021"], list: [
+      "Not with a compromised airway, a spinal deformity, or concerns about raised intracranial pressure",
+      "Hold the head in neutral alignment. Count how many fingers fill the space from the shoulder to the chin",
+      "Measure the same number from the lower plastic edge of the collar to the size window. Pull the chin piece until that window shows red, then lock it"
+    ] },
+    { h: "Vacuum mattress", src: ["cssg", "cpp018"], steps: [
+      "Unroll it on the stretcher and spread the beads evenly (uneven beads cause pressure points). Straps and handles free. A sheet on top.",
+      "Shoulders level with the red line, patient centred.",
+      "One person pushes the sides in while the other tightens the straps (feed in, pull out of the buckle): green pelvis, yellow legs, red figure of eight at the ankles, blue crossed over the chest, black arm strap, then the head section and forehead strap.",
+      "Close the valve, apply suction while squeezing the sides in, then disconnect and keep the valve closed. Take up any slack in the straps.",
+      "Secure it to the stretcher with the harness straps. It is not a lifting device.",
+      "The guide's mattress page mentions a spinal board for suspected spinal injury. Follow CPP-018-AO: do not transport on a long board."
+    ] },
+    { h: "Keep them warm", src: ["cpp063", "cpp004"], list: [
+      "Keep them warm and dry. Hypothermia happens in hot and cold weather",
+      "Expose only what you need to find injuries, then cover again",
+      "Adjust the vehicle temperature and add or remove blankets as needed"
+    ] },
+    { h: "Space blanket and thermal cap", src: ["lead"], list: [
+      "Get the patient off the cold ground and out of the wind first",
+      "Wet clothing off, then a sandwich: a blanket next to the patient, the space blanket in the middle, and another blanket over the top, tucked in",
+      "Thermal cap on",
+      "Leave access to the arm for the BP cuff and a finger for the SpO2 probe"
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "The patient is walking around at a 'crash'. Talk them into stopping and sitting, then onto the stretcher.",
+      "Do a modified towel roll. Then do it again with the vacuum mattress.",
+      "Warm them: off the ground, wet clothing off, the blanket sandwich (blanket, space blanket, blanket), thermal cap.",
+      "Swap roles."
+    ] }
+  ],
+  checks: ["Stopped the patient and explained why (high-speed rollover)", "Towel roll firm, tape over a combine, head not taped to the stretcher",
+    "Collar sized correctly, or said why it wasn't used", "Vacuum mattress strap order right, valve closed, slack taken up", "No transport on a long board", "Covered again after every check"] },
+
+{ id: "s4", n: 4, title: "Pelvis and femur", mins: 20,
+  goal: "Apply a SAM Pelvic Sling to a supine patient with two crew, then apply a traction splint and know which goes on first.",
+  kit: ["SAM Pelvic Sling II (training), in the size for your volunteer", "Large yellow slide sheet", "Triangular bandages x 2, small towels x 2", "Shears (don't cut anything)",
+    "CT-6 or Slishman traction splint, and a combine for padding", "A volunteer in shorts, or over thin clothing for practice"],
+  blocks: [
+    { h: "When to use the pelvic sling", src: ["c045"], list: [
+      "A mechanism that could fracture the pelvis, plus any of: a suspected or obvious pelvic fracture, an altered GCS, haemodynamic compromise",
+      "Don't rock or spring the pelvis. Use minimum movement for every patient with blunt trauma",
+      "Pelvic fractures are the third most common cause of death in motor vehicle collisions"
+    ] },
+    { h: "Size", src: ["c045"], table: { head: ["Size", "Hip circumference"], rows: [["Extra-small", "69 to 119 cm"], ["Standard", "81 to 127 cm"], ["Extra-large", "91 to 152 cm"]] } },
+    { h: "Apply it: supine patient, two crew (Procedure A)", src: ["c045"], steps: [
+      "Patient supine, legs in neutral, knees and feet tied together. The sling goes on bare skin: cut clothing with as little movement as possible, cover the genitals, and manage heat loss. (For practice: shorts or thin clothing, no cutting.)",
+      "Fold the slide sheet in half, open end towards the feet. Feed it under the knees and slide it up under the lower back, buttocks and upper legs.",
+      "Feed the black strap under the knees, white/black side up, blue side down. Slide it up between the two layers to the level of the greater trochanters and pull it through.",
+      "One crew member steadies the pelvis while the other pulls the bottom layer of the slide sheet out.",
+      "Check the level. Centre the sling with the orange buckle off centre.",
+      "Thread the black strap into the orange buckle. One holds the orange handle, the other the black strap: pull in opposite directions, steadily, until the buckle clicks. Keep the tension and fasten the strap."
+    ] },
+    { h: "Pitfalls", src: ["c045"], tone: "warn", list: [
+      "Too high (over the iliac crest) or too low (over the lesser trochanter): poor reduction or over-reduction",
+      "The wrong size",
+      "Pressure injury: check the skin"
+    ] },
+    { h: "Femur: before the splint", src: ["c028"], tone: "warn", list: [
+      "For a suspected or obvious mid-shaft femur fracture: thigh pain and deformity, a shortened or rotated leg",
+      "Suspected pelvic fracture as well: the pelvic sling goes on BEFORE the traction splint",
+      "Not for a neck of femur fracture or an avulsion with bone separation",
+      "Expose and control any bleeding. Check and mark the pedal pulse, capillary refill, sensation and the pain score",
+      "Open fracture: irrigate with at least 1 L of sodium chloride 0.9% and cover with a damp combine before traction",
+      "Can't use a splint? Secure the injured leg to the uninjured leg"
+    ] },
+    { choose: { h: "Which splint does your station carry?", key: "splint", src: ["c028"], options: [
+      { value: "slishman", label: "Slishman (STS Gen 2)", blocks: [
+        { h: "Slishman traction splint (STS Gen 2)", src: ["c028"], steps: [
+          "Decide: distal strap at the ankle or just above the calf. For the ankle, extend the telescopic pole until the button clicks.",
+          "Black strap first: neoprene flush on the skin, pole on the outer side. Longer side under the ankle (or calf), wrap firmly.",
+          "Red groin strap: neoprene buckle cover flush on the skin, pole on the outer side. Slide the long end under the leg and tighten the clasp on the front of the thigh. Pad it with a combine if needed.",
+          "Pull the cord by the red toggle at the hip, towards the head, until the pain eases, the leg length is corrected and the bone realigns.",
+          "Pull the cord towards the foot while keeping tension, lock it in the v-notch, and wrap the spare cord once around each cleat wing.",
+          "Pressure wrap: lasso one foot loosely, wrap the tail around the other foot so the feet sit together. Or tie the feet with a triangular bandage.",
+          "Check distal perfusion, capillary refill, pedal pulse, sensation and comfort. Record the time traction went on. Check regularly that traction holds."
+        ] },
+        { h: "Good for", src: ["c028"], list: ["The STS Gen 2 can be used with a lower-leg injury (strap above the calf or the knee) and on all children"] }
+      ] },
+      { value: "ct6", label: "CT-6", blocks: [
+        { h: "CT-6 traction splint", src: ["c028"], steps: [
+          "Shake the CT-6 out of the bag so the tubes hang and link up. Check all parts are there and the traction line is fully lengthened.",
+          "Size it beside the uninjured leg: ischial cap at the top of the pelvic crest, ankle hitch about one pole segment (about 15 cm) beyond the foot. Add or remove sections.",
+          "Move it beside the injured leg with two straps above the knee and two below, not over the fracture or the knee.",
+          "Ischial strap under the upper inner thigh, buckle on top, padding on the groin, genitals clear. Tighten it.",
+          "Ankle hitch just above the malleoli (not over the ankle), padded, foot strap even on both sides, slack taken out.",
+          "Manual traction (if there are enough hands): slowly, as the muscle spasm relaxes, from the ankle into normal alignment. Keep it on until the splint takes over.",
+          "Pull the line to a neutral position (ischial cap stays at the pelvic crest), then fasten the four leg straps, tubing on the outer side.",
+          "Pull the line slowly until the leg is the same length as the other one, comfort improves and perfusion improves. Lock it in the V-jam cleat, slide the safety clip down, then release manual traction.",
+          "Check distal perfusion and sensation, record the time and any changes, and check the traction regularly."
+        ] },
+        { h: "Not with the CT-6", src: ["c028"], tone: "warn", list: ["Any injury to the lower leg, knee, ankle or foot, or an amputation below the fracture. Use the Slishman, or splint leg to leg", "Children under 23 kg: splinting only, no traction"] }
+      ] }
+    ] } },
+    { h: "Practice card", src: ["dsy", "ctl042"], cases: [
+      { who: "Passenger, 19, after the rollover", text: "Pain and swelling in the right thigh, the leg shortened and turned out. Also pain over the pelvis when he moves. Pulse 118, BP 104/70.",
+        answer: "Suspected pelvic fracture with haemodynamic compromise and a suspected mid-shaft femur fracture: pelvic sling first, then the traction splint. A major pelvic fracture is a Major Trauma Tool Level 1 injury (a femur fracture is Level 1 when there is another long bone fracture too). Request clinical support, consult the EOC Clinician, keep him warm." }
+    ] }
+  ],
+  checks: ["Named the indication for the pelvic sling", "Chose the right size", "Sling at the greater trochanters, buckle clicked, tension held", "Knees and feet tied together",
+    "Said the sling goes on before traction", "Splint applied, traction checked, distal pulse and sensation checked", "Kept the volunteer covered and warm"] }
+];
+
+var END = { title: "Finish together", mins: 20,
+  steps: [
+    "Run the whole job as one crew with the student walk-through: Jason, 34, a rollover near Cummins. Use each station's kit as you reach that part: the obs in the car, the spinal precautions and warming.",
+    "Then each person does the knowledge check in the microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-mva";
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/mva/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "High-speed MVA skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Student walk-through", "../../modules/mva-ao/?mode=student", "btn small"));
+  links.appendChild(a("Knowledge check (microlearning)", "../../microlearning/mva-baseline/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-through: " + root + "modules/mva-ao/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY high-speed MVA skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "High-speed MVA skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Baseline obs at a high-speed MVA\" (about 20 min). Send the link a few days ahead."],
+    ["0:00", "Read the safety box at station 2 together (tourniquet on the training limb only). Split into pairs or threes."],
+    ["0:05", "Rotate through stations 1 to 4 (about 15 to 20 min each). Partners tick the checks on the phone."],
+    ["about 1:20", "Finish together: the student walk-through as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 1: a car parked off the road with the keys out and the handbrake on. Corpuls charged, spare probe covers.",
+    "Station 2: the training limb and a training tourniquet. Label it TRAINING STOCK and keep it apart from operational stock.",
+    "Station 3: stretcher with clear floor space, the vacuum mattress and a working suction device. Training saline bags only.",
+    "Station 4: a floor mat or stretcher, the pelvic sling, a slide sheet and your station's traction splint.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Training tourniquet loosened and back in its labelled box.",
+    "Pelvic sling and traction splint cleaned with detergent wipes (not bleach) and repacked.",
+    "Vacuum mattress softened (valve open), rolled and back in its bag.",
+    "Corpuls back on charge. Car locked.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Four stations to practise the hands-on parts of a high-speed MVA job, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Baseline obs at a high-speed MVA\" first (about 20 minutes)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/mva-baseline/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Full job, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cssg, SRC.c004, SRC.c021, SRC.c045, SRC.c028, SRC.cpp042, SRC.cpp018, SRC.cpp063].join(", ") +
+    ". The review dates of CPPRO-004 (Aug 2018) and CPPRO-028 (Apr 2026) have passed. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>

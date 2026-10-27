@@ -4,6 +4,8 @@
 window.RELATED = {
   "CPP-063-AO": [
     { kind: "Microlearning module", title: "Baseline obs at a high-speed MVA", href: "/microlearning/mva-baseline/", text: "Why the first complete set matters: obs every 15 minutes, the RDR chart's escalation triggers, the Major Trauma Tool, shock and the cold in the trend, and AO care at the crash." }
+,
+    { kind: "Walk-through scenario", title: "High-speed MVA - AO: Jason, 34", href: "/modules/mva-ao/", text: "Two-person AO crew near Cummins: a rollover, a patient who climbed out, a baseline set of obs and a trend that turns from white to red. Facilitator and student versions." }
   ],
   "CPG-113-P": [
     { kind: "Microlearning module", title: "Asthma or COPD?", href: "/microlearning/asthma-copd/", text: "When both guidelines apply: grading the asthma, oxygen, magnesium, adrenaline and CPAP side by side, and a worked job." },
