@@ -5,7 +5,7 @@
 may be reproduced or stored without written permission, so the guide itself is **not** kept in this repo (the repo
 and the site are public). The owner has a scanned PDF (90 pages, images only, no text layer): ask for it when a page
 needs it, read only the pages needed, and write our own short steps citing "SAAS Clinical Skills Study Guide v3.2
-(Oct 2026), <skill>". First used for the anaphylaxis stations (Oxygen), the high-speed MVA stations, the falls stations and the chest pain and ACPO stations.
+(Oct 2026), <skill>". First used for the anaphylaxis stations (Oxygen), the high-speed MVA stations, the falls stations, the chest pain and ACPO stations and the asthma stations.
 
 Page numbers are the printed numbers, which match the PDF page numbers. The guide's own contents page is about one page
 out (it lists Manual BP at 25; it starts on 24).
@@ -15,8 +15,8 @@ out (it lists Manual BP at 25; it starts on 24).
 | Airway clearance (manual) | 9 | |
 | Airway clearance (suction) | 10 | |
 | Airway manoeuvres | 14 | |
-| Bag-valve-mask ventilation | 16 | |
-| Blood glucose level (BGL) measurement (testing 20 to 21, error codes 21 to 22, calibration and quality control 22 to 23) | 20 to 23 | no / yes / yes |
+| Bag-valve-mask ventilation (mask sizing, valve unlocked, reservoir, 15 L/min, no bacterial filter under 40 kg, two-operator seal, C-E solo, squeeze about a third) | 15 to 18 | yes / yes / yes |
+| Blood glucose level (BGL) measurement (equipment 19, testing 20 to 21, error codes 21 to 22, calibration and quality control 22 to 23) | 19 to 23 | no / yes / yes |
 | Blood pressure: manual (cuff sizes, palpatory and auscultatory) | 24 to 26 | no / yes / yes |
 | Blood pressure: automatic NIBP, Corpuls 3 (initial 180, dial to 120, Auto interval 1 to 60 min, 3-star reliability) | 27 to 28 | no / yes / yes |
 | Burn dressing (cling film) | 29 | yes / yes / yes |
