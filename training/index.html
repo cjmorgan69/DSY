@@ -73,7 +73,7 @@
   function renderAuth() {
     var up = S.authMode === "up";
     $app.innerHTML =
-      '<div class="auth stack"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>Sign in to see your sessions and book a spot.</p></div></div>" +
+      '<div class="auth stack"><a class="link" href="../" style="align-self:flex-start">&larr; DSY Training home</a><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>Sign in to see your sessions and book a spot.</p></div></div>" +
       '<form class="panel pad stack" data-form="auth" autocomplete="on">' +
       (up ? '<label>Your name<input id="f-name" name="name" autocomplete="name" required></label>' : "") +
       '<label>' + (up ? "Ambulance ID number" : "Ambulance ID number (or email)") + '<input id="f-email" name="email" autocomplete="username" autocapitalize="none" spellcheck="false" inputmode="' + (up ? "numeric" : "text") + '" required></label>' +
@@ -129,7 +129,7 @@
 
   /* ---------- member view ---------- */
   function header(sub) {
-    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row">' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../region/">Region</a>' : "") + '<a class="link" href="../teams/">Team page</a><button class="link" data-act="signout">Sign out</button></div></header>';
+    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row"><a class="link" href="../">DSY home</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../region/">Region</a>' : "") + '<a class="link" href="../teams/">Team page</a><button class="link" data-act="signout">Sign out</button></div></header>';
   }
 
   function renderMember() {
