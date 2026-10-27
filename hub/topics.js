@@ -1,14 +1,15 @@
 /* DSY topic list: one entry per topic, used by the hub pages (/hub/, /hub/learn/, /hub/run/).
    Add a topic here when a module, walk-through or MDT job is made, and it appears on every page.
    module: folder under /microlearning/   walk: walk-through page (add ?mode=student for students)
-   mdt: job id in /mdt/jobs.js   custom: slug in the scenario customiser (/scenarios/), if it can be customised */
+   mdt: job id in /mdt/jobs.js   stations: practical skills stations page, if any
+   custom: slug in the scenario customiser (/scenarios/), if it can be customised */
 window.DSY_TOPICS = [
   { id:'chest-pain', title:'Chest pain', protocol:'CPP-007-AO', patient:'Graham, 62: chest pain not settling with his own GTN',
     module:'chest-pain', walk:'/modules/chest-pain/', mdt:'chest-pain', custom:'chest-pain-ao' },
   { id:'asthma', title:'Asthma', protocol:'CPP-050-AO', patient:'Karen, 45: more severe asthma at 2 am',
     module:'asthma', walk:'/modules/asthma-ao/', mdt:'asthma', custom:'asthma-ao' },
   { id:'anaphylaxis', title:'Anaphylaxis', protocol:'CPP-003-AO', patient:'David, 54: bee sting and an expired EpiPen',
-    module:'anaphylaxis', walk:'/modules/anaphylaxis/', mdt:'anaphylaxis', custom:'anaphylaxis-ao' },
+    module:'anaphylaxis', walk:'/modules/anaphylaxis/', mdt:'anaphylaxis', custom:'anaphylaxis-ao', stations:'/stations/anaphylaxis/' },
   { id:'stroke', title:'Stroke', protocol:'CPP-016-AO', patient:'Frank, 78: weakness and slurred speech at morning tea',
     module:'stroke', walk:'/modules/stroke-AO/', mdt:'stroke', custom:'stroke-ao' },
   { id:'envenomation', title:'Snake bite', protocol:'CPP-008-AO', patient:'Greg, 52: brown snake bite to the leg',
