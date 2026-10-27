@@ -30,5 +30,5 @@ window.DSY_TOPICS = [
   { id:'burns', title:'Burns', protocol:'CPP-006-AO', patient:'Daniel, 42: diesel flash burn to the face',
     module:'burns', walk:'/modules/burns/', custom:'burns-ao' },
   { id:'mva-baseline', title:'Baseline obs at a high-speed MVA', protocol:'CPP-063-AO', patient:'Jason, 34: rollover near Cummins, walking and "fine"',
-    module:'mva-baseline', walk:'/modules/mva-ao/', mdt:'mva', custom:'mva-ao' }
+    module:'mva-baseline', walk:'/modules/mva-ao/', mdt:'mva', custom:'mva-ao', stations:'/stations/mva/' }
 ];
