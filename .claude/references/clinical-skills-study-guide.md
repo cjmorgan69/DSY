@@ -5,7 +5,7 @@
 may be reproduced or stored without written permission, so the guide itself is **not** kept in this repo (the repo
 and the site are public). The owner has a scanned PDF (90 pages, images only, no text layer): ask for it when a page
 needs it, read only the pages needed, and write our own short steps citing "SAAS Clinical Skills Study Guide v3.2
-(Oct 2026), <skill>". First used for the anaphylaxis stations (Oxygen), the high-speed MVA stations and the falls stations.
+(Oct 2026), <skill>". First used for the anaphylaxis stations (Oxygen), the high-speed MVA stations, the falls stations and the chest pain and ACPO stations.
 
 Page numbers are the printed numbers, which match the PDF page numbers. The guide's own contents page is about one page
 out (it lists Manual BP at 25; it starts on 24).
@@ -24,7 +24,7 @@ out (it lists Manual BP at 25; it starts on 24).
 | Cardiac monitor (PowerHeart G3 Pro): AED | 31 | |
 | Cardiac monitor (Corpuls 3): AED mode | 34 | |
 | Cardiac monitor (Corpuls 1): AED | 39 | |
-| Cardiac monitor (Corpuls): monitor mode, 4-lead ECG | 42 | |
+| Cardiac monitor (Corpuls): monitor mode, 4-lead ECG (lead colours and sites, D-ECG with age and sex only, artefact, cleaning leads, printer paper, Event key and event summary) | 42 to 47 | no / yes / yes |
 | Cardiac monitor (Corpuls): pulse oximetry (probes, pleth wave, poor-signal causes) | 48 to 49 | no / yes / yes |
 | Chest auscultation | 50 | no / no / yes |
 | Chest compressions | 52 | |
@@ -35,7 +35,7 @@ out (it lists Manual BP at 25; it starts on 24).
 | IV therapy: set up line (AO prepares or replaces a bag only, 20 drops/mL sets, KVO 10 drops/min) | 62 to 64 | no / no / yes |
 | Log roll (four people, person 1 at the head calls it, 45 degrees) | 65 to 66 | yes / yes / yes |
 | Oropharyngeal airway (OPA) | 67 | |
-| Oxygen (D-size cylinder change on 72 to 73) | 69 | |
+| Oxygen (Inhalo CD cylinder; nasal cannula 2 to 4 L/min, face mask 8 to 10, non-rebreather 15 with the bag inflated; D-size cylinder change on 72 to 73) | 69 to 73 | yes / yes / yes |
 | Pulse measurement (sites, strength, rhythm, 15 s x 4 or 30 s x 2) | 74 to 75 | yes / yes / yes |
 | Pupil size and response | 76 | no / yes / yes |
 | Recovery position | 77 | yes / yes / yes |

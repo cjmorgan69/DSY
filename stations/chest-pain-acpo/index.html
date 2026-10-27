@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chest pain and ACPO skills stations - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261027c">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Chest pain and ACPO skills stations (AO). Built 27 Oct 2026 for a group training night without the instructor present,
+   to go with the modules /microlearning/chest-pain/ and /microlearning/acpo/ and the walk-throughs /modules/chest-pain/
+   (Graham, 62) and /modules/APO/ (Kevin, 72).
+   Sources: SAAS Clinical Skills Study Guide v3.2 (released Oct 2026; owner's scanned copy, not stored in the repo: see
+   .claude/references/clinical-skills-study-guide.md for the page index), read for Corpuls monitor mode (4-lead ECG),
+   pulse oximetry, chest auscultation and oxygen; CPP-007-AO Chest Pain v4.2 and CPP-001-AO ACPO v4.2 (as checked for the
+   modules); CPPRO-008 Medication Checks and CPPRO-009 Oral Medication Administration (v1.0, review date June 2020 passed);
+   CPPRO-001 Patient Mobility Assessment (active chest pain). Lead instructor guidance (owner, Oct 2026): GTN 300 microg
+   tablet or 400 microg spray both acceptable; a patient who has used their own GTN can have the first crew dose if BP and HR
+   are within the limits, then the EOC Clinician is consulted; adequate oxygenation in chest pain = SpO2 above 94% on air,
+   else nasal cannula to bring it above 94%. Patient cards and how-to-run notes are DSY-written and marked as such. */
+var SRC = {
+  cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
+  cpp007: "CPP-007-AO Chest Pain v4.2",
+  cpp001: "CPP-001-AO Acute Cardiogenic Pulmonary Oedema v4.2",
+  c008: "CPPRO-008 Medication Checks v1.0",
+  c009: "CPPRO-009 Oral Medication Administration v1.0",
+  c001: "CPPRO-001 Patient Mobility Assessment v1.1",
+  lead: "DSY lead instructor",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "Aspirin and GTN", mins: 20,
+  goal: "Do a full medication check with your partner, give aspirin the right way, give GTN as a tablet or a spray, and know the limits for chest pain and for ACPO.",
+  kit: ["Training stock only, labelled TRAINING: aspirin 300 mg, GTN 300 microg tablets, a GTN 400 microg spray", "A glass of water", "A BP cuff and a watch", "Hand gel", "A blank PCR or notepad", "The patient cards below"],
+  blocks: [
+    { h: "Safety", src: ["c008", "dsy"], tone: "red", list: [
+      "Nobody takes or is given any medicine tonight. Hand over the tablets and say the steps; the spray goes into the air only, away from everyone",
+      "Use expired or training stock, kept apart from operational stock and clearly labelled TRAINING (CPPRO-008)"
+    ] },
+    { h: "The medication check", src: ["c008"], steps: [
+      "Two clinicians check every medicine before you prepare it, before you give it, and after you give it.",
+      "Check its integrity: seals unbroken, no discolouration.",
+      "Hand the packet to your partner and ask, without prompting: \"What is this medication?\" \"What is the expiry date?\" \"What is the dose?\"",
+      "Before giving: the right patient (right indication, no contraindication, allergy or sensitivity), the right medication, the right dose, the right route, the right time.",
+      "Afterwards: confirm the medication and dose, and record the dose, route and time on the PCR.",
+      "Medicine expires at the end of the month printed, or the end of the day if a date is given."
+    ] },
+    { h: "Aspirin", src: ["cpp007", "c009"], steps: [
+      "Chest pain: oral aspirin 300 mg for every patient, unless they're allergic.",
+      "Check allergies. Sit the patient up (or on their side) to swallow.",
+      "Hand hygiene. Place the tablet in their hand. SAAS aspirin is chewed before it is swallowed; small sips of water help.",
+      "Not if they can't swallow safely or their conscious state is altered."
+    ] },
+    { h: "GTN: tablet or spray", src: ["c009", "lead"], steps: [
+      "Either a 300 microg tablet or a 400 microg spray: both are acceptable (lead instructor). Tablet: under the tongue and let it dissolve.",
+      "Spray: test it into the air first, away from yourself, the patient and others, and don't breathe it in.",
+      "Ask the patient to lift the tip of the tongue to the roof of the mouth. Spray underneath. Don't let the nozzle touch the mouth.",
+      "Can't follow instructions: spray between the cheek and gum.",
+      "GTN bottles are used for more than one patient: hand hygiene, and no part of the bottle touches the patient.",
+      "Watch the BP closely afterwards: GTN can drop it a long way."
+    ] },
+    { h: "The GTN limits", src: ["cpp007", "cpp001"], tone: "warn", table: { head: ["", "Chest pain (CPP-007-AO)", "ACPO (CPP-001-AO)"], rows: [
+      ["Who decides", "Prescribed GTN: the AO, if within the limits. Not prescribed: consult the EOC Clinician", "Always the EOC Clinician, who may advise it"],
+      ["Systolic BP", "100 or more if prescribed; above 100 if not", "Above 100"],
+      ["Pulse", "60 to 120", "60 to 120"],
+      ["PDE-5 inhibitor", "None in 24 h (sildenafil, vardenafil, avanafil) or 48 h (tadalafil)", "Same"],
+      ["Repeats", "Every 5 min as needed, 3 doses in total; obs every 3 to 5 min", "As directed by the EOC Clinician"]
+    ] } },
+    { h: "Their own GTN first", src: ["lead"], list: [
+      "If the patient has already used their own GTN: you may give the first crew dose if the BP and pulse are within the limits, then consult the EOC Clinician for a plan"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp007", "cpp001", "lead"], cases: [
+      { who: "A. Chest pain, GTN prescribed", text: "Graham, 62. Central chest pain for 20 minutes. Has GTN at home but hasn't used it. BP 138/86, pulse 92. No PDE-5 inhibitor. No allergies.",
+        answer: "Aspirin 300 mg, chewed. Then GTN 300 microg tablet or 400 microg spray under the tongue: prescribed, systolic 100 or more, pulse 60 to 120, no PDE-5. Obs every 3 to 5 minutes; repeat every 5 minutes to 3 doses if pain persists and the limits still hold." },
+      { who: "B. Exactly 100", text: "Chest pain, GTN not prescribed. BP 100/64, pulse 84.",
+        answer: "Not prescribed, so the systolic must be ABOVE 100. 100 fails. No GTN. Aspirin, consult the EOC Clinician." },
+      { who: "C. ACPO", text: "Kevin, 72, can't breathe, sitting on the edge of the bed. BP 152/94, pulse 114. No PDE-5 inhibitor.",
+        answer: "Sit him up, high-flow oxygen via non-rebreather, request clinical support. GTN only if the EOC Clinician advises it: within the limits (SBP above 100, pulse 60 to 120, no PDE-5)." },
+      { who: "D. Tadalafil", text: "Chest pain. BP 150/90, pulse 78. Took tadalafil (Cialis) 30 hours ago.",
+        answer: "Tadalafil within 48 hours: no GTN (it can cause life-threatening hypotension). Aspirin, consult the EOC Clinician." },
+      { who: "E. Already used his own spray", text: "Used two of his own GTN sprays before you arrived. Pain still 6/10. BP 128/80, pulse 76.",
+        answer: "Lead instructor guidance: BP and pulse within the limits, so you may give the first crew dose, then consult the EOC Clinician for a plan." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person is the patient. Read them a card.",
+      "Do the full three-question check with your partner out loud, then 'give' the aspirin and the GTN (spray into the air only).",
+      "Say whether GTN is allowed, and who decides. Then open the answer. Swap roles."
+    ] }
+  ],
+  checks: ["Asked the three check questions without prompting", "Checked allergies and conscious state", "Aspirin chewed, patient sitting up", "Spray tested into the air; nozzle kept off the mouth",
+    "Named the BP, pulse and PDE-5 limits", "Knew the ACPO difference: GTN only on EOC Clinician advice", "Recorded dose, route and time"] },
+
+{ id: "s2", n: 2, title: "The ECG and SpO2 on the Corpuls", mins: 20,
+  goal: "Put a 4-lead ECG and the SpO2 probe on a partner, get a clean trace, print a diagnostic strip, and mark an event.",
+  kit: ["Corpuls3 (charged) with ECG leads, SpO2 probe and spare paper", "In-date ECG electrodes", "Hand towel, razor (don't shave anyone tonight)", "Alcohol wipes", "A volunteer happy to bare their chest, or a manikin"],
+  blocks: [
+    { h: "Electrodes on", src: ["cssg"], steps: [
+      "PPE. Check the electrodes are in date: out of date ones may not work.",
+      "Clean, dry skin: wipe off moisture or dirt with a towel. Excess hair may need shaving.",
+      "Clip the leads onto the electrode studs before you put them on the patient. Peel the backing and check the gel is moist.",
+      "Press around the edge of the pad, not on the centre.",
+      "White (RA): just under the right collarbone. Black (LA): just under the left collarbone.",
+      "Red (LL): under the ribs on the left side of the abdomen. Green (RL): under the ribs on the right side."
+    ] },
+    { h: "Monitor mode", src: ["cssg"], steps: [
+      "Green power button. The Corpuls3 starts in AED mode: wait for the screen to load, then press the soft key under Monitor.",
+      "The metronome still sounds: press metronome off (bottom left soft key).",
+      "The screen shows leads I, II and III. Lead II is the main monitoring lead.",
+      "Look for a flat baseline and little artefact. Lots of wandering: check the leads and try again."
+    ] },
+    { h: "Print it", src: ["cssg"], steps: [
+      "Diagnostic ECG: press the D-ECG soft key, patient sitting still. When Start lights up, press it.",
+      "Enter age and sex only (confidentiality), then Okay. When Print turns black, print: a 6-lead strip (I, II, III, aVR, aVL, aVF).",
+      "The print button on the home screen prints a running strip for trends only: it isn't diagnostic.",
+      "Corpuls1: no printer, no D-ECG, lead II only. Not for diagnosis."
+    ] },
+    { h: "Only 4 leads", src: ["cssg"], tone: "warn", list: [
+      "A 4-lead ECG gives a limited view of the heart. If you have clinical concerns, request clinical support for a 12-lead ECG"
+    ] },
+    { h: "Artefact", src: ["cssg"], list: [
+      "Patient moving, dry or loose electrodes, electrodes in the wrong place, loose cable connections",
+      "Electrical interference from nearby equipment, power cords and phones. Consider turning off electric beds and recliner chairs"
+    ] },
+    { h: "SpO2", src: ["cssg"], list: [
+      "Adult probe over the finger: nail bed between the sensors, cable over the top of the finger",
+      "A good signal: the pleth wave reaches the top and bottom grid lines. A small, irregular wave: the reading isn't accurate",
+      "Poor signal: nail polish, cold or shocked patients, movement, bright light"
+    ] },
+    { h: "Mark an event", src: ["cssg"], list: [
+      "Press Event to time-stamp the ECG",
+      "Press and hold Event for the list of treatments, scroll with the Jog dial and push to select (for example, when you give GTN)",
+      "After the job: hold the Browser key 3 seconds for the operational log and the event summary (Corpuls3 only)"
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Volunteer sitting up in a chair, as a chest pain patient would be.",
+      "Put the electrodes and SpO2 on, go to monitor mode, silence the metronome.",
+      "Wiggle a lead and ask your volunteer to move: see the artefact. Fix it.",
+      "Print a D-ECG with age and sex only. Mark a 'GTN' event. Swap roles."
+    ] }
+  ],
+  checks: ["Electrodes in date, skin dry and clean", "Leads clipped on before applying; pressed round the edge", "White, black, red, green in the right places", "Monitor mode and metronome off",
+    "Spotted and fixed artefact", "D-ECG printed with age and sex only", "SpO2 pleth wave checked", "Event marked"] },
+
+{ id: "s3", n: 3, title: "Oxygen: how much, and how", mins: 20,
+  goal: "Set up the Inhalo cylinder and each delivery device at the right flow, and match the oxygen to the patient: chest pain to keep SpO2 above 94%, ACPO high flow.",
+  kit: ["Inhalo CD cylinder (or a training cylinder)", "Nasal cannula, simple face mask, non-rebreather mask, tubing", "Access to the ambulance's in-vehicle oxygen and a spare D-size cylinder (if you're changing one)", "The patient cards below"],
+  blocks: [
+    { h: "Safety", src: ["cssg"], tone: "red", list: ["Keep oxygen away from naked flames and other heat sources"] },
+    { h: "The Inhalo cylinder", src: ["cssg"], steps: [
+      "Check the label says medical oxygen.",
+      "Read the contents gauge. Needle in the red (under a quarter full): change it for a full one as soon as you can.",
+      "New cylinder: open the two light grey covers to reach the outlet and the on/off valve.",
+      "Flow selector at 0. Open the on/off valve at least a quarter of a turn.",
+      "Tubing to the cylinder and the device. Turn the flow selector clockwise until the rate shows in the window.",
+      "Check for leaks and that oxygen is flowing through the device."
+    ] },
+    { h: "Devices and flows", src: ["cssg"], table: { head: ["Device", "Flow", "Gives about"], rows: [
+      ["Nasal cannula", "2 to 4 L/min", "30% oxygen"],
+      ["Face mask", "8 to 10 L/min", "40 to 45%"],
+      ["Non-rebreather mask", "15 L/min, reservoir bag fully inflated first", "80 to 85%"]
+    ] } },
+    { h: "Fitting them", src: ["cssg"], list: [
+      "Nasal cannula: prongs in the nostrils, tubing behind both ears, back under the chin, slide the toggle up. Not too tight",
+      "Masks: open out the nose clip, strap over the head above the ears, mask on, squeeze the nose clip, adjust the strap",
+      "Take a mask off at once if the patient vomits"
+    ] },
+    { h: "Which patient gets what", src: ["cpp001", "lead"], tone: "warn", list: [
+      "ACPO: high-flow oxygen via a non-rebreather mask (CPP-001-AO)",
+      "Chest pain: adequate oxygenation is SpO2 above 94% on air. Not above 94%: oxygen via nasal cannula to bring it above 94% (lead instructor)"
+    ] },
+    { h: "In-vehicle oxygen and the D-size change", src: ["cssg"], steps: [
+      "In the vehicle: use the flow meters in the rear; turn the knob counter-clockwise to the rate. A selector valve chooses between the two D-size cylinders.",
+      "Changing one: select the full cylinder inside the vehicle. Close the empty cylinder's valve fully clockwise.",
+      "Loosen the T-handle and lift off the gauge (a little gas may escape). Take the empty out of the bracket.",
+      "Full cylinder (sealed plastic covering): check it's medical oxygen, remove the coverings, place it with the two pin holes on the left, secure it.",
+      "Gauge on with the pins in the holes, tighten the T-handle, open the valve counter-clockwise: the gauge shows full. Listen for hissing."
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp001", "lead"], cases: [
+      { who: "A. Chest pain, SpO2 96% on air", text: "Graham, central chest pain, talking normally.",
+        answer: "Above 94% on air: adequate oxygenation, no oxygen needed now. Keep watching the SpO2." },
+      { who: "B. Chest pain, SpO2 93% on air", text: "Same patient, a few minutes later.",
+        answer: "Not above 94%: nasal cannula, 2 to 4 L/min, to bring it above 94%." },
+      { who: "C. ACPO, SpO2 82%", text: "Kevin, sitting on the bed edge, gasping, pink frothy sputum.",
+        answer: "High-flow oxygen via non-rebreather: 15 L/min with the reservoir bag inflated before it goes on. Keep him sitting up." },
+      { who: "D. Gauge in the red", text: "Halfway through the job the Inhalo gauge needle is in the red.",
+        answer: "Less than a quarter full: change to a full cylinder as soon as you can (medical oxygen label, flow at 0, open the valve a quarter turn)." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Set up the Inhalo and fit each device on your partner at its flow (short bursts only, then turn it off).",
+      "Talk through cards A to D.",
+      "If you have the vehicle, practise the D-size change together.",
+      "Swap roles."
+    ] }
+  ],
+  checks: ["Checked the label and the contents gauge", "Flow at 0 before opening; valve a quarter turn", "Nasal cannula 2 to 4, mask 8 to 10, NRB 15 L/min", "NRB bag inflated before it went on",
+    "Chose oxygen by SpO2 for chest pain (above 94%)", "High flow NRB for ACPO", "D-size change: full selected, gauge pins aligned, no hiss"] },
+
+{ id: "s4", n: 4, title: "Sit them up, listen, and move them", mins: 20,
+  goal: "Listen to the chest, keep a breathless patient sitting up, and move a cardiac patient to the ambulance without making them walk or lie flat.",
+  kit: ["Stethoscope", "A chair, and a bed or couch to sit on the edge of", "Green carry chair", "Stretcher", "Oxygen with a non-rebreather (from station 3)"],
+  blocks: [
+    { h: "Listening to the chest (AO only)", src: ["cssg"], steps: [
+      "Check the diaphragm is 'turned on': tap it with the ear pieces in. Nothing? Twist the diaphragm until it clicks.",
+      "Explain what you're doing. Bare skin is best (a thin t-shirt is OK). Think about privacy.",
+      "Diaphragm flat on the chest. Ask for a deep breath in through the mouth, and listen as they breathe in.",
+      "Move around the chest, then the back, with a deep breath each time.",
+      "Always compare left with right."
+    ] },
+    { h: "ACPO: posture", src: ["cpp001"], list: [
+      "ACPO is best treated by attention to oxygenation and posture",
+      "Basic care including posture: sitting up",
+      "High-flow oxygen via non-rebreather, request clinical support, consult the EOC Clinician"
+    ] },
+    { h: "Chest pain: don't make them walk", src: ["c001", "cpp007"], list: [
+      "Active chest pain is a contraindication to the mobility assessment (CPPRO-001): don't ask them to walk to the ambulance",
+      "ECG monitoring and vital signs every 5 minutes continue through the move (CPP-007-AO)"
+    ] },
+    { h: "Moving them (DSY)", src: ["dsy"], steps: [
+      "Plan the route first: clear a path for the carry chair.",
+      "Bring the carry chair to the patient. They stay sitting up the whole way.",
+      "Oxygen and monitor travel with them. Keep talking to them.",
+      "Stretcher with the head up. For ACPO, sitting up with the legs down if you can."
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp001", "c001"], cases: [
+      { who: "A. Kevin, can't lie down", text: "He's on the edge of the bed, leaning forward on his arms. Your partner wants to lie him on the stretcher to listen to his back.",
+        answer: "Keep him sitting up: posture is treatment in ACPO. Listen to his back while he leans forward. Carry chair to him, stretcher head up." },
+      { who: "B. Graham wants to walk", text: "\"I'm right, I'll walk out to the ambulance.\" Chest pain 6/10.",
+        answer: "Active chest pain: no mobility assessment, so no walking. Carry chair, with the monitor on." },
+      { who: "C. Listening", text: "Your partner breathes in. Practise the order: front, then back, comparing sides.",
+        answer: "Upper and lower chest front, then the back, each with a deep breath, left against right." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Listen to your partner's chest and back (over a thin t-shirt is fine).",
+      "Your partner plays Kevin on the edge of a bed: keep him sitting up, oxygen on, and move him by carry chair to a stretcher with the head up.",
+      "Then play Graham: talk him out of walking.",
+      "Swap roles."
+    ] }
+  ],
+  checks: ["Stethoscope checked by tapping the diaphragm", "Deep breath at each spot, left against right, front and back", "Kept the ACPO patient sitting up throughout",
+    "Said no walking with active chest pain", "Carry chair to the patient; oxygen and monitor went too", "Stretcher head up"] }
+];
+
+var END = { title: "Finish together", mins: 25,
+  steps: [
+    "Run one walk-through as one crew, using each station's kit as you reach it: Graham, 62, chest pain, or Kevin, 72, ACPO. Your instructor may tell you which. Do the other on another night.",
+    "Then each person does the knowledge check in the chest pain or ACPO microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-heart";
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/chest-pain-acpo/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Chest pain and ACPO skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Graham: student walk-through", "../../modules/chest-pain/?mode=student", "btn small"));
+  links.appendChild(a("Kevin: student walk-through", "../../modules/APO/?mode=student", "btn small"));
+  links.appendChild(a("Chest pain knowledge check", "../../microlearning/chest-pain/", "btn small ghost"));
+  links.appendChild(a("ACPO knowledge check", "../../microlearning/acpo/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-throughs: " + root + "modules/chest-pain/?mode=student and " + root + "modules/APO/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY chest pain and ACPO skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Chest pain and ACPO skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Chest pain\" and \"ACPO\" (about 25 min each). Send the links a few days ahead."],
+    ["0:00", "Read the safety box at station 1 together (no medicine is given to anyone; sprays into the air only). Split into pairs or threes."],
+    ["0:05", "Rotate through stations 1 to 4 (about 20 min each). Partners tick the checks on the phone."],
+    ["about 1:25", "Finish together: one walk-through (Graham or Kevin) as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 1: training stock only, labelled TRAINING and kept apart from operational stock: aspirin, GTN tablets, a GTN spray.",
+    "Station 2: the Corpuls3 charged, ECG leads, SpO2 probe, in-date electrodes, spare printer paper.",
+    "Station 3: an Inhalo cylinder, nasal cannula, face mask and non-rebreather. The vehicle, if you'll practise the D-size change.",
+    "Station 4: stethoscope, a bed or couch, the carry chair and the stretcher with clear space between them.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Training medicines counted and back in their labelled TRAINING box, apart from operational stock.",
+    "Corpuls leads wiped (ISO wipes if clean, Clinell if soiled) and dried. Printer paper replaced if the red mark showed. Corpuls on charge.",
+    "Oxygen cylinders turned off, flow at 0. Used masks and cannulas binned or replaced.",
+    "Carry chair and stretcher cleaned and back in the vehicle.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Four stations to practise the hands-on parts of a chest pain or ACPO job, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Chest pain\" and \"ACPO\" first (about 25 minutes each)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Chest pain", "../../microlearning/chest-pain/", "btn small")); pb.appendChild(a("ACPO", "../../microlearning/acpo/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "One walk-through, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cssg, SRC.cpp007, SRC.cpp001, SRC.c008, SRC.c009, SRC.c001].join(", ") +
+    ". The review dates of CPPRO-008 and CPPRO-009 (June 2020) and CPPRO-001 (Dec 2019) have passed. GTN tablet or spray, the patient's own GTN and the chest pain oxygen target follow the DSY lead instructor's guidance. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>
