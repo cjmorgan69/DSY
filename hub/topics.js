@@ -5,7 +5,7 @@
    custom: slug in the scenario customiser (/scenarios/), if it can be customised */
 window.DSY_TOPICS = [
   { id:'chest-pain', title:'Chest pain', protocol:'CPP-007-AO', patient:'Graham, 62: chest pain not settling with his own GTN',
-    module:'chest-pain', walk:'/modules/chest-pain/', mdt:'chest-pain', custom:'chest-pain-ao' },
+    module:'chest-pain', walk:'/modules/chest-pain/', mdt:'chest-pain', custom:'chest-pain-ao', stations:'/stations/chest-pain-acpo/' },
   { id:'asthma', title:'Asthma', protocol:'CPP-050-AO', patient:'Karen, 45: more severe asthma at 2 am',
     module:'asthma', walk:'/modules/asthma-ao/', mdt:'asthma', custom:'asthma-ao' },
   { id:'anaphylaxis', title:'Anaphylaxis', protocol:'CPP-003-AO', patient:'David, 54: bee sting and an expired EpiPen',
@@ -21,7 +21,7 @@ window.DSY_TOPICS = [
   { id:'pain', title:'Pain management', protocol:'CPP-013-AO', patient:'Gary, 58: fall from a shed roof at dusk',
     module:'pain', walk:'/modules/pain-management/', mdt:'pain', custom:'pain-ao' },
   { id:'acpo', title:'ACPO', protocol:'CPP-001-AO', patient:'Kevin, 72: woke at 2 am gasping',
-    module:'acpo', walk:'/modules/APO/', mdt:'acpo', custom:'acpo-ao' },
+    module:'acpo', walk:'/modules/APO/', mdt:'acpo', custom:'acpo-ao', stations:'/stations/chest-pain-acpo/' },
   { id:'headache', title:'Headache', protocol:'CPP-061-AO', patient:'Ian, 62: sudden severe headache at the caravan park',
     module:'headache', walk:'/modules/headache%20-ao/', mdt:'headache', custom:'headache-ao' },
   { id:'nausea', title:'Nausea and vomiting', protocol:'CPP-047-AO', patient:'Helen, 62: eight hours of vomiting',
