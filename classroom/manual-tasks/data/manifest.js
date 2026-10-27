@@ -3,10 +3,11 @@
 window.DRIVE_SECTIONS = [];
 (function () {
   var files = [
-    'lesson1-human-body.js'
-    // , 'lesson2-something.js'
+    'lesson1-human-body.js',
+    'lesson2-postures.js'
+    // , 'lesson3-something.js'
   ];
   files.forEach(function (f) {
-    document.write('<script src="data/' + f + '?v=20261028b" charset="utf-8"><\/script>');
+    document.write('<script src="data/' + f + '?v=20261028c" charset="utf-8"><\/script>');
   });
 })();
