@@ -2,6 +2,8 @@
 (function () {
   var D = window.DRIVE = { sections: window.DRIVE_SECTIONS || [] };
 
+  D.secName = function (sec) { return sec.name || ('Lesson ' + sec.number); };
+
   D.esc = function (s) {
     return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];

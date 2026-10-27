@@ -44,8 +44,8 @@
   <span id="filter"></span>
 </div>
 <div id="out"></div>
-<script src="data/manifest.js?v=20261028c"></script>
-<script src="assets/common.js?v=20261028c"></script>
+<script src="data/manifest.js?v=20261028h"></script>
+<script src="assets/common.js?v=20261028h"></script>
 <script>
 (function () {
   var D = window.DRIVE, E = D.esc;
@@ -53,7 +53,7 @@
   var secs = D.sections.filter(function (s) { return !only || s.id === only; });
 
   var f = '<strong>Show:</strong> <a href="guide.html">all lessons</a>';
-  D.sections.forEach(function (s) { f += ' · <a href="guide.html?s=' + s.id + '">Lesson ' + s.number + '</a>'; });
+  D.sections.forEach(function (s) { f += ' · <a href="guide.html?s=' + s.id + '">' + D.secName(s) + '</a>'; });
   document.getElementById('filter').innerHTML = f;
 
   function ul(arr) { return '<ul>' + arr.map(function (x) { return '<li>' + E(x) + '</li>'; }).join('') + '</ul>'; }
@@ -62,7 +62,7 @@
   secs.forEach(function (sec) {
     var total = 0, vids = 0;
     sec.slides.forEach(function (s) { total += (s.notes && s.notes.time) || 0; if (s.vimeo || s.video) vids++; });
-    h += '<div class="sec"><h2>Lesson ' + sec.number + ': ' + E(sec.title) + '</h2>';
+    h += '<div class="sec"><h2>' + D.secName(sec) + ': ' + E(sec.title) + '</h2>';
     h += '<div class="sub">' + E(sec.audience || '') + ' · ' + sec.slides.length + ' slides · ' + vids + ' videos · suggested time about ' + total + ' min' +
          (sec.elearningMinutes ? ' (eLearning version: about ' + sec.elearningMinutes + ' min)' : '') + '</div>';
     h += '<table><tr><th class="n">#</th><th>Slide</th><th class="t">Time</th></tr>';

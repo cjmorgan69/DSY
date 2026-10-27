@@ -47,11 +47,11 @@
     },
     cards: function (s, it) {
       var cols = s.cols || 3, v = s.variant || 'plain';
-      return '<div class="slide light"><h1 class="t">' + E(s.title) + '</h1><div class="body"><div class="grid ' + v + '" style="grid-template-columns:repeat(' + cols + ',1fr)">' +
+      return '<div class="slide light"><h1 class="t">' + E(s.title) + '</h1><div class="body' + (s.callout ? ' hc' : '') + '"><div class="grid ' + v + '" style="grid-template-columns:repeat(' + cols + ',1fr)">' +
         s.items.map(function (c, i) {
           var badge = v === 'number' ? '<div class="bd">' + (i + 1) + '</div>' : v === 'check' ? '<div class="bd">&#10003;</div>' : '';
           return '<div class="card step" data-step="' + (i + 1) + '">' + badge + '<div>' + E(c.h) + '</div>' + (c.t ? '<div class="tx">' + E(c.t) + '</div>' : '') + '</div>';
-        }).join('') + '</div></div>' + lab(it) + '</div>';
+        }).join('') + '</div>' + (s.callout ? '<div class="callout-band step" data-step="' + (s.items.length + 1) + '">' + E(s.callout.text) + '</div>' : '') + '</div>' + lab(it) + '</div>';
     },
     numbered: function (s, it) {
       return '<div class="slide light"><h1 class="t">' + E(s.title) + '</h1><div class="body"><div class="nums">' +
