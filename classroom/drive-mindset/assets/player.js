@@ -69,11 +69,11 @@
     video: function (s, it) {
       var v = s.vimeo;
       if (ART) {
-        return '<div class="slide dark video"><div class="vhead"><h1 class="t">' + E(s.title) + '</h1><div class="vbadge">&#9654; ' + E(v.length || '') + '</div></div>' +
+        return '<div class="slide dark video"><div class="vhead"><h1 class="t">' + E(s.title) + '</h1>' + (v.length ? '<div class="vbadge">&#9654; ' + E(v.length) + '</div>' : '') + '</div>' +
           '<div class="vpanel"><div class="vplay">&#9654;</div><a class="vbtn" href="' + D.vimeoUrl(v) + '" target="_blank" rel="noopener">Watch on Vimeo</a>' +
           '<div class="vnote">Opens in a new tab. Come back here and press the right arrow to continue.</div></div></div>';
       }
-      return '<div class="slide dark video"><div class="vhead"><h1 class="t">' + E(s.title) + '</h1><div class="vbadge">&#9654; ' + E(v.length || '') + '</div></div>' +
+      return '<div class="slide dark video"><div class="vhead"><h1 class="t">' + E(s.title) + '</h1>' + (v.length ? '<div class="vbadge">&#9654; ' + E(v.length) + '</div>' : '') + '</div>' +
         '<div class="vframe"><iframe src="' + D.vimeoEmbed(v) + '" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="' + E(s.title) + '"></iframe></div>' +
         '<div class="vlink">Video not playing? <a href="' + D.vimeoUrl(v) + '" target="_blank" rel="noopener">Open it on Vimeo</a>. Click outside the video to use the arrow keys again.</div></div>';
     },
@@ -193,7 +193,7 @@
         if (n.ask && n.ask.length) h += '<h4>Ask the group</h4><ul>' + n.ask.map(function (x) { return '<li>' + E(x) + '</li>'; }).join('') + '</ul>';
         if (n.activity) h += '<p class="gbox"><strong>Activity:</strong> ' + E(n.activity) + '</p>';
         if (s.vimeo) {
-          h += '<p class="gbox"><strong>Video (' + E(s.vimeo.length || '') + '):</strong> <a href="' + D.vimeoUrl(s.vimeo) + '" target="_blank" rel="noopener">Open on Vimeo</a>';
+          h += '<p class="gbox"><strong>Video (' + (s.vimeo.length ? E(s.vimeo.length) : 'length not known') + '):</strong> <a href="' + D.vimeoUrl(s.vimeo) + '" target="_blank" rel="noopener">Open on Vimeo</a>';
           if (n.videoSummary && n.videoSummary.length) h += '<ul>' + n.videoSummary.map(function (x) { return '<li>' + E(x) + '</li>'; }).join('') + '</ul>';
           else h += '<br>No captions available: preview the video and add the key points.';
           h += '</p>';
