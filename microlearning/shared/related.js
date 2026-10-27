@@ -41,7 +41,8 @@ window.RELATED = {
     { kind: "Walk-through scenario", title: "Pain Management - AO: Gary, 58", href: "/modules/pain-management/", text: "Two-person AO crew, a tib/fib fracture after a fall from a shed roof near Cummins: Penthrox, ibuprofen withheld, and a ketamine wafer. Facilitator and student versions." }
   ],
   "CPP-045-AO": [
-    { kind: "Microlearning module", title: "Falls", href: "/microlearning/falls/", text: "Mobility assessment, transport criteria, the FROP falls screen with Country Referral Unit referral, and the Braden pressure injury screen." }
+    { kind: "Microlearning module", title: "Falls", href: "/microlearning/falls/", text: "Mobility assessment, transport criteria, the FROP falls screen with Country Referral Unit referral, and the Braden pressure injury screen." },
+    { kind: "Walk-through scenario", title: "Falls - AO: Mavis, 81", href: "/modules/falls-ao/", text: "Two-person AO crew in Cummins: a long lie on the bathroom floor, the mobility check, the Raizer lifting chair, and dizziness once she sits up. Facilitator and student versions." }
   ],
   "CPP-062-AO": [
     { kind: "Microlearning module", title: "Sepsis", href: "/microlearning/sepsis/", text: "NEWS2, the SBP 100 threshold, IM ceftriaxone and the sepsis checker, with a quiz." },
