@@ -23,13 +23,13 @@ window.DSY_TOPICS = [
   { id:'acpo', title:'ACPO', protocol:'CPP-001-AO', patient:'Kevin, 72: woke at 2 am gasping',
     module:'acpo', walk:'/modules/APO/', mdt:'acpo', custom:'acpo-ao', stations:'/stations/chest-pain-acpo/' },
   { id:'headache', title:'Headache', protocol:'CPP-061-AO', patient:'Ian, 62: sudden severe headache at the caravan park',
-    module:'headache', walk:'/modules/headache%20-ao/', mdt:'headache', custom:'headache-ao' },
+    module:'headache', walk:'/modules/headache%20-ao/', mdt:'headache', custom:'headache-ao', stations:'/stations/headache-nausea/' },
   { id:'nausea', title:'Nausea and vomiting', protocol:'CPP-047-AO', patient:'Helen, 62: eight hours of vomiting',
-    module:'nausea', walk:'/modules/nausea-vomiting/', mdt:'nausea', custom:'nausea-ao' },
+    module:'nausea', walk:'/modules/nausea-vomiting/', mdt:'nausea', custom:'nausea-ao', stations:'/stations/headache-nausea/' },
   { id:'falls', title:'Falls', protocol:'CPP-045-AO', patient:'Mavis, 81: a long lie on the bathroom floor, Cummins',
     module:'falls', walk:'/modules/falls-ao/', mdt:'falls', custom:'falls-ao', stations:'/stations/falls/' },
   { id:'burns', title:'Burns', protocol:'CPP-006-AO', patient:'Daniel, 42: diesel flash burn to the face',
-    module:'burns', walk:'/modules/burns/', custom:'burns-ao' },
+    module:'burns', walk:'/modules/burns/', custom:'burns-ao', stations:'/stations/burns/' },
   { id:'mva-baseline', title:'Baseline obs at a high-speed MVA', protocol:'CPP-063-AO', patient:'Jason, 34: rollover near Cummins, walking and "fine"',
     module:'mva-baseline', walk:'/modules/mva-ao/', mdt:'mva', custom:'mva-ao', stations:'/stations/mva/' }
 ];

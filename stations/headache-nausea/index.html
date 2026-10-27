@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Headache, nausea and vomiting skills stations - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261027c">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+@media (max-width: 420px) { table.t th, table.t td { padding: .35rem .3rem; font-size: .86rem; } }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Headache, nausea and vomiting skills stations (AO). Built 27 Oct 2026 for a group training night without the instructor
+   present, to go with the modules /microlearning/headache/ and /microlearning/nausea/ and the walk-throughs
+   /modules/headache%20-ao/ (Ian, 62) and /modules/nausea-vomiting/ (Helen, 62).
+   Sources: CPP-061-AO Headache v1.0 (Dec 2025) and CPP-047-AO Nausea and Vomiting v2.3 (June 2025), as checked for the
+   modules; CPP-013-AO Pain Management v7.2; CPP-016-AO Stroke and CTL-066 ROSIER+ACT; CPP-009-AO (BGL threshold);
+   CTL-075 GCS and CTL-070 Adult RDR Chart; CPPRO-008 and CPPRO-009 (review June 2020 passed); SAAS Clinical Skills Study
+   Guide v3.2 (released Oct 2026; owner's scanned copy, not stored in the repo), read for pupils and BGL. The owner asked for
+   the GCS station. Patient cards and how-to-run notes are DSY-written and marked as such. */
+var SRC = {
+  cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
+  cpp061: "CPP-061-AO Headache v1.0",
+  cpp047: "CPP-047-AO Nausea and Vomiting v2.3",
+  cpp013: "CPP-013-AO Pain Management v7.2",
+  cpp016: "CPP-016-AO Stroke v6.0",
+  ctl066: "CTL-066 ROSIER+ACT",
+  cpp009: "CPP-009-AO Hypoglycaemia v4.1",
+  c008: "CPPRO-008 Medication Checks v1.0",
+  c009: "CPPRO-009 Oral Medication Administration v1.0",
+  ctl075: "CTL-075 GCS (Glasgow Coma Score)",
+  ctl070: "CTL-070 Adult RDR Chart",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "The headache history and the red flags", mins: 20,
+  goal: "Take a headache history that finds the red flags, and know when it becomes a stroke or sepsis job instead.",
+  kit: ["The patient cards below", "The headache module's red flag checker on a phone (optional)"],
+  blocks: [
+    { h: "Every patient with a headache (CPP-061-AO)", src: ["cpp061"], steps: [
+      "Basic care and life support.",
+      "A thorough history: crucial for recognising a serious cause. A history of similar headaches with similar triggers is reassuring.",
+      "Pain and neurological assessment, including ROSIER + ACT and gait (station 3).",
+      "Check for red flags."
+    ] },
+    { h: "The ten red flags", src: ["cpp061"], tone: "red", list: [
+      "Sudden onset severe thunderclap or uncharacteristic headache",
+      "Sudden or severe headache triggered by cough, exertion or sexual activity",
+      "Severe headache with signs of systemic illness (altered conscious state, neck stiffness, fever, rash, vomiting, confusion)",
+      "Headache with a current or resolved neurological sign and/or altered consciousness",
+      "First severe headache in a patient over 50",
+      "New headache with a history of cancer or HIV infection",
+      "Persistent headache worsening over hours to days",
+      "Severe headache in pregnancy, with or without hypertension",
+      "Headache with recent head trauma",
+      "Raised intracranial pressure features: worse lying down or on waking, with nausea and/or vomiting"
+    ] },
+    { h: "What to do", src: ["cpp061", "cpp013"], list: [
+      "Any red flag: prioritise transport and request clinical support. No clinical support: consult the EOC Clinician",
+      "Neurological signs on ROSIER + ACT: manage as per Stroke CPP-016-AO. Suspected infection or meningococcal septicaemia: Sepsis CPP-062-AO",
+      "Treat the symptoms: the patient's own headache or migraine plan, analgesia as per CPP-013-AO, consider ondansetron (station 2)",
+      "Relief from good analgesia is not evidence of a benign cause"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp061"], cases: [
+      { who: "A. Ian, 62", text: "Sudden severe headache at the caravan park, \"the worst ever\". Light hurts his eyes. Never had headaches.", answer: "Red flags: thunderclap / uncharacteristic, and first severe headache over 50. Prioritise transport, request clinical support." },
+      { who: "B. Her usual migraine", text: "34, migraines for years, this one the same as usual. Nauseated. Normal neuro check.", answer: "No red flags. Her own migraine plan, analgesia per CPP-013-AO, consider ondansetron, transport. Alternate pathway: consult the EOC Clinician." },
+      { who: "C. Fever and a rash", text: "19, headache, fever, stiff neck, a few purple spots.", answer: "Systemic illness red flag and suspected infection: manage as per Sepsis CPP-062-AO, prioritise transport." },
+      { who: "D. Worse every morning", text: "61, breast cancer last year, headache for a week, worse on waking, vomiting.", answer: "Red flags: cancer history, worsening over days, raised pressure features. Prioritise transport, clinical support." },
+      { who: "E. Better after Penthrox", text: "Thunderclap headache, now 3/10 after methoxyflurane. Wants to stay home.", answer: "Relief from analgesia doesn't mean it's benign. The red flag stands: transport, clinical support." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: ["One person is the patient with a card; the other takes a history without reading it.", "Name the red flags found and the plan. Open the answer. Swap."] }
+  ],
+  checks: ["Asked about onset, trigger and previous headaches", "Asked about fever, neck stiffness, rash", "Asked about cancer, pregnancy, head injury", "Named the red flags found", "Said relief doesn't rule out a serious cause"] },
+
+{ id: "s2", n: 2, title: "Ondansetron", mins: 20,
+  goal: "Decide if ondansetron is right, check contraindications and precautions with the patient, give the right ODT dose, and know when to consult.",
+  kit: ["Ondansetron ODTs (expired, labelled TRAINING)", "The patient cards below", "Dry hands"],
+  blocks: [
+    { h: "Safety", src: ["dsy", "c008"], tone: "red", list: ["Nobody takes the tablet tonight: mime placing it. Training stock stays apart from operational stock"] },
+    { h: "When (CPP-047-AO)", src: ["cpp047"], list: [
+      "Patients 2 years and over, for uncontrolled nausea and vomiting and/or to make transport safe",
+      "Not for preventing motion sickness, and not where vomiting (gastric emptying) helps the patient"
+    ] },
+    { h: "Contraindications", src: ["cpp047"], tone: "red", list: ["Allergy or hypersensitivity to ondansetron or the formulation", "Taking apomorphine for Parkinson's disease"] },
+    { h: "Precautions: confirm with the patient first", src: ["cpp047"], tone: "warn", list: [
+      "Prolonged QT syndrome",
+      "Irregular heart conditions (AF) or heart failure",
+      "Low magnesium or potassium (or other metabolic derangement)",
+      "More than one precaution: consult the EOC Clinician",
+      "Caution after a previous dystonic reaction to any drug, or with Parkinson's"
+    ] },
+    { h: "Dose", src: ["cpp047"], table: { head: ["Age", "ODT"], rows: [["Adult", "4 mg"], ["6 to under 16", "4 mg"], ["2 to under 6", "2 mg"], ["Under 2", "Consult the EOC Clinician"]] },
+      list: ["Children: single dose. Adults still nauseated or vomiting: consult the EOC Clinician, who may advise a further 4 mg ODT"] },
+    { h: "Giving the ODT (CPPRO-009)", src: ["c009", "c008"], steps: [
+      "Medication check with your partner. Explain it, get consent, check allergies.",
+      "Sit them up or on their side. Hand hygiene, and dry hands: the tablet dissolves with moisture.",
+      "Take it out of the packaging and place it on the tongue. Ask them to let it dissolve, not chew it.",
+      "Hand hygiene. Record the dose, route and time."
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp047"], cases: [
+      { who: "A. Helen, 62", text: "Vomiting for 8 hours. Has AF, nothing else.", answer: "One precaution (AF): confirm it with her, then ondansetron 4 mg ODT." },
+      { who: "B. Heart failure and low potassium", text: "80, heart failure, low potassium on recent bloods, vomiting.", answer: "Two precautions: consult the EOC Clinician before giving it." },
+      { who: "C. Apomorphine pump", text: "Parkinson's, uses an apomorphine pump, vomiting.", answer: "Contraindicated: no ondansetron. Consult the EOC Clinician about treatment and transport." },
+      { who: "D. Child, 4", text: "Vomiting before a long transport.", answer: "2 mg ODT, single dose." },
+      { who: "E. Still vomiting", text: "Adult had 4 mg 20 minutes ago, still vomiting.", answer: "Consult the EOC Clinician, who may advise a further 4 mg ODT (adults only)." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: ["Read a card. Ask the patient about each precaution out loud.", "Do the medication check and mime the ODT. Swap."] }
+  ],
+  checks: ["Asked about apomorphine and allergy", "Asked about QT, AF or heart failure, low potassium or magnesium", "Right dose for the age", "Dry hands, on the tongue, not chewed", "Knew when to consult"] },
+
+{ id: "s3", n: 3, title: "The neuro check", mins: 20,
+  goal: "Do a quick neurological check on a headache patient: ROSIER + ACT, gait, pupils and a BGL.",
+  kit: ["Penlight", "Printed ROSIER+ACT (CTL-066)", "Glucometer, strips, control solution, lancets, sharps container"],
+  blocks: [
+    { h: "Why", src: ["cpp061", "cpp016"], list: [
+      "CPP-061-AO asks for a pain and neurological assessment including ROSIER + ACT and gait",
+      "Any neurological signs on ROSIER + ACT: manage as per Stroke CPP-016-AO"
+    ] },
+    { h: "ROSIER (CTL-066)", src: ["ctl066"], list: [
+      "Minus 1 each: loss of consciousness or syncope (not seizure-related); seizure activity with a known seizure history",
+      "Plus 1 each, new and acute: facial weakness, arm weakness, leg weakness, speech disturbance, visual field defect",
+      "1 or more is positive. ACT: arm drop within 10 seconds, plus chat (severe language deficit) or tap (gaze deviation)"
+    ] },
+    { h: "Gait", src: ["dsy"], list: ["Only if it's safe: watch them stand and walk a few steps, with you beside them. Unsteady or veering to one side is a neurological sign"] },
+    { h: "Pupils (study guide)", src: ["cssg"], steps: [
+      "Ask about eye surgery, eye injury or eye medicines first.",
+      "Look into the distance. Size and shape of both pupils.",
+      "Light in from the side, each eye: both should get smaller. Record size and reaction (PEARL)."
+    ] },
+    { h: "BGL", src: ["cpp009", "cssg"], list: [
+      "Measure it on anyone with an altered conscious state or altered cerebral function",
+      "Below 3.5 mmol/L: treat as per CPP-009-AO",
+      "Control solution, or a finger prick only on a willing adult partner who agrees"
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: ["Do ROSIER + ACT, gait and pupils on your partner (who may act out a sign).", "BGL on the control solution. Swap."] }
+  ],
+  checks: ["ROSIER all seven items", "ACT arm held 10 seconds", "Gait only when safe, with support", "Pupils: asked about eye history, light from the side", "BGL done or explained"] },
+
+{ id: "s4", n: 4, title: "GCS: score it right", mins: 15,
+  goal: "Score eye, verbal and motor responses separately from CTL-075, for an adult, a young child and a baby, and record E, V and M as well as the total.",
+  kit: ["CTL-075 GCS printed, or the SAAS Clinical app's GCS calculator", "The patient cards below", "A blank PCR or notepad"],
+  blocks: [
+    { h: "Adult (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Obeys commands"],
+      ["5", "", "Orientated", "Purposeful movement"],
+      ["4", "Spontaneous", "Confused conversation", "Withdraws"],
+      ["3", "To speech", "Inappropriate words", "Flexion to pain"],
+      ["2", "To pain", "Incomprehensible sounds", "Extension to pain"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "2 to 4 years (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Obeys commands"],
+      ["5", "", "Appropriate words, smile", "Localises to pain"],
+      ["4", "Spontaneous", "Consolable cry, few words", "Withdraws from pain"],
+      ["3", "To voice", "Inappropriate words, persistent irritable cry", "Flexion to pain"],
+      ["2", "To pain", "Incomprehensible words, agitated, cries only to pain", "Extension to pain"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "Baby (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Normal, spontaneous"],
+      ["5", "", "Alert, coos, babbles", "Withdraws to touch"],
+      ["4", "Spontaneous", "Irritable, consolable cry", "Withdraws from pain"],
+      ["3", "To speech or shout", "Cry to pain", "Flexion responses"],
+      ["2", "To pain", "Cry or moan to pain, restless", "Extensor responses"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "Note on CTL-075", src: ["dsy"], tone: "warn", list: [
+      "CTL-075 heads the baby scale \"≥ 1 year old\", but the scale (coos, babbles) is for babies: it is probably meant to read under 1. It also has no scale for 1 to 2 years. Check with your instructor or the SAAS Clinical app"
+    ] },
+    { h: "Getting it right", src: ["dsy", "ctl070"], list: [
+      "Score each part on its own, then add them up: lowest total 3, highest 15",
+      "Write it as E, V and M with the total (for example E3 V4 M6 = 13). The parts tell the next person more than the total",
+      "Score the best response you see. If one arm is weak (stroke), score the better arm",
+      "Can't speak because of the stroke itself? Score what you see and write why",
+      "On the RDR chart (CTL-070): 15 white, 13 to 14 yellow, 9 to 12 red, 8 or less purple",
+      "Repeat it with every set of obs and compare with the first"
+    ] },
+    { h: "Patient cards", src: ["dsy", "ctl075"], cases: [
+      { who: "A. Frank", text: "Eyes open when you speak to him. Thinks he's at home when he's at the club. Squeezes your hand when asked.", answer: "E3 V4 M6 = 13." },
+      { who: "B. Ron, very low sugar", text: "Eyes closed, open only to pain. Moans, no words. Pulls his hand away from the pain.", answer: "E2 V2 M4 = 8." },
+      { who: "C. Can't find the words", text: "Eyes open on their own. Says random, wrong words. Doesn't follow commands but reaches up and pushes your hand away from the pain.", answer: "E4 V3 M5 = 12. Purposeful movement is 5." },
+      { who: "D. No speech since the stroke", text: "Eyes open on their own. Can't make any words since the stroke started. Obeys commands with the left hand.", answer: "E4 V1 M6 = 11. Record why: no speech from the stroke, obeys commands." },
+      { who: "E. Deeply unconscious", text: "No eye opening, no sounds. To pain, both arms bend in at the elbows.", answer: "E1 V1 M3 = 5. Purple zone on the RDR chart: protect the airway, consult the EOC Clinician." },
+      { who: "F. Child, 3", text: "Eyes open when you call her name. Crying but settles with mum, says a few words. Does what you ask.", answer: "2 to 4 years scale: E3 V4 M6 = 13." },
+      { who: "G. Baby, 8 months", text: "Eyes open, watching you. Irritable but settles when held. Pulls away when you touch the foot.", answer: "Baby scale: E4 V4 M5 = 13." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person reads a card aloud. Everyone writes E, V and M on their own before anyone says the answer.",
+      "Compare, then open the answer. Check any disagreement against CTL-075 or the app's calculator.",
+      "Then act a few out: one person is the patient, the other scores without the card."
+    ] }
+  ],
+  checks: ["Scored E, V and M separately", "Wrote E V M and the total", "Used the right scale for the child and the baby", "Scored the best response", "Named the RDR zone for the total"] }
+
+];
+
+var END = { title: "Finish together", mins: 25,
+  steps: [
+    "Run one student walk-through as one crew: Ian, 62, a sudden severe headache at the Coffin Bay caravan park, or Helen, 62, eight hours of vomiting near Cummins. Do the other another night.",
+    "Then each person does the knowledge check in the headache or nausea microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-headache-nausea";
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/headache-nausea/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Headache, nausea and vomiting skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Ian: student walk-through", "../../modules/headache%20-ao/?mode=student", "btn small"));
+  links.appendChild(a("Helen: student walk-through", "../../modules/nausea-vomiting/?mode=student", "btn small"));
+  links.appendChild(a("Headache knowledge check", "../../microlearning/headache/", "btn small ghost"));
+  links.appendChild(a("Nausea knowledge check", "../../microlearning/nausea/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-throughs: " + root + "modules/headache%20-ao/?mode=student and " + root + "modules/nausea-vomiting/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY headache, nausea and vomiting skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Headache, nausea and vomiting skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Headache\" and \"Nausea and vomiting\" (about 20 min each). Send the links a few days ahead."],
+    ["0:00", "Read the safety boxes together (nobody takes an ondansetron tablet; finger pricks only with consent). Split into pairs or threes."],
+    ["0:05", "Rotate through stations 1 to 4 (15 to 20 min each). Partners tick the checks on the phone."],
+    ["about 1:20", "Finish together: Ian's or Helen's walk-through as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 1: the patient cards, a phone with the headache module (optional).",
+    "Station 2: expired ondansetron ODTs labelled TRAINING and kept apart from operational stock.",
+    "Station 3: penlight, printed ROSIER+ACT (CTL-066), glucometer with strips and control solution, lancets, sharps container.",
+    "Station 4: printed CTL-075 GCS tables or the SAAS Clinical app, pens and paper.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Sharps container closed. Used strips and swabs in the bin.",
+    "Training ondansetron counted and back in its labelled TRAINING box, apart from operational stock.",
+    "Glucometer back in its workstation.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Four stations to practise the hands-on parts of a headache or vomiting job, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Headache\" and \"Nausea and vomiting\" first (about 20 minutes each)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Headache", "../../microlearning/headache/", "btn small")); pb.appendChild(a("Nausea and vomiting", "../../microlearning/nausea/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "One walk-through, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cpp061, SRC.cpp047, SRC.cpp013, SRC.ctl066, SRC.ctl075, SRC.c009, SRC.cssg].join(", ") +
+    ". The review dates of CPPRO-008 and CPPRO-009 (June 2020) have passed. GCS scales are from CTL-075. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>
