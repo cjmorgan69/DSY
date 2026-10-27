@@ -143,7 +143,13 @@ window.MDT_JOBS = [
           '+' + early + ' CALLER: PT STILL WALKING AROUND - WONT SIT DOWN', '+' + late + ' CALLER PARKED BEHIND VEHICLE - HAZARD LIGHTS ON'].join('\n'),
         expected:U(v.hospital_town || 'Port Lincoln') + ' HOSPITAL, about ' + (+v.transport || 50) + ' minutes; EOC Clinician arranges retrieval (customised scenario)'
       };
-    } }
+    } },
+  { id:'falls', label:'Falls: Mavis, 81 (long lie, Cummins, 0630)', scenario:'/modules/falls-ao/',
+    priority:'2', startTime:'06:30', typeName:'Fall', town:'Cummins', street:'HOUSE IN TOWNSHIP',
+    note:'81F FALL - ON FLOOR - CANT GET UP', patient:'TRELOAR, MAVIS', age:'81Y', weight:'', caller:'PERSONAL ALARM MONITORING SERVICE',
+    unitLoc:'CUMMINS AMBULANCE STATION',
+    remarks:'PENDANT ALARM ACTIVATED - PT ANSWERED MONITORING SERVICE\nPT ON BATHROOM FLOOR - CANT GET UP\nPT STATES ON FLOOR "SINCE ABOUT 3"\nLIVES ALONE - KEY SAFE BY FRONT DOOR - CODE 4471\nDAUGHTER (SUE) IN PORT LINCOLN NOTIFIED\n+3 MONITORING SERVICE: PT STILL TALKING - SAYS SHE IS COLD\n+6 FRONT PORCH LIGHT ON',
+    expected:'CUMMINS HOSPITAL, about 5 minutes (scenario)' }
 ];
 
 /* Links from the scenario customiser (Supabase public.scenarios) for the jobs that have no custom() of their own.
@@ -192,4 +198,6 @@ window.MDT_JOBS = [
     town('hospital_town', 'Port Lincoln'));
   link('nausea', 'nausea-ao', { patient:'Helen', age:'62', partner:'husband', partner_name:'David', town:'Cummins', station:'Cummins', response:'8', transport:'7', dispatch:'20:35' },
     v => U(v.hospital || 'Cummins District Hospital'));
+  link('falls', 'falls-ao', { patient:'Mavis', age:'81', town:'Cummins', station:'Cummins', hospital_town:'Cummins', response:'8', transport:'5', dispatch:'06:30' },
+    town('hospital_town', 'Cummins'));
 })();
