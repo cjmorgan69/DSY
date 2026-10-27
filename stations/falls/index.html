@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Falls skills stations - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261027b">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Falls skills stations (AO). Built 27 Oct 2026 for a group training night without the instructor present, to go with
+   the module /microlearning/falls/ (there is no falls walk-through yet, so the finish uses two DSY-written cases).
+   Sources: SAAS Clinical Skills Study Guide v3.2 (released Oct 2026; owner's scanned copy, not stored in the repo: see
+   .claude/references/clinical-skills-study-guide.md for the page index), read for BGL measurement, head to toe
+   examination, log roll, slings and the cardboard splint; CPP-045-AO Falls v1.0; CTL-003 Falls Risk Screening and
+   Referral v1.1; CTL-010 Pressure Injury Screening Tool (Braden); CPPRO-001 Patient Mobility Assessment, CPPRO-002 Falls
+   Risk Screening and CPPRO-003 Pressure Injury Prevention (all v1.1, review date Dec 2019 passed); CPPRO-028 Femoral
+   Traction Splint v2.0 (review date Apr 2026 passed) for the neck of femur line only; CPP-018-AO where the guide's log roll
+   page mentions a spinal board (owner's choice for the MVA stations, 27 Oct 2026). Station 3 (Raizer lifting chair, added at
+   the owner's request) is from the maker's Raizer II User Manual: SAAS has no Raizer procedure on its clinical site and the
+   study guide has no Raizer page. Patient cards, the two finishing cases
+   and the how-to-run notes are DSY-written and marked as such. */
+var SRC = {
+  cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
+  cpp045: "CPP-045-AO Falls v1.0",
+  ctl003: "CTL-003 Falls Risk Screening and Referral v1.1",
+  ctl010: "CTL-010 Pressure Injury Screening Tool (Braden)",
+  c001: "CPPRO-001 Patient Mobility Assessment v1.1",
+  c002: "CPPRO-002 Falls Risk Screening v1.1",
+  c003: "CPPRO-003 Pressure Injury Prevention v1.1",
+  c028: "CPPRO-028 Femoral Traction Splint v2.0",
+  cpp018: "CPP-018-AO Spinal Injury v5.0",
+  raizer: "Raizer II User Manual (Liftup / DHG, Issue 1, Jan 2023)",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "On the floor: why did they fall?", mins: 20,
+  goal: "Assess a patient who is still on the floor: a full set of obs including a BGL, a head to toe examination, and the history of the fall. Then decide whether anything on the CPP-045-AO transport list applies.",
+  kit: ["A floor mat and a pillow", "BP cuff and stethoscope, or the Corpuls3 with NIBP and SpO2", "Glucometer, test strips with their calibration bar, control solution", "Lancets, alcohol swabs, cotton balls, sharps container",
+    "Tympanic thermometer and probe covers", "Gloves", "A blanket", "The patient cards below"],
+  blocks: [
+    { h: "Safety", src: ["dsy"], tone: "red", list: [
+      "Finger prick only on a willing adult partner who agrees to it, with a new lancet straight into the sharps container",
+      "Anyone who'd rather not: practise the whole BGL with the control solution instead"
+    ] },
+    { h: "First on the floor", src: ["cpp045"], steps: [
+      "Basic care: a full set of observations.",
+      "The full history of how the fall happened: what they were doing, how they felt just before, did they hit their head, how long have they been down.",
+      "Treat any urgent medical issues or injuries you find.",
+      "Keep them warm while you work: a long lie can cause hypothermia."
+    ] },
+    { h: "BGL", src: ["cssg"], steps: [
+      "PPE. Sharps container within reach.",
+      "Check the lot number on the strip foil matches the calibration bar in the meter's carrier. If it doesn't, calibrate first.",
+      "Clean the site: washed with soap and warm water, or an alcohol swab left to dry (don't blow on it). Use the side of a fingertip.",
+      "Tear the foil at the notch. Strip in, black contact bars towards the meter. Check the lot number on the display. Wait for the flashing blood drop.",
+      "Lance the side of the fingertip, lancet straight into the sharps. Gentle pressure only: squeezing hard gives a wrong result.",
+      "Touch the drop to the white end of the strip until the three lines go. Read and record the result, then dispose of the strip.",
+      "Errors: E1 too hot or cold for the meter (10 to 50 °C), E3 drop too small or strip problem, LO below 1.1 mmol/L, Hi above 27.8 mmol/L."
+    ] },
+    { h: "Head to toe", src: ["cssg"], steps: [
+      "Consent first, and explain what you're doing. Keep their dignity.",
+      "Head, neck, chest, abdomen: look (bruising, swelling, bleeding, wounds, fluid from ears, nose or mouth), ask about pain or altered sensation, gently feel.",
+      "Pelvis: look and ask. Splayed legs can be a sign of a serious pelvic fracture. Don't press on the bones of the pelvis.",
+      "Limbs: look for deformity, ask about pain, weakness or altered sensation, feel for pulses and warmth in the hands and feet.",
+      "Back: the patient has to be rolled to see it. Any suspicion of a spinal injury: a log roll.",
+      "Cover them again once you've looked."
+    ] },
+    { h: "Log roll (four people)", src: ["cssg", "cpp018"], steps: [
+      "Note the injuries, empty the pockets, arms by the sides (palms in) or crossed on the chest.",
+      "Person 1 at the head holds it in line and calls every move. Persons 2 and 3 kneel on the side they'll roll towards: 2 at the shoulder and hip, 3 at the hip and knees.",
+      "On person 1's call, roll to about 45 degrees together. Person 4 examines the back.",
+      "On the call, roll back together. Don't roll onto an injured side, and roll as little as possible if the pelvis may be injured.",
+      "The guide's log roll page mentions placing a spinal board. Follow CPP-018-AO: do not transport on a long board."
+    ] },
+    { h: "Transport if the patient has", src: ["cpp045"], tone: "warn", list: [
+      "A medical cause of the fall",
+      "Associated injuries",
+      "Other clinical or social concerns",
+      "A need for further management or investigation",
+      "Taken anticoagulants"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp045"], cases: [
+      { who: "A. Margaret, 79", text: "Says she 'came over all dizzy' at the sink, and the next thing she was on the floor. No injury found. Obs and BGL normal now.",
+        answer: "Possible medical cause of the fall (dizziness, then on the floor): transport. Ask what 'dizzy' means and how long she was out." },
+      { who: "B. Peter, 81", text: "Tripped on the back step. A small graze on his elbow, nothing else. Obs and BGL normal. Takes apixaban for AF.",
+        answer: "He has taken an anticoagulant: transport, even with a minor injury." },
+      { who: "C. Joyce, 74", text: "Caught her foot on the rug. Didn't hit her head. No injury on the head to toe. Obs and BGL normal. No blood thinners. Lives with her husband.",
+        answer: "Nothing on the transport list so far. Next: the mobility assessment before you help her up (station 2), then the falls screen (station 5)." },
+      { who: "D. Les, 86", text: "Found on the bathroom floor this morning. He thinks he went down before midnight. Cold to touch. Can't remember why he fell.",
+        answer: "A long lie (on the ground more than an hour): think hypothermia, pressure injury, muscle damage, dehydration. He can't say why he fell and needs further management after a long lie: transport, and get him warm." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person lies on the mat as the patient. Read them a patient card; they answer your questions from it.",
+      "Take a real full set of obs and a BGL (or the control solution). Do the head to toe.",
+      "If there are four of you, log roll and check the back.",
+      "Say whether the patient goes to hospital, and why. Then open the answer. Swap roles."
+    ] }
+  ],
+  checks: ["Asked how the fall happened and how long they were down", "BGL: lot number checked, site cleaned, side of fingertip, no hard squeezing", "Sharps straight into the container",
+    "Head to toe with consent: looked, asked, felt; didn't press on the pelvis", "Log roll called by the person at the head (if four people)", "Named any transport criterion that applied", "Kept the patient covered and warm"] },
+
+{ id: "s2", n: 2, title: "The mobility check and getting up", mins: 20,
+  goal: "Do the CPPRO-001 mobility assessment from the floor and from a chair, and use the result to plan a safe way up.",
+  kit: ["A floor mat", "A chair with arms", "A walking frame or stick if you have one", "Your station's manual task aids: slide sheet, carry chair, and any others you carry"],
+  blocks: [
+    { h: "Not suitable if the patient has", src: ["c001"], tone: "red", list: ["Hypotension", "Suspected spinal injury", "Active chest pain", "Significant cognitive impairment"] },
+    { h: "Take care if", src: ["c001"], tone: "warn", list: [
+      "A recent change in medication, surgery or dialysis",
+      "Blood loss",
+      "Lying on the ground or flat for a long time, or at risk of postural hypotension"
+    ] },
+    { h: "Why do it", src: ["c001"], list: [
+      "Asking how they usually move isn't enough: a new illness or injury can change it",
+      "'Do everything for the person but nothing they can do for themselves'",
+      "No equipment is needed for the check. The result tells you what equipment and how many people the move needs"
+    ] },
+    { h: "Lying on the floor", src: ["c001"], steps: [
+      "Check first for contraindications, precautions and obs of concern.",
+      "Straight leg raise: hold your hand above the foot, ask them to lift the leg to touch it. Then the other leg. Can't lift a leg: unlikely to stand safely or on their own.",
+      "Bridge: knees bent, feet flat, lift the hips. Can't: may be unsafe to sit up unassisted.",
+      "Head lift: lift the head off the pillow. Poor head or trunk control: likely unsafe to sit up.",
+      "Roll to the side you'll sit them up on.",
+      "Passed all of these: likely able to sit up, with or without help. If they need help, use the manual task techniques.",
+      "Assess again once they're sitting, before they move away."
+    ] },
+    { h: "In a chair", src: ["c001"], steps: [
+      "Leg extension: straighten the knee to 'touch' your hand with the foot, each leg. Can't lift one or both: may not be safe to stand.",
+      "Seated march: lift one foot, then the other, and repeat. Can't raise both knees in turn: may not mobilise safely with minimal help.",
+      "Reach: lean forward and to the side to touch your hand, away from the chair back. Be ready to steady them.",
+      "Sit to stand: knees over the toes, shuffle forward in the chair if needed. Assess again once standing."
+    ] },
+    { h: "If they start to fall", src: ["c001", "cpp045"], tone: "warn", list: [
+      "Don't try to catch them. Always try to protect their head",
+      "Their condition can change at any time during the move: keep watching",
+      "A fall while SAAS is present is reported in SLS (and an IRQA form if a device failed or staff were hurt)"
+    ] },
+    { h: "Plan the move", src: ["cpp045", "c001"], list: [
+      "Work out the right lifting plan for the patient and the crew",
+      "Request support if you need extra equipment or more people",
+      "Manual task aids named in CPPRO-001: the compact carry chair, Hovermat, slide sheet and sally tube. Use them as taught in your manual tasks training",
+      "Can't get up by themselves, uninjured and alert: the Raizer lifting chair may suit (station 3)",
+      "Clean reusable aids with detergent and disinfectant wipes after each patient"
+    ] },
+    { h: "Patient cards", src: ["dsy", "c001"], cases: [
+      { who: "A. Passes everything", text: "Lifts both legs, bridges, lifts her head and rolls well. BP 132/80.",
+        answer: "Likely able to sit up with or without help. Help her to sitting, then assess again sitting (leg extension, march, reach) before sit to stand." },
+      { who: "B. Can't bridge", text: "Lifts both legs to your hand, but can't lift his hips off the floor.",
+        answer: "May be unsafe to sit up unassisted. Plan an assisted move: if he's uninjured and alert, the Raizer (station 3), otherwise the manual task aids and enough people; request support if you need it." },
+      { who: "C. BP 86/50", text: "On the floor after feeling faint. Pale. BP 86/50.",
+        answer: "Hypotension: the mobility assessment isn't suitable. Don't ask her to get up. Treat what you find; a medical cause of the fall means transport. Plan the move with aids." },
+      { who: "D. Six hours on the floor", text: "Passed all the floor checks. He wants to get up and walk to his chair.",
+        answer: "A long time lying on the floor is a precaution (postural hypotension). Sit him up with help, then assess again sitting before he stands, and be ready to steady him." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Patient on the mat. Talk them through the four floor checks. They act out a patient card (or make one up).",
+      "Say what each result means, and what your plan is to get them up.",
+      "Help them to sitting, then into the chair. Do the four chair checks.",
+      "Swap roles."
+    ] }
+  ],
+  checks: ["Checked the contraindications before starting", "Straight leg raise, both legs", "Bridge, head lift, then roll to the side you'll sit them up on", "Assessed again once sitting",
+    "Chair: leg extension, march, reach, then set up for sit to stand", "Said the lifting plan (aids and people) out loud", "Knew: don't catch, protect the head"] },
+
+{ id: "s3", n: 3, title: "The Raizer lifting chair", mins: 20,
+  goal: "Get a patient who can't get up by themselves off the floor with the Raizer: decide if it's suitable, assemble it around them, lift safely, and pack it away ready for the next job.",
+  kit: ["Raizer II (charged) in its two bags, with the remote and the seat belt", "Headrest if your station has one", "A floor mat and a pillow", "A chair or the carry chair to move to after the lift", "A willing volunteer under 150 kg"],
+  blocks: [
+    { h: "Safety", src: ["raizer", "dsy"], tone: "red", list: [
+      "Moving parts can crush: keep hands and feet clear of the legs, and keep onlookers back",
+      "Volunteer under 150 kg, and happy to be lifted. Stop at once if they want to stop",
+      "Never push the chair with someone on it, and never stand on it"
+    ] },
+    { h: "Is the Raizer right for this patient?", src: ["raizer", "c001"], tone: "warn", list: [
+      "For a person lying on the floor who can't get up by themselves. The mobility check (station 2) tells you that",
+      "Not for: an injury from the fall, or where you can't rule one out; a patient who isn't fully conscious and able to tell you how they feel during the lift; anyone over 150 kg",
+      "Not for unstable fractures or a patient who can't tolerate being moved",
+      "It isn't a transport device: it brings them to sitting or almost standing, then you move them to a chair or the carry chair"
+    ] },
+    { h: "Before you start", src: ["raizer"], list: [
+      "Turn it on (on/off button, or the up or down arrow). The battery light must not flash red",
+      "The red stop button must be in place, or the chair won't run",
+      "Parts may be hot or cold to touch if it's been in the vehicle: think about that against the patient's skin",
+      "A hygiene cover or cloth on the seat if the patient's skin would touch it"
+    ] },
+    { h: "Assemble it around the patient", src: ["raizer"], steps: [
+      "Patient on their back. A pillow under the head for comfort.",
+      "Seat on the floor beside them. Bend their thighs up and carefully slide the seat under the thighs.",
+      "Seat belt on the backrest, if it isn't already. Never run the belt under the rear legs.",
+      "Backrests BEFORE legs, one side at a time: lift the shoulder gently with a light push at the elbow, slide the backrest under the shoulder, and click it into the seat (wait for the tone). A foot in front of the seat stops it sliding. Then the other side.",
+      "Fasten the seat belt (it clicks). It holds the hips, not the trunk.",
+      "Fit the four legs, any order, each until it clicks and you hear the tone. A double tone and a green light: ready to lift.",
+      "Headrest (if you have one) slid under the neck between the backrests, or plan to hold the neck yourself."
+    ] },
+    { h: "The lift", src: ["raizer", "c001"], steps: [
+      "Arms crossed over the chest, shoulders well placed on the backrests, legs together and feet clear of the front legs.",
+      "Tell the patient the lift is starting and check they're ready.",
+      "Support the neck with one hand. Hold the UP arrow (on the seat or the remote) the whole time: let go and it stops.",
+      "Stop at the position you want. At the top it stops by itself with a tone, the patient sitting upright.",
+      "Keep watching and talking to them. Problem: let go, or pull the red stop button.",
+      "Assess again once sitting, before they stand or move away (CPPRO-001). Then help them to the chair or carry chair."
+    ] },
+    { h: "If it won't run", src: ["raizer"], list: [
+      "Two-tone alarm: a leg or backrest isn't clicked in. Refit it until you hear the tone and the light is green",
+      "Stop button pulled out: put it back",
+      "Battery light flashing red: it needs charging",
+      "Stops partway with a two-tone alarm: overloaded. Lower the patient back to the floor"
+    ] },
+    { h: "Pack it away", src: ["raizer"], steps: [
+      "Run it all the way down to flat until it stops with a tone. Otherwise the next assembly won't work.",
+      "Remote back in its pocket (it beeps for the remote if you forget).",
+      "Pull out the four legs and two backrests and pack them in the bag.",
+      "Wipe it with detergent or disinfectant wipes (no solvents or alcohol cleaners, never hose it). Put it on charge: about 6 hours for a full charge."
+    ] },
+    { h: "Patient cards", src: ["dsy", "raizer", "cpp045"], cases: [
+      { who: "A. Joyce, 74", text: "Slipped on the rug. No injury on the head to toe, obs normal. Lifts both legs but can't bridge. Alert and chatting. About 70 kg.",
+        answer: "No injury, fully conscious and can give feedback, under 150 kg, and can't get up by herself: the Raizer suits her. Assemble it, lift to sitting, assess again sitting, then help her to a chair." },
+      { who: "B. Hip pain after the fall", text: "Pain in the right groin, the leg looks shorter. Wants to get up.",
+        answer: "An injury from the fall: the Raizer is not for her. She needs transport for the injury; plan the move with your manual task aids and request support." },
+      { who: "C. Drowsy", text: "Found on the floor, opens his eyes to voice but drifts off. No obvious injury.",
+        answer: "Not fully conscious and able to give feedback: don't use the Raizer. An altered conscious state needs assessment and transport." },
+      { who: "D. Stops halfway", text: "Halfway up there's a two-tone alarm and the chair stops.",
+        answer: "Possible overload (or a flat battery: check the light). Lower the patient back to the floor and plan another way up." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "A volunteer lies on the mat. Talk through card A and decide the Raizer suits them.",
+      "One person assembles it, talking through each step. The other checks the order (backrests first) and listens for the tones.",
+      "Lift to sitting, supporting the neck. Assess again sitting.",
+      "Lower them back down, pack it away, and talk through cards B to D. Swap roles."
+    ] }
+  ],
+  checks: ["Said why the Raizer suits this patient (no injury, alert, under 150 kg)", "Battery and stop button checked", "Backrests before legs, each one clicked with a tone",
+    "Seat belt fastened, not under the rear legs", "Arms crossed, legs together, warned before lifting", "Neck supported and UP held through the lift", "Assessed again once sitting",
+    "Run flat before packing away; remote back in its pocket"] },
+
+{ id: "s4", n: 4, title: "Injuries from the fall", mins: 20,
+  goal: "Splint a suspected wrist fracture with a cardboard splint, put on the right sling, and check circulation and sensation before and after.",
+  kit: ["Cardboard splints (small and large)", "Combine dressings or small towels for padding", "Triangular bandages x 3", "Roller bandages and tape", "Shears (don't cut anything)", "Safety pins", "Dressings for a skin tear"],
+  blocks: [
+    { h: "Before you splint", src: ["cssg"], steps: [
+      "PPE. Consider pain relief under the pain management protocol before you move the limb.",
+      "Expose the limb completely: cut clothing over the injury (for practice, roll sleeves up) and take off any jewellery.",
+      "Control any bleeding and dress wounds. Don't press over the broken bone, don't push bone ends back in.",
+      "Compare with the other limb: colour, warmth, sensation, pulse. Poor blood supply or sensation: contact the EOC Clinician for advice."
+    ] },
+    { h: "Cardboard splint", src: ["cssg"], steps: [
+      "Size it against the uninjured limb. Where possible it should hold the joint above and below the fracture. Cut it if needed.",
+      "Pad it with combines or a small towel so the limb sits in its natural shape.",
+      "Support the limb with gentle traction. If needed, cautiously align it to fit the splint.",
+      "Splint under the limb, fold it up around it, and secure it with roller bandages, triangular bandages or tape.",
+      "Check colour, warmth, sensation and pulse again. Worse: readjust or remove the splint. Still not back: contact the EOC Clinician."
+    ] },
+    { h: "Arm sling", src: ["cssg"], steps: [
+      "Patient holds the injured arm across the body, elbow bent, forearm where it's most comfortable.",
+      "Open bandage between the body and the arm, point towards the elbow.",
+      "Bring the lower end up over the arm and tie it to the top end behind the neck. Knot on the uninjured side.",
+      "Fingers clearly visible. Fold the point at the elbow and secure it with tape or a safety pin."
+    ] },
+    { h: "Collar and cuff", src: ["cssg"], steps: [
+      "Arm by the side, elbow bent, forearm across the chest, fingers towards the opposite shoulder.",
+      "Fold a triangular bandage into a narrow bandage and make a clove hitch: two loops, one up and one down, brought together with the free ends between them.",
+      "Slide the clove hitch over the wrist (tie it on the wrist if more comfortable).",
+      "Adjust the height. Tie the ends in the hollow above the collarbone."
+    ] },
+    { h: "Elevation sling", src: ["cssg"], steps: [
+      "For a wound on the hand or forearm, once bleeding is controlled: fingers pointing to the opposite shoulder tip.",
+      "Open bandage over the forearm and hand, point towards the elbow, top end over the shoulder.",
+      "Tuck it under the fingers, hand, wrist and forearm. Lower end around the back to the uninjured shoulder.",
+      "Twist the upper end to enclose the fingers, tie the ends together, then twist and tuck the excess at the elbow."
+    ] },
+    { h: "Every sling and splint", src: ["cssg"], tone: "warn", list: [
+      "Check colour, warmth, sensation and pulse before and after",
+      "Signs of poor blood supply or altered sensation: loosen or remove the sling and bandages and reassess",
+      "Move an injured limb only as much as needed, and think about pain relief throughout"
+    ] },
+    { h: "Hip injuries", src: ["cpp045", "c002", "c028"], list: [
+      "An injury from the fall is on the CPP-045-AO transport list",
+      "Can't walk because of a new injury: recommend transport (CPPRO-002)",
+      "A suspected neck of femur fracture is not for the traction splint (CPPRO-028)"
+    ] },
+    { h: "Patient cards", src: ["dsy"], cases: [
+      { who: "A. Wrist after a fall onto the hand", text: "Pain, swelling and a 'dinner fork' shape at the wrist. Fingers pink and warm, radial pulse present.",
+        answer: "Check and record circulation and sensation first. Pain relief. Cardboard splint holding the wrist and elbow if possible, padded, then an arm sling. Recheck the fingers. An associated injury: transport." },
+      { who: "B. Skin tear on the forearm", text: "A large flap of thin skin torn on the forearm, oozing. No deformity.",
+        answer: "Direct pressure with a dressing that fits, then an elevation sling. Check the fingers. An associated injury: transport." },
+      { who: "C. Can't get up: hip", text: "Pain in the right groin, the leg looks shorter and turned out. Can't stand.",
+        answer: "Possible hip fracture: transport. Pain relief, request support for the move, keep her warm. No traction splint for a neck of femur fracture." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Partner sits in a chair. Read card A, splint and sling it.",
+      "Card B: the elevation sling. Then practise the collar and cuff.",
+      "Talk through card C.",
+      "Swap roles."
+    ] }
+  ],
+  checks: ["Checked colour, warmth, sensation and pulse before starting", "Mentioned pain relief before moving the limb", "Splint sized on the other arm, padded, joint above and below",
+    "Arm sling knotted on the uninjured side, fingers visible", "Collar and cuff clove hitch tied correctly", "Rechecked the fingers after every sling and splint"] },
+
+{ id: "s5", n: 5, title: "Staying home: screen, skin and referral", mins: 20,
+  goal: "For a patient who doesn't need hospital: do the FROP falls screen, check the skin and Braden score after a long lie, make the Country Referral Unit call, and give leave-home advice.",
+  kit: ["A chair and 3 metres of clear floor, marked", "A walking frame or stick if you have one", "A phone with the SAAS Clinical app (FROP and Braden tables)", "A blank PCR or notepad", "A falls handout if your station has one"],
+  blocks: [
+    { h: "Only if", src: ["cpp045", "c002"], tone: "warn", list: [
+      "There is no clinical or social need for transport",
+      "The patient is normally ambulant",
+      "They agree to the screen and the referral, and want to work on their falls risk",
+      "Not for: an injury needing hospital, a medical cause of the fall, or a normally non-ambulant patient. Take care with significant cognitive impairment or dizziness"
+    ] },
+    { h: "FROP falls screen", src: ["c002", "ctl003"], table: { head: ["Question", "Score"], rows: [
+      ["Falls in the past 12 months (count today's)", "0 none · 1 one · 2 two · 3 three or more"],
+      ["Help with basic activities before this fall (cooking, housework, laundry)", "0 none · 1 supervision · 2 some help · 3 completely dependent"],
+      ["Unsteady standing, walking 3 m, turning and sitting", "0 none · 1 minimally · 2 moderately (needs supervision) · 3 severely (constant hands-on help)"]
+    ] } },
+    { h: "Score it", src: ["c002", "ctl003", "cpp045"], steps: [
+      "Watch them stand, walk three metres, turn, walk back and sit, with their usual walking aid. If it changes, score the most unsteady.",
+      "Can't walk because of a new injury: recommend transport.",
+      "Add the three scores. 0 to 3 low risk: consider a non-urgent falls referral. 4 to 9 high risk: urgent falls referral.",
+      "A 3 for help needed or for balance, with inadequate support or supervision at home (or any other concern): consider transport.",
+      "Record the outcome on the PCR."
+    ] },
+    { h: "Long lie: the skin", src: ["cpp045", "c003", "ctl010"], list: [
+      "On the ground more than an hour after the fall: do a pressure injury screen (Braden, CTL-010). A lower score means a higher risk",
+      "Look at the common sites: the sacrum and coccyx, heels, elbows and malleoli",
+      "Above 15 low risk: give prevention advice. 13 to 14 (or a clinical concern) medium: advice and recommend follow-up with their GP. 6 to 12 (or an existing pressure injury) high: advice and arrange a GP review appointment",
+      "Moist skin: clean and dry it gently, don't rub hard"
+    ] },
+    { h: "The Country Referral Unit", src: ["ctl003"], list: [
+      "Email the CRU form to Health.CountryReferralUnit@sa.gov.au, writing 'high risk' or 'low risk' falls assessment in the management / care requested section",
+      "Or phone the CRU on 1800 003 307 (9am to 5pm) to complete the form",
+      "The form is on SAASnet > Service & Forms > Forms Portal"
+    ] },
+    { h: "Before you leave", src: ["cpp045"], tone: "red", list: [
+      "Consult the EOC Clinician for every patient you don't transport",
+      "Make sure there is an appropriate level of supervision, and encourage usual activities",
+      "Tell the patient or carer when to call for help again",
+      "Leave a falls handout where available, and pressure injury information if relevant",
+      "Not enough support to manage a non-ambulant patient safely at home: transport"
+    ] },
+    { h: "Patient cards", src: ["dsy", "ctl003"], cases: [
+      { who: "A. Joyce, 74", text: "Second fall this year, counting today. Independent at home. Minimally unsteady on the walk. Lives with her husband. Agrees to a referral.",
+        answer: "2 + 0 + 1 = 3: low risk. Consider a non-urgent falls referral to the CRU ('low risk'). Consult the EOC Clinician, give escalation advice and a handout." },
+      { who: "B. Ron, 80", text: "Third fall this year. Needs some help with housework. Moderately unsteady with his frame. His daughter visits daily. Agrees to a referral.",
+        answer: "3 + 2 + 2 = 7: high risk. Urgent falls referral: the CRU form marked 'high risk', or phone the CRU 9am to 5pm. Consult the EOC Clinician before leaving." },
+      { who: "C. Edna, 88, after two hours on the floor", text: "Uninjured, obs normal. Braden: sensory 3, mobility 3, activity 3, moisture 2, friction 2, nutrition 2. Lives alone.",
+        answer: "Braden 15. CTL-010 gives no band for exactly 15 (low is above 15, medium 13 to 14): give prevention advice and discuss the risk with the EOC Clinician. Living alone: check there is appropriate supervision before leaving." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Patient sits in the chair with their aid. Read a card. Ask the three FROP questions, then watch the walk and score it.",
+      "Card C: talk through which skin sites you'd look at (don't expose your partner) and the Braden band.",
+      "Role-play the CRU phone call: who you are, the patient, the score and risk, their consent.",
+      "Role-play the EOC Clinician consult and the leave-home advice. Swap roles."
+    ] }
+  ],
+  checks: ["Checked there's no need for transport before screening", "Asked for consent to the screen and referral", "Counted today's fall", "Watched stand, walk 3 m, turn and sit with the usual aid",
+    "Right total and risk band", "CRU referral with 'high risk' or 'low risk'", "Consulted the EOC Clinician and gave escalation advice"] }
+];
+
+var END = { title: "Finish together", mins: 25,
+  steps: [
+    "Run the two jobs below as one crew, start to finish, using each station's kit as you reach it. One person is the patient, one plays the EOC Clinician, the rest are the crew.",
+    "Then each person does the knowledge check in the falls microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ],
+  cases: [
+    { who: "Job 1. Dorothy, 83, found on the kitchen floor at 7am", text: "Her neighbour found her. She got up for a drink at about 1am and slipped. Lives alone. Pain and swelling in the left wrist, a 'dinner fork' shape. No head strike. Obs: RR 18, SpO2 96%, BP 138/82, pulse 88, temp 35.4, GCS 15, BGL 6.2. No blood thinners.",
+      answer: "Six hours on the floor: a long lie. Warm her. Associated injury: transport. Pain relief, splint and sling, check the fingers before and after. Mobility check before the move (take care: a long time on the floor). Braden screen and report any risk or pressure injury to the hospital." },
+    { who: "Job 2. Bill, 76, slipped getting out of the shower", text: "His wife called. He's been on the bathroom floor 20 minutes. No injury on the head to toe, didn't hit his head, felt well before. No blood thinners. Obs and BGL normal. First fall this year. Independent. No unsteadiness on the walk.",
+      answer: "Nothing on the transport list. Mobility check on the floor, then up with help (the Raizer if he can't get up by himself). FROP 1 + 0 + 0 = 1: low risk, consider a non-urgent CRU referral if he agrees. Not a long lie, so the pressure injury screen isn't triggered. Consult the EOC Clinician, give escalation advice to Bill and his wife, leave a falls handout." }
+  ] };
+
+var KEY = "dsy-stations-falls";
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/falls/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Falls skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  f.appendChild(block({ h: "Two jobs to run as one crew", src: ["dsy", "cpp045"], cases: END.cases }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Knowledge check (microlearning)", "../../microlearning/falls/", "btn small"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Knowledge check: " + root + "microlearning/falls/")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY falls skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Falls skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Falls\" (about 25 min). Send the link a few days ahead."],
+    ["0:00", "Read the safety box at station 1 together (finger pricks only with consent, or the control solution). Split into pairs or threes."],
+    ["0:05", "Rotate through stations 1 to 5 (about 20 min each). Partners tick the checks on the phone. Station 1's log roll needs four: do it when two pairs meet, or at the finish."],
+    ["about 1:45", "Finish together: the two jobs as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 1: a floor mat and pillow. Glucometer with in-date strips and control solution, new lancets, a sharps container. Corpuls charged.",
+    "Station 2: a floor mat, a chair with arms, a walking frame if you have one, and your manual task aids.",
+    "Station 3: the Raizer, charged the day before (about 6 hours), with its remote, seat belt and headrest. Clear floor space around the mat.",
+    "Station 4: a chair, cardboard splints, padding and triangular bandages. Use training stock where you have it.",
+    "Station 5: a chair and 3 metres of clear floor marked with tape. A phone with the SAAS Clinical app.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Sharps container closed. Used strips and swabs in the bin.",
+    "Manual task aids cleaned with detergent and disinfectant wipes and put back.",
+    "Raizer run flat, packed in its bags, wiped down and back on charge.",
+    "Used splints, bandages and dressings replaced from stock.",
+    "Corpuls back on charge.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Five stations to practise the hands-on parts of a falls job, then two full jobs together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Falls\" first (about 25 minutes)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/falls/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Two jobs, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cssg, SRC.cpp045, SRC.ctl003, SRC.ctl010, SRC.c001, SRC.c002, SRC.c003, SRC.c028, SRC.cpp018, SRC.raizer].join(", ") +
+    ". The review dates of CPPRO-001, CPPRO-002 and CPPRO-003 (Dec 2019) and CPPRO-028 (Apr 2026) have passed. SAAS has no Raizer procedure: the Raizer steps are from the maker's manual. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>

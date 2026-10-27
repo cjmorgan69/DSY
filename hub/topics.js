@@ -26,7 +26,7 @@ window.DSY_TOPICS = [
     module:'headache', walk:'/modules/headache%20-ao/', mdt:'headache', custom:'headache-ao' },
   { id:'nausea', title:'Nausea and vomiting', protocol:'CPP-047-AO', patient:'Helen, 62: eight hours of vomiting',
     module:'nausea', walk:'/modules/nausea-vomiting/', mdt:'nausea', custom:'nausea-ao' },
-  { id:'falls', title:'Falls', protocol:'CPP-045-AO', module:'falls' },
+  { id:'falls', title:'Falls', protocol:'CPP-045-AO', module:'falls', stations:'/stations/falls/' },
   { id:'burns', title:'Burns', protocol:'CPP-006-AO', patient:'Daniel, 42: diesel flash burn to the face',
     module:'burns', walk:'/modules/burns/', custom:'burns-ao' },
   { id:'mva-baseline', title:'Baseline obs at a high-speed MVA', protocol:'CPP-063-AO', patient:'Jason, 34: rollover near Cummins, walking and "fine"',
