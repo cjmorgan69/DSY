@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AR Day 6 stations - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261027c">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Ambulance Responder course, Day 6 skills stations. Built 27 Oct 2026 for the lead instructor's Day 6 of the Far North
+   West Coast Recruit to Ambulance Responder course (course completion checklist, Jan 2026): Medical Conditions and First
+   Aid and AA Protocols. Every station follows the AR protocols and AR scope, not the AO ones used by the other stations pages.
+   Sources: CPP-048-AR Asthma v3.2 and CTL-083 AR Asthma Severity and Treatment v1.0; CPP-022-AR Anaphylaxis v2.0;
+   CPP-029-AR Chest Pain v2.1; CPP-031-AR Hypoglycaemia v2.1; CPP-060-AR Pregnancy and Birth v1.0; CPP-035-AR Newborn Care
+   and Resuscitation v3.0; CTL-061 APGAR Assessment; CTL-119 Neonatal Resus Flowchart; CTL-128 Obstetric Aide-memoire;
+   CPPRO-046 Newborn Temperature Management v1.0 (review Nov 2028); CPPRO-008 Medication Checks v1.0, CPPRO-009 Oral
+   Medication Administration v1.0, CPPRO-010 Drawing Up and Labelling Medications v1.0, CPPRO-011 Intramuscular Injection
+   v1.0, CPPRO-012 Inhaled Medication Administration v2.0 (review dates passed); SAAS Clinical Skills Study Guide v3.2
+   (Oct 2026; owner's scanned copy, not stored in the repo): BGL, IV therapy set up line (AO scope only), eye irrigation.
+   The owner chose to pitch the IV item as "prepare the line for the paramedic". Patient cards, jobs and how-to-run notes
+   are DSY-written and marked as such. */
+var SRC = {
+  cpp048: "CPP-048-AR Asthma v3.2",
+  ctl083: "CTL-083 AR Asthma Severity and Treatment",
+  cpp022: "CPP-022-AR Anaphylaxis v2.0",
+  cpp029: "CPP-029-AR Chest Pain v2.1",
+  cpp031: "CPP-031-AR Hypoglycaemia v2.1",
+  cpp060: "CPP-060-AR Pregnancy and Birth v1.0",
+  cpp035: "CPP-035-AR Newborn Care and Resuscitation v3.0",
+  ctl061: "CTL-061 APGAR Assessment",
+  ctl128: "CTL-128 Obstetric Aide-memoire",
+  c046: "CPPRO-046 Newborn Temperature Management v1.0",
+  c008: "CPPRO-008 Medication Checks v1.0",
+  c009: "CPPRO-009 Oral Medication Administration v1.0",
+  c010: "CPPRO-010 Drawing Up and Labelling Medications v1.0",
+  c011: "CPPRO-011 Intramuscular Injection v1.0",
+  c012: "CPPRO-012 Inhaled Medication Administration v2.0",
+  cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var CHECK = { h: "The medication check (every medicine, every time)", src: ["c008"], steps: [
+  "Check its integrity: seals unbroken, not discoloured, no particles.",
+  "Hand it to your partner and ask, without prompting: \"What is this medication?\" \"What is the expiry date?\" \"What is the dose?\"",
+  "Before giving: right patient (indication, no contraindication, allergy or sensitivity), right medication, right dose, right route, right time.",
+  "Afterwards: record the dose, route and time."
+] };
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "Asthma: how bad, and the puffer", mins: 20, item: "Skill Demonstration - Asthma",
+  goal: "Rule out anaphylaxis, judge asthma severity by speech and distress, and give salbutamol by MDI and spacer at the AR dose for the age.",
+  kit: ["Expired salbutamol MDIs, labelled TRAINING", "Single patient use spacers, a small face mask or resuscitation mask for the spacer", "A child manikin", "Corpuls with SpO2 (or a finger probe)", "The patient cards below"],
+  blocks: [
+    { h: "Safety", src: ["c008", "dsy"], tone: "red", list: [
+      "The expired inhalers still spray real salbutamol: nobody breathes it in. Test puffs go into the air, away from everyone",
+      "Puffs into a spacer go only on the manikin. A partner playing the patient breathes through a spacer with no inhaler fitted",
+      "Expired medicines may be kept for training if they are isolated from operational stock and clearly labelled training stock (CPPRO-008)"
+    ] },
+    { h: "Every patient first", src: ["cpp048", "ctl083", "cpp022"], list: [
+      "Basic care and life support. Assess GCS, work of breathing, baseline obs (RR, pulse, monitor, SpO2) and the past history",
+      "Could it be allergy or anaphylaxis? Follow Anaphylaxis CPP-022-AR first (station 3) and request clinical support",
+      "Known asthma plus a food, insect or medication allergy and sudden breathing difficulty: treat as anaphylaxis before any asthma medicine",
+      "SpO2 alone never decides the severity: only with a thorough assessment"
+    ] },
+    { h: "Severity and first treatment (CTL-083)", src: ["ctl083", "cpp048"], tone: "warn", table: { head: ["", "Signs", "Under 6", "6 and over"], rows: [
+      ["Mild", "Talks in sentences, normal work of breathing, SpO2 usually above 95%", "6 puffs salbutamol (600 microg)", "12 puffs salbutamol (1200 microg)"],
+      ["More severe", "Phrases, words or can't speak; distressed; SpO2 usually below 95%", "Neb: salbutamol 2.5 mg + ipratropium 250 microg + 3 mL saline (station 2)", "Neb: salbutamol 5 mg + ipratropium 500 microg (station 2)"],
+      ["Life threatening", "Unable to speak, drowsy or unconscious, cyanosed, poor effort or arrest", "High-flow oxygen; BVM slow and gentle, 4 per min", "Same"]
+    ] } },
+    { h: "Mild: the puffer and spacer (CPP-048-AR)", src: ["cpp048"], list: [
+      "Follow the patient's own asthma plan if appropriate, or salbutamol by MDI and spacer: 12 puffs if 6 or over, 6 puffs if 1 to 6",
+      "Can't use the MDI and spacer: add a resuscitation mask to the MDI for 1 to 4 years, or a neb (salbutamol 2.5 mg + saline to 5 mL if 1 to 6; 5 mg if 6 or over)",
+      "Consult the EOC Clinician about treatment and transport. They may advise repeat doses at paramedic level, transport and cancel clinical support, transport and meet clinical support en route, or monitor until clinical support arrives",
+      "Deteriorates at any time: consult the EOC Clinician immediately. Unresponsive and not breathing normally: CPR"
+    ] },
+    { h: "MDI and spacer (CPPRO-012)", src: ["c012"], steps: [
+      "Medication check, allergies, explain and get consent.",
+      "Sit the patient up at more than 45 degrees. Hand hygiene.",
+      "Canister in the holder, cover off, shake well, test spray into the air.",
+      "MDI into the spacer. Prime the spacer with one puff.",
+      "Lips sealed on the mouthpiece. A young child who can't: mask on the spacer, held on the face.",
+      "One puff into the spacer, then four slow deep breaths (hold about 10 seconds if they can).",
+      "Wait 30 to 60 seconds, repeat to the dose. Record dose, route and time."
+    ] },
+    { h: "Two things to know", src: ["cpp048", "ctl083"], list: [
+      "The protocol says 12 puffs at 6 years or more and 6 puffs at 1 to 6 years, and the table says under 6 and over 6: a child who is exactly 6 fits both, so consult the EOC Clinician",
+      "For more severe asthma the protocol says start the nebs. The table also shows MDI and spacer, with oxygen 4 L/min, as an EOC Clinician option"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp048", "ctl083"], cases: [
+      { who: "A. Sam, 28", text: "Wheezy after a run. Full sentences, normal work of breathing, SpO2 97%.", answer: "Mild. His own plan, or 12 puffs salbutamol by MDI and spacer. Consult the EOC Clinician about treatment and transport." },
+      { who: "B. Mia, 3", text: "Wheezy, talking in sentences, won't seal her lips on the spacer.", answer: "Mild, under 6: 6 puffs, with a resuscitation mask on the spacer (1 to 4 years). Or a neb of salbutamol 2.5 mg with saline to 5 mL." },
+      { who: "C. Karen, 45", text: "A few words at a time, sitting forward, distressed. SpO2 93%.", answer: "More severe. Request early clinical support, start the neb: salbutamol 5 mg + ipratropium 500 microg. Consult the EOC Clinician." },
+      { who: "D. Tom, 17", text: "Known asthma and peanut allergy. Sudden wheeze after a party snack, lips swelling.", answer: "Anaphylaxis first (station 3): his own EpiPen as a priority, clinical support, then the asthma." },
+      { who: "E. Can't speak", text: "Adult, drowsy, lips blue, breathing weakly.", answer: "Life threatening. High-flow oxygen, early clinical support, BVM if needed: small, slow (4 a minute), gentle. Consult the EOC Clinician (continuous salbutamol nebs)." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person acts a card (how they talk, sit and breathe). The others don't read it.",
+      "Count the breathing, look at the work of breathing, put the SpO2 on, say the severity and the first treatment.",
+      "For the mild cards: do the medication check aloud and the full MDI and spacer steps (on the manikin for the child). Swap."
+    ] }
+  ],
+  checks: ["Asked about allergy and anaphylaxis first", "Judged severity by speech and distress, not SpO2 alone", "Right puffs for the age (6 or 12)", "Shook, test sprayed into the air, primed the spacer",
+    "One puff, four slow breaths, 30 to 60 seconds apart", "Mask on the spacer for the young child", "Said when to consult the EOC Clinician"] },
+
+{ id: "s2", n: 2, title: "Nebulised medication: under 6, and 6 and over", mins: 20, item: "Preparing and Administering Nebulised Medication (6 years or older, and under 6 years old)",
+  goal: "Load and run a salbutamol and ipratropium neb at the AR dose for a child under 6 and for an adult, and keep the crew safe from the mist.",
+  kit: ["Nebuliser bowls with adult and paediatric masks and tubing", "Saline ampoules labelled TRAINING standing in for salbutamol and ipratropium", "Saline 0.9% ampoules and a syringe", "Oxygen (Inhalo) or air", "Adult and child manikins"],
+  blocks: [
+    { h: "Safety", src: ["dsy", "c012"], tone: "red", list: [
+      "Training saline only, never real salbutamol or ipratropium. Run the masks on a manikin",
+      "Oxygen away from naked flames"
+    ] },
+    { h: "More severe asthma: the first neb (CPP-048-AR)", src: ["cpp048", "ctl083"], table: { head: ["Age", "Salbutamol", "Ipratropium", "Saline"], rows: [
+      ["6 and over", "5 mg (one neb)", "500 microg (one neb)", "None"],
+      ["1 to 6", "2.5 mg (about half a neb)", "250 microg (about half a neb)", "3 mL to make 5 mL"]
+    ] } },
+    { h: "Mild asthma, can't use the MDI and spacer", src: ["cpp048"], list: ["Salbutamol only: 5 mg if 6 or over; 2.5 mg plus saline to 5 mL if 1 to 6"] },
+    CHECK,
+    { h: "Load and run it (CPPRO-012)", src: ["c012"], steps: [
+      "Patient at more than 45 degrees, or upright. Hand hygiene.",
+      "Take the chamber off the mask and load through the top.",
+      "Plastic ampoule: twist the top off and squeeze it into the bowl without touching the open end. Half a neb: draw up the amount with a syringe.",
+      "Several medicines or saline can go in one bowl. No more than 10 mL in total.",
+      "Chamber firmly onto the right size mask and the tubing. Keep it upright so it doesn't leak.",
+      "Oxygen or air at 6 to 8 L/min for a good mist. Mask over the nose and mouth; breathe normally.",
+      "Tap the bowl now and then, and at the end. Hand hygiene. Record dose, route and time."
+    ] },
+    { h: "In the ambulance", src: ["c012"], list: [
+      "Use the vehicle extraction and fresh-air (not recirculated) ventilation: the mist reaches the crew too",
+      "Nebulisers can spread droplet and airborne infection: wear the right PPE"
+    ] },
+    { h: "Then", src: ["cpp048"], list: [
+      "Request early clinical support and consult the EOC Clinician, who may advise repeat doses at paramedic level, or transport options",
+      "Deteriorates at any time: consult the EOC Clinician immediately"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp048"], cases: [
+      { who: "A. Karen, 45", text: "More severe asthma.", answer: "Salbutamol 5 mg and ipratropium 500 microg, one neb of each in one bowl. Adult mask, 6 to 8 L/min." },
+      { who: "B. Lily, 4", text: "More severe asthma.", answer: "Salbutamol 2.5 mg and ipratropium 250 microg (about half a neb of each) plus 3 mL saline to make 5 mL. Paediatric mask." },
+      { who: "C. Joan, 70", text: "Mild asthma, confused, can't manage the spacer.", answer: "Salbutamol 5 mg by neb (6 and over). A neb is preferred for a confused patient (CPPRO-012)." },
+      { who: "D. Jack, 2", text: "Mild asthma, won't tolerate the spacer even with a mask.", answer: "Salbutamol 2.5 mg plus saline to 5 mL by neb." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Medication check aloud with the training ampoules. Load the adult neb and run it on the adult manikin.",
+      "Then the under 6 dose: work out half of each and the saline to 5 mL, paediatric mask on the child manikin.",
+      "Swap."
+    ] }
+  ],
+  checks: ["Medication check aloud, unprompted answers", "Ampoule opened without touching the open end", "Right dose 6 and over", "Right dose under 6, with saline to 5 mL",
+    "Total under 10 mL, chamber upright", "6 to 8 L/min", "Mentioned extraction and fresh-air ventilation"] },
+
+{ id: "s3", n: 3, title: "Anaphylaxis and IM adrenaline", mins: 25, item: "Preparing and Administering Adrenaline for IM Injection; Skill Demonstration - Anaphylaxis",
+  goal: "Recognise anaphylaxis, give the patient's own EpiPen as a priority, and, only when the EOC Clinician advises it, draw up and give IM adrenaline from an ampoule.",
+  kit: ["EpiPen trainer if you have one (never a real EpiPen); no trainer: a marker pen", "Training adrenaline ampoules, 1000 microg in 1 mL, glass (expired, labelled TRAINING)", "1 mL syringes, blunt fill needles, IM needles",
+    "Alcohol swabs, gauze or an ampoule opener, gloves, blue sheet", "Sharps container", "Injection practice pad", "Oxygen and a non-rebreather mask"],
+  blocks: [
+    { h: "Safety", tone: "red", src: ["dsy", "c008"], list: [
+      "Inject only into the practice pad. Never into a person",
+      "Every sharp goes straight into the sharps container. Never recap a used needle",
+      "Training ampoules stay in the labelled training box, apart from operational stock (CPPRO-008)"
+    ] },
+    { h: "When to act (CPP-022-AR)", src: ["cpp022"], tone: "warn", list: [
+      "Suspected anaphylaxis with hypotension, severe bronchospasm, or severe breathing distress from airway swelling",
+      "Signs of a severe reaction: difficult or noisy breathing, swollen tongue, swelling or tightness in the throat, hoarse voice or trouble talking, wheeze or persistent cough, persistent dizziness or collapse, pale and floppy (young children)"
+    ] },
+    { h: "What the AR does (CPP-022-AR)", src: ["cpp022"], steps: [
+      "Basic care and life support: lay them flat unless their breathing is difficult. Don't let them stand or walk.",
+      "Remove the allergen or trigger if you can. Request clinical support.",
+      "Follow their own anaphylaxis action plan if it's there.",
+      "Give their prescribed adrenaline auto-injector (EpiPen) as a priority.",
+      "Consult the EOC Clinician, who may advise, if no auto-injector: IM adrenaline 10 microg/kg (single maximum 500 microg), and further doses if needed; and the transport option.",
+      "Everyone with allergy or anaphylaxis goes to a health facility, even if they seem to recover."
+    ] },
+    { h: "The EpiPen (CPPRO-011)", src: ["c011"], steps: [
+      "Hand hygiene, medication check, explain and get consent where you can.",
+      "Mid outer thigh (it can go through clothing). Fist around the barrel, blue cap off; don't touch either end.",
+      "Orange end firmly against the thigh until it clicks. Hold 10 seconds or more.",
+      "Straight into the sharps container. Massage the site for 10 seconds. Say the dose and the time."
+    ] },
+    { h: "Work out the dose (on EOC advice)", src: ["cpp022", "c010"], text: "10 microg/kg, single maximum 500 microg. The ampoule is 1000 microg in 1 mL, so the volume in mL is the dose divided by 1000.",
+      cases: [
+        { who: "15 kg child", answer: "150 microg = 0.15 mL" },
+        { who: "28 kg child", answer: "280 microg = 0.28 mL" },
+        { who: "50 kg adult", answer: "500 microg = 0.5 mL" },
+        { who: "90 kg adult", answer: "900 microg is over the maximum, so 500 microg = 0.5 mL" }
+      ] },
+    CHECK,
+    { h: "Draw up from a glass ampoule (CPPRO-010)", src: ["c010"], steps: [
+      "Hand hygiene, clean area (blue sheet). Open the syringe and needles from the corner, left in their cradles.",
+      "Blunt fill needle on the syringe. Tap the ampoule so the fluid goes to the base.",
+      "Dot away from you; snap it open at the neck, away from you (opener or gauze). Top straight into the sharps container.",
+      "Draw up the whole volume from the base. Ampoule and blunt needle into the sharps container.",
+      "IM needle on. Expel the air and prime to the dose: the top ring of the plunger lines up with the volume.",
+      "A syringe you give straight away, in full, yourself, needs no label."
+    ] },
+    { h: "Give it into the pad (CPPRO-011)", src: ["c008", "c011"], steps: [
+      "Five rights with your partner.",
+      "Mid outer thigh. Alcohol swab, inside out, let it dry.",
+      "Hold it like a dart, cap off, in quickly at 90 degrees to about two thirds of the needle.",
+      "Push the plunger slowly to give the full dose. Out in one movement, straight into the sharps container.",
+      "Gauze, say the dose and time. Hand hygiene."
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp022"], cases: [
+      { who: "A. David, 54", text: "Bee sting 10 minutes ago. Hives, wheeze, BP 80/50. Has his own EpiPen in the car.", answer: "Anaphylaxis with hypotension. Lie flat, don't let him stand. Clinical support. His EpiPen as a priority. Consult the EOC Clinician. Transport." },
+      { who: "B. No auto-injector", text: "Same, but no EpiPen anywhere. 70 kg.", answer: "Consult the EOC Clinician, who may advise IM adrenaline 10 microg/kg: 700 microg is over the maximum, so 500 microg = 0.5 mL." },
+      { who: "C. Breathing hard", text: "Tongue swelling, noisy breathing, wants to sit up.", answer: "Don't lay her flat: she can sit as her breathing is difficult. Don't let her stand or walk. Her EpiPen as a priority, clinical support, consult." },
+      { who: "D. Feels better", text: "After his EpiPen, David says he's fine and wants to stay home.", answer: "All patients with allergy and anaphylaxis go to a health facility, whatever their apparent recovery." }
+    ] }
+  ],
+  checks: ["Laid flat (or sitting if breathing is hard); didn't let them stand", "Own EpiPen as a priority", "Said: IM adrenaline only on EOC Clinician advice", "EpiPen: held 10 s, massaged 10 s",
+    "Dose worked out, 500 microg maximum", "Three check questions answered unprompted", "Ampoule opened safely, sharps straight in", "Primed to the dose, 90 degrees into the pad, not recapped"] },
+
+{ id: "s4", n: 4, title: "Chest pain: aspirin and GTN under the tongue", mins: 20, item: "Preparing and Administering GTN Sublingual; Skill Demonstration - Chest Pain",
+  goal: "Give aspirin to every chest pain patient unless allergic, and give a GTN tablet under the tongue only when the EOC Clinician advises it and the limits are met.",
+  kit: ["Training stock only, labelled TRAINING: aspirin 300 mg, GTN 300 microg tablets", "A glass of water", "Corpuls with the 4-lead ECG, a BP cuff and a watch", "A blank PCR or notepad", "The patient cards below"],
+  blocks: [
+    { h: "Safety", src: ["c008", "dsy"], tone: "red", list: [
+      "Nobody takes or is given any medicine. Hand over the tablets and say the steps",
+      "Expired or training stock only, kept apart from operational stock and labelled TRAINING (CPPRO-008)"
+    ] },
+    { h: "What the AR does (CPP-029-AR)", src: ["cpp029"], steps: [
+      "Basic care including ECG monitoring. Vital signs every 5 minutes.",
+      "Request clinical support.",
+      "Oral aspirin 300 mg, unless allergic.",
+      "Consult the EOC Clinician, who may advise a GTN 300 microg tablet under the tongue if the limits below are met.",
+      "Consult the EOC Clinician about transport: transport and cancel clinical support, meet clinical support en route, or monitor until it arrives."
+    ] },
+    { h: "GTN limits (only on EOC Clinician advice)", src: ["cpp029"], tone: "warn", table: { head: ["Check", "Limit"], rows: [
+      ["Systolic BP", "Above 100 mmHg"],
+      ["Pulse", "60 to 120"],
+      ["PDE-5 inhibitors", "None in 24 h (sildenafil, vardenafil, avanafil) or 48 h (tadalafil): together they can cause life-threatening hypotension"],
+      ["Repeat", "Pain persists and the limits still hold: every 5 minutes as needed, 3 doses in total, or as the EOC Clinician directs"],
+      ["Obs", "Every 3 to 5 minutes after GTN: it can drop the BP a long way"]
+    ] } },
+    CHECK,
+    { h: "Aspirin (CPPRO-009)", src: ["c009"], steps: [
+      "Check allergies. Sit them up (or on their side) to swallow.",
+      "Hand hygiene. Tablet into their hand: SAAS aspirin is chewed, then swallowed; small sips of water help.",
+      "Not if they can't swallow safely or their conscious state is altered. Record dose, route and time."
+    ] },
+    { h: "GTN tablet under the tongue", src: ["c009", "cpp029"], steps: [
+      "Medication check, explain and get consent where you can, check allergies. Hand hygiene.",
+      "The tablet goes under the tongue: sublingual medicines are absorbed through the lining of the mouth (CPPRO-009).",
+      "Recheck BP and pulse every 3 to 5 minutes (CPP-029-AR). Record dose, route and time."
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp029"], cases: [
+      { who: "A. Graham, 62", text: "Central chest pressure for 20 minutes. BP 138/86, pulse 92. No allergies, no PDE-5 inhibitor.", answer: "ECG monitoring, obs every 5 min, request clinical support, aspirin 300 mg chewed. Consult the EOC Clinician: within the limits, so they may advise GTN 300 microg under the tongue." },
+      { who: "B. Exactly 100", text: "BP 100/64, pulse 84.", answer: "Systolic must be above 100: 100 is not. Tell the EOC Clinician; GTN outside the limits." },
+      { who: "C. Tadalafil", text: "BP 150/90, pulse 78. Took tadalafil 30 hours ago.", answer: "Within 48 hours of tadalafil: GTN outside the limits (life-threatening hypotension). Aspirin, consult." },
+      { who: "D. Aspirin allergy", text: "Says aspirin gives him hives and swelling.", answer: "Allergic: no aspirin. Consult the EOC Clinician." },
+      { who: "E. Still hurting", text: "5 minutes after the first GTN: pain still there, BP 124/80, pulse 80.", answer: "Pain persists and the limits hold: a repeat every 5 minutes, 3 doses in total, or as the EOC Clinician directs. Obs every 3 to 5 minutes." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Put the 4-lead ECG on your partner (the chest pain stations page, station 2, has the Corpuls steps). Take a BP.",
+      "Read a card. Do the medication check aloud, 'give' the aspirin, then make the EOC Clinician call and say whether GTN fits the limits.",
+      "Swap."
+    ] }
+  ],
+  checks: ["ECG monitoring on, obs every 5 minutes", "Requested clinical support", "Aspirin 300 mg chewed, allergies checked", "Consulted the EOC Clinician before any GTN",
+    "Checked SBP above 100, pulse 60 to 120, PDE-5", "Tablet under the tongue", "Obs every 3 to 5 minutes after GTN; 3 doses maximum"] },
+
+{ id: "s5", n: 5, title: "Diabetic emergencies: the BGL and oral glucose", mins: 20, item: "Skill Demonstration - Diabetic Emergencies",
+  goal: "Take an accurate BGL and treat a low one with oral glucose at AR level: who can have it, how much, and when to call the EOC Clinician.",
+  kit: ["FreeStyle Optium Neo-H glucometer, strips with their calibration bar, control solution (LO and HI)", "Lancets, alcohol swabs, cotton balls, sharps container", "Glucose paste (expired, labelled TRAINING)", "The patient cards below"],
+  blocks: [
+    { h: "Safety", src: ["dsy"], tone: "red", list: [
+      "Finger prick only on a willing adult partner who agrees to it; otherwise use the control solution",
+      "New lancet each time, straight into the sharps container. Nobody swallows the training paste"
+    ] },
+    { h: "Who gets a BGL (CPP-031-AR)", src: ["cpp031"], list: [
+      "Every patient (particularly children) with an altered conscious state or altered cerebral function, including trauma and seizures",
+      "Normal is usually above 3.5 mmol/L for adults and children, above 2.5 for neonates"
+    ] },
+    { h: "Taking the BGL", src: ["cssg"], steps: [
+      "PPE, sharps container within reach. Strip lot number matches the calibration bar; if not, calibrate first.",
+      "Clean the side of the fingertip: soap and water, or an alcohol swab left to dry.",
+      "Strip in, black bars towards the meter; wait for the flashing blood drop.",
+      "Lance the side of the fingertip. Gentle pressure only: squeezing hard gives a wrong result.",
+      "Touch the drop to the white end of the strip. Read, record, strip and lancet into the sharps.",
+      "More detail (quality control, error codes): the hypoglycaemia stations page, station 1."
+    ] },
+    { h: "BGL below 3.5 (CPP-031-AR)", src: ["cpp031"], tone: "warn", table: { head: ["", "What the AR does"], rows: [
+      ["2 years and over", "GCS adequate to swallow (a cough is a good sign): oral glucose up to 15 g. Request clinical support as appropriate"],
+      ["Can't have it, or it hasn't worked", "Consult the EOC Clinician"],
+      ["Recovers", "Consider offering complex carbohydrates to eat"],
+      ["Under 2 years", "Request clinical support. Consult the EOC Clinician, who may advise oral glucose gel"],
+      ["Every case", "Consult the EOC Clinician about treatment and transport"]
+    ] } },
+    { h: "Not at AR level", src: ["cpp031"], list: ["There is no glucagon in the AR protocol. The hypoglycaemia stations page's glucagon station is AO scope: skip it"] },
+    { h: "Giving oral glucose (CPPRO-009)", src: ["c009", "c008"], steps: [
+      "Medication check with your partner, allergies, consent where you can.",
+      "Sit them upright, or on their side, to swallow. Hand hygiene.",
+      "Give the paste and watch them swallow. Not with an altered conscious state or if they can't swallow.",
+      "Recheck the BGL. Record dose, route and time."
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp031"], cases: [
+      { who: "A. Ron, 67", text: "Confused and sweaty, BGL 2.4. Coughs when asked.", answer: "Oral glucose up to 15 g, sitting up. Recheck the BGL; recovers: offer complex carbohydrates. Consult the EOC Clinician about transport." },
+      { who: "B. Won't wake properly", text: "BGL 1.8, groans to pain, can't follow instructions.", answer: "Not safe to swallow: no oral glucose. Airway and recovery position, request clinical support, consult the EOC Clinician." },
+      { who: "C. Toddler, 18 months", text: "BGL 2.8, irritable.", answer: "Under 2: request clinical support and consult the EOC Clinician, who may advise oral glucose gel." },
+      { who: "D. Not low", text: "Confused, BGL 4.8.", answer: "Not below 3.5: look for another cause. Basic care and consult as needed." }
+    ] }
+  ],
+  checks: ["Lot number matched", "Side of the fingertip, no hard squeezing", "Sharps straight in", "Checked GCS and a cough before oral glucose", "Up to 15 g, sitting up", "Under 2 = consult", "Knew glucagon is not AR scope"] },
+
+{ id: "s6", n: 6, title: "Prepare the IV line for the paramedic", mins: 20, item: "Intravenous Therapy (Set-up Line, Change Empty Bag)",
+  goal: "Prepare and prime an IV giving set and saline bag, ready for the paramedic, and know how a bag is changed and what can go wrong.",
+  kit: ["IV giving sets (SAAS 20 drops/mL) and 500 mL saline bags (expired or labelled TRAINING)", "Alcohol swabs", "An IV pole or hanger, or a hook", "Tape", "A training arm (no cannulas into people)"],
+  blocks: [
+    { h: "Scope", src: ["cssg"], tone: "warn", list: [
+      "The study guide lists IV therapy set-up for the Ambulance Officer only, not the Ambulance Assist or Ambulance Responder. Cannulation is not in AO scope either",
+      "At AR level we practise preparing the line for a paramedic, ICP or doctor. Connecting it, setting the rate and changing a bag are shown so you know what the paramedic will do and can help when asked",
+      "The same spike-and-prime steps are in scope for eye irrigation with a giving set and saline bag (study guide)"
+    ] },
+    { h: "Safety", src: ["dsy"], tone: "red", list: ["Nothing goes into a person. Connect only to a training arm, or leave the capped line hanging ready"] },
+    { h: "Prepare the line", src: ["cssg", "c008"], steps: [
+      "Hand hygiene.",
+      "Medication check of the fluid: integrity, then \"What is it?\" \"What is the expiry date?\" \"What is the dose?\"",
+      "Open the bag at the easy tear split. Put it on a clean surface.",
+      "Unroll the giving set, move the flow regulator wheel to just under the drip chamber and close it.",
+      "Take the cover off the spike. Don't touch the spike.",
+      "Bag upside down: twist off its blue seal and push the spike through the port at the base. Don't pierce the side of the port.",
+      "Turn the bag so the drip chamber hangs below it and squeeze the chamber gently until it is half full.",
+      "Hang the bag on a pole or hanger if you can.",
+      "Open the wheel to run fluid through and prime the tubing (most of the air bubbles go). A little saline comes out of the end: close the wheel.",
+      "Keep the blue end cap on (it must stay sterile) and hand the primed line to the paramedic."
+    ] },
+    { h: "What the paramedic does next (awareness)", src: ["cssg"], steps: [
+      "Blue cap off; into the cannula hub, or into a bung swabbed just before, then twist to lock.",
+      "The rate comes from the health professional present or the EOC Clinician. SAAS giving sets are 20 drops/mL: count the drops in a minute. 10 drops a minute keeps the vein open (KVO).",
+      "The tubing is looped and taped to the arm in at least three places so the cannula isn't pulled out in a transfer."
+    ] },
+    { h: "Changing an empty bag (awareness, AO under a medical order)", src: ["cssg"], steps: [
+      "Close the wheel while there is still fluid in the tubing and drip chamber, so no air gets in.",
+      "Set up the new bag the same way (check, spike, half fill the chamber).",
+      "Connect the new bag."
+    ] },
+    { h: "If something goes wrong", src: ["cssg"], table: { head: ["Problem", "Do"], rows: [
+      ["Cannula comes out", "Direct pressure and a simple dressing. Don't reinsert it. Tell the EOC Clinician"],
+      ["Blood backs up the tubing", "Check for a tourniquet or anything tight above the site. Bag higher than the site. Still there: turn it off and consult"],
+      ["It stops running", "Check for kinks, the bag height, straighten the limb. The EOC Clinician may ask you to flush and will tell you how"],
+      ["Swelling or pain at the site", "Close the wheel and consult the EOC Clinician"]
+    ] } },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Each person prepares and primes a line, medication check aloud, and hands it to their partner as 'the paramedic'.",
+      "The partner talks through connecting it to the training arm and counting the drops for KVO (10 a minute).",
+      "Then talk through a bag change and one problem from the table. Swap."
+    ] }
+  ],
+  checks: ["Medication check of the fluid", "Wheel closed before spiking", "Spike not touched; port not pierced from the side", "Chamber half full", "Line primed, air out, wheel closed", "Blue end cap kept on and sterile", "Knew KVO is 10 drops a minute and the rate comes from the clinician", "Bag change: closed the wheel with fluid still in the line"] },
+
+{ id: "s7", n: 7, title: "Assist a normal birth", mins: 25, item: "Skill Demonstration - Assist in the Delivery of a Newborn",
+  goal: "Prepare for an imminent birth, guide a calm hands-off delivery, note the times, and care for the birthing parent and the placenta afterwards.",
+  kit: ["A maternity kit (towel, beanie, nappy, cotton wrap, axillary thermometer, NeoHelp suit, TransWarmer, zip-lock bag)", "Cord clamps and sterile scissors (check your maternity kit)", "Combines", "A birthing manikin if you have one, or a doll and a towel", "A watch", "Gloves and PPE"],
+  blocks: [
+    { h: "General principles (CPP-060-AR)", src: ["cpp060"], list: [
+      "Basic care and life support. Consult the EOC Clinician and request on-scene clinical support",
+      "Use the obstetric aide-memoire (CTL-128) and the pregnancy RDR chart (over 20 weeks)",
+      "Pain relief as per Pain Management CPP-036-AR. Visual perineal assessments",
+      "Warm the room; prepare the maternity kit and newborn resuscitation equipment close by",
+      "Consent before any assessment or intervention; privacy and dignity. A hands-off approach: the birthing parent follows their own urge to push"
+    ] },
+    { h: "Is the birth imminent?", src: ["cpp060"], tone: "warn", list: [
+      "Not imminent: transport is the priority, with notification. Over 28 weeks or in labour: semi-recumbent or left lateral (more than 30 degrees), never flat on the back",
+      "Imminent: stay on scene, help them into their chosen position",
+      "Under 37 weeks or known complications: consult the EOC Clinician, request clinical support and MedSTAR Kids, prepare for newborn resuscitation"
+    ] },
+    { h: "The birth (second stage)", src: ["cpp060"], steps: [
+      "As stretching (crowning) starts: a warm (or dry) combine on the perineum, replaced as needed.",
+      "As the head crowns: consider gentle pressure on the top of the head with the flat tips of at least two fingers (never under 37 weeks), other hand guarding the perineum.",
+      "Talk them through it: panting as the head crowns, slow controlled breathing, push with their own urge and the contractions.",
+      "Note the time the head is born. Wait for the next contraction.",
+      "The shoulders should come with the next contraction or within 60 seconds. If not: suspect shoulder dystocia (CTL-128).",
+      "Support the rest of the body. Never pull on the head or body.",
+      "Note the time of birth. Newborn care: station 8.",
+      "Born inside the intact sac: PPE, wait for the full birth, then break the sac gently with your fingers."
+    ] },
+    { h: "Not a head?", src: ["cpp060", "ctl128"], list: [
+      "Presenting part isn't a head: suspect breech. All fours at once, CTL-128, follow EOC Clinician advice",
+      "Cord visible: suspect cord prolapse. Knee-chest at once, CTL-128, EOC Clinician advice, transport in exaggerated Sims position",
+      "The obstetric emergencies companion on DSY has these flowcharts for the phone"
+    ] },
+    { h: "After the birth (third stage)", src: ["cpp060"], steps: [
+      "Skin-to-skin, wet clothing off, keep everyone warm.",
+      "Look for tears or bleeding. Repeat the birthing parent's obs.",
+      "No immediate concerns: wait at least 1 minute, clamp the cord at 10, 15 and 20 cm from the newborn, and cut between the two clamps furthest from the newborn (two clamps stay on the newborn's side).",
+      "Watch for signs the placenta is separating. It comes by the parent's effort and gravity only, usually within 60 minutes. Encourage them to empty their bladder.",
+      "Placenta into the zip-lock bag from the maternity kit; it goes to hospital with them.",
+      "Abnormal obs after the birth with no outside bleeding: suspect a concealed PPH, consult the EOC Clinician. PPH: consult and request clinical support."
+    ] },
+    { h: "Transport", src: ["cpp060"], list: [
+      "Transport the birthing parent and the newborn, with any blood-stained items",
+      "To their booked birthing hospital where possible (consult the EOC Clinician about distance); unstable: the closest emergency department. Notify early"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp060", "ctl128"], cases: [
+      { who: "A. 39 weeks, crowning", text: "Second baby, contractions every 2 minutes, the head is visible.", answer: "Imminent: stay on scene, consult the EOC Clinician, request clinical support, prepare the kit and resus gear, warm the room. Warm combine, gentle guarding, note the time of the head." },
+      { who: "B. Two minutes after the head", text: "The head was born at 10:42. Two contractions later, no shoulders.", answer: "Over 60 seconds: suspect shoulder dystocia. CTL-128 and EOC Clinician advice." },
+      { who: "C. 33 weeks", text: "Waters broke, contractions 5 minutes apart, no urge to push.", answer: "Under 37 weeks: consult the EOC Clinician, request clinical support and MedSTAR Kids, prepare for newborn resuscitation, rapid transport and notification. No pressure on the head at any stage." },
+      { who: "D. A foot", text: "Something that isn't a head is coming first.", answer: "Suspect breech: all fours at once, CTL-128, EOC Clinician advice." },
+      { who: "E. Pale after the birth", text: "Placenta not yet out. Pulse climbing, BP falling, little blood seen.", answer: "Suspect a concealed PPH. Consult the EOC Clinician, request clinical support." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Set out the maternity kit and the resus gear as if birth is imminent. Say aloud who you'd call.",
+      "With the manikin or doll: talk through and do each second-stage step, calling the times.",
+      "Clamp and cut the cord (on the manikin), then talk through the placenta. Run one card from C to E. Swap."
+    ] }
+  ],
+  checks: ["Consulted the EOC Clinician and requested clinical support", "Kit and newborn resus gear ready, room warm", "Warm combine and gentle guarding; no pulling", "Called the time of the head and the time of birth",
+    "Knew: shoulders within 60 seconds or think dystocia", "Delayed cord clamping: 10, 15, 20 cm; cut between the two furthest", "Placenta by gravity and effort only, bagged for hospital", "Knew the breech and cord prolapse positions"] },
+
+{ id: "s8", n: 8, title: "The newborn: APGAR, warmth and resus", mins: 25, item: "Skill Demonstration - Newborn Assessment (APGAR)",
+  goal: "Give routine care to a vigorous newborn (APGAR at 1 and 5 minutes, warmth, temperature), and start resuscitation if the newborn isn't breathing well.",
+  kit: ["Newborn manikin", "Maternity kit: towel, beanie, nappy, cotton wrap, axillary thermometer (NeoHelp and TransWarmer to look at, not open)", "Newborn bag-valve-mask and masks", "Stethoscope", "A watch", "The APGAR cards below"],
+  blocks: [
+    { h: "Breathing well or crying: routine care (CPP-035-AR)", src: ["cpp035"], steps: [
+      "Note the time of birth.",
+      "Dry and keep warm (don't dry the skin under 28 weeks). Wet blankets away.",
+      "APGAR at 1 minute and at 5 minutes, and record both.",
+      "Cord: no concerns, wait more than 1 minute, clamp at 10, 15 and 20 cm, two clamps stay on the newborn.",
+      "Skin-to-skin, wrap parent and newborn in warm dry blankets, beanie on.",
+      "Axillary temperature, then every 15 minutes. Normal is 36.5 to 37.5 °C.",
+      "Warm the ambulance to 25 °C where possible. Consult the EOC Clinician early (MedSTAR Kids retrieval consultant via the EOC)."
+    ] },
+    { h: "APGAR (CTL-061): score each at 1 and 5 minutes", src: ["ctl061"], tone: "warn", table: { head: ["", "0", "1", "2"], rows: [
+      ["Appearance", "Blue, pale", "Blue extremities", "Pink"],
+      ["Pulse", "Absent", "Below 100", "100 or more"],
+      ["Grimace", "No response", "Grimaces", "Crying, good response"],
+      ["Activity", "Limp", "Some flexion of the limbs", "Active motion"],
+      ["Respirations", "Absent", "Slow and irregular", "Strong cry, adequate breathing"]
+    ] } },
+    { h: "Taking the temperature (CPPRO-046)", src: ["c046"], steps: [
+      "Thermometer tip in the middle of the armpit.",
+      "Hold the arm against the body so the tip stays in place, at 35 to 45 degrees to the arm.",
+      "Turn it on and wait 3 minutes for an accurate reading.",
+      "Below 36.5 is hypothermia; above 37.5 is hyperthermia (take off any active warming)."
+    ] },
+    { h: "Keeping warm (CPPRO-046)", src: ["c046", "cpp035"], list: [
+      "Every term newborn: skin-to-skin, beanie, warm dry wraps",
+      "Consult the EOC Clinician to use the NeoHelp suit and the TransWarmer mattress",
+      "NeoHelp: under 37 weeks or under 2500 g, and every newborn needing resuscitation",
+      "TransWarmer: a priority for any newborn at 36.4 °C or below. Line it with a sheet or towel; take it away above 37.5 °C"
+    ] },
+    { h: "Not breathing well or not crying (CPP-035-AR)", src: ["cpp035"], steps: [
+      "Up to 30 seconds: stimulate, open the airway, keep warm. Apnoeic, white and floppy after 10 seconds of stimulation: don't wait the full 30.",
+      "Still not breathing well: consult the EOC Clinician about the NeoHelp and TransWarmer. Ventilate for 30 seconds: on the back, head neutral or slightly extended (a towel under the shoulders may help), 40 to 60 a minute, room air, watch the chest rise and fall.",
+      "Chest not rising: keep going 30 seconds, check the mask seal and the head position, mouth open, suction only if the airway is compromised.",
+      "Still not breathing well, no cry or still blue: keep ventilating, consult the EOC Clinician, check the heart rate (pulse at the base of the cord or stethoscope).",
+      "Over 100 but still blue: oxygen 10 L/min through tubing near the nose and mouth.",
+      "60 to 100: IPPV 40 to 60 a minute with 100% oxygen at 10 L/min.",
+      "Below 60: CPR, 3 compressions to 1 breath, two thumbs with hands round the chest, lower third of the sternum, 100% oxygen. Rate 100 a minute, pause for the breaths.",
+      "Breathing well or crying and pulse 100 or more: routine care. Otherwise continue and urgent transport to the closest ED with early notification."
+    ] },
+    { h: "Worth knowing", src: ["cpp035"], list: [
+      "Ventilate with air for the first 60 seconds; after that, if still needed, add 100% oxygen at 10 L/min (by BVM with ventilations: a newborn can't open the valve by itself)",
+      "BGL (heel) if the newborn is preterm, cold or needed resuscitation; normal in the first 4 hours is above 2.5 mmol/L",
+      "The protocol's text says consult the EOC Clinician if the BGL is 2.5 or below; its principle section says 2.5 or above. Consult either way"
+    ] },
+    { h: "APGAR cards", src: ["dsy", "ctl061"], cases: [
+      { who: "A. 1 minute", text: "Body pink, hands and feet blue. Heart rate 130. Cries when the feet are flicked. Arms and legs flexed and moving. Strong cry.", answer: "Appearance 1, Pulse 2, Grimace 2, Activity 2, Respirations 2 = 9. Routine care." },
+      { who: "B. 1 minute", text: "Blue all over. Heart rate 90. Grimaces. Some flexion. Slow, irregular breaths.", answer: "0 + 1 + 1 + 1 + 1 = 4. Not breathing effectively: stimulate, airway, warmth, then ventilate (room air, 40 to 60 a minute)." },
+      { who: "C. 5 minutes", text: "Pink, heart rate 140, crying, active, strong cry.", answer: "10. Record it with the 1-minute score." },
+      { who: "D. Limp", text: "Pale, limp, no breathing after 10 seconds of drying and rubbing.", answer: "Apnoeic, white and floppy: don't wait the full 30 seconds. Open the airway and ventilate; consult the EOC Clinician." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Partner reads an APGAR card. Score it aloud, one letter at a time.",
+      "Routine care on the manikin: dry, swap the towel, beanie, wrap; show the axillary thermometer position and say when to repeat it.",
+      "Then the manikin 'isn't breathing': 30 seconds stimulate and airway, then ventilate at 40 to 60 a minute (count it), check the heart rate at the cord, and say each branch. Do 3:1 CPR for 30 seconds. Swap."
+    ] }
+  ],
+  checks: ["Noted the time of birth", "Dried, wet towel away, beanie, skin-to-skin", "APGAR scored at 1 and 5 minutes, letter by letter", "Axillary temperature: 3 minutes, every 15 minutes, 36.5 to 37.5",
+    "Stimulate and airway within 30 seconds", "Ventilated 40 to 60 a minute in room air, watched the chest", "Heart rate at the cord base or with a stethoscope", "3:1 CPR with two thumbs below 60"] }
+];
+
+var END = { title: "Finish: theory and the checklist", mins: 20,
+  steps: [
+    "Go back over any partner check that wasn't ticked.",
+    "Each person completes the eLearning theory assessments from the course checklist (Medical Conditions; First Aid and AA Protocols) via the QR codes on the checklist.",
+    "Write any questions for the instructor below, then send your record."
+  ],
+  extra: { h: "Revision on your own (optional)", src: ["dsy"], list: [
+    "The DSY microlearning modules (asthma, anaphylaxis, chest pain, hypoglycaemia) and Protocol Chase are written to the Ambulance Officer protocols. They are good revision of the recognition parts, but the AR doses and EOC Clinician steps on this page are the ones for this course"
+  ] } };
+
+var KEY = "dsy-stations-ar-day6";
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/ar-day6/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "AR course: Day 6 stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (s.item) ht.appendChild(el("p", "src", "Course checklist: " + s.item));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  if (END.extra) f.appendChild(block(END.extra));
+  if (print) return f;
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY AR course Day 6 stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "AR course Day 6 stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The day at a glance", src: ["dsy"], table: { head: ["Time", "What"], rows: [
+    ["Before", "Read the safety boxes. Set the eight stations out around the room. Check the training stock is labelled TRAINING and kept apart from operational stock."],
+    ["Start", "Read the safety boxes together: nobody takes, breathes in or is injected with a real medicine; sharps go only into a practice pad; nothing goes into a person from the IV line. Split into pairs or threes."],
+    ["Morning", "Medical Conditions: stations 2 (nebs), 3 (adrenaline IM), 4 (GTN), 6 (IV line), 7 (birth), 8 (newborn APGAR). About 20 to 25 minutes each."],
+    ["Afternoon", "First Aid and AA Protocols: stations 1 (asthma), 3 (anaphylaxis, if not done), 4 (chest pain), 5 (diabetic emergencies)."],
+    ["End", "Theory assessments on eLearning (checklist QR codes). Share the record. RTL signs off each skill demonstration on eLearning."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Checklist item by station", table: { head: ["Station", "Day 6 checklist item"], rows: STATIONS.map(function (s) { return [String(s.n), s.item]; }) } }));
+  f.appendChild(block({ h: "AR, not AO", src: ["dsy"], tone: "warn", list: [
+    "These stations follow the Ambulance Responder protocols. The other DSY stations pages are written for Ambulance Officers: AR differences are glucagon (not AR), GTN (only on EOC Clinician advice, tablet), IM adrenaline from an ampoule (only on EOC Clinician advice, after the patient's own auto-injector) and asthma doses (as CTL-083)",
+    "IV set-up is Ambulance Officer scope in the study guide; station 6 is pitched as preparing the line for the paramedic"
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Training inhalers, ampoules, tablets, paste, bags and giving sets counted back into the labelled TRAINING box, apart from operational stock.",
+    "Sharps container closed. Spacers, neb bowls, masks and used giving sets binned or replaced.",
+    "Manikins and BVMs cleaned and repacked as your station does. Oxygen off, flow at 0.",
+    "On the phone used for ticks: Finish > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A full day of skills stations"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Eight stations for Day 6 of the Recruit to Ambulance Responder course: Medical Conditions, and First Aid and AA Protocols. Everything follows the Ambulance Responder (AR) protocols and scope. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "AR scope"));
+  pre.appendChild(el("p", null, "IM adrenaline from an ampoule and GTN are given only on EOC Clinician advice. There is no glucagon at AR level. The IV line is prepared for the paramedic."));
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Theory assessments, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from the SAAS AR protocols (" + [SRC.cpp048, SRC.cpp022, SRC.cpp029, SRC.cpp031, SRC.cpp060, SRC.cpp035].join(", ") + "), " + [SRC.ctl083, SRC.ctl061, SRC.ctl128, SRC.c046, SRC.c008, SRC.c009, SRC.c010, SRC.c011, SRC.c012, SRC.cssg].join(", ") +
+    ". The review dates of CPPRO-008 to CPPRO-012 have passed. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>
