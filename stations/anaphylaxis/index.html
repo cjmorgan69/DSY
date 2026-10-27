@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anaphylaxis skills stations - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261027a">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Anaphylaxis skills stations (AO). Built 27 Oct 2026 for a group training night without the instructor present.
+   Sources: SAAS CPP-003-AO Anaphylaxis v3.0 (8 Dec 2016); CPPRO-008 Medication Checks, CPPRO-010 Drawing Up and Labelling
+   Medications, CPPRO-011 Intramuscular Injection (each v1.0, 5 Jul 2017, review date June 2020 passed); CPPRO-001 Patient
+   Mobility Assessment v1.1 (29 Dec 2016, review date Dec 2019 passed); SAAS Clinical Skills Study Guide v3.2 (released
+   Oct 2026), Oxygen. Patient cards, the EOC Clinician's replies, the call outline and the manual task practice are
+   DSY-written and marked as such. Lead instructor guidance: if the patient is on the floor or hard to extricate but the
+   BP is OK after adrenaline, call the EOC Clinician about how to move them. */
+var SRC = {
+  cpp: "CPP-003-AO Anaphylaxis v3.0",
+  c001: "CPPRO-001 Patient Mobility Assessment v1.1",
+  c008: "CPPRO-008 Medication Checks v1.0",
+  c010: "CPPRO-010 Drawing Up and Labelling Medications v1.0",
+  c011: "CPPRO-011 Intramuscular Injection v1.0",
+  o2: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026): Oxygen",
+  lead: "DSY lead instructor",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "Recognise and call", mins: 12,
+  goal: "Spot the features that put a patient on the adrenaline pathway, say the first actions, and make a clear call to the EOC Clinician.",
+  kit: ["The patient cards below (on a phone or printed)", "A phone to hold for the practice call (do not ring anyone)"],
+  blocks: [
+    { h: "The adrenaline pathway", src: ["cpp"], tone: "warn", list: [
+      "Anaphylaxis is suspected AND any one of:",
+      "Hypotension",
+      "Severe bronchospasm",
+      "Severe respiratory distress due to angioedema (airway swelling)"
+    ] },
+    { h: "First actions", src: ["cpp"], steps: [
+      "Basic care: lay the person flat, unless their breathing is difficult. Do not allow them to stand or walk.",
+      "Remove the allergen or trigger if possible.",
+      "Request clinical support.",
+      "Follow the patient's personal anaphylaxis plan, if it is immediately available.",
+      "Use the patient's prescribed adrenaline auto-injector as a priority (for example an EpiPen).",
+      "No auto-injector: consult the EOC Clinician, who may advise IM adrenaline 10 microg/kg (single maximum dose 500 microg).",
+      "Provide prompt transport and notify the receiving facility. Every patient with allergy or anaphylaxis goes to hospital, even if they seem to recover."
+    ] },
+    { h: "How to run it", steps: [
+      "One person reads a patient card aloud. The others say: is anaphylaxis suspected, which severe feature (if any), and the first actions. Then open the answer.",
+      "For cards B and D, make the call. One person is the EOC Clinician and reads the reply on the card. Swap roles each time."
+    ] },
+    { h: "Patient cards", src: ["dsy"], cases: [
+      { who: "A. Jess, 34", text: "Stung by a bee 10 minutes ago in the garden. Hives over her chest, feels faint, lying on the lawn. BP 76/40, HR 118. Her EpiPen is in her handbag.",
+        answer: "Suspected anaphylaxis with hypotension: adrenaline pathway. Her own EpiPen as a priority. Keep her flat and do not let her stand or walk. Request clinical support. She goes to hospital." },
+      { who: "B. Tom, 22, about 75 kg", text: "Peanut allergy, ate satay chicken. Lips and tongue swollen, hoarse voice, noisy breathing, can only say a few words. No auto-injector.",
+        answer: "Severe respiratory distress due to angioedema: adrenaline pathway. No auto-injector, so call the EOC Clinician. 75 kg x 10 microg/kg = 750 microg, so the 500 microg maximum applies (0.5 mL of 1000 microg in 1 mL). His breathing is difficult, so he does not have to lie flat, but he must not stand or walk.",
+        eoc: "\"Thanks. Give adrenaline 500 micrograms IM into the thigh. That's 0.5 mL of the 1 milligram in 1 mL. Reassess him and call me back in 5 minutes.\" The caller repeats back the medication, dose and route." },
+      { who: "C. Mary, 58", text: "Itchy hives on both arms an hour after starting a new antibiotic. Talking in full sentences, breathing normally. BP 132/80, HR 88.",
+        answer: "No severe feature now, so not the adrenaline pathway. Basic care, watch closely for hypotension, bronchospasm and airway swelling, and take her to hospital (every patient with allergy goes)." },
+      { who: "D. Sam, 16, about 60 kg", text: "Known asthma and a prawn allergy. Sudden severe wheeze at a seafood dinner, can't finish a sentence. Has his own EpiPen and a Ventolin puffer.",
+        answer: "Known asthma with an allergy and sudden breathing difficulty: treat for anaphylaxis before any asthma medication. Severe bronchospasm: adrenaline pathway, his own EpiPen as a priority.",
+        eoc: "\"Good. Give him his EpiPen now, before the Ventolin. Lie him down only if his breathing allows, and keep him off his feet. Call me back with a new set of obs.\" The caller repeats it back." }
+    ] },
+    { h: "The call", src: ["dsy", "c008"], list: [
+      "Who you are and where you are",
+      "Patient: age, sex, weight",
+      "What happened: the trigger and when",
+      "What you see: the severe feature and the obs",
+      "What you have: their own auto-injector, given or not",
+      "What you are asking for",
+      "Repeat back the advice: medication, dose and route (CPPRO-008)"
+    ] }
+  ],
+  checks: ["Named the severe feature, or said there was none", "Said lay flat unless breathing is difficult, and no standing or walking",
+    "Used the patient's own auto-injector first when they had one", "Call had weight, signs, obs and what had been given",
+    "Repeated the EOC Clinician's advice back: medication, dose, route"] },
+
+{ id: "s2", n: 2, title: "Adrenaline: EpiPen, drawing up and IM", mins: 15,
+  goal: "Give the patient's own EpiPen, then, as if the EOC Clinician has advised it, check, draw up and give IM adrenaline from a glass ampoule.",
+  kit: ["EpiPen trainer if you have one (never a real EpiPen). No trainer: hold a marker pen and talk it through",
+    "Training adrenaline ampoules, 1000 microg in 1 mL, glass (expired, labelled TRAINING STOCK)", "1 mL syringes, blunt fill needles, IM needles",
+    "Alcohol swabs, gauze or an ampoule opener, gloves, blue sheet", "Sharps container", "Injection practice pad", "Calculator and pen"],
+  blocks: [
+    { h: "Safety", tone: "red", src: ["dsy"], list: [
+      "Inject only into the practice pad. Never into a person.",
+      "Every sharp goes straight into the sharps container. Never recap a used needle.",
+      "Training ampoules stay in the training box. Expired medications can be kept for training only if they are kept apart from operational stock and clearly labelled (CPPRO-008)."
+    ] },
+    { h: "2a. EpiPen auto-injector", src: ["c011"], steps: [
+      "Perform hand hygiene.",
+      "Complete the pre-administration medication checks.",
+      "Where possible, explain why it is needed and its side effects, and gain consent.",
+      "Site: mid anterior-lateral thigh (vastus lateralis). Expose the thigh if you can, but it can go through clothing.",
+      "Perform hand hygiene. Put on gloves if required.",
+      "Take the auto-injector out of its outer plastic container.",
+      "Make a fist around the barrel and remove the blue cap. Do not touch either end with your fingers or thumb.",
+      "Push the orange end firmly against the thigh until it clicks, then hold it there for 10 or more seconds.",
+      "Remove it and put it straight into a sharps container.",
+      "Gently massage the site with tissue or gauze for 10 seconds.",
+      "Say the dose and the time for the patient record.",
+      "Perform hand hygiene."
+    ] },
+    { h: "Expired or discoloured EpiPen", src: ["c011"], text: "If there is no other alternative in a life-threatening situation, give it. Tell the receiving team at handover, record it and report it in the safety learning system." },
+    { h: "2b. Work out the dose", src: ["cpp", "c010"], text: "10 microg/kg, single maximum dose 500 microg. The ampoule is 1000 microg in 1 mL, so the volume in mL is the dose divided by 1000 (CPPRO-010's example: 500 microg is 0.5 mL).",
+      cases: [
+        { who: "15 kg child", answer: "150 microg = 0.15 mL" },
+        { who: "28 kg child", answer: "280 microg = 0.28 mL" },
+        { who: "45 kg teenager", answer: "450 microg = 0.45 mL" },
+        { who: "50 kg adult", answer: "500 microg = 0.5 mL" },
+        { who: "90 kg adult", answer: "900 microg would be over the maximum, so 500 microg = 0.5 mL" }
+      ] },
+    { h: "Medication check before drawing up", src: ["c008"], steps: [
+      "Check the ampoule is intact, not discoloured and with no unusual particles.",
+      "Pass the intact ampoule to your partner and ask: \"What is this medication?\" \"What is the expiry date?\" \"What is the dose?\" Do not prompt the answers.",
+      "Confirm the dose with your partner or, where relevant, the EOC Clinician."
+    ] },
+    { h: "Draw up from a glass ampoule", src: ["c010"], steps: [
+      "Perform hand hygiene and set up a clean area (a blue sheet if needed).",
+      "Open the syringe, blunt fill needle and IM needle packets by peeling from the corner and leaving each in its plastic cradle. Do not touch the open ends. Keep caps on.",
+      "Attach the blunt fill needle to the syringe.",
+      "Tap the top of the ampoule so all the fluid goes to the base.",
+      "Hold it with the small dot pointing away from you.",
+      "Snap it open at the neck: pull the top towards you and push the base away. An ampoule opener or gauze can help.",
+      "Put the top straight into the sharps container.",
+      "Uncap the blunt fill needle, put it to the base of the ampoule and draw up the whole volume (or more than the dose).",
+      "Put the ampoule into the sharps container. Take off the blunt fill needle and put it in the sharps container.",
+      "Attach the IM needle. Expel any air and prime to the dose with the IM needle on. The top ring of the plunger lines up with the volume.",
+      "A syringe you give straight away, in full, yourself, does not need a label."
+    ] },
+    { h: "Check again, then give it (into the pad)", src: ["c008", "c011"], steps: [
+      "Check with your partner: right patient (indication, no contraindication or allergy), right medication, right prepared dose, right route, right time.",
+      "Site: mid anterior-lateral thigh. Clean with an alcohol swab from the inside out and let it dry.",
+      "Hold the syringe like a dart. Take the needle cap off with your other hand.",
+      "Go in quickly and firmly at 90 degrees, to about two-thirds of the needle length.",
+      "Hold it steady and push the plunger slowly to give the full dose. No need to draw back in the thigh.",
+      "Withdraw in one quick movement, straight into the sharps container. Do not recap it or pass it to anyone.",
+      "Press gently with gauze.",
+      "Say the dose and the time for the patient record. Hand hygiene."
+    ] },
+    { h: "Worth knowing", src: ["c011", "cpp"], list: [
+      "A poorly perfused, hypotensive patient may not absorb an IM dose as well.",
+      "The EOC Clinician may advise further doses of adrenaline if required."
+    ] }
+  ],
+  checks: ["EpiPen: blue cap off, orange end to the thigh, held 10 seconds or more, massaged 10 seconds", "Ampoule check: three questions, answered unprompted",
+    "Dose worked out right, with the 500 microg maximum", "Ampoule opened safely, top and glass into the sharps container",
+    "IM needle on, no air, primed to the dose", "Five rights said before injecting",
+    "90 degrees into the thigh, slow push", "Needle straight into the sharps container, not recapped", "Dose and time said for the record"] },
+
+{ id: "s3", n: 3, title: "Oxygen: non-rebreather mask", mins: 10,
+  goal: "Set up the oxygen, fill the non-rebreather reservoir and fit the mask. Oxygenation is part of basic care in anaphylaxis.",
+  kit: ["Inhalo oxygen cylinder (or a vehicle outlet)", "Non-rebreather masks, adult and paediatric", "A face mask and nasal specs to compare"],
+  blocks: [
+    { h: "The three devices", src: ["o2"], table: { head: ["Device", "Flow", "Inspired oxygen"], rows: [
+      ["Nasal specs", "2 to 4 L/min", "about 30%"],
+      ["Face mask", "8 to 10 L/min", "about 40 to 45%"],
+      ["Non-rebreather mask", "15 L/min", "about 80 to 85%"]
+    ] } },
+    { h: "Set it up", src: ["o2"], steps: [
+      "Wear the right PPE. Keep oxygen away from naked flames and other heat sources.",
+      "Inhalo: check the label says medical oxygen. Read the contents gauge. Below a quarter full (needle in the red) means change it for a full one as soon as you can.",
+      "New bottle: remove or open the two light grey covers.",
+      "Turn the flow selector to 0.",
+      "Open the on/off valve at least a quarter of a turn.",
+      "Connect the tubing to the cylinder and to the mask.",
+      "Set 15 L/min: on the Inhalo turn the selector clockwise until 15 shows in the window. In the vehicle, turn the flow knob anti-clockwise until the needle shows 15.",
+      "Check for leaks and that oxygen is flowing through the mask.",
+      "Let the reservoir bag fill completely before you put the mask on."
+    ] },
+    { h: "Fit the mask (practise on each other)", src: ["o2"], steps: [
+      "Open out the nose strip and extend the elastic strap.",
+      "Hold the mask in one hand and stretch the strap over the head so it sits above the ears.",
+      "Place the mask gently on the face.",
+      "Squeeze the metal strip over the nose for a firm but comfortable fit.",
+      "Pull the strap gently to hold the mask in place. Not too tight."
+    ] },
+    { h: "Watch for", src: ["o2"], list: [
+      "Keep the right flow for the device. Too little flow can harm the patient.",
+      "Remove the mask straight away if the patient vomits.",
+      "Take care with facial injuries."
+    ] },
+    { h: "Extra if you have time: change an Inhalo cylinder", src: ["o2"], steps: [
+      "Check the label says medical oxygen.",
+      "Check the gauge shows full and both grey covers are attached and intact.",
+      "Turn the flow selector to 0.",
+      "Open or remove the two grey covers.",
+      "Turn the on/off hand wheel anti-clockwise as far as it goes, then back clockwise a quarter turn."
+    ] }
+  ],
+  checks: ["Label and gauge checked out loud", "Flow selector at 0 before opening the valve", "15 L/min for the non-rebreather",
+    "Reservoir bag full before the mask went on", "Strap above the ears, nose strip shaped, not too tight", "Said: off straight away if they vomit"] },
+
+{ id: "s4", n: 4, title: "Moving the patient", mins: 15,
+  goal: "Get the patient to the stretcher without them standing or walking, and know when to call the EOC Clinician about a different plan.",
+  kit: ["Stretcher", "Slide sheet and spine board", "Carry chair", "A volunteer patient"],
+  blocks: [
+    { h: "The rules", tone: "warn", src: ["cpp", "c001"], list: [
+      "Lay the person flat, unless their breathing is difficult. Do not allow them to stand or walk (CPP-003-AO).",
+      "A patient with hypotension is not suitable for a mobility assessment (CPPRO-001).",
+      "Take care if they have been lying on the ground or lying flat for a long time, or are at risk of their blood pressure dropping when they sit or stand (CPPRO-001)."
+    ] },
+    { h: "Floor, but the BP is now OK", tone: "warn", src: ["lead"], text: "If the patient is on the floor or hard to get out, but their BP is OK after adrenaline, call the EOC Clinician about how to move them. Whatever the plan, they still go to hospital." },
+    { h: "Practice A: Jess on the floor, BP 76/40", src: ["dsy"], steps: [
+      "Stretcher at its lowest, alongside her.",
+      "One person leads and calls every move. Tell Jess what is happening.",
+      "Use the slide sheet with the spine board as a bridge to slide her onto the stretcher, as taught in your manual tasks training. She stays flat the whole way.",
+      "Raise the stretcher. Oxygen and monitoring stay on."
+    ] },
+    { h: "Practice B: Tom sitting on a couch, struggling to breathe, BP normal", src: ["dsy"], steps: [
+      "His breathing is difficult, so he can stay sitting up. He still must not stand or walk.",
+      "Plan the move to the carry chair so he does not take steps, as taught in your manual tasks training. If you can't do it without him standing, call the EOC Clinician.",
+      "Carry chair to the stretcher, then onto the stretcher the same way."
+    ] },
+    { h: "Practice C: Jess 15 minutes after adrenaline", src: ["dsy"], text: "She feels better. BP 118/76. She is on the floor of a narrow toilet and there is no room for the stretcher or a slide sheet. Make the call to the EOC Clinician (station 1 outline). The EOC Clinician agrees to a mobility assessment first. Practise it on your volunteer:" },
+    { h: "Mobility assessment, lying on their back", src: ["c001"], steps: [
+      "Make sure the clinical assessment is done: no contraindications, and check the obs.",
+      "Leg raise: hold your hand above their foot and ask them to lift the leg to touch it. Then the other leg. If they can't lift a leg, they are unlikely to stand safely or on their own.",
+      "Bridge: feet flat with knees bent, lift the hips. If they can't, they may be unsafe to sit up without help.",
+      "Head lift: lift the head off the pillow or floor. Poor head or trunk control means they are likely to be unsafe to sit up.",
+      "Roll to the side you will sit them up on.",
+      "If they manage all of these, they are likely to be able to sit up, with or without help.",
+      "Assess again once they are sitting, before they move any further.",
+      "If they start to fall, don't try to catch them. Protect their head."
+    ] }
+  ],
+  checks: ["Said why the patient must not stand or walk", "Practice A: kept flat the whole way, leader called the moves",
+    "Practice B: sitting up, no steps taken", "Practice C: called the EOC Clinician before any mobility assessment",
+    "Mobility assessment done in order: leg raise, bridge, head lift, roll", "Reassessed before each new move"] }
+];
+
+var END = { title: "Finish together", mins: 20,
+  steps: [
+    "Run the whole job as one crew with the student walk-through: David, 54, bee sting and an expired EpiPen. Use each station's kit as you reach that part.",
+    "Then each person does the knowledge check in the microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-anaphylaxis";
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/anaphylaxis/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Anaphylaxis skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Student walk-through", "../../modules/anaphylaxis/?mode=student", "btn small"));
+  links.appendChild(a("Knowledge check (microlearning)", "../../microlearning/anaphylaxis/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-through: " + root + "modules/anaphylaxis/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY anaphylaxis skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Anaphylaxis skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the anaphylaxis microlearning (about 20 min). Send the link a few days ahead."],
+    ["0:00", "Read the safety box at station 2 together. Split into pairs or threes."],
+    ["0:05", "Rotate through stations 1 to 4 (about 10 to 15 min each). Partners tick the checks on the phone."],
+    ["about 1:00", "Finish together: the student walk-through as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy", "c008"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 2: label the box TRAINING STOCK. Keep it apart from operational stock. Sharps container open and within reach. Practice pad on the blue sheet.",
+    "Station 3: check the cylinder has enough oxygen for practice.",
+    "Station 4: stretcher, slide sheet, spine board and carry chair with clear floor space.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Sharps container closed if full. No sharps left on the bench.",
+    "Training ampoules counted back into the labelled box.",
+    "Oxygen off, flow selector at 0, masks binned or bagged.",
+    "Stretcher and carry chair wiped and back in place.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Four stations to practise the hands-on parts of anaphylaxis care, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the anaphylaxis microlearning first (about 20 minutes)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/anaphylaxis/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Full job, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Protocol steps come from " + [SRC.cpp, SRC.c008, SRC.c010, SRC.c011, SRC.c001, SRC.o2].join(", ") +
+    ". The CPPRO review dates have passed (June 2020; CPPRO-001 Dec 2019). Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+function go() {
+  var h = location.hash.slice(1), s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>

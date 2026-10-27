@@ -45,7 +45,7 @@
   <p class="small muted" id="msg" aria-live="polite"></p>
   <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
 </main>
-<script src="../topics.js?v=5"></script>
+<script src="../topics.js?v=6"></script>
 <script>
 (function () {
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
@@ -59,6 +59,7 @@
     var body = el("div", "stack"), kit = el("div", "kit");
     if (t.walk) kit.appendChild(link("Facilitator walk-through", "../.." + t.walk));
     if (t.custom) kit.appendChild(link("Customise for your area", "../../scenarios/#s=" + t.custom, true));
+    if (t.stations) kit.appendChild(link("Skills stations (team runs it)", "../.." + t.stations));
     if (t.mdt) kit.appendChild(link("Load the MDT job", "../../mdt/#job=" + t.mdt, true));
     kit.appendChild(link("Microlearning", "../../microlearning/" + t.module + "/", true));
     body.appendChild(kit);
@@ -73,7 +74,7 @@
     });
     var row = el("div", "kit"); row.appendChild(share); row.appendChild(link("Log the session", "../../training/", true));
     body.appendChild(row);
-    body.appendChild(el("p", "note", t.protocol + (t.custom ? " · customisable" : "") + (t.mdt ? " · MDT job ready" : "")));
+    body.appendChild(el("p", "note", t.protocol + (t.custom ? " · customisable" : "") + (t.mdt ? " · MDT job ready" : "") + (t.stations ? " · skills stations" : "")));
     d.appendChild(body);
     list.appendChild(d);
   });
