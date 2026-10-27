@@ -19,8 +19,8 @@ out (it lists Manual BP at 25; it starts on 24).
 | Blood glucose level (BGL) measurement (equipment 19, testing 20 to 21, error codes 21 to 22, calibration and quality control 22 to 23) | 19 to 23 | no / yes / yes |
 | Blood pressure: manual (cuff sizes, palpatory and auscultatory) | 24 to 26 | no / yes / yes |
 | Blood pressure: automatic NIBP, Corpuls 3 (initial 180, dial to 120, Auto interval 1 to 60 min, 3-star reliability) | 27 to 28 | no / yes / yes |
-| Burn dressing (cling film) | 29 | yes / yes / yes |
-| Burn dressing (hydrogel) | 30 | |
+| Burn dressing (cling film: discard the first 5 to 10 cm, not circumferential, not across the face, loose roller bandage) | 29 | yes / yes / yes |
+| Burn dressing (hydrogel: BurnAID face mask and large rectangle, no roller bandage over the face, 20 min, neonates 10) | 30 | yes / yes / yes |
 | Cardiac monitor (PowerHeart G3 Pro): AED | 31 | |
 | Cardiac monitor (Corpuls 3): AED mode | 34 | |
 | Cardiac monitor (Corpuls 1): AED | 39 | |
