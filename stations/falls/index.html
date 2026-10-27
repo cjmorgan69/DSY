@@ -87,7 +87,9 @@ table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em
    Referral v1.1; CTL-010 Pressure Injury Screening Tool (Braden); CPPRO-001 Patient Mobility Assessment, CPPRO-002 Falls
    Risk Screening and CPPRO-003 Pressure Injury Prevention (all v1.1, review date Dec 2019 passed); CPPRO-028 Femoral
    Traction Splint v2.0 (review date Apr 2026 passed) for the neck of femur line only; CPP-018-AO where the guide's log roll
-   page mentions a spinal board (owner's choice for the MVA stations, 27 Oct 2026). Patient cards, the two finishing cases
+   page mentions a spinal board (owner's choice for the MVA stations, 27 Oct 2026). Station 3 (Raizer lifting chair, added at
+   the owner's request) is from the maker's Raizer II User Manual: SAAS has no Raizer procedure on its clinical site and the
+   study guide has no Raizer page. Patient cards, the two finishing cases
    and the how-to-run notes are DSY-written and marked as such. */
 var SRC = {
   cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
@@ -99,6 +101,7 @@ var SRC = {
   c003: "CPPRO-003 Pressure Injury Prevention v1.1",
   c028: "CPPRO-028 Femoral Traction Splint v2.0",
   cpp018: "CPP-018-AO Spinal Injury v5.0",
+  raizer: "Raizer II User Manual (Liftup / DHG, Issue 1, Jan 2023)",
   dsy: "DSY-written for practice: check with your instructor"
 };
 
@@ -155,7 +158,7 @@ var STATIONS = [
       { who: "B. Peter, 81", text: "Tripped on the back step. A small graze on his elbow, nothing else. Obs and BGL normal. Takes apixaban for AF.",
         answer: "He has taken an anticoagulant: transport, even with a minor injury." },
       { who: "C. Joyce, 74", text: "Caught her foot on the rug. Didn't hit her head. No injury on the head to toe. Obs and BGL normal. No blood thinners. Lives with her husband.",
-        answer: "Nothing on the transport list so far. Next: the mobility assessment before you help her up (station 2), then the falls screen (station 4)." },
+        answer: "Nothing on the transport list so far. Next: the mobility assessment before you help her up (station 2), then the falls screen (station 5)." },
       { who: "D. Les, 86", text: "Found on the bathroom floor this morning. He thinks he went down before midnight. Cold to touch. Can't remember why he fell.",
         answer: "A long lie (on the ground more than an hour): think hypothermia, pressure injury, muscle damage, dehydration. He can't say why he fell and needs further management after a long lie: transport, and get him warm." }
     ] },
@@ -208,13 +211,14 @@ var STATIONS = [
       "Work out the right lifting plan for the patient and the crew",
       "Request support if you need extra equipment or more people",
       "Manual task aids named in CPPRO-001: the compact carry chair, Hovermat, slide sheet and sally tube. Use them as taught in your manual tasks training",
+      "Can't get up by themselves, uninjured and alert: the Raizer lifting chair may suit (station 3)",
       "Clean reusable aids with detergent and disinfectant wipes after each patient"
     ] },
     { h: "Patient cards", src: ["dsy", "c001"], cases: [
       { who: "A. Passes everything", text: "Lifts both legs, bridges, lifts her head and rolls well. BP 132/80.",
         answer: "Likely able to sit up with or without help. Help her to sitting, then assess again sitting (leg extension, march, reach) before sit to stand." },
       { who: "B. Can't bridge", text: "Lifts both legs to your hand, but can't lift his hips off the floor.",
-        answer: "May be unsafe to sit up unassisted. Plan an assisted move with the manual task aids and enough people; request support if you need it." },
+        answer: "May be unsafe to sit up unassisted. Plan an assisted move: if he's uninjured and alert, the Raizer (station 3), otherwise the manual task aids and enough people; request support if you need it." },
       { who: "C. BP 86/50", text: "On the floor after feeling faint. Pale. BP 86/50.",
         answer: "Hypotension: the mobility assessment isn't suitable. Don't ask her to get up. Treat what you find; a medical cause of the fall means transport. Plan the move with aids." },
       { who: "D. Six hours on the floor", text: "Passed all the floor checks. He wants to get up and walk to his chair.",
@@ -230,7 +234,78 @@ var STATIONS = [
   checks: ["Checked the contraindications before starting", "Straight leg raise, both legs", "Bridge, head lift, then roll to the side you'll sit them up on", "Assessed again once sitting",
     "Chair: leg extension, march, reach, then set up for sit to stand", "Said the lifting plan (aids and people) out loud", "Knew: don't catch, protect the head"] },
 
-{ id: "s3", n: 3, title: "Injuries from the fall", mins: 20,
+{ id: "s3", n: 3, title: "The Raizer lifting chair", mins: 20,
+  goal: "Get a patient who can't get up by themselves off the floor with the Raizer: decide if it's suitable, assemble it around them, lift safely, and pack it away ready for the next job.",
+  kit: ["Raizer II (charged) in its two bags, with the remote and the seat belt", "Headrest if your station has one", "A floor mat and a pillow", "A chair or the carry chair to move to after the lift", "A willing volunteer under 150 kg"],
+  blocks: [
+    { h: "Safety", src: ["raizer", "dsy"], tone: "red", list: [
+      "Moving parts can crush: keep hands and feet clear of the legs, and keep onlookers back",
+      "Volunteer under 150 kg, and happy to be lifted. Stop at once if they want to stop",
+      "Never push the chair with someone on it, and never stand on it"
+    ] },
+    { h: "Is the Raizer right for this patient?", src: ["raizer", "c001"], tone: "warn", list: [
+      "For a person lying on the floor who can't get up by themselves. The mobility check (station 2) tells you that",
+      "Not for: an injury from the fall, or where you can't rule one out; a patient who isn't fully conscious and able to tell you how they feel during the lift; anyone over 150 kg",
+      "Not for unstable fractures or a patient who can't tolerate being moved",
+      "It isn't a transport device: it brings them to sitting or almost standing, then you move them to a chair or the carry chair"
+    ] },
+    { h: "Before you start", src: ["raizer"], list: [
+      "Turn it on (on/off button, or the up or down arrow). The battery light must not flash red",
+      "The red stop button must be in place, or the chair won't run",
+      "Parts may be hot or cold to touch if it's been in the vehicle: think about that against the patient's skin",
+      "A hygiene cover or cloth on the seat if the patient's skin would touch it"
+    ] },
+    { h: "Assemble it around the patient", src: ["raizer"], steps: [
+      "Patient on their back. A pillow under the head for comfort.",
+      "Seat on the floor beside them. Bend their thighs up and carefully slide the seat under the thighs.",
+      "Seat belt on the backrest, if it isn't already. Never run the belt under the rear legs.",
+      "Backrests BEFORE legs, one side at a time: lift the shoulder gently with a light push at the elbow, slide the backrest under the shoulder, and click it into the seat (wait for the tone). A foot in front of the seat stops it sliding. Then the other side.",
+      "Fasten the seat belt (it clicks). It holds the hips, not the trunk.",
+      "Fit the four legs, any order, each until it clicks and you hear the tone. A double tone and a green light: ready to lift.",
+      "Headrest (if you have one) slid under the neck between the backrests, or plan to hold the neck yourself."
+    ] },
+    { h: "The lift", src: ["raizer", "c001"], steps: [
+      "Arms crossed over the chest, shoulders well placed on the backrests, legs together and feet clear of the front legs.",
+      "Tell the patient the lift is starting and check they're ready.",
+      "Support the neck with one hand. Hold the UP arrow (on the seat or the remote) the whole time: let go and it stops.",
+      "Stop at the position you want. At the top it stops by itself with a tone, the patient sitting upright.",
+      "Keep watching and talking to them. Problem: let go, or pull the red stop button.",
+      "Assess again once sitting, before they stand or move away (CPPRO-001). Then help them to the chair or carry chair."
+    ] },
+    { h: "If it won't run", src: ["raizer"], list: [
+      "Two-tone alarm: a leg or backrest isn't clicked in. Refit it until you hear the tone and the light is green",
+      "Stop button pulled out: put it back",
+      "Battery light flashing red: it needs charging",
+      "Stops partway with a two-tone alarm: overloaded. Lower the patient back to the floor"
+    ] },
+    { h: "Pack it away", src: ["raizer"], steps: [
+      "Run it all the way down to flat until it stops with a tone. Otherwise the next assembly won't work.",
+      "Remote back in its pocket (it beeps for the remote if you forget).",
+      "Pull out the four legs and two backrests and pack them in the bag.",
+      "Wipe it with detergent or disinfectant wipes (no solvents or alcohol cleaners, never hose it). Put it on charge: about 6 hours for a full charge."
+    ] },
+    { h: "Patient cards", src: ["dsy", "raizer", "cpp045"], cases: [
+      { who: "A. Joyce, 74", text: "Slipped on the rug. No injury on the head to toe, obs normal. Lifts both legs but can't bridge. Alert and chatting. About 70 kg.",
+        answer: "No injury, fully conscious and can give feedback, under 150 kg, and can't get up by herself: the Raizer suits her. Assemble it, lift to sitting, assess again sitting, then help her to a chair." },
+      { who: "B. Hip pain after the fall", text: "Pain in the right groin, the leg looks shorter. Wants to get up.",
+        answer: "An injury from the fall: the Raizer is not for her. She needs transport for the injury; plan the move with your manual task aids and request support." },
+      { who: "C. Drowsy", text: "Found on the floor, opens his eyes to voice but drifts off. No obvious injury.",
+        answer: "Not fully conscious and able to give feedback: don't use the Raizer. An altered conscious state needs assessment and transport." },
+      { who: "D. Stops halfway", text: "Halfway up there's a two-tone alarm and the chair stops.",
+        answer: "Possible overload (or a flat battery: check the light). Lower the patient back to the floor and plan another way up." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "A volunteer lies on the mat. Talk through card A and decide the Raizer suits them.",
+      "One person assembles it, talking through each step. The other checks the order (backrests first) and listens for the tones.",
+      "Lift to sitting, supporting the neck. Assess again sitting.",
+      "Lower them back down, pack it away, and talk through cards B to D. Swap roles."
+    ] }
+  ],
+  checks: ["Said why the Raizer suits this patient (no injury, alert, under 150 kg)", "Battery and stop button checked", "Backrests before legs, each one clicked with a tone",
+    "Seat belt fastened, not under the rear legs", "Arms crossed, legs together, warned before lifting", "Neck supported and UP held through the lift", "Assessed again once sitting",
+    "Run flat before packing away; remote back in its pocket"] },
+
+{ id: "s4", n: 4, title: "Injuries from the fall", mins: 20,
   goal: "Splint a suspected wrist fracture with a cardboard splint, put on the right sling, and check circulation and sensation before and after.",
   kit: ["Cardboard splints (small and large)", "Combine dressings or small towels for padding", "Triangular bandages x 3", "Roller bandages and tape", "Shears (don't cut anything)", "Safety pins", "Dressings for a skin tear"],
   blocks: [
@@ -293,7 +368,7 @@ var STATIONS = [
   checks: ["Checked colour, warmth, sensation and pulse before starting", "Mentioned pain relief before moving the limb", "Splint sized on the other arm, padded, joint above and below",
     "Arm sling knotted on the uninjured side, fingers visible", "Collar and cuff clove hitch tied correctly", "Rechecked the fingers after every sling and splint"] },
 
-{ id: "s4", n: 4, title: "Staying home: screen, skin and referral", mins: 20,
+{ id: "s5", n: 5, title: "Staying home: screen, skin and referral", mins: 20,
   goal: "For a patient who doesn't need hospital: do the FROP falls screen, check the skin and Braden score after a long lie, make the Country Referral Unit call, and give leave-home advice.",
   kit: ["A chair and 3 metres of clear floor, marked", "A walking frame or stick if you have one", "A phone with the SAAS Clinical app (FROP and Braden tables)", "A blank PCR or notepad", "A falls handout if your station has one"],
   blocks: [
@@ -362,7 +437,7 @@ var END = { title: "Finish together", mins: 25,
     { who: "Job 1. Dorothy, 83, found on the kitchen floor at 7am", text: "Her neighbour found her. She got up for a drink at about 1am and slipped. Lives alone. Pain and swelling in the left wrist, a 'dinner fork' shape. No head strike. Obs: RR 18, SpO2 96%, BP 138/82, pulse 88, temp 35.4, GCS 15, BGL 6.2. No blood thinners.",
       answer: "Six hours on the floor: a long lie. Warm her. Associated injury: transport. Pain relief, splint and sling, check the fingers before and after. Mobility check before the move (take care: a long time on the floor). Braden screen and report any risk or pressure injury to the hospital." },
     { who: "Job 2. Bill, 76, slipped getting out of the shower", text: "His wife called. He's been on the bathroom floor 20 minutes. No injury on the head to toe, didn't hit his head, felt well before. No blood thinners. Obs and BGL normal. First fall this year. Independent. No unsteadiness on the walk.",
-      answer: "Nothing on the transport list. Mobility check on the floor, then up with help. FROP 1 + 0 + 0 = 1: low risk, consider a non-urgent CRU referral if he agrees. Not a long lie, so the pressure injury screen isn't triggered. Consult the EOC Clinician, give escalation advice to Bill and his wife, leave a falls handout." }
+      answer: "Nothing on the transport list. Mobility check on the floor, then up with help (the Raizer if he can't get up by himself). FROP 1 + 0 + 0 = 1: low risk, consider a non-urgent CRU referral if he agrees. Not a long lie, so the pressure injury screen isn't triggered. Consult the EOC Clinician, give escalation advice to Bill and his wife, leave a falls handout." }
   ] };
 
 var KEY = "dsy-stations-falls";
@@ -506,8 +581,8 @@ function setupPage(print) {
   f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
     ["Before", "Everyone does the microlearning \"Falls\" (about 25 min). Send the link a few days ahead."],
     ["0:00", "Read the safety box at station 1 together (finger pricks only with consent, or the control solution). Split into pairs or threes."],
-    ["0:05", "Rotate through stations 1 to 4 (about 20 min each). Partners tick the checks on the phone. Station 1's log roll needs four: do it when two pairs meet, or at the finish."],
-    ["about 1:25", "Finish together: the two jobs as one crew, then the knowledge check."],
+    ["0:05", "Rotate through stations 1 to 5 (about 20 min each). Partners tick the checks on the phone. Station 1's log roll needs four: do it when two pairs meet, or at the finish."],
+    ["about 1:45", "Finish together: the two jobs as one crew, then the knowledge check."],
     ["End", "Share the record with the instructor. Pack up and reset."]
   ] } }));
   var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
@@ -517,13 +592,15 @@ function setupPage(print) {
     "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
     "Station 1: a floor mat and pillow. Glucometer with in-date strips and control solution, new lancets, a sharps container. Corpuls charged.",
     "Station 2: a floor mat, a chair with arms, a walking frame if you have one, and your manual task aids.",
-    "Station 3: a chair, cardboard splints, padding and triangular bandages. Use training stock where you have it.",
-    "Station 4: a chair and 3 metres of clear floor marked with tape. A phone with the SAAS Clinical app.",
+    "Station 3: the Raizer, charged the day before (about 6 hours), with its remote, seat belt and headrest. Clear floor space around the mat.",
+    "Station 4: a chair, cardboard splints, padding and triangular bandages. Use training stock where you have it.",
+    "Station 5: a chair and 3 metres of clear floor marked with tape. A phone with the SAAS Clinical app.",
     "Leave this page open on one phone so the group can find the finish."
   ] }));
   f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
     "Sharps container closed. Used strips and swabs in the bin.",
     "Manual task aids cleaned with detergent and disinfectant wipes and put back.",
+    "Raizer run flat, packed in its bags, wiped down and back on charge.",
     "Used splints, bandages and dressings replaced from stock.",
     "Corpuls back on charge.",
     "On the phone used for ticks: Finish together > Clear the ticks for the next group."
@@ -542,7 +619,7 @@ function home() {
   var f = document.createDocumentFragment();
   f.appendChild(header("A practical night you can run as a team"));
   var i = el("section", "stack");
-  i.appendChild(el("p", null, "Four stations to practise the hands-on parts of a falls job, then two full jobs together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  i.appendChild(el("p", null, "Five stations to practise the hands-on parts of a falls job, then two full jobs together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
   var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
   pre.appendChild(el("p", null, "Everyone does the microlearning \"Falls\" first (about 25 minutes)."));
   var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/falls/", "btn small")); pre.appendChild(pb);
@@ -557,8 +634,8 @@ function home() {
   f.appendChild(list);
   var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
   f.appendChild(ins);
-  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cssg, SRC.cpp045, SRC.ctl003, SRC.ctl010, SRC.c001, SRC.c002, SRC.c003, SRC.c028, SRC.cpp018].join(", ") +
-    ". The review dates of CPPRO-001, CPPRO-002 and CPPRO-003 (Dec 2019) and CPPRO-028 (Apr 2026) have passed. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cssg, SRC.cpp045, SRC.ctl003, SRC.ctl010, SRC.c001, SRC.c002, SRC.c003, SRC.c028, SRC.cpp018, SRC.raizer].join(", ") +
+    ". The review dates of CPPRO-001, CPPRO-002 and CPPRO-003 (Dec 2019) and CPPRO-028 (Apr 2026) have passed. SAAS has no Raizer procedure: the Raizer steps are from the maker's manual. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
   return f;
 }
 
