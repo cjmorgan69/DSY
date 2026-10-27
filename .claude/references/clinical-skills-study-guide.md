@@ -28,7 +28,7 @@ out (it lists Manual BP at 25; it starts on 24).
 | Cardiac monitor (Corpuls): pulse oximetry (probes, pleth wave, poor-signal causes) | 48 to 49 | no / yes / yes |
 | Chest auscultation | 50 | no / no / yes |
 | Chest compressions | 52 | |
-| Eye irrigation with giving set and IV saline bag | 54 | |
+| Eye irrigation with giving set and IV saline bag (500 mL saline bag, medication check, prime the giving set: the same set-up steps as IV therapy) | 54 to 55 | yes / yes / yes |
 | Haemorrhage control (direct pressure) | 56 to 57 | yes / yes / yes |
 | Head to toe examination (basic: look, hear, feel; don't palpate the pelvis) | 58 to 59 | yes / yes / yes |
 | Helmet removal | 60 to 61 | no / yes / yes |
