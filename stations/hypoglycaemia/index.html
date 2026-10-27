@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hypoglycaemia skills stations - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261027c">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+@media (max-width: 420px) { table.t th, table.t td { padding: .35rem .3rem; font-size: .86rem; } }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Hypoglycaemia skills stations (AO). Built 27 Oct 2026 for a group training night without the instructor present, to go
+   with the module /microlearning/hypoglycaemia/ and the walk-through /modules/hypoglycaemia-ao/ (Ron, 67).
+   Sources: CPP-009-AO Hypoglycaemia v4.1 (as checked for the module); CPPRO-008 Medication Checks, CPPRO-009 Oral
+   Medication Administration, CPPRO-010 Drawing Up and Labelling Medications and CPPRO-011 Intramuscular Injection (each
+   v1.0, review date June 2020 passed); SAAS Clinical Skills Study Guide v3.2 (released Oct 2026; owner's scanned copy, not
+   stored in the repo: see .claude/references/clinical-skills-study-guide.md), read for BGL measurement, calibration and
+   quality control, recovery position, airway manoeuvres, suction and OPA. The glucagon mixing steps are CPPRO-010's general
+   "reconstitution of dry powder" steps: check them against the kit your station carries. Patient cards and how-to-run notes
+   are DSY-written and marked as such. */
+var SRC = {
+  cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
+  cpp009: "CPP-009-AO Hypoglycaemia v4.1",
+  c008: "CPPRO-008 Medication Checks v1.0",
+  c009: "CPPRO-009 Oral Medication Administration v1.0",
+  c010: "CPPRO-010 Drawing Up and Labelling Medications v1.0",
+  c011: "CPPRO-011 Intramuscular Injection v1.0",
+  ctl075: "CTL-075 GCS (Glasgow Coma Score)",
+  ctl070: "CTL-070 Adult RDR Chart",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "The BGL and the meter", mins: 20,
+  goal: "Take an accurate BGL, calibrate the meter for a new pack of strips, run quality control, and know what the error codes mean.",
+  kit: ["FreeStyle Optium Neo-H glucometer in its workstation", "Test strips with their calibration bar", "Control solution (LO and HI)", "Lancets, alcohol swabs, cotton balls, sharps container"],
+  blocks: [
+    { h: "Safety", src: ["dsy"], tone: "red", list: [
+      "Finger prick only on a willing adult partner who agrees to it. Otherwise use the control solution",
+      "New lancet each time, straight into the sharps container"
+    ] },
+    { h: "Who gets a BGL", src: ["cpp009"], list: [
+      "Every patient with an altered conscious state or altered cerebral function, including trauma and seizures, particularly children",
+      "Normal is usually above 3.5 mmol/L for adults and children, above 2.5 mmol/L for neonates. The protocol applies below 3.5"
+    ] },
+    { h: "Testing", src: ["cssg"], steps: [
+      "PPE, sharps container within reach.",
+      "Strip lot number matches the calibration bar. If not, calibrate first.",
+      "Clean the site: soap and warm water, or an alcohol swab left to dry (don't blow on it). Side of the fingertip.",
+      "Tear the foil at the notch, strip in with the black bars towards the meter. Lot number on the display matches. Wait for the flashing blood drop.",
+      "Lance the side of the fingertip. Gentle pressure only: squeezing hard gives a wrong result.",
+      "Touch the drop to the white end until the three lines go. Read and record, dispose of the strip. The meter turns off after 3 minutes."
+    ] },
+    { h: "Calibration and quality control", src: ["cssg"], steps: [
+      "Every new pack of strips: insert its calibration bar (lot number towards you). Check the display, the bar and the last five digits on the strip foils all match. Store the bar in the carrier, lot number out.",
+      "Only use the bar from the pack you're using. One box per meter.",
+      "Quality control on the first shift of each rotation: strip in, when the drop blinks press the control button until the control icon shows.",
+      "Meter flat, bottle inverted, nozzle wiped, a drop on the white end until three lines show. Result after a 5 second countdown.",
+      "LO solution should read 1.7 to 3.4 mmol/L; HI 12.6 to 20.9 mmol/L. Out of range: repeat; still out: replace the meter and send it to Clinical Resources."
+    ] },
+    { h: "Error codes", src: ["cssg"], table: { head: ["Code", "Means"], rows: [
+      ["qc", "Quality control needs running before use"],
+      ["pc", "Meter faulty: replace it"],
+      ["E1", "Too hot or cold for the meter (10 to 50 °C)"],
+      ["E2 or E9", "Meter error: new strip, try again; again = replace the meter"],
+      ["E3", "Drop too small, wrong technique, or a used, expired or faulty strip"],
+      ["E4", "BGL too high to read, or a strip problem"],
+      ["E5", "Blood applied too soon"],
+      ["E6 / E7", "Calibration or strip error / strip damaged, used or not recognised"],
+      ["LO / Hi", "Below 1.1 / above 27.8 mmol/L"]
+    ] } },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Calibrate the meter with the bar from the strips you're using.",
+      "Run quality control with LO and HI.",
+      "Do a BGL on the control solution, or on a consenting partner.",
+      "Quiz each other on the error codes. Swap."
+    ] }
+  ],
+  checks: ["Lot numbers matched", "Site cleaned and dried, side of the fingertip", "No hard squeezing", "Sharps straight into the container", "Calibration bar from the right pack", "Quality control run, result in range", "Knew E3 and LO"] },
+
+{ id: "s2", n: 2, title: "Oral glucose", mins: 15,
+  goal: "Decide who can have oral glucose, give it safely, and know the rules for children and when to call the EOC Clinician.",
+  kit: ["Glucose paste (expired, labelled TRAINING)", "A glass of water and something to eat (for the recovery step)", "The patient cards below"],
+  blocks: [
+    { h: "Safety", src: ["dsy"], tone: "red", list: ["Nobody swallows the training paste: say and mime the steps"] },
+    { h: "2 years and over, BGL below 3.5 (CPP-009-AO)", src: ["cpp009"], steps: [
+      "Basic care and life support.",
+      "Oral glucose up to 15 g, if the GCS is adequate to swallow the paste. A cough is a good indicator.",
+      "Request clinical support as appropriate.",
+      "Can't have oral glucose, or it hasn't worked: consult the EOC Clinician, who may advise IM glucagon (station 3).",
+      "Recovers: consider offering complex carbohydrates to eat.",
+      "Transport and notify the receiving facility."
+    ] },
+    { h: "Under 2 years", src: ["cpp009"], tone: "warn", list: ["Consult the EOC Clinician, who may advise oral glucose gel or IM glucagon 0.5 mg. Request clinical support. Transport"] },
+    { h: "Giving it (CPPRO-009)", src: ["c009", "c008"], steps: [
+      "Medication checks with your partner. Explain and get consent where you can. Check allergies.",
+      "Sit them upright, or on their side, to swallow.",
+      "Hand hygiene. Give the paste and watch them swallow. Hand hygiene again.",
+      "Not with an altered conscious state or if they can't swallow. Take care lying flat (choking risk).",
+      "Record the dose, route and time."
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp009"], cases: [
+      { who: "A. Ron, 67", text: "Confused and sweaty, BGL 2.4. Answers questions slowly; coughs when asked.", answer: "Can swallow: oral glucose up to 15 g, sitting up. Recheck the BGL. Recovers: offer complex carbohydrates. Transport." },
+      { who: "B. Won't wake properly", text: "BGL 1.8, groans to pain, can't follow instructions.", answer: "Not safe to swallow: no oral glucose. Airway first (station 4). Consult the EOC Clinician, who may advise IM glucagon. Request clinical support." },
+      { who: "C. Toddler, 18 months", text: "BGL 2.8, irritable.", answer: "Under 2: consult the EOC Clinician, who may advise oral glucose gel or IM glucagon 0.5 mg. Request clinical support." },
+      { who: "D. Not low", text: "Confused, BGL 4.8.", answer: "Not below 3.5: the hypoglycaemia protocol doesn't apply. Look for another cause." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: ["Act out each card. Decide oral glucose or not, and say why.", "Mime giving it with the full medication check. Swap."] }
+  ],
+  checks: ["Checked the GCS and a cough before oral glucose", "Sat the patient up", "Medication check and allergies", "Under 2 = consult", "Knew what to do when oral glucose can't be given"] },
+
+{ id: "s3", n: 3, title: "Glucagon: mix, draw up, give IM", mins: 20,
+  goal: "As if the EOC Clinician has advised it: repeat the order back, work out the dose, mix the glucagon, and give it IM into a pad.",
+  kit: ["Expired glucagon kits labelled TRAINING", "Syringes, blunt fill needles, IM needles", "Alcohol swabs, gauze, sharps container", "An injection pad", "The dose table below"],
+  blocks: [
+    { h: "Safety", src: ["dsy", "c008"], tone: "red", list: [
+      "Expired kits labelled TRAINING only, kept apart from operational stock (CPPRO-008). Inject into the pad, never a person",
+      "Needles straight into the sharps container; never recap"
+    ] },
+    { h: "The EOC Clinician advises it", src: ["cpp009", "c008"], list: [
+      "An AO gives IM glucagon only when the EOC Clinician advises it",
+      "Repeat the medication, dose and route back to confirm"
+    ] },
+    { h: "Dose (CPP-009-AO)", src: ["cpp009"], table: { head: ["Patient", "IM glucagon"], rows: [
+      ["6 years or older (or 25 kg or more)", "1 mg"],
+      ["2 to under 6 years (or under 25 kg)", "0.5 mg"],
+      ["Under 2 (if the EOC Clinician advises)", "0.5 mg"]
+    ] } },
+    { h: "Mix it (CPPRO-010)", src: ["c010"], steps: [
+      "Medication check with your partner: name, expiry, dose. Hand hygiene, clean area.",
+      "Prepare the diluent into the syringe (as for a plastic ampoule) with a blunt fill needle.",
+      "Cap off the vial, scrub the rubber stopper with an alcohol swab and let it dry.",
+      "Needle through the stopper without touching key parts. Inject the diluent.",
+      "Keep the needle and syringe in place and swirl the vial until it's visibly mixed.",
+      "Turn the vial upside down and draw up the whole volume (or more than the dose).",
+      "Withdraw. Blunt fill needle into the sharps. IM needle on, prime to the dose, no air.",
+      "Any doubt about the dose: discard it and start again."
+    ] },
+    { h: "Give it (CPPRO-011)", src: ["c011", "c008"], steps: [
+      "Five rights with your partner: patient, medication, dose, route, time.",
+      "Mid anterior-lateral thigh. Alcohol swab, let it dry.",
+      "Quickly and firmly at 90 degrees, about two-thirds of the needle. Push slowly. No need to draw back in the thigh.",
+      "Out in one quick movement, straight into the sharps. Gauze. Record the dose and time.",
+      "A poorly perfused patient may not absorb it as well."
+    ] },
+    { h: "Cards", src: ["dsy", "cpp009"], cases: [
+      { who: "A. Adult", text: "EOC Clinician: \"Give IM glucagon, 1 milligram, into the thigh.\"", answer: "Repeat back: \"Glucagon, 1 milligram, IM.\" Mix it, draw up 1 mg and give it." },
+      { who: "B. Child, 4, 16 kg", text: "EOC Clinician advises glucagon.", answer: "2 to under 6, under 25 kg: 0.5 mg. Check how much volume that is with your partner from the label once mixed." },
+      { who: "C. Age and weight disagree", text: "7 years, 20 kg.", answer: "Age says 1 mg, weight says 0.5 mg: confirm the dose with the EOC Clinician." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: ["Role-play the EOC Clinician call and the repeat-back.", "Mix and draw up a training kit, then give it into the pad.", "Swap and do the child card."] }
+  ],
+  checks: ["Repeated the order back", "Medication check: name, expiry, dose", "Stopper swabbed and dried", "Mixed with the needle in place until clear", "Primed to the dose, no air",
+    "90 degrees into the thigh, slow push", "Needle straight into the sharps"] },
+
+{ id: "s4", n: 4, title: "The drowsy patient's airway", mins: 20,
+  goal: "Protect the airway of a patient too drowsy to swallow: recovery position, airway manoeuvres, suction and an OPA on a manikin.",
+  kit: ["Airway manikin", "Portable suction (LCSU-4) charged, Y-catheters and a large bore suction handle", "OPAs in several sizes", "A mat"],
+  blocks: [
+    { h: "Why", src: ["cpp009"], list: [
+      "Hypoglycaemia can range from confusion, odd behaviour and sweating to unconsciousness and seizure",
+      "Nothing by mouth for someone who can't swallow safely: airway first, then the EOC Clinician"
+    ] },
+    { h: "Recovery position", src: ["cssg"], steps: [
+      "PPE. The near arm at right angles to the body; the other arm across the chest, fingers to the opposite shoulder tip.",
+      "Bring the knee on the same side as the arm across the chest up to a right angle.",
+      "Lift under the shoulder and thigh and gently roll them onto their side, towards the outstretched arm. Support the head and neck.",
+      "Keep the knee and hip at right angles; don't let them roll face down. Let the arms fall naturally.",
+      "With your lower hand support the jaw and lift the chin slightly so the tongue stays forward. Face pointing slightly down."
+    ] },
+    { h: "Opening the airway", src: ["cssg"], list: [
+      "Chin lift and head tilt: beside the head, one hand on the forehead, thumb over the chin and two fingers along the jaw; tilt the head (not the neck) and pull the chin away from the chest",
+      "Jaw thrust: behind the head, index fingers behind the angles of the jaw, lift the jaw up and away from the chest, thumbs hold the mouth slightly open",
+      "Take care with possible neck injury: avoid too much head tilt"
+    ] },
+    { h: "Suction", src: ["cssg"], steps: [
+      "Catheter onto the tubing, tubing onto the portable or vehicle suction.",
+      "Portable: off the charger, canister firmly on, press the green button, block the tubing briefly and release when the LEDs show 500 mmHg. Don't block it for more than 10 seconds at a time.",
+      "Patient on their back or side, airway opened.",
+      "Only as far as you can see. Y-catheter: insert with the port uncovered, cover it to suck. Rigid handle: careful of the soft tissues.",
+      "Suck as you gently withdraw. Stuck to tissue: uncover the port. Gagging: take it out.",
+      "Gross soiling: clear quickly with manual clearance plus suction. Long suctioning causes hypoxia."
+    ] },
+    { h: "OPA (manikin only)", src: ["cssg"], steps: [
+      "Size: flange at the front teeth, tip level with the angle of the jaw.",
+      "Adult: concave side up to the roof of the mouth, slide in about halfway, rotate 180 degrees and keep going until the flange sits at the lips, bite block between the teeth.",
+      "Child: insert it concave side towards the tongue, no rotation.",
+      "Any gagging: take it out at once (no need to rotate). An OPA in someone with a gag reflex can cause vomiting and aspiration."
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Partner on the mat: recovery position.",
+      "Manikin: chin lift, jaw thrust, suction the mouth.",
+      "Size and insert an OPA, then take it out as if they gag.",
+      "Swap."
+    ] }
+  ],
+  checks: ["Recovery position done well", "Chin lift and jaw thrust both shown", "Suction tested, only as far as you can see", "OPA sized and inserted, out at once on gagging"] },
+
+{ id: "s5", n: 5, title: "GCS: score it right", mins: 15,
+  goal: "Score eye, verbal and motor responses separately from CTL-075, for an adult, a young child and a baby, and record E, V and M as well as the total.",
+  kit: ["CTL-075 GCS printed, or the SAAS Clinical app's GCS calculator", "The patient cards below", "A blank PCR or notepad"],
+  blocks: [
+    { h: "Adult (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Obeys commands"],
+      ["5", "", "Orientated", "Purposeful movement"],
+      ["4", "Spontaneous", "Confused conversation", "Withdraws"],
+      ["3", "To speech", "Inappropriate words", "Flexion to pain"],
+      ["2", "To pain", "Incomprehensible sounds", "Extension to pain"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "2 to 4 years (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Obeys commands"],
+      ["5", "", "Appropriate words, smile", "Localises to pain"],
+      ["4", "Spontaneous", "Consolable cry, few words", "Withdraws from pain"],
+      ["3", "To voice", "Inappropriate words, persistent irritable cry", "Flexion to pain"],
+      ["2", "To pain", "Incomprehensible words, agitated, cries only to pain", "Extension to pain"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "Baby (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Normal, spontaneous"],
+      ["5", "", "Alert, coos, babbles", "Withdraws to touch"],
+      ["4", "Spontaneous", "Irritable, consolable cry", "Withdraws from pain"],
+      ["3", "To speech or shout", "Cry to pain", "Flexion responses"],
+      ["2", "To pain", "Cry or moan to pain, restless", "Extensor responses"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "Note on CTL-075", src: ["dsy"], tone: "warn", list: [
+      "CTL-075 heads the baby scale \"≥ 1 year old\", but the scale (coos, babbles) is for babies: it is probably meant to read under 1. It also has no scale for 1 to 2 years. Check with your instructor or the SAAS Clinical app"
+    ] },
+    { h: "Getting it right", src: ["dsy", "ctl070"], list: [
+      "Score each part on its own, then add them up: lowest total 3, highest 15",
+      "Write it as E, V and M with the total (for example E3 V4 M6 = 13). The parts tell the next person more than the total",
+      "Score the best response you see. If one arm is weak (stroke), score the better arm",
+      "Can't speak because of the stroke itself? Score what you see and write why",
+      "On the RDR chart (CTL-070): 15 white, 13 to 14 yellow, 9 to 12 red, 8 or less purple",
+      "Repeat it with every set of obs and compare with the first"
+    ] },
+    { h: "Patient cards", src: ["dsy", "ctl075"], cases: [
+      { who: "A. Frank", text: "Eyes open when you speak to him. Thinks he's at home when he's at the club. Squeezes your hand when asked.", answer: "E3 V4 M6 = 13." },
+      { who: "B. Ron, very low sugar", text: "Eyes closed, open only to pain. Moans, no words. Pulls his hand away from the pain.", answer: "E2 V2 M4 = 8." },
+      { who: "C. Can't find the words", text: "Eyes open on their own. Says random, wrong words. Doesn't follow commands but reaches up and pushes your hand away from the pain.", answer: "E4 V3 M5 = 12. Purposeful movement is 5." },
+      { who: "D. No speech since the stroke", text: "Eyes open on their own. Can't make any words since the stroke started. Obeys commands with the left hand.", answer: "E4 V1 M6 = 11. Record why: no speech from the stroke, obeys commands." },
+      { who: "E. Deeply unconscious", text: "No eye opening, no sounds. To pain, both arms bend in at the elbows.", answer: "E1 V1 M3 = 5. Purple zone on the RDR chart: protect the airway, consult the EOC Clinician." },
+      { who: "F. Child, 3", text: "Eyes open when you call her name. Crying but settles with mum, says a few words. Does what you ask.", answer: "2 to 4 years scale: E3 V4 M6 = 13." },
+      { who: "G. Baby, 8 months", text: "Eyes open, watching you. Irritable but settles when held. Pulls away when you touch the foot.", answer: "Baby scale: E4 V4 M5 = 13." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person reads a card aloud. Everyone writes E, V and M on their own before anyone says the answer.",
+      "Compare, then open the answer. Check any disagreement against CTL-075 or the app's calculator.",
+      "Then act a few out: one person is the patient, the other scores without the card."
+    ] }
+  ],
+  checks: ["Scored E, V and M separately", "Wrote E V M and the total", "Used the right scale for the child and the baby", "Scored the best response", "Named the RDR zone for the total"] }
+
+];
+
+var END = { title: "Finish together", mins: 25,
+  steps: [
+    "Run the student walk-through as one crew: Ron, 67, confused and sweaty in the shed near Cummins. Use each station's kit as you reach it.",
+    "Then each person does the knowledge check in the hypoglycaemia microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-hypo";
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/hypoglycaemia/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Hypoglycaemia skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Ron: student walk-through", "../../modules/hypoglycaemia-ao/?mode=student", "btn small"));
+  links.appendChild(a("Knowledge check (microlearning)", "../../microlearning/hypoglycaemia/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-through: " + root + "modules/hypoglycaemia-ao/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY hypoglycaemia skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Hypoglycaemia skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Hypoglycaemia\" (about 20 min). Send the link a few days ahead."],
+    ["0:00", "Read the safety boxes together (finger pricks only with consent; training paste and glucagon kits are never given to anyone; injections into a pad). Split into pairs or threes."],
+    ["0:05", "Rotate through stations 1 to 5 (15 to 20 min each). Partners tick the checks on the phone."],
+    ["about 1:35", "Finish together: Ron's walk-through as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 1: glucometer with strips, calibration bar, LO and HI control solution, lancets, sharps container.",
+    "Station 2: expired glucose paste labelled TRAINING, the cards.",
+    "Station 3: expired glucagon kits labelled TRAINING and kept apart from operational stock, syringes, blunt fill and IM needles, injection pad, sharps container.",
+    "Station 4: airway manikin, portable suction charged, Y-catheters and suction handle, OPAs, a mat.",
+    "Station 5: printed CTL-075 GCS tables or the SAAS Clinical app, pens and paper.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Sharps containers closed. Used strips, swabs and kits in the bin.",
+    "Training paste and glucagon kits counted and back in their labelled TRAINING box, apart from operational stock.",
+    "Suction canister emptied or replaced, catheters binned, suction back on charge. Manikin wiped.",
+    "Glucometer back in its workstation with the calibration bar in the carrier.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Five stations to practise the hands-on parts of a hypoglycaemia job, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Hypoglycaemia\" first (about 20 minutes)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/hypoglycaemia/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Ron's walk-through, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cpp009, SRC.c008, SRC.c009, SRC.c010, SRC.c011, SRC.ctl075, SRC.cssg].join(", ") +
+    ". The review dates of CPPRO-008 to CPPRO-011 (June 2020) have passed. The glucagon mixing steps are CPPRO-010's general steps for a dry powder: check them against your kit. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>

@@ -5,7 +5,7 @@
 may be reproduced or stored without written permission, so the guide itself is **not** kept in this repo (the repo
 and the site are public). The owner has a scanned PDF (90 pages, images only, no text layer): ask for it when a page
 needs it, read only the pages needed, and write our own short steps citing "SAAS Clinical Skills Study Guide v3.2
-(Oct 2026), <skill>". First used for the anaphylaxis stations (Oxygen), the high-speed MVA stations, the falls stations, the chest pain and ACPO stations and the asthma stations.
+(Oct 2026), <skill>". First used for the anaphylaxis stations (Oxygen), the high-speed MVA stations, the falls stations, the chest pain and ACPO stations, the asthma stations and the stroke and hypoglycaemia stations.
 
 Page numbers are the printed numbers, which match the PDF page numbers. The guide's own contents page is about one page
 out (it lists Manual BP at 25; it starts on 24).
@@ -13,8 +13,8 @@ out (it lists Manual BP at 25; it starts on 24).
 | Skill | Page | Scope (AA / AR / AO) |
 | --- | --- | --- |
 | Airway clearance (manual) | 9 | |
-| Airway clearance (suction) | 10 | |
-| Airway manoeuvres | 14 | |
+| Airway clearance (suction: vehicle and portable LCSU-4, test to 500 mmHg, block no more than 10 s, only as far as you can see) | 9 to 12 | yes / yes / yes |
+| Airway manoeuvres (jaw thrust, chin lift/head tilt; infant neutral position on 14) | 13 to 14 | yes / yes / yes |
 | Bag-valve-mask ventilation (mask sizing, valve unlocked, reservoir, 15 L/min, no bacterial filter under 40 kg, two-operator seal, C-E solo, squeeze about a third) | 15 to 18 | yes / yes / yes |
 | Blood glucose level (BGL) measurement (equipment 19, testing 20 to 21, error codes 21 to 22, calibration and quality control 22 to 23) | 19 to 23 | no / yes / yes |
 | Blood pressure: manual (cuff sizes, palpatory and auscultatory) | 24 to 26 | no / yes / yes |
@@ -34,10 +34,10 @@ out (it lists Manual BP at 25; it starts on 24).
 | Helmet removal | 60 to 61 | no / yes / yes |
 | IV therapy: set up line (AO prepares or replaces a bag only, 20 drops/mL sets, KVO 10 drops/min) | 62 to 64 | no / no / yes |
 | Log roll (four people, person 1 at the head calls it, 45 degrees) | 65 to 66 | yes / yes / yes |
-| Oropharyngeal airway (OPA) | 67 | |
+| Oropharyngeal airway (OPA: size flange to angle of the jaw, rotate 180 in adults, no rotation in children) | 67 to 68 | yes / yes / yes |
 | Oxygen (Inhalo CD cylinder; nasal cannula 2 to 4 L/min, face mask 8 to 10, non-rebreather 15 with the bag inflated; D-size cylinder change on 72 to 73) | 69 to 73 | yes / yes / yes |
 | Pulse measurement (sites, strength, rhythm, 15 s x 4 or 30 s x 2) | 74 to 75 | yes / yes / yes |
-| Pupil size and response | 76 | no / yes / yes |
+| Pupil size and response (light from the side, PEARL, size chart on the PCR insert) | 76 | no / yes / yes |
 | Recovery position | 77 | yes / yes / yes |
 | Slings (arm sling, collar and cuff, elevation sling) | 78 to 81 | yes / yes / yes |
 | Splint: cardboard splint (neurovascular checks on 84) | 82 to 84 | yes / yes / yes |

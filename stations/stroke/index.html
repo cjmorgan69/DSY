@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stroke skills stations - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261027c">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+@media (max-width: 420px) { table.t th, table.t td { padding: .35rem .3rem; font-size: .86rem; } }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Stroke skills stations (AO). Built 27 Oct 2026 for a group training night without the instructor present, to go with
+   the module /microlearning/stroke/ and the walk-through /modules/stroke-AO/ (Frank, 78).
+   Sources: CPP-016-AO Stroke v6.0 (25 June 2026) and CTL-066 ROSIER+ACT Assessment Screening Tool (as checked for the
+   module and walk-through); CPP-009-AO Hypoglycaemia v4.1 (BGL threshold); SAAS Clinical Skills Study Guide v3.2 (released
+   Oct 2026; owner's scanned copy, not stored in the repo: see .claude/references/clinical-skills-study-guide.md), read for
+   BGL, recovery position, airway manoeuvres, suction, OPA and pupils. Lead instructor guidance (owner): local Code Stroke
+   notification is that the EOC Clinician may contact Port Lincoln Hospital and/or the crew notifies by GRN radio; adequate
+   oxygenation = SpO2 above 94%. Patient cards and how-to-run notes are DSY-written and marked as such. */
+var SRC = {
+  cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
+  cpp016: "CPP-016-AO Stroke v6.0",
+  ctl066: "CTL-066 ROSIER+ACT Assessment Screening Tool",
+  cpp009: "CPP-009-AO Hypoglycaemia v4.1",
+  lead: "DSY lead instructor",
+  ctl075: "CTL-075 GCS (Glasgow Coma Score)",
+  ctl070: "CTL-070 Adult RDR Chart",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "BGL first, then ROSIER and ACT", mins: 20,
+  goal: "Rule out hypoglycaemia with a BGL, then score ROSIER and ACT on a partner acting out a stroke, and say what the score means.",
+  kit: ["Glucometer, strips with their calibration bar, control solution, lancets, alcohol swabs, sharps container", "Printed ROSIER+ACT cards (CTL-066) or the module on a phone", "A watch", "The patient cards below"],
+  blocks: [
+    { h: "BGL first", src: ["cpp016", "cpp009", "cssg"], steps: [
+      "Measure the BGL to exclude hypoglycaemia before the ROSIER.",
+      "Below 3.5 mmol/L: treat as per CPP-009-AO Hypoglycaemia and reassess after treatment.",
+      "Lot number on the strip foil matches the calibration bar. Clean, dry fingertip side. Gentle pressure only. Sharps straight into the container.",
+      "Practise with the control solution, or a finger prick only on a willing adult partner who agrees."
+    ] },
+    { h: "ROSIER (CTL-066)", src: ["ctl066"], table: { head: ["Item", "Yes", "No"], rows: [
+      ["Loss of consciousness or syncope (not seizure-related)", "-1", "0"],
+      ["Seizure activity and a known history of seizures", "-1", "0"],
+      ["New acute asymmetric facial weakness", "+1", "0"],
+      ["New acute asymmetric arm weakness", "+1", "0"],
+      ["New acute asymmetric leg weakness", "+1", "0"],
+      ["New acute speech disturbance", "+1", "0"],
+      ["New acute visual field defect", "+1", "0"]
+    ] } },
+    { h: "Reading it", src: ["ctl066", "cpp016"], list: [
+      "Record the symptom onset or last seen well: date and time. New acute means under 24 hours",
+      "ROSIER 1 or more is positive. Use it with a thorough history and clinical assessment, not instead of one"
+    ] },
+    { h: "ACT (CTL-066)", src: ["ctl066"], list: [
+      "Arm: one arm drops within 10 seconds",
+      "Chat: severe language deficit, not just slurring (mute, gibberish, can't be understood)",
+      "Tap: both eyes turned away from the weak side, or doesn't turn to the weak side when tapped",
+      "ACT positive: arm weakness AND chat or tap positive. ACT negative: no weakness in either arm",
+      "ROSIER 1 or more and ACT positive: consider transport to the RAH"
+    ] },
+    { h: "Patient cards", src: ["dsy", "ctl066"], cases: [
+      { who: "A. Frank, 78", text: "Right face droop, right arm drifts down in 5 seconds, slurred speech. No collapse, no seizure.", answer: "Face +1, arm +1, speech +1 = ROSIER 3, positive. ACT: arm weakness, but slurring isn't a severe language deficit and no gaze deviation: ACT negative." },
+      { who: "B. Fainted first", text: "Collapsed at the shops, now drowsy with left arm weakness.", answer: "Syncope -1, arm +1 = 0: ROSIER negative. Stroke can still be suspected: transport to the closest CSU/STS or nearest hospital, or consult the EOC Clinician." },
+      { who: "C. Can't find words", text: "Left arm drops, speaking gibberish, eyes turned to the right.", answer: "ROSIER positive (arm, speech, plus any face or leg). ACT: arm weakness AND chat and tap positive: ACT positive. Consider transport to the RAH (consult the EOC Clinician)." },
+      { who: "D. BGL 2.9", text: "Confused, weak right arm. BGL 2.9.", answer: "Below 3.5: treat as per CPP-009-AO first, reassess, then do the ROSIER." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Do the BGL on the control solution (or a consenting partner).",
+      "One person acts out a card; the other scores ROSIER and ACT out loud, on the card or the phone.",
+      "Say the score and what it means, then open the answer. Swap."
+    ] }
+  ],
+  checks: ["BGL before ROSIER", "Asked for onset or last seen well, with the time", "All seven ROSIER items scored, including the two minus items", "Arm held out and timed 10 seconds",
+    "ACT: arm, chat, tap", "Said what the score means"] },
+
+{ id: "s2", n: 2, title: "The clock and the Code Stroke call", mins: 20,
+  goal: "Work out Code Stroke eligibility from the onset time and travel time, then make a one-minute ISBAR call.",
+  kit: ["A phone (for the role-play)", "A watch", "The cards below", "The stroke module's eligibility checker on a phone (optional)"],
+  blocks: [
+    { h: "Code Stroke: all of these (CPP-016-AO v6.0)", src: ["cpp016"], tone: "warn", list: [
+      "Stroke is clinically suspected",
+      "ROSIER positive",
+      "Independent pre-morbid functioning",
+      "Less than 9 hours from symptom onset to arrival at the CSU/STS (it used to be 4)",
+      "Less than 60 minutes travel to the CSU/STS"
+    ] },
+    { h: "Eyre Peninsula STS", src: ["cpp016"], list: ["Port Lincoln, Whyalla and Port Augusta hospitals are Stroke Thrombolysis Services"] },
+    { h: "For a Code Stroke patient", src: ["cpp016"], steps: [
+      "Consult the EOC Clinician for authorisation to transport directly to the closest CSU/STS.",
+      "Request clinical support if the patient is unstable or transport is likely to be over 20 minutes.",
+      "Patient ID, and a phone number for the substitute decision maker, close relative or carer.",
+      "Notify Code Stroke to the stroke coordinator via the SAAS Code Notification Line or local processes, using ISBAR: the eligibility criteria and your ETA.",
+      "Confirm Code Stroke arrival via SAGRN to the receiving ED."
+    ] },
+    { h: "Local process", src: ["lead"], list: ["The EOC Clinician may contact Port Lincoln Hospital, and/or the crew notifies by GRN radio"] },
+    { h: "Not eligible, or too far", src: ["cpp016"], list: [
+      "Negative ROSIER, over 9 hours, or diminished pre-morbid independence: closest CSU/STS, or nearest hospital, or consult the EOC Clinician",
+      "Everything else fits but over 60 minutes travel: consult the EOC Clinician about transport and destination"
+    ] },
+    { h: "Cards", src: ["dsy", "cpp016"], cases: [
+      { who: "A. Frank", text: "Wife saw it at 1000. You reach him at 1045. Port Lincoln 35 minutes away. ROSIER 3, independent.", answer: "Arrival about 1135: well under 9 hours and under 60 minutes travel. Code Stroke: consult the EOC Clinician, notify, go." },
+      { who: "B. Woke with it", text: "Went to bed well at 2200, woke at 0600 with a weak arm. You reach her at 0640. STS 40 minutes away.", answer: "Onset is last seen well: 2200. Arrival about 0730 is 9.5 hours: not eligible. Closest CSU/STS, nearest hospital, or consult the EOC Clinician." },
+      { who: "C. Far away", text: "Onset 40 minutes ago, ROSIER positive, independent, but 85 minutes from the nearest STS.", answer: "Eligible except for distance: consult the EOC Clinician to discuss transport and destination." },
+      { who: "D. Nursing home", text: "ROSIER positive, onset 1 hour ago, needs full help with daily care.", answer: "Not independent pre-morbid: not Code Stroke. Closest CSU/STS, nearest hospital, or consult the EOC Clinician." }
+    ] },
+    { h: "One-minute ISBAR (example)", src: ["dsy"], table: { head: ["", "Say"], rows: [
+      ["I", "Who you are, where you are, the patient's name and age"],
+      ["S", "Suspected stroke, ROSIER score, Code Stroke criteria met"],
+      ["B", "Onset or last seen well (time), independent before, relevant history"],
+      ["A", "BGL, obs, ROSIER items, ACT"],
+      ["R", "Requesting authorisation for the STS; ETA"]
+    ] } },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Work out each card with the times written down.",
+      "For card A, one person is the EOC Clinician: make the call in under a minute.",
+      "Swap and do card C."
+    ] }
+  ],
+  checks: ["Used last seen well when the onset wasn't seen", "Added the travel time to get the arrival time", "All five criteria checked", "Clinical support if unstable or over 20 minutes",
+    "Patient ID and a contact number", "ISBAR in under a minute, with the ETA"] },
+
+{ id: "s3", n: 3, title: "Protect the airway", mins: 20,
+  goal: "Look after the airway of a stroke patient who becomes drowsy or vomits: recovery position, airway manoeuvres, suction and an OPA on a manikin.",
+  kit: ["Airway manikin", "Portable suction (LCSU-4) charged, Y-catheters and a large bore suction handle", "OPAs in several sizes", "Oxygen with nasal cannula and mask", "A mat for the recovery position"],
+  blocks: [
+    { h: "Why", src: ["dsy", "lead"], list: [
+      "A falling GCS, vomiting, a seizure, or breathing problems in a stroke patient: protect the airway and consult the EOC Clinician",
+      "Nil by mouth if swallowing may be affected",
+      "Adequate oxygenation: SpO2 above 94%; add oxygen to bring it above 94% (lead instructor)"
+    ] },
+    { h: "Recovery position", src: ["cssg"], steps: [
+      "PPE. The near arm at right angles to the body; the other arm across the chest, fingers to the opposite shoulder tip.",
+      "Bring the knee on the same side as the arm across the chest up to a right angle.",
+      "Lift under the shoulder and thigh and gently roll them onto their side, towards the outstretched arm. Support the head and neck.",
+      "Keep the knee and hip at right angles; don't let them roll face down. Let the arms fall naturally.",
+      "With your lower hand support the jaw and lift the chin slightly so the tongue stays forward. Face pointing slightly down."
+    ] },
+    { h: "Opening the airway", src: ["cssg"], list: [
+      "Chin lift and head tilt: beside the head, one hand on the forehead, thumb over the chin and two fingers along the jaw; tilt the head (not the neck) and pull the chin away from the chest",
+      "Jaw thrust: behind the head, index fingers behind the angles of the jaw, lift the jaw up and away from the chest, thumbs hold the mouth slightly open",
+      "Take care with possible neck injury: avoid too much head tilt"
+    ] },
+    { h: "Suction", src: ["cssg"], steps: [
+      "Catheter onto the tubing, tubing onto the portable or vehicle suction.",
+      "Portable: off the charger, canister firmly on, press the green button, block the tubing briefly and release when the LEDs show 500 mmHg. Don't block it for more than 10 seconds at a time.",
+      "Patient on their back or side, airway opened.",
+      "Only as far as you can see. Y-catheter: insert with the port uncovered, cover it to suck. Rigid handle: careful of the soft tissues.",
+      "Suck as you gently withdraw. Stuck to tissue: uncover the port. Gagging: take it out.",
+      "Gross soiling: clear quickly with manual clearance plus suction. Long suctioning causes hypoxia."
+    ] },
+    { h: "OPA (manikin only)", src: ["cssg"], steps: [
+      "Size: flange at the front teeth, tip level with the angle of the jaw.",
+      "Adult: concave side up to the roof of the mouth, slide in about halfway, rotate 180 degrees and keep going until the flange sits at the lips, bite block between the teeth.",
+      "Child: insert it concave side towards the tongue, no rotation.",
+      "Any gagging: take it out at once (no need to rotate). An OPA in someone with a gag reflex can cause vomiting and aspiration."
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Partner on the mat: put them in the recovery position.",
+      "On the manikin: chin lift, then jaw thrust. Set up and test the suction, suction the mouth.",
+      "Size and insert an OPA, then take it out as if they gag.",
+      "Swap."
+    ] }
+  ],
+  checks: ["Recovery position: knee and hip at right angles, chin lifted, face slightly down", "Chin lift and jaw thrust both shown", "Suction tested to 500 mmHg, no more than 10 seconds blocked",
+    "Suction only as far as you can see", "OPA sized flange to angle of the jaw", "Removed at once on gagging"] },
+
+{ id: "s4", n: 4, title: "Pupils, repeat obs and the move", mins: 15,
+  goal: "Check pupils and GCS again and again, notice a change, and move a patient with a weak side safely.",
+  kit: ["Penlight torch", "GCS card or the RDR chart", "Carry chair and stretcher", "Pillows and a blanket"],
+  blocks: [
+    { h: "Pupils", src: ["cssg"], steps: [
+      "PPE. Ask about eye surgery, eye injury or eye medicines first.",
+      "Ask them to look at a point in the distance.",
+      "Check the size and shape of both pupils.",
+      "Bring the light in from the side across one eye: both pupils should get smaller. Then the other side.",
+      "Record the size and reaction on the PCR (the size chart is on the PCR pad insert). PEARL: pupils equal and reacting to light.",
+      "Bright sunlight makes it hard: wait until you're in the ambulance."
+    ] },
+    { h: "Watch for change", src: ["dsy"], list: [
+      "Repeat the GCS and pupils with every set of obs, and compare with the first set",
+      "Worry: a falling GCS, vomiting, a seizure, airway or breathing problems. Consult the EOC Clinician and update the hospital"
+    ] },
+    { h: "The move", src: ["dsy"], list: [
+      "Bring the stretcher and carry chair to the patient early, ready to go",
+      "Support the weak arm and leg; they can't protect them themselves",
+      "Position for comfort, weak arm on a pillow, blanket over"
+    ] },
+    { h: "Cards", src: ["dsy"], cases: [
+      { who: "A. On the way", text: "Frank was GCS 15 at the house. Now he opens his eyes only to voice and is confused: GCS 13.", answer: "A falling GCS: protect the airway (side position, suction ready), oxygen to keep SpO2 above 94%, consult the EOC Clinician, update the hospital." },
+      { who: "B. Pupils", text: "Right pupil 3 mm, reacts. Left pupil 6 mm, slow.", answer: "Unequal and slow: record it with the time, tell the EOC Clinician and the hospital." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Check your partner's pupils indoors and by a window.",
+      "Partner plays a patient with a weak right side: move them by carry chair to the stretcher, weak arm supported.",
+      "Talk through the cards. Swap."
+    ] }
+  ],
+  checks: ["Asked about eye surgery or medicines", "Light from the side, both eyes, recorded size and reaction", "Compared GCS and pupils with the first set", "Weak arm supported in the move", "Knew what to do if GCS falls"] },
+
+{ id: "s5", n: 5, title: "GCS: score it right", mins: 15,
+  goal: "Score eye, verbal and motor responses separately from CTL-075, for an adult, a young child and a baby, and record E, V and M as well as the total.",
+  kit: ["CTL-075 GCS printed, or the SAAS Clinical app's GCS calculator", "The patient cards below", "A blank PCR or notepad"],
+  blocks: [
+    { h: "Adult (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Obeys commands"],
+      ["5", "", "Orientated", "Purposeful movement"],
+      ["4", "Spontaneous", "Confused conversation", "Withdraws"],
+      ["3", "To speech", "Inappropriate words", "Flexion to pain"],
+      ["2", "To pain", "Incomprehensible sounds", "Extension to pain"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "2 to 4 years (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Obeys commands"],
+      ["5", "", "Appropriate words, smile", "Localises to pain"],
+      ["4", "Spontaneous", "Consolable cry, few words", "Withdraws from pain"],
+      ["3", "To voice", "Inappropriate words, persistent irritable cry", "Flexion to pain"],
+      ["2", "To pain", "Incomprehensible words, agitated, cries only to pain", "Extension to pain"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "Baby (CTL-075)", src: ["ctl075"], table: { head: ["", "Eyes", "Verbal", "Best motor"], rows: [
+      ["6", "", "", "Normal, spontaneous"],
+      ["5", "", "Alert, coos, babbles", "Withdraws to touch"],
+      ["4", "Spontaneous", "Irritable, consolable cry", "Withdraws from pain"],
+      ["3", "To speech or shout", "Cry to pain", "Flexion responses"],
+      ["2", "To pain", "Cry or moan to pain, restless", "Extensor responses"],
+      ["1", "None", "None", "None"]
+    ] } },
+    { h: "Note on CTL-075", src: ["dsy"], tone: "warn", list: [
+      "CTL-075 heads the baby scale \"≥ 1 year old\", but the scale (coos, babbles) is for babies: it is probably meant to read under 1. It also has no scale for 1 to 2 years. Check with your instructor or the SAAS Clinical app"
+    ] },
+    { h: "Getting it right", src: ["dsy", "ctl070"], list: [
+      "Score each part on its own, then add them up: lowest total 3, highest 15",
+      "Write it as E, V and M with the total (for example E3 V4 M6 = 13). The parts tell the next person more than the total",
+      "Score the best response you see. If one arm is weak (stroke), score the better arm",
+      "Can't speak because of the stroke itself? Score what you see and write why",
+      "On the RDR chart (CTL-070): 15 white, 13 to 14 yellow, 9 to 12 red, 8 or less purple",
+      "Repeat it with every set of obs and compare with the first"
+    ] },
+    { h: "Patient cards", src: ["dsy", "ctl075"], cases: [
+      { who: "A. Frank", text: "Eyes open when you speak to him. Thinks he's at home when he's at the club. Squeezes your hand when asked.", answer: "E3 V4 M6 = 13." },
+      { who: "B. Ron, very low sugar", text: "Eyes closed, open only to pain. Moans, no words. Pulls his hand away from the pain.", answer: "E2 V2 M4 = 8." },
+      { who: "C. Can't find the words", text: "Eyes open on their own. Says random, wrong words. Doesn't follow commands but reaches up and pushes your hand away from the pain.", answer: "E4 V3 M5 = 12. Purposeful movement is 5." },
+      { who: "D. No speech since the stroke", text: "Eyes open on their own. Can't make any words since the stroke started. Obeys commands with the left hand.", answer: "E4 V1 M6 = 11. Record why: no speech from the stroke, obeys commands." },
+      { who: "E. Deeply unconscious", text: "No eye opening, no sounds. To pain, both arms bend in at the elbows.", answer: "E1 V1 M3 = 5. Purple zone on the RDR chart: protect the airway, consult the EOC Clinician." },
+      { who: "F. Child, 3", text: "Eyes open when you call her name. Crying but settles with mum, says a few words. Does what you ask.", answer: "2 to 4 years scale: E3 V4 M6 = 13." },
+      { who: "G. Baby, 8 months", text: "Eyes open, watching you. Irritable but settles when held. Pulls away when you touch the foot.", answer: "Baby scale: E4 V4 M5 = 13." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person reads a card aloud. Everyone writes E, V and M on their own before anyone says the answer.",
+      "Compare, then open the answer. Check any disagreement against CTL-075 or the app's calculator.",
+      "Then act a few out: one person is the patient, the other scores without the card."
+    ] }
+  ],
+  checks: ["Scored E, V and M separately", "Wrote E V M and the total", "Used the right scale for the child and the baby", "Scored the best response", "Named the RDR zone for the total"] }
+
+];
+
+var END = { title: "Finish together", mins: 25,
+  steps: [
+    "Run the student walk-through as one crew: Frank, 78, weakness and slurred speech at morning tea in Coffin Bay. Use each station's kit as you reach it.",
+    "Then each person does the knowledge check in the stroke microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-stroke";
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/stroke/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Stroke skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Frank: student walk-through", "../../modules/stroke-AO/?mode=student", "btn small"));
+  links.appendChild(a("Knowledge check (microlearning)", "../../microlearning/stroke/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-through: " + root + "modules/stroke-AO/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY stroke skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Stroke skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Stroke\" (about 25 min). Send the link a few days ahead."],
+    ["0:00", "Read the safety box at station 1 together (finger pricks only with consent, or the control solution; OPAs on the manikin only). Split into pairs or threes."],
+    ["0:05", "Rotate through stations 1 to 5 (15 to 20 min each). Partners tick the checks on the phone."],
+    ["about 1:35", "Finish together: Frank's walk-through as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 1: glucometer with in-date strips and control solution, lancets, sharps container, printed ROSIER+ACT cards (CTL-066).",
+    "Station 2: a phone for the EOC Clinician role-play, the cards.",
+    "Station 3: airway manikin, portable suction charged, Y-catheters and suction handle, OPAs, a mat.",
+    "Station 4: penlight, GCS card, carry chair and stretcher, pillows.",
+    "Station 5: printed CTL-075 GCS tables or the SAAS Clinical app, pens and paper.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Sharps container closed. Used strips and swabs in the bin.",
+    "Suction canister emptied or replaced (single patient use), catheters binned, suction back on charge.",
+    "OPAs used on the manikin binned or kept as labelled training stock. Manikin wiped.",
+    "Carry chair and stretcher cleaned and back in the vehicle.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Five stations to practise the hands-on parts of a stroke job, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Stroke\" first (about 25 minutes)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/stroke/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Frank's walk-through, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cpp016, SRC.ctl066, SRC.ctl075, SRC.cpp009, SRC.cssg].join(", ") +
+    ". ROSIER and ACT are from CTL-066; local Code Stroke notification and the SpO2 target follow the DSY lead instructor's guidance. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>
