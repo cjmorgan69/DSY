@@ -6,6 +6,7 @@ window.DRIVE_SECTIONS = [];
     'lesson1-human-body.js',
     'lesson2-postures.js',
     'lesson3-ambulant.js',
+    'lesson4a-stryker.js',
     'lesson4b-equipment.js',
     'lesson5-bariatric.js',
     'lesson6-hazardous.js',
@@ -14,6 +15,6 @@ window.DRIVE_SECTIONS = [];
     // , 'lesson6-something.js'
   ];
   files.forEach(function (f) {
-    document.write('<script src="data/' + f + '?v=20261028g" charset="utf-8"><\/script>');
+    document.write('<script src="data/' + f + '?v=20261028h" charset="utf-8"><\/script>');
   });
 })();
