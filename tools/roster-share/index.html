@@ -40,18 +40,18 @@ p{font-size:38px;line-height:1.3;margin:0 0 18px}
 .people{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
 .people svg{width:46px;height:56px}
 .logo{height:64px;margin-bottom:26px;align-self:flex-start}
-.cta{background:var(--gold);color:var(--gd);border-radius:26px;padding:30px 36px;font-size:44px;font-weight:800;margin-top:20px}
-#all .slide{margin:20px auto;transform-origin:top left}
+.cta{display:flex;align-items:center;gap:30px;justify-content:space-between;background:var(--gold);color:var(--gd);border-radius:26px;padding:30px 36px;font-size:44px;font-weight:800;margin-top:20px}
+#qr{background:#fff;padding:14px;border-radius:16px;flex:none;line-height:0}#all .slide{margin:20px auto;transform-origin:top left}
 </style></head><body>
 <div id="all"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 const P=(c)=>`<svg viewBox="0 0 46 56"><circle cx="23" cy="13" r="11" fill="${c}"/><path d="M3 56c0-17 8-26 20-26s20 9 20 26z" fill="${c}"/></svg>`;
 const pair=c=>`<svg viewBox="0 0 100 70"><g transform="translate(2,6) scale(.85)"><circle cx="23" cy="13" r="11" fill="${c}"/><path d="M3 56c0-17 8-26 20-26s20 9 20 26z" fill="${c}"/></g><g transform="translate(50,6) scale(.85)"><circle cx="23" cy="13" r="11" fill="${c}"/><path d="M3 56c0-17 8-26 20-26s20 9 20 26z" fill="${c}"/></g></svg>`;
 const foot=(n)=>`<div class="foot"><span>Volunteer ambulance roster, Eyre Peninsula</span><span>${n} / 7</span></div>`;
 const D=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const S=[
-`<div class="slide dark"><img class="logo" src="../../microlearning/shared/dsy-logo.png" alt="" onerror="this.remove()">
-<div class="tag">Volunteer ambulance</div>
+`<div class="slide dark"><div class="tag">Volunteer ambulance</div>
 <h1>On call for the ambulance <span class="gold">won't take over your life.</span></h1>
 <p class="sub">Here's how a team of 14 shares the load.</p>
 ${foot(1)}</div>`,
@@ -98,11 +98,13 @@ ${foot(6)}</div>`,
 `<div class="slide dark"><div class="tag">Two on the ambulance</div>
 <h2>We only need 2 people on the ambulance. Not the whole town.</h2>
 <p>You're not needed every day and every night. With enough volunteers it's <b class="gold">24 hours a week</b>, from home.</p>
-<div class="cta">Want to be part of the roster? Ask your local ambulance team how to join.</div>
+<div class="cta"><div>Want to be part of the roster?<br>Ask your local ambulance team, or scan the code.</div><div id="qr"></div></div>
+<p style="font-size:30px;margin-top:18px">saambulance.sa.gov.au/volunteer-with-us</p>
 ${foot(7)}</div>`
 ];
 const q=new URLSearchParams(location.search).get('s');
 const all=document.getElementById('all');
 if(q){all.innerHTML=S[q-1];document.body.style.background='none';all.firstChild.style.margin=0}
 else{all.innerHTML=S.join('');const f=()=>{const k=Math.min(1,(innerWidth-20)/1080);document.querySelectorAll('.slide').forEach(s=>{s.style.zoom=k})};f();addEventListener('resize',f)}
+document.querySelectorAll('#qr').forEach(e=>new QRCode(e,{text:'https://saambulance.sa.gov.au/volunteer-with-us/',width:220,height:220,correctLevel:QRCode.CorrectLevel.M}));
 </script></body></html>
