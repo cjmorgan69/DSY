@@ -34,8 +34,22 @@
           'Watch the patient; listen to others about recent behaviour',
           'Call SAPOL if needed'
         ],
-        callout: { head: 'Risk Assessment Matrix (CTL-011)', text: 'High risk violence, high risk self-harm, moderate and low risk, each with actions. A laminated copy is in every ambulance.' },
+        callout: { head: 'Risk Assessment Matrix (CTL-011)', text: 'A laminated copy is in every ambulance. Next slide.' },
         notes: { time: 3, say: ['Most people with a mental illness are not violent, but someone experiencing psychosis may be unpredictable.'] }
+      },
+      {
+        type: 'table',
+        title: 'Risk Assessment Matrix (CTL-011)',
+        head: ['Risk level', 'Behaviours', 'Actions'],
+        rows: [
+          ['High risk: violence', 'Drug use with violence or aggression; weapon; verbal threats; attempts to injure bystanders or crew; past severe violence towards crews or health workers', 'Do not enter, or withdraw immediately. Request SAPOL. Immediate danger: call Code 51 or activate the radio duress alarm'],
+          ['High risk: self-harm', 'Drug use with agitation; high lethality suicide attempt (electrocution, hanging); high intent with a lethal plan; severely altered mental state (acute psychosis); severe depression with clear suicidal intent', 'Monitor the patient closely. Consider SAPOL in some circumstances'],
+          ['Moderate risk: self-harm', 'Drug use with anxiety; moderate lethality attempt (overdose, lacerations, abrasions); severe depressive illness without firm suicidal intent; suicidal ideation without severe depression or psychosis; cooperative', 'SAPOL not required. Monitor the patient'],
+          ['Low risk: self-harm', 'Alcohol or drug use; no suicide attempt; depressive illness with no suicidal ideation', 'SAPOL not required. Monitor the patient']
+        ],
+        fs: 28,
+        source: 'Risk factors for violence: past violence (most important), impulsiveness, young males (worse in groups), child abuse history, substance intoxication or withdrawal, personality disorder, psychosis, dementia, organic brain disorder.',
+        notes: { time: 0, say: ['Walk through the four levels and their actions.'], tip: 'From the Risk Assessment Matrix as printed in the study guide, page 27. Fits in the risk assessment time.' }
       },
       {
         type: 'bullets',

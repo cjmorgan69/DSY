@@ -44,8 +44,8 @@
   <span id="filter"></span>
 </div>
 <div id="out"></div>
-<script src="data/manifest.js?v=20261028a"></script>
-<script src="assets/common.js?v=20261028a"></script>
+<script src="data/manifest.js?v=20261028c"></script>
+<script src="assets/common.js?v=20261028c"></script>
 <script>
 (function () {
   var D = window.DRIVE, E = D.esc;
@@ -61,29 +61,31 @@
   var h = '';
   secs.forEach(function (sec) {
     var total = 0, vids = 0;
-    sec.slides.forEach(function (s) { total += (s.notes && s.notes.time) || 0; if (s.vimeo || s.video) vids++; });
+    sec.slides.forEach(function (s) { total += (s.notes && s.notes.time) || 0; if (s.vimeo || s.youtube || s.video) vids++; });
     h += '<div class="sec"><h2>' + D.secName(sec) + ': ' + E(sec.title) + '</h2>';
     h += '<div class="sub">' + E(sec.audience || '') + ' · ' + sec.slides.length + ' slides · ' + vids + ' videos · suggested time about ' + total + ' min' +
          (sec.elearningMinutes ? ' (eLearning version: about ' + sec.elearningMinutes + ' min)' : '') + '</div>';
     h += '<table><tr><th class="n">#</th><th>Slide</th><th class="t">Time</th></tr>';
     sec.slides.forEach(function (s, i) {
-      h += '<tr><td class="n">' + (i + 1) + '</td><td>' + E(D.title(s)) + (s.vimeo ? (s.vimeo.length ? ' (video ' + E(s.vimeo.length) + ')' : ' (video)') : '') + '</td><td class="t">' + ((s.notes && s.notes.time) ? s.notes.time + ' min' : '') + '</td></tr>';
+      h += '<tr><td class="n">' + (i + 1) + '</td><td>' + E(D.title(s)) + (D.vid(s) ? ' (video ' + E(D.vid(s).v.length || '') + ')' : '') + '</td><td class="t">' + ((s.notes && s.notes.time) ? s.notes.time + ' min' : '') + '</td></tr>';
     });
     h += '</table>';
     sec.slides.forEach(function (s, i) {
       var n = s.notes || {};
       h += '<div class="slide"><header><h3><span class="check"></span>Slide ' + (i + 1) + ': ' + E(D.title(s)) + '</h3><span class="tag">' +
-           (s.vimeo ? 'Video ' + E(s.vimeo.length || '') : s.video ? 'Video ' + E(s.video.length || '') : s.type) + (n.time ? ' · ' + n.time + ' min' : '') + '</span></header>';
+           (D.vid(s) ? 'Video ' + E(D.vid(s).v.length || '') : s.video ? 'Video ' + E(s.video.length || '') : s.type) + (n.time ? ' · ' + n.time + ' min' : '') + '</span></header>';
       var onSlide = D.slideText(s);
+      if (s.img) h += '<img src="' + E(s.img) + '" alt="" style="max-width:320px;max-height:200px;display:block;margin:6px 0">';
       if (s.type !== 'video' && onSlide.length) h += '<div class="lbl">On the slide</div>' + ul(onSlide);
       if (n.say && n.say.length) h += '<div class="lbl">Say</div>' + ul(n.say);
       if (n.ask && n.ask.length) h += '<div class="lbl">Ask the group</div>' + ul(n.ask);
       if (n.activity) h += '<div class="act"><strong>Activity:</strong> ' + E(n.activity) + '</div>';
       if (s.video) h += '<div class="vid"><strong>Video:</strong> ' + E(s.video.length || '') + ' · ' + E(s.video.file || '') + (s.video.url ? ' · <a href="' + E(s.video.url) + '">Open in the eLearning lesson</a> (saaslearn login needed)' : ' (' + E(s.video.where || 'in the eLearning lesson') + ')') + '</div>';
-      if (s.vimeo) {
-        h += '<div class="vid"><strong>Video:</strong> ' + E(s.vimeo.length || '') + ' · <a href="' + D.vimeoUrl(s.vimeo) + '">' + D.vimeoUrl(s.vimeo) + '</a>';
-        if (n.videoSummary && n.videoSummary.length) h += '<div class="lbl">What it covers (from Vimeo auto-captions; check before relying on it)</div>' + ul(n.videoSummary);
-        else h += '<div class="lbl">No captions available: preview the video and add the key points here.</div>';
+      var gv = D.vid(s);
+      if (gv) {
+        h += '<div class="vid"><strong>Video:</strong> ' + E(gv.v.length || '') + ' · <a href="' + gv.url + '">' + gv.url + '</a>';
+        if (n.videoSummary && n.videoSummary.length) h += '<div class="lbl">What it covers</div>' + ul(n.videoSummary);
+        else h += '<div class="lbl">Preview the video before the session.</div>';
         h += '</div>';
       }
       if (n.tip) h += '<div class="tip"><strong>Tip:</strong> ' + E(n.tip) + '</div>';

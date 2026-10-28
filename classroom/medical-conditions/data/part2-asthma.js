@@ -8,19 +8,20 @@
     audience: 'Volunteer Ambulance Responders (AR course Day 6)',
     slides: [
       {
-        type: 'bullets',
+        type: 'image',
         title: 'What happens in asthma',
+        img: 'img/asthma-airways.jpg',
+        caption: 'Normal airway, asthmatic airway, and during an attack',
         points: [
           'A chronic disease (always there) with acute attacks',
           'An “attack” = not responding to their usual treatment, so they call us',
-          { t: 'Three things narrow the airways:', sub: ['Bronchospasm: the muscle around the bronchioles tightens', 'The lining swells', 'Extra mucus and sputum block the flow'] },
+          { t: 'Three things narrow the airways:', sub: ['Bronchospasm: the muscle tightens', 'The lining swells', 'Extra mucus and sputum'] },
           'Air can’t move in and out freely: that causes the symptoms'
         ],
-        callout: { head: 'Triggers', text: 'Dust, pollen, chemicals, smoke, animal hair, cold air, exercise. Asthma symptoms can also be part of anaphylaxis.' },
         notes: {
           time: 12,
           say: ['Briefly discuss the basic pathophysiology. Asthma is chronic; an asthma attack is an acute episode that doesn’t respond to the normal treatment and an ambulance may be called.'],
-          tip: 'Triggers callout is from the study guide (Asthma, background).'
+          tip: 'Picture from the SAAS PowerPoint slide 9 (used with SAAS permission). Triggers (study guide): dust, pollen, chemicals, smoke, animal hair, cold air, exercise; asthma symptoms can also be part of anaphylaxis.'
         }
       },
       {
@@ -91,6 +92,12 @@
           'Request clinical support early'
         ],
         notes: { time: 5, say: ['Review the ventilation technique for patients with life-threatening asthma.'], tip: 'Anaphylaxis-first point: study guide, Asthma and anaphylaxis.' }
+      },
+      {
+        type: 'video',
+        title: 'Optional video: IPPV ventilation, are you doing it right?',
+        vimeo: { id: '339888483', length: '13:58', linkOnly: true },
+        notes: { time: 0, videoSummary: ['Bag-valve-mask ventilation technique (SAAS Clinical Education, AA AR AO IPPV Ventilation).'], tip: 'Optional: not in the SAAS workshop timetable. From the Medical Conditions study guide (SAAS Clinical Education). Use it if time allows, or set it for revision.' }
       },
       {
         type: 'compare',

@@ -57,6 +57,12 @@
         notes: { time: 2 }
       },
       {
+        type: 'video',
+        title: 'Optional video: complicated pregnancies',
+        vimeo: { id: '1086642489', hash: '84533fc4f1', length: '7:17' },
+        notes: { time: 0, videoSummary: ['The most common or most concerning complications of pregnancy (SAAS Clinical Education, AR Complicated Pregnancies).'], tip: 'Optional: not in the SAAS workshop timetable. From the Medical Conditions study guide (SAAS Clinical Education). Use it if time allows, or set it for revision. Unlisted SAAS video: share the link only with SAAS students.' }
+      },
+      {
         type: 'bullets',
         title: 'Caring for the pregnant patient',
         points: [
@@ -83,9 +89,21 @@
       },
       {
         type: 'video',
+        title: 'Optional video: uncomplicated pregnancy and birth 1, general management',
+        vimeo: { id: '1086642772', hash: '612ad6c56d', length: '16:25' },
+        notes: { time: 0, videoSummary: ['SAAS’s general approach, gathering an obstetric history, and immediate care after an uncomplicated birth (SAAS Clinical Education).'], tip: 'Optional: not in the SAAS workshop timetable. From the Medical Conditions study guide (SAAS Clinical Education). Use it if time allows, or set it for revision. Unlisted SAAS video: share the link only with SAAS students.' }
+      },
+      {
+        type: 'video',
         title: 'Video: Normal labour and vaginal birth',
         video: { length: '3:43', file: 'Stages 1, 2 and 3 of labour explained', where: 'SAAS PowerPoint slide 50', note: 'Play this video from the SAAS Medical Conditions PowerPoint (slide 50).' },
         notes: { time: 4 }
+      },
+      {
+        type: 'video',
+        title: 'Optional video: uncomplicated pregnancy and birth 2, the three stages of labour',
+        vimeo: { id: '1086642181', hash: 'bd2305cece', length: '11:22' },
+        notes: { time: 0, videoSummary: ['The three stages of labour (SAAS Clinical Education).'], tip: 'Optional: not in the SAAS workshop timetable. From the Medical Conditions study guide (SAAS Clinical Education). Use it if time allows, or set it for revision. Unlisted SAAS video: share the link only with SAAS students.' }
       },
       {
         type: 'compare',
@@ -108,15 +126,24 @@
         }
       },
       {
-        type: 'bullets',
+        type: 'image',
+        title: 'What’s in the maternity kit',
+        img: 'img/maternity-kit.jpg',
+        caption: 'Gloves, gown, sterile scissors, cord clamps, dressings, nappy; newborn resuscitation gear and suction',
+        notes: { time: 0, tip: 'Picture from the SAAS Medical Conditions PowerPoint v3.0 (used with SAAS permission).' }
+      },
+      {
+        type: 'image',
         title: 'Assisting with the delivery',
+        img: 'img/delivery-stages.jpg',
+        caption: 'Second stage: head, anterior shoulder, posterior shoulder, body and cord',
         points: [
           'The head comes first, usually with no help',
-          'The baby turns on its side for the shoulders: stand by for a sudden delivery',
+          'The baby turns for the shoulders: stand by',
           'Never force the head to turn or twist',
           'Support the head; hold the slippery body firmly',
-          'Onto the mother’s abdomen, skin to skin',
-          'Dry, assess, note the time of birth, cover with a warm blanket and a hat'
+          'Skin to skin on the mother’s abdomen',
+          'Dry, assess, note the time, warm blanket and hat'
         ],
         notes: { time: 3, tip: 'Station 7 (CPP-060-AR) adds: note the time the head is born; shoulders should come with the next contraction or within 60 seconds, otherwise suspect shoulder dystocia (CTL-128).' }
       },
@@ -147,6 +174,33 @@
           time: 8,
           tip: 'CPP-060-AR and CTL-128 (station 7) say breech: all fours at once, then EOC Clinician advice. DSY’s obstetric emergencies companion (dsytraining.com/tools/obstetric/) has phone flowcharts from CTL-128.'
         }
+      },
+      {
+        type: 'image',
+        title: 'Positions for complications',
+        img: 'img/sims-positions.jpg',
+        caption: 'Sims (knee-chest) position, and the modified Sims position for transport',
+        notes: { time: 0, tip: 'Picture from the SAAS Medical Conditions PowerPoint v3.0 (used with SAAS permission).' }
+      },
+      {
+        type: 'image',
+        title: 'Breech presentations',
+        img: 'img/breech.jpg',
+        caption: 'Complete, incomplete and frank breech',
+        notes: { time: 0, tip: 'Picture from the SAAS Medical Conditions PowerPoint v3.0 (used with SAAS permission).' }
+      },
+      {
+        type: 'image',
+        title: 'Prolapsed cord',
+        img: 'img/prolapsed-cord.jpg',
+        caption: 'The presenting part compresses the cord',
+        notes: { time: 0, tip: 'Picture from the SAAS Medical Conditions PowerPoint v3.0 (used with SAAS permission).' }
+      },
+      {
+        type: 'video',
+        title: 'Optional video: complicated births (obstetric emergencies)',
+        vimeo: { id: '1086642369', hash: '1c712672d9', length: '10:48' },
+        notes: { time: 0, videoSummary: ['The most common or most concerning obstetric emergencies (SAAS Clinical Education, AR Complicated Births).'], tip: 'Optional: not in the SAAS workshop timetable. From the Medical Conditions study guide (SAAS Clinical Education). Use it if time allows, or set it for revision. Unlisted SAAS video: share the link only with SAAS students.' }
       },
       {
         type: 'bullets',
@@ -180,6 +234,12 @@
         }
       },
       {
+        type: 'video',
+        title: 'Optional video: newborn care and resuscitation',
+        vimeo: { id: '1086642578', hash: '61212b18b4', length: '14:33' },
+        notes: { time: 0, videoSummary: ['Newborn care and the Newborn Care and Resuscitation flowchart (SAAS Clinical Education).'], tip: 'Optional: not in the SAAS workshop timetable. From the Medical Conditions study guide (SAAS Clinical Education). Use it if time allows, or set it for revision. Unlisted SAAS video: share the link only with SAAS students.' }
+      },
+      {
         type: 'bullets',
         title: 'The placenta and bleeding after the birth',
         points: [
@@ -192,6 +252,13 @@
         ],
         callout: { head: 'Shock', text: 'Raise the legs (not the pelvis); urgent transport as the EOC Clinician directs. They may guide you to massage the abdomen.' },
         notes: { time: 6, say: ['For advice on managing the placenta, contact the EOC Clinician.', 'Discuss with the EOC Clinician the best way to transport mother and baby (they may consult the SDM).'] }
+      },
+      {
+        type: 'image',
+        title: 'Estimating blood loss',
+        img: 'img/blood-loss.jpg',
+        caption: 'Soiled pad 30 mL, soaked pad 100 mL, incontinence pad 250 mL, full kidney dish 500 mL, on the bed 1000 mL, spilling to the floor 2000 mL',
+        notes: { time: 0, say: ['Use these to estimate the loss and report it to the EOC Clinician.'], tip: 'Picture from the SAAS Medical Conditions PowerPoint v3.0 (used with SAAS permission).' }
       },
       {
         type: 'station',

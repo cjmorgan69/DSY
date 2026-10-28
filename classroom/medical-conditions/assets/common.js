@@ -19,8 +19,14 @@
     return out;
   };
 
-  D.vimeoEmbed = function (v) { return 'https://player.vimeo.com/video/' + v.id + '?h=' + v.hash + '&badge=0&autopause=0&app_id=58479'; };
-  D.vimeoUrl = function (v) { return 'https://vimeo.com/' + v.id + '/' + v.hash; };
+  D.vimeoEmbed = function (v) { return 'https://player.vimeo.com/video/' + v.id + '?' + (v.hash ? 'h=' + v.hash + '&' : '') + 'badge=0&autopause=0&app_id=58479'; };
+  D.vimeoUrl = function (v) { return 'https://vimeo.com/' + v.id + (v.hash ? '/' + v.hash : ''); };
+  // Online video on a slide: Vimeo ({ vimeo: { id, hash, length } }) or YouTube ({ youtube: { id, length } }).
+  D.vid = function (s) {
+    if (s.youtube) return { v: s.youtube, site: 'YouTube', embed: 'https://www.youtube-nocookie.com/embed/' + s.youtube.id + '?rel=0', url: 'https://www.youtube.com/watch?v=' + s.youtube.id };
+    if (s.vimeo) return { v: s.vimeo, site: 'Vimeo', embed: D.vimeoEmbed(s.vimeo), url: D.vimeoUrl(s.vimeo) };
+    return null;
+  };
 
   D.title = function (s) {
     return s.title || s.kicker || (s.text ? s.text.replace(/\s+/g, ' ').slice(0, 60) : 'Slide');
@@ -53,6 +59,7 @@
     (s.rows || []).forEach(function (r) { out.push(r.join(' | ')); });
     if (s.station) out.push('Station page: dsytraining.com/stations/ar-day6/#' + s.station);
     if (s.source) out.push(s.source);
+    if (s.img) out.push('[Picture: ' + (s.caption || s.img) + ']');
     if (s.callout) out.push((s.callout.head ? s.callout.head + ': ' : '') + s.callout.text);
     return out;
   };
@@ -75,15 +82,16 @@
       if (s.video.url) h += '<p class="small"><a href="' + D.esc(s.video.url) + '" target="_blank" rel="noopener">Open in the eLearning lesson</a> (saaslearn login needed)</p>';
       h += '</div>';
     }
-    if (s.vimeo) {
-      h += '<div class="nblock vid"><h4>Video' + (s.vimeo.length ? ' (' + D.esc(s.vimeo.length) + ')' : '') + '</h4>';
+    var ov = D.vid(s);
+    if (ov) {
+      h += '<div class="nblock vid"><h4>Video' + (ov.v.length ? ' (' + D.esc(ov.v.length) + ')' : '') + '</h4>';
       if (n.videoSummary && n.videoSummary.length) {
-        h += '<p class="small">What the video covers (from Vimeo auto-captions, check before relying on it):</p><ul>' +
+        h += '<p class="small">What the video covers:</p><ul>' +
           n.videoSummary.map(function (x) { return '<li>' + D.esc(x) + '</li>'; }).join('') + '</ul>';
       } else {
-        h += '<p class="small">No captions are available for this video. Preview it before the session and add the key points here.</p>';
+        h += '<p class="small">Preview it before the session.</p>';
       }
-      h += '<p class="small"><a href="' + D.vimeoUrl(s.vimeo) + '" target="_blank" rel="noopener">Open on Vimeo</a></p></div>';
+      h += '<p class="small"><a href="' + ov.url + '" target="_blank" rel="noopener">Open on ' + ov.site + '</a></p></div>';
     }
     if (n.tip) h += '<div class="nblock tip"><h4>Tip</h4><p>' + D.esc(n.tip) + '</p></div>';
     if (!h) h = '<p class="small">No notes for this slide.</p>';

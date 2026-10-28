@@ -70,6 +70,13 @@
         notes: { time: 10, say: ['Direct students to the SAAS Clinical App, AR, Medical, Anaphylaxis CPP-022-AR.'] }
       },
       {
+        type: 'image',
+        title: 'Adrenaline (epinephrine)',
+        img: 'img/adrenaline.jpg',
+        caption: 'Auto-injectors, and the SAAS adrenaline 1 mg in 1 mL ampoules',
+        notes: { time: 0, tip: 'Picture from the SAAS Medical Conditions PowerPoint v3.0 (used with SAAS permission).' }
+      },
+      {
         type: 'compare',
         title: 'Adrenaline: two ways',
         left: { head: 'Auto-injector (EpiPen)', points: ['Pre-set dose', 'The preferred AR method, using the patient’s own', 'Patient has one and a care plan: give it as per the plan, THEN consult the EOC Clinician'] },
@@ -83,6 +90,12 @@
           ],
           tip: 'Everyone given adrenaline for anaphylaxis goes to hospital, even if their symptoms resolve (study guide). Insect sting still visible: flick it off rather than grab it (study guide).'
         }
+      },
+      {
+        type: 'video',
+        title: 'Optional video: how to use an EpiPen',
+        vimeo: { id: '339479927', length: '5:34', linkOnly: true },
+        notes: { time: 0, videoSummary: ['Using an EpiPen auto-injector (SAAS Clinical Education, AA AR AO How to use EpiPen).'], tip: 'Optional: not in the SAAS workshop timetable. From the Medical Conditions study guide (SAAS Clinical Education). Use it if time allows, or set it for revision.' }
       },
       {
         type: 'bullets',
