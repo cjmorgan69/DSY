@@ -20,6 +20,7 @@ settings or play files you leave in the container: send files with the file tool
   student versions). The other `/modules/*` pages are still the old standalone style.
 - `/scenarios/` - trial scenario customiser: pick a walk-through and change its local details (names, places, times).
   Templates are in Supabase `public.scenarios`. Read `scenarios/README.md`. All 11 converted walk-throughs.
+- `/classroom/` - slide shows built from SAAS eLearning lessons (DRiVE sections 2 to 7 in `drive-mindset/`, Manual Tasks lessons in `manual-tasks/`), live 27 to 28 Oct 2026. Read `classroom/README.md` for the process and rules before adding a lesson.
 - `/training/` - the training-session app (Supabase). `/teams/`, `/region/` - team and region pages.
 
 ## Skills
