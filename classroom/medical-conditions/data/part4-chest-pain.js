@@ -66,6 +66,13 @@
         }
       },
       {
+        type: 'image',
+        title: 'Where heart attack pain is felt',
+        img: 'img/pain-location.jpg',
+        caption: 'Pain may be central, or in the neck, jaw, arms, back or upper abdomen',
+        notes: { time: 0, say: ['Some patients have pain only in the jaw, arm or back, or no pain at all.'], tip: 'Picture from the SAAS Medical Conditions PowerPoint v3.0 (used with SAAS permission).' }
+      },
+      {
         type: 'bullets',
         title: 'Chest pain management',
         points: [
@@ -87,6 +94,12 @@
           ],
           tip: 'Cardiac monitoring was taught in Foundations of Care.'
         }
+      },
+      {
+        type: 'video',
+        title: 'Optional video: the story of a real heart attack',
+        vimeo: { id: '339047353', length: '7:47', linkOnly: true },
+        notes: { time: 0, videoSummary: ['A case study of a real heart attack (SAAS Clinical Education, AR AO Case Study). The study guide uses it to show why time is muscle.'], tip: 'Optional: not in the SAAS workshop timetable. From the Medical Conditions study guide (SAAS Clinical Education). Use it if time allows, or set it for revision.' }
       },
       {
         type: 'table',

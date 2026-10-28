@@ -48,6 +48,12 @@
         notes: { time: 3, say: ['Acute bacterial infection; sudden onset of illness; use the RDR chart for assistance.'], tip: 'Peaks late winter and early spring; ages 0 to 4 and 15 to 25 most at risk (study guide).' }
       },
       {
+        type: 'video',
+        title: 'Optional video: meningococcal disease',
+        vimeo: { id: '339487543', length: '17:06', linkOnly: true },
+        notes: { time: 0, videoSummary: ['Meningococcal disease: recognition and management (SAAS Clinical Education, AR Meningococcal Disease).'], tip: 'Optional: not in the SAAS workshop timetable. From the Medical Conditions study guide (SAAS Clinical Education). Use it if time allows, or set it for revision.' }
+      },
+      {
         type: 'statement',
         kicker: 'Other medical emergencies',
         text: 'No AR protocol for these. Basic care and life support for all of them.',

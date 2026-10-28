@@ -123,9 +123,10 @@
       {
         type: 'video',
         title: 'Video: Asthma',
-        video: { length: '4:50', file: 'Asthma: a teenage boy with life-threatening asthma in the emergency department', where: 'SAAS PowerPoint slide 7; also linked from the study guide, Asthma', note: 'Play this video from the SAAS Medical Conditions PowerPoint (slide 7) or the study guide link.' },
+        vimeo: { id: '339491880', length: '4:50', linkOnly: true },
         notes: {
           time: 5,
+          videoSummary: ['A teenage boy with life-threatening asthma in the emergency department (SAAS Clinical Education, AR AO Asthma).'],
           ask: ['What signs and symptoms were present in this patient?', 'Was it a life-threatening asthma attack? If yes, what makes us think so?'],
           say: ['Today we are going to discuss asthma and other common medical conditions we are routinely called to.']
         }

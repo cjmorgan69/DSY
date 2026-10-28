@@ -82,21 +82,27 @@
         pts(s.points) + '<div class="stu">' + E(url.replace('https://', '')) + '</div></div>' +
         '<div class="qr" data-url="' + E(url) + '"></div></div>' + lab(it) + '</div>';
     },
+    image: function (s, it) {
+      var pic = '<figure class="pic"><img src="' + E(s.img) + '" alt="' + E(s.alt || s.title) + '">' + (s.caption ? '<figcaption>' + E(s.caption) + '</figcaption>' : '') + '</figure>';
+      return '<div class="slide light"><h1 class="t">' + E(s.title) + '</h1><div class="body imgbody' + (s.points ? ' two' : '') + '" style="--fs:' + (s.fs || 40) + 'px">' +
+        (s.points ? '<div>' + pts(s.points, true) + (s.callout ? callout(s.callout).replace('class="callout"', 'class="callout step" data-step="' + (s.points.length + 1) + '"') : '') + '</div>' : '') + pic + '</div>' + lab(it) + '</div>';
+    },
     video: function (s, it) {
-      var v = s.vimeo;
+      var ov = D.vid(s), v = ov && ov.v;
       if (!v) {
         var f = s.video || {};
         return '<div class="slide dark video"><div class="vhead"><h1 class="t">' + E(s.title) + '</h1>' + (f.length ? '<div class="vbadge">&#9654; ' + E(f.length) + '</div>' : '') + '</div>' +
           '<div class="vpanel"><div class="vplay">&#9654;</div><div class="vnote">' + E(f.note || 'This video is in the eLearning lesson. Play it from the lesson, or add the file to this slide.') + '</div></div></div>';
       }
-      if (ART) {
-        return '<div class="slide dark video"><div class="vhead"><h1 class="t">' + E(s.title) + '</h1>' + (v.length ? '<div class="vbadge">&#9654; ' + E(v.length) + '</div>' : '') + '</div>' +
-          '<div class="vpanel"><div class="vplay">&#9654;</div><a class="vbtn" href="' + D.vimeoUrl(v) + '" target="_blank" rel="noopener">Watch on Vimeo</a>' +
-          '<div class="vnote">Opens in a new tab. Come back here and press the right arrow to continue.</div></div></div>';
+      var head = '<div class="vhead"><h1 class="t">' + E(s.title) + '</h1>' + (v.length ? '<div class="vbadge">&#9654; ' + E(v.length) + '</div>' : '') + '</div>';
+      if (ART || v.linkOnly) {
+        return '<div class="slide dark video">' + head +
+          '<div class="vpanel"><div class="vplay">&#9654;</div><a class="vbtn" href="' + ov.url + '" target="_blank" rel="noopener">Watch on ' + ov.site + '</a>' +
+          '<div class="vnote">' + (v.linkOnly && !ART ? 'This video only plays on ' + ov.site + '. ' : '') + 'Opens in a new tab. Come back here and press the right arrow to continue.</div></div></div>';
       }
-      return '<div class="slide dark video"><div class="vhead"><h1 class="t">' + E(s.title) + '</h1>' + (v.length ? '<div class="vbadge">&#9654; ' + E(v.length) + '</div>' : '') + '</div>' +
-        '<div class="vframe"><iframe src="' + D.vimeoEmbed(v) + '" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="' + E(s.title) + '"></iframe></div>' +
-        '<div class="vlink">Video not playing? <a href="' + D.vimeoUrl(v) + '" target="_blank" rel="noopener">Open it on Vimeo</a>. Click outside the video to use the arrow keys again.</div></div>';
+      return '<div class="slide dark video">' + head +
+        '<div class="vframe"><iframe src="' + ov.embed + '" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="' + E(s.title) + '"></iframe></div>' +
+        '<div class="vlink">Video not playing? <a href="' + ov.url + '" target="_blank" rel="noopener">Open it on ' + ov.site + '</a>. Click outside the video to use the arrow keys again.</div></div>';
     },
     mantra: function (s, it) {
       var lights = s.lights.map(function (l, i) { return '<div class="tl ' + l.color + ' soft" data-light="' + (i + 1) + '"></div>'; }).join('');
@@ -194,7 +200,7 @@
   var menu = document.getElementById('menu'), mh = '', lastSec = -1;
   slides.forEach(function (it, idx) {
     if (it.si !== lastSec) { lastSec = it.si; mh += '<h3>' + D.secName(it.sec) + ': ' + E(it.sec.title) + '</h3>'; }
-    mh += '<a href="#' + it.sec.id + '/' + it.n + '" data-g="' + idx + '"><span class="n">' + it.n + '</span><span>' + E(D.title(it.s)) + (it.s.vimeo ? ' <span class="v">&#9654;</span>' : '') + '</span></a>';
+    mh += '<a href="#' + it.sec.id + '/' + it.n + '" data-g="' + idx + '"><span class="n">' + it.n + '</span><span>' + E(D.title(it.s)) + ((it.s.vimeo || it.s.youtube) ? ' <span class="v">&#9654;</span>' : '') + '</span></a>';
   });
   menu.innerHTML = mh;
   menu.addEventListener('click', function (e) {
@@ -216,10 +222,11 @@
         if (n.ask && n.ask.length) h += '<h4>Ask the group</h4><ul>' + n.ask.map(function (x) { return '<li>' + E(x) + '</li>'; }).join('') + '</ul>';
         if (n.activity) h += '<p class="gbox"><strong>Activity:</strong> ' + E(n.activity) + '</p>';
         if (s.video) h += '<p class="gbox"><strong>Video (' + E(s.video.length || 'length not known') + '):</strong> ' + E(s.video.file || '') + (s.video.url ? ' · <a href="' + E(s.video.url) + '" target="_blank" rel="noopener">Open in the eLearning lesson</a> (saaslearn login needed)' : ' (' + E(s.video.where || 'in the eLearning lesson') + ')') + '</p>';
-        if (s.vimeo) {
-          h += '<p class="gbox"><strong>Video (' + (s.vimeo.length ? E(s.vimeo.length) : 'length not known') + '):</strong> <a href="' + D.vimeoUrl(s.vimeo) + '" target="_blank" rel="noopener">Open on Vimeo</a>';
+        var gv = D.vid(s);
+        if (gv) {
+          h += '<p class="gbox"><strong>Video (' + (gv.v.length ? E(gv.v.length) : 'length not known') + '):</strong> <a href="' + gv.url + '" target="_blank" rel="noopener">Open on ' + gv.site + '</a>';
           if (n.videoSummary && n.videoSummary.length) h += '<ul>' + n.videoSummary.map(function (x) { return '<li>' + E(x) + '</li>'; }).join('') + '</ul>';
-          else h += '<br>No captions available: preview the video and add the key points.';
+          else h += '<br>Preview the video before the session.';
           h += '</p>';
         }
         if (n.tip) h += '<p class="gbox"><strong>Tip:</strong> ' + E(n.tip) + '</p>';

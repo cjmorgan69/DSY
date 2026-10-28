@@ -36,6 +36,18 @@
         }
       },
       {
+        type: 'video',
+        title: 'Video: Signs of stroke, Fire in the Brain',
+        youtube: { id: 'MmoGeCXovJ8', length: '0:30' },
+        notes: { time: 1, videoSummary: ['Stroke Foundation advertisement on the FAST signs.'], tip: 'From the study guide. Fits in the stroke time.' }
+      },
+      {
+        type: 'video',
+        title: 'Optional video: introduction to Code Stroke',
+        vimeo: { id: '339051187', length: '8:17', linkOnly: true },
+        notes: { time: 0, videoSummary: ['Introduction to Code Stroke (SAAS Clinical Education, AR AO Intro to Code Stroke).'], tip: 'Optional: not in the SAAS workshop timetable. From the Medical Conditions study guide (SAAS Clinical Education). Use it if time allows, or set it for revision. ROSIER and Code Stroke are not AR scope (facilitator guide): it shows what happens after the EOC Clinician call.' }
+      },
+      {
         type: 'cards',
         title: 'Seizures',
         cols: 3,
@@ -53,6 +65,19 @@
             'Febrile: it is more likely the speed of the rise, not the peak temperature, that causes it.'
           ]
         }
+      },
+      {
+        type: 'image',
+        title: 'A tonic-clonic seizure',
+        img: 'img/seizure-stages.jpg',
+        caption: 'Aura, tonic, clonic and post-ictal stages',
+        notes: { time: 0, tip: 'Picture from the SAAS Medical Conditions PowerPoint v3.0 (used with SAAS permission).' }
+      },
+      {
+        type: 'video',
+        title: 'Optional video: seizures explained',
+        vimeo: { id: '339890645', length: '5:56', linkOnly: true },
+        notes: { time: 0, videoSummary: ['Seizure types and what happens in the brain (SAAS Clinical Education, AA AR AO Seizures Explained).'], tip: 'Optional: not in the SAAS workshop timetable. From the Medical Conditions study guide (SAAS Clinical Education). Use it if time allows, or set it for revision.' }
       },
       {
         type: 'bullets',
