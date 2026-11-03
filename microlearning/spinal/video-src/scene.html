@@ -1,0 +1,161 @@
+<!doctype html><meta charset="utf-8">
+<style>
+*{margin:0;box-sizing:border-box}
+body{width:1280px;height:720px;overflow:hidden;background:radial-gradient(120% 90% at 30% 20%,#25694e,#123d2c);color:#fff;font-family:"Helvetica Neue",Arial,sans-serif}
+svg{position:absolute;inset:0}
+</style>
+<svg id="v" width="1280" height="720" viewBox="0 0 1280 720"></svg>
+<script>
+const TL=TIMELINE, NS="http://www.w3.org/2000/svg";
+const C={gold:"#e3a712",red:"#e2574c",mint:"#8be0b1",ink:"#123d2c",card:"rgba(0,0,0,.30)",cardLine:"rgba(255,255,255,.16)",ok:"#3fae74"};
+const cl=t=>Math.max(0,Math.min(1,t)), eo=t=>1-Math.pow(1-cl(t),3);
+const pr=(t,a,b)=>cl((t-a)/(b-a));
+function el(tag,a,p){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);(p||v).appendChild(e);return e}
+function txt(s,a,p){const e=el("text",Object.assign({fill:"#fff","font-family":"Helvetica Neue,Arial,sans-serif"},a),p);e.textContent=s;return e}
+function defs(){const d=el("defs",{});const sh=el("filter",{id:"sh",x:"-20%",y:"-20%",width:"140%",height:"140%"},d);
+  el("feDropShadow",{dx:0,dy:6,stdDeviation:8,"flood-color":"#000","flood-opacity":.28},sh)}
+/* reveal: fade/slide in starting at time s */
+function rv(t,s,d){return eo(pr(t,s,s+(d||0.5)))}
+function grp(p,a){return el("g",{opacity:a,transform:`translate(0 ${(1-a)*16})`},p)}
+function card(g,x,y,w,h,fill,stroke){return el("rect",{x,y,width:w,height:h,rx:22,fill:fill||C.card,stroke:stroke||C.cardLine,"stroke-width":2},g)}
+function badgeNum(g,x,y,n,col){el("circle",{cx:x,cy:y,r:24,fill:col||C.gold},g);txt(String(n),{x,y:y+10,"text-anchor":"middle","font-size":28,"font-weight":800,fill:C.ink},g)}
+function tick(g,x,y,a,r){r=r||20;el("circle",{cx:x,cy:y,r,fill:a>0?C.ok:"rgba(255,255,255,.15)"},g);
+  if(a>0)el("path",{d:`M${x-r*.45} ${y} L${x-r*.1} ${y+r*.38} L${x+r*.5} ${y-r*.35}`,fill:"none",stroke:"#fff","stroke-width":r*.28,"stroke-linecap":"round","stroke-linejoin":"round","stroke-dasharray":60,"stroke-dashoffset":60*(1-a)},g)}
+function row(g,x,y,w,h,title,sub,a,col){
+  const gg=grp(g,a);card(gg,x,y,w,h);
+  el("rect",{x,y,width:8,height:h,rx:4,fill:col||C.gold},gg);
+  txt(title,{x:x+34,y:y+(sub?(Array.isArray(sub)?h*.32:h*.42):h*.62),"font-size":32,"font-weight":700},gg);
+  if(Array.isArray(sub))sub.forEach((ln,k)=>txt(ln,{x:x+34,y:y+h*.62+k*30,"font-size":23,fill:"#cfe7da"},gg));
+  else if(sub)txt(sub,{x:x+34,y:y+h*.76,"font-size":23,fill:"#cfe7da"},gg);
+  return gg}
+function bullets(g,x,y,items,t,starts,col){items.forEach((s,i)=>{const a=rv(t,starts[i]);const gg=grp(g,a);
+  el("circle",{cx:x,cy:y+i*50-9,r:7,fill:col||C.gold},gg);txt(s,{x:x+24,y:y+i*50,"font-size":28},gg)})}
+
+function lineAt(t){let i=0;TL.lines.forEach((l,k)=>{if(t>=l.start-0.45)i=k});return i}
+function sentAt(t,l){let j=0;l.s.forEach((s,k)=>{if(t>=s.s-0.15)j=k});return j}
+
+function chrome(t,i){
+  const l=TL.lines[i], n=TL.lines.length;
+  txt("DSY TRAINING",{x:70,y:62,"font-size":17,"font-weight":700,"letter-spacing":"3",opacity:.65});
+  txt(l.head,{x:70,y:112,"font-size":46,"font-weight":800,"letter-spacing":"-1"});
+  for(let k=0;k<n;k++){const w=32,x=1210-(n-k)*(w+7);
+    el("rect",{x,y:52,width:w,height:7,rx:3.5,fill:"rgba(255,255,255,.22)"});
+    const f=k<i?1:k>i?0:pr(t,l.start,l.end);
+    if(f>0)el("rect",{x,y:52,width:w*f,height:7,rx:3.5,fill:C.gold});}
+  const j=sentAt(t,l), s=l.s[j];
+  const a=Math.min(cl((t-(s.s-0.15))/0.2), t>l.end+0.35?cl(1-(t-l.end-0.35)/0.25):1);
+  const g=el("g",{opacity:a});
+  const long=s.text.length>70;
+  el("rect",{x:70,y:long?570:590,width:1140,height:long?112:84,rx:22,fill:"rgba(0,0,0,.34)"},g);
+  if(!long) txt(s.text,{x:640,y:644,"text-anchor":"middle","font-size":s.text.length>62?30:34,"font-weight":600},g);
+  else{ // wrap into two lines at the nearest space to the middle
+    let m=Math.floor(s.text.length/2), L=s.text.lastIndexOf(" ",m), R=s.text.indexOf(" ",m);
+    const cut=(m-L<R-m||R<0)?L:R;
+    const fs=s.text.length>150?25:(s.text.length>125?28:32);
+    txt(s.text.slice(0,cut),{x:640,y:620,"text-anchor":"middle","font-size":fs,"font-weight":600},g);
+    txt(s.text.slice(cut+1),{x:640,y:664,"text-anchor":"middle","font-size":fs,"font-weight":600},g);}
+  txt("SAAS CPP-018-AO · CPPRO-021",{x:1210,y:704,"text-anchor":"end","font-size":15,opacity:.5,"letter-spacing":"1.5"});
+}
+
+function scene(t,i){
+  const l=TL.lines[i], S=l.s, T=t;
+  const fade=Math.min(cl((t-(l.start-0.45))/0.35), i<TL.lines.length-1?cl((TL.lines[i+1].start-0.45-t)/0.3):1);
+  const g=el("g",{opacity:fade});
+  const chips=(items,x0,y,starts,fill,maxX)=>{let x=x0,yy=y;items.forEach((c,k)=>{const w=c.length*13.2+40;if(x+w>maxX){x=x0;yy+=62}
+      const a=rv(T,starts[k],0.35);if(a>0){const g2=grp(g,a);el("rect",{x,y:yy,width:w,height:48,rx:24,fill:Array.isArray(fill)?fill[k]:fill},g2);txt(c,{x:x+w/2,y:yy+31,"text-anchor":"middle","font-size":22,"font-weight":700},g2)}x+=w+10})};
+  const tiles=(labels,starts,y,hiLast)=>{const n=labels.length,gap=20,w=(1140-(n-1)*gap)/n;labels.forEach((p,k)=>{const a=rv(T,starts[k],0.4), x=70+k*(w+gap);
+      const hi=hiLast&&k===n-1;
+      const gg=grp(g,a);el("rect",{x,y,width:w,height:170,rx:26,fill:hi?C.gold:"rgba(0,0,0,.32)",stroke:C.cardLine,"stroke-width":2},gg);
+      badgeNum(gg,x+46,y+50,p[0],hi?"#fff":C.gold);
+      txt(p[1],{x:x+w/2,y:y+113,"text-anchor":"middle","font-size":27,"font-weight":800,fill:hi?C.ink:"#fff"},gg);txt(p[2],{x:x+w/2,y:y+147,"text-anchor":"middle","font-size":22,fill:hi?C.ink:"#cfe7da"},gg)})};
+  const big=(x,y,w,h,title,sub,a,tone)=>{if(a<=0)return;const gg=grp(g,a);
+      card(gg,x,y,w,h,tone==="no"?"rgba(226,87,76,.28)":tone==="ok"?"rgba(63,174,116,.30)":C.card,tone==="no"?"rgba(226,87,76,.7)":tone==="ok"?"rgba(139,224,177,.7)":C.cardLine);
+      txt(title,{x:x+w/2,y:y+(sub?h*.44:h*.6),"text-anchor":"middle","font-size":30,"font-weight":800},gg);
+      if(sub)txt(sub,{x:x+w/2,y:y+h*.78,"text-anchor":"middle","font-size":22,fill:"#e6f2ec"},gg)};
+
+  if(i===0){
+    txt("WALKED IN",{x:640,y:290,"text-anchor":"middle","font-size":120,"font-weight":800,"letter-spacing":"-4",opacity:rv(T,S[0].s,0.5)},g);
+    el("rect",{x:640-210*rv(T,S[0].s+0.2,0.7),y:318,width:420*rv(T,S[0].s+0.2,0.7),height:7,rx:3.5,fill:C.gold},g);
+    txt("still not cleared  ·  Ambulance Officer microlearning",{x:640,y:380,"text-anchor":"middle","font-size":32,fill:"#dff1e7",opacity:rv(T,S[0].s+0.6,0.5)},g);
+    chips(["Ladder fall","LOC 2 min","Walked inside","Kitchen table","Left hip pain","\"My neck's fine\""],70,420,[S[0].s+0.8,S[1].s,S[2].s,S[3].s,S[4].s,S[5].s],["rgba(0,0,0,.32)","rgba(0,0,0,.32)","rgba(0,0,0,.32)","rgba(0,0,0,.32)","rgba(0,0,0,.32)","rgba(226,87,76,.55)"],1215);
+    badge(g,"So, is it?",640,506,rv(T,S[6].s,0.4),"rgba(227,167,18,.6)");
+  }
+
+  if(i===1){
+    txt("Spinal Injury - AO (CPP-018-AO): spinal precautions if",{x:70,y:175,"font-size":28,"font-weight":700,fill:C.gold,opacity:rv(T,S[0].s,0.4)},g);
+    big(70,200,520,150,"Spinal pain","tenderness · neck ache · back pain",rv(T,S[1].s),"");
+    txt("OR",{x:640,y:290,"text-anchor":"middle","font-size":40,"font-weight":800,fill:C.gold,opacity:rv(T,S[2].s,0.4)},g);
+    big(690,200,520,150,"A mechanism","likely to cause a spinal injury",rv(T,S[2].s),"");
+    chips(["Injury above the chest","Distracting injury"],330,380,[S[3].s,S[4].s],"rgba(227,167,18,.5)",1210);
+    badge(g,"Either one is enough",640,480,rv(T,S[5].s,0.4),"rgba(63,174,116,.6)");
+  }
+
+  if(i===2){
+    txt("Neil's red flags",{x:70,y:165,"font-size":28,"font-weight":700,fill:C.gold,opacity:rv(T,S[0].s,0.4)},g);
+    const R=[["Fall over 1 m","about 2.8 m",1],["Head strike + LOC","above the chest",2],["Distracting injury","his hip",3],["Reduced GCS","concussed, amnesic",4],["Over 65","he's 67",5]];
+    R.forEach((r,k)=>{const x=k<3?70:650,y=k<3?185+k*86:185+(k-3)*86;row(g,x,y,560,74,r[0],null,rv(T,S[r[2]].s),Z.r);
+      txt(r[1],{x:x+540,y:y+46,"text-anchor":"end","font-size":22,fill:"#cfe7da",opacity:rv(T,S[r[2]].s,0.5)},g)});
+    big(650,365,560,74,"Don't try to clear his neck",null,rv(T,S[6].s),"no");
+    badge(g,"His answer can't be relied on",640,500,rv(T,S[7].s,0.4),"rgba(0,0,0,.4)");
+  }
+
+  if(i===3){
+    tiles([["1","Stop moving","don't walk again"],["2","Hold the head","explain why"],["3","No mobility","assessment"]],[S[1].s,S[2].s,S[3].s],165,false);
+    txt("Check for",{x:70,y:385,"font-size":28,"font-weight":700,fill:C.gold,opacity:rv(T,S[4].s,0.4)},g);
+    chips(["Paralysis","Tingling","Weakness","Numbness","Low BP"],230,355,[S[4].s,S[4].s+0.4,S[4].s+0.8,S[4].s+1.2,S[4].s+1.8],"rgba(226,87,76,.5)",1210);
+    big(70,430,1140,96,"Request clinical support","vacuum mattress for transport, if available",rv(T,S[6].s),"no");
+  }
+
+  if(i===4){
+    big(70,165,560,130,"Semi-rigid collar ✗","concerns about raised ICP",rv(T,S[1].s),"no");
+    big(650,165,560,130,"Modified towel roll ✓","CPPRO-021",rv(T,S[3].s),"ok");
+    chips(["2 towels","2 × 500 mL saline","Tape across the forehead"],70,320,[S[4].s,S[4].s+0.7,S[4].s+1.5],"rgba(0,0,0,.32)",1210);
+    badge(g,"Never tape the head to the stretcher",640,430,rv(T,S[5].s,0.4),"rgba(226,87,76,.55)");
+    badge(g,"No long board",640,505,rv(T,S[6].s,0.4),"rgba(226,87,76,.55)");
+  }
+
+  if(i===5){
+    const a=rv(T,S[0].s,0.5);
+    if(a>0){const gg=grp(g,a);
+      el("rect",{x:150,y:250,width:120,height:14,rx:4,fill:"#cfe7da"},gg);el("rect",{x:150,y:150,width:14,height:114,rx:4,fill:"#cfe7da"},gg);
+      el("rect",{x:160,y:264,width:12,height:90,fill:"#cfe7da"},gg);el("rect",{x:250,y:264,width:12,height:90,fill:"#cfe7da"},gg);
+      txt("Chair",{x:210,y:390,"text-anchor":"middle","font-size":24,fill:"#cfe7da"},gg);
+      el("path",{d:"M330 260 L560 260",stroke:C.gold,"stroke-width":8,"stroke-linecap":"round","stroke-dasharray":"6 18"},gg);
+      el("path",{d:"M545 240 L575 260 L545 280",fill:"none",stroke:C.gold,"stroke-width":8,"stroke-linecap":"round","stroke-linejoin":"round"},gg);
+      el("rect",{x:620,y:270,width:300,height:24,rx:8,fill:"#cfe7da"},gg);el("rect",{x:650,y:294,width:10,height:60,fill:"#cfe7da"},gg);el("rect",{x:880,y:294,width:10,height:60,fill:"#cfe7da"},gg);
+      txt("Stretcher",{x:770,y:390,"text-anchor":"middle","font-size":24,fill:"#cfe7da"},gg);}
+    chips(["Plan it as a team","Head and spine in line","Minimal movement"],70,420,[S[0].s+0.5,S[1].s,S[2].s],"rgba(0,0,0,.32)",1210);
+    badge(g,"Methoxyflurane for the move",640,530,rv(T,S[3].s,0.4),"rgba(227,167,18,.55)");
+  }
+
+  if(i===6){
+    txt("Pain (CPP-013-AO): multimodal",{x:70,y:165,"font-size":28,"font-weight":700,fill:C.gold,opacity:rv(T,S[0].s,0.4)},g);
+    chips(["Paracetamol","Ibuprofen, if safe","Methoxyflurane"],70,185,[S[1].s,S[2].s,S[3].s],"rgba(63,174,116,.55)",1210);
+    big(70,265,1140,100,"Ketamine wafer: not on the protocol alone","needs GCS 15 or normal · over 64 = SAAS Medical Officer consult",rv(T,S[4].s),"no");
+    txt("Nausea (CPP-047-AO)",{x:70,y:415,"font-size":28,"font-weight":700,fill:C.gold,opacity:rv(T,S[7].s,0.4)},g);
+    big(70,435,1140,100,"Ondansetron 4 mg ODT before transport","head or spine trauma, where vomiting would be risky",rv(T,S[8].s),"ok");
+  }
+
+  if(i===7){
+    tiles([["1","Sticker","C-spine NOT clear"],["2","PCR","your decisions"],["3","Handover","why not cleared"]],[S[0].s,S[1].s,S[2].s],200,true);
+    badge(g,"He walked in. He still needs the precautions.",640,470,rv(T,S[3].s,0.5),"rgba(227,167,18,.6)");
+  }
+}
+const Z={w:"#f4f4ef",y:"#e6dc63",r:"#d9786e",p:"#9b7fc4"};
+function badge(g,s,x,y,a,col){
+  if(a<=0)return;
+  const gg=grp(g,a), w=s.length*15.5+56;
+  el("rect",{x:x-w/2,y:y-30,width:w,height:56,rx:28,fill:col||"rgba(0,0,0,.35)"},gg);
+  txt(s,{x,y:y+9,"text-anchor":"middle","font-size":26,"font-weight":700},gg);
+}
+function render(t){
+  v.innerHTML=""; defs();
+  const i=lineAt(t);
+  scene(t,i); chrome(t,i);
+  const last=TL.lines[TL.lines.length-1].end;
+  if(t>last+0.3){const a=eo(pr(t,last+0.3,last+0.9));
+    el("rect",{x:0,y:0,width:1280,height:720,fill:C.ink,opacity:a*.94});
+    txt("Walked in, still not cleared",{x:640,y:330,"text-anchor":"middle","font-size":64,"font-weight":800,opacity:a});
+    txt("SAAS CPP-018-AO · CPPRO-021  ·  DSY Training",{x:640,y:385,"text-anchor":"middle","font-size":26,opacity:a*.75});}
+}
+</script>

@@ -48,6 +48,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
+      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Walked in, still not cleared" } },
       { text: "Neil, 67, was cleaning the gutters at home in Tumby Bay. He fell from the ladder onto the timber decking. His wife saw it: his torso was about gutter height, roughly 2.8 metres up. He hit his head and was knocked out for about two minutes." },
       { text: "When he came round, his wife and a neighbour helped him walk inside. You find him sitting at the kitchen table. He's holding his left hip and that's all he wants to talk about. He says his neck and back are fine. He keeps asking what happened, and he can't remember the fall." },
       { box: { title: "Before you read on", tone: "warn", items: [
