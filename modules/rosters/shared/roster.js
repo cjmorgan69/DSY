@@ -721,7 +721,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         let savedRosterTime = null;
         let loadingCardTimer = null;
 
-        // Hours report (feature "hoursReport"); see setupHoursReport.
+        // Hours report (features "myHours", "teamHours"); see setupHoursReport.
         const HOURS_MS = 3600000;
         const MY_HOURS_WEEKS = 4;
         const TEAM_HOURS_WEEK_CHOICES = [2, 4, 6, 8];
@@ -757,7 +757,10 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 showSavedRoster();
             }
 
-            if (TEAM_FEATURES.has("hoursReport")) {
+            if (
+                TEAM_FEATURES.has("myHours") ||
+                TEAM_FEATURES.has("teamHours")
+            ) {
                 setupHoursReport();
             }
 
@@ -4300,7 +4303,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 setMessagesLoading(false);
             }
         }
-        /* ----- Hours report (feature "hoursReport") -----
+        /* ----- Hours report (features "myHours" and "teamHours") -----
          *
          * Rostered hours worked out from the bookings the page has
          * already loaded (active bookings only; cancelled shifts are
@@ -4310,19 +4313,24 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
          * weeks, or between two dates.
          */
         function setupHoursReport() {
-            const myHoursButton = document.createElement("button");
-            myHoursButton.id = "myHoursButton";
-            myHoursButton.className = "btn-secondary";
-            myHoursButton.type = "button";
-            myHoursButton.textContent = "My hours";
-            myHoursButton.addEventListener("click", () => openHoursModal("mine"));
-            document.getElementById("myBookingsButton").after(myHoursButton);
+            if (TEAM_FEATURES.has("myHours")) {
+                const myHoursButton = document.createElement("button");
+                myHoursButton.id = "myHoursButton";
+                myHoursButton.className = "btn-secondary";
+                myHoursButton.type = "button";
+                myHoursButton.textContent = "My hours";
+                myHoursButton.addEventListener(
+                    "click",
+                    () => openHoursModal("mine")
+                );
+                document.getElementById("myBookingsButton").after(myHoursButton);
+            }
 
             const firstManagerBar = document.querySelector(
                 "#managerControlsPanel .manager-controls-content .action-bar"
             );
 
-            if (firstManagerBar) {
+            if (TEAM_FEATURES.has("teamHours") && firstManagerBar) {
                 const bar = document.createElement("div");
                 bar.className = "action-bar";
 
