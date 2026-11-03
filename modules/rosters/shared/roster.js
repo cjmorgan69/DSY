@@ -721,7 +721,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         let savedRosterTime = null;
         let loadingCardTimer = null;
 
-        // Hours report (feature "hoursReport"); see setupHoursReport.
+        // Hours report (features "myHours", "teamHours"); see setupHoursReport.
         const HOURS_MS = 3600000;
         const MY_HOURS_WEEKS = 4;
         const TEAM_HOURS_WEEK_CHOICES = [2, 4, 6, 8];
@@ -758,7 +758,10 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 showSavedRoster();
             }
 
-            if (TEAM_FEATURES.has("hoursReport")) {
+            if (
+                TEAM_FEATURES.has("myHours") ||
+                TEAM_FEATURES.has("teamHours")
+            ) {
                 setupHoursReport();
             }
 
@@ -4301,7 +4304,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 setMessagesLoading(false);
             }
         }
-        /* ----- Hours report (feature "hoursReport") -----
+        /* ----- Hours report (features "myHours" and "teamHours") -----
          *
          * Rostered hours worked out from the bookings the page has
          * already loaded (active bookings only; cancelled shifts are
@@ -4311,23 +4314,30 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
          * weeks, or between two dates.
          */
         function setupHoursReport() {
-            const myHoursButton = document.createElement("button");
-            myHoursButton.id = "myHoursButton";
-            myHoursButton.className = "btn-secondary";
-            myHoursButton.type = "button";
-            myHoursButton.textContent = "My hours";
-            myHoursButton.addEventListener("click", () => openHoursModal("mine"));
-            document.getElementById("myBookingsButton").after(myHoursButton);
+            if (TEAM_FEATURES.has("myHours")) {
+                const myHoursButton = document.createElement("button");
+                myHoursButton.id = "myHoursButton";
+                myHoursButton.className = "btn-secondary";
+                myHoursButton.type = "button";
+                myHoursButton.textContent = "My hours";
+                myHoursButton.addEventListener(
+                    "click",
+                    () => openHoursModal("mine")
+                );
+                document.getElementById("myBookingsButton").after(myHoursButton);
+            }
 
             // Beside "Edit sent cut-off" in Manager controls.
-            const teamHoursButton = document.createElement("button");
-            teamHoursButton.id = "teamHoursButton";
-            teamHoursButton.className = "btn-secondary";
-            teamHoursButton.type = "button";
-            teamHoursButton.textContent = "Team hours";
-            teamHoursButton.addEventListener("click", openTeamHours);
-            document.getElementById("editRosterSentUntilButton")
-                .after(teamHoursButton);
+            if (TEAM_FEATURES.has("teamHours")) {
+                const teamHoursButton = document.createElement("button");
+                teamHoursButton.id = "teamHoursButton";
+                teamHoursButton.className = "btn-secondary";
+                teamHoursButton.type = "button";
+                teamHoursButton.textContent = "Team hours";
+                teamHoursButton.addEventListener("click", openTeamHours);
+                document.getElementById("editRosterSentUntilButton")
+                    .after(teamHoursButton);
+            }
 
             hoursModal = document.createElement("div");
             hoursModal.id = "hoursModal";
