@@ -3,7 +3,8 @@
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
   "CPP-018-AO": [
-    { kind: "Microlearning module", title: "Walked in, still not cleared", href: "/microlearning/spinal/", text: "A ladder fall, a knock-out and a patient who denies neck pain: the CPP-018-AO red flags, self-extrication risk factors, the modified towel roll, pain relief and ondansetron." }
+    { kind: "Microlearning module", title: "Walked in, still not cleared", href: "/microlearning/spinal/", text: "A ladder fall, a knock-out and a patient who denies neck pain: the CPP-018-AO red flags, self-extrication risk factors, the modified towel roll, pain relief and ondansetron." },
+    { kind: "Walk-through scenario", title: "Spinal precautions - AO: Neil, 67", href: "/modules/spinal-ao/", text: "Two-person AO crew in Tumby Bay: a ladder fall, a knock-out, a patient who walked to the kitchen table, the towel roll, pain relief, ondansetron and the handover. Facilitator and student versions." }
   ],
   "CPP-063-AO": [
     { kind: "Microlearning module", title: "Baseline obs at a high-speed MVA", href: "/microlearning/mva-baseline/", text: "Why the first complete set matters: obs every 15 minutes, the RDR chart's escalation triggers, the Major Trauma Tool, shock and the cold in the trend, and AO care at the crash." }
