@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spinal precautions skills stations - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261103c">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Spinal precautions skills stations (AO). Built 3 Nov 2026 for a group training night without the instructor present,
+   to go with the module /microlearning/spinal/ and the walk-through /modules/spinal-ao/ (Neil, 67).
+   Sources: CPP-018-AO Spinal Injury v5.0; CPPRO-021 Cervical Spine Immobilisation v1.2 (review date Mar 2023 passed);
+   CPPRO-001 Patient Mobility Assessment v1.1 (review date Dec 2019 passed); CPP-013-AO Pain Management v7.2; CPP-047-AO
+   Nausea and Vomiting v2.3; CPPRO-012 Inhaled Medication Administration v2.0, CPPRO-008 and CPPRO-009 (as used for the
+   burns and headache stations; review dates passed); SAAS Clinical Skills Study Guide v3.2 (Oct 2026; owner's copy, not
+   in the repo) for the vacuum mattress and log roll, as already written for the MVA and falls stations. Owner's choices:
+   modified towel roll rather than a collar after a head strike with LOC; CPP-018-AO over the guide's spinal board lines;
+   AOs don't clear a C-spine when risk factors are present. Patient cards, the limb check wording and how-to-run notes are
+   DSY-written. The chair-to-stretcher move is left to the lead instructor's team method. */
+var SRC = {
+  cpp018: "CPP-018-AO Spinal Injury v5.0",
+  c021: "CPPRO-021 Cervical Spine Immobilisation v1.2",
+  c001: "CPPRO-001 Patient Mobility Assessment v1.1",
+  cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
+  cpp013: "CPP-013-AO Pain Management v7.2",
+  cpp047: "CPP-047-AO Nausea and Vomiting v2.3",
+  c012: "CPPRO-012 Inhaled Medication Administration v2.0",
+  c008: "CPPRO-008 Medication Checks v1.0",
+  c009: "CPPRO-009 Oral Medication Administration v1.0",
+  lead: "DSY lead instructor",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "Find the red flags", mins: 15,
+  goal: "Decide from the story whether a patient needs spinal precautions, using CPP-018-AO's wording, and count the self-extrication risk factors.",
+  kit: ["This page on a phone", "The patient cards below (or read them aloud)", "A pen and paper to list the red flags"],
+  blocks: [
+    { h: "Apply a spinal precaution technique if the patient has", src: ["cpp018", "c021"], tone: "warn", list: [
+      "Musculoskeletal spinal injury: spinal pain, tenderness, neck ache, back pain",
+      "OR a mechanism of injury likely to cause a potential spinal injury: consider injury above the chest or a distracting injury",
+      "CPPRO-021: suspect a C-spine injury in patients with injuries above the shoulders. Have a high index of suspicion in trauma"
+    ] },
+    { h: "Self-extrication risk factors", src: ["cpp018"], list: [
+      "Significant distracting injuries", "Under the influence of drugs or alcohol", "Reduced GCS or uncooperative", "Thoracolumbar spinal pain",
+      "New motor or sensory deficits", "Previous spinal injury or disease", "Over 65 years",
+      "High-speed collision, rollover or ejection", "Axial load to the head", "Accident with a motorised vehicle, e.g. a quad bike",
+      "Bicycle collision with an object", "Fall from elevation over 1 m or 5 stairs"
+    ] },
+    { h: "\"My neck's fine\"", src: ["lead"], tone: "red", list: [
+      "AOs don't try to clear a C-spine when risk factors are present",
+      "A concussed patient, or one with a painful injury elsewhere, can't reliably tell you their neck is fine"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp018"], cases: [
+      { who: "A. Neil, 67", text: "Fell from a ladder at gutter height onto decking, knocked out about 2 minutes. Walked inside with help. Left hip pain 8/10. Denies neck and back pain. Keeps asking what happened.",
+        answer: "Spinal precautions: a fall over 1 m and a head strike (injury above the chest) are the mechanism; the hip is a distracting injury. Risk factors: distracting injury, reduced GCS, over 65, fall over 1 m. His 'no neck pain' can't be relied on." },
+      { who: "B. Quad bike, 24", text: "Rolled a quad bike on a sandhill. Walking about. Sore neck. GCS 15, sober, nothing else hurts.",
+        answer: "Spinal precautions: neck ache (musculoskeletal spinal injury) and a mechanism on the list (motorised vehicle). Stop him walking." },
+      { who: "C. Footpath trip, 45", text: "Tripped on a footpath and grazed both palms. No head strike, no pain anywhere else, GCS 15, sober.",
+        answer: "None of CPP-018-AO's criteria: no spinal pain, no injury above the chest, no distracting injury, no high-risk mechanism. Treat the grazes." },
+      { who: "D. Down the stairs, 78", text: "Fell down six stairs. Mid-back pain, tingling in both hands. Severe kyphosis.",
+        answer: "Spinal precautions, and evidence of possible spinal cord injury (tingling): request clinical support, vacuum mattress for transport if available. Kyphosis is a spinal deformity: no semi-rigid collar." },
+      { who: "E. Pub car park, 30", text: "Pushed over, hit his head on a car door. Smells of alcohol, argumentative, says he's fine and wants to go home.",
+        answer: "Spinal precautions: an injury above the chest. Risk factors: drugs or alcohol, uncooperative. Consult the EOC Clinician." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person reads a card aloud. The others write the red flags before anyone speaks.",
+      "Say each one with the protocol's words, then open the answer.",
+      "Take turns reading."
+    ] }
+  ],
+  checks: ["Said both CPP-018-AO reasons (spinal pain OR mechanism)", "Found the mechanism in a patient with no spinal pain", "Named at least four self-extrication risk factors from memory",
+    "Spotted the possible spinal cord injury in card D", "Said why 'my neck's fine' doesn't clear the C-spine"] },
+
+{ id: "s2", n: 2, title: "Stop the movement, hold the head", mins: 15,
+  goal: "Stop a patient who has already walked, hold the head in line while they sit at a table, check the limbs, and plan the move to the stretcher.",
+  kit: ["A kitchen chair and a table", "A stretcher (or a mat to stand in for it)", "A partner as the patient"],
+  blocks: [
+    { h: "Manual stabilisation of the head", src: ["c021"], steps: [
+      "A clinician or a bystander can do it.",
+      "Hold the head on both sides, minimising movement while keeping the natural position of the spine.",
+      "It works in a range of postures, including sitting.",
+      "Alert, conscious patients may be able to hold their own head in natural alignment. A confused patient needs your hands."
+    ] },
+    { h: "Already walked?", src: ["cpp018", "c001"], list: [
+      "Any self-extrication risk factor: consider an alternate extrication strategy. Not time critical: a controlled extrication",
+      "Tell the patient: if they get numbness, tingling, weakness, or new or worse spinal pain, stop moving and wait to be moved",
+      "No mobility assessment: a suspected spinal injury is a contraindication (CPPRO-001)"
+    ] },
+    { h: "Signs of spinal cord injury", src: ["cpp018"], tone: "red", list: [
+      "Paralysis, tingling, weakness, numbness or hypotension",
+      "Any of these: request clinical support and package the patient in a vacuum mattress for transport, if available"
+    ] },
+    { h: "Limb check", src: ["dsy"], list: [
+      "Ask them to squeeze both your hands, then push both feet against your hands",
+      "Touch each hand and foot: \"Can you feel that? Is it the same both sides?\"",
+      "Ask about tingling or numbness. Repeat after every move and en route"
+    ] },
+    { h: "From the chair to the stretcher", src: ["lead"], list: [
+      "Neither CPP-018-AO nor CPPRO-021 describes this move. Your lead instructor will show the team's method",
+      "Plan it out loud first: who holds the head, who calls the moves, where helpers go",
+      "Keep the head and spine in line and the movement to a minimum"
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "The patient sits at the table holding a hip and says their neck is fine. They start to stand when you walk in.",
+      "Stop them kindly, take manual stabilisation, and explain why.",
+      "Do the limb check.",
+      "Plan the move to the stretcher out loud, then do it with minimal movement. Swap roles."
+    ] }
+  ],
+  checks: ["Stopped the patient before they stood, and explained why", "Hands on both sides of the head, natural alignment held", "Limb check: strength and feeling, both sides, asked about tingling",
+    "Said no mobility assessment", "Planned the move out loud: who holds the head, who calls it", "Moved with minimal movement, head held throughout"] },
+
+{ id: "s3", n: 3, title: "The modified towel roll", mins: 20,
+  goal: "Build a modified towel roll on the stretcher, and say when a semi-rigid collar is and isn't right.",
+  kit: ["Stretcher with a removable head rest", "Towels x 2", "500 mL bags of sodium chloride 0.9% x 2 (training stock)", "Transpore tape and a combine dressing",
+    "A 'Cervical Spine NOT Clear' sticker, if you have one", "A semi-rigid collar"],
+  blocks: [
+    { h: "Choose a technique", src: ["cpp018", "c021"], list: [
+      "Manual stabilisation of the head (self splinting), modified towel roll, vacuum mattress, or a correctly fitted semi-rigid collar",
+      "Aim to keep the whole spine in neutral alignment and avoid movement. In healthy adults about 2 cm of padding under the head may help",
+      "Record your decisions and technique on the PCR"
+    ] },
+    { h: "Modified towel roll", src: ["c021"], steps: [
+      "Remove the head rest from the stretcher.",
+      "Two towels, folded in half lengthways, across the stretcher where the head will rest.",
+      "If the towels need to go under the head: hold the head, lift it about 2 cm, and slide the towels in, held tight, in a head to toe direction.",
+      "Keep holding the head. Roll a 500 mL saline bag into the top towel to form a block beside the head. Repeat on the other side. Bags sit on their narrow edge; no need to remove the outer packaging.",
+      "Roll the bottom towel tightly on each side to form a small roll that supports the larger roll.",
+      "Rolls firm against the head and shoulders.",
+      "One length of Transpore across the forehead from roll to roll, with a combine dressing under the tape. Never fixed to the stretcher. The head is not strapped down.",
+      "You may need to unroll the towels for a lateral transfer. Severe kyphosis: use another method that keeps natural alignment and minimal movement."
+    ] },
+    { h: "Semi-rigid collar: not with", src: ["c021", "cpp018"], tone: "red", list: [
+      "A compromised airway", "Spinal deformities", "Concerns about raised intra-cranial pressure (for example a head strike with loss of consciousness)",
+      "A badly fitted collar can raise intra-cranial pressure, get in the way of the airway, and cause pain and pressure",
+      "Where possible remove semi-rigid collars for transport and replace them with another technique"
+    ] },
+    { h: "Never", src: ["cpp018"], tone: "warn", list: ["Secure the head to the stretcher or a long board", "Transport a patient on a long board"] },
+    { h: "Sticker", src: ["c021"], list: ["'Cervical Spine NOT Clear' on the patient somewhere obvious, as early as possible, not on the skin"] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Partner lies on the stretcher with the towels already under their head. Build the roll step by step, saying each step.",
+      "Then start again with the towels laid out first and the partner moving onto them, head held.",
+      "Talk through: would a collar be right for Neil? For the quad bike rider? Swap."
+    ] }
+  ],
+  checks: ["Head rest off; two towels folded lengthways", "Head held the whole time", "Saline bags rolled in, on their narrow edge", "Small rolls under the big rolls, firm against head and shoulders",
+    "Tape across the forehead over a combine, not to the stretcher", "Named the three collar contraindications"] },
+
+{ id: "s4", n: 4, title: "Vacuum mattress and the log roll", mins: 20,
+  goal: "Package a patient with signs of spinal cord injury in a vacuum mattress, using a log roll to get them on.",
+  kit: ["Vacuum mattress and a working suction device", "A sheet", "A stretcher or floor mat", "Four people (or three and the facilitator)"],
+  blocks: [
+    { h: "When", src: ["cpp018", "c021"], list: [
+      "Evidence of spinal cord injury (paralysis, tingling, weakness, numbness or hypotension): request clinical support and package the patient in a vacuum mattress for transport, if available",
+      "Inside the mattress, hold the C-spine with a modified towel roll (saline bags out) or folded towels each side of the head, and a folded towel under the head"
+    ] },
+    { h: "Log roll (four people)", src: ["cssg", "cpp018"], steps: [
+      "Note the injuries, empty the pockets, arms by the sides (palms in) or crossed on the chest.",
+      "Person 1 at the head holds it in line and calls every move. Persons 2 and 3 kneel on the side they'll roll towards: 2 at the shoulder and hip, 3 at the hip and knees.",
+      "On person 1's call, roll to about 45 degrees together. Person 4 examines the back and places the mattress.",
+      "On the call, roll back together. Don't roll onto an injured side.",
+      "The guide's log roll page mentions placing a spinal board. Follow CPP-018-AO: do not transport on a long board."
+    ] },
+    { h: "Vacuum mattress", src: ["cssg", "cpp018"], steps: [
+      "Unroll it on the stretcher and spread the beads evenly (uneven beads cause pressure points). Straps and handles free. A sheet on top.",
+      "Shoulders level with the red line, patient centred.",
+      "One person pushes the sides in while the other tightens the straps (feed in, pull out of the buckle): green pelvis, yellow legs, red figure of eight at the ankles, blue crossed over the chest, black arm strap, then the head section and forehead strap.",
+      "Close the valve, apply suction while squeezing the sides in, then disconnect and keep the valve closed. Take up any slack in the straps.",
+      "Secure it to the stretcher with the harness straps. It is not a lifting device.",
+      "The guide's mattress page mentions a spinal board for suspected spinal injury. Follow CPP-018-AO: do not transport on a long board."
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "The facilitator reads card D from station 1: tingling in both hands after a fall down the stairs.",
+      "Person 1 takes the head. Log roll onto the mattress, then package.",
+      "Do the limb check from station 2 again once packaged. Rotate so everyone has a turn at the head."
+    ] }
+  ],
+  checks: ["Said why the vacuum mattress: signs of spinal cord injury", "Person at the head called every move", "Rolled together to about 45 degrees",
+    "Beads spread, shoulders at the red line", "Strap order right, valve closed after suction, slack taken up", "No long board for transport"] },
+
+{ id: "s5", n: 5, title: "Pain and nausea", mins: 15,
+  goal: "Choose pain relief for a spinal patient with a painful hip and coach methoxyflurane, then check ondansetron before transport.",
+  kit: ["An empty or expired methoxyflurane kit labelled TRAINING (bottle never opened)", "An ondansetron pack labelled TRAINING, or a card: nobody takes a tablet", "The patient cards below"],
+  blocks: [
+    { h: "Safety", src: ["lead"], tone: "red", list: ["Nobody breathes in or takes a real medicine. Mime the pour and the tablet"] },
+    { h: "Pain (CPP-013-AO)", src: ["cpp013"], list: [
+      "Non-pharmacological first: reassurance, posture, splinting, temperature control. Pain score before and after",
+      "Paracetamol: adults oral 1000 mg if no doses in the past 4 hours",
+      "Ibuprofen (trained crews): adults oral 400 mg if no ibuprofen or other NSAIDs in the past 6 hours; check contraindications; any ambiguity, withhold",
+      "Methoxyflurane 3 mL, repeated once if needed; no more than 2 doses in 24 hours or 15 mL a week. Useful for brief painful procedures such as extrication",
+      "Ketamine wafer (authorised crews): pain 7 to 10, GCS 15 or normal GCS, age 16 to 64. Over 64: SAAS Medical Officer consult",
+      "IN fentanyl (authorised crews): consult the EOC Clinician"
+    ] },
+    { h: "Methoxyflurane (CPPRO-012)", src: ["c012", "c008"], steps: [
+      "Medication checks. Explain it and get consent. Check allergies. Hand hygiene.",
+      "Tilt the inhaler and pour the whole 3 mL bottle into the base while rotating it. Shake gently. Bin the bottle.",
+      "Wrist loop over the patient's wrist. Mouthpiece between their lips.",
+      "First few breaths gentle, then breathe normally in and out through the mouthpiece.",
+      "Stronger relief: cover the dilutor hole on top with a finger while breathing in.",
+      "The same inhaler can be used for a second dose. Hand hygiene. Record dose, route and time."
+    ] },
+    { h: "Ondansetron before transport (CPP-047-AO)", src: ["cpp047", "c009"], list: [
+      "May be given before transport in head, spine or eye trauma where the risk of complications from vomiting is high",
+      "Contraindications: allergy to ondansetron; apomorphine for Parkinson's. Precautions: prolonged QT, AF or heart failure, low magnesium or potassium",
+      "Adults 4 mg ODT, single dose: dry hands, on top of the tongue, let it dissolve, then swallow",
+      "Still vomiting, or more than one precaution: consult the EOC Clinician"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp013", "cpp047"], cases: [
+      { who: "A. Neil, 67", text: "GCS 14 after a head strike. Hip pain 8/10. Took two ibuprofen at 1230; it's now 1448. No paracetamol today. Feels sick. No heart problems.",
+        answer: "Paracetamol 1000 mg (none in 4 hours). Not ibuprofen (within 6 hours). Methoxyflurane before the move. No ketamine wafer on the protocol alone: GCS 14 and over 64. Ondansetron 4 mg ODT before transport (head and spine trauma, no precautions)." },
+      { who: "B. Quad bike, 24", text: "Neck ache, GCS 15, pain 8/10. Authorised crew. No medicines today.",
+        answer: "Paracetamol, and ibuprofen if no contraindications. Methoxyflurane. Ketamine wafer may be considered: pain 7 to 10, GCS 15, aged 16 to 64. Early EOC consult about his complaint." },
+      { who: "C. Down the stairs, 78", text: "Back pain 7/10, heart failure, on a fluid tablet with low potassium on recent bloods. Feels sick.",
+        answer: "Ondansetron: two precautions (heart failure, low potassium): consult the EOC Clinician first. Pain: paracetamol; CPP-013-AO warns ibuprofen can cause serious harm in heart failure, so with any ambiguity withhold it; methoxyflurane." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: ["Read a card. Say what you'd give and what you wouldn't, and why.", "Do the medication check aloud and coach your partner through methoxyflurane with the empty inhaler.", "Mime the ODT. Swap."] }
+  ],
+  checks: ["Checked what the patient had already taken, with times", "Ruled out ibuprofen within 6 hours", "Said why no ketamine wafer for Neil (GCS, over 64)",
+    "Coached methoxyflurane: gentle breaths, then normal; dilutor hole", "Checked ondansetron contraindications and precautions; 4 mg ODT on the tongue"] }
+];
+
+var END = { title: "Finish together", mins: 25,
+  steps: [
+    "Run the whole job as one crew with the student walk-through: Neil, 67, a ladder fall in Tumby Bay. Use each station's kit as you reach that part: the kitchen chair, the towel roll, the pain and nausea cards.",
+    "Then each person does the knowledge check in the microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-spinal";
+
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/spinal/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Spinal precautions skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Student walk-through", "../../modules/spinal-ao/?mode=student", "btn small"));
+  links.appendChild(a("Knowledge check (microlearning)", "../../microlearning/spinal/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-through: " + root + "modules/spinal-ao/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY spinal precautions skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Spinal precautions skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Walked in, still not cleared\" (about 20 min). Send the link a few days ahead."],
+    ["0:00", "Read the safety box at station 5 together (nobody takes a real medicine). Split into pairs or threes; station 4 needs four people."],
+    ["0:05", "Rotate through stations 1 to 5 (about 15 to 20 min each). Partners tick the checks on the phone."],
+    ["about 1:30", "Finish together: the student walk-through as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 2: a kitchen chair and a table, with a stretcher (or mat) nearby.",
+    "Station 3: stretcher with the head rest removable, towels, training saline bags, Transpore, combines, a semi-rigid collar.",
+    "Station 4: clear floor space, the vacuum mattress and a working suction device, a sheet. Four people.",
+    "Station 5: an empty or expired methoxyflurane kit and an ondansetron pack, both labelled TRAINING and kept apart from operational stock. Nobody takes a real medicine.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Towels to the wash; training saline bags back in their labelled box.",
+    "Vacuum mattress softened (valve open), rolled and back in its bag. Suction cleaned and on charge.",
+    "Training medicine packs back in their labelled box.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Five stations to practise the hands-on parts of a spinal job, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Walked in, still not cleared\" first (about 20 minutes)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/spinal/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Full job, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cpp018, SRC.c021, SRC.c001, SRC.cssg, SRC.cpp013, SRC.cpp047, SRC.c012, SRC.c008, SRC.c009].join(", ") +
+    ". The review dates of CPPRO-021 (Mar 2023), CPPRO-001 (Dec 2019), CPPRO-012 (Mar 2021) and CPPRO-008/009 (June 2020) have passed. The chair-to-stretcher method and the collar choice follow the DSY lead instructor. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>
