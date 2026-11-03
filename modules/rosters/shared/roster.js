@@ -732,6 +732,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         let teamHoursPeriod = "4";
         let teamHoursRows = [];
         let teamHoursColumns = [];
+        let teamHoursUnlocked = false;
 
         initialise();
 
@@ -4326,26 +4327,16 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 document.getElementById("myBookingsButton").after(myHoursButton);
             }
 
-            const firstManagerBar = document.querySelector(
-                "#managerControlsPanel .manager-controls-content .action-bar"
-            );
-
-            if (TEAM_FEATURES.has("teamHours") && firstManagerBar) {
-                const bar = document.createElement("div");
-                bar.className = "action-bar";
-
+            // Beside "Edit sent cut-off" in Manager controls.
+            if (TEAM_FEATURES.has("teamHours")) {
                 const teamHoursButton = document.createElement("button");
                 teamHoursButton.id = "teamHoursButton";
                 teamHoursButton.className = "btn-secondary";
                 teamHoursButton.type = "button";
                 teamHoursButton.textContent = "Team hours";
-                teamHoursButton.addEventListener(
-                    "click",
-                    () => openHoursModal("team")
-                );
-
-                bar.appendChild(teamHoursButton);
-                firstManagerBar.after(bar);
+                teamHoursButton.addEventListener("click", openTeamHours);
+                document.getElementById("editRosterSentUntilButton")
+                    .after(teamHoursButton);
             }
 
             hoursModal = document.createElement("div");
@@ -4412,6 +4403,56 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
             hoursModal.classList.add("active");
             document.getElementById("closeHoursModalButton").focus();
+        }
+
+        /*
+         * Team hours needs the roster manager password, checked by the
+         * Apps Script action "verifyManagerPassword". Once accepted it
+         * is not asked again until the page is reloaded.
+         */
+        async function openTeamHours() {
+            if (!hasLoadedBookings || isLoading) {
+                showToast("Please wait for the roster to load.");
+                return;
+            }
+
+            if (!teamHoursUnlocked) {
+                const managerPassword = window.prompt(
+                    "Enter the roster manager password to view team hours:"
+                );
+
+                if (!managerPassword) return;
+
+                const button = document.getElementById("teamHoursButton");
+                button.disabled = true;
+
+                try {
+                    const result = await callRosterApi(
+                        "verifyManagerPassword",
+                        { managerPassword }
+                    );
+
+                    if (!result || result.success !== true) {
+                        throw new Error("The password could not be checked.");
+                    }
+
+                    teamHoursUnlocked = true;
+                } catch (error) {
+                    const message = String(error.message || "");
+
+                    showToast(
+                        /unknown action/i.test(message)
+                            ? "Team hours needs the roster's Google script " +
+                              "updating before it can check the password."
+                            : message || "The password could not be checked."
+                    );
+                    return;
+                } finally {
+                    button.disabled = false;
+                }
+            }
+
+            openHoursModal("team");
         }
 
         function closeHoursModal() {
