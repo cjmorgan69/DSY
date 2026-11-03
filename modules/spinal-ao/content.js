@@ -28,7 +28,7 @@ window.MODULE = {
            { code: "CTL-070", name: "Adult RDR Chart" }]
   },
   relatedCodes: ["CPP-013-AO", "CPP-047-AO"],
-  footerNotes: ["The patient, story, observations, timings, the chair-to-stretcher plan, the destination and the EOC Clinician's replies are a training scenario written by DSY. Check it with your lead instructor.",
+  footerNotes: ["The patient, story, observations, timings, the chair-to-stretcher plan, the destination (Tumby Bay Hospital, then transfer on to Port Lincoln, as the owner chose) and the EOC Clinician's replies are a training scenario written by DSY. Check it with your lead instructor.",
     "CPPRO-021 v1.2 is past its review date (March 2023), and CPPRO-001 v1.1 is past its review date (December 2019). Check the SAAS Clinical app for newer versions.",
     "SAAS has no AO head injury protocol. This scenario uses CPP-018-AO, CPPRO-021, CPP-013-AO and CPP-047-AO."],
 
@@ -52,8 +52,8 @@ window.MODULE = {
       ] } },
       { box: { title: "Timing and resources", items: [
         "Pre-brief about 10 minutes; walk-through 40 to 45 minutes; debrief 15 minutes",
-        "Port Lincoln paramedics: about 45 minutes away by road (DSY)",
-        "Port Lincoln Hospital: about 35 minutes from Tumby Bay (DSY)",
+        "Tumby Bay Hospital: about 4 minutes from the house (DSY)",
+        "Port Lincoln Hospital: about 35 minutes from Tumby Bay. The hospital arranges any transfer on (DSY)",
         "EOC Clinician: available by phone"
       ] } },
       { box: { title: "Crew roles", items: [
@@ -240,35 +240,35 @@ window.MODULE = {
     { title: "The call and the trip", blocks: [
       { text: "1506. AO2 calls the EOC Clinician from the ambulance." },
       { box: { title: "EOC Clinician (DSY)", items: [
-        "\"Thanks. With the loss of consciousness, the GCS of 14 and the hip, he needs assessment at Port Lincoln. Head there now. I'll send the Port Lincoln paramedic crew to meet you on the Lincoln Highway, and let the hospital know.\"",
+        "\"Thanks. Take him to Tumby Bay Hospital for assessment. With the loss of consciousness and the hip, they'll likely arrange a transfer on to Port Lincoln. Notify the hospital on your way.\"",
         "\"Call me back if his GCS drops, he vomits, or he gets any new numbness, tingling or weakness.\""
       ] } },
-      { table: { title: "Obs en route", table: { head: ["", "1438 sitting", "1512 en route", "1527 en route"], rows: [
+      { table: { title: "Obs", table: { head: ["", "1438 sitting", "1504 on the stretcher", "1512 at the hospital"], rows: [
         ["RR", "18", "16", "18"], ["SpO2", "96%", "97%", "96%"], ["BP", "148/86", "142/84", "146/88"], ["Pulse", "88", "80", "84"],
         ["GCS", "14 (V4)", "14 (V4)", "14 (V4)"], ["Pain", "8/10", "4/10", "4/10"], ["Limbs", "Normal", "Normal", "Normal"]
       ] } } },
-      { breakpoint: { title: "En route", type: "Discussion",
-        prompts: ["What are you watching for?", "What would make you call the EOC Clinician again?", "He says he feels sick again. What are your options?", "When do you meet the paramedics, and what will you tell them?"],
+      { breakpoint: { title: "To Tumby Bay Hospital", type: "Discussion",
+        prompts: ["What are you watching for?", "What would make you call the EOC Clinician again?", "He says he feels sick again. What are your options?", "What will you tell the hospital when you notify them?"],
         expected: [
           "GCS (especially V and E), pupils, obs every 15 minutes or more often, any numbness, tingling, weakness, or a falling BP",
           "Any new limb signs or low BP: possible spinal cord injury, request clinical support and use the vacuum mattress (CPP-018-AO). A GCS of 13 or less is Major Trauma Tool Level 1 (CTL-042). Vomiting",
           "Still vomiting, or more than one precaution: consult the EOC Clinician, who may advise a second ondansetron 4 mg ODT for an adult (CPP-047-AO)",
-          "A short ISBAR at the meet: the mechanism, the LOC, that he walked in, why the C-spine isn't cleared, the medicines and the obs trend"
+          "Notify the receiving facility (CPP-018-AO): a short ISBAR with the mechanism, the LOC, that he walked in, why the C-spine isn't cleared, and your ETA"
         ],
-        teaching: ["Hand over the trend, not just the last set", "The paramedics may add assessment and pain relief. The towel roll stays unless they decide otherwise"],
-        realJob: "Keep talking to him. A confused patient may try to lift his head to look around. Remind him gently each time.",
+        teaching: ["Hand over the trend, not just the last set", "Tumby Bay Hospital assesses him first. If he goes on to Port Lincoln, the hospital arranges it and the C-spine stays protected for that trip too (DSY)"],
+        realJob: "It's a short trip, but keep talking to him. A confused patient may try to lift his head to look around. Remind him gently each time.",
         cards: [{ q: "If Neil's GCS falls to 13, what does the Major Trauma Tool say?", a: "GCS 13 or less is a Level 1 physiological criterion at any time (CTL-042). Tell the EOC Clinician straight away." }]
       } }
     ] },
 
     { title: "Handover", blocks: [
-      { text: "1532. The paramedic crew meets you in a lay-by on the Lincoln Highway." },
+      { text: "1512. Tumby Bay Hospital. The nurse in charge meets you in the emergency room; the doctor on call is on the way." },
       { table: { title: "ISBAR (CTL-054)", table: { head: ["", "Example"], rows: [
         ["I", "\"I'm [name], Ambulance Officer from Tumby Bay. This is Neil Haddon, 67.\""],
         ["S", "\"Fell from a ladder, chest at gutter height, onto decking at about 1415. Hit the back of his head, knocked out about two minutes. His family walked him inside. Left hip pain 8/10. Denies neck and back pain, but the C-spine isn't cleared.\""],
         ["B", "\"Reflux and cholesterol: pantoprazole, atorvastatin. Ibuprofen at 1230. No blood thinners, no allergies, no previous spinal problems.\""],
         ["A", "\"GCS 14 throughout, V4: confused, can't remember the fall. Pupils equal. Obs otherwise white: BP 146/88, pulse 84. Moves and feels all four limbs. Ondansetron 4 mg, paracetamol 1 g, methoxyflurane from 1452: pain now 4/10.\""],
-        ["R", "\"Modified towel roll, no collar because of the head injury. Sticker on. He needs his head and hip assessed.\""]
+        ["R", "\"Modified towel roll, no collar because of the head injury. Sticker on. He needs his head and hip assessed, and he may need transfer on to Port Lincoln.\""]
       ] } } },
       { breakpoint: { title: "Hand over the spine", type: "Practical skill",
         prompts: ["Deliver your ISBAR now. Go.", "Did you say why the C-spine isn't cleared?", "Did you say what he's had, and when?"],
@@ -307,7 +307,7 @@ window.MODULE = {
       { box: { title: "1. Tingling in both hands", text: "On the stretcher Neil says his hands are 'buzzing' and his grip is weaker. Evidence of spinal cord injury: request clinical support and package him in a vacuum mattress for transport, if available (CPP-018-AO). Tell the EOC Clinician straight away." } },
       { box: { title: "2. He vomits in the towel roll", text: "Neil vomits suddenly en route. Keep the head and spine in line while you clear the airway. Consult the EOC Clinician: they may advise a second ondansetron 4 mg ODT (CPP-047-AO). Discuss with your lead instructor how your team turns a patient in a towel roll (DSY)." } },
       { box: { title: "3. A collar is already on", text: "A first responder has put a semi-rigid collar on before you arrive. With concerns about raised intra-cranial pressure it is contraindicated, and CPP-018-AO says remove semi-rigid collars for transport where possible and replace them with another technique. Hold manual stabilisation while you swap to the towel roll." } },
-      { box: { title: "4. GCS falls to 12", text: "At 1525 Neil is harder to rouse: opens his eyes to voice, GCS 12. Major Trauma Tool Level 1 (GCS 13 or less, CTL-042). Call the EOC Clinician now. Watch the airway. A semi-rigid collar is still contraindicated." } },
+      { box: { title: "4. GCS falls to 12", text: "At 1508, on the way, Neil is harder to rouse: opens his eyes to voice, GCS 12. Major Trauma Tool Level 1 (GCS 13 or less, CTL-042). Call the EOC Clinician now. Watch the airway. A semi-rigid collar is still contraindicated." } },
       { box: { title: "5. He refuses to lie down", text: "Neil insists he's fine and wants to stay at the table. Explain the risk plainly, involve Jan, keep manual stabilisation, and consult the EOC Clinician (DSY)." } }
     ] }
   ]
