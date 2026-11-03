@@ -721,6 +721,18 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         let savedRosterTime = null;
         let loadingCardTimer = null;
 
+        // Hours report (feature "hoursReport"); see setupHoursReport.
+        const HOURS_MS = 3600000;
+        const MY_HOURS_WEEKS = 4;
+        const TEAM_HOURS_WEEK_CHOICES = [2, 4, 6, 8];
+
+        let hoursModal = null;
+        let hoursModalBody = null;
+        let hoursModalReturnFocus = null;
+        let teamHoursPeriod = "4";
+        let teamHoursRows = [];
+        let teamHoursColumns = [];
+
         initialise();
 
         function initialise() {
@@ -743,6 +755,10 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
             if (TEAM_FEATURES.has("savedRoster")) {
                 showSavedRoster();
+            }
+
+            if (TEAM_FEATURES.has("hoursReport")) {
+                setupHoursReport();
             }
 
             if (TEAM_FEATURES.has("loadingMessages")) {
@@ -4284,6 +4300,518 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 setMessagesLoading(false);
             }
         }
+        /* ----- Hours report (feature "hoursReport") -----
+         *
+         * Rostered hours worked out from the bookings the page has
+         * already loaded (active bookings only; cancelled shifts are
+         * not counted). People are matched by the name they typed.
+         * My hours: rolling total for the last 4 weeks up to now.
+         * Team hours (manager controls): every crew member over 2 to 8
+         * weeks, or between two dates.
+         */
+        function setupHoursReport() {
+            const myHoursButton = document.createElement("button");
+            myHoursButton.id = "myHoursButton";
+            myHoursButton.className = "btn-secondary";
+            myHoursButton.type = "button";
+            myHoursButton.textContent = "My hours";
+            myHoursButton.addEventListener("click", () => openHoursModal("mine"));
+            document.getElementById("myBookingsButton").after(myHoursButton);
+
+            const firstManagerBar = document.querySelector(
+                "#managerControlsPanel .manager-controls-content .action-bar"
+            );
+
+            if (firstManagerBar) {
+                const bar = document.createElement("div");
+                bar.className = "action-bar";
+
+                const teamHoursButton = document.createElement("button");
+                teamHoursButton.id = "teamHoursButton";
+                teamHoursButton.className = "btn-secondary";
+                teamHoursButton.type = "button";
+                teamHoursButton.textContent = "Team hours";
+                teamHoursButton.addEventListener(
+                    "click",
+                    () => openHoursModal("team")
+                );
+
+                bar.appendChild(teamHoursButton);
+                firstManagerBar.after(bar);
+            }
+
+            hoursModal = document.createElement("div");
+            hoursModal.id = "hoursModal";
+            hoursModal.className = "modal-overlay";
+            hoursModal.innerHTML = `
+                <div
+                    class="modal hours-modal"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="hoursModalTitle"
+                >
+                    <div class="modal-header">
+                        <h3 id="hoursModalTitle"></h3>
+                        <button
+                            id="closeHoursModalButton"
+                            class="btn-secondary btn-small"
+                            type="button"
+                        >
+                            Close
+                        </button>
+                    </div>
+                    <div id="hoursModalBody"></div>
+                </div>`;
+
+            document.body.appendChild(hoursModal);
+            hoursModalBody = document.getElementById("hoursModalBody");
+
+            document.getElementById("closeHoursModalButton")
+                .addEventListener("click", closeHoursModal);
+
+            hoursModal.addEventListener("click", event => {
+                if (event.target === hoursModal) {
+                    closeHoursModal();
+                }
+            });
+
+            document.addEventListener("keydown", event => {
+                if (
+                    event.key === "Escape" &&
+                    hoursModal.classList.contains("active")
+                ) {
+                    closeHoursModal();
+                }
+            });
+        }
+
+        function openHoursModal(mode) {
+            if (!hasLoadedBookings || isLoading) {
+                showToast("Please wait for the roster to load.");
+                return;
+            }
+
+            hoursModalReturnFocus = document.activeElement;
+
+            document.getElementById("hoursModalTitle").textContent =
+                mode === "mine" ? "My hours" : `${TEAM_NAME} team hours`;
+
+            if (mode === "mine") {
+                renderMyHours();
+            } else {
+                renderTeamHours();
+            }
+
+            hoursModal.classList.add("active");
+            document.getElementById("closeHoursModalButton").focus();
+        }
+
+        function closeHoursModal() {
+            hoursModal.classList.remove("active");
+            hoursModalReturnFocus?.focus();
+        }
+
+        function formatHoursValue(hours) {
+            return String(Math.round(hours * 10) / 10);
+        }
+
+        function formatHoursDate(date) {
+            return date.toLocaleDateString("en-AU", {
+                weekday: "short",
+                day: "numeric",
+                month: "short"
+            });
+        }
+
+        function parseDateInput(value) {
+            const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || "");
+
+            return match
+                ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
+                : null;
+        }
+
+        // Hours of a booking inside [from, to).
+        function bookingHoursBetween(event, from, to) {
+            const start = Math.max(Date.parse(event.start), from.getTime());
+            const end = Math.min(Date.parse(event.end), to.getTime());
+
+            return end > start ? (end - start) / HOURS_MS : 0;
+        }
+
+        // Whole weeks ending now; the last week runs up to this moment.
+        function rollingWeeks(count) {
+            const now = new Date();
+            const first = addDays(startOfDay(now), -(7 * count - 1));
+            const weeks = [];
+
+            for (let index = 0; index < count; index++) {
+                const from = addDays(first, 7 * index);
+                const last = index === count - 1;
+
+                weeks.push({
+                    from,
+                    to: last ? now : addDays(from, 7),
+                    label:
+                        formatHoursDate(from) + " – " +
+                        formatHoursDate(last ? now : addDays(from, 6))
+                });
+            }
+
+            return weeks;
+        }
+
+        function summariseHours(bookings, from, to, weeks) {
+            const people = new Map();
+
+            bookings
+                .slice()
+                .sort((a, b) => Date.parse(a.start) - Date.parse(b.start))
+                .forEach(event => {
+                    const hours = bookingHoursBetween(event, from, to);
+
+                    if (hours <= 0) return;
+
+                    const key = normaliseName(event.user);
+
+                    if (!people.has(key)) {
+                        people.set(key, {
+                            name: event.user,
+                            levels: new Set(),
+                            shifts: [],
+                            total: 0,
+                            perWeek: weeks.map(() => 0)
+                        });
+                    }
+
+                    const person = people.get(key);
+
+                    person.name = event.user;
+                    if (event.clinicalLevel) person.levels.add(event.clinicalLevel);
+                    person.shifts.push({ event, hours });
+                    person.total += hours;
+
+                    weeks.forEach((week, index) => {
+                        person.perWeek[index] +=
+                            bookingHoursBetween(event, week.from, week.to);
+                    });
+                });
+
+            return Array.from(people.values());
+        }
+
+        function renderMyHours() {
+            const name = (nameInput.value || currentUser || "").trim();
+
+            if (!name) {
+                hoursModalBody.innerHTML = `
+                    <div class="empty-state">
+                        Type your name at the top of the page, then open My hours again.
+                    </div>`;
+                return;
+            }
+
+            const weeks = rollingWeeks(MY_HOURS_WEEKS);
+            const from = weeks[0].from;
+            const to = weeks[weeks.length - 1].to;
+
+            const mine = events.filter(event =>
+                normaliseName(event.user) === normaliseName(name)
+            );
+
+            const person = summariseHours(mine, from, to, weeks)[0] || {
+                total: 0,
+                shifts: [],
+                perWeek: weeks.map(() => 0)
+            };
+
+            const weekRows = weeks.map((week, index) => `
+                <tr>
+                    <td>${escapeHtml(week.label)}</td>
+                    <td>${formatHoursValue(person.perWeek[index])} h</td>
+                </tr>`).join("");
+
+            const shiftRows = person.shifts.map(({ event, hours }) => `
+                <li>
+                    ${escapeHtml(formatHoursDate(new Date(event.start)))}
+                    ${escapeHtml(formatHour(new Date(event.start).getHours()))}–${escapeHtml(formatHour(new Date(event.end).getHours()))}
+                    · ${formatHoursValue(hours)} h
+                </li>`).join("");
+
+            hoursModalBody.innerHTML = `
+                <p class="field-help">
+                    Rostered hours for <strong>${escapeHtml(name)}</strong>,
+                    ${escapeHtml(formatHoursDate(from))} to now.
+                </p>
+
+                <div class="hours-total">
+                    <span>${formatHoursValue(person.total)} hours</span>
+                    in the last ${MY_HOURS_WEEKS} weeks ·
+                    ${person.shifts.length} shift${person.shifts.length === 1 ? "" : "s"}
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>Week</th><th>Hours</th></tr></thead>
+                        <tbody>${weekRows}</tbody>
+                    </table>
+                </div>
+
+                ${shiftRows ? `<ul class="hours-shift-list">${shiftRows}</ul>` : ""}
+
+                <p class="field-help">
+                    Counts booked shifts on this roster that match the name at
+                    the top of the page exactly. Cancelled shifts are not counted,
+                    and a shift still in progress counts up to now.
+                </p>`;
+        }
+
+        function renderTeamHours() {
+            const today = formatDateKey(new Date());
+            const fourWeeksAgo = formatDateKey(addDays(new Date(), -27));
+
+            const options = TEAM_HOURS_WEEK_CHOICES.map(weeks => `
+                <option value="${weeks}">Last ${weeks} weeks</option>`).join("");
+
+            hoursModalBody.innerHTML = `
+                <div class="hours-controls">
+                    <label class="field">
+                        <span>Period</span>
+                        <select id="teamHoursPeriod">
+                            ${options}
+                            <option value="custom">Choose dates…</option>
+                        </select>
+                    </label>
+
+                    <label class="field" data-hours-custom hidden>
+                        <span>From</span>
+                        <input id="teamHoursFrom" type="date" value="${fourWeeksAgo}">
+                    </label>
+
+                    <label class="field" data-hours-custom hidden>
+                        <span>To (inclusive)</span>
+                        <input id="teamHoursTo" type="date" value="${today}">
+                    </label>
+
+                    <button
+                        id="teamHoursCsvButton"
+                        class="btn-secondary"
+                        type="button"
+                    >
+                        Download CSV
+                    </button>
+                </div>
+
+                <div id="teamHoursResults"></div>
+
+                <p class="field-help">
+                    Rostered hours from active bookings on this roster. Cancelled
+                    shifts are not counted, recruits are included, and shifts
+                    crossing the start or end of the period count only the
+                    hours inside it. People are matched by the name they typed.
+                </p>`;
+
+            const periodSelect = document.getElementById("teamHoursPeriod");
+            periodSelect.value = teamHoursPeriod;
+
+            periodSelect.addEventListener("change", () => {
+                teamHoursPeriod = periodSelect.value;
+                renderTeamHoursResults();
+            });
+
+            ["teamHoursFrom", "teamHoursTo"].forEach(id => {
+                document.getElementById(id)
+                    .addEventListener("change", renderTeamHoursResults);
+            });
+
+            document.getElementById("teamHoursCsvButton")
+                .addEventListener("click", downloadTeamHoursCsv);
+
+            renderTeamHoursResults();
+        }
+
+        function similarNames(first, second) {
+            const a = first.replace(/[^a-z]/g, "");
+            const b = second.replace(/[^a-z]/g, "");
+
+            if (a === b) return true;
+            if (Math.min(a.length, b.length) < 5) return false;
+            if (Math.abs(a.length - b.length) > 2) return false;
+
+            // Edit distance of 2 or less.
+            let previous = Array.from({ length: b.length + 1 }, (_, i) => i);
+
+            for (let i = 1; i <= a.length; i++) {
+                const current = [i];
+
+                for (let j = 1; j <= b.length; j++) {
+                    current[j] = Math.min(
+                        previous[j] + 1,
+                        current[j - 1] + 1,
+                        previous[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)
+                    );
+                }
+
+                previous = current;
+            }
+
+            return previous[b.length] <= 2;
+        }
+
+        function renderTeamHoursResults() {
+            const results = document.getElementById("teamHoursResults");
+            const custom = teamHoursPeriod === "custom";
+
+            hoursModalBody
+                .querySelectorAll("[data-hours-custom]")
+                .forEach(element => { element.hidden = !custom; });
+
+            let from;
+            let to;
+            let weeks = [];
+            let periodText;
+
+            if (custom) {
+                const fromDate = parseDateInput(
+                    document.getElementById("teamHoursFrom").value
+                );
+                const toDate = parseDateInput(
+                    document.getElementById("teamHoursTo").value
+                );
+
+                if (!fromDate || !toDate || toDate < fromDate) {
+                    teamHoursRows = [];
+                    results.innerHTML = `
+                        <div class="empty-state">
+                            Choose a From date on or before the To date.
+                        </div>`;
+                    return;
+                }
+
+                from = fromDate;
+                to = addDays(toDate, 1);
+                periodText =
+                    formatHoursDate(fromDate) + " to " + formatHoursDate(toDate);
+
+                if (to > new Date()) {
+                    periodText += " (includes shifts booked ahead)";
+                }
+            } else {
+                weeks = rollingWeeks(Number(teamHoursPeriod));
+                from = weeks[0].from;
+                to = weeks[weeks.length - 1].to;
+                periodText = formatHoursDate(from) + " to now";
+            }
+
+            const people = summariseHours(events, from, to, weeks)
+                .sort((a, b) =>
+                    b.total - a.total || a.name.localeCompare(b.name)
+                );
+
+            people.forEach(person => {
+                const key = normaliseName(person.name);
+
+                person.similar = people
+                    .filter(other =>
+                        other !== person &&
+                        similarNames(key, normaliseName(other.name))
+                    )
+                    .map(other => other.name);
+            });
+
+            teamHoursRows = people;
+            teamHoursColumns = weeks;
+
+            if (people.length === 0) {
+                results.innerHTML = `
+                    <p class="field-help">${escapeHtml(periodText)}</p>
+                    <div class="empty-state">No booked hours in this period.</div>`;
+                return;
+            }
+
+            const teamTotal = people.reduce((sum, person) => sum + person.total, 0);
+
+            const weekHeads = weeks.map((week, index) => `
+                <th title="${escapeHtml(week.label)}">Wk ${index + 1}</th>`).join("");
+
+            const rows = people.map(person => `
+                <tr>
+                    <td>
+                        ${escapeHtml(person.name)}
+                        ${person.similar.length
+                            ? `<div class="hours-similar">Similar name: ${escapeHtml(person.similar.join(", "))}</div>`
+                            : ""}
+                    </td>
+                    <td>${escapeHtml(Array.from(person.levels).join(", "))}</td>
+                    <td>${person.shifts.length}</td>
+                    <td><strong>${formatHoursValue(person.total)}</strong></td>
+                    ${person.perWeek.map(hours => `<td>${formatHoursValue(hours)}</td>`).join("")}
+                </tr>`).join("");
+
+            const weekKey = weeks.length
+                ? `<p class="field-help">${weeks.map((week, index) =>
+                    `Wk ${index + 1}: ${escapeHtml(week.label)}`).join(" · ")}</p>`
+                : "";
+
+            results.innerHTML = `
+                <p class="field-help">
+                    ${escapeHtml(periodText)} · ${people.length}
+                    ${people.length === 1 ? "person" : "people"} ·
+                    ${formatHoursValue(teamTotal)} hours in total
+                </p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Level</th>
+                                <th>Shifts</th>
+                                <th>Total h</th>
+                                ${weekHeads}
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+
+                ${weekKey}`;
+        }
+
+        function downloadTeamHoursCsv() {
+            if (teamHoursRows.length === 0) {
+                showToast("No hours to download for this period.");
+                return;
+            }
+
+            const rows = [[
+                "Name",
+                "Level",
+                "Shifts",
+                "Total hours",
+                ...teamHoursColumns.map(week => week.label),
+                "Similar names"
+            ]];
+
+            teamHoursRows.forEach(person => {
+                rows.push([
+                    person.name,
+                    Array.from(person.levels).join(", "),
+                    person.shifts.length,
+                    formatHoursValue(person.total),
+                    ...person.perWeek.map(formatHoursValue),
+                    person.similar.join(", ")
+                ]);
+            });
+
+            downloadCSV(
+                rows,
+                `${TEAM_NAME}_Team_Hours_${formatDateKey(new Date())}.csv`
+            );
+
+            showToast("Team hours CSV downloaded.");
+        }
+
         function openBookingsModal() {
             modalReturnFocus = document.activeElement;
             renderMyBookings();

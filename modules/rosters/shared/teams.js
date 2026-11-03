@@ -28,6 +28,8 @@ const WESTCOAST_API =
  * - editBooking:     Edit button in My bookings (needs Apps Script v4)
  * - messageBadge:    count of new team messages on the Team
  *                    messages button
+ * - hoursReport:     My hours (rolling 4-week total) and Team hours
+ *                    in Manager controls (test roster first)
  * - flexZ:           Z in the flexibility list; a single AR on Z
  *                    shows operational Z instead of D (needs Z
  *                    allowed in the cluster's Apps Script)
@@ -48,7 +50,8 @@ const ROSTER_TEAM_LIST = {
     test: {
         name: "Summer Bay",
         cluster: "Lower Eyre",
-        apiUrl: TEST_API
+        apiUrl: TEST_API,
+        features: [...STANDARD_FEATURES, "hoursReport"]
     },
     tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
