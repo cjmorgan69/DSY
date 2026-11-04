@@ -41,6 +41,8 @@
       --yellow-text: #7a5a00;
       --red: #ffc4bf;
       --red-text: #a1271c;
+      --town: #d6e8ff;
+      --town-text: #0b4a8f;
     }
 
     * { box-sizing: border-box; }
@@ -320,6 +322,14 @@
       padding-top: 6px;
     }
 
+    .tag.town {
+      display: block;
+      width: fit-content;
+      margin-top: 4px;
+      background: var(--town);
+      color: var(--town-text);
+    }
+
     .tag {
       display: inline-block;
       padding: 1px 6px;
@@ -427,6 +437,7 @@
           <div class="legend">
             <span><i style="background:var(--red)"></i>Part of a gap of 6 h or more</span>
             <span><i style="background:var(--green)"></i>No 6 h gap</span>
+            <span><i style="background:var(--town)"></i>One town with no crew</span>
           </div>
         </div>
       </section>
@@ -441,6 +452,18 @@
             6 hours or more.
           </p>
           <ul id="cover-list" class="cover-list"></ul>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>One town with no crew</h2>
+        <div class="card-body">
+          <p class="rule">
+            6 hours or more with no AR, AO or PARA in one town while the
+            other town has a full crew. Not a gap for the pair, shown for
+            information.
+          </p>
+          <ul id="empty-list" class="cover-list"></ul>
         </div>
       </section>
 
@@ -744,7 +767,51 @@
         .filter((x) => (x.to - x.from) / MINUTE >= BIG_GAP);
     }
 
-    function shiftResult(name, from, to, gaps) {
+    // Stretches of 6 h or more when one town has no crew (no AR, AO or
+    // PARA, so it cannot respond) while the other town has a full crew
+    // of 2. Not a gap for the pair, shown for information.
+    function emptyTownStretches(from, to) {
+      const points = new Set([from, to]);
+      bookings.forEach((b) => {
+        if (b.start > from && b.start < to) points.add(b.start);
+        if (b.end > from && b.end < to) points.add(b.end);
+      });
+      const sorted = [...points].sort((a, b) => a - b);
+      const out = [];
+
+      for (let i = 0; i < sorted.length - 1; i++) {
+        const a = sorted[i];
+        const b = sorted[i + 1];
+        const here = bookings.filter((x) => x.start < b && x.end > a);
+        const crew = {};
+        const aaOnly = {};
+        TOWNS.forEach((town) => {
+          const lead = here.filter((x) => x.town === town && COUNTED_LEVELS.includes(x.level)).length;
+          const aa = here.filter((x) => x.town === town && CREW_ONLY_LEVELS.includes(x.level)).length;
+          crew[town] = { lead, total: lead + (lead ? aa : 0) };
+          aaOnly[town] = !lead && aa > 0;
+        });
+
+        TOWNS.forEach((town) => {
+          const other = TOWNS.find((t) => t !== town);
+          if (crew[town].lead > 0 || crew[other].total < MINIMUM) return;
+          const last = out.filter((x) => x.town === town).pop();
+          if (last && last.to === a) {
+            last.to = b;
+            last.aa = last.aa || aaOnly[town];
+          } else {
+            out.push({ town, other, from: a, to: b, aa: aaOnly[town] });
+          }
+        });
+      }
+
+      out.forEach((x) => { x.minutes = (x.to - x.from) / MINUTE; });
+      return out
+        .filter((x) => x.minutes >= BIG_GAP)
+        .sort((x, y) => x.from - y.from);
+    }
+
+    function shiftResult(name, from, to, gaps, empty) {
       const inShift = gaps.filter((g) => g.from < to && g.to > from);
       const big = inShift.filter(isBig);
       const bigMinutes = big.reduce((sum, g) =>
@@ -756,7 +823,8 @@
         to,
         big,
         bigMinutes,
-        small: inShift.filter((g) => !isBig(g))
+        small: inShift.filter((g) => !isBig(g)),
+        empty: empty.filter((x) => x.from < to && x.to > from)
       };
     }
 
@@ -777,21 +845,24 @@
       const gaps = gapsIn(bookings, rangeFrom - 24 * 60 * MINUTE, rangeTo + 24 * 60 * MINUTE)
         .filter((g) => g.from < rangeTo && g.to > rangeFrom);
 
+      const empty = emptyTownStretches(rangeFrom - 24 * 60 * MINUTE, rangeTo + 24 * 60 * MINUTE)
+        .filter((x) => x.from < rangeTo && x.to > rangeFrom);
+
       const days = [];
       for (let i = 0; i < DAYS; i++) {
         const date = addDays(startDate, i);
         const next = addDays(date, 1);
         days.push({
           date,
-          day: shiftResult("Day", adelaideTime(date, 8), adelaideTime(date, 18), gaps),
-          night: shiftResult("Night", adelaideTime(date, 18), adelaideTime(next, 8), gaps)
+          day: shiftResult("Day", adelaideTime(date, 8), adelaideTime(date, 18), gaps, empty),
+          night: shiftResult("Night", adelaideTime(date, 18), adelaideTime(next, 8), gaps, empty)
         });
       }
 
       const big = gaps.filter(isBig);
       const small = gaps.filter((g) => !isBig(g));
 
-      return { days, big, small };
+      return { days, big, small, empty };
     }
 
     /* ----- Rendering ----- */
@@ -853,7 +924,7 @@
     function renderBig() {
       const list = $("cover-list");
       list.replaceChildren();
-      $("email-card").hidden = !report.big.length;
+      $("email-card").hidden = !report.big.length && !report.empty.length;
 
       if (!report.big.length) {
         list.append(el("li", "None. No gap of 6 hours or more in this period."));
@@ -876,6 +947,26 @@
             "extra"));
         }
 
+        list.append(item);
+      });
+    }
+
+    function renderEmpty() {
+      const list = $("empty-list");
+      list.replaceChildren();
+
+      if (!report.empty.length) {
+        list.append(el("li", "None in this period."));
+        return;
+      }
+
+      report.empty.forEach((x) => {
+        const item = el("li");
+        item.append(el("strong", x.town + ": " + whenText(x.from, x.to) + " · " + duration(x.minutes)));
+        item.append(el("span",
+          "No AR, AO or PARA in " + x.town + (x.aa ? " (an AA is booked part of this time)" : "") +
+          ". " + x.other + " has a full crew.",
+          "gap-line"));
         list.append(item);
       });
     }
@@ -951,6 +1042,13 @@
         }
       }
 
+      shift.empty.forEach((x) => {
+        summary.append(el("span",
+          "No crew in " + x.town + " " +
+          time(Math.max(x.from, shift.from)) + "–" + time(Math.min(x.to, shift.to)),
+          "tag town"));
+      });
+
       summary.append(el("span", "Who's booked", "shift-more"));
       card.append(summary, peopleBlock(shift));
       return card;
@@ -994,8 +1092,24 @@
         lines.push("");
       });
 
+      if (!report.big.length) {
+        lines.push("No gaps of 6 hours or more.", "");
+      }
+
+      if (report.empty.length) {
+        lines.push("For information, one town has no crew (no AR, AO or PARA) for 6 hours or more " +
+          "while the other town has a full crew:");
+        report.empty.forEach((x) => {
+          lines.push("  " + x.town + ": " + whenText(x.from, x.to).replace(/–/g, "-") +
+            " (" + duration(x.minutes) + ")");
+        });
+        lines.push("");
+      }
+
       lines.push(
-        "Could we look at allocating a paramedic resource to cover these gaps?",
+        report.big.length
+          ? "Could we look at allocating a paramedic resource to cover these gaps?"
+          : "Could we look at whether these need cover?",
         "",
         "Checked from the live rosters " + stampFormat.format(loadedAt) + "."
       );
@@ -1015,6 +1129,7 @@
       renderTotals();
       renderDays();
       renderBig();
+      renderEmpty();
       renderSmall();
       $("checked").textContent =
         "Checked from the live rosters " + stampFormat.format(loadedAt) +
