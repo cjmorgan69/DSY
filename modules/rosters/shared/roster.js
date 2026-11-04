@@ -5198,8 +5198,6 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 .filter(Boolean)
                 .forEach(button => quickBar.appendChild(button));
 
-            header.after(quickBar);
-
             // The two tabs.
             const tabs = document.createElement("div");
             tabs.className = "section-tabs";
@@ -5222,8 +5220,10 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             bookPanel.id = "bookPanel";
             bookPanel.setAttribute("role", "tabpanel");
 
-            bookingCard.before(tabs);
-            tabs.after(rosterPanel);
+            // Tabs straight under the name, then the everyday buttons.
+            header.after(tabs);
+            tabs.after(quickBar);
+            bookingCard.before(rosterPanel);
             rosterPanel.after(bookPanel);
 
             // Roster tab: Timeline | List | 14 days.
@@ -5251,6 +5251,28 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             viewRosterButton.hidden = true;
             bookingCard.querySelector(".card-title").hidden = true;
             bookPanel.appendChild(bookingCard);
+
+            // "Roster sent up until …" in its own space above the form.
+            const sentBox = bookingCard.querySelector(".roster-submission-manager");
+            sentBox.classList.add("sent-notice");
+            bookPanel.prepend(sentBox);
+
+            // The PDF view's Mark as sent sets the cut-off, so only Reset
+            // is kept here, for a cut-off marked by mistake.
+            document.getElementById("editRosterSentUntilButton").hidden = true;
+
+            const managerHelp = managerPanel.querySelector(
+                ".manager-controls-content > .field-help"
+            );
+
+            if (managerHelp) {
+                managerHelp.innerHTML =
+                    "Print the 7-day roster for Country Rostering from the PDF " +
+                    "view, then use its <strong>Mark as sent</strong> button to " +
+                    "move the hard-copy cut-off to the end of those 7 days. Use " +
+                    "<strong>Reset sent status</strong> only if a cut-off was " +
+                    "marked by mistake. Changes need the roster manager password.";
+            }
 
             // Manager controls under both tabs.
             const managerSection = document.createElement("section");
@@ -6511,6 +6533,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                         : null,
                 apiUrl: APPS_SCRIPT_URL,
                 sentStorageKey: COUNTRY_ROSTER_SENT_STORAGE_KEY,
+                showOnDateChange: TEAM_FEATURES.has("sectionLayout"),
                 generatedAt: new Date().toISOString()
             };
 
@@ -7754,6 +7777,17 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
             document.getElementById("applyDatesButton")
                 .addEventListener("click", showSelectedRoster);
+
+            if (snapshot.showOnDateChange) {
+                // The roster follows the date straight away, so the
+                // Show roster button is not needed.
+                document.getElementById("applyDatesButton").style.display = "none";
+
+                document.getElementById("rosterStartDate")
+                    .addEventListener("change", event => {
+                        if (event.target.value) showSelectedRoster();
+                    });
+            }
 
             document.getElementById("nextWeekButton")
                 .addEventListener("click", () => {
