@@ -5226,8 +5226,9 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             bookingCard.before(rosterPanel);
             rosterPanel.after(bookPanel);
 
-            // Roster tab: Timeline | List | 14 days.
-            listTab.textContent = "List";
+            // Roster tab: Timeline | 14 days. The booking list moves
+            // into Manager controls.
+            listTab.hidden = true;
 
             const fourteenDayTab = document.createElement("button");
             fourteenDayTab.type = "button";
@@ -5244,7 +5245,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 .observe(viewRosterButton, { attributes: true, attributeFilter: ["disabled"] });
             syncFourteenDay();
 
-            rosterPanel.append(viewSwitcher, timelineSection, listSection);
+            rosterPanel.append(viewSwitcher, timelineSection);
 
             // Book a shift tab: the booking card, without the 14-day
             // button (now a Roster view) and the repeated heading.
@@ -5279,6 +5280,35 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             managerSection.className = "card manager-section";
             managerSection.appendChild(managerPanel);
             bookPanel.after(managerSection);
+
+            // Booking list: a button in Manager controls shows or hides it.
+            const bookingListButton = document.createElement("button");
+            bookingListButton.id = "bookingListButton";
+            bookingListButton.type = "button";
+            bookingListButton.className = "btn-secondary";
+            bookingListButton.textContent = "Booking list";
+            bookingListButton.setAttribute("aria-expanded", "false");
+            bookingListButton.setAttribute("aria-controls", "listSection");
+            bookingListButton.addEventListener("click", () => {
+                const show = !listSection.classList.contains("active");
+
+                listSection.classList.toggle("active", show);
+                bookingListButton.setAttribute("aria-expanded", String(show));
+                bookingListButton.textContent =
+                    show ? "Hide booking list" : "Booking list";
+
+                if (show) {
+                    renderBookingTable();
+                    listSection.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            });
+
+            document.getElementById("resetRosterSentButton")
+                .before(bookingListButton);
+
+            listSection.classList.add("manager-booking-list");
+            managerPanel.querySelector(".manager-controls-content")
+                .appendChild(listSection);
 
             tabs.querySelectorAll("[data-section]").forEach(tab => {
                 tab.addEventListener("click", () => {
