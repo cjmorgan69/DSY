@@ -842,6 +842,20 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         let flexInfoModal = null;
         let flexInfoReturnFocus = null;
 
+        /* ----- Roster / Book a shift tabs (feature "sectionLayout") -----
+         *
+         * Moves the existing page parts into place rather than building
+         * new ones, so every button keeps its own behaviour:
+         * - a quick bar of everyday buttons under the name;
+         * - a Roster tab (Timeline, List, and 14 days, which opens the
+         *   printable table) and a Book a shift tab;
+         * - Manager controls collapsed under both tabs.
+         * The device remembers the last tab; a saved booking returns
+         * to the Roster tab so the new shift can be seen.
+         */
+        const SECTION_STORAGE_KEY =
+            `crew-roster-section-${TEAM_NAME.toLowerCase()}`;
+
         // Hours report (features "myHours", "teamHours"); see setupHoursReport.
         const HOURS_MS = 3600000;
         const MY_HOURS_WEEKS = 4;
@@ -888,6 +902,10 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
             if (TEAM_FEATURES.has("flexInfo")) {
                 setupFlexInfo();
+            }
+
+            if (TEAM_FEATURES.has("sectionLayout")) {
+                setupSectionLayout();
             }
 
             if (TEAM_FEATURES.has("loadingMessages")) {
@@ -1747,7 +1765,17 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 "rosterSubmissionStatus"
             );
 
-            if (!rosterSentUntil) {
+            const statusBox = status.closest(".roster-submission-manager");
+
+            if (TEAM_FEATURES.has("sectionLayout")) {
+                // Short form: the save message already says when
+                // Country Rostering must be told.
+                status.textContent = rosterSentUntil
+                    ? "Roster sent up until " +
+                      formatRosterSentUntilDateTime(rosterSentUntil)
+                    : "";
+                statusBox.hidden = !rosterSentUntil;
+            } else if (!rosterSentUntil) {
                 status.textContent =
                     `No hard-copy roster cut-off is currently marked as sent for ${TEAM_NAME}.`;
             } else {
@@ -1766,6 +1794,9 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             rosterSentUntil = null;
             submissionStatusLoaded = false;
             lastCentralRosteringWarningKey = "";
+
+            document.getElementById("rosterSubmissionStatus")
+                .closest(".roster-submission-manager").hidden = false;
 
             document.getElementById("rosterSubmissionStatus").textContent =
                 "Unable to verify hard-copy status. " +
@@ -2759,6 +2790,9 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
                showThankYouConfetti();
                 showHardCopyChangeOutcome("booked", data);
+
+                // Back to the roster to see the new shift.
+                showSection("roster");
 
                 // No extra reload: the save response supplied the roster.
                 showLoadedConnectionStatus();
@@ -5143,6 +5177,123 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         function closeFlexInfo() {
             flexInfoModal.classList.remove("active");
             flexInfoReturnFocus?.focus();
+        }
+
+        function setupSectionLayout() {
+            const container = document.querySelector(".container");
+            const header = container.querySelector("header");
+            const bookingCard = bookButton.closest("section.card");
+            const managerPanel =
+                document.getElementById("managerControlsPanel");
+            const viewSwitcher = timelineTab.closest(".view-switcher");
+
+            document.body.classList.add("section-layout");
+
+            // Everyday buttons under the name.
+            const quickBar = document.createElement("div");
+            quickBar.className = "quick-bar";
+
+            ["myBookingsButton", "myHoursButton", "messagesButton", "refreshButton"]
+                .map(id => document.getElementById(id))
+                .filter(Boolean)
+                .forEach(button => quickBar.appendChild(button));
+
+            header.after(quickBar);
+
+            // The two tabs.
+            const tabs = document.createElement("div");
+            tabs.className = "section-tabs";
+            tabs.setAttribute("role", "tablist");
+            tabs.innerHTML = `
+                <button type="button" class="section-tab" role="tab"
+                    data-section="roster" aria-controls="rosterPanel">
+                    Roster
+                </button>
+                <button type="button" class="section-tab" role="tab"
+                    data-section="book" aria-controls="bookPanel">
+                    Book a shift
+                </button>`;
+
+            const rosterPanel = document.createElement("div");
+            rosterPanel.id = "rosterPanel";
+            rosterPanel.setAttribute("role", "tabpanel");
+
+            const bookPanel = document.createElement("div");
+            bookPanel.id = "bookPanel";
+            bookPanel.setAttribute("role", "tabpanel");
+
+            bookingCard.before(tabs);
+            tabs.after(rosterPanel);
+            rosterPanel.after(bookPanel);
+
+            // Roster tab: Timeline | List | 14 days.
+            listTab.textContent = "List";
+
+            const fourteenDayTab = document.createElement("button");
+            fourteenDayTab.type = "button";
+            fourteenDayTab.className = "view-tab";
+            fourteenDayTab.textContent = "14 days";
+            fourteenDayTab.title = "Opens the 14-day team roster";
+            fourteenDayTab.addEventListener("click", () => viewRosterButton.click());
+            viewSwitcher.appendChild(fourteenDayTab);
+
+            const syncFourteenDay = () => {
+                fourteenDayTab.disabled = viewRosterButton.disabled;
+            };
+            new MutationObserver(syncFourteenDay)
+                .observe(viewRosterButton, { attributes: true, attributeFilter: ["disabled"] });
+            syncFourteenDay();
+
+            rosterPanel.append(viewSwitcher, timelineSection, listSection);
+
+            // Book a shift tab: the booking card, without the 14-day
+            // button (now a Roster view) and the repeated heading.
+            viewRosterButton.hidden = true;
+            bookingCard.querySelector(".card-title").hidden = true;
+            bookPanel.appendChild(bookingCard);
+
+            // Manager controls under both tabs.
+            const managerSection = document.createElement("section");
+            managerSection.className = "card manager-section";
+            managerSection.appendChild(managerPanel);
+            bookPanel.after(managerSection);
+
+            tabs.querySelectorAll("[data-section]").forEach(tab => {
+                tab.addEventListener("click", () => {
+                    showSection(tab.dataset.section);
+                });
+            });
+
+            let saved = "roster";
+
+            try {
+                saved = localStorage.getItem(SECTION_STORAGE_KEY) || "roster";
+            } catch (error) {
+                // Private browsing: start on the roster.
+            }
+
+            showSection(saved === "book" ? "book" : "roster", false);
+        }
+
+        function showSection(name, remember = true) {
+            if (!TEAM_FEATURES.has("sectionLayout")) return;
+
+            document.querySelectorAll(".section-tab").forEach(tab => {
+                const active = tab.dataset.section === name;
+                tab.classList.toggle("active", active);
+                tab.setAttribute("aria-selected", String(active));
+            });
+
+            document.getElementById("rosterPanel").hidden = name !== "roster";
+            document.getElementById("bookPanel").hidden = name !== "book";
+
+            if (remember) {
+                try {
+                    localStorage.setItem(SECTION_STORAGE_KEY, name);
+                } catch (error) {
+                    // Private browsing: nothing to remember.
+                }
+            }
         }
 
         function openBookingsModal() {

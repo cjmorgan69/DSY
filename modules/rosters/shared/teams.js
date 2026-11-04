@@ -33,6 +33,8 @@ const WESTCOAST_API =
  *                    needs verifyManagerPassword in the Apps Script)
  * - flexInfo:        meaning of each flexibility code under the list,
  *                    with a More info grid (PRO-295 v1.1)
+ * - sectionLayout:   Roster / Book a shift tabs, quick bar of everyday
+ *                    buttons, Manager controls underneath (test first)
  * - flexZ:           Z in the flexibility list; a single AR on Z
  *                    shows operational Z instead of D (needs Z
  *                    allowed in the cluster's Apps Script)
@@ -56,7 +58,8 @@ const ROSTER_TEAM_LIST = {
     test: {
         name: "Summer Bay",
         cluster: "Lower Eyre",
-        apiUrl: TEST_API
+        apiUrl: TEST_API,
+        features: [...STANDARD_FEATURES, "sectionLayout"]
     },
     tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },

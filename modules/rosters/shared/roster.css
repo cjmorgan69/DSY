@@ -467,6 +467,52 @@
         background: var(--primary-light);
     }
 
+    /* ----- Roster / Book a shift tabs (feature "sectionLayout") ----- */
+    .section-layout .connection-status.connected { display: none; }
+
+    .section-layout [hidden] { display: none !important; }
+
+    .section-layout .roster-submission-manager strong { display: none; }
+
+    .section-layout .roster-submission-manager p { margin: 0; }
+
+    .quick-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .section-tabs {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.3rem;
+        margin-bottom: 1rem;
+        padding: 0.3rem;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #e7ece8;
+    }
+
+    .section-tab {
+        min-height: 46px;
+        border-radius: 10px;
+        color: var(--muted);
+        background: transparent;
+        font-weight: 800;
+    }
+
+    .section-tab.active {
+        color: white;
+        background: var(--primary);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    }
+
+    .manager-section { margin-top: 1.5rem; }
+
     .flex-info-line {
         display: block;
         margin-top: 0.4rem;
