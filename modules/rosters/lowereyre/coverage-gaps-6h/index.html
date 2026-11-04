@@ -796,6 +796,7 @@
     // The LEP40 single-paramedic shift (0700-1900 or 1900-0700, from
     // Port Lincoln) to page out for a gap: the one shift that covers
     // the most of it (the owner, Nov 2026). On a tie, the earlier one.
+    // A gap of 24 h or more gets both the 0700 and the 1900 shifts.
     function lepShifts(gap) {
       const shifts = [];
       let date = addDays(dateOf(gap.from), -1);
@@ -811,6 +812,11 @@
           if (overlap > 0) shifts.push({ ...w, date, overlap });
         });
         date = next;
+      }
+
+      // A gap of 24 h or more: every shift covering 6 h or more of it.
+      if (gap.minutes >= 24 * 60) {
+        return shifts.filter((w) => w.overlap >= BIG_GAP);
       }
 
       return shifts.sort((a, b) => b.overlap - a.overlap || a.from - b.from).slice(0, 1);
