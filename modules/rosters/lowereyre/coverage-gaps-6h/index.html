@@ -13,8 +13,8 @@
 
     The two towns are checked as one pair. The minimum is met while at
     least 2 people at AR level or above (AR, AO, PARA) are booked across
-    the two towns: both in one town or one in each. AA and recruits
-    (REC) do not count.
+    the two towns: both in one town or one in each. AA count only as part of a crew
+    with an AR or above in the same town; recruits (REC) do not count.
 
     Volunteer shifts: Day 08:00-18:00, Night 18:00-08:00.
     Paramedic shifts (gap cover from Port Lincoln): 07:00-19:00 and
@@ -419,7 +419,7 @@
         <div class="card-body">
           <p class="rule">
             Minimum: 2 people at AR level or above (AR, AO or PARA) across
-            the two towns. AA and recruits don't count.
+            the two towns. An AA counts only with an AR or above in the same town; recruits don't count.
           </p>
           <div id="totals" class="totals"></div>
           <div class="legend">
@@ -486,6 +486,10 @@
 
     const TOWNS = ["Tumby Bay", "Cummins"];
     const COUNTED_LEVELS = ["AR", "AO", "PARA"];
+    // AA count as part of a crew (with an AR or above in the same town,
+    // or with the paramedic in either town), never as a single
+    // responder. Recruits never count.
+    const CREW_ONLY_LEVELS = ["AA"];
     const MINIMUM = 2;
     const DAYS = 8;
     const BIG_GAP = 6 * 60;  // gaps this long or longer (minutes) are reported
@@ -641,7 +645,8 @@
     // Split [from, to) into pieces with a steady count of counted crew.
     function segments(bookings, from, to) {
       const counted = bookings.filter((b) =>
-        COUNTED_LEVELS.includes(b.level) && b.start < to && b.end > from
+        (COUNTED_LEVELS.includes(b.level) || CREW_ONLY_LEVELS.includes(b.level)) &&
+        b.start < to && b.end > from
       );
 
       const points = new Set([from, to]);
@@ -656,8 +661,17 @@
       for (let i = 0; i < sorted.length - 1; i++) {
         const a = sorted[i];
         const b = sorted[i + 1];
-        const count = counted.filter((x) => x.start < b && x.end > a).length;
-        pieces.push({ from: a, to: b, count });
+        const here = counted.filter((x) => x.start < b && x.end > a);
+        let count = 0;
+        TOWNS.forEach((town) => {
+          const lead = here.filter((x) => x.town === town && COUNTED_LEVELS.includes(x.level)).length;
+          const aa = here.filter((x) => x.town === town && CREW_ONLY_LEVELS.includes(x.level)).length;
+          count += lead + (lead ? aa : 0);
+        });
+        // An AA booked in either town can crew with the paramedic,
+        // who is mobile between the two towns.
+        const aa = here.some((x) => CREW_ONLY_LEVELS.includes(x.level));
+        pieces.push({ from: a, to: b, count, aa });
       }
 
       return pieces;
@@ -688,11 +702,11 @@
       return gaps;
     }
 
-    // How many were booked during a gap: "nobody", "1 booked" or "0–1 booked".
+    // How many of the 2 were there during a gap: "0 of 2", "1 of 2" or "0–1 of 2".
     function bookedText(gap) {
-      if (gap.highest === 0) return "nobody booked";
-      if (gap.lowest === 0) return "0–1 booked";
-      return "1 booked";
+      if (gap.highest === 0) return "0 of 2";
+      if (gap.lowest === 0) return "0–1 of 2";
+      return "1 of 2";
     }
 
     function gapText(gap) {
@@ -703,11 +717,12 @@
     // more are reported; shorter ones are listed but not emailed.
     const isBig = (gap) => gap.minutes >= BIG_GAP;
 
-    // Pieces of a gap with nobody booked, joined, inside [from, to).
+    // Pieces of a gap where a single paramedic still makes only 1 of 2
+    // (no AR or above, and no AA to crew with), joined, inside [from, to).
     function nobodyTimes(gap, from, to) {
       const out = [];
       gap.parts.forEach((part) => {
-        if (part.count > 0) return;
+        if (part.count > 0 || part.aa) return;
         const a = Math.max(part.from, from);
         const b = Math.min(part.to, to);
         if (b <= a) return;
@@ -876,7 +891,7 @@
 
           if (s.nobody.length) {
             item.append(el("span",
-              "Extra resource needed on top of the paramedic: nobody booked " +
+              "Extra resource needed on top of the paramedic: no AR, AO, PARA or AA booked " +
               s.nobody.map((x) => time(x.from) + "–" + time(x.to)).join(", ") +
               ", so a single paramedic only makes 1 of 2.",
               "extra"));
@@ -925,7 +940,9 @@
           list.append(el("li",
             b.user + " · " + (b.level || "?") + " · " +
             time(Math.max(b.start, shift.from)) + "–" + time(Math.min(b.end, shift.to)) +
-            (counts ? "" : " (doesn't count)"),
+            (counts ? "" : CREW_ONLY_LEVELS.includes(b.level)
+              ? " (counts only with an AR or above in " + town + ")"
+              : " (doesn't count)"),
             counts ? "" : "not-counted"));
         });
         box.append(list);
@@ -983,7 +1000,7 @@
         "Hi,",
         "",
         "The Tumby Bay and Cummins rosters have these gaps of 6 hours or more " +
-        "below the minimum (2 crew at AR level or above across the two towns), " +
+        "below the minimum (2 crew across the two towns, at AR level or above, or an AA with an AR or above in the same town), " +
         dayLabel(startDate) + " to " + dayLabel(lastDate) + ":",
         ""
       ];
@@ -996,7 +1013,7 @@
             " " + s.hours.replace("–", "-") + ": covers " + time(s.gapFrom) + "-" +
             time(s.gapTo) + " (" + duration(s.minutes) + ")" +
             (s.nobody.length
-              ? ". EXTRA RESOURCE NEEDED on top of the paramedic: nobody booked " +
+              ? ". EXTRA RESOURCE NEEDED on top of the paramedic: no AR, AO, PARA or AA booked " +
                 s.nobody.map((x) => time(x.from) + "-" + time(x.to)).join(", ")
               : ""));
         });
