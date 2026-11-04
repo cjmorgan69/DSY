@@ -851,8 +851,8 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
          * - Roster screen: Timeline and 14 days (opens the printable table);
          * - Book a shift screen: sent-roster notice and the booking form.
          * Each screen has its own address (#roster, #book), so the phone's
-         * back button returns Home. The page always opens on Home; a saved
-         * booking goes to the Roster screen so the new shift can be seen.
+         * back button returns Home. The page always opens on Home; after a
+         * booking the Book a shift screen stays open for the next shift.
          */
         // Hours report (features "myHours", "teamHours"); see setupHoursReport.
         const HOURS_MS = 3600000;
@@ -2788,9 +2788,6 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
                showThankYouConfetti();
                 showHardCopyChangeOutcome("booked", data);
-
-                // To the roster to see the new shift.
-                goToScreen("roster", { replace: true });
 
                 // No extra reload: the save response supplied the roster.
                 showLoadedConnectionStatus();
@@ -5342,8 +5339,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         /*
          * Go to a screen and add it to the browser history, so the phone's
          * back button returns to Home. "← Home" goes back the same way.
-         * With replace, the current history entry is swapped instead
-         * (used after a booking so Back still lands on Home).
+         * With replace, the current history entry is swapped instead.
          */
         function goToScreen(name, { replace = false } = {}) {
             if (!TEAM_FEATURES.has("sectionLayout")) return;
