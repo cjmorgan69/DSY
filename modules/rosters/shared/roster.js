@@ -5593,6 +5593,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 hoursPerDay: HOURS_PER_DAY,
                 maxCrew: MAX_CREW,
                 operationalRules: OPERATIONAL_RULES,
+                simpleControls: TEAM_FEATURES.has("sectionLayout"),
                 generatedAt: new Date().toISOString()
             };
 
@@ -6474,6 +6475,17 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
             document.getElementById("closeButton")
                 .addEventListener("click", () => window.close());
+
+            if (snapshot.simpleControls) {
+                // Always the next 14 days from today: no date boxes,
+                // Show roster or Print; Next 14 days and Close stay.
+                document.querySelectorAll(".controls .date-field")
+                    .forEach(field => { field.style.display = "none"; });
+
+                ["applyDatesButton", "printButton"].forEach(id => {
+                    document.getElementById(id).style.display = "none";
+                });
+            }
 
             showSelectedRoster();
         }
