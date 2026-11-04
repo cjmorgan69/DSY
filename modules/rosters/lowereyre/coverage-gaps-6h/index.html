@@ -18,8 +18,9 @@
 
     Volunteer shifts: Day 08:00-18:00, Night 18:00-08:00.
     Gaps of 6 h or more are listed on their own (the owner: a paramedic
-    is not sent for a few hours), with an extra-resource note where no
-    AR, AO, PARA or AA is booked in either town.
+    is not sent for a few hours, smaller gaps are not filled). A second
+    resource is flagged only where nobody (no AR, AO, PARA or AA) is
+    booked in either town for 6 h or more.
 
     Data: the same getBookings call the roster pages make (Lower Eyre
     Apps Script), one per town. Counted to the minute, in Adelaide time.
@@ -435,7 +436,9 @@
         <div class="card-body">
           <p class="rule">
             Joined time below the minimum, measured across shift changes
-            and midnight.
+            and midnight. A paramedic makes 2 with the one person booked.
+            A second resource is flagged only where nobody is booked for
+            6 hours or more.
           </p>
           <ul id="cover-list" class="cover-list"></ul>
         </div>
@@ -734,6 +737,13 @@
       return out;
     }
 
+    // Stretches of 6 h or more with nobody to crew with a paramedic.
+    // Shorter stretches are not filled, so they are not flagged.
+    function secondResourceTimes(gap) {
+      return nobodyTimes(gap, gap.from, gap.to)
+        .filter((x) => (x.to - x.from) / MINUTE >= BIG_GAP);
+    }
+
     function shiftResult(name, from, to, gaps) {
       const inShift = gaps.filter((g) => g.from < to && g.to > from);
       const big = inShift.filter(isBig);
@@ -858,10 +868,10 @@
         line.append(levelTag(gap));
         item.append(line);
 
-        const extra = nobodyTimes(gap, gap.from, gap.to);
+        const extra = secondResourceTimes(gap);
         if (extra.length) {
           item.append(el("span",
-            "Extra resource needed on top of a paramedic: no AR, AO, PARA or AA booked " +
+            "Second resource needed with the paramedic: nobody (no AR, AO, PARA or AA) booked " +
             extra.map((x) => extraText(gap, x)).join(", ") + ".",
             "extra"));
         }
@@ -976,9 +986,9 @@
       report.big.forEach((gap) => {
         lines.push(whenText(gap.from, gap.to).replace(/–/g, "-") + " (" +
           duration(gap.minutes) + ", " + bookedText(gap) + ")");
-        const extra = nobodyTimes(gap, gap.from, gap.to);
+        const extra = secondResourceTimes(gap);
         if (extra.length) {
-          lines.push("  EXTRA RESOURCE NEEDED on top of a paramedic: no AR, AO, PARA or AA booked " +
+          lines.push("  SECOND RESOURCE NEEDED with the paramedic: nobody (no AR, AO, PARA or AA) booked " +
             extra.map((x) => extraText(gap, x).replace(/–/g, "-")).join(", "));
         }
         lines.push("");
