@@ -793,10 +793,9 @@
         .sort((x, y) => x.from - y.from);
     }
 
-    // LEP40 single-paramedic shifts (0700-1900, 1900-0700, from Port
-    // Lincoln) to page out for a gap: every shift that covers 6 h or
-    // more of it, or, when none does (say 1600-2200), the one that
-    // covers the most. A short tail alone does not call a paramedic out.
+    // The LEP40 single-paramedic shift (0700-1900 or 1900-0700, from
+    // Port Lincoln) to page out for a gap: the one shift that covers
+    // the most of it (the owner, Nov 2026). On a tie, the earlier one.
     function lepShifts(gap) {
       const shifts = [];
       let date = addDays(dateOf(gap.from), -1);
@@ -814,9 +813,7 @@
         date = next;
       }
 
-      const enough = shifts.filter((w) => w.overlap >= BIG_GAP);
-      if (enough.length) return enough;
-      return shifts.sort((a, b) => b.overlap - a.overlap).slice(0, 1);
+      return shifts.sort((a, b) => b.overlap - a.overlap || a.from - b.from).slice(0, 1);
     }
 
     function lepText(shift) {
