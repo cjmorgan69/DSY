@@ -793,6 +793,36 @@
         .sort((x, y) => x.from - y.from);
     }
 
+    // LEP40 single-paramedic shifts (0700-1900, 1900-0700, from Port
+    // Lincoln) to page out for a gap: every shift that covers 6 h or
+    // more of it, or, when none does (say 1600-2200), the one that
+    // covers the most. A short tail alone does not call a paramedic out.
+    function lepShifts(gap) {
+      const shifts = [];
+      let date = addDays(dateOf(gap.from), -1);
+      const last = dateOf(gap.to);
+
+      while (date <= last) {
+        const next = addDays(date, 1);
+        [
+          { label: "0700-1900", from: adelaideTime(date, 7), to: adelaideTime(date, 19) },
+          { label: "1900-0700", from: adelaideTime(date, 19), to: adelaideTime(next, 7) }
+        ].forEach((w) => {
+          const overlap = (Math.min(w.to, gap.to) - Math.max(w.from, gap.from)) / MINUTE;
+          if (overlap > 0) shifts.push({ ...w, date, overlap });
+        });
+        date = next;
+      }
+
+      const enough = shifts.filter((w) => w.overlap >= BIG_GAP);
+      if (enough.length) return enough;
+      return shifts.sort((a, b) => b.overlap - a.overlap).slice(0, 1);
+    }
+
+    function lepText(shift) {
+      return dayLabel(shift.date).replace(",", "") + " " + shift.label;
+    }
+
     function shiftResult(name, from, to, gaps, empty) {
       const inShift = gaps.filter((g) => g.from < to && g.to > from);
       const big = inShift.filter(isBig);
@@ -840,7 +870,7 @@
         });
       }
 
-      const big = gaps.filter(isBig);
+      const big = gaps.filter(isBig).map((g) => ({ ...g, lep: lepShifts(g) }));
 
       return { days, big, empty };
     }
@@ -918,6 +948,10 @@
         const line = el("span", undefined, "gap-line");
         line.append(levelTag(gap));
         item.append(line);
+
+        item.append(el("span",
+          "LEP40 single paramedic: " + gap.lep.map(lepText).join(", "),
+          "gap-line"));
 
         const extra = secondResourceTimes(gap);
         if (extra.length) {
@@ -1036,46 +1070,60 @@
 
     function emailText() {
       const lastDate = addDays(startDate, DAYS - 1);
-      const lines = [
-        "Hi,",
-        "",
-        "The Tumby Bay and Cummins rosters have these gaps of 6 hours or more " +
-        "below the minimum (2 crew across the two towns, at AR level or above, or an AA with an AR or above in the same town), " +
-        dayLabel(startDate) + " to " + dayLabel(lastDate) + ":",
-        ""
-      ];
+      const dash = (text) => text.replace(/–/g, "-");
+      const lines = ["Hi,", ""];
 
-      report.big.forEach((gap) => {
-        lines.push(whenText(gap.from, gap.to).replace(/–/g, "-") + " (" +
-          duration(gap.minutes) + ", " + bookedText(gap) + ")");
-        const extra = secondResourceTimes(gap);
-        if (extra.length) {
-          lines.push("  SECOND RESOURCE NEEDED with the paramedic: nobody (no AR, AO, PARA or AA) booked " +
-            extra.map((x) => extraText(gap, x).replace(/–/g, "-")).join(", "));
-        }
+      // LEP40 shifts, in order, once each.
+      const seen = new Set();
+      const lep = [];
+      report.big.forEach((gap) => gap.lep.forEach((w) => {
+        if (seen.has(w.from)) return;
+        seen.add(w.from);
+        lep.push({ ...w, extra: secondResourceTimes(gap).filter((x) => x.from < w.to && x.to > w.from) });
+      }));
+      lep.sort((a, b) => a.from - b.from);
+
+      if (lep.length) {
+        lines.push(
+          "Could we page out the following LEP40 shifts as single paramedic " +
+          "starting and finishing in Port Lincoln:",
+          ""
+        );
+        lep.forEach((w) => lines.push(lepText(w)));
         lines.push("");
-      });
 
-      if (!report.big.length) {
-        lines.push("No gaps of 6 hours or more.", "");
+        const second = lep.filter((w) => w.extra.length);
+        if (second.length) {
+          lines.push("These shifts also need a second resource, as nobody is booked " +
+            "in Tumby Bay or Cummins:", "");
+          second.forEach((w) => lines.push(lepText(w) + " (nobody booked " +
+            w.extra.map((x) => time(x.from).replace(":", "") + "-" + time(x.to).replace(":", "")).join(", ") + ")"));
+          lines.push("");
+        }
+      } else {
+        lines.push("No LEP40 shifts needed: there are no gaps of 6 hours or more.", "");
+      }
+
+      if (report.big.length) {
+        lines.push("Gaps of 6 hours or more (Tumby Bay and Cummins together below " +
+          "2 crew), " + dayLabel(startDate) + " to " + dayLabel(lastDate) + ":");
+        report.big.forEach((gap) => {
+          lines.push("  " + dash(whenText(gap.from, gap.to)) + " (" +
+            duration(gap.minutes) + ", " + bookedText(gap) + ")");
+        });
+        lines.push("");
       }
 
       if (report.empty.length) {
         lines.push("Town with no crew (no AR, AO or PARA booked) for 6 hours or more:");
         report.empty.forEach((x) => {
-          lines.push("  " + x.town + ": " + whenText(x.from, x.to).replace(/–/g, "-") +
+          lines.push("  " + x.town + ": " + dash(whenText(x.from, x.to)) +
             " (" + duration(x.minutes) + ")");
         });
         lines.push("");
       }
 
-      lines.push(
-        report.big.length
-          ? "Could we look at allocating a paramedic resource to cover these gaps?"
-          : "Could we look at whether these need cover?",
-        "",
-        "Checked from the live rosters " + stampFormat.format(loadedAt) + "."
-      );
+      lines.push("Checked from the live rosters " + stampFormat.format(loadedAt) + ".");
 
       return lines.join("\n");
     }
