@@ -721,6 +721,127 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         let savedRosterTime = null;
         let loadingCardTimer = null;
 
+        /* ----- Flexibility code explanations (feature "flexInfo") -----
+         *
+         * Wording from SAAS PRO-295 Volunteer Rosters v1.1
+         * (effective 17/01/2023). The Z "local practice" note is the
+         * lead instructor's local rule, not part of PRO-295.
+         */
+        const FLEX_INFO_SOURCE =
+            "SAAS PRO-295 Volunteer Rosters, version 1.1, effective 17/01/2023";
+
+        const FLEX_INFO = {
+            N: {
+                title: "No Restrictions",
+                short: "Available for all cases, all categories, all locations.",
+                // Own catchment P1–3, P4–5, P6–8; neighbouring P1–3, P4–5, P6–8.
+                grid: [true, true, true, true, true, true],
+                summary:
+                    "Volunteer teams with No Restrictions will be available to be " +
+                    "tasked to all events regardless of the category of case or location.",
+                includes: [
+                    "Respond to all cases, all categories, all locations.",
+                    "Crews may negotiate rendezvous for long distance transfers"
+                ],
+                excludes: []
+            },
+            C: {
+                title: "Local Emergency, Urgent and Routine",
+                short:
+                    "P1–8 in your catchment; P1–5 in neighbouring catchments " +
+                    "(no neighbouring routine P6–8).",
+                grid: [true, true, true, true, true, false],
+                summary:
+                    "Volunteer teams with Local Emergency, Urgent and Routine crewing " +
+                    "restriction are available to be tasked to all category of events " +
+                    "in their catchment area and emergency and urgent events in " +
+                    "neighbouring catchment areas.",
+                includes: [
+                    "Respond to emergency and urgent events (Priority 1 to 3) in catchment area",
+                    "Respond to emergency and urgent events (Priority 1 to 3) in neighbouring catchment areas",
+                    "Respond to urgent events (Priority 4 & 5) in catchment area",
+                    "Respond to routine events (Priority 6 to 8) both into and out of the catchment area",
+                    "Respond to urgent events (Priority 4 & 5) in neighbouring catchment areas"
+                ],
+                excludes: [
+                    "Respond to routine events (Priority 6 to 8) into and out of the neighbouring catchment areas"
+                ]
+            },
+            B: {
+                title: "Local Emergency and Urgent",
+                short: "P1–5 in your catchment; P1–3 in neighbouring catchments.",
+                grid: [true, true, false, true, false, false],
+                summary:
+                    "Volunteer teams with Local Emergency and Urgent crewing restriction " +
+                    "are available to be tasked to all Priority 1 to 5 events in their " +
+                    "catchment area and emergency events (Priority 1 to 3) in " +
+                    "neighbouring catchment areas.",
+                includes: [
+                    "Respond to emergency and urgent events (Priority 1 to 3) in catchment area",
+                    "Respond to emergency and urgent events (Priority 1 to 3) in neighbouring catchment areas",
+                    "Respond to urgent events (Priority 4 & 5) in catchment area"
+                ],
+                excludes: [
+                    "Respond to urgent events (Priority 4 & 5) in neighbouring catchment areas",
+                    "Respond to routine events (Priority 6 to 8) both into and out of the catchment area",
+                    "Respond to routine events (Priority 6 to 8) into and out of the neighbouring catchment areas"
+                ]
+            },
+            A: {
+                title: "Local Emergency",
+                short: "P1–3 in your catchment and in neighbouring catchments.",
+                grid: [true, false, false, true, false, false],
+                summary:
+                    "Volunteer teams with Local Emergency restriction have volunteers " +
+                    "who are released from work to complete the case; they may " +
+                    "negotiate in advance not being able to cover a (Priority 1 to 3) " +
+                    "in a neighbouring catchment area. If this is negotiated, crewing " +
+                    "must be resourced to cover the adjoining catchment.",
+                includes: [
+                    "Respond to emergency and urgent events (Priority 1 to 3) in catchment area",
+                    "Respond to emergency and urgent events (Priority 1 to 3) in neighbouring catchment areas."
+                ],
+                excludes: [
+                    "Respond to urgent events (Priority 4 & 5) in catchment area",
+                    "Respond to urgent events (Priority 4 & 5) in neighbouring catchment areas",
+                    "Respond to routine events (Priority 6 to 8) both into and out of the catchment area",
+                    "Respond to routine events (Priority 6 to 8) into and out of the neighbouring catchment areas"
+                ]
+            },
+            Z: {
+                title: "Single Ambulance Assist",
+                short:
+                    "Not sent alone or as first responder, except to a confirmed " +
+                    "cardiac arrest.",
+                grid: null,
+                gridText:
+                    "Not dispatched solo or as first responder to any case except a " +
+                    "confirmed cardiac arrest. RV with a qualified Ambulance Officer " +
+                    "before arriving on scene.",
+                summary:
+                    "A (Z) restriction is a constraint applied to a single AA who can " +
+                    "be dispatched to a case, and are to RV with a qualified Ambulance " +
+                    "Officer prior to arriving on scene.",
+                includes: [],
+                excludes: [],
+                notes: [
+                    "A “Z” Code driver only may be used under negotiation and " +
+                    "approval by SDM for MedSTAR retrievals and RFDS nurse/Mental " +
+                    "Health transfers as a driver only, when no clinical contact is required.",
+                    "Volunteer stations utilising this restriction cannot be dispatched " +
+                    "as a solo/first responder to any case EXCEPT a confirmed cardiac arrest."
+                ],
+                local:
+                    "Local practice (not part of PRO-295): a new AR who does not wish " +
+                    "to respond on their own (except to a cardiac arrest) may choose Z. " +
+                    "If someone else is on the shift with them, the roster works out " +
+                    "the operational code from the whole crew instead."
+            }
+        };
+
+        let flexInfoModal = null;
+        let flexInfoReturnFocus = null;
+
         // Hours report (features "myHours", "teamHours"); see setupHoursReport.
         const HOURS_MS = 3600000;
         const MY_HOURS_WEEKS = 4;
@@ -763,6 +884,10 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 TEAM_FEATURES.has("teamHours")
             ) {
                 setupHoursReport();
+            }
+
+            if (TEAM_FEATURES.has("flexInfo")) {
+                setupFlexInfo();
             }
 
             if (TEAM_FEATURES.has("loadingMessages")) {
@@ -2986,6 +3111,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                         </select>
                     </label>
                 </div>
+                ${TEAM_FEATURES.has("flexInfo") ? '<p class="flex-info-line" data-flex-info></p>' : ""}
                 <p class="edit-note" ${started ? "" : "hidden"}>
                     This shift has started, so only the finish time and
                     flexibility can change.
@@ -3120,6 +3246,15 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
             finishSelect.addEventListener("change", update);
             flexSelect.addEventListener("change", update);
+
+            if (TEAM_FEATURES.has("flexInfo")) {
+                const flexInfoLine = panel.querySelector("[data-flex-info]");
+                const showFlexInfo = () =>
+                    renderFlexInfoLine(flexInfoLine, flexSelect.value);
+
+                flexSelect.addEventListener("change", showFlexInfo);
+                showFlexInfo();
+            }
 
             panel.querySelector("[data-edit-close]")
                 .addEventListener("click", closeShiftEditor);
@@ -4859,6 +4994,155 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             );
 
             showToast("Team hours CSV downloaded.");
+        }
+
+        function renderFlexInfoLine(element, code) {
+            const info = FLEX_INFO[code];
+
+            if (!element || !info) {
+                if (element) element.textContent = "";
+                return;
+            }
+
+            element.innerHTML = `
+                <strong>${escapeHtml(code)} – ${escapeHtml(info.title)}:</strong>
+                ${escapeHtml(info.short)}
+                <button type="button" class="link-button">More info</button>`;
+
+            element.querySelector("button")
+                .addEventListener("click", () => openFlexInfo(code));
+        }
+
+        function setupFlexInfo() {
+            const help = document.getElementById("restrictionHelp");
+            help.classList.add("flex-info-line");
+
+            const update = () => renderFlexInfoLine(help, restrictionSelect.value);
+            restrictionSelect.addEventListener("change", update);
+            update();
+
+            const tick = yes => yes
+                ? '<span class="flex-yes" aria-label="Yes">✓</span>'
+                : '<span class="flex-no" aria-label="No">✗</span>';
+
+            const rows = ["N", "C", "B", "A", "Z"].map(code => {
+                const info = FLEX_INFO[code];
+                const cells = info.grid
+                    ? info.grid.map(value => `<td>${tick(value)}</td>`).join("")
+                    : `<td colspan="6" class="flex-grid-note">${escapeHtml(info.gridText)}</td>`;
+
+                return `
+                    <tr data-flex-row="${code}">
+                        <th scope="row">${code}<span>${escapeHtml(info.title)}</span></th>
+                        ${cells}
+                    </tr>`;
+            }).join("");
+
+            const list = (heading, items) => items.length
+                ? `<p class="flex-list-heading">${heading}</p>
+                   <ul>${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+                : "";
+
+            const sections = ["N", "C", "B", "A", "Z"].map(code => {
+                const info = FLEX_INFO[code];
+
+                return `
+                    <section class="flex-detail" data-flex-detail="${code}">
+                        <h4>${code} = ${escapeHtml(info.title)}</h4>
+                        <p>${escapeHtml(info.summary)}</p>
+                        ${list("This includes being available to:", info.includes)}
+                        ${list("This excludes being available to:", info.excludes)}
+                        ${(info.notes || []).map(note => `<p>${escapeHtml(note)}</p>`).join("")}
+                        ${info.local ? `<p class="flex-local">${escapeHtml(info.local)}</p>` : ""}
+                    </section>`;
+            }).join("");
+
+            flexInfoModal = document.createElement("div");
+            flexInfoModal.id = "flexInfoModal";
+            flexInfoModal.className = "modal-overlay";
+            flexInfoModal.innerHTML = `
+                <div
+                    class="modal flex-info-modal"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="flexInfoTitle"
+                >
+                    <div class="modal-header">
+                        <h3 id="flexInfoTitle">Flexibility codes</h3>
+                        <button
+                            id="closeFlexInfoButton"
+                            class="btn-secondary btn-small"
+                            type="button"
+                        >
+                            Close
+                        </button>
+                    </div>
+
+                    <p class="field-help">
+                        Which events a crew can be tasked to. P = priority.
+                    </p>
+
+                    <div class="table-wrapper">
+                        <table class="flex-grid">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">Code</th>
+                                    <th colspan="3">Own catchment</th>
+                                    <th colspan="3">Neighbouring</th>
+                                </tr>
+                                <tr>
+                                    <th>P1–3</th><th>P4–5</th><th>P6–8</th>
+                                    <th>P1–3</th><th>P4–5</th><th>P6–8</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+
+                    ${sections}
+
+                    <p class="field-help">From ${escapeHtml(FLEX_INFO_SOURCE)}.</p>
+                </div>`;
+
+            document.body.appendChild(flexInfoModal);
+
+            document.getElementById("closeFlexInfoButton")
+                .addEventListener("click", closeFlexInfo);
+
+            flexInfoModal.addEventListener("click", event => {
+                if (event.target === flexInfoModal) closeFlexInfo();
+            });
+
+            document.addEventListener("keydown", event => {
+                if (
+                    event.key === "Escape" &&
+                    flexInfoModal.classList.contains("active")
+                ) {
+                    event.stopPropagation();
+                    closeFlexInfo();
+                }
+            }, true);
+        }
+
+        function openFlexInfo(code) {
+            flexInfoReturnFocus = document.activeElement;
+
+            flexInfoModal
+                .querySelectorAll("[data-flex-row], [data-flex-detail]")
+                .forEach(element => {
+                    const match =
+                        (element.dataset.flexRow || element.dataset.flexDetail) === code;
+                    element.classList.toggle("flex-current", match);
+                });
+
+            flexInfoModal.classList.add("active");
+            document.getElementById("closeFlexInfoButton").focus();
+            flexInfoModal.querySelector(".modal").scrollTop = 0;
+        }
+
+        function closeFlexInfo() {
+            flexInfoModal.classList.remove("active");
+            flexInfoReturnFocus?.focus();
         }
 
         function openBookingsModal() {
