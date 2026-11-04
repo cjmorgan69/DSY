@@ -17,8 +17,9 @@
     with an AR or above in the same town; recruits (REC) do not count.
 
     Volunteer shifts: Day 08:00-18:00, Night 18:00-08:00.
-    Paramedic shifts (gap cover from Port Lincoln): 07:00-19:00 and
-    19:00-07:00.
+    Gaps of 6 h or more are listed on their own (the owner: a paramedic
+    is not sent for a few hours), with an extra-resource note where no
+    AR, AO, PARA or AA is booked in either town.
 
     Data: the same getBookings call the roster pages make (Lower Eyre
     Apps Script), one per town. Counted to the minute, in Adelaide time.
@@ -433,8 +434,8 @@
         <h2>Gaps of 6 hours or more</h2>
         <div class="card-body">
           <p class="rule">
-            With the paramedic shifts (07:00 to 19:00 and 19:00 to 07:00,
-            from Port Lincoln) that would cover them.
+            Joined time below the minimum, measured across shift changes
+            and midnight.
           </p>
           <ul id="cover-list" class="cover-list"></ul>
         </div>
@@ -733,37 +734,6 @@
       return out;
     }
 
-    // Paramedic shifts (07:00-19:00, 19:00-07:00) that overlap a gap.
-    function paramedicShifts(gap) {
-      const shifts = [];
-      let date = addDays(dateOf(gap.from), -1);
-      const last = dateOf(gap.to);
-
-      while (date <= last) {
-        const next = addDays(date, 1);
-        [
-          { name: "Day", hours: "07:00–19:00", from: adelaideTime(date, 7), to: adelaideTime(date, 19) },
-          { name: "Night", hours: "19:00–07:00", from: adelaideTime(date, 19), to: adelaideTime(next, 7) }
-        ].forEach((w) => {
-          if (w.from < gap.to && w.to > gap.from) {
-            const from = Math.max(w.from, gap.from);
-            const to = Math.min(w.to, gap.to);
-            shifts.push({
-              ...w,
-              date,
-              gapFrom: from,
-              gapTo: to,
-              minutes: (to - from) / MINUTE,
-              nobody: nobodyTimes(gap, from, to)
-            });
-          }
-        });
-        date = next;
-      }
-
-      return shifts;
-    }
-
     function shiftResult(name, from, to, gaps) {
       const inShift = gaps.filter((g) => g.from < to && g.to > from);
       const big = inShift.filter(isBig);
@@ -808,7 +778,7 @@
         });
       }
 
-      const big = gaps.filter(isBig).map((g) => ({ ...g, shifts: paramedicShifts(g) }));
+      const big = gaps.filter(isBig);
       const small = gaps.filter((g) => !isBig(g));
 
       return { days, big, small };
@@ -836,6 +806,13 @@
       const b = dateOf(to - 1);
       return dayLabel(a) + " " + time(from) + " – " +
         (a === b ? "" : dayLabel(b) + " ") + time(to);
+    }
+
+    // Time only when on the gap's first day, else with the day.
+    function extraText(gap, x) {
+      return dateOf(x.from) === dateOf(gap.from) && dateOf(x.to - 1) === dateOf(gap.from)
+        ? time(x.from) + "–" + time(x.to)
+        : whenText(x.from, x.to);
     }
 
     function levelTag(gap) {
@@ -881,22 +858,13 @@
         line.append(levelTag(gap));
         item.append(line);
 
-        gap.shifts.forEach((s) => {
-          const shiftLine = el("span", undefined, "gap-line");
-          shiftLine.append(
-            "Paramedic " + s.name.toLowerCase() + " shift " + dayLabel(s.date) + " " +
-            s.hours + ": covers " + time(s.gapFrom) + "–" + time(s.gapTo) +
-            " (" + duration(s.minutes) + ")");
-          item.append(shiftLine);
-
-          if (s.nobody.length) {
-            item.append(el("span",
-              "Extra resource needed on top of the paramedic: no AR, AO, PARA or AA booked " +
-              s.nobody.map((x) => time(x.from) + "–" + time(x.to)).join(", ") +
-              ", so a single paramedic only makes 1 of 2.",
-              "extra"));
-          }
-        });
+        const extra = nobodyTimes(gap, gap.from, gap.to);
+        if (extra.length) {
+          item.append(el("span",
+            "Extra resource needed on top of a paramedic: no AR, AO, PARA or AA booked " +
+            extra.map((x) => extraText(gap, x)).join(", ") + ".",
+            "extra"));
+        }
 
         list.append(item);
       });
@@ -1008,15 +976,11 @@
       report.big.forEach((gap) => {
         lines.push(whenText(gap.from, gap.to).replace(/–/g, "-") + " (" +
           duration(gap.minutes) + ", " + bookedText(gap) + ")");
-        gap.shifts.forEach((s) => {
-          lines.push("  Paramedic " + s.name.toLowerCase() + " shift " + dayLabel(s.date) +
-            " " + s.hours.replace("–", "-") + ": covers " + time(s.gapFrom) + "-" +
-            time(s.gapTo) + " (" + duration(s.minutes) + ")" +
-            (s.nobody.length
-              ? ". EXTRA RESOURCE NEEDED on top of the paramedic: no AR, AO, PARA or AA booked " +
-                s.nobody.map((x) => time(x.from) + "-" + time(x.to)).join(", ")
-              : ""));
-        });
+        const extra = nobodyTimes(gap, gap.from, gap.to);
+        if (extra.length) {
+          lines.push("  EXTRA RESOURCE NEEDED on top of a paramedic: no AR, AO, PARA or AA booked " +
+            extra.map((x) => extraText(gap, x).replace(/–/g, "-")).join(", "));
+        }
         lines.push("");
       });
 
