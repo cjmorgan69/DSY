@@ -310,6 +310,13 @@
       font-weight: 600;
     }
 
+    .short-details summary {
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 14px;
+      padding-top: 6px;
+    }
+
     .tag {
       display: inline-block;
       padding: 1px 6px;
@@ -415,10 +422,20 @@
           </p>
           <div id="totals" class="totals"></div>
           <div class="legend">
-            <span><i style="background:var(--green)"></i>Covered</span>
-            <span><i style="background:var(--yellow)"></i>Under 25% uncovered</span>
-            <span><i style="background:var(--red)"></i>25% or more uncovered</span>
+            <span><i style="background:var(--red)"></i>Part of a gap of 6 h or more</span>
+            <span><i style="background:var(--green)"></i>No 6 h gap</span>
           </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Gaps of 6 hours or more</h2>
+        <div class="card-body">
+          <p class="rule">
+            With the paramedic shifts (07:00 to 19:00 and 19:00 to 07:00,
+            from Port Lincoln) that would cover them.
+          </p>
+          <ul id="cover-list" class="cover-list"></ul>
         </div>
       </section>
 
@@ -429,26 +446,11 @@
         </div>
       </section>
 
-      <section class="card">
-        <h2>Paramedic cover needed</h2>
-        <div class="card-body">
-          <p class="rule">
-            Gaps grouped by paramedic shift (07:00 to 19:00 and 19:00 to
-            07:00, from Port Lincoln).
-          </p>
-          <ul id="cover-list" class="cover-list"></ul>
-        </div>
-      </section>
-
       <section id="short-card" class="card" hidden>
-        <h2>Short changeover gaps</h2>
-        <div class="card-body">
-          <p class="rule">
-            Paramedic shifts with 2 hours of gap or less, usually where
-            bookings don't quite meet at a changeover.
-          </p>
+        <details class="card-body short-details">
+          <summary id="short-count"></summary>
           <ul id="short-list" class="cover-list"></ul>
-        </div>
+        </details>
       </section>
 
       <section id="email-card" class="card">
@@ -485,8 +487,7 @@
     const COUNTED_LEVELS = ["AR", "AO", "PARA"];
     const MINIMUM = 2;
     const DAYS = 8;
-    const YELLOW_LIMIT = 25; // % uncovered below this is yellow
-    const SHORT_GAP = 120;   // gaps this long or shorter (minutes) are listed separately
+    const BIG_GAP = 6 * 60;  // gaps this long or longer (minutes) are reported
     const TIME_ZONE = "Australia/Adelaide";
     const EMAIL_KEY = "dsy-coverage-gaps-email";
 
@@ -697,29 +698,70 @@
       return time(gap.from) + "–" + time(gap.to);
     }
 
-    function shiftResult(bookings, name, from, to) {
-      const gaps = gapsIn(bookings, from, to);
-      const total = (to - from) / MINUTE;
-      const uncovered = gaps.reduce((sum, g) => sum + g.minutes, 0);
-      const percent = uncovered / total * 100;
+    // A gap is joined time below the minimum. Only gaps of 6 hours or
+    // more are reported; shorter ones are listed but not emailed.
+    const isBig = (gap) => gap.minutes >= BIG_GAP;
+
+    // Pieces of a gap with nobody booked, joined, inside [from, to).
+    function nobodyTimes(gap, from, to) {
+      const out = [];
+      gap.parts.forEach((part) => {
+        if (part.count > 0) return;
+        const a = Math.max(part.from, from);
+        const b = Math.min(part.to, to);
+        if (b <= a) return;
+        const last = out[out.length - 1];
+        if (last && last.to === a) last.to = b;
+        else out.push({ from: a, to: b });
+      });
+      return out;
+    }
+
+    // Paramedic shifts (07:00-19:00, 19:00-07:00) that overlap a gap.
+    function paramedicShifts(gap) {
+      const shifts = [];
+      let date = addDays(dateOf(gap.from), -1);
+      const last = dateOf(gap.to);
+
+      while (date <= last) {
+        const next = addDays(date, 1);
+        [
+          { name: "Day", hours: "07:00–19:00", from: adelaideTime(date, 7), to: adelaideTime(date, 19) },
+          { name: "Night", hours: "19:00–07:00", from: adelaideTime(date, 19), to: adelaideTime(next, 7) }
+        ].forEach((w) => {
+          if (w.from < gap.to && w.to > gap.from) {
+            const from = Math.max(w.from, gap.from);
+            const to = Math.min(w.to, gap.to);
+            shifts.push({
+              ...w,
+              date,
+              gapFrom: from,
+              gapTo: to,
+              minutes: (to - from) / MINUTE,
+              nobody: nobodyTimes(gap, from, to)
+            });
+          }
+        });
+        date = next;
+      }
+
+      return shifts;
+    }
+
+    function shiftResult(name, from, to, gaps) {
+      const inShift = gaps.filter((g) => g.from < to && g.to > from);
+      const big = inShift.filter(isBig);
+      const bigMinutes = big.reduce((sum, g) =>
+        sum + (Math.min(g.to, to) - Math.max(g.from, from)) / MINUTE, 0);
 
       return {
         name,
         from,
         to,
-        total,
-        uncovered,
-        percent,
-        gaps,
-        colour: uncovered === 0
-          ? "green"
-          : percent < YELLOW_LIMIT ? "yellow" : "red"
+        big,
+        bigMinutes,
+        small: inShift.filter((g) => !isBig(g))
       };
-    }
-
-    function percentText(percent) {
-      if (percent > 0 && percent < 1) return "under 1%";
-      return Math.round(percent) + "%";
     }
 
     /* ----- State ----- */
@@ -731,90 +773,29 @@
     let controller = null;
 
     function analyse() {
-      const days = [];
-
-      for (let i = 0; i < DAYS; i++) {
-        const date = addDays(startDate, i);
-        const next = addDays(date, 1);
-
-        days.push({
-          date,
-          day: shiftResult(bookings, "Day", adelaideTime(date, 8), adelaideTime(date, 18)),
-          night: shiftResult(bookings, "Night", adelaideTime(date, 18), adelaideTime(next, 8))
-        });
-      }
-
       const rangeFrom = adelaideTime(startDate, 8);
       const rangeTo = adelaideTime(addDays(startDate, DAYS), 8);
 
-      // Paramedic shifts that overlap the checked period.
-      const cover = [];
+      // Look a day either side so a gap running over the edge of the
+      // period is measured at its full length.
+      const gaps = gapsIn(bookings, rangeFrom - 24 * 60 * MINUTE, rangeTo + 24 * 60 * MINUTE)
+        .filter((g) => g.from < rangeTo && g.to > rangeFrom);
 
-      for (let i = 0; i <= DAYS; i++) {
+      const days = [];
+      for (let i = 0; i < DAYS; i++) {
         const date = addDays(startDate, i);
         const next = addDays(date, 1);
-        const windows = [
-          { name: "Day", from: adelaideTime(date, 7), to: adelaideTime(date, 19) },
-          { name: "Night", from: adelaideTime(date, 19), to: adelaideTime(next, 7) }
-        ];
-
-        windows.forEach((w) => {
-          const from = Math.max(w.from, rangeFrom);
-          const to = Math.min(w.to, rangeTo);
-          if (to <= from) return;
-
-          const gaps = gapsIn(bookings, from, to);
-          if (!gaps.length) return;
-
-          cover.push({ ...w, date, gaps });
+        days.push({
+          date,
+          day: shiftResult("Day", adelaideTime(date, 8), adelaideTime(date, 18), gaps),
+          night: shiftResult("Night", adelaideTime(date, 18), adelaideTime(next, 8), gaps)
         });
       }
 
-      // Short gaps are judged on the whole gap, so 18:00-20:00 stays
-      // one 2-hour gap even though the paramedic shift changes at 19:00.
-      const allGaps = gapsIn(bookings, rangeFrom, rangeTo);
-      const fullGap = (piece) =>
-        allGaps.find((g) => g.from <= piece.from && g.to >= piece.to);
+      const big = gaps.filter(isBig).map((g) => ({ ...g, shifts: paramedicShifts(g) }));
+      const small = gaps.filter((g) => !isBig(g));
 
-      cover.forEach((c) => {
-        // Needed when this paramedic shift holds more than 2 h of gap
-        // from gaps longer than 2 h; a short tail is listed with the
-        // short gaps instead.
-        c.needed = c.gaps
-          .filter((g) => fullGap(g).minutes > SHORT_GAP)
-          .reduce((sum, g) => sum + g.minutes, 0) > SHORT_GAP;
-        // Times with nobody booked: a single paramedic only makes 1.
-        c.extra = [];
-        c.gaps.forEach((g) => g.parts.forEach((part) => {
-          if (part.count > 0) return;
-          const last = c.extra[c.extra.length - 1];
-          if (last && last.to === part.from) last.to = part.to;
-          else c.extra.push({ from: part.from, to: part.to });
-        }));
-      });
-
-      const needed = cover.filter((c) => c.needed);
-      // Gap time in paramedic shifts not needed, joined across the
-      // 07:00 and 19:00 changes.
-      const short = [];
-      cover.filter((c) => !c.needed).forEach((c) => c.gaps.forEach((g) => {
-        const last = short[short.length - 1];
-        if (last && last.to === g.from) {
-          last.to = g.to;
-          last.parts.push(...g.parts);
-        } else {
-          short.push({ from: g.from, to: g.to, parts: [...g.parts] });
-        }
-      }));
-      short.forEach((g) => {
-        g.minutes = (g.to - g.from) / MINUTE;
-        g.lowest = Math.min(...g.parts.map((p) => p.count));
-        g.highest = Math.max(...g.parts.map((p) => p.count));
-        const whole = fullGap(g);
-        g.tail = whole.minutes > g.minutes;
-      });
-
-      return { days, cover: needed, short, allGaps };
+      return { days, big, small };
     }
 
     /* ----- Rendering ----- */
@@ -832,109 +813,92 @@
       $("message").hidden = false;
     }
 
-    function renderTotals() {
-      const box = $("totals");
-      box.replaceChildren();
-
-      ["day", "night"].forEach((key) => {
-        const shifts = report.days.map((d) => d[key]);
-        const covered = shifts.filter((s) => s.uncovered === 0).length;
-        const uncovered = shifts.reduce((sum, s) => sum + s.uncovered, 0);
-        const total = shifts.reduce((sum, s) => sum + s.total, 0);
-
-        const card = el("div", undefined, "total");
-        card.append(
-          el("span", key === "day" ? "Day shifts 08–18" : "Night shifts 18–08"),
-          el("strong", covered + " of " + shifts.length + " covered"),
-          el("span",
-            uncovered
-              ? duration(uncovered) + " below minimum (" +
-                percentText(uncovered / total * 100) + ")"
-              : "No gaps")
-        );
-        box.append(card);
-      });
+    // "Thu 5 Nov 08:00 – 16:00", or across midnight
+    // "Sat 7 Nov 16:00 – Sun 8 Nov 08:00".
+    function whenText(from, to) {
+      const a = dateOf(from);
+      const b = dateOf(to - 1);
+      return dayLabel(a) + " " + time(from) + " – " +
+        (a === b ? "" : dayLabel(b) + " ") + time(to);
     }
 
     function levelTag(gap) {
       return el("span", bookedText(gap), gap.lowest === 0 ? "tag none" : "tag one");
     }
 
-    // Wording for the gap breakdown inside one gap.
-    function partsText(gap) {
-      if (gap.lowest === gap.highest) return "";
-      // Join neighbouring pieces with the same count.
-      const joined = [];
-      gap.parts.forEach((p) => {
-        const last = joined[joined.length - 1];
-        if (last && last.count === p.count && last.to === p.from) last.to = p.to;
-        else joined.push({ ...p });
+    function renderTotals() {
+      const box = $("totals");
+      box.replaceChildren();
+
+      ["day", "night"].forEach((key) => {
+        const shifts = report.days.map((d) => d[key]);
+        const hit = shifts.filter((s) => s.big.length).length;
+        const minutes = shifts.reduce((sum, s) => sum + s.bigMinutes, 0);
+
+        const card = el("div", undefined, "total");
+        card.append(
+          el("span", key === "day" ? "Day shifts 08–18" : "Night shifts 18–08"),
+          el("strong", hit + " of " + shifts.length),
+          el("span", hit
+            ? "with a 6 h+ gap · " + duration(minutes) + " uncovered"
+            : "with a 6 h+ gap")
+        );
+        box.append(card);
       });
-      return joined
-        .map((p) => time(p.from) + "–" + time(p.to) + " " +
-          (p.count === 0 ? "nobody" : "1 booked"))
-        .join(", ");
     }
 
-    function fullGapOf(piece) {
-      return report.allGaps.find((g) => g.from <= piece.from && g.to >= piece.to);
-    }
-
-    function renderCover() {
+    function renderBig() {
       const list = $("cover-list");
       list.replaceChildren();
+      $("email-card").hidden = !report.big.length;
 
-      const shortList = $("short-list");
-      shortList.replaceChildren();
-      $("short-card").hidden = !report.short.length;
-
-      report.short.forEach((gap) => {
-        const item = el("li");
-        item.append(el("strong", dayLabel(dateOf(gap.from)) + " · " + gapText(gap) +
-          " (" + duration(gap.minutes) + ")"));
-        const line = el("span", undefined, "gap-line");
-        if (gap.tail) line.append("Part of a longer gap " + gapText(fullGapOf(gap)) + ". ");
-        line.append(levelTag(gap));
-        const detail = partsText(gap);
-        if (detail) line.append(el("span", " " + detail));
-        item.append(line);
-        shortList.append(item);
-      });
-
-      $("email-card").hidden = !report.cover.length && !report.short.length;
-
-      if (!report.cover.length) {
-        list.append(el("li", report.short.length
-          ? "None. Only short changeover gaps (below)."
-          : "None. The minimum is met for the whole period."));
+      if (!report.big.length) {
+        list.append(el("li", "None. No gap of 6 hours or more in this period."));
         return;
       }
 
-      report.cover.forEach((c) => {
+      report.big.forEach((gap) => {
         const item = el("li");
-        const minutes = c.gaps.reduce((sum, g) => sum + g.minutes, 0);
+        item.append(el("strong", whenText(gap.from, gap.to) + " · " + duration(gap.minutes)));
 
-        item.append(el("strong",
-          dayLabel(c.date) + " · paramedic " + c.name.toLowerCase() + " shift " +
-          (c.name === "Day" ? "07:00–19:00" : "19:00–07:00") +
-          " · " + duration(minutes) + " to cover"));
+        const line = el("span", undefined, "gap-line");
+        line.append(levelTag(gap));
+        item.append(line);
 
-        c.gaps.forEach((gap) => {
-          const line = el("span", undefined, "gap-line");
-          line.append(gapText(gap) + " (" + duration(gap.minutes) + ") ", levelTag(gap));
-          const detail = partsText(gap);
-          if (detail) line.append(el("span", " " + detail));
-          item.append(line);
+        gap.shifts.forEach((s) => {
+          const shiftLine = el("span", undefined, "gap-line");
+          shiftLine.append(
+            "Paramedic " + s.name.toLowerCase() + " shift " + dayLabel(s.date) + " " +
+            s.hours + ": covers " + time(s.gapFrom) + "–" + time(s.gapTo) +
+            " (" + duration(s.minutes) + ")");
+          item.append(shiftLine);
+
+          if (s.nobody.length) {
+            item.append(el("span",
+              "Extra resource needed on top of the paramedic: nobody booked " +
+              s.nobody.map((x) => time(x.from) + "–" + time(x.to)).join(", ") +
+              ", so a single paramedic only makes 1 of 2.",
+              "extra"));
+          }
         });
 
-        if (c.extra.length) {
-          item.append(el("span",
-            "Extra resource needed on top of the paramedic: nobody booked " +
-            c.extra.map((x) => time(x.from) + "–" + time(x.to)).join(", ") +
-            ", so a single paramedic only makes 1 of 2.",
-            "extra"));
-        }
+        list.append(item);
+      });
+    }
 
+    function renderSmall() {
+      const list = $("short-list");
+      list.replaceChildren();
+      $("short-card").hidden = !report.small.length;
+      $("short-count").textContent =
+        report.small.length + " shorter gap" + (report.small.length === 1 ? "" : "s") +
+        " (under 6 h, not emailed)";
+
+      report.small.forEach((gap) => {
+        const item = el("li");
+        const line = el("span", whenText(gap.from, gap.to) + " (" + duration(gap.minutes) + ") ");
+        line.append(levelTag(gap));
+        item.append(line);
         list.append(item);
       });
     }
@@ -970,20 +934,25 @@
     }
 
     function shiftCard(shift) {
-      const card = el("details", undefined, "shift " + shift.colour);
+      const card = el("details", undefined, "shift " + (shift.big.length ? "red" : "green"));
       const summary = el("summary");
 
       summary.append(el("span",
         shift.name + " " + (shift.name === "Day" ? "08–18" : "18–08"), "shift-name"));
 
-      summary.append(el("span",
-        shift.uncovered === 0 ? "Covered" : percentText(shift.percent) + " uncovered",
-        "shift-status"));
-
-      if (shift.gaps.length) {
+      if (shift.big.length) {
+        summary.append(el("span", duration(shift.bigMinutes) + " gap", "shift-status"));
         summary.append(el("span",
-          shift.gaps.map((g) => gapText(g) + " (" + bookedText(g) + ")").join(", "),
+          shift.big.map((g) => "Part of " + whenText(g.from, g.to)).join("; "),
           "shift-gaps"));
+      } else {
+        summary.append(el("span", "No 6 h gap", "shift-status"));
+        if (shift.small.length) {
+          summary.append(el("span",
+            "Short: " + shift.small.map((g) =>
+              time(Math.max(g.from, shift.from)) + "–" + time(Math.min(g.to, shift.to))).join(", "),
+            "shift-gaps"));
+        }
       }
 
       summary.append(el("span", "Who's booked", "shift-more"));
@@ -1012,46 +981,29 @@
       const lines = [
         "Hi,",
         "",
-        "The Tumby Bay and Cummins rosters are below the minimum " +
-        "(2 crew at AR level or above across the two towns) at these times, " +
+        "The Tumby Bay and Cummins rosters have these gaps of 6 hours or more " +
+        "below the minimum (2 crew at AR level or above across the two towns), " +
         dayLabel(startDate) + " to " + dayLabel(lastDate) + ":",
         ""
       ];
 
-      report.cover.forEach((c) => {
-        lines.push(dayLabel(c.date) + ", paramedic " + c.name.toLowerCase() +
-          " shift " + (c.name === "Day" ? "07:00-19:00" : "19:00-07:00") +
-          (c.extra.length ? " - EXTRA RESOURCE NEEDED on top of the paramedic" : "") + ":");
-        c.gaps.forEach((gap) => {
-          lines.push("  " + time(gap.from) + "-" + time(gap.to) + " (" +
-            duration(gap.minutes) + ", " +
-            bookedText(gap) + ")");
+      report.big.forEach((gap) => {
+        lines.push(whenText(gap.from, gap.to).replace(/–/g, "-") + " (" +
+          duration(gap.minutes) + ", " + bookedText(gap) + ")");
+        gap.shifts.forEach((s) => {
+          lines.push("  Paramedic " + s.name.toLowerCase() + " shift " + dayLabel(s.date) +
+            " " + s.hours.replace("–", "-") + ": covers " + time(s.gapFrom) + "-" +
+            time(s.gapTo) + " (" + duration(s.minutes) + ")" +
+            (s.nobody.length
+              ? ". EXTRA RESOURCE NEEDED on top of the paramedic: nobody booked " +
+                s.nobody.map((x) => time(x.from) + "-" + time(x.to)).join(", ")
+              : ""));
         });
-        if (c.extra.length) {
-          lines.push("  Nobody booked " +
-            c.extra.map((x) => time(x.from) + "-" + time(x.to)).join(", ") +
-            ": a single paramedic only makes 1 of 2.");
-        }
+        lines.push("");
       });
 
-      if (!report.cover.length) {
-        lines.push("No paramedic shifts needed (only short changeover gaps).");
-      }
-
-      if (report.short.length) {
-        lines.push("", "Short changeover gaps (2 h or less), for information:");
-        report.short.forEach((gap) => {
-          lines.push("  " + dayLabel(dateOf(gap.from)) + " " + time(gap.from) + "-" +
-            time(gap.to) + " (" + duration(gap.minutes) + ", " + bookedText(gap) +
-            (gap.tail ? ", part of a longer gap" : "") + ")");
-        });
-      }
-
       lines.push(
-        "",
-        report.cover.length
-          ? "Could we look at allocating a paramedic resource to cover these gaps?"
-          : "Could we look at whether these need cover?",
+        "Could we look at allocating a paramedic resource to cover these gaps?",
         "",
         "Checked from the live rosters " + stampFormat.format(loadedAt) + "."
       );
@@ -1069,8 +1021,9 @@
     function render() {
       report = analyse();
       renderTotals();
-      renderCover();
       renderDays();
+      renderBig();
+      renderSmall();
       $("checked").textContent =
         "Checked from the live rosters " + stampFormat.format(loadedAt) +
         ". Counted to the minute. Tap a shift to see who's booked.";
