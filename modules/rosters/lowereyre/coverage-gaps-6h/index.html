@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f5f7">
+  <title>Coverage Gaps 6h</title>
+
+  <!--
+    Tumby Bay + Cummins coverage gaps, 6-hour version (trial page, Nov 2026).
+    Only gaps of 6 h or more are reported; ../coverage-gaps/ shows every gap.
+
+    The two towns are checked as one pair. The minimum is met while at
+    least 2 people at AR level or above (AR, AO, PARA) are booked across
+    the two towns: both in one town or one in each. AA and recruits
+    (REC) do not count.
+
+    Volunteer shifts: Day 08:00-18:00, Night 18:00-08:00.
+    Paramedic shifts (gap cover from Port Lincoln): 07:00-19:00 and
+    19:00-07:00.
+
+    Data: the same getBookings call the roster pages make (Lower Eyre
+    Apps Script), one per town. Counted to the minute, in Adelaide time.
+  -->
+
+  <style>
+    :root {
+      color-scheme: light;
+      --background: #f5f5f7;
+      --surface: #ffffff;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --line: #e5e5ea;
+      --blue: #0066cc;
+      --green: #b9edc7;
+      --green-text: #1d6b34;
+      --yellow: #ffe581;
+      --yellow-text: #7a5a00;
+      --red: #ffc4bf;
+      --red-text: #a1271c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.4;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: default; opacity: 0.35; }
+
+    button:focus-visible,
+    input:focus-visible,
+    summary:focus-visible {
+      outline: 3px solid #80baff;
+      outline-offset: 2px;
+    }
+
+    [hidden] { display: none !important; }
+
+    .page {
+      max-width: 720px;
+      margin: auto;
+      padding: 18px 16px 32px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.8px;
+    }
+
+    .subtitle {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .text-button {
+      min-height: 44px;
+      padding: 6px 10px;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .controls label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .controls input {
+      flex: 1;
+      min-width: 0;
+      height: 44px;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .message {
+      margin: 12px 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    .message.error {
+      background: #fff2f1;
+      border-color: var(--red);
+      color: var(--red-text);
+    }
+
+    .card {
+      margin-bottom: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .card > h2 {
+      margin: 0;
+      padding: 12px 14px 0;
+      font-size: 16px;
+      letter-spacing: -0.3px;
+    }
+
+    .card-body {
+      padding: 8px 14px 14px;
+      font-size: 14px;
+    }
+
+    .rule {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .totals {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .total {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--background);
+    }
+
+    .total strong {
+      display: block;
+      font-size: 22px;
+      letter-spacing: -0.5px;
+    }
+
+    .total span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* Day by day: one row per day, day and night shift side by side. */
+    .day {
+      border-top: 1px solid var(--line);
+      padding: 10px 14px 12px;
+    }
+
+    .day:first-of-type { border-top: 0; }
+
+    .day-title {
+      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .shifts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    details.shift {
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    details.shift summary {
+      list-style: none;
+      cursor: pointer;
+    }
+
+    details.shift summary::-webkit-details-marker { display: none; }
+
+    .shift.green { background: var(--green); }
+    .shift.yellow { background: var(--yellow); }
+    .shift.red { background: var(--red); }
+
+    .shift-name {
+      display: block;
+      color: #000000a6;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .shift-status {
+      display: block;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .shift-gaps {
+      display: block;
+      margin-top: 2px;
+      font-size: 12px;
+    }
+
+    .shift-more {
+      display: block;
+      margin-top: 4px;
+      color: #000000a6;
+      font-size: 11px;
+    }
+
+    details[open] .shift-more::after { content: " ▲"; }
+    details:not([open]) .shift-more::after { content: " ▼"; }
+
+    .people {
+      margin: 8px 0 0;
+      padding: 8px 0 0;
+      border-top: 1px solid #00000020;
+      font-size: 12px;
+    }
+
+    .people h4 {
+      margin: 6px 0 2px;
+      font-size: 12px;
+    }
+
+    .people ul {
+      margin: 0;
+      padding-left: 16px;
+    }
+
+    .people .not-counted { color: #000000a6; }
+
+    /* Paramedic cover list. */
+    .cover-list {
+      margin: 6px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .cover-list li {
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .cover-list li:first-child { border-top: 0; }
+
+    .cover-list strong { display: block; }
+
+    .cover-list .gap-line {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .extra {
+      display: block;
+      margin-top: 6px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: var(--red);
+      color: var(--red-text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .short-details summary {
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 14px;
+      padding-top: 6px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .tag.one { background: var(--yellow); color: var(--yellow-text); }
+    .tag.none { background: var(--red); color: var(--red-text); }
+
+    .email-box {
+      display: grid;
+      gap: 8px;
+    }
+
+    .email-box input {
+      height: 44px;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 16px;
+    }
+
+    .email-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .primary, .secondary {
+      min-height: 44px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .primary {
+      border: 0;
+      background: var(--blue);
+      color: #ffffff;
+    }
+
+    .secondary {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--blue);
+    }
+
+    .note {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-right: 4px;
+      border-radius: 4px;
+      vertical-align: -2px;
+    }
+
+    @media (max-width: 380px) {
+      .shifts, .totals, .email-buttons { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Coverage gaps (6 h+)</h1>
+      <button id="refresh" class="text-button" type="button">Refresh</button>
+    </header>
+    <p class="subtitle">Tumby Bay + Cummins · 8 days · gaps of 6 hours or more</p>
+
+    <div class="controls">
+      <label for="start-date">From</label>
+      <input id="start-date" type="date">
+      <button id="today" class="text-button" type="button">Today</button>
+    </div>
+
+    <div id="message" class="message" hidden></div>
+
+    <div id="results" hidden>
+      <section class="card">
+        <h2>Summary</h2>
+        <div class="card-body">
+          <p class="rule">
+            Minimum: 2 people at AR level or above (AR, AO or PARA) across
+            the two towns. AA and recruits don't count.
+          </p>
+          <div id="totals" class="totals"></div>
+          <div class="legend">
+            <span><i style="background:var(--red)"></i>Part of a gap of 6 h or more</span>
+            <span><i style="background:var(--green)"></i>No 6 h gap</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Gaps of 6 hours or more</h2>
+        <div class="card-body">
+          <p class="rule">
+            With the paramedic shifts (07:00 to 19:00 and 19:00 to 07:00,
+            from Port Lincoln) that would cover them.
+          </p>
+          <ul id="cover-list" class="cover-list"></ul>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Day by day</h2>
+        <div class="card-body" style="padding:8px 0 0">
+          <div id="days"></div>
+        </div>
+      </section>
+
+      <section id="short-card" class="card" hidden>
+        <details class="card-body short-details">
+          <summary id="short-count"></summary>
+          <ul id="short-list" class="cover-list"></ul>
+        </details>
+      </section>
+
+      <section id="email-card" class="card">
+        <h2>Email the operations manager</h2>
+        <div class="card-body">
+          <div id="email-box" class="email-box">
+            <input
+              id="manager-email"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              placeholder="Operations manager's email (saved on this phone)"
+              aria-label="Operations manager's email"
+            >
+            <div class="email-buttons">
+              <button id="email" class="primary" type="button">Email gaps</button>
+              <button id="copy" class="secondary" type="button">Copy text</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <p id="checked" class="note"></p>
+    </div>
+  </main>
+
+  <script>
+    "use strict";
+
+    const API =
+      "https://script.google.com/macros/s/AKfycbxEboPS9reZI5OpUMdlriag0QeAJzIyXFZ2Jy0z_4qBJLEK054R5bDcJgyWAW2YSP6l/exec";
+
+    const TOWNS = ["Tumby Bay", "Cummins"];
+    const COUNTED_LEVELS = ["AR", "AO", "PARA"];
+    const MINIMUM = 2;
+    const DAYS = 8;
+    const BIG_GAP = 6 * 60;  // gaps this long or longer (minutes) are reported
+    const TIME_ZONE = "Australia/Adelaide";
+    const EMAIL_KEY = "dsy-coverage-gaps-email"; // shared with ../coverage-gaps/
+
+    const MINUTE = 60000;
+
+    const $ = (id) => document.getElementById(id);
+
+    /* ----- Adelaide time helpers ----- */
+
+    const partsFormat = new Intl.DateTimeFormat("en-AU", {
+      timeZone: TIME_ZONE,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23"
+    });
+
+    function zonedParts(ms) {
+      const values = {};
+      partsFormat.formatToParts(new Date(ms)).forEach((part) => {
+        values[part.type] = part.value;
+      });
+      return {
+        year: Number(values.year),
+        month: Number(values.month),
+        day: Number(values.day),
+        hour: Number(values.hour),
+        minute: Number(values.minute)
+      };
+    }
+
+    // Milliseconds for a wall-clock hour on a date in Adelaide.
+    function adelaideTime(date, hour) {
+      const [year, month, day] = date.split("-").map(Number);
+      const wanted = Date.UTC(year, month - 1, day, hour, 0);
+      let guess = wanted - 630 * MINUTE;
+
+      for (let i = 0; i < 3; i++) {
+        const p = zonedParts(guess);
+        const shown = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute);
+        if (shown === wanted) break;
+        guess += wanted - shown;
+      }
+
+      return guess;
+    }
+
+    function addDays(date, days) {
+      const value = new Date(date + "T12:00:00Z");
+      value.setUTCDate(value.getUTCDate() + days);
+      return value.toISOString().slice(0, 10);
+    }
+
+    // The volunteer day starts at 08:00: before then it is still
+    // yesterday's night shift.
+    function currentOperationalDate() {
+      const p = zonedParts(Date.now());
+      const date =
+        p.year + "-" + String(p.month).padStart(2, "0") + "-" +
+        String(p.day).padStart(2, "0");
+      return p.hour < 8 ? addDays(date, -1) : date;
+    }
+
+    const timeFormat = new Intl.DateTimeFormat("en-AU", {
+      timeZone: TIME_ZONE,
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23"
+    });
+
+    const dayFormat = new Intl.DateTimeFormat("en-AU", {
+      timeZone: "UTC",
+      weekday: "short",
+      day: "numeric",
+      month: "short"
+    });
+
+    const stampFormat = new Intl.DateTimeFormat("en-AU", {
+      timeZone: TIME_ZONE,
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23"
+    });
+
+    const time = (ms) => timeFormat.format(new Date(ms));
+    const dayLabel = (date) => dayFormat.format(new Date(date + "T12:00:00Z"));
+
+    // Calendar date (YYYY-MM-DD) of a moment in Adelaide.
+    function dateOf(ms) {
+      const p = zonedParts(ms);
+      return p.year + "-" + String(p.month).padStart(2, "0") + "-" +
+        String(p.day).padStart(2, "0");
+    }
+
+    function duration(minutes) {
+      const h = Math.floor(minutes / 60);
+      const m = Math.round(minutes % 60);
+      if (h && m) return h + " h " + m + " min";
+      if (h) return h + " h";
+      return m + " min";
+    }
+
+    /* ----- Loading ----- */
+
+    async function loadTown(town, signal) {
+      const response = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "getBookings", team: town }),
+        redirect: "follow",
+        credentials: "omit",
+        signal
+      });
+
+      if (!response.ok) {
+        throw new Error(town + ": the server returned HTTP " + response.status + ".");
+      }
+
+      const data = await response.json();
+
+      if (!data || data.success !== true || !Array.isArray(data.bookings)) {
+        throw new Error(town + ": " + (data && data.error || "the roster did not load."));
+      }
+
+      return data.bookings
+        .filter((booking) => String(booking.team || "").trim() === town)
+        .map((booking) => ({
+          town,
+          user: String(booking.user || "").trim(),
+          level: String(booking.clinicalLevel || "").trim().toUpperCase(),
+          flex: String(booking.restriction || "").trim().toUpperCase() || "N",
+          start: new Date(booking.start).getTime(),
+          end: new Date(booking.end).getTime()
+        }))
+        .filter((booking) =>
+          booking.user &&
+          Number.isFinite(booking.start) &&
+          Number.isFinite(booking.end) &&
+          booking.end > booking.start
+        );
+    }
+
+    /* ----- Coverage ----- */
+
+    // Split [from, to) into pieces with a steady count of counted crew.
+    function segments(bookings, from, to) {
+      const counted = bookings.filter((b) =>
+        COUNTED_LEVELS.includes(b.level) && b.start < to && b.end > from
+      );
+
+      const points = new Set([from, to]);
+      counted.forEach((b) => {
+        if (b.start > from && b.start < to) points.add(b.start);
+        if (b.end > from && b.end < to) points.add(b.end);
+      });
+
+      const sorted = [...points].sort((a, b) => a - b);
+      const pieces = [];
+
+      for (let i = 0; i < sorted.length - 1; i++) {
+        const a = sorted[i];
+        const b = sorted[i + 1];
+        const count = counted.filter((x) => x.start < b && x.end > a).length;
+        pieces.push({ from: a, to: b, count });
+      }
+
+      return pieces;
+    }
+
+    // Joined runs of time below the minimum, keeping how many were booked.
+    function gapsIn(bookings, from, to) {
+      const gaps = [];
+
+      segments(bookings, from, to).forEach((piece) => {
+        if (piece.count >= MINIMUM) return;
+
+        const last = gaps[gaps.length - 1];
+        if (last && last.to === piece.from) {
+          last.to = piece.to;
+          last.parts.push(piece);
+        } else {
+          gaps.push({ from: piece.from, to: piece.to, parts: [piece] });
+        }
+      });
+
+      gaps.forEach((gap) => {
+        gap.minutes = (gap.to - gap.from) / MINUTE;
+        gap.lowest = Math.min(...gap.parts.map((p) => p.count));
+        gap.highest = Math.max(...gap.parts.map((p) => p.count));
+      });
+
+      return gaps;
+    }
+
+    // How many were booked during a gap: "nobody", "1 booked" or "0–1 booked".
+    function bookedText(gap) {
+      if (gap.highest === 0) return "nobody booked";
+      if (gap.lowest === 0) return "0–1 booked";
+      return "1 booked";
+    }
+
+    function gapText(gap) {
+      return time(gap.from) + "–" + time(gap.to);
+    }
+
+    // A gap is joined time below the minimum. Only gaps of 6 hours or
+    // more are reported; shorter ones are listed but not emailed.
+    const isBig = (gap) => gap.minutes >= BIG_GAP;
+
+    // Pieces of a gap with nobody booked, joined, inside [from, to).
+    function nobodyTimes(gap, from, to) {
+      const out = [];
+      gap.parts.forEach((part) => {
+        if (part.count > 0) return;
+        const a = Math.max(part.from, from);
+        const b = Math.min(part.to, to);
+        if (b <= a) return;
+        const last = out[out.length - 1];
+        if (last && last.to === a) last.to = b;
+        else out.push({ from: a, to: b });
+      });
+      return out;
+    }
+
+    // Paramedic shifts (07:00-19:00, 19:00-07:00) that overlap a gap.
+    function paramedicShifts(gap) {
+      const shifts = [];
+      let date = addDays(dateOf(gap.from), -1);
+      const last = dateOf(gap.to);
+
+      while (date <= last) {
+        const next = addDays(date, 1);
+        [
+          { name: "Day", hours: "07:00–19:00", from: adelaideTime(date, 7), to: adelaideTime(date, 19) },
+          { name: "Night", hours: "19:00–07:00", from: adelaideTime(date, 19), to: adelaideTime(next, 7) }
+        ].forEach((w) => {
+          if (w.from < gap.to && w.to > gap.from) {
+            const from = Math.max(w.from, gap.from);
+            const to = Math.min(w.to, gap.to);
+            shifts.push({
+              ...w,
+              date,
+              gapFrom: from,
+              gapTo: to,
+              minutes: (to - from) / MINUTE,
+              nobody: nobodyTimes(gap, from, to)
+            });
+          }
+        });
+        date = next;
+      }
+
+      return shifts;
+    }
+
+    function shiftResult(name, from, to, gaps) {
+      const inShift = gaps.filter((g) => g.from < to && g.to > from);
+      const big = inShift.filter(isBig);
+      const bigMinutes = big.reduce((sum, g) =>
+        sum + (Math.min(g.to, to) - Math.max(g.from, from)) / MINUTE, 0);
+
+      return {
+        name,
+        from,
+        to,
+        big,
+        bigMinutes,
+        small: inShift.filter((g) => !isBig(g))
+      };
+    }
+
+    /* ----- State ----- */
+
+    let bookings = [];
+    let startDate = currentOperationalDate();
+    let report = null;
+    let loadedAt = null;
+    let controller = null;
+
+    function analyse() {
+      const rangeFrom = adelaideTime(startDate, 8);
+      const rangeTo = adelaideTime(addDays(startDate, DAYS), 8);
+
+      // Look a day either side so a gap running over the edge of the
+      // period is measured at its full length.
+      const gaps = gapsIn(bookings, rangeFrom - 24 * 60 * MINUTE, rangeTo + 24 * 60 * MINUTE)
+        .filter((g) => g.from < rangeTo && g.to > rangeFrom);
+
+      const days = [];
+      for (let i = 0; i < DAYS; i++) {
+        const date = addDays(startDate, i);
+        const next = addDays(date, 1);
+        days.push({
+          date,
+          day: shiftResult("Day", adelaideTime(date, 8), adelaideTime(date, 18), gaps),
+          night: shiftResult("Night", adelaideTime(date, 18), adelaideTime(next, 8), gaps)
+        });
+      }
+
+      const big = gaps.filter(isBig).map((g) => ({ ...g, shifts: paramedicShifts(g) }));
+      const small = gaps.filter((g) => !isBig(g));
+
+      return { days, big, small };
+    }
+
+    /* ----- Rendering ----- */
+
+    function el(tag, text, className) {
+      const node = document.createElement(tag);
+      if (text !== undefined) node.textContent = text;
+      if (className) node.className = className;
+      return node;
+    }
+
+    function showMessage(text, error) {
+      $("message").textContent = text;
+      $("message").className = "message" + (error ? " error" : "");
+      $("message").hidden = false;
+    }
+
+    // "Thu 5 Nov 08:00 – 16:00", or across midnight
+    // "Sat 7 Nov 16:00 – Sun 8 Nov 08:00".
+    function whenText(from, to) {
+      const a = dateOf(from);
+      const b = dateOf(to - 1);
+      return dayLabel(a) + " " + time(from) + " – " +
+        (a === b ? "" : dayLabel(b) + " ") + time(to);
+    }
+
+    function levelTag(gap) {
+      return el("span", bookedText(gap), gap.lowest === 0 ? "tag none" : "tag one");
+    }
+
+    function renderTotals() {
+      const box = $("totals");
+      box.replaceChildren();
+
+      ["day", "night"].forEach((key) => {
+        const shifts = report.days.map((d) => d[key]);
+        const hit = shifts.filter((s) => s.big.length).length;
+        const minutes = shifts.reduce((sum, s) => sum + s.bigMinutes, 0);
+
+        const card = el("div", undefined, "total");
+        card.append(
+          el("span", key === "day" ? "Day shifts 08–18" : "Night shifts 18–08"),
+          el("strong", hit + " of " + shifts.length),
+          el("span", hit
+            ? "with a 6 h+ gap · " + duration(minutes) + " uncovered"
+            : "with a 6 h+ gap")
+        );
+        box.append(card);
+      });
+    }
+
+    function renderBig() {
+      const list = $("cover-list");
+      list.replaceChildren();
+      $("email-card").hidden = !report.big.length;
+
+      if (!report.big.length) {
+        list.append(el("li", "None. No gap of 6 hours or more in this period."));
+        return;
+      }
+
+      report.big.forEach((gap) => {
+        const item = el("li");
+        item.append(el("strong", whenText(gap.from, gap.to) + " · " + duration(gap.minutes)));
+
+        const line = el("span", undefined, "gap-line");
+        line.append(levelTag(gap));
+        item.append(line);
+
+        gap.shifts.forEach((s) => {
+          const shiftLine = el("span", undefined, "gap-line");
+          shiftLine.append(
+            "Paramedic " + s.name.toLowerCase() + " shift " + dayLabel(s.date) + " " +
+            s.hours + ": covers " + time(s.gapFrom) + "–" + time(s.gapTo) +
+            " (" + duration(s.minutes) + ")");
+          item.append(shiftLine);
+
+          if (s.nobody.length) {
+            item.append(el("span",
+              "Extra resource needed on top of the paramedic: nobody booked " +
+              s.nobody.map((x) => time(x.from) + "–" + time(x.to)).join(", ") +
+              ", so a single paramedic only makes 1 of 2.",
+              "extra"));
+          }
+        });
+
+        list.append(item);
+      });
+    }
+
+    function renderSmall() {
+      const list = $("short-list");
+      list.replaceChildren();
+      $("short-card").hidden = !report.small.length;
+      $("short-count").textContent =
+        report.small.length + " shorter gap" + (report.small.length === 1 ? "" : "s") +
+        " (under 6 h, not emailed)";
+
+      report.small.forEach((gap) => {
+        const item = el("li");
+        const line = el("span", whenText(gap.from, gap.to) + " (" + duration(gap.minutes) + ") ");
+        line.append(levelTag(gap));
+        item.append(line);
+        list.append(item);
+      });
+    }
+
+    function peopleBlock(shift) {
+      const box = el("div", undefined, "people");
+
+      TOWNS.forEach((town) => {
+        const here = bookings
+          .filter((b) => b.town === town && b.start < shift.to && b.end > shift.from)
+          .sort((a, b) => a.start - b.start);
+
+        box.append(el("h4", town));
+
+        if (!here.length) {
+          box.append(el("div", "Nobody booked", "not-counted"));
+          return;
+        }
+
+        const list = el("ul");
+        here.forEach((b) => {
+          const counts = COUNTED_LEVELS.includes(b.level);
+          list.append(el("li",
+            b.user + " · " + (b.level || "?") + " · " +
+            time(Math.max(b.start, shift.from)) + "–" + time(Math.min(b.end, shift.to)) +
+            (counts ? "" : " (doesn't count)"),
+            counts ? "" : "not-counted"));
+        });
+        box.append(list);
+      });
+
+      return box;
+    }
+
+    function shiftCard(shift) {
+      const card = el("details", undefined, "shift " + (shift.big.length ? "red" : "green"));
+      const summary = el("summary");
+
+      summary.append(el("span",
+        shift.name + " " + (shift.name === "Day" ? "08–18" : "18–08"), "shift-name"));
+
+      if (shift.big.length) {
+        summary.append(el("span", duration(shift.bigMinutes) + " gap", "shift-status"));
+        summary.append(el("span",
+          shift.big.map((g) => "Part of " + whenText(g.from, g.to)).join("; "),
+          "shift-gaps"));
+      } else {
+        summary.append(el("span", "No 6 h gap", "shift-status"));
+        if (shift.small.length) {
+          summary.append(el("span",
+            "Short: " + shift.small.map((g) =>
+              time(Math.max(g.from, shift.from)) + "–" + time(Math.min(g.to, shift.to))).join(", "),
+            "shift-gaps"));
+        }
+      }
+
+      summary.append(el("span", "Who's booked", "shift-more"));
+      card.append(summary, peopleBlock(shift));
+      return card;
+    }
+
+    function renderDays() {
+      const box = $("days");
+      box.replaceChildren();
+
+      report.days.forEach((d) => {
+        const row = el("div", undefined, "day");
+        row.append(el("h3", dayLabel(d.date), "day-title"));
+        const shifts = el("div", undefined, "shifts");
+        shifts.append(shiftCard(d.day), shiftCard(d.night));
+        row.append(shifts);
+        box.append(row);
+      });
+    }
+
+    /* ----- Email ----- */
+
+    function emailText() {
+      const lastDate = addDays(startDate, DAYS - 1);
+      const lines = [
+        "Hi,",
+        "",
+        "The Tumby Bay and Cummins rosters have these gaps of 6 hours or more " +
+        "below the minimum (2 crew at AR level or above across the two towns), " +
+        dayLabel(startDate) + " to " + dayLabel(lastDate) + ":",
+        ""
+      ];
+
+      report.big.forEach((gap) => {
+        lines.push(whenText(gap.from, gap.to).replace(/–/g, "-") + " (" +
+          duration(gap.minutes) + ", " + bookedText(gap) + ")");
+        gap.shifts.forEach((s) => {
+          lines.push("  Paramedic " + s.name.toLowerCase() + " shift " + dayLabel(s.date) +
+            " " + s.hours.replace("–", "-") + ": covers " + time(s.gapFrom) + "-" +
+            time(s.gapTo) + " (" + duration(s.minutes) + ")" +
+            (s.nobody.length
+              ? ". EXTRA RESOURCE NEEDED on top of the paramedic: nobody booked " +
+                s.nobody.map((x) => time(x.from) + "-" + time(x.to)).join(", ")
+              : ""));
+        });
+        lines.push("");
+      });
+
+      lines.push(
+        "Could we look at allocating a paramedic resource to cover these gaps?",
+        "",
+        "Checked from the live rosters " + stampFormat.format(loadedAt) + "."
+      );
+
+      return lines.join("\n");
+    }
+
+    function emailSubject() {
+      return "Tumby Bay / Cummins coverage gaps " + dayLabel(startDate) +
+        " to " + dayLabel(addDays(startDate, DAYS - 1));
+    }
+
+    /* ----- Main ----- */
+
+    function render() {
+      report = analyse();
+      renderTotals();
+      renderDays();
+      renderBig();
+      renderSmall();
+      $("checked").textContent =
+        "Checked from the live rosters " + stampFormat.format(loadedAt) +
+        ". Counted to the minute. Tap a shift to see who's booked.";
+      $("results").hidden = false;
+    }
+
+    async function load() {
+      if (controller) controller.abort();
+      controller = new AbortController();
+      const mine = controller;
+      const timer = setTimeout(() => mine.abort(), 60000);
+
+      $("refresh").disabled = true;
+      $("results").hidden = true;
+      showMessage("Loading Tumby Bay and Cummins rosters…");
+
+      try {
+        const lists = await Promise.all(TOWNS.map((t) => loadTown(t, mine.signal)));
+        if (mine !== controller) return;
+        bookings = lists.flat();
+        loadedAt = new Date();
+        $("message").hidden = true;
+        render();
+      } catch (error) {
+        if (mine !== controller) return;
+        showMessage(
+          error.name === "AbortError"
+            ? "The rosters took too long to load. Try Refresh."
+            : error.message,
+          true
+        );
+      } finally {
+        clearTimeout(timer);
+        if (mine === controller) $("refresh").disabled = false;
+      }
+    }
+
+    $("start-date").value = startDate;
+
+    $("start-date").addEventListener("change", () => {
+      if (!$("start-date").value) return;
+      startDate = $("start-date").value;
+      if (loadedAt) render();
+    });
+
+    $("today").addEventListener("click", () => {
+      startDate = currentOperationalDate();
+      $("start-date").value = startDate;
+      if (loadedAt) render();
+    });
+
+    $("refresh").addEventListener("click", load);
+
+    try {
+      $("manager-email").value = localStorage.getItem(EMAIL_KEY) || "";
+    } catch (error) {
+      // Not remembered on this device.
+    }
+
+    $("manager-email").addEventListener("change", () => {
+      try {
+        localStorage.setItem(EMAIL_KEY, $("manager-email").value.trim());
+      } catch (error) {
+        // Not remembered on this device.
+      }
+    });
+
+    $("email").addEventListener("click", () => {
+      const to = $("manager-email").value.trim();
+      window.location.href =
+        "mailto:" + to.replace(/[^A-Za-z0-9.@_+,;-]/g, "") +
+        "?subject=" + encodeURIComponent(emailSubject()) +
+        "&body=" + encodeURIComponent(emailText());
+    });
+
+    $("copy").addEventListener("click", async () => {
+      const button = $("copy");
+      try {
+        await navigator.clipboard.writeText(emailSubject() + "\n\n" + emailText());
+        button.textContent = "Copied";
+      } catch (error) {
+        button.textContent = "Couldn't copy";
+      }
+      setTimeout(() => { button.textContent = "Copy text"; }, 2000);
+    });
+
+    load();
+  </script>
+</body>
+</html>
