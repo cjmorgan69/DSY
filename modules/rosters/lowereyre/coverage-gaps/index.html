@@ -483,8 +483,9 @@
 
     const TOWNS = ["Tumby Bay", "Cummins"];
     const COUNTED_LEVELS = ["AR", "AO", "PARA"];
-    // AA count as part of a crew (with an AR or above in the same town),
-    // never as a single responder. Recruits never count.
+    // AA count as part of a crew (with an AR or above in the same town,
+    // or with the paramedic in either town), never as a single
+    // responder. Recruits never count.
     const CREW_ONLY_LEVELS = ["AA"];
     const MINIMUM = 2;
     const DAYS = 8;
@@ -665,7 +666,10 @@
           const aa = here.filter((x) => x.town === town && CREW_ONLY_LEVELS.includes(x.level)).length;
           count += lead + (lead ? aa : 0);
         });
-        pieces.push({ from: a, to: b, count });
+        // An AA booked in either town can crew with the paramedic,
+        // who is mobile between the two towns.
+        const aa = here.some((x) => CREW_ONLY_LEVELS.includes(x.level));
+        pieces.push({ from: a, to: b, count, aa });
       }
 
       return pieces;
@@ -793,10 +797,11 @@
         c.needed = c.gaps
           .filter((g) => fullGap(g).minutes > SHORT_GAP)
           .reduce((sum, g) => sum + g.minutes, 0) > SHORT_GAP;
-        // Times with nobody booked: a single paramedic only makes 1.
+        // Times when a single paramedic only makes 1: no AR or above,
+        // and no AA in either town to crew with the paramedic.
         c.extra = [];
         c.gaps.forEach((g) => g.parts.forEach((part) => {
-          if (part.count > 0) return;
+          if (part.count > 0 || part.aa) return;
           const last = c.extra[c.extra.length - 1];
           if (last && last.to === part.from) last.to = part.to;
           else c.extra.push({ from: part.from, to: part.to });
@@ -939,7 +944,7 @@
 
         if (c.extra.length) {
           item.append(el("span",
-            "Extra resource needed on top of the paramedic: no AR or above booked " +
+            "Extra resource needed on top of the paramedic: no AR, AO, PARA or AA booked " +
             c.extra.map((x) => time(x.from) + "–" + time(x.to)).join(", ") +
             ", so a single paramedic only makes 1 of 2.",
             "extra"));
@@ -1040,7 +1045,7 @@
             bookedText(gap) + ")");
         });
         if (c.extra.length) {
-          lines.push("  No AR or above booked " +
+          lines.push("  No AR, AO, PARA or AA booked " +
             c.extra.map((x) => time(x.from) + "-" + time(x.to)).join(", ") +
             ": a single paramedic only makes 1 of 2.");
         }
