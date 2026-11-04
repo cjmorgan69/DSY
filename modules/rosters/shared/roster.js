@@ -5295,6 +5295,17 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             }
 
             showSection(saved === "book" ? "book" : "roster", false);
+
+            // The 14-day window's Book a shift button comes back here.
+            window.dsyRosterShowBook = () => {
+                showSection("book");
+                window.scrollTo(0, 0);
+            };
+
+            if (location.hash === "#book") {
+                showSection("book");
+                history.replaceState(null, "", location.pathname + location.search);
+            }
         }
 
         function showSection(name, remember = true) {
@@ -5594,6 +5605,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 maxCrew: MAX_CREW,
                 operationalRules: OPERATIONAL_RULES,
                 simpleControls: TEAM_FEATURES.has("sectionLayout"),
+                pageUrl: location.href.split("#")[0],
                 generatedAt: new Date().toISOString()
             };
 
@@ -6485,6 +6497,65 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 ["applyDatesButton", "printButton"].forEach(id => {
                     document.getElementById(id).style.display = "none";
                 });
+
+                const nextButton =
+                    document.getElementById("nextFortnightButton");
+
+                // Book a shift: back to the roster page's booking tab.
+                const bookButton = document.createElement("button");
+                bookButton.type = "button";
+                bookButton.className = "btn btn-primary";
+                bookButton.textContent = "Book a shift";
+                bookButton.addEventListener("click", () => {
+                    const opener = window.opener;
+
+                    if (
+                        opener &&
+                        !opener.closed &&
+                        typeof opener.dsyRosterShowBook === "function"
+                    ) {
+                        opener.dsyRosterShowBook();
+                        opener.focus();
+                        window.close();
+                    } else {
+                        window.location.href = snapshot.pageUrl + "#book";
+                    }
+                });
+
+                // Previous 14 days, beside Next 14 days.
+                const previousButton = document.createElement("button");
+                previousButton.type = "button";
+                previousButton.className = "btn btn-secondary";
+                previousButton.textContent = "Previous 14 days";
+                previousButton.addEventListener("click", () => {
+                    const selectedDates = getSelectedDates();
+
+                    if (!selectedDates) return;
+
+                    const previousStartDate =
+                        addDays(selectedDates.startDate, -14);
+                    const previousEndDate =
+                        addDays(selectedDates.startDate, -1);
+
+                    document.getElementById("rosterStartDate").value =
+                        formatDateForInput(previousStartDate);
+
+                    document.getElementById("rosterEndDate").value =
+                        formatDateForInput(previousEndDate);
+
+                    buildRoster(previousStartDate, previousEndDate);
+                });
+
+                const controls = nextButton.parentElement;
+                controls.prepend(bookButton);
+                nextButton.before(previousButton);
+
+                const readOnlyNote = document.createElement("p");
+                readOnlyNote.textContent =
+                    "This roster is read only. To book a shift, tap Book a shift.";
+                readOnlyNote.style.cssText =
+                    "margin: -0.75rem 0 1rem; color: #5d6b63; font-size: 0.85rem;";
+                controls.after(readOnlyNote);
             }
 
             showSelectedRoster();
