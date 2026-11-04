@@ -842,20 +842,18 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
         let flexInfoModal = null;
         let flexInfoReturnFocus = null;
 
-        /* ----- Roster / Book a shift tabs (feature "sectionLayout") -----
+        /* ----- Home, Roster and Book a shift screens (feature "sectionLayout") -----
          *
          * Moves the existing page parts into place rather than building
          * new ones, so every button keeps its own behaviour:
-         * - a quick bar of everyday buttons under the name;
-         * - a Roster tab (Timeline, List, and 14 days, which opens the
-         *   printable table) and a Book a shift tab;
-         * - Manager controls collapsed under both tabs.
-         * The device remembers the last tab; a saved booking returns
-         * to the Roster tab so the new shift can be seen.
+         * - Home: name and level, Roster and Book a shift buttons, the
+         *   everyday buttons, Manager controls at the bottom;
+         * - Roster screen: Timeline and 14 days (opens the printable table);
+         * - Book a shift screen: sent-roster notice and the booking form.
+         * Each screen has its own address (#roster, #book), so the phone's
+         * back button returns Home. The page always opens on Home; a saved
+         * booking goes to the Roster screen so the new shift can be seen.
          */
-        const SECTION_STORAGE_KEY =
-            `crew-roster-section-${TEAM_NAME.toLowerCase()}`;
-
         // Hours report (features "myHours", "teamHours"); see setupHoursReport.
         const HOURS_MS = 3600000;
         const MY_HOURS_WEEKS = 4;
@@ -2791,8 +2789,8 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                showThankYouConfetti();
                 showHardCopyChangeOutcome("booked", data);
 
-                // Back to the roster to see the new shift.
-                showSection("roster");
+                // To the roster to see the new shift.
+                goToScreen("roster", { replace: true });
 
                 // No extra reload: the save response supplied the roster.
                 showLoadedConnectionStatus();
@@ -5189,7 +5187,31 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
             document.body.classList.add("section-layout");
 
-            // Everyday buttons under the name.
+            // Bar shown on the Roster and Book a shift screens.
+            const screenBar = document.createElement("div");
+            screenBar.id = "screenBar";
+            screenBar.className = "screen-bar";
+            screenBar.innerHTML = `
+                <button type="button" class="btn-secondary" data-go="home">
+                    ← Home
+                </button>
+                <h2 id="screenTitle"></h2>`;
+            header.after(screenBar);
+
+            // Home: the two main buttons, the everyday buttons, then
+            // Manager controls at the bottom.
+            const homeScreen = document.createElement("div");
+            homeScreen.id = "homeScreen";
+            homeScreen.innerHTML = `
+                <div class="home-main">
+                    <button type="button" class="btn-primary home-button" data-go="roster">
+                        <span aria-hidden="true">🗓</span> Roster
+                    </button>
+                    <button type="button" class="btn-primary home-button" data-go="book">
+                        <span aria-hidden="true">＋</span> Book a shift
+                    </button>
+                </div>`;
+
             const quickBar = document.createElement("div");
             quickBar.className = "quick-bar";
 
@@ -5198,36 +5220,20 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 .filter(Boolean)
                 .forEach(button => quickBar.appendChild(button));
 
-            // The two tabs.
-            const tabs = document.createElement("div");
-            tabs.className = "section-tabs";
-            tabs.setAttribute("role", "tablist");
-            tabs.innerHTML = `
-                <button type="button" class="section-tab" role="tab"
-                    data-section="roster" aria-controls="rosterPanel">
-                    Roster
-                </button>
-                <button type="button" class="section-tab" role="tab"
-                    data-section="book" aria-controls="bookPanel">
-                    Book a shift
-                </button>`;
+            homeScreen.appendChild(quickBar);
 
             const rosterPanel = document.createElement("div");
             rosterPanel.id = "rosterPanel";
-            rosterPanel.setAttribute("role", "tabpanel");
 
             const bookPanel = document.createElement("div");
             bookPanel.id = "bookPanel";
-            bookPanel.setAttribute("role", "tabpanel");
 
-            // Tabs straight under the name, then the everyday buttons.
-            header.after(tabs);
-            tabs.after(quickBar);
-            bookingCard.before(rosterPanel);
+            bookingCard.before(homeScreen);
+            homeScreen.after(rosterPanel);
             rosterPanel.after(bookPanel);
 
-            // Roster tab: Timeline | 14 days. The booking list moves
-            // into Manager controls.
+            // Roster screen: Timeline | 14 days. The booking list is in
+            // Manager controls.
             listTab.hidden = true;
 
             const fourteenDayTab = document.createElement("button");
@@ -5247,7 +5253,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
             rosterPanel.append(viewSwitcher, timelineSection);
 
-            // Book a shift tab: the booking card, without the 14-day
+            // Book a shift screen: the booking card, without the 14-day
             // button (now a Roster view) and the repeated heading.
             viewRosterButton.hidden = true;
             bookingCard.querySelector(".card-title").hidden = true;
@@ -5275,11 +5281,11 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                     "marked by mistake. Changes need the roster manager password.";
             }
 
-            // Manager controls under both tabs.
+            // Manager controls at the bottom of Home.
             const managerSection = document.createElement("section");
             managerSection.className = "card manager-section";
             managerSection.appendChild(managerPanel);
-            bookPanel.after(managerSection);
+            homeScreen.appendChild(managerSection);
 
             // Booking list: a button in Manager controls shows or hides it.
             const bookingListButton = document.createElement("button");
@@ -5310,53 +5316,72 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             managerPanel.querySelector(".manager-controls-content")
                 .appendChild(listSection);
 
-            tabs.querySelectorAll("[data-section]").forEach(tab => {
-                tab.addEventListener("click", () => {
-                    showSection(tab.dataset.section);
-                });
+            container.querySelectorAll("[data-go]").forEach(button => {
+                button.addEventListener("click", () => goToScreen(button.dataset.go));
             });
 
-            let saved = "roster";
-
-            try {
-                saved = localStorage.getItem(SECTION_STORAGE_KEY) || "roster";
-            } catch (error) {
-                // Private browsing: start on the roster.
-            }
-
-            showSection(saved === "book" ? "book" : "roster", false);
+            // The phone's back button moves between the screens.
+            window.addEventListener("popstate", () => {
+                showSection(screenFromHash());
+            });
 
             // The 14-day window's Book a shift button comes back here.
-            window.dsyRosterShowBook = () => {
-                showSection("book");
-                window.scrollTo(0, 0);
-            };
+            window.dsyRosterShowBook = () => goToScreen("book");
 
-            if (location.hash === "#book") {
-                showSection("book");
-                history.replaceState(null, "", location.pathname + location.search);
-            }
+            // Always start on Home, unless the address asks for a screen
+            // (the 14-day window's fallback uses #book).
+            showSection(screenFromHash());
         }
 
-        function showSection(name, remember = true) {
+        function screenFromHash() {
+            return location.hash === "#roster" || location.hash === "#book"
+                ? location.hash.slice(1)
+                : "home";
+        }
+
+        /*
+         * Go to a screen and add it to the browser history, so the phone's
+         * back button returns to Home. "← Home" goes back the same way.
+         * With replace, the current history entry is swapped instead
+         * (used after a booking so Back still lands on Home).
+         */
+        function goToScreen(name, { replace = false } = {}) {
             if (!TEAM_FEATURES.has("sectionLayout")) return;
 
-            document.querySelectorAll(".section-tab").forEach(tab => {
-                const active = tab.dataset.section === name;
-                tab.classList.toggle("active", active);
-                tab.setAttribute("aria-selected", String(active));
-            });
+            const current = screenFromHash();
+            if (name === current) return showSection(name);
 
+            const base = location.pathname + location.search;
+
+            if (name === "home") {
+                if (history.state && history.state.dsyScreen) {
+                    history.back();
+                    return;
+                }
+
+                history.replaceState(null, "", base);
+            } else if (replace || current !== "home") {
+                history.replaceState({ dsyScreen: true }, "", base + "#" + name);
+            } else {
+                history.pushState({ dsyScreen: true }, "", base + "#" + name);
+            }
+
+            showSection(name);
+        }
+
+        function showSection(name) {
+            if (!TEAM_FEATURES.has("sectionLayout")) return;
+
+            const titles = { roster: "Roster", book: "Book a shift" };
+
+            document.querySelector(".container > header").hidden = name !== "home";
+            document.getElementById("screenBar").hidden = name === "home";
+            document.getElementById("screenTitle").textContent = titles[name] || "";
+            document.getElementById("homeScreen").hidden = name !== "home";
             document.getElementById("rosterPanel").hidden = name !== "roster";
             document.getElementById("bookPanel").hidden = name !== "book";
 
-            if (remember) {
-                try {
-                    localStorage.setItem(SECTION_STORAGE_KEY, name);
-                } catch (error) {
-                    // Private browsing: nothing to remember.
-                }
-            }
+            window.scrollTo(0, 0);
         }
 
         function openBookingsModal() {
