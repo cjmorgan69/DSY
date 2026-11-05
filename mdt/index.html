@@ -252,6 +252,8 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
         <label>Crew type<input name="crewType"></label>
         <label>Fleet number (logon screen)<input name="fleet"></label>
         <label>Start with the logon screen<select name="logon"><option value="yes">Yes</option><option value="no">No</option></select></label>
+        <label>GPS statuses<select name="gps"><option value="off">Off (classroom)</option><option value="on">On (real drive)</option></select></label>
+        <p class="hint">GPS statuses on: like the real MDT, ENROUTE is set when the unit leaves (100 m from where it acknowledged), Time Scene within 50 m of the map location, and Arrive Dest within 100 m of the chosen hospital. The buttons still work. Needs a cellular iPad or a phone, the page kept open, and the clock on Real time. Off: everything is by the buttons, no location needed.</p>
         <label class="wide">Unit location when dispatched<input name="unitLoc"></label>
       </div>
     </fieldset>
@@ -281,7 +283,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
         <label>Cross street 1<input name="xs1"></label>
         <label>Cross street 2<input name="xs2"></label>
         <label>Instructions<input name="instructions"></label>
-        <label class="wide">Map location for Navigate (optional): an address, "lat,long" or a Google Maps link. Use a public place, never a real patient's address. Blank = the town centre.<input name="mapLoc" placeholder="e.g. Tumby Bay Oval, Tumby Bay SA"></label>
+        <label class="wide">Map location for Navigate and GPS arrival (optional): an address, "lat,long" or a Google Maps link with the pin's coordinates. Use a public place, never a real patient's address. Blank = the town centre.<input name="mapLoc" placeholder="e.g. Tumby Bay Oval, Tumby Bay SA"></label>
       </div>
     </fieldset>
 
@@ -323,6 +325,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
   <div class="simbar">
     <span>DSY Training · MDT simulator · fictional data</span><span class="sp"></span>
     <button id="fsBtn" hidden>Full screen</button>
+    <span id="gpsInfo"></span>
     <span id="queueInfo"></span>
     <button id="logBtn">Run log</button>
     <button id="restartBtn">Restart job</button>
@@ -347,36 +350,39 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 <script>
 'use strict';
 // [name, lat, lon, group] group: M = major metro, V = virtual
+// Positions are the hospitals themselves (OpenStreetMap, Nov 2026), so Closest, Navigate and GPS arrival use them.
+// Barmera and Yorketown were not found: they stay at the town centre and are left out of GPS arrival (PRECISE).
 const HOSPITALS = [
-  ['ANGASTON AND DISTRICT HOSPITAL',-34.50,139.05],['ARDROSSAN HOSPITAL',-34.42,137.92],
-  ['ASHFORD HOSPITAL',-34.95,138.57],['BALAKLAVA DISTRICT HOSPITAL',-34.15,138.41],
-  ['BARMERA HOSPITAL',-34.25,140.46],['BOOLEROO CENTRE DISTRICT HOSPITAL',-32.88,138.35],
-  ['BORDERTOWN MEMORIAL HOSPITAL',-36.31,140.77],['BROKEN HILL HOSPITAL (NSW)',-31.95,141.47],
-  ['BURRA HOSPITAL',-33.68,138.93],['CALVARY ADELAIDE HOSPITAL - ANGAS ST',-34.93,138.61],
-  ['CAVUCS (VIRTUAL)',null,null,'V'],['CEDUNA HOSPITAL',-32.13,133.68],
-  ['CLARE AND DISTRICT HOSPITAL',-33.83,138.61],['CLEVE HOSPITAL',-33.70,136.49],
-  ['COOBER PEDY HOSPITAL',-29.01,134.75],['COWELL HOSPITAL',-33.68,136.92],
-  ['CRYSTAL BROOK HOSPITAL',-33.35,138.21],['CUMMINS HOSPITAL',-34.26,135.73],
-  ['ELLISTON HOSPITAL',-33.65,134.89],['FLINDERS MEDICAL CENTRE',-35.02,138.57,'M'],
-  ['GAWLER HOSPITAL',-34.60,138.75],['HAWKER HOSPITAL',-31.89,138.42],
-  ['JAMESTOWN HOSPITAL',-33.20,138.60],['KANGAROO ISLAND HOSPITAL',-35.66,137.64],
-  ['KIMBA HOSPITAL',-33.14,136.42],['KINGSTON SOLDIERS MEMORIAL HOSPITAL',-36.83,139.85],
-  ['LEIGH CREEK HOSPITAL',-30.59,138.40],['LOXTON HOSPITAL',-34.45,140.57],
-  ['LYELL MCEWIN HOSPITAL',-34.71,138.67,'M'],['MAITLAND HOSPITAL',-34.37,137.67],
-  ['MILLICENT HOSPITAL',-37.59,140.35],['MODBURY HOSPITAL',-34.83,138.69],
-  ['MOUNT BARKER HOSPITAL',-35.07,138.86],['MOUNT GAMBIER HOSPITAL',-37.83,140.78],
-  ['MURRAY BRIDGE HOSPITAL',-35.12,139.27],['NARACOORTE HOSPITAL',-36.96,140.74],
-  ['NOARLUNGA HOSPITAL',-35.14,138.50],['PETERBOROUGH HOSPITAL',-32.97,138.84],
-  ['PORT AUGUSTA HOSPITAL',-32.49,137.77],['PORT LINCOLN HOSPITAL',-34.72,135.86],
-  ['PORT PIRIE HOSPITAL',-33.19,138.02],['QUEEN ELIZABETH HOSPITAL',-34.89,138.53,'M'],
-  ['QUORN HOSPITAL',-32.35,138.04],['RENMARK HOSPITAL',-34.17,140.75],
-  ['RIVERLAND GENERAL HOSPITAL (BERRI)',-34.28,140.60],['ROXBY DOWNS HEALTH SERVICE',-30.56,136.89],
-  ['ROYAL ADELAIDE HOSPITAL',-34.92,138.59,'M'],['SOUTH COAST DISTRICT HOSPITAL',-35.55,138.62],
-  ['STREAKY BAY HOSPITAL',-32.80,134.21],['TUMBY BAY HOSPITAL',-34.375,136.10],
-  ['WAIKERIE HOSPITAL',-34.18,139.98],['WALLAROO HOSPITAL',-33.93,137.63],
-  ['WHYALLA HOSPITAL',-33.03,137.58],['WOMENS AND CHILDRENS HOSPITAL',-34.91,138.60,'M'],
-  ['WUDINNA HOSPITAL',-33.05,135.46],['YORKETOWN HOSPITAL',-35.02,137.60]
+  ['ANGASTON AND DISTRICT HOSPITAL',-34.50359,139.05478],['ARDROSSAN HOSPITAL',-34.42637,137.9176],
+  ['ASHFORD HOSPITAL',-34.94805,138.57676],['BALAKLAVA DISTRICT HOSPITAL',-34.13902,138.42043],
+  ['BARMERA HOSPITAL',-34.25,140.46],['BOOLEROO CENTRE DISTRICT HOSPITAL',-32.87807,138.35136],
+  ['BORDERTOWN MEMORIAL HOSPITAL',-36.31235,140.76649],['BROKEN HILL HOSPITAL (NSW)',-31.94762,141.45431],
+  ['BURRA HOSPITAL',-33.68505,138.9347],['CALVARY ADELAIDE HOSPITAL - ANGAS ST',-34.9294,138.60541],
+  ['CAVUCS (VIRTUAL)',null,null,'V'],['CEDUNA HOSPITAL',-32.11901,133.67237],
+  ['CLARE AND DISTRICT HOSPITAL',-33.82964,138.61438],['CLEVE HOSPITAL',-33.69744,136.49416],
+  ['COOBER PEDY HOSPITAL',-29.00502,134.76233],['COWELL HOSPITAL',-33.68596,136.92117],
+  ['CRYSTAL BROOK HOSPITAL',-33.35477,138.21305],['CUMMINS HOSPITAL',-34.26415,135.73294],
+  ['ELLISTON HOSPITAL',-33.6479,134.8925],['FLINDERS MEDICAL CENTRE',-35.02139,138.56884,'M'],
+  ['GAWLER HOSPITAL',-34.59341,138.75504],['HAWKER HOSPITAL',-31.89318,138.42754],
+  ['JAMESTOWN HOSPITAL',-33.21232,138.61615],['KANGAROO ISLAND HOSPITAL',-35.65261,137.64126],
+  ['KIMBA HOSPITAL',-33.14296,136.41628],['KINGSTON SOLDIERS MEMORIAL HOSPITAL',-36.83524,139.84858],
+  ['LEIGH CREEK HOSPITAL',-30.59161,138.39849],['LOXTON HOSPITAL',-34.45473,140.56421],
+  ['LYELL MCEWIN HOSPITAL',-34.74762,138.66429,'M'],['MAITLAND HOSPITAL',-34.37043,137.67406],
+  ['MILLICENT HOSPITAL',-37.59778,140.35894],['MODBURY HOSPITAL',-34.8342,138.69056],
+  ['MOUNT BARKER HOSPITAL',-35.08178,138.87021],['MOUNT GAMBIER HOSPITAL',-37.80525,140.78691],
+  ['MURRAY BRIDGE HOSPITAL',-35.12964,139.28071],['NARACOORTE HOSPITAL',-36.96667,140.74376],
+  ['NOARLUNGA HOSPITAL',-35.13981,138.50069],['PETERBOROUGH HOSPITAL',-32.98079,138.83022],
+  ['PORT AUGUSTA HOSPITAL',-32.50991,137.77586],['PORT LINCOLN HOSPITAL',-34.72422,135.85031],
+  ['PORT PIRIE HOSPITAL',-33.17714,138.00553],['QUEEN ELIZABETH HOSPITAL',-34.88365,138.53412,'M'],
+  ['QUORN HOSPITAL',-32.35108,138.03858],['RENMARK HOSPITAL',-34.16461,140.74483],
+  ['RIVERLAND GENERAL HOSPITAL (BERRI)',-34.27656,140.60146],['ROXBY DOWNS HEALTH SERVICE',-30.56291,136.89409],
+  ['ROYAL ADELAIDE HOSPITAL',-34.9206,138.58661,'M'],['SOUTH COAST DISTRICT HOSPITAL',-35.56147,138.6068],
+  ['STREAKY BAY HOSPITAL',-32.79283,134.21729],['TUMBY BAY HOSPITAL',-34.3721,136.10395],
+  ['WAIKERIE HOSPITAL',-34.18231,139.98504],['WALLAROO HOSPITAL',-33.92727,137.6365],
+  ['WHYALLA HOSPITAL',-33.03414,137.57742],['WOMENS AND CHILDRENS HOSPITAL',-34.9115,138.60001,'M'],
+  ['WUDINNA HOSPITAL',-33.05062,135.4669],['YORKETOWN HOSPITAL',-35.02,137.60]
 ].map(([name,lat,lon,g])=>({name,lat,lon,g:g||''}));
+const IMPRECISE = ['BARMERA HOSPITAL','YORKETOWN HOSPITAL'];
 
 const TOWNS = [
   ['Tumby Bay',-34.375,136.10],['Port Lincoln',-34.72,135.86],['Cummins',-34.26,135.73],
@@ -407,7 +413,7 @@ const pad = n => String(n).padStart(2,'0');
 
 function example(){
   return {
-    callsign:'TB85', crewType:'TL-PR', fleet:String(rint(100,999)), logon:'yes', speed:'3', unitLoc:'BRIDGE ST/NORTH TCE, TUMBY BAY',
+    callsign:'TB85', crewType:'TL-PR', fleet:String(rint(100,999)), logon:'yes', gps:'off', speed:'3', unitLoc:'BRIDGE ST/NORTH TCE, TUMBY BAY',
     priority:'4', dcode:'D0'+rint(100,999), eventNo:'A00'+rint(10,99)+'-'+rint(10000,99999),
     startTime: pad(new Date().getHours())+':'+pad(new Date().getMinutes()),
     typeCode:'RTVL', typeName:'Retrieval', subCode:'RT1', subName:'FIXED',
@@ -528,6 +534,7 @@ function startSim(c){
         queue:(c.queue||[]).map(q=>Object.assign({}, q)), gap:+c.gap||0, jobNo:1, done:[], nextAt:null };
   queueInfo();
   if (S.view==='logon') logIt('Logon screen'); else dispatchNow();
+  gpsStart();
   document.getElementById('setup').hidden = true;
   document.getElementById('sim').hidden = false;
   history.replaceState(null,'',location.pathname + '#sim=' + b64e(JSON.stringify(c)));
@@ -567,7 +574,7 @@ function toast(msg){
   t.textContent = msg; clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.remove(), 1800);
 }
 
-function setStatus(i){ S.st = i; S.stTimes[i] = clock(); logIt('Status: ' + ST[i].s); }
+function setStatus(i, tag){ S.st = i; S.stTimes[i] = clock(); logIt('Status: ' + ST[i].s + (tag ? ' ' + tag : '')); }
 
 // F6 and dialog actions
 const act = {
@@ -582,7 +589,7 @@ const act = {
     }
     render();
   },
-  ack(){ if (S.st===0){ setStatus(1); S.popup=false; } render(); },
+  ack(){ if (S.st===0){ setStatus(1); S.popup=false; S.ackPos = S.pos || null; } render(); },
   closePopup(){ S.popup=false; render(); },
   sceneYes(){ setStatus(3); S.view='event'; render(); },
   sceneNo(){ logIt('Cancelled Time Scene'); S.view='event'; render(); },
@@ -1049,8 +1056,66 @@ function nextJob(){
   const unit = {}; UNIT_KEYS.forEach(k=>unit[k]=C[k]);
   C = Object.assign({}, q, unit, {unitLoc: S.dest || C.unitLoc});
   Object.assign(S, { st:0, view:'event', tab:'EVENT', popup:true, seen:{}, filter:'All', pending:null, dest:null, stTimes:[],
-    phCount:0, direct:false, nav:false, remarks:[], live:[], newRemarks:false, jobNo:S.jobNo+1 });
+    phCount:0, direct:false, nav:false, remarks:[], live:[], newRemarks:false, jobNo:S.jobNo+1, ackPos:null, gpsSet:[] });
+  gpsScene();
   logIt('--- Job ' + S.jobNo + ' ---'); dispatchNow(); queueInfo(); render();
+}
+
+// ---------- GPS statuses (real drives; off by default for the classroom) ----------
+// Like the real MDT: ENROUTE when the unit moves 100 m from where it acknowledged, Time Scene within 50 m of the
+// scene, Arrive Dest within 100 m of the chosen hospital. Mobile and Clear stay manual. The buttons always work.
+let gpsWatch = null;
+const metres = (a, b) => { const R = 6371000, r = x=>x*Math.PI/180, dLa = r(b.lat-a.lat), dLo = r(b.lon-a.lon);
+  const h = Math.sin(dLa/2)**2 + Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dLo/2)**2; return 2*R*Math.asin(Math.sqrt(h)); };
+const parseLatLng = t => { const m = String(t||'').match(/(-?\d{1,2}\.\d{3,})\s*,\s*(-?\d{2,3}\.\d{3,})/); return m ? {lat:+m[1], lon:+m[2]} : null; };
+function gpsInfo(text){ document.getElementById('gpsInfo').textContent = text; }
+function gpsStop(){ if (gpsWatch != null && navigator.geolocation) navigator.geolocation.clearWatch(gpsWatch); gpsWatch = null; gpsInfo(''); }
+// Scene point: coordinates or a Maps link with coordinates; an address is looked up once (OpenStreetMap)
+function gpsScene(){
+  S.scenePt = null; if (C.gps !== 'on') return;
+  const m = String(C.mapLoc||'').trim(), ll = parseLatLng(m);
+  if (ll) { S.scenePt = ll; return; }
+  if (!m) { logIt('GPS: no map location, so Time Scene is by the button'); return; }
+  const job = S.jobNo;
+  fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=au&q=' + encodeURIComponent(m))
+    .then(r=>r.json()).then(a=>{
+      if (S.jobNo !== job) return;
+      if (a && a[0]) { S.scenePt = {lat:+a[0].lat, lon:+a[0].lon}; logIt('GPS: scene found: ' + a[0].display_name.slice(0,80)); }
+      else logIt('GPS: map location not found, so Time Scene is by the button');
+    }).catch(()=>logIt('GPS: could not look up the map location (no signal?)'));
+}
+function gpsStart(){
+  gpsStop(); S.gpsSet = [];
+  if (C.gps !== 'on') return;
+  if (!navigator.geolocation) { gpsInfo('GPS: not available'); logIt('GPS: not available on this device'); return; }
+  gpsScene(); gpsInfo('GPS: waiting…');
+  gpsWatch = navigator.geolocation.watchPosition(onGps, e=>{
+    gpsInfo(e.code === 1 ? 'GPS: location blocked' : 'GPS: no fix');
+    if (e.code === 1) logIt('GPS: location permission refused, statuses are by the buttons');
+  }, {enableHighAccuracy:true, maximumAge:5000, timeout:30000});
+}
+function destPt(){
+  const h = S.dest && HOSPITALS.find(x=>x.name===S.dest);
+  return h && h.lat != null && !IMPRECISE.includes(h.name) ? {lat:h.lat, lon:h.lon} : null;
+}
+function onGps(p){
+  if (!S) return;
+  const pos = {lat:p.coords.latitude, lon:p.coords.longitude, acc:p.coords.accuracy}; S.pos = pos;
+  let txt = `GPS ±${Math.round(pos.acc)} m`;
+  const target = S.st <= 2 ? S.scenePt : (S.st === 4 ? destPt() : null);
+  if (target) { const d = metres(pos, target); txt += ` · ${d < 1000 ? Math.round(d) + ' m' : (d/1000).toFixed(1) + ' km'} to ${S.st <= 2 ? 'scene' : 'hospital'}`; }
+  gpsInfo(txt);
+  if (pos.acc > 75 || S.view === 'logon') return;          // too rough to act on
+  if (S.st === 1) {
+    if (!S.ackPos) S.ackPos = pos;
+    else if (metres(pos, S.ackPos) > 100) autoStatus(2);
+  } else if (S.st === 2 && S.scenePt && metres(pos, S.scenePt) <= 50) autoStatus(3);
+  else if (S.st === 4) { const d = destPt(); if (d && metres(pos, d) <= 100) autoStatus(5); }
+}
+function autoStatus(i){
+  setStatus(i, '(GPS)'); S.gpsSet.push(ST[i].s);
+  if (S.view.startsWith('confirm') || S.view === 'dest') S.view = 'event';
+  render(); toast(ST[i].s + ' (GPS)');
 }
 
 // ---------- run log ----------
@@ -1064,6 +1129,7 @@ function jobChecks(){
     S.dest ? `Destination: ${S.dest}${C.booked ? (S.dest===C.booked ? ' (matches the booking)' : ' — booking was ' + C.booked) : ''}` : 'Destination: not chosen yet',
     `P.H. pressed: ${S.phCount ? S.phCount + ' time(s)' : 'no'}`,
     ...(C.expected ? [`Expected destination: ${C.expected}`] : []),
+    ...(C.gps==='on' ? [`Set by GPS: ${S.gpsSet && S.gpsSet.length ? S.gpsSet.join(', ') : 'none'}`] : []),
   ];
 }
 function showLog(){
@@ -1082,6 +1148,7 @@ document.getElementById('logBtn').onclick = showLog;
 document.getElementById('restartBtn').onclick = ()=>{ if (confirm(ORIG.queue && ORIG.queue.length ? 'Restart from the first job?' : 'Restart this job from dispatch?')) startSim(ORIG); };
 document.getElementById('setupBtn').onclick = ()=>{
   if (!confirm('Leave the simulation and go to instructor setup?')) return;
+  gpsStop();
   clearInterval(clockTimer);
   document.getElementById('sim').hidden = true; document.getElementById('setup').hidden = false;
   history.replaceState(null,'',location.pathname);
