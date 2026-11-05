@@ -42,6 +42,8 @@ input,select,textarea{font:inherit;font-size:15px;color:var(--ink);background:va
 textarea{min-height:96px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px}
 .check{flex-direction:row;align-items:center;gap:8px;font-size:15px;color:var(--ink)}
 details summary{cursor:pointer;font-weight:600;margin:6px 0}
+.editbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.editbar #editName{flex:1 1 100%;font-size:15px}
 .queue{margin:4px 0 0;padding-left:22px;font-size:15px}
 .queue li{padding:4px 0;border-bottom:1px solid var(--line)}
 .queue li button{margin-left:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:2px 8px}
@@ -217,22 +219,21 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
     <button class="btn" id="shareBtn">Copy student link</button>
     <button class="btn" id="resetBtn">Reset to example</button>
   </div>
-  <fieldset><legend>Job library</legend>
+  <fieldset><legend>Jobs</legend>
     <div class="grid">
-      <label class="wide">One job for each walk-through scenario. Loading a job keeps your unit and notice settings and makes new event numbers.<select id="jobSel"></select></label>
+      <label class="wide">Library jobs follow the walk-through scenarios. Your saved jobs are kept on this device (Safari and the Home Screen icon keep separate lists). Loading a job makes new event numbers.<select id="jobSel"></select></label>
     </div>
     <div class="actions" style="margin:10px 0 0"><button class="btn" id="loadJobBtn">Load job</button><a id="scenLink" class="btn" target="_blank" hidden>Open the walk-through</a></div>
+    <div class="editbar">
+      <span id="editName"></span>
+      <button class="btn primary" id="saveChangesBtn" type="button" hidden>Save changes</button>
+      <button class="btn" id="saveNewBtn" type="button">Save as new job…</button>
+      <button class="btn" id="renameBtn" type="button" hidden>Rename…</button>
+      <button class="btn" id="delSavedBtn" type="button" hidden>Delete</button>
+    </div>
   </fieldset>
-  <fieldset><legend>Saved jobs and job queue</legend>
-    <div class="grid">
-      <label class="wide">Saved jobs (kept on this device)<select id="savedSel"></select></label>
-    </div>
-    <div class="actions" style="margin:8px 0 14px">
-      <button class="btn" id="saveJobBtn" type="button">Save this job…</button>
-      <button class="btn" id="loadSavedBtn" type="button">Load</button>
-      <button class="btn" id="delSavedBtn" type="button">Delete</button>
-    </div>
-    <p class="hint" style="margin:0 0 6px">Job queue: the job on this screen runs first. When the crew clears it, the next job in the queue is dispatched to them.</p>
+  <fieldset><legend>Job queue</legend>
+    <p class="hint" style="margin:0 0 6px">The job on this screen runs first. When the crew clears it, the next job in the queue is dispatched to them.</p>
     <ol id="queueList" class="queue"></ol>
     <div class="actions" style="margin:8px 0 0;align-items:center">
       <button class="btn" id="queueAddBtn" type="button">Add this job to the queue</button>
@@ -461,7 +462,7 @@ function readForm(){
 }
 form.addEventListener('input', ()=>save(readForm()));
 document.getElementById('fakeBtn').onclick = ()=>{ const c = fakeOver(readForm()); fillForm(c); save(c); };
-document.getElementById('resetBtn').onclick = ()=>{ const c = example(); fillForm(c); save(c); };
+document.getElementById('resetBtn').onclick = ()=>{ const c = example(); fillForm(c); save(c); setEdit(null); };
 document.getElementById('shareBtn').onclick = async ()=>{
   const c = readForm(); c.queue = Q.items.map(i=>i.cfg); c.gap = Q.gap;
   const url = location.href.split('#')[0] + '#sim=' + b64e(JSON.stringify(c));
@@ -471,7 +472,6 @@ document.getElementById('shareBtn').onclick = async ()=>{
 };
 const JOBS = window.MDT_JOBS || [];
 const jobSel = document.getElementById('jobSel'), scenLink = document.getElementById('scenLink');
-jobSel.innerHTML = JOBS.map(j=>`<option value="${j.id}">${esc(j.label)}</option>`).join('');
 function showScenLink(c){ scenLink.hidden = !c.scenario; if (c.scenario) scenLink.href = c.scenario; }
 function jobConfig(j, cur){
   const c = Object.assign({}, cur, {
@@ -484,9 +484,11 @@ function jobConfig(j, cur){
   return c;
 }
 document.getElementById('loadJobBtn').onclick = ()=>{
+  document.getElementById('fromNote').hidden = true;
+  if (jobSel.value.startsWith('saved:')) return loadSaved(+jobSel.value.slice(6));
   const j = JOBS.find(x=>x.id===jobSel.value); if (!j) return;
   const c = jobConfig(j, readForm());
-  fillForm(c); save(c); showScenLink(c); document.getElementById('fromNote').hidden = true;
+  fillForm(c); save(c); showScenLink(c); setEdit(null);
 };
 // Opened from the scenario customiser (/scenarios/): "#s=<slug>&field=value..." fills the matching library job
 function fromCustomiser(hash){
@@ -495,7 +497,7 @@ function fromCustomiser(hash){
   const v = Object.assign({}, j.customDefaults); q.forEach((val,k)=>{ if (k!=='s') v[k]=val; });
   const c = Object.assign(jobConfig(j, load() || example()), j.custom(v));
   c.scenario = '/scenarios/view/' + hash;
-  fillForm(c); save(c); showScenLink(c); jobSel.value = j.id;
+  fillForm(c); save(c); showScenLink(c); setEdit(null); jobSel.value = j.id;
   const n = document.getElementById('fromNote'); n.hidden = false;
   n.textContent = 'Filled in from your customised ' + j.label.split(':')[0].toLowerCase() + ' scenario. Check the details, then press Start simulation.';
   history.replaceState(null,'',location.pathname);
@@ -971,9 +973,36 @@ let ORIG, SAVED = [], Q = {items:[], gap:'0'};
 try { SAVED = JSON.parse(localStorage.getItem('dsy-mdt-saved') || '[]'); } catch(e){}
 try { Q = Object.assign(Q, JSON.parse(localStorage.getItem('dsy-mdt-queue') || '{}')); } catch(e){}
 const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
-function drawSaved(){
-  document.getElementById('savedSel').innerHTML = SAVED.length
-    ? SAVED.map((j,i)=>`<option value="${i}">${esc(j.name)}</option>`).join('') : '<option value="">No saved jobs yet</option>';
+// One job list: the library (walk-throughs), then "My saved jobs" (value "saved:<n>")
+function drawJobSel(){
+  const keep = jobSel.value;
+  jobSel.innerHTML = `<optgroup label="Library (walk-throughs)">${JOBS.map(j=>`<option value="${j.id}">${esc(j.label)}</option>`).join('')}</optgroup>`
+    + (SAVED.length ? `<optgroup label="My saved jobs">${SAVED.map((j,i)=>`<option value="saved:${i}">${esc(j.name)}</option>`).join('')}</optgroup>` : '');
+  if ([...jobSel.options].some(o=>o.value===keep)) jobSel.value = keep;
+}
+// The saved job being edited: "Save changes" updates it
+let EDIT = null;
+try { const e = localStorage.getItem('dsy-mdt-editing'); if (e !== null && e !== '') EDIT = +e; } catch(e){}
+function setEdit(i){
+  EDIT = (i != null && SAVED[i]) ? i : null;
+  try { localStorage.setItem('dsy-mdt-editing', EDIT == null ? '' : String(EDIT)); } catch(e){}
+  drawEdit();
+}
+function drawEdit(msg){
+  const on = EDIT != null && SAVED[EDIT];
+  document.getElementById('editName').innerHTML = on
+    ? `Editing saved job: <b>${esc(SAVED[EDIT].name)}</b>${msg ? ` <span style="color:var(--accent)">${esc(msg)}</span>` : ''}`
+    : `<span class="hint">To keep this job for later, save it. A saved job keeps the call sign, crew type and fleet number too.</span>`;
+  ['saveChangesBtn','renameBtn','delSavedBtn'].forEach(id=>document.getElementById(id).hidden = !on);
+  if (on) jobSel.value = 'saved:' + EDIT;
+}
+// A saved job keeps the job and the unit it is for (call sign, crew type, fleet number)
+const savedPart = c => Object.assign(jobPart(c), {callsign:c.callsign, crewType:c.crewType, fleet:c.fleet});
+function loadSaved(i){
+  const j = SAVED[i]; if (!j) return;
+  const c = Object.assign(readForm(), j.cfg); fakeOver(c);
+  Object.assign(c, {patient:j.cfg.patient, age:j.cfg.age, weight:j.cfg.weight, caller:j.cfg.caller});
+  fillForm(c); save(c); showScenLink(c); setEdit(i);
 }
 function drawQueue(){
   document.getElementById('queueList').innerHTML = Q.items.map((j,i)=>`<li>${esc(j.label)}
@@ -981,20 +1010,23 @@ function drawQueue(){
   document.getElementById('gapSel').value = Q.gap;
   store('dsy-mdt-queue', Q);
 }
-document.getElementById('saveJobBtn').onclick = ()=>{
-  const c = jobPart(readForm()), name = prompt('Name for this saved job:', jobLabel(c));
-  if (!name) return;
-  SAVED.push({name:name.trim(), cfg:c}); store('dsy-mdt-saved', SAVED); drawSaved();
-  document.getElementById('savedSel').value = String(SAVED.length-1);
+document.getElementById('saveNewBtn').onclick = ()=>{
+  const c = savedPart(readForm()), name = prompt('Name for this saved job:', jobLabel(c));
+  if (!name || !name.trim()) return;
+  SAVED.push({name:name.trim(), cfg:c}); store('dsy-mdt-saved', SAVED); drawJobSel(); setEdit(SAVED.length-1); drawEdit('Saved');
 };
-document.getElementById('loadSavedBtn').onclick = ()=>{
-  const j = SAVED[+document.getElementById('savedSel').value]; if (!j) return;
-  const c = Object.assign(readForm(), j.cfg); fakeOver(c); Object.assign(c, {patient:j.cfg.patient, age:j.cfg.age, weight:j.cfg.weight, caller:j.cfg.caller});
-  fillForm(c); save(c); showScenLink(c);
+document.getElementById('saveChangesBtn').onclick = ()=>{
+  if (EDIT == null || !SAVED[EDIT]) return;
+  SAVED[EDIT].cfg = savedPart(readForm()); store('dsy-mdt-saved', SAVED); drawEdit('Changes saved');
+};
+document.getElementById('renameBtn').onclick = ()=>{
+  if (EDIT == null || !SAVED[EDIT]) return;
+  const name = prompt('New name:', SAVED[EDIT].name); if (!name || !name.trim()) return;
+  SAVED[EDIT].name = name.trim(); store('dsy-mdt-saved', SAVED); drawJobSel(); drawEdit('Renamed');
 };
 document.getElementById('delSavedBtn').onclick = ()=>{
-  const i = +document.getElementById('savedSel').value; if (!SAVED[i] || !confirm('Delete "' + SAVED[i].name + '"?')) return;
-  SAVED.splice(i,1); store('dsy-mdt-saved', SAVED); drawSaved();
+  if (EDIT == null || !SAVED[EDIT] || !confirm('Delete the saved job "' + SAVED[EDIT].name + '"? The job stays on the screen.')) return;
+  SAVED.splice(EDIT,1); store('dsy-mdt-saved', SAVED); setEdit(null); drawJobSel();
 };
 document.getElementById('queueAddBtn').onclick = ()=>{
   const c = jobPart(readForm()); c.dcode = 'D0'+rint(100,999); c.eventNo = 'A00'+rint(10,99)+'-'+rint(10000,99999);
@@ -1007,7 +1039,7 @@ document.getElementById('queueList').onclick = e=>{
   if (b.dataset.q==='del') Q.items.splice(i,1); else [Q.items[i-1], Q.items[i]] = [Q.items[i], Q.items[i-1]];
   drawQueue();
 };
-drawSaved(); drawQueue();
+drawJobSel(); drawEdit(); drawQueue();
 
 function queueInfo(){ const n = S.queue.length; document.getElementById('queueInfo').textContent = n ? `Job ${S.jobNo} · ${n} more queued` : (S.jobNo > 1 ? `Job ${S.jobNo}` : ''); }
 function checkNext(){ if (S && S.nextAt != null && simSecs() >= S.nextAt) { S.nextAt = null; nextJob(); } }
@@ -1070,7 +1102,7 @@ addEventListener('resize', fit);
   // "#job=<id>" fills that library job (from the hub's Run a session page); "&self=1" starts it straight away for a student
   const jm = location.hash.match(/^#job=([\w-]+)(&self=1)?/), jj = jm && JOBS.find(x=>x.id===jm[1]);
   if (jj){
-    const c = jobConfig(jj, load() || example()); jobSel.value = jj.id;
+    const c = jobConfig(jj, load() || example()); setEdit(null); jobSel.value = jj.id;
     history.replaceState(null,'',location.pathname);
     if (jm[2]) { startSim(c); return; }
     fillForm(c); save(c); showScenLink(c); return;
@@ -1078,7 +1110,7 @@ addEventListener('resize', fit);
   const m = location.hash.match(/^#sim=(.+)$/);
   if (m){ try{ const c = Object.assign(example(), JSON.parse(b64d(m[1]))); fillForm(c); startSim(c); return; }catch(e){} }
   const c0 = load() || example(); fillForm(c0); showScenLink(c0);
-  const j0 = JOBS.find(j=>j.scenario && j.scenario===c0.scenario); if (j0) jobSel.value = j0.id;
+  const j0 = JOBS.find(j=>j.scenario && j.scenario===c0.scenario); if (j0 && EDIT == null) jobSel.value = j0.id;
 })();
 </script>
 </body>
