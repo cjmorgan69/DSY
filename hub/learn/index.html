@@ -24,7 +24,7 @@
   <section class="stack" id="list"></section>
   <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
 </main>
-<script src="../topics.js?v=20261103a"></script>
+<script src="../topics.js?v=20261106a"></script>
 <script>
 (function () {
   var KEY = "dsy-hub-progress", done = {};
@@ -36,7 +36,8 @@
     return [
       { key: "learn", n: 1, label: "Learn", sub: "Video, key points and quiz", href: "../../microlearning/" + t.module + "/" },
       { key: "practise", n: 2, label: "Practise the call", sub: t.walk ? t.patient : "Walk-through coming", href: t.walk ? ".." + "/.." + t.walk + "?mode=student" : null },
-      { key: "mdt", n: 3, label: "Drill the MDT", sub: t.mdt ? "Data terminal, dispatch to clear" : "Coming", href: t.mdt ? "../../mdt/#job=" + t.mdt + "&self=1" : null }
+      { key: "mdt", n: 3, label: "Drill the MDT", sub: t.mdt ? "Data terminal, dispatch to clear" : "Coming", href: t.mdt ? "../../mdt/#job=" + t.mdt + "&self=1" : null },
+      { key: "pcr", n: 4, label: "Write the PCR", sub: t.pcr ? "Patient care record, after the walk-through" : "Coming", href: t.pcr ? "../../tools/pcr/#job=" + t.pcr : null }
     ];
   }
   function render() {

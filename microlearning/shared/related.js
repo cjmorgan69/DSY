@@ -46,7 +46,8 @@ window.RELATED = {
   ],
   "CPP-045-AO": [
     { kind: "Microlearning module", title: "Falls", href: "/microlearning/falls/", text: "Mobility assessment, transport criteria, the FROP falls screen with Country Referral Unit referral, and the Braden pressure injury screen." },
-    { kind: "Walk-through scenario", title: "Falls - AO: Mavis, 81", href: "/modules/falls-ao/", text: "Two-person AO crew in Cummins: a long lie on the bathroom floor, the mobility check, the Raizer lifting chair, and dizziness once she sits up. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Falls - AO: Mavis, 81", href: "/modules/falls-ao/", text: "Two-person AO crew in Cummins: a long lie on the bathroom floor, the mobility check, the Raizer lifting chair, and dizziness once she sits up. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Mavis's patient care record", href: "/tools/pcr/#job=mavis", text: "After the walk-through: write her PCR on a copy of the card, tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-062-AO": [
     { kind: "Microlearning module", title: "Sepsis", href: "/microlearning/sepsis/", text: "NEWS2, the SBP 100 threshold, IM ceftriaxone and the sepsis checker, with a quiz." },
