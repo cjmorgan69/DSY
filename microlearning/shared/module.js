@@ -457,6 +457,7 @@
   /* links to the other pages built on the same protocol (shared/related.js) */
   var relCodes = [P.code].concat(M.relatedCodes || []), rel = [], seen = {};
   relCodes.forEach(function (c) { ((window.RELATED || {})[c] || []).forEach(function (r) {
+    if (r.kind === "PCR trainer" && c !== P.code) return; // one scenario = one PCR job: only the page's own protocol's
     var here = location.pathname.replace(/index\.html$/, "");
     if (seen[r.href] || here === r.href || here.slice(-r.href.length) === r.href) return; seen[r.href] = 1; rel.push(r); }); });
   if (rel.length) {
