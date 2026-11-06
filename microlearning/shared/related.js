@@ -9,7 +9,8 @@ window.RELATED = {
   "CPP-063-AO": [
     { kind: "Microlearning module", title: "Baseline obs at a high-speed MVA", href: "/microlearning/mva-baseline/", text: "Why the first complete set matters: obs every 15 minutes, the RDR chart's escalation triggers, the Major Trauma Tool, shock and the cold in the trend, and AO care at the crash." }
 ,
-    { kind: "Walk-through scenario", title: "High-speed MVA - AO: Jason, 34", href: "/modules/mva-ao/", text: "Two-person AO crew near Cummins: a rollover, a patient who climbed out, a baseline set of obs and a trend that turns from white to red. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "High-speed MVA - AO: Jason, 34", href: "/modules/mva-ao/", text: "Two-person AO crew near Cummins: a rollover, a patient who climbed out, a baseline set of obs and a trend that turns from white to red. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Jason's patient care record", href: "/tools/pcr/#job=jason", text: "After the walk-through: write the PCR on a copy of the card, including his rising pulse, falling BP and the secondary survey. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPG-113-P": [
     { kind: "Microlearning module", title: "Asthma or COPD?", href: "/microlearning/asthma-copd/", text: "When both guidelines apply: grading the asthma, oxygen, magnesium, adrenaline and CPAP side by side, and a worked job." },
@@ -59,7 +60,8 @@ window.RELATED = {
   ],
   "CPP-016-AO": [
     { kind: "Microlearning module", title: "Stroke", href: "/microlearning/stroke/", text: "BGL, ROSIER, the Code Stroke criteria and the eligibility checker, with a narrated video and quiz." },
-    { kind: "Walk-through scenario", title: "Stroke - AO: Frank, 78", href: "/modules/stroke-AO/", text: "Two-person AO crew, Code Stroke from Coffin Bay to Port Lincoln. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Stroke - AO: Frank, 78", href: "/modules/stroke-AO/", text: "Two-person AO crew, Code Stroke from Coffin Bay to Port Lincoln. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Frank's patient care record", href: "/tools/pcr/#job=frank", text: "After the walk-through: write the PCR on a copy of the card, including the onset time, ROSIER, ACT and the Code Stroke call. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-003-AO": [
     { kind: "Microlearning module", title: "Anaphylaxis", href: "/microlearning/anaphylaxis/", text: "The adrenaline pathway, the auto-injector and the adrenaline checker, with a narrated video and quiz." },
@@ -71,10 +73,12 @@ window.RELATED = {
   ],
   "CPP-007-AO": [
     { kind: "Microlearning module", title: "Chest pain", href: "/microlearning/chest-pain/", text: "Aspirin, the GTN limits and the GTN checker, with a narrated video and quiz." },
-    { kind: "Walk-through scenario", title: "Chest Pain - AO: Graham, 62", href: "/modules/chest-pain/", text: "Two-person AO crew, chest pain not settling with his own GTN at a rural property. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Chest Pain - AO: Graham, 62", href: "/modules/chest-pain/", text: "Two-person AO crew, chest pain not settling with his own GTN at a rural property. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Graham's patient care record", href: "/tools/pcr/#job=graham", text: "After the walk-through: write the PCR on a copy of the card, including aspirin, GTN with times and the EOC Clinician consult. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-050-AO": [
     { kind: "Microlearning module", title: "Asthma", href: "/microlearning/asthma/", text: "Severity, doses and the asthma checker, with a narrated video and quiz." },
-    { kind: "Walk-through scenario", title: "Asthma - AO: Karen, 45", href: "/modules/asthma-ao/", text: "Two-person AO crew, more severe asthma at a rural property. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Asthma - AO: Karen, 45", href: "/modules/asthma-ao/", text: "Two-person AO crew, more severe asthma at a rural property. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Karen's patient care record", href: "/tools/pcr/#job=karen", text: "After the walk-through: write the PCR on a copy of the card, including her severity, the nebuliser and the EOC Clinician's advice. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ]
 };
