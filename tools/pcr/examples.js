@@ -1,5 +1,8 @@
 /* Worked examples for the patient report card (/tools/pcr/). Each one is a DSY walk-through scenario written up as a
-   crew might write it. The scenarios are DSY-written training material, not real patients. */
+   crew might write it. The scenarios are DSY-written training material, not real patients.
+   Free text layout (owner, 6 Nov 2026, from the PCR guide card): presenting complaint, then PHx, Med'n, Hx, O/A, each
+   followed by a blank line; O/E with CNS, SKIN, CVS, RESP and PAIN each on its own line, normal findings written too
+   (e.g. 'nil resp distress'); 2* SURVEY only when trauma is involved. */
 window.PCR_EXAMPLES = {
   mavis: {
     label: 'Example: Mavis, 81 (falls walk-through)',
@@ -10,21 +13,22 @@ window.PCR_EXAMPLES = {
       communicable: 'Nil known',
       clinical:
         'Fall at home ~0300, long lie ~3.5 hrs, unable to get up.\n\n' +
-        'PHx: HTN, high cholesterol, OA knees. 2nd fall this year (garden, March, nil injury). Walking frame indoors. Lives alone.\n\n' +
-        'Medn: perindopril (dose increased by GP last week), atorvastatin, paracetamol. Nil anticoagulants (med box checked).\n\n' +
+        "PHx: HTN, high cholesterol, OA knees. 2nd fall this year (garden, March, nil injury). Walking frame indoors. Lives alone.\n\n" +
+        "Med'n: perindopril (dose increased by GP last week), atorvastatin, paracetamol. Nil anticoagulants (med box checked).\n\n" +
         'Hx: Got up to toilet ~0300, "my feet went from under me". Denies head strike. Unable to get up. Pressed pendant 0624.\n\n' +
-        'O/A: 81F supine on bathroom floor between toilet and bath, nightie + towel, shivering. House cold. Incontinent of urine, ' +
-        'nightie damp. Alert, talking, apologetic, wants to get up.\n\n' +
-        'O/E: CNS - A on AVPU, GCS 15, oriented, PEARL, moves all 4 limbs. SKIN - cool, hands + feet cold, red skin sacrum + both heels.\n' +
-        'CVS - pulse 82 regular, peripheral pulses present, nil blood loss. RESP - RR 16, normal effort, equal chest rise, SpO2 95% RA. ' +
-        'PAIN - nil, 0/10.\n' +
-        '2* survey: Head/neck NAD, nil neck pain. Chest/back NAD, nil spinal pain. Abdo NAD. ' +
-        'Hips/pelvis NAD, legs straight. Limbs NAD, nil deformity.\n\n' +
+        'O/A: 81F lying on her back on bathroom floor between toilet and bath, nightie + towel over her, shivering. House cold. ' +
+        'Incontinent of urine, nightie damp. Alert, talking, apologetic, wants to get up.\n\n' +
+        'O/E: CNS - A on AVPU, GCS 15, oriented, recalls events. PEARL. Moves all 4 limbs.\n' +
+        'SKIN - cool, normal colour, hands + feet cold. Red skin over sacrum + both heels.\n' +
+        'CVS - pulse 82 regular, strong. BP 132/78. Peripheral pulses present. Nil blood loss.\n' +
+        'RESP - RR 16, nil resp distress, normal effort, chest rise equal L + R. SpO2 95% RA.\n' +
+        'PAIN - nil pain, 0/10.\n' +
+        '2* SURVEY - Head/neck NAD, nil neck pain. Chest/back NAD, nil spinal pain. Abdo NAD. Hips/pelvis NAD, legs straight. Limbs NAD.\n\n' +
         'Mobility (CPPRO-001) lying: SLR yes, head lift yes, rolls with help, unable to bridge. Raizer lift to sitting 0702. ' +
         '~1 min later pale, dizzy ("swimmy"), BP 104/66 P 98. States same feeling getting off the toilet just before the fall. ' +
         'Raizer lowered, sx settled. 0708 BP 126/76 P 86. Not stood. Transport.\n\n' +
-        'Braden 14 (medium risk). Wet nightie off, skin dried, dry clothes + fresh pad. Slide sheet to stretcher, kept warm.\n' +
-        'Med box, glasses + frame with pt. House locked, key returned to key safe. Daughter Sue (Port Lincoln) informed.',
+        'Braden 14 (medium risk). Wet nightie off, skin dried, dry clothes + fresh pad. Slide sheet to stretcher, kept warm. ' +
+        'Med box, glasses + frame with pt. Daughter Sue (Port Lincoln) informed.',
       provisional: 'Fall with long lie (~3.5 hrs). ?Medical cause: dizzy with BP drop on sitting up, perindopril increased last week.',
       recommendation:
         'Transported to Cummins Hospital. Nil injury found. Became dizzy + pale sitting up (BP 132 lying, 104 sitting), ' +
