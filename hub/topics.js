@@ -6,13 +6,13 @@
    pcr: job id in /tools/pcr/jobs.js (PCR trainer: write the patient care record after the walk-through) */
 window.DSY_TOPICS = [
   { id:'chest-pain', title:'Chest pain', protocol:'CPP-007-AO', patient:'Graham, 62: chest pain not settling with his own GTN',
-    module:'chest-pain', walk:'/modules/chest-pain/', mdt:'chest-pain', custom:'chest-pain-ao', stations:'/stations/chest-pain-acpo/' },
+    module:'chest-pain', walk:'/modules/chest-pain/', mdt:'chest-pain', custom:'chest-pain-ao', stations:'/stations/chest-pain-acpo/', pcr:'graham' },
   { id:'asthma', title:'Asthma', protocol:'CPP-050-AO', patient:'Karen, 45: more severe asthma at 2 am',
-    module:'asthma', walk:'/modules/asthma-ao/', mdt:'asthma', custom:'asthma-ao', stations:'/stations/asthma/' },
+    module:'asthma', walk:'/modules/asthma-ao/', mdt:'asthma', custom:'asthma-ao', stations:'/stations/asthma/', pcr:'karen' },
   { id:'anaphylaxis', title:'Anaphylaxis', protocol:'CPP-003-AO', patient:'David, 54: bee sting and an expired EpiPen',
     module:'anaphylaxis', walk:'/modules/anaphylaxis/', mdt:'anaphylaxis', custom:'anaphylaxis-ao', stations:'/stations/anaphylaxis/' },
   { id:'stroke', title:'Stroke', protocol:'CPP-016-AO', patient:'Frank, 78: weakness and slurred speech at morning tea',
-    module:'stroke', walk:'/modules/stroke-AO/', mdt:'stroke', custom:'stroke-ao', stations:'/stations/stroke/' },
+    module:'stroke', walk:'/modules/stroke-AO/', mdt:'stroke', custom:'stroke-ao', stations:'/stations/stroke/', pcr:'frank' },
   { id:'envenomation', title:'Snake bite', protocol:'CPP-008-AO', patient:'Greg, 52: brown snake bite to the leg',
     module:'envenomation', walk:'/modules/envenomation/', mdt:'envenomation', custom:'envenomation-ao' },
   { id:'hypoglycaemia', title:'Hypoglycaemia', protocol:'CPP-009-AO', patient:'Ron, 67: confused and sweaty in the shed',
@@ -32,7 +32,7 @@ window.DSY_TOPICS = [
   { id:'burns', title:'Burns', protocol:'CPP-006-AO', patient:'Daniel, 42: diesel flash burn to the face',
     module:'burns', walk:'/modules/burns/', custom:'burns-ao', stations:'/stations/burns/' },
   { id:'mva-baseline', title:'Baseline obs at a high-speed MVA', protocol:'CPP-063-AO', patient:'Jason, 34: rollover near Cummins, walking and "fine"',
-    module:'mva-baseline', walk:'/modules/mva-ao/', mdt:'mva', custom:'mva-ao', stations:'/stations/mva/' },
+    module:'mva-baseline', walk:'/modules/mva-ao/', mdt:'mva', custom:'mva-ao', stations:'/stations/mva/', pcr:'jason' },
   { id:'spinal', title:'Spinal precautions', protocol:'CPP-018-AO', patient:'Neil, 67: ladder fall, walked to the kitchen table',
     module:'spinal', walk:'/modules/spinal-ao/', stations:'/stations/spinal/' }
 ];
