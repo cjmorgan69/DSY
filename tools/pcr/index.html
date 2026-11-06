@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Patient report card - DSY Training</title>
+<style>
+/* Training copy of the paper patient report card (PCR): RDR obs chart on the left, clinical text on the right.
+   Layout copied from the owner's photo of the blank card (Nov 2026). Every box is editable; fill(data) writes a
+   worked example into it (see examples.js). */
+:root { --purple: #9a8fd0; --brown: #d1a596; --yellow: #f3ee6e; --grey: #8c8c8c; --greybar: #c9c9c9; --ink: #222; --line: #555; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #e9e9e9; color: var(--ink); font-family: Calibri, "Segoe UI", Arial, Helvetica, sans-serif; }
+.bar { position: sticky; top: 0; z-index: 5; display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; padding: .5rem 1rem;
+  background: #1f5b43; color: #fff; font-size: 14px; }
+.bar b { margin-right: auto; }
+.bar button, .bar select { font: inherit; border: 0; border-radius: 999px; padding: .35rem .8rem; background: #fff; color: #1f5b43; font-weight: 600; }
+.note { font-size: 12px; color: #555; padding: .4rem 1rem 0; }
+#fit { overflow: hidden; }
+.sheet { width: 1400px; height: 990px; background: #fff; margin: 10px; padding: 14px 16px 10px; position: relative; transform-origin: 0 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,.25); display: grid; grid-template-columns: 430px 1fr; gap: 14px; font-size: 12px; }
+[contenteditable] { outline: none; }
+[contenteditable]:focus { background: rgba(255,255,160,.5); }
+.hand { font-family: "Comic Neue", "Segoe Print", "Bradley Hand", "Marker Felt", cursive; color: #1a3a9c; }
+
+/* ---------- Obs chart ---------- */
+.obs { display: flex; flex-direction: column; }
+.obs .addl { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 4px; height: 20px; }
+table.chart { border-collapse: collapse; width: 100%; table-layout: fixed; border: 2px solid #333; }
+.chart td { border: 1px solid #666; height: 18.7px; padding: 0 2px; text-align: center; font-size: 11.5px; white-space: nowrap; overflow: hidden; }
+.chart td.g { font-weight: 700; font-size: 14px; line-height: 1.05; vertical-align: middle; white-space: normal; border-right: 1px solid #666; }
+.chart td.g small { display: block; font-weight: 400; font-size: 8.5px; line-height: 1.05; margin-top: 3px; }
+.chart td.b { font-weight: 700; font-size: 11.5px; }
+.chart td.bsm { font-weight: 400; font-size: 8.5px; line-height: 1; }
+.chart tr.top td { border-top: 2px solid #333; }
+.chart td.p { background: var(--purple); } .chart td.r { background: var(--brown); } .chart td.y { background: var(--yellow); }
+.chart td.v { font-family: "Comic Neue", "Segoe Print", "Bradley Hand", cursive; color: #1a3a9c; font-weight: 700; font-size: 12px; }
+.chart td.diag { background: linear-gradient(to top right, transparent calc(50% - .6px), #666 calc(50% - .6px), #666 calc(50% + .6px), transparent calc(50% + .6px)); position: relative; }
+.chart td.diag span { position: absolute; font-size: 10px; }
+.chart td.diag span:first-child { left: 3px; top: 0; } .chart td.diag span:last-child { right: 3px; bottom: 0; }
+.chart .timehd td { font-weight: 700; font-size: 13px; }
+.chart .minsets { font-size: 8px; font-weight: 400; }
+
+/* ---------- Right side ---------- */
+.right { display: grid; grid-template-rows: 56px 22px 1fr; min-width: 0; }
+.toprow { display: grid; grid-template-columns: 1fr 350px; gap: 10px; }
+.allergy { border: 4px dashed #c0292b; padding: 3px 8px; font-weight: 700; font-size: 14px; line-height: 1.05; display: flex; gap: 8px; }
+.allergy .t { flex: none; }
+.comm { border: 2px solid #333; padding: 3px 8px; font-weight: 700; font-size: 13px; }
+.box-txt { font-weight: 400; font-size: 13px; flex: 1; min-height: 1em; }
+.hdr { display: flex; justify-content: space-between; align-items: center; border: 2px solid #333; border-bottom: 0; margin-top: 6px; padding: 0 6px;
+  font-size: 13px; background: #f4f4f4; }
+.hdr b { font-size: 15px; } .hdr label { display: inline-flex; align-items: center; gap: 3px; }
+.main { border: 2px solid #333; display: grid; grid-template-columns: 1fr 270px; grid-template-rows: 1fr auto; min-height: 0; }
+.clin { position: relative; border-right: 1px solid #333; }
+.lined { background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 25px, #8a8a8a 25px, #8a8a8a 26px); background-position: 0 0; }
+.tab { position: absolute; left: 0; top: 0; background: #6e6e6e; color: #fff; font-weight: 700; font-size: 14px; padding: 4px 8px; height: 25px; }
+.txt { display: block; width: 100%; border: 0; resize: none; padding: 0 8px; font-size: 15px; line-height: 26px; background-color: transparent; overflow: hidden; white-space: pre-wrap; }
+.clin .txt { height: 100%; text-indent: 200px; }
+.side { display: grid; grid-template-rows: 1fr 140px; }
+.body { position: relative; border-bottom: 1px solid #333; }
+.body svg { position: absolute; }
+.pim { position: absolute; right: 6px; top: 6px; width: 132px; font-size: 11.5px; line-height: 1.25; }
+.pim h4 { margin: 0; font-size: 12px; text-align: center; line-height: 1.1; }
+.pim .cb { display: flex; align-items: center; gap: 3px; margin-left: 34px; }
+.pim .ital { font-style: italic; font-size: 10px; text-align: right; line-height: 1.1; margin-top: 2px; }
+.legend { position: absolute; left: 6px; bottom: 6px; font-size: 11px; line-height: 1.24; }
+.legend span { display: inline-block; width: 18px; }
+.ecg { padding: 4px 6px; font-size: 12px; } .ecg b { font-size: 12.5px; }
+.ecg .box-txt { display: block; margin-top: 4px; font-size: 14px; }
+.blank { display: inline-block; border-bottom: 1px solid #333; min-width: 46px; text-align: center; font-size: 13px; }
+.provrow { grid-column: 1 / -1; border-top: 1px solid #333; }
+.provrow .lbl { display: flex; align-items: stretch; height: 26px; }
+.provrow .lbl .tab { position: static; flex: none; }
+.provrow .lbl .txt { flex: 1; height: 26px; text-indent: 0; border-left: 0; }
+.recbar { grid-column: 1 / -1; background: var(--greybar); border-top: 1px solid #333; border-bottom: 1px solid #333; font-size: 13px; padding: 3px 6px; }
+.recbar b { font-size: 15px; }
+.recrow { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 270px; }
+.recrow .txt { height: 156px; }
+.falls { border-left: 1px solid #333; padding: 4px 6px; font-size: 11.5px; line-height: 1.55; }
+.falls .s { font-size: 10px; } .falls i { font-size: 10.5px; }
+.chk { display: inline-block; width: 13px; height: 13px; border: 1px solid #333; vertical-align: -2px; background: #fff; cursor: pointer; text-align: center;
+  line-height: 11px; font-size: 13px; font-weight: 700; color: #1a3a9c; }
+.chk.on::after { content: "\2713"; }
+.inforow { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; font-size: 14px; white-space: nowrap; border-top: 1px solid #333; }
+.inforow small { font-size: 11px; } .inforow .dots { display: inline-block; min-width: 230px; border-bottom: 1px dotted #333; font-size: 13px; }
+.drugs { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding: 4px 0 0; }
+table.dt { border-collapse: collapse; width: 100%; table-layout: fixed; border: 2px solid #333; }
+.dt th { background: var(--greybar); font-size: 14px; font-weight: 700; height: 24px; border: 1px solid #333; }
+.dt td { border: 1px solid #555; border-top: 0; border-bottom: 1px solid #999; height: 19px; font-size: 12.5px; padding: 0 3px; overflow: hidden; white-space: nowrap; }
+.foot { position: absolute; bottom: 2px; left: 0; right: 0; text-align: center; font-size: 9px; color: #999; }
+
+@media print {
+  @page { size: A4 landscape; margin: 6mm; }
+  html, body { background: #fff; }
+  .bar, .note { display: none; }
+  #fit { height: auto !important; overflow: visible; }
+  .sheet { transform: none !important; margin: 0; box-shadow: none; zoom: .775; }
+  [contenteditable]:focus { background: none; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<div class="bar"><b>Patient report card (training copy)</b>
+  <select id="pick" aria-label="Example"><option value="">Blank card</option></select>
+  <button id="clear" type="button">Clear</button>
+  <button type="button" onclick="print()">Print or save as PDF</button>
+</div>
+<p class="note">Tap any box to write in it. For training only: not a SAAS record. Nothing typed here is saved or sent.</p>
+<div id="fit"><div class="sheet" id="sheet">
+
+  <!-- Obs chart -->
+  <section class="obs">
+    <div class="addl"><span class="chk" data-k="attached"></span> Additional clinical notes/PCR attached</div>
+    <table class="chart" id="chart"></table>
+  </section>
+
+  <!-- Clinical side -->
+  <section class="right">
+    <div class="toprow">
+      <div class="allergy"><span class="t">ALLERGIES or<br>ADVERSE DRUG REACTIONS:</span><span class="box-txt hand" contenteditable data-k="allergies"></span></div>
+      <div class="comm">COMMUNICABLE DISEASES: <span class="box-txt hand" contenteditable data-k="communicable"></span></div>
+    </div>
+    <div class="hdr">
+      <span><b>PHx</b> (past medical history)</span>
+      <span><b>Med<sup>n</sup></b> (medications) <label><span class="chk" data-k="medsHanded"></span>Pt's meds taken &amp; handed over</label></span>
+      <span><b>Hx</b> (history)</span><span><b>O/A</b> (on arrival)</span><span><b>O/E</b> (on examination)</span>
+    </div>
+    <div class="main">
+      <div class="clin lined"><span class="tab">Presenting complaint:</span>
+        <div class="txt hand" contenteditable data-k="clinical" style="height:100%"></div></div>
+      <div class="side">
+        <div class="body">
+          <svg id="front" viewBox="0 0 100 250" width="70" height="175" style="left:24px;top:4px"></svg>
+          <svg id="back" viewBox="0 0 100 250" width="80" height="200" style="right:24px;bottom:6px"></svg>
+          <div class="pim"><h4>Pressure Injury<br>Management</h4>
+            Braden Score: <span class="blank hand" contenteditable data-k="braden"></span><br>
+            PI risk: <span class="chk" data-k="piLow"></span> Low
+            <div class="cb"><span class="chk" data-k="piMed"></span> Medium</div>
+            <div class="cb"><span class="chk" data-k="piHigh"></span> High</div>
+            <div class="ital">Detail prevention strategies in clinical text</div></div>
+          <div class="legend">
+            <div><span>A</span>Abrasion</div><div><span>B</span>Burn</div><div><span>C</span>Contusion</div><div><span>D</span>Dislocation</div>
+            <div><span>F</span>Fracture</div><div><span>H</span>Haemorrhage</div><div><span>L</span>Laceration</div><div><span>N</span>Numbness</div>
+            <div><span>P</span>Pain</div><div><span>Pa</span>Paralysis</div><div><span>PI</span>Pressure Injury</div><div><span>S</span>Swelling</div>
+            <div><span>W</span>Weakness</div></div>
+          <svg id="marks" viewBox="0 0 270 400" style="left:0;top:0;width:100%;height:100%;pointer-events:none"></svg>
+        </div>
+        <div class="ecg"><b>ECG analysis</b> (attach copy to back of PCR)<span class="box-txt hand" contenteditable data-k="ecg"></span></div>
+      </div>
+      <div class="provrow"><div class="lbl lined"><span class="tab">Provisional diagnosis:</span><div class="txt hand" contenteditable data-k="provisional"></div></div></div>
+      <div class="recbar"><b>Recommendation</b> (clinical summary of treatment, and a referral plan for all TNT - including any signs or symptoms for the patient to consider seeking further review)</div>
+      <div class="recrow">
+        <div class="lined"><div class="txt hand" contenteditable data-k="recommendation"></div></div>
+        <div class="falls"><b>Falls Management</b> <i>(detail in clinical text)</i><br>
+          Length of time on the ground: <span class="blank hand" contenteditable data-k="ground"></span><br>
+          <span class="s">(if &gt; 1 hour, complete pressure injury risk screening)</span><br>
+          Mobility assessment completed: <span class="chk" data-k="mobY"></span>Y <span class="chk" data-k="mobN"></span>N<br>
+          Falls risk: <span class="chk" data-k="riskLow"></span> Low risk &nbsp; <span class="chk" data-k="riskHigh"></span> High risk<br>
+          Falls referral completed: <span class="chk" data-k="refY"></span> Yes <span class="chk" data-k="refN"></span> No</div>
+      </div>
+      <div class="inforow">
+        <span><span class="chk" data-k="info"></span> Patient information provided <small>(specifically:</small><span class="dots hand" contenteditable data-k="infoText"></span><small>)</small></span>
+        <span><span class="chk" data-k="consult"></span> Clinical consult completed <small>(with EOC clinician or SAAS Medical Officer)</small></span>
+      </div>
+      <div class="drugs"><table class="dt" id="dt1"></table><table class="dt" id="dt2"></table></div>
+    </div>
+  </section>
+  <div class="foot">DSY Training copy for practice. Not a SAAS record.</div>
+</div></div>
+
+<script src="examples.js?v=20261106a"></script>
+<script>
+(function () {
+  // ---- Obs chart rows: [group, band, colour (p purple, r brown, y yellow, '' white), key for filling] ----
+  var G = {
+    rr:   { name: 'Resp<br>Rate', sub: '(/min)<small>Write actual value</small>', rows: [['≥ 31','p',31,999],['26 - 30','r',26,30],['21 - 25','y',21,25],['11 - 20','',11,20],['8 - 10','r',8,10],['≤ 7','p',-1,7]] },
+    o2:   { name: '<span style="font-size:11px">Suppl. O<sub>2</sub></span>', rows: [['<span style="font-size:8px;font-weight:400">RA or L/min</span>','']] },
+    spo2: { name: 'SpO<sub>2</sub>', sub: '(%)<small>Write actual value</small>', rows: [['≥ 95','',95,100],['90 - 94','y',90,94],['≤ 89','p',-1,89]] },
+    bp:   { name: 'BP', sub: '(mmHg)<small>Write actual systolic and diastolic value</small><small style="margin-top:8px">125<br>|<br>60</small><small style="margin-top:8px">Colour zones are for <b>systolic</b> BP only</small>',
+            rows: [['≥ 200','p',200,999],['180-199','r',180,199],['170-179','y',170,179],['130-169','',130,169],['120-129','',120,129],['110-119','',110,119],['100-109','',100,109],['90 - 99','r',90,99],['80 - 89','p',80,89],['70 - 79','p',70,79],['60 - 69','p',60,69],['≤ 59','p',-1,59]] },
+    crt:  { name: 'CRT', rows: [['<span style="font-size:8px;font-weight:400;white-space:normal;display:block;line-height:1">(&lt;2 sec, &gt;2<br>sec or none)</span>','']] },
+    hr:   { name: 'Pulse<br>rate', sub: '(bpm)<small>Write actual value</small><small style="margin-top:6px">Record pulse rate not ECG heart rate</small>', rows: [['≥ 140','p',140,999],['120-139','r',120,139],['100-119','y',100,119],['60 - 99','',60,99],['50 - 59','y',50,59],['40 - 49','r',40,49],['≤ 39','p',-1,39]] },
+    temp: { name: 'Temp', sub: '(°C)<small>Write actual value</small>', rows: [['≥ 38.6','r',38.6,99],['38.1-38.5','y',38.1,38.5],['35.6-38.0','',35.6,38.0],['35.1-35.5','y',35.1,35.5],['≤ 35.0','r',-1,35.0]] },
+    gcs:  { name: 'GCS', sub: '(TOTAL)', rows: [['15','',15,15],['13 - 14','y',13,14],['9 - 12','r',9,12],['≤ 8','p',-1,8]] },
+    evm:  { name: 'E-V-M', sub: '<small>Attempt to wake patient before scoring</small>', rows: [['E (/4)','','e'],['V (/5)','','v'],['M (/6)','','m']] },
+    pupils: { name: 'Pupils', rows: [['L+/- R+/-','']] },
+    pain: { name: 'Pain<br>Score', sub: '(0 - 10)', rows: [['8 - 10','r',8,10],['5 - 7','y',5,7],['0 - 4','',0,4]] }
+  };
+  var COLS = 6, chart = document.getElementById('chart'), h = [];
+  h.push('<colgroup><col style="width:72px"><col style="width:62px">' + '<col>'.repeat(COLS) + '</colgroup>');
+  h.push('<tr class="timehd"><td colspan="2" style="text-align:right"><span class="minsets">(min. 2 sets)</span> Time:</td>' + cells('time', 0) + '</tr>');
+  function cells(key, i, cls) { var s = ''; for (var c = 0; c < COLS; c++) s += '<td class="v ' + (cls || '') + '" contenteditable data-cell="' + key + ':' + i + ':' + c + '"></td>'; return s; }
+  Object.keys(G).forEach(function (k) {
+    var g = G[k];
+    g.rows.forEach(function (r, i) {
+      var tr = '<tr' + (i === 0 ? ' class="top"' : '') + '>';
+      if (i === 0) tr += '<td class="g" rowspan="' + g.rows.length + '"' + (g.rows.length === 1 ? ' style="font-size:13px"' : '') + '>' + g.name + (g.sub ? '<small>' + g.sub + '</small>' : '') + '</td>';
+      tr += '<td class="b ' + r[1] + '">' + r[0] + '</td>';
+      if (k === 'pupils') { for (var c = 0; c < COLS; c++) tr += '<td class="diag"><span class="hand" contenteditable data-cell="pupL:0:' + c + '"></span><span class="hand" contenteditable data-cell="pupR:0:' + c + '"></span></td>'; }
+      else tr += cells(k, i, r[1]);
+      h.push(tr + '</tr>');
+    });
+  });
+  [['BGL <span style="font-weight:400;font-size:9px">(mmol/L)</span>','bgl'],['SAT score <span style="font-weight:400;font-size:8px">(-3 to +3)</span>','sat'],['EtCO<sub>2</sub> <span style="font-weight:400;font-size:9px">(mmHg)</span>','etco2']]
+    .forEach(function (r, i) { h.push('<tr' + (i === 0 ? ' class="top"' : '') + '><td class="g" colspan="2" style="text-align:left;font-size:12.5px">' + r[0] + '</td>' + cells(r[1], 0) + '</tr>'); });
+  chart.innerHTML = h.join('');
+
+  // ---- Drug tables ----
+  ['dt1', 'dt2'].forEach(function (id, t) {
+    var s = '<colgroup><col style="width:13%"><col style="width:42%"><col style="width:12%"><col style="width:15%"><col style="width:18%"></colgroup>'
+      + '<tr><th>Time</th><th>Drug or intervention</th><th>Dose</th><th>Units</th><th>Route</th></tr>';
+    for (var r = 0; r < 6; r++) { s += '<tr>'; for (var c = 0; c < 5; c++) s += '<td class="hand" contenteditable data-drug="' + (t * 6 + r) + ':' + c + '"></td>'; s += '</tr>'; }
+    document.getElementById(id).innerHTML = s;
+  });
+
+  // ---- Body outlines (front and back) ----
+  var R = [[54,23],[54,29],[64,32],[71,35],[74,42],[75,58],[77,80],[80,102],[82,114],[86,124],[84,131],[80,128],[78,118],[75,110],[71,90],[68,72],[66,54],
+    [66,72],[63,90],[66,104],[67,120],[66,150],[63,172],[64,196],[61,228],[64,240],[60,244],[53,244],[53,232],[54,198],[53,172],[52,140],[50,126]];
+  function outline() {
+    var L = R.slice().reverse().map(function (p) { return [100 - p[0], p[1]]; });
+    var pts = R.concat(L.slice(1));
+    return 'M' + pts.map(function (p) { return p[0] + ' ' + p[1]; }).join(' L') + ' Z';
+  }
+  var base = '<ellipse cx="50" cy="12" rx="8.5" ry="11" fill="#fff" stroke="#222" stroke-width="1.1"/><path d="' + outline() + '" fill="#fff" stroke="#222" stroke-width="1.1" stroke-linejoin="round"/>';
+  document.getElementById('front').innerHTML = base + '<path d="M40 33 Q50 37 60 33 M43 46 Q46 52 50 50 Q54 52 57 46 M50 52 L50 92 M44 104 Q50 112 56 104" fill="none" stroke="#444" stroke-width=".6"/>'
+    + '<path d="M46 32 L50 40 L54 32" fill="none" stroke="#444" stroke-width=".5" stroke-dasharray="1 1.4"/>';
+  document.getElementById('back').innerHTML = base + '<path d="M50 24 L50 112" stroke="#444" stroke-width=".8" stroke-dasharray="1.4 1.6"/><path d="M40 108 Q50 116 60 108 M50 112 L50 124" fill="none" stroke="#444" stroke-width=".6"/>';
+
+  // ---- Tick boxes ----
+  document.querySelectorAll('.chk').forEach(function (b) { b.addEventListener('click', function () { b.classList.toggle('on'); }); });
+
+  // ---- Fill with an example ----
+  function band(key, val) {
+    var g = G[key]; if (!g) return 0;
+    if (key === 'evm') return { e: 0, v: 1, m: 2 }[val];
+    var n = parseFloat(String(val)); if (isNaN(n)) return 0;
+    for (var i = 0; i < g.rows.length; i++) { var r = g.rows[i]; if (r.length < 4 || (n >= r[2] && n <= r[3])) return i; }
+    return 0;
+  }
+  function put(key, row, col, text) { var el = document.querySelector('[data-cell="' + key + ':' + row + ':' + col + '"]'); if (el) el.textContent = text; }
+  function clear() {
+    document.querySelectorAll('[contenteditable]').forEach(function (e) { e.textContent = ''; });
+    document.querySelectorAll('.chk').forEach(function (e) { e.classList.remove('on'); });
+    document.getElementById('marks').innerHTML = '';
+  }
+  function fill(d) {
+    clear(); if (!d) return;
+    Object.keys(d.text || {}).forEach(function (k) { var el = document.querySelector('[data-k="' + k + '"]'); if (el) el.textContent = d.text[k]; });
+    (d.ticks || []).forEach(function (k) { var el = document.querySelector('.chk[data-k="' + k + '"]'); if (el) el.classList.add('on'); });
+    (d.obs || []).forEach(function (o, c) {
+      put('time', 0, c, o.time || '');
+      ['rr', 'spo2', 'hr', 'temp', 'gcs', 'pain'].forEach(function (k) { if (o[k] != null) put(k, band(k, o[k]), c, String(o[k])); });
+      if (o.bp) put('bp', band('bp', o.bp.split('/')[0]), c, o.bp);
+      ['o2', 'crt', 'bgl', 'sat', 'etco2'].forEach(function (k) { if (o[k] != null) put(k, 0, c, String(o[k])); });
+      if (o.evm) o.evm.forEach(function (v, i) { put('evm', i, c, String(v)); });
+      if (o.pupils) { put('pupL', 0, c, o.pupils[0]); put('pupR', 0, c, o.pupils[1]); }
+    });
+    (d.drugs || []).forEach(function (row, r) { row.forEach(function (v, c) { var el = document.querySelector('[data-drug="' + r + ':' + c + '"]'); if (el) el.textContent = v; }); });
+    document.getElementById('marks').innerHTML = (d.marks || []).map(function (m) {
+      return '<text x="' + m[0] + '" y="' + m[1] + '" font-size="13" font-weight="700" fill="#1a3a9c" font-family="Segoe Print, Bradley Hand, cursive">' + m[2] + '</text>';
+    }).join('');
+  }
+
+  var ex = window.PCR_EXAMPLES || {}, pick = document.getElementById('pick');
+  Object.keys(ex).forEach(function (k) { var o = document.createElement('option'); o.value = k; o.textContent = ex[k].label; pick.appendChild(o); });
+  pick.addEventListener('change', function () { fill(ex[pick.value]); history.replaceState(null, '', pick.value ? '#ex=' + pick.value : location.pathname); });
+  document.getElementById('clear').addEventListener('click', function () { pick.value = ''; fill(null); history.replaceState(null, '', location.pathname); });
+  var m = location.hash.match(/ex=([\w-]+)/); if (m && ex[m[1]]) { pick.value = m[1]; fill(ex[m[1]]); }
+
+  // ---- Scale the A4 sheet to the screen ----
+  var sheet = document.getElementById('sheet'), fit = document.getElementById('fit');
+  function scale() { var s = Math.min(1, (document.documentElement.clientWidth - 8) / 1424); sheet.style.transform = 'scale(' + s + ')'; fit.style.height = (1010 * s + 10) + 'px'; }
+  addEventListener('resize', scale); scale();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+window.PCR_EXAMPLES = {};
