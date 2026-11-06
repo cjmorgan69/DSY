@@ -4,7 +4,8 @@
 window.RELATED = {
   "CPP-018-AO": [
     { kind: "Microlearning module", title: "Walked in, still not cleared", href: "/microlearning/spinal/", text: "A ladder fall, a knock-out and a patient who denies neck pain: the CPP-018-AO red flags, self-extrication risk factors, the modified towel roll, pain relief and ondansetron." },
-    { kind: "Walk-through scenario", title: "Spinal precautions - AO: Neil, 67", href: "/modules/spinal-ao/", text: "Two-person AO crew in Tumby Bay: a ladder fall, a knock-out, a patient who walked to the kitchen table, the towel roll, pain relief, ondansetron and the handover. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Spinal precautions - AO: Neil, 67", href: "/modules/spinal-ao/", text: "Two-person AO crew in Tumby Bay: a ladder fall, a knock-out, a patient who walked to the kitchen table, the towel roll, pain relief, ondansetron and the handover. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Neil's patient care record", href: "/tools/pcr/#job=neil", text: "After the walk-through: write the PCR on a copy of the card, including the spinal risk factors, why no collar, and the medicines with times. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-063-AO": [
     { kind: "Microlearning module", title: "Baseline obs at a high-speed MVA", href: "/microlearning/mva-baseline/", text: "Why the first complete set matters: obs every 15 minutes, the RDR chart's escalation triggers, the Major Trauma Tool, shock and the cold in the trend, and AO care at the crash." }
@@ -18,7 +19,8 @@ window.RELATED = {
   ],
   "CPP-006-AO": [
     { kind: "Microlearning module", title: "Burns", href: "/microlearning/burns/", text: "Airway burns first, 20 minutes of running water, hydrogel limits, chemical burns, covering and keeping warm, and the rule of nines." },
-    { kind: "Walk-through scenario", title: "Burns - AO: Daniel, 42", href: "/modules/burns/", text: "Two-person AO crew near Port Neill: a diesel flash burn to the face, a suspected airway burn, cover and go, pain relief and airway monitoring en route. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Burns - AO: Daniel, 42", href: "/modules/burns/", text: "Two-person AO crew near Port Neill: a diesel flash burn to the face, a suspected airway burn, cover and go, pain relief and airway monitoring en route. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Daniel's patient care record", href: "/tools/pcr/#job=daniel", text: "After the walk-through: write the PCR on a copy of the card, including the airway signs, the cooling time and the burn on the body chart. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPG-135-P": [
     { kind: "Microlearning module", title: "Crush syndrome", href: "/microlearning/crush/", text: "Who to worry about, saline before and after release, the ECG and hyperkalaemia, and what the ICP adds." }
@@ -31,15 +33,18 @@ window.RELATED = {
   ],
   "CPP-047-AO": [
     { kind: "Microlearning module", title: "Nausea and vomiting", href: "/microlearning/nausea/", text: "Ondansetron ODT: indications, contraindications and precautions, doses by age, and when to consult." },
-    { kind: "Walk-through scenario", title: "Nausea and Vomiting - AO: Helen, 62", href: "/modules/nausea-vomiting/", text: "Two-person AO crew near Cummins: 8 hours of vomiting, AF as one precaution, a second ondansetron dose on EOC Clinician advice, and watching the BGL. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Nausea and Vomiting - AO: Helen, 62", href: "/modules/nausea-vomiting/", text: "Two-person AO crew near Cummins: 8 hours of vomiting, AF as one precaution, a second ondansetron dose on EOC Clinician advice, and watching the BGL. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Helen's patient care record", href: "/tools/pcr/#job=helen", text: "After the walk-through: write the PCR on a copy of the card, including the ondansetron precaution, both doses and the BGL trend. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-061-AO": [
     { kind: "Microlearning module", title: "Headache", href: "/microlearning/headache/", text: "The ten red flags, when to manage as stroke or sepsis, pain relief and ondansetron, with a red flag checker." },
-    { kind: "Walk-through scenario", title: "Headache - AO: Ian, 62", href: "/modules/headache%20-ao/", text: "Two-person AO crew at the Coffin Bay caravan park: a thunderclap headache, a negative ROSIER, symptom relief, and deterioration. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Headache - AO: Ian, 62", href: "/modules/headache%20-ao/", text: "Two-person AO crew at the Coffin Bay caravan park: a thunderclap headache, a negative ROSIER, symptom relief, and deterioration. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Ian's patient care record", href: "/tools/pcr/#job=ian", text: "After the walk-through: write the PCR on a copy of the card, including the red flags, the falling GCS and the medicines with times. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-001-AO": [
     { kind: "Microlearning module", title: "Acute cardiogenic pulmonary oedema", href: "/microlearning/acpo/", text: "Posture, high-flow oxygen, clinical support and the GTN checker (SBP, heart rate, PDE-5 inhibitors)." },
-    { kind: "Walk-through scenario", title: "ACPO - AO: Kevin, 72", href: "/modules/APO/", text: "Two-person AO crew at 3am: posture, high-flow oxygen, the PDE-5 question and GTN spray on EOC Clinician advice. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "ACPO - AO: Kevin, 72", href: "/modules/APO/", text: "Two-person AO crew at 3am: posture, high-flow oxygen, the PDE-5 question and GTN spray on EOC Clinician advice. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Kevin's patient care record", href: "/tools/pcr/#job=kevin", text: "After the walk-through: write the PCR on a copy of the card, including the PDE-5 check and both GTN doses with times. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-013-AO": [
     { kind: "Microlearning module", title: "Pain management", href: "/microlearning/pain/", text: "Multimodal analgesia, the sedation score, the IN fentanyl checker and sublingual ketamine for authorised AOs." },

@@ -560,5 +560,268 @@ window.PCR_JOBS = {
       ['1950', 'Carry sheet, 80 m carry']
     ],
     marks: [['front', 60, 195, 'F S', 6], ['front', 86, 128, 'A', 6]]
+  },
+
+  kevin: {
+    label: 'Kevin, 72: ACPO (AO)',
+    short: 'Kevin',
+    walk: '/modules/APO/',
+    // From /modules/APO/. Times 0302 (oxygen), 0309 (EOC Clinician) and 0330 (last set, the handover numbers) are DSY's.
+    // Oxygen 15 L/min NRM is DSY's reading of "high-flow oxygen by non-rebreather".
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Acute cardiogenic pulmonary oedema (ACPO).',
+      recommendation: 'Transported to nearest hospital, notified. Sat up, high-flow O2 NRM, GTN 400 microg SL spray 0311 + 0317 (EOC Clinician). Nil PDE-5 inhibitors. Improving: SpO2 82 to 94%, RR 32 to 22, BP 156 to 128. Needs ongoing treatment + monitoring. Clinical support requested.',
+      ecg: 'Irregular rhythm (known AF), tachycardic.'
+    },
+    sections: {
+      pc: 'Sudden SOB from sleep, can\'t lie down, pink frothy sputum. Cardiac history.',
+      phx: 'Heart failure, AF, MI 4 yrs ago, HTN.',
+      medn: 'Metoprolol, perindopril, frusemide, aspirin, atorvastatin. Nil PDE-5 inhibitors (wife).',
+      hx: 'Woke 0215 short of breath, couldn\'t lie down, coughing pink sputum. Worse than ever before. Fish and chips for dinner ~1900. Wife called SAAS. Hx from wife (pt too breathless).',
+      oa: '72M sitting on the edge of the bed leaning forward on his arms, grey, sweaty, breathing fast + hard, audible from the hallway. Pink frothy sputum at his lips. Wife at the door, distressed.',
+      cns: 'A on AVPU, GCS 15, anxious + distressed.',
+      skin: 'Grey, pale, sweaty.',
+      cvs: 'Pulse 118 irregular, fast radial. BP 156/92. Nil blood loss.',
+      resp: 'RR 32, single words only, working hard, crackles both sides. Pink frothy sputum, airway open. SpO2 82% RA, 89% on O2.',
+      pain: 'Nil c/o chest pain.',
+      survey: '',
+      care: 'Kept sitting up, legs down. High-flow O2 NRM. Clinical support requested. PDE-5 asked (pt + wife): nil. EOC Clinician: GTN 400 microg SL, obs every 3-5 min, repeat in 5 min if SBP over 100 + HR 60-120. Limits checked aloud.\nGTN 0311. 0316 SpO2 92%, BP 138/86, HR 108, "a bit better": GTN 0317 as directed. Carry chair (upright, nil walking), stretcher head up. O2 + obs every 3-5 min en route.'
+    },
+    tips: {
+      survey: 'No trauma, so no secondary survey.',
+      care: 'Write that you asked about PDE-5 inhibitors, and the answer: it is part of the GTN check.',
+      pain: 'No chest pain is still a finding: write it.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Nothing to mark.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted for the GTN.'
+    },
+    ticks: ['medsHanded', 'consult'],
+    obs: [
+      { time: '0303', rr: 32, o2: 'RA', spo2: 82, bp: '156/92', hr: 118, temp: 36.4, gcs: 15, evm: [4, 5, 6], bgl: 7.8 },
+      { time: '0308', rr: 30, o2: '15', spo2: 89, bp: '152/94', hr: 114, gcs: 15, evm: [4, 5, 6] },
+      { time: '0316', rr: 26, o2: '15', spo2: 92, bp: '138/86', hr: 108, gcs: 15, evm: [4, 5, 6] },
+      { time: '0330', rr: 22, o2: '15', spo2: 94, bp: '128/82', hr: 102 }
+    ],
+    drugs: [
+      ['0302', 'Oxygen', '15', 'L/min', 'NRM'],
+      ['0303', 'Clinical support requested'],
+      ['0309', 'EOC Clinician consult'],
+      ['0311', 'GTN spray (EOC advice)', '400', 'microg', 'Sublingual'],
+      ['0317', 'GTN spray (EOC advice)', '400', 'microg', 'Sublingual'],
+      ['0320', 'Carry chair to stretcher']
+    ],
+    marks: []
+  },
+
+  ian: {
+    label: 'Ian, 62: headache (AO)',
+    short: 'Ian',
+    walk: '/modules/headache%20-ao/',
+    // From the headache walk-through. Time 1446 (EOC Clinician update) is DSY's; handover time is not given.
+    text: {
+      allergies: 'Penicillin (rash)',
+      communicable: 'Nil known',
+      provisional: 'Sudden severe (thunderclap) headache with red flags, ?serious secondary cause. Deteriorating GCS.',
+      recommendation: 'Transported to Port Lincoln Hospital, paramedics met en route, hospital notified by EOC. Red flags: sudden worst-ever headache, first severe headache over 50, neck stiffness. GCS 15 to 14, BP 178 to 182. Paracetamol 1 g 1440, ondansetron 4 mg ODT 1442. Ibuprofen withheld. Needs urgent medical assessment.',
+      ecg: 'Sinus rhythm.'
+    },
+    sections: {
+      pc: 'Sudden severe "worst ever" headache ~1340, first ever. Nausea, photophobia, neck stiffness.',
+      phx: 'HTN, mild osteoarthritis. Nil previous headaches like this.',
+      medn: 'Perindopril 5 mg. Paracetamol PRN, none today.',
+      hx: 'Sitting reading at the caravan park ~1340: sudden headache "like someone smashed me with a cricket bat". Back of the head spreading over whole head, constant. Nil exertion, nil head knock. Nausea, nil vomiting. Light hurts. Neck getting stiff over last 15 min. Nil weakness, droop, speech or vision change. Nil seizure, LOC or rash. Lunch 1 hr ago. Wife called SAAS.',
+      oa: '62M in a deck chair under the caravan annex, leaning forward, head in his hands, eyes shut, avoiding the bright sun. Wife anxious.',
+      cns: 'A on AVPU, GCS 15, oriented. PEARL. ROSIER 0: nil face, arm or leg weakness, speech or vision change. Photophobia, neck stiffness. 1445: GCS 14 (E4 V4 M6), confused.',
+      skin: 'Warm, normal colour. Nil rash.',
+      cvs: 'Pulse 88 regular. BP 178/102, rising to 182/106. Nil blood loss.',
+      resp: 'RR 18, nil resp distress. SpO2 98% RA.',
+      pain: 'Sudden onset, occipital spreading to whole head, "cricket bat", constant, 9/10. 8/10 after paracetamol.',
+      survey: '',
+      care: 'Moved to shade, lights low. BGL 6.8. ROSIER 0: not the stroke pathway, but red flags. Clinical support requested 1438 (Port Lincoln paramedics). Paracetamol 1 g 1440. Ondansetron 4 mg ODT 1442 (nil contraindications or precautions). Ibuprofen withheld (perindopril).\n1445: GCS 14, confused, BP up. EOC Clinician updated: go now, paramedics to meet on the Lincoln Hwy, hospital notified, GCS every 5 min. Stand + pivot to stretcher, head up ~30 deg.'
+    },
+    tips: {
+      survey: 'No trauma, so no secondary survey.',
+      pain: 'For a headache, the description is the evidence: onset, site, character, severity.',
+      care: 'Pain relief that works is not evidence of a benign cause (CPP-061-AO): the red flags still stand.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Nothing to mark.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician updated.'
+    },
+    ticks: ['medsHanded', 'consult'],
+    obs: [
+      { time: '1435', rr: 18, o2: 'RA', spo2: 98, bp: '178/102', hr: 88, temp: 37.2, gcs: 15, evm: [4, 5, 6], pupils: ['+', '+'], pain: 9, bgl: 6.8 },
+      { time: '1445', rr: 20, o2: 'RA', spo2: 97, bp: '182/106', hr: 92, gcs: 14, evm: [4, 4, 6], pupils: ['+', '+'], pain: 8 }
+    ],
+    drugs: [
+      ['1435', 'BGL 6.8, ROSIER 0'],
+      ['1438', 'Clinical support requested'],
+      ['1440', 'Paracetamol', '1000', 'mg', 'Oral'],
+      ['1442', 'Ondansetron ODT', '4', 'mg', 'Oral (ODT)'],
+      ['1446', 'EOC Clinician updated'],
+      ['1450', 'Stand + pivot to stretcher']
+    ],
+    marks: []
+  },
+
+  helen: {
+    label: 'Helen, 62: nausea and vomiting (AO)',
+    short: 'Helen',
+    walk: '/modules/nausea-vomiting/',
+    // From /modules/nausea-vomiting/. Time 2102 (EOC Clinician) is DSY's.
+    text: {
+      allergies: 'Penicillin (rash)',
+      communicable: 'Nil known',
+      provisional: '?Food poisoning / gastroenteritis with dehydration.',
+      recommendation: 'Transported to Cummins District Hospital, notified. Ondansetron 4 mg ODT 2047 (AF precaution noted) + 4 mg 2105 (EOC Clinician). Vomiting stopped, nausea 8 to 2/10. BGL drifting 4.8 to 4.5, not eating, on metformin: needs fluids + BGL monitoring. On apixaban.',
+      ecg: 'AF (known), rate 104 then 92. Nil acute changes on 4-lead.'
+    },
+    sections: {
+      pc: 'Vomiting ~8 hrs, unable to keep fluids down, near faint walking from the bathroom.',
+      phx: 'AF, type 2 diabetes.',
+      medn: 'Metoprolol 50 mg BD, apixaban 5 mg BD, metformin 1000 mg BD.',
+      hx: 'Reheated chicken at lunch, vomiting from ~1230, 8+ times, now clear. Husband ate the same, well. Dizzy on standing, weak, nearly fainted walking to bed. Nil diarrhoea, chest pain or headache. Water 4 hrs ago, vomited. Husband called SAAS.',
+      oa: '62F on the bathroom floor with a bucket, pale + exhausted. Strong smell of cleaning products.',
+      cns: 'A on AVPU, GCS 15, oriented. Dizzy on standing.',
+      skin: 'Pale, dry mouth.',
+      cvs: 'Pulse 104 irregular (known AF). BP 108/72. CRT 3 s. Nil blood loss.',
+      resp: 'RR 18, nil resp distress. SpO2 97% RA.',
+      pain: 'Mild generalised abdo tenderness. Nil chest pain or headache. Nausea 8/10.',
+      survey: '',
+      care: 'Window opened. Helped to a chair, nil walking. BGL 4.8. Ondansetron screen: no allergy, no apomorphine; AF = one precaution, confirmed with pt. Ondansetron 4 mg ODT 2047.\n2100: vomiting stopped, nausea 5/10, BGL 4.6. EOC Clinician: 2nd 4 mg ODT, BGL checks (under 3.5 = hypo protocol), Cummins Hospital. 2105 ondansetron 4 mg ODT. 2115: nausea 2/10, BGL 4.5. Carry chair, semi-reclined, emesis bags.'
+    },
+    tips: {
+      survey: 'No trauma, so no secondary survey.',
+      care: 'Name the precaution (AF) and that you counted it: one precaution = give and note it; more than one = consult first.',
+      pain: 'Nausea has its own score: record it with the time, so the response to ondansetron shows.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Nothing to mark.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted for the second dose.'
+    },
+    ticks: ['medsHanded', 'consult'],
+    obs: [
+      { time: '2045', rr: 18, o2: 'RA', spo2: 97, bp: '108/72', crt: '>2', hr: 104, temp: 37.4, gcs: 15, evm: [4, 5, 6], bgl: 4.8 },
+      { time: '2100', rr: 16, o2: 'RA', spo2: 97, bp: '110/74', hr: 98, bgl: 4.6 },
+      { time: '2115', bp: '114/76', hr: 92, bgl: 4.5 }
+    ],
+    drugs: [
+      ['2045', 'BGL 4.8. Monitor: AF'],
+      ['2047', 'Ondansetron ODT', '4', 'mg', 'Oral (ODT)'],
+      ['2102', 'EOC Clinician consult'],
+      ['2105', 'Ondansetron ODT (EOC)', '4', 'mg', 'Oral (ODT)'],
+      ['2115', 'BGL 4.5, nausea 2/10'],
+      ['2120', 'Carry chair to stretcher']
+    ],
+    marks: []
+  },
+
+  daniel: {
+    label: 'Daniel, 42: burns (AO)',
+    short: 'Daniel',
+    walk: '/modules/burns/',
+    // From /modules/burns/. Times 1902 (EOC call), 1903 (cover), 1904 (paracetamol) and 1905 (Penthrox) are DSY's.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Facial flash burn ~3% (red, early blistering), suspected airway burn.',
+      recommendation: 'SUSPECTED AIRWAY BURN. Transported to Tumby Bay Hospital, paramedics met en route, EOC Clinician consulted. Burn forehead, cheeks, nose, upper lip ~3%, singed eyebrows + beard. ~15 min running water. Voice clear throughout. Paracetamol 1 g + Penthrox: pain 8 to 5/10. Temp 36.1: keep warm. Needs close airway monitoring. Handed over 1935.',
+      ecg: 'Sinus tachycardia, then sinus rhythm.'
+    },
+    sections: {
+      pc: 'Facial flash burn from igniting diesel ~1840. Singed eyebrows + beard.',
+      phx: 'Nil.',
+      medn: 'Nil regular. Nil paracetamol or anti-inflammatories today.',
+      hx: 'Pouring diesel on a fire pit ~1840, it went "whoosh". Turned away, brief exposure to his face. Friends started cooling with a hose straight away (~15 min by our arrival). Last ate lunchtime. Friend called SAAS.',
+      oa: '42M sitting upright in a plastic chair in a backyard, eyes closed, in pain, friend running a hose over his face. Face red with early blistering, eyebrows + front of beard singed. Talking. Fire pit smouldering 8 m away, open 20 L diesel drum beside it.',
+      cns: 'A on AVPU, GCS 15, oriented, recalls events.',
+      skin: 'Burn forehead, both cheeks, nose + upper lip: red, early blistering, painful. ~3% (CTL-050). Rest of skin cool after cooling.',
+      cvs: 'Pulse 108 regular. BP 148/92. Nil blood loss.',
+      resp: 'RR 20, nil resp distress. Voice clear, nil hoarseness, stridor or wheeze. Nil singed nasal hair, nil soot around nose or mouth. SpO2 97% RA.',
+      pain: 'Facial burn, 8/10. 5/10 after paracetamol + Penthrox.',
+      survey: 'Head/neck: burns as above, singed eyebrows + beard. Chest/back, abdo, hips/pelvis, limbs: nil burns, NAD.',
+      care: 'Diesel moved away from the fire. Facial burns + singed eyebrows = suspected airway burn: airway + urgent transport before finishing the 20 min cooling. Clinical support requested, EOC Clinician consulted. Hose stopped (~15 min total), cling wrap over the burn, nose + mouth clear, never round the head. Blanket, out of the wind.\nParacetamol 1 g. Penthrox 3 mL, pt holds it. Walked to the ambulance with help, sitting upright. Voice checked often en route: clear. Paramedics met on the highway.'
+    },
+    tips: {
+      survey: 'A flash burn is trauma: check the rest of the body for burns and write that you did.',
+      resp: 'For a suspected airway burn, the airway signs you looked for and didn\'t find are as important as the ones you found.',
+      care: 'Record the total cooling time: the hospital needs it.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'B (burn) over the face on the front figure: forehead, cheeks, nose and upper lip, ~3%.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted.'
+    },
+    ticks: ['consult'],
+    obs: [
+      { time: '1859', rr: 20, o2: 'RA', spo2: 97, bp: '148/92', hr: 108, temp: 36.3, gcs: 15, evm: [4, 5, 6], pain: 8, bgl: 6.4 },
+      { time: '1920', rr: 18, o2: 'RA', spo2: 98, bp: '138/86', hr: 94, temp: 36.1, pain: 5 }
+    ],
+    drugs: [
+      ['1857', 'Cooling (friends, hose) ~15 min'],
+      ['1902', 'EOC Clinician + clin support'],
+      ['1903', 'Cling wrap cover, blanket'],
+      ['1904', 'Paracetamol', '1000', 'mg', 'Oral'],
+      ['1905', 'Methoxyflurane', '3', 'mL', 'Inhaler'],
+      ['1908', 'To ambulance, upright'],
+      ['1935', 'Handover Tumby Bay Hosp']
+    ],
+    marks: [['front', 50, 12, 'B 3%', 10]]
+  },
+
+  neil: {
+    label: 'Neil, 67: spinal precautions (AO)',
+    short: 'Neil',
+    walk: '/modules/spinal-ao/',
+    // From /modules/spinal-ao/. Time 1500 (towel roll) is DSY's; the rest are the walk-through's.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Head injury with LOC (~2 min), amnesia, GCS 14. L hip injury, ?#NOF. C-spine NOT cleared.',
+      recommendation: 'Transported to Tumby Bay Hospital for assessment (EOC Clinician), notified. Ladder fall ~1415 onto decking, head strike, LOC ~2 min, walked inside by family. GCS 14 (V4) throughout. Modified towel roll, nil collar (head injury), "C-spine NOT clear" sticker. Ibuprofen at 1230. Ondansetron, paracetamol, Penthrox 1452: pain 8 to 4/10. May need transfer to Port Lincoln. Handed over 1512.',
+      ecg: 'Sinus rhythm.'
+    },
+    sections: {
+      pc: 'Fall from ladder ~1415 onto decking, head strike, LOC ~2 min. L hip pain. Confused, amnesic.',
+      phx: 'Reflux, high cholesterol. Nil previous neck or back problems.',
+      medn: 'Pantoprazole, atorvastatin. Ibuprofen x2 at ~1230 (knees). Nil blood thinners.',
+      hx: 'Cleaning gutters, chest at gutter height. Ladder slid sideways, fell onto timber decking, landed on L side, hit back of head. Didn\'t move or answer ~2 min (wife), then groggy. Wife + neighbour helped him up and walked him ~10 m inside. Can\'t remember the fall. Nil alcohol. Wife called SAAS.',
+      oa: '67M sitting on a kitchen chair leaning on the table, holding his L hip. Ladder on the decking outside. Asks "What happened? Did I fall?" and asks again a minute later. Wife + neighbour present.',
+      cns: 'GCS 14 (E4 V4 M6), confused, repeating questions, amnesic for the fall. PEARL. Moves + feels all 4 limbs, nil tingling or numbness.',
+      skin: 'Warm, normal colour.',
+      cvs: 'Pulse 88 regular. BP 148/86. Nil bleeding.',
+      resp: 'RR 18, nil resp distress. SpO2 96% RA.',
+      pain: 'L hip, 8/10, worse with any movement, won\'t move the leg. Denies neck + back pain (unreliable: GCS 14, distracting injury). 5/10 then 4/10 after meds.',
+      survey: 'Head: swelling back of head R, nil bleeding. Neck: denies pain (not relied on). Chest/back, abdo: NAD. Hips/pelvis: very tender L hip, won\'t move leg. Limbs: CSM normal x4.',
+      care: 'Asked to stay still, manual head stabilisation sitting at the table. Spinal precautions: fall over 1 m, head strike, distracting injury, GCS 14, over 65. No collar (head injury, ?raised ICP). Nil ibuprofen (taken 1230), nil ketamine (GCS 14, over 64). 1452 ondansetron 4 mg ODT, paracetamol 1 g, Penthrox.\nControlled move onto the stretcher, head in line, modified towel roll, tape over a combine, "C-spine NOT clear" sticker. Limbs rechecked: normal. EOC Clinician 1506: Tumby Bay Hospital.'
+    },
+    tips: {
+      survey: 'Trauma: the secondary survey goes in.',
+      care: 'CPP-018-AO asks you to record your spinal immobilisation decisions and the technique: write the risk factors and why no collar.',
+      pain: 'Write that he denies neck pain AND why you didn\'t rely on it.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Not a falls-risk job: a fall from a ladder, not a ground-level fall. Leave blank.',
+      body: 'Back figure: S (swelling) on the back of the head, right side. Front figure: P (pain) at the left hip.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted at 1506.'
+    },
+    ticks: ['medsHanded', 'consult'],
+    obs: [
+      { time: '1438', rr: 18, o2: 'RA', spo2: 96, bp: '148/86', hr: 88, temp: 36.6, gcs: 14, evm: [4, 4, 6], pupils: ['+', '+'], pain: 8, bgl: 6.2 },
+      { time: '1504', rr: 16, o2: 'RA', spo2: 97, bp: '142/84', hr: 80, gcs: 14, evm: [4, 4, 6], pain: 4 },
+      { time: '1512', rr: 18, o2: 'RA', spo2: 96, bp: '146/88', hr: 84, gcs: 14, evm: [4, 4, 6], pain: 4 }
+    ],
+    drugs: [
+      ['1430', 'Manual head stabilisation'],
+      ['1452', 'Ondansetron ODT', '4', 'mg', 'Oral (ODT)'],
+      ['1452', 'Paracetamol', '1000', 'mg', 'Oral'],
+      ['1452', 'Methoxyflurane', '3', 'mL', 'Inhaler'],
+      ['1500', 'Mod. towel roll, stretcher'],
+      ['1506', 'EOC Clinician consult'],
+      ['1512', 'Handover Tumby Bay Hosp']
+    ],
+    marks: [['back', 54, 10, 'S', 7], ['front', 60, 110, 'P', 6]]
   }
 };
