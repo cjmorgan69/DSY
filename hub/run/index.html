@@ -49,7 +49,7 @@
   <p class="small muted" id="msg" aria-live="polite"></p>
   <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
 </main>
-<script src="../topics.js?v=20261103a"></script>
+<script src="../topics.js?v=20261106a"></script>
 <script>
 (function () {
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
@@ -65,6 +65,7 @@
     if (t.custom) kit.appendChild(link("Customise for your area", "../../scenarios/#s=" + t.custom, true));
     if (t.stations) kit.appendChild(link("Skills stations (team runs it)", "../.." + t.stations));
     if (t.mdt) kit.appendChild(link("Load the MDT job", "../../mdt/#job=" + t.mdt, true));
+    if (t.pcr) kit.appendChild(link("PCR trainer", "../../tools/pcr/#job=" + t.pcr, true));
     kit.appendChild(link("Microlearning", "../../microlearning/" + t.module + "/", true));
     body.appendChild(kit);
     var share = el("button", "btn ghost small", "Copy the student links");
@@ -72,7 +73,8 @@
     share.addEventListener("click", function () {
       var text = "DSY Training: " + t.title + "\nLearn: " + root + "microlearning/" + t.module + "/" +
         (t.walk ? "\nPractise the call: " + root + t.walk.slice(1) + "?mode=student" : "") +
-        (t.mdt ? "\nDrill the MDT: " + root + "mdt/#job=" + t.mdt + "&self=1" : "");
+        (t.mdt ? "\nDrill the MDT: " + root + "mdt/#job=" + t.mdt + "&self=1" : "") +
+        (t.pcr ? "\nWrite the PCR: " + root + "tools/pcr/#job=" + t.pcr : "");
       if (navigator.share) { navigator.share({ title: "DSY Training: " + t.title, text: text }).catch(function () {}); return; }
       (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Student links for " + t.title + " copied."; }, function () { msg.textContent = text; });
     });

@@ -2,7 +2,8 @@
    Add a topic here when a module, walk-through or MDT job is made, and it appears on every page.
    module: folder under /microlearning/   walk: walk-through page (add ?mode=student for students)
    mdt: job id in /mdt/jobs.js   stations: practical skills stations page, if any
-   custom: slug in the scenario customiser (/scenarios/), if it can be customised */
+   custom: slug in the scenario customiser (/scenarios/), if it can be customised
+   pcr: job id in /tools/pcr/jobs.js (PCR trainer: write the patient care record after the walk-through) */
 window.DSY_TOPICS = [
   { id:'chest-pain', title:'Chest pain', protocol:'CPP-007-AO', patient:'Graham, 62: chest pain not settling with his own GTN',
     module:'chest-pain', walk:'/modules/chest-pain/', mdt:'chest-pain', custom:'chest-pain-ao', stations:'/stations/chest-pain-acpo/' },
@@ -27,7 +28,7 @@ window.DSY_TOPICS = [
   { id:'nausea', title:'Nausea and vomiting', protocol:'CPP-047-AO', patient:'Helen, 62: eight hours of vomiting',
     module:'nausea', walk:'/modules/nausea-vomiting/', mdt:'nausea', custom:'nausea-ao', stations:'/stations/headache-nausea/' },
   { id:'falls', title:'Falls', protocol:'CPP-045-AO', patient:'Mavis, 81: a long lie on the bathroom floor, Cummins',
-    module:'falls', walk:'/modules/falls-ao/', mdt:'falls', custom:'falls-ao', stations:'/stations/falls/' },
+    module:'falls', walk:'/modules/falls-ao/', mdt:'falls', custom:'falls-ao', stations:'/stations/falls/', pcr:'mavis' },
   { id:'burns', title:'Burns', protocol:'CPP-006-AO', patient:'Daniel, 42: diesel flash burn to the face',
     module:'burns', walk:'/modules/burns/', custom:'burns-ao', stations:'/stations/burns/' },
   { id:'mva-baseline', title:'Baseline obs at a high-speed MVA', protocol:'CPP-063-AO', patient:'Jason, 34: rollover near Cummins, walking and "fine"',

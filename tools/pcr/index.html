@@ -4,12 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Patient report card - DSY Training</title>
+<title>PCR trainer - DSY Training</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
-/* Training copy of the paper patient report card (PCR): RDR obs chart on the left, clinical text on the right.
+/* PCR trainer: a training copy of the paper patient report card (PCR), RDR obs chart on the left, clinical text on the
+   right. The student works through a DSY walk-through first, then writes the card here. Tapping any heading opens a
+   sheet with "What goes here" (from the owner's PCR guide card, photographed Nov 2026) and, for a job, a possible entry
+   (jobs.js, DSY-written). "Show model card" swaps in the worked card. The student's work is kept on the device only.
    Layout copied from the owner's photo of the blank card (Nov 2026). Every box is editable; fill(data) writes a
    worked example into it (see examples.js). */
 :root { --purple: #9a8fd0; --brown: #d1a596; --yellow: #f3ee6e; --grey: #8c8c8c; --greybar: #c9c9c9; --ink: #222; --line: #555; }
@@ -20,7 +23,7 @@ html, body { margin: 0; background: #e9e9e9; color: var(--ink); font-family: Cal
 .bar b { margin-right: auto; }
 .bar button, .bar select { font: inherit; border: 0; border-radius: 999px; padding: .35rem .8rem; background: #fff; color: #1f5b43; font-weight: 600; }
 .note { font-size: 12px; color: #555; padding: .4rem 1rem 0; }
-#fit { overflow: hidden; }
+#fit { overflow: hidden; } #fit.big { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .sheet { width: 1400px; height: 990px; background: #fff; margin: 10px; padding: 14px 16px 10px; position: relative; transform-origin: 0 0;
   box-shadow: 0 2px 10px rgba(0,0,0,.25); display: grid; grid-template-columns: 430px 1fr; gap: 14px; font-size: 12px; }
 [contenteditable] { outline: none; }
@@ -95,10 +98,40 @@ table.dt { border-collapse: collapse; width: 100%; table-layout: fixed; border: 
 .dt td { border: 1px solid #555; border-top: 0; border-bottom: 1px solid #999; height: 19px; line-height: 16px; font-size: 12.5px; padding: 0 3px; overflow: hidden; white-space: nowrap; }
 .foot { position: absolute; bottom: 2px; left: 0; right: 0; text-align: center; font-size: 9px; color: #999; }
 
+/* free-text sections */
+.clin { overflow-y: auto; }
+.secs { padding: 0 8px; font-size: 15px; line-height: 18px; }
+.sec { min-height: 18px; } .sec.gap { margin-bottom: 18px; } .sec.sub { padding-left: 14px; }
+.sec::after { content: ""; display: block; clear: both; }
+.sec .h { float: left; margin-right: 6px; color: #a0362c; font-weight: 700; font-size: 13px; }
+.sec .t { display: block; min-height: 18px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.sec.pc .h { width: 152px; height: 18px; }
+[data-help] { cursor: pointer; }
+.helpable [data-help]:not(.legend):not(.g) { text-decoration: underline dotted #a0362c; text-underline-offset: 2px; }
+.sec .h { text-decoration: underline dotted #a0362c; text-underline-offset: 2px; }
+body.model .sheet::before { content: "MODEL CARD: a possible write-up. Your wording can differ."; position: absolute; top: -2px; left: 50%; transform: translateX(-50%);
+  background: #1f5b43; color: #fff; font: 700 12px Arial, sans-serif; padding: 2px 10px; border-radius: 0 0 6px 6px; z-index: 3; }
+body.model [contenteditable] { pointer-events: none; }
+.bar a { color: #fff; font-weight: 600; }
+.bar button.on { background: #f3ee6e; }
+.intro { margin: .5rem 1rem 0; padding: .6rem .8rem; background: #fff; border-left: 6px solid #1f5b43; border-radius: 6px; font-size: 14px; line-height: 1.4; max-width: 60rem; }
+.intro a { color: #1f5b43; font-weight: 700; }
+/* help sheet */
+#help { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: #fff; border-top: 4px solid #1f5b43; box-shadow: 0 -4px 16px rgba(0,0,0,.25);
+  max-height: 62vh; overflow-y: auto; padding: .8rem 1rem 1.2rem; font-size: 15px; line-height: 1.45; transform: translateY(105%); transition: transform .2s; }
+#help.open { transform: none; }
+#help h3 { margin: 0 2.5rem .4rem 0; font-size: 17px; color: #1f5b43; }
+#help h4 { margin: .7rem 0 .2rem; font-size: 13px; text-transform: uppercase; letter-spacing: .03em; color: #555; }
+#help .entry { background: #f4f8ff; border-left: 4px solid #1a3a9c; padding: .4rem .6rem; font-family: "Patrick Hand", "Bradley Hand", cursive; font-size: 17px; color: #1a3a9c; white-space: pre-wrap; }
+#help .tip { font-size: 13px; color: #555; margin-top: .4rem; }
+#help .x { position: absolute; right: .6rem; top: .5rem; border: 0; background: #eee; border-radius: 999px; width: 2rem; height: 2rem; font-size: 1.1rem; }
+#help table { border-collapse: collapse; font-size: 14px; } #help td, #help th { border: 1px solid #bbb; padding: 2px 6px; text-align: left; }
+#help .entry table td { font-family: inherit; }
 @media print {
   @page { size: A4 landscape; margin: 6mm; }
   html, body { background: #fff; }
-  .bar, .note { display: none; }
+  .bar, .note, .intro, #help { display: none; }
+  body.model .sheet::before { display: none; }
   #fit { height: auto !important; overflow: visible; }
   .sheet { transform: none !important; margin: 0; box-shadow: none; zoom: .775; }
   [contenteditable]:focus { background: none; }
@@ -107,12 +140,15 @@ table.dt { border-collapse: collapse; width: 100%; table-layout: fixed; border: 
 </style>
 </head>
 <body>
-<div class="bar"><b>Patient report card (training copy)</b>
-  <select id="pick" aria-label="Example"><option value="">Blank card</option></select>
+<div class="bar"><b>PCR trainer</b>
+  <select id="pick" aria-label="Job"><option value="">Blank card</option></select>
+  <button id="model" type="button" hidden>Show model card</button>
+  <button id="zoom" type="button">Zoom in</button>
   <button id="clear" type="button">Clear</button>
   <button type="button" onclick="print()">Print or save as PDF</button>
 </div>
-<p class="note">Tap any box to write in it. For training only: not a SAAS record. Nothing typed here is saved or sent.</p>
+<div class="intro" id="intro"></div>
+<p class="note">Tap a box to write in it. Tap an <u style="text-decoration-style:dotted">underlined heading</u> to see what goes there. For training only: not a SAAS record. Your card is kept on this device only, never sent. On a phone, turn it sideways or use Zoom in.</p>
 <div id="fit"><div class="sheet" id="sheet">
 
   <!-- Obs chart -->
@@ -124,40 +160,40 @@ table.dt { border-collapse: collapse; width: 100%; table-layout: fixed; border: 
   <!-- Clinical side -->
   <section class="right">
     <div class="toprow">
-      <div class="allergy"><span class="t">ALLERGIES or<br>ADVERSE DRUG REACTIONS:</span><span class="box-txt hand" contenteditable data-k="allergies"></span></div>
-      <div class="comm">COMMUNICABLE DISEASES: <span class="box-txt hand" contenteditable data-k="communicable"></span></div>
+      <div class="allergy"><span class="t" data-help="allergies">ALLERGIES or<br>ADVERSE DRUG REACTIONS:</span><span class="box-txt hand" contenteditable data-k="allergies"></span></div>
+      <div class="comm"><span data-help="communicable">COMMUNICABLE DISEASES:</span> <span class="box-txt hand" contenteditable data-k="communicable"></span></div>
     </div>
     <div class="hdr">
-      <span><b>PHx</b> (past medical history)</span>
-      <span><b>Med<sup>n</sup></b> (medications) <label><span class="chk" data-k="medsHanded"></span>Pt's meds taken &amp; handed over</label></span>
-      <span><b>Hx</b> (history)</span><span><b>O/A</b> (on arrival)</span><span><b>O/E</b> (on examination)</span>
+      <span data-help="phx"><b>PHx</b> (past medical history)</span>
+      <span><span data-help="medn"><b>Med<sup>n</sup></b> (medications)</span> <label><span class="chk" data-k="medsHanded"></span>Pt's meds taken &amp; handed over</label></span>
+      <span data-help="hx"><b>Hx</b> (history)</span><span data-help="oa"><b>O/A</b> (on arrival)</span><span data-help="oe"><b>O/E</b> (on examination)</span>
     </div>
     <div class="main">
-      <div class="clin lined"><span class="tab">Presenting complaint:</span>
-        <div class="txt hand" contenteditable data-k="clinical" style="height:100%"></div></div>
+      <div class="clin lined"><span class="tab" data-help="pc">Presenting complaint:</span>
+        <div class="secs" id="secs"></div></div>
       <div class="side">
         <div class="body">
           <svg id="front" viewBox="0 0 100 250" width="70" height="175" style="left:24px;top:4px"></svg>
           <svg id="back" viewBox="0 0 100 250" width="80" height="200" style="right:24px;bottom:6px"></svg>
-          <div class="pim"><h4>Pressure Injury<br>Management</h4>
+          <div class="pim"><h4 data-help="pi">Pressure Injury<br>Management</h4>
             Braden Score: <span class="blank hand" contenteditable data-k="braden"></span><br>
             PI risk: <span class="chk" data-k="piLow"></span> Low
             <div class="cb"><span class="chk" data-k="piMed"></span> Medium</div>
             <div class="cb"><span class="chk" data-k="piHigh"></span> High</div>
             <div class="ital">Detail prevention strategies in clinical text</div></div>
-          <div class="legend">
+          <div class="legend" data-help="body">
             <div><span>A</span>Abrasion</div><div><span>B</span>Burn</div><div><span>C</span>Contusion</div><div><span>D</span>Dislocation</div>
             <div><span>F</span>Fracture</div><div><span>H</span>Haemorrhage</div><div><span>L</span>Laceration</div><div><span>N</span>Numbness</div>
             <div><span>P</span>Pain</div><div><span>Pa</span>Paralysis</div><div><span>PI</span>Pressure Injury</div><div><span>S</span>Swelling</div>
             <div><span>W</span>Weakness</div></div>
         </div>
-        <div class="ecg"><b>ECG analysis</b> (attach copy to back of PCR)<span class="box-txt hand" contenteditable data-k="ecg"></span></div>
+        <div class="ecg"><b data-help="ecg">ECG analysis</b> (attach copy to back of PCR)<span class="box-txt hand" contenteditable data-k="ecg"></span></div>
       </div>
-      <div class="provrow"><div class="lbl lined"><span class="tab">Provisional diagnosis:</span><div class="txt hand" contenteditable data-k="provisional"></div></div></div>
-      <div class="recbar"><b>Recommendation</b> (clinical summary of treatment, and a referral plan for all TNT - including any signs or symptoms for the patient to consider seeking further review)</div>
+      <div class="provrow"><div class="lbl lined"><span class="tab" data-help="provisional">Provisional diagnosis:</span><div class="txt hand" contenteditable data-k="provisional"></div></div></div>
+      <div class="recbar"><b data-help="recommendation">Recommendation</b> (clinical summary of treatment, and a referral plan for all TNT - including any signs or symptoms for the patient to consider seeking further review)</div>
       <div class="recrow">
         <div class="lined"><div class="txt hand" contenteditable data-k="recommendation"></div></div>
-        <div class="falls"><b>Falls Management</b> <i>(detail in clinical text)</i><br>
+        <div class="falls"><b data-help="falls">Falls Management</b> <i>(detail in clinical text)</i><br>
           Length of time on the ground: <span class="blank hand" contenteditable data-k="ground"></span><br>
           <span class="s">(if &gt; 1 hour, complete pressure injury risk screening)</span><br>
           Mobility assessment completed: <span class="chk" data-k="mobY"></span>Y <span class="chk" data-k="mobN"></span>N<br>
@@ -165,16 +201,18 @@ table.dt { border-collapse: collapse; width: 100%; table-layout: fixed; border: 
           Falls referral completed: <span class="chk" data-k="refY"></span> Yes <span class="chk" data-k="refN"></span> No</div>
       </div>
       <div class="inforow">
-        <span><span class="chk" data-k="info"></span> Patient information provided <small>(specifically:</small><span class="dots hand" contenteditable data-k="infoText"></span><small>)</small></span>
-        <span><span class="chk" data-k="consult"></span> Clinical consult completed <small>(with EOC clinician or SAAS Medical Officer)</small></span>
+        <span><span class="chk" data-k="info"></span> <span data-help="info">Patient information provided</span> <small>(specifically:</small><span class="dots hand" contenteditable data-k="infoText"></span><small>)</small></span>
+        <span><span class="chk" data-k="consult"></span> <span data-help="consult">Clinical consult completed</span> <small>(with EOC clinician or SAAS Medical Officer)</small></span>
       </div>
       <div class="drugs"><table class="dt" id="dt1"></table><table class="dt" id="dt2"></table></div>
     </div>
   </section>
   <div class="foot">DSY Training copy for practice. Not a SAAS record.</div>
 </div></div>
+<div id="help" role="dialog" aria-live="polite"><button class="x" type="button" aria-label="Close">&times;</button><div id="helpBody"></div></div>
 
-<script src="examples.js?v=20261106e"></script>
+<script src="help.js?v=20261106a"></script>
+<script src="jobs.js?v=20261106a"></script>
 <script>
 (function () {
   // ---- Obs chart rows: [group, band, colour (p purple, r brown, y yellow, '' white), key for filling] ----
@@ -194,13 +232,13 @@ table.dt { border-collapse: collapse; width: 100%; table-layout: fixed; border: 
   };
   var COLS = 6, chart = document.getElementById('chart'), h = [];
   h.push('<colgroup><col style="width:72px"><col style="width:62px">' + '<col>'.repeat(COLS) + '</colgroup>');
-  h.push('<tr class="timehd"><td colspan="2" style="text-align:right"><span class="minsets">(min. 2 sets)</span> Time:</td>' + cells('time', 0) + '</tr>');
+  h.push('<tr class="timehd"><td colspan="2" style="text-align:right" data-help="obs"><span class="minsets">(min. 2 sets)</span> Time:</td>' + cells('time', 0) + '</tr>');
   function cells(key, i, cls) { var s = ''; for (var c = 0; c < COLS; c++) s += '<td class="v ' + (cls || '') + '" contenteditable data-cell="' + key + ':' + i + ':' + c + '"></td>'; return s; }
   Object.keys(G).forEach(function (k) {
     var g = G[k];
     g.rows.forEach(function (r, i) {
       var tr = '<tr' + (i === 0 ? ' class="top"' : '') + '>';
-      if (i === 0) tr += '<td class="g" rowspan="' + g.rows.length + '"' + (g.rows.length === 1 ? ' style="font-size:13px"' : '') + '>' + g.name + (g.sub ? '<small>' + g.sub + '</small>' : '') + '</td>';
+      if (i === 0) tr += '<td class="g" data-help="obs" rowspan="' + g.rows.length + '"' + (g.rows.length === 1 ? ' style="font-size:13px"' : '') + '>' + g.name + (g.sub ? '<small>' + g.sub + '</small>' : '') + '</td>';
       tr += '<td class="b ' + r[1] + '">' + r[0] + '</td>';
       if (k === 'pupils') { for (var c = 0; c < COLS; c++) tr += '<td class="diag"><span class="hand" contenteditable data-cell="pupL:0:' + c + '"></span><span class="hand" contenteditable data-cell="pupR:0:' + c + '"></span></td>'; }
       else tr += cells(k, i, r[1]);
@@ -214,7 +252,7 @@ table.dt { border-collapse: collapse; width: 100%; table-layout: fixed; border: 
   // ---- Drug tables ----
   ['dt1', 'dt2'].forEach(function (id, t) {
     var s = '<colgroup><col style="width:13%"><col style="width:42%"><col style="width:12%"><col style="width:15%"><col style="width:18%"></colgroup>'
-      + '<tr><th>Time</th><th>Drug or intervention</th><th>Dose</th><th>Units</th><th>Route</th></tr>';
+      + '<tr data-help="drugs"><th>Time</th><th>Drug or intervention</th><th>Dose</th><th>Units</th><th>Route</th></tr>';
     for (var r = 0; r < 6; r++) { s += '<tr>'; for (var c = 0; c < 5; c++) s += '<td class="hand" contenteditable data-drug="' + (t * 6 + r) + ':' + c + '"></td>'; s += '</tr>'; }
     document.getElementById(id).innerHTML = s;
   });
@@ -233,7 +271,7 @@ table.dt { border-collapse: collapse; width: 100%; table-layout: fixed; border: 
   document.getElementById('back').innerHTML = base + '<path d="M50 24 L50 112" stroke="#444" stroke-width=".8" stroke-dasharray="1.4 1.6"/><path d="M40 108 Q50 116 60 108 M50 112 L50 124" fill="none" stroke="#444" stroke-width=".6"/>';
 
   // ---- Tick boxes ----
-  document.querySelectorAll('.chk').forEach(function (b) { b.addEventListener('click', function () { b.classList.toggle('on'); }); });
+  document.querySelectorAll('.chk').forEach(function (b) { b.addEventListener('click', function () { if (!document.body.classList.contains('model')) b.classList.toggle('on'); }); });
 
   // ---- Fill with an example ----
   function band(key, val) {
@@ -251,6 +289,7 @@ table.dt { border-collapse: collapse; width: 100%; table-layout: fixed; border: 
   }
   function fill(d) {
     clear(); if (!d) return;
+    Object.keys(d.sections || {}).forEach(function (k) { var el = document.querySelector('[data-k="s_' + k + '"]'); if (el) el.innerText = d.sections[k]; });
     Object.keys(d.text || {}).forEach(function (k) { var el = document.querySelector('[data-k="' + k + '"]'); if (el) el.textContent = d.text[k]; });
     (d.ticks || []).forEach(function (k) { var el = document.querySelector('.chk[data-k="' + k + '"]'); if (el) el.classList.add('on'); });
     (d.obs || []).forEach(function (o, c) {
@@ -270,15 +309,105 @@ table.dt { border-collapse: collapse; width: 100%; table-layout: fixed; border: 
     });
   }
 
-  var ex = window.PCR_EXAMPLES || {}, pick = document.getElementById('pick');
-  Object.keys(ex).forEach(function (k) { var o = document.createElement('option'); o.value = k; o.textContent = ex[k].label; pick.appendChild(o); });
-  pick.addEventListener('change', function () { fill(ex[pick.value]); history.replaceState(null, '', pick.value ? '#ex=' + pick.value : location.pathname); });
-  document.getElementById('clear').addEventListener('click', function () { pick.value = ''; fill(null); history.replaceState(null, '', location.pathname); });
-  var m = location.hash.match(/ex=([\w-]+)/); if (m && ex[m[1]]) { pick.value = m[1]; fill(ex[m[1]]); }
+  // ---- Trainer: jobs, help sheet, model card, saving on the device ----
+  var JOBS = window.PCR_JOBS || {}, HELP = window.PCR_HELP || {}, pick = document.getElementById('pick'),
+      modelBtn = document.getElementById('model'), intro = document.getElementById('intro'), job = null, mine = null;
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function getState() {
+    var st = { k: {}, ticks: [], marks: [] };
+    document.querySelectorAll('[contenteditable]').forEach(function (e) {
+      var id = e.getAttribute('data-k') || ('c' + (e.getAttribute('data-cell') || '')) + (e.getAttribute('data-drug') ? 'd' + e.getAttribute('data-drug') : '');
+      if (e.textContent) st.k[id] = e.innerText;
+    });
+    document.querySelectorAll('.chk.on').forEach(function (e) { st.ticks.push(e.getAttribute('data-k')); });
+    return st;
+  }
+  function setState(st) {
+    clear(); if (!st) return;
+    document.querySelectorAll('[contenteditable]').forEach(function (e) {
+      var id = e.getAttribute('data-k') || ('c' + (e.getAttribute('data-cell') || '')) + (e.getAttribute('data-drug') ? 'd' + e.getAttribute('data-drug') : '');
+      if (st.k[id] != null) e.innerText = st.k[id];
+    });
+    (st.ticks || []).forEach(function (k) { var el = document.querySelector('.chk[data-k="' + k + '"]'); if (el) el.classList.add('on'); });
+  }
+  function key() { return 'dsy-pcr:' + (pick.value || 'blank'); }
+  function save() { if (document.body.classList.contains('model')) return; try { localStorage.setItem(key(), JSON.stringify(getState())); } catch (e) {} }
+  function load() { var st = null; try { st = JSON.parse(localStorage.getItem(key()) || 'null'); } catch (e) {} setState(st); }
+  var t; document.getElementById('sheet').addEventListener('input', function () { clearTimeout(t); t = setTimeout(save, 400); });
+  document.querySelectorAll('.chk').forEach(function (b) { b.addEventListener('click', function () { setTimeout(save, 0); }); });
+
+  // free-text sections, laid out like the PCR guide card
+  var SECS = [['pc', '', 'pc gap'], ['phx', 'PHx:', 'gap'], ['medn', "Med'n:", 'gap'], ['hx', 'Hx:', 'gap'], ['oa', 'O/A:', 'gap'],
+    ['cns', 'O/E: CNS -', ''], ['skin', 'SKIN -', 'sub'], ['cvs', 'CVS -', 'sub'], ['resp', 'RESP -', 'sub'], ['pain', 'PAIN -', 'sub'],
+    ['survey', '2* SURVEY -', 'sub gap'], ['care', 'Care + events:', '']];
+  document.getElementById('secs').innerHTML = SECS.map(function (x) {
+    var h = x[0] === 'cns' ? '<span class="h"><span data-help="oe">O/E:</span> <span data-help="cns">CNS -</span></span>' : '<span class="h" data-help="' + x[0] + '">' + x[1] + '</span>';
+    return '<div class="sec ' + x[2] + '">' + h + '<div class="t hand" contenteditable data-k="s_' + x[0] + '"></div></div>';
+  }).join('');
+
+  function obsTable(obs) {
+    var rows = [['Time', 'time'], ['Resp rate', 'rr'], ['Suppl. O2', 'o2'], ['SpO2', 'spo2'], ['BP', 'bp'], ['CRT', 'crt'], ['Pulse', 'hr'], ['Temp', 'temp'], ['GCS', 'gcs'], ['E-V-M', 'evm'], ['Pupils', 'pupils'], ['Pain', 'pain'], ['BGL', 'bgl']];
+    return '<table>' + rows.map(function (r) {
+      return '<tr><th>' + r[0] + '</th>' + obs.map(function (o) { var v = o[r[1]]; return '<td>' + (v == null ? '' : esc(Array.isArray(v) ? v.join(r[1] === 'evm' ? '-' : ' ') : v)) + '</td>'; }).join('') + '</tr>';
+    }).join('') + '</table>';
+  }
+  function entry(k) {
+    if (!job) return null;
+    if (k === 'obs') return job.obs && job.obs.length ? obsTable(job.obs) : null;
+    if (k === 'drugs') return job.drugs && job.drugs.length ? '<table>' + job.drugs.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + esc(c || '') + '</td>'; }).join('') + '</tr>'; }).join('') + '</table>' : null;
+    var v = (job.sections && job.sections[k]) || (job.reveal && job.reveal[k]);
+    return v ? esc(v) : null;
+  }
+  var helpEl = document.getElementById('help'), helpBody = document.getElementById('helpBody');
+  function openHelp(k) {
+    var hlp = HELP[k] || { title: k }, e = entry(k), html = '<h3>' + esc(hlp.title) + '</h3>';
+    if (job) html += '<h4>A possible entry: ' + esc(job.short) + '</h4>' + (e ? '<div class="entry">' + e + '</div>' : '<div class="tip">Nothing needed here for this job.</div>')
+      + ((job.tips && job.tips[k]) ? '<div class="tip">' + esc(job.tips[k]) + '</div>' : '') + '<div class="tip">Your wording can differ: check the same facts are there.</div>';
+    if (hlp.text) html += '<h4>What goes here</h4><div>' + hlp.text + '</div>' + (hlp.src ? '<div class="tip">' + esc(hlp.src) + '</div>' : '');
+    helpBody.innerHTML = html; helpEl.classList.add('open'); helpEl.scrollTop = 0;
+  }
+  document.addEventListener('click', function (ev) {
+    var h = ev.target.closest('[data-help]');
+    if (h) { ev.preventDefault(); openHelp(h.getAttribute('data-help')); return; }
+    if (ev.target.closest('.x') || (!ev.target.closest('#help') && helpEl.classList.contains('open') && !ev.target.closest('[contenteditable]'))) helpEl.classList.remove('open');
+  });
+  document.body.classList.add('helpable');
+
+  function setModel(on) {
+    if (on) { mine = getState(); document.body.classList.add('model'); fill(job); modelBtn.textContent = 'Back to my card'; modelBtn.classList.add('on'); }
+    else { document.body.classList.remove('model'); setState(mine); modelBtn.textContent = 'Show model card'; modelBtn.classList.remove('on'); }
+  }
+  modelBtn.addEventListener('click', function () { setModel(!document.body.classList.contains('model')); });
+  function choose(id) {
+    if (document.body.classList.contains('model')) setModel(false);
+    job = JOBS[id] || null; pick.value = job ? id : '';
+    modelBtn.hidden = !job; helpEl.classList.remove('open');
+    intro.innerHTML = job ? '<b>' + esc(job.label) + '.</b> First work through the <a href="' + job.walk + '?mode=student" target="_blank" rel="noopener">student walk-through</a>, then write the card as if you were the crew. '
+        + 'Tap an underlined heading to see what goes there and a possible entry, or <b>Show model card</b> to compare the whole card. ' + (job.note ? esc(job.note) : '')
+      : '<b>Blank card.</b> Write any job on it, or choose a walk-through job from the list. Tap an underlined heading to see what goes there.';
+    history.replaceState(null, '', job ? '#job=' + id : location.pathname);
+    load();
+  }
+  Object.keys(JOBS).forEach(function (k) { var o = document.createElement('option'); o.value = k; o.textContent = JOBS[k].label; pick.appendChild(o); });
+  pick.addEventListener('change', function () { choose(pick.value); });
+  document.getElementById('clear').addEventListener('click', function () {
+    if (document.body.classList.contains('model')) setModel(false);
+    if (!confirm('Clear everything you have written on this card?')) return;
+    clear(); try { localStorage.removeItem(key()); } catch (e) {}
+  });
+  var m = location.hash.match(/(?:job|ex)=([\w-]+)/); choose(m ? m[1] : '');
 
   // ---- Scale the A4 sheet to the screen ----
   var sheet = document.getElementById('sheet'), fit = document.getElementById('fit');
-  function scale() { var s = Math.min(1, (document.documentElement.clientWidth - 8) / 1424); sheet.style.transform = 'scale(' + s + ')'; fit.style.height = (1010 * s + 10) + 'px'; }
+  var big = false, zb = document.getElementById('zoom');
+  function scale() {
+    var s = Math.min(1, (document.documentElement.clientWidth - 8) / 1424);
+    if (big) s = Math.min(1, Math.max(s * 2, 0.75));
+    zb.hidden = (document.documentElement.clientWidth - 8) / 1424 >= 0.9;
+    sheet.style.transform = 'scale(' + s + ')'; fit.style.height = (1010 * s + 10) + 'px';
+    fit.classList.toggle('big', big);
+  }
+  zb.addEventListener('click', function () { big = !big; zb.textContent = big ? 'Fit to screen' : 'Zoom in'; scale(); });
   addEventListener('resize', scale); scale();
 })();
 </script>
