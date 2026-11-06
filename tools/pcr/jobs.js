@@ -290,5 +290,275 @@ window.PCR_JOBS = {
       ['1843', 'Handover paramedic crew']
     ],
     marks: [['front', 58, 50, 'C', 6], ['front', 60, 70, 'P', 6], ['front', 50, 98, 'C', 6], ['front', 22, 100, 'A', -6], ['front', 78, 100, 'A', 6]]
+  },
+
+  david: {
+    label: 'David, 54: anaphylaxis (AO)',
+    short: 'David',
+    walk: '/modules/anaphylaxis/',
+    // From /modules/anaphylaxis/. Times 1446 (oxygen) and 1447 (EOC Clinician call, clinical support) are DSY's. EpiPen dose:
+    // an adult EpiPen is 300 microg (the walk-through doesn't state it).
+    text: {
+      allergies: 'Bee stings: ANAPHYLAXIS',
+      communicable: 'Nil known',
+      provisional: 'Severe anaphylaxis after a bee sting (hypotension, bronchospasm, facial swelling, hoarse voice).',
+      recommendation: 'Transported to nearest hospital, notified. Expired EpiPen 1444, IM adrenaline 500 microg 1450 (EOC Clinician). Improving: BP 92 to 104, wheeze resolving, but facial swelling unchanged and voice still husky: symptoms can return. Expired EpiPen handed over and to be reported (CPPRO-011).',
+      ecg: 'Sinus tachycardia.'
+    },
+    sections: {
+      pc: 'Bee sting ~1427, known bee allergy: facial swelling, hives, wheeze, hoarse voice, worsening.',
+      phx: 'Bee allergy. Nil other.',
+      medn: 'Nil regular. Oral antihistamine taken after the sting. EpiPen (expired last year).',
+      hx: 'Stung in the garden ~15 min before arrival. Took an antihistamine tablet: getting worse. EpiPen expired, never replaced. Stinger removed by wife. Wife called SAAS.',
+      oa: '54M sitting on a garden chair, leaning forward, working hard to breathe with an audible wheeze. Red blotchy skin on arms + neck, face swollen around eyes + lips. Conscious, anxious. Wife holding his expired EpiPen.',
+      cns: 'A on AVPU, GCS 15, anxious. PEARL. BGL 7.2.',
+      skin: 'Warm, flushed, urticaria (hives) arms + neck. Swelling around eyes + lips.',
+      cvs: 'Pulse 118, thready radial. BP 92/58. CRT 3 s. Nil blood loss.',
+      resp: 'RR 28, short sentences, bilateral wheeze, accessory muscle use. Voice hoarse. Airway patent. SpO2 93% RA.',
+      pain: 'Nil c/o pain.',
+      survey: '',
+      care: 'Expired EpiPen given immediately 1444 (looks really sick, no other auto-injector). Not stood or walked, positioned as flat as his breathing allows. Oxygen. Driver: EOC Clinician + clinical support requested.\n1449: HR 108, BP 96/62, wheeze improving, still hoarse. EOC Clinician directed IM adrenaline 500 microg (0.5 mL of 1000 microg in 1 mL), repeated back, other thigh 1450. 1455: HR 96, BP 104/68, wheeze resolving, voice husky. Carry chair to stretcher, Red Kit ready en route.'
+    },
+    tips: {
+      survey: 'No trauma, so no secondary survey.',
+      care: 'The walk-through gives no oxygen flow: write what you used to bring SpO2 above 94%. An adult EpiPen is 300 microg.',
+      allergies: 'Make the allergy loud: this is the box the hospital reads first.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Optional: the sting site, if you found it, and the injection sites (both thighs).',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted.'
+    },
+    ticks: ['consult'],
+    obs: [
+      { time: '1445', rr: 28, o2: 'RA', spo2: 93, bp: '92/58', crt: '>2', hr: 118, temp: 36.8, gcs: 15, evm: [4, 5, 6], pupils: ['+', '+'], bgl: 7.2 },
+      { time: '1449', rr: 24, o2: 'O2', spo2: 96, bp: '96/62', hr: 108 },
+      { time: '1455', rr: 20, o2: 'O2', spo2: 97, bp: '104/68', hr: 96 }
+    ],
+    drugs: [
+      ['1444', 'EpiPen (pt\'s own, EXPIRED)', '300', 'microg', 'IM L thigh'],
+      ['1445', 'Monitor: sinus tachy'],
+      ['1446', 'Oxygen', '', '', ''],
+      ['1447', 'EOC Clinician + clin support'],
+      ['1450', 'Adrenaline (EOC advice)', '500', 'microg', 'IM R thigh'],
+      ['1455', 'EOC Clinician updated'],
+      ['1500', 'Carry chair to stretcher']
+    ],
+    marks: []
+  },
+
+  greg: {
+    label: 'Greg, 52: snake bite (AO)',
+    short: 'Greg',
+    walk: '/modules/envenomation/',
+    // From /modules/envenomation/. Times 1458 (clinical support), 1505 (EOC Clinician), 1530 (depart) are DSY's.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Suspected brown snake envenoming, R lower leg, symptomatic (headache, vomiting, rising HR).',
+      recommendation: 'Transported to Port Lincoln Hospital, notified. Bite ~1415, walked ~100 m, bite WASHED (swabbing may be affected). Pressure bandage toes to groin, bite circled, NOT removed. Vacuum mattress. HR 92 to 108, vomited once, nil paralysis or bleeding signs. Handed over 1605 (ISBAR).',
+      ecg: 'Sinus rhythm, then sinus tachycardia.'
+    },
+    sections: {
+      pc: 'Snake bite R lower leg ~1415, brown snake ~1.5 m. Headache + nausea.',
+      phx: 'HTN.',
+      medn: 'Perindopril 5 mg daily.',
+      hx: 'Clearing scrub near the water tank at Wangary, felt a sharp sting R calf, saw a brown snake ~1.5 m. Walked ~100 m back to the house. Wife washed the bite + applied a cold cloth. No bandage. Now headache + feels sick. Last ate ~1 hr ago. Wife called SAAS.',
+      oa: '52M sitting in a deck chair on the back verandah, R leg on a footstool, damp cloth on R calf. Pale, mildly sweaty, talking. Wife beside him, anxious. Dog penned, no snake seen.',
+      cns: 'A on AVPU, GCS 15, oriented. PEARL 3 mm. Nil ptosis, double vision, slurred speech or difficulty swallowing.',
+      skin: 'Pale, mild sweating. Two puncture marks R outer calf, mild local swelling, nil bleeding.',
+      cvs: 'Pulse 92 regular. BP 138/82. Nil bleeding from gums or elsewhere. R foot pulses + sensation normal.',
+      resp: 'RR 18, nil resp distress, normal effort. SpO2 98% RA.',
+      pain: 'Pain at the bite site. Headache developing. Nil generalised muscle pain.',
+      survey: '',
+      care: 'Kept still from arrival, no walking or standing. Clinical support requested, EOC Clinician consulted. Pressure bandage toes to groin 1512, bite circled, cuticle beds pink. Vacuum mattress, head up 20-30 deg, clothing on.\n1522: HR 104, worse headache, vomited once, more sweating. EOC Clinician updated 1524: Port Lincoln now. Longboard to stretcher. Suction, BVM, defib ready. Cuticle beds pink throughout.'
+    },
+    tips: {
+      survey: 'A bite on its own isn\'t a trauma secondary survey: the systemic screen goes in CNS, SKIN and CVS.',
+      care: 'Longboard or carry chair are both right (lead instructor): say which you used.',
+      recommendation: 'The washed bite and the bandage still on are the two things the hospital must hear.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Mark the bite on the right outer calf (front or back figure), for example S for the local swelling, and say "bite" beside it.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted and updated at 1524.'
+    },
+    ticks: ['medsHanded', 'consult'],
+    obs: [
+      { time: '1500', rr: 18, o2: 'RA', spo2: 98, bp: '138/82', hr: 92, temp: 36.8, gcs: 15, evm: [4, 5, 6], pupils: ['+', '+'], bgl: 6.2 },
+      { time: '1522', rr: 20, o2: 'RA', spo2: 97, bp: '130/78', hr: 104, gcs: 15, evm: [4, 5, 6] },
+      { time: '1600', rr: 20, o2: 'RA', spo2: 97, bp: '126/76', hr: 108, gcs: 15, evm: [4, 5, 6] }
+    ],
+    drugs: [
+      ['1458', 'Clinical support requested'],
+      ['1500', 'Monitor: sinus rhythm'],
+      ['1505', 'EOC Clinician consult'],
+      ['1512', 'Pressure bandage toes-groin'],
+      ['1515', 'Vacuum mattress, head up'],
+      ['1524', 'EOC Clinician updated'],
+      ['1530', 'Longboard to stretcher'],
+      ['1605', 'Handover Port Lincoln ED']
+    ],
+    marks: [['front', 39, 205, 'S bite', -6]]
+  },
+
+  ron: {
+    label: 'Ron, 67: hypoglycaemia (AO)',
+    short: 'Ron',
+    walk: '/modules/hypoglycaemia-ao/',
+    // From /modules/hypoglycaemia-ao/. Departure and handover times are not given in the walk-through, so none are shown.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Hypoglycaemia (BGL 2.2): insulin-treated T2DM, missed lunch, working all day.',
+      recommendation: 'Transported to Cummins Hospital (EOC Clinician), notified. Oral glucose 1730 ineffective, IM glucagon 1 mg 1744 (EOC Clinician). BGL 2.2, 2.6, 5.1. GCS now 15, eaten a sandwich. On insulin: watch for the hypo coming back. Clinical support requested.',
+      ecg: 'Sinus tachycardia, then sinus rhythm.'
+    },
+    sections: {
+      pc: 'Found confused + sweaty in the shed. Insulin-treated diabetic. BGL 2.2.',
+      phx: 'Type 2 diabetes on insulin (8 yrs).',
+      medn: 'Insulin (usual morning dose today), metformin, atorvastatin.',
+      hx: 'Seeding since 0600, missed lunch. Last seen well ~1300 (two-way). Wife found him ~1710 in the machinery shed, sweaty, "not making sense". Nil fall known, nil head injury seen. Wife called SAAS.',
+      oa: '67M sitting on the concrete floor of the machinery shed against a tractor tyre, pale + drenched in sweat. Looks at us, words muddled, pushes hand away. Water bottle beside him. Diesel smell, tractor off.',
+      cns: 'GCS 13 (E4 V3 M6), confused, muddled speech. Strong cough on request. 1740: GCS 11 (E3 V3 M5), drowsy, weak cough. 1758: GCS 15.',
+      skin: 'Pale, diaphoretic.',
+      cvs: 'Pulse 104. BP 146/84. Nil blood loss.',
+      resp: 'RR 18, nil resp distress. SpO2 97% RA. Airway clear.',
+      pain: 'Nil c/o pain.',
+      survey: '',
+      care: 'BGL 2.2. Strong cough on request: oral glucose paste in small amounts 1730, swallowed. Clinical support requested.\n1740: BGL 2.6, GCS 11, weak cough: nil more oral glucose. EOC Clinician 1741: glucagon 1 mg IM, repeated back. Glucagon 1 mg L thigh 1744. 1758: BGL 5.1, GCS 15, sitting up. Sandwich eaten. Reluctant to go: reasons explained with wife, agreed. Carry chair to stretcher.'
+    },
+    tips: {
+      survey: 'No injury found and no fall known: no secondary survey. A quick check for injury is still worth a line.',
+      cns: 'Write the GCS as E V M: a falling score is the reason for the glucagon.',
+      care: 'The cough test is your evidence that it was safe to give oral glucose: record it.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Glucagon injection site: left thigh (optional).',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted at 1741.'
+    },
+    ticks: ['medsHanded', 'consult'],
+    obs: [
+      { time: '1728', rr: 18, o2: 'RA', spo2: 97, bp: '146/84', hr: 104, temp: 36.2, gcs: 13, evm: [4, 3, 6], bgl: 2.2 },
+      { time: '1740', o2: 'RA', spo2: 97, bp: '142/80', hr: 100, gcs: 11, evm: [3, 3, 5], bgl: 2.6 },
+      { time: '1758', o2: 'RA', spo2: 98, bp: '138/80', hr: 88, gcs: 15, evm: [4, 5, 6], bgl: 5.1 }
+    ],
+    drugs: [
+      ['1728', 'BGL 2.2'],
+      ['1730', 'Oral glucose paste', '15', 'g', 'Oral'],
+      ['1730', 'Clinical support requested'],
+      ['1741', 'EOC Clinician consult'],
+      ['1744', 'Glucagon (EOC advice)', '1', 'mg', 'IM L thigh'],
+      ['1758', 'BGL 5.1. Sandwich eaten']
+    ],
+    marks: []
+  },
+
+  robert: {
+    label: 'Robert, 71: sepsis (AO)',
+    short: 'Robert',
+    walk: '/modules/sepsis/',
+    // From /modules/sepsis/. Times 2131 (oxygen) and 2135 (clinical support with the consult) are DSY's. Oxygen 15 L/min
+    // NRM is DSY's reading of "high-flow oxygen".
+    text: {
+      allergies: 'Nil known (incl. antibiotics)',
+      communicable: 'Nil known',
+      provisional: 'Suspected septic shock, likely urinary source (SBP 100 or less).',
+      recommendation: 'SUSPECTED SEPTIC SHOCK. Transported to Tumby Bay Hospital, notified by GRN. EOC Clinician 2135: ceftriaxone not advised, go direct. Deteriorating: GCS 9 to 8, BP 92 to 86, mottled. NEWS2 7 or more. Needs urgent hospital treatment.',
+      ecg: 'Sinus tachycardia.'
+    },
+    sections: {
+      pc: '2 days urinary symptoms, now febrile (39.4), confused + hard to rouse.',
+      phx: 'Type 2 diabetes, CKD, enlarged prostate, 3 UTIs in 12 months.',
+      medn: 'Metformin, gliclazide, tamsulosin, aspirin.',
+      hx: '2 days burning + frequency passing urine, lower abdo discomfort. Fever + rigors since yesterday. Today confused, not eating or drinking, very little urine. Nil cough, chest pain, diarrhoea or rash noticed. Wife called SAAS.',
+      oa: '71M lying on the bed in pyjamas, eyes closed, flushed + sweaty, in a warm bedroom with a fan heater running. Groans to his name, doesn\'t open his eyes. Wife at the door.',
+      cns: 'Responds to voice, GCS 9 (E3 V2 M4), confused. 2140 GCS 8 (E2 V2 M4).',
+      skin: 'Hot, flushed, sweaty. 2140 mottled peripheries, cool by 2155. Nil rash.',
+      cvs: 'Pulse 118. BP 92/58 (manual 90/56). CRT 4 s. Nil blood loss.',
+      resp: 'RR 26, nil cough. SpO2 91% RA, 96% on high-flow O2.',
+      pain: 'Lower abdo discomfort (per wife). Unable to score.',
+      survey: '',
+      care: 'PPE. Heater off. High-flow O2. SBP 100 or less = suspected septic shock pathway. EOC Clinician 2135 (febrile + GCS 9): ceftriaxone not advised, priority transport to Tumby Bay, go direct (paramedic 45 min). Clinical support requested "suspected septic shock".\n2140: worse, NEWS2 7 or more. Carry chair to stretcher, flat, O2 + monitor on, suction + BVM ready. GRN notification. Obs every 5 min.'
+    },
+    tips: {
+      survey: 'No trauma, so no secondary survey.',
+      care: 'Ceftriaxone wasn\'t given, but the consult and the answer still go on the card: it shows the decision was made.',
+      recommendation: 'Say the words "suspected septic shock".'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Nothing to mark.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted at 2135.'
+    },
+    ticks: ['medsHanded', 'consult'],
+    obs: [
+      { time: '2130', rr: 26, o2: 'RA', spo2: 91, bp: '92/58', crt: '>2', hr: 118, temp: 39.4, gcs: 9, evm: [3, 2, 4], bgl: 14.2 },
+      { time: '2140', rr: 28, o2: '15', spo2: 96, bp: '88/54', hr: 122, temp: 39.4, gcs: 8, evm: [2, 2, 4] },
+      { time: '2155', rr: 28, o2: '15', spo2: 95, bp: '86/52', hr: 124, gcs: 8, evm: [2, 2, 4] }
+    ],
+    drugs: [
+      ['2131', 'Oxygen', '15', 'L/min', 'NRM'],
+      ['2135', 'EOC Clinician: nil ceftriax.'],
+      ['2135', 'Clinical support requested'],
+      ['2140', 'NEWS2 7 or more'],
+      ['2145', 'Carry chair to stretcher'],
+      ['2150', 'GRN: suspected septic shock']
+    ],
+    marks: []
+  },
+
+  gary: {
+    label: 'Gary, 58: pain management (AO)',
+    short: 'Gary',
+    walk: '/modules/pain-management/',
+    // From /modules/pain-management/. Times 1926 (consult) and 1945 (second Penthrox) are DSY's.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Suspected closed fracture L tibia + fibula (mid-shaft), isolated injury.',
+      recommendation: 'Transported to nearest country hospital, notified. Pain 8/10 to 3/10. Paracetamol 1 g 1905, Penthrox 3 mL 1907 + 2nd 3 mL for the carry, ketamine 25 mg SL 1928 + 1943 (EOC Clinician). Ibuprofen WITHHELD: on perindopril. Splinted, foot CSM intact before + after. Needs imaging, analgesia review, orthopaedics.',
+      ecg: ''
+    },
+    sections: {
+      pc: 'Fall ~2 m from shed roof onto concrete ~1840. Painful, deformed L lower leg.',
+      phx: 'HTN, mild osteoarthritis.',
+      medn: 'Perindopril 4 mg daily. Paracetamol PRN for arthritis, none in last 24 hrs.',
+      hx: 'Working on the shed roof, fell ~2 m onto concrete ~1840. Landed on his feet, then fell onto his L side. Nil head strike, nil LOC. Unable to get up. Last ate 1730. Wife called SAAS.',
+      oa: '58M lying on the concrete apron beside the shed, blanket over his chest, calling out in pain. Ladder against the wall, loose roof iron overhead. Dark, one shed light.',
+      cns: 'A on AVPU, GCS 15, oriented, recalls events. Nil head strike or LOC.',
+      skin: 'Pale, cool.',
+      cvs: 'Pulse 98, radial present. BP 148/92. Nil bleeding. L foot pulse present, warm.',
+      resp: 'RR 20, nil resp distress, talking full sentences. SpO2 98% RA.',
+      pain: 'L lower leg, 8/10 (NRS). 4/10 at rest after Penthrox, 8/10 on movement, 3/10 en route.',
+      survey: 'Head/neck: nil head strike, nil neck pain. Chest/abdo: NAD. Hips/pelvis: NAD. Limbs: L lower leg swollen + angulated mid-shaft, closed, foot pulse, sensation + movement present. Graze L palm.',
+      care: 'Ladder moved, lighting. Blankets under + over. Leg supported as found. Paracetamol 1 g 1905. Penthrox 3 mL 1907, pt holds it. Splinted 1915, foot CSM checked before + after. Ibuprofen withheld (perindopril).\n1925 rolled: pain 8/10. EOC Clinician: agreed ibuprofen withheld, ketamine 25 mg SL, repeat once after 15 min. Ketamine 1928 + 1943. 2nd Penthrox for the 80 m carry on a carry sheet. Foot CSM rechecked.'
+    },
+    tips: {
+      survey: 'A 2 m fall is trauma: the secondary survey goes in, even when the leg is the only injury.',
+      pain: 'Give the score with the time and the context (rest or movement): the hospital plans the next doses from it.',
+      care: 'Write why ibuprofen was withheld: "any ambiguity = withhold" (CPP-013-AO).'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie (down 15 to 20 minutes).', falls: 'Not a falls-risk job: a fall from height, not an older person\'s fall. Leave blank.',
+      body: 'Front figure: F (fracture, suspected) and S (swelling) on the left lower leg, A (abrasion) on the left palm.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted for the ketamine.'
+    },
+    ticks: ['consult'],
+    obs: [
+      { time: '1900', rr: 20, o2: 'RA', spo2: 98, bp: '148/92', hr: 98, temp: 36.4, gcs: 15, evm: [4, 5, 6], pain: 8, bgl: 6.2 },
+      { time: '1920', rr: 16, o2: 'RA', spo2: 98, bp: '140/88', hr: 88, temp: 36.2, gcs: 15, evm: [4, 5, 6], pain: 4 },
+      { time: '1925', rr: 22, o2: 'RA', spo2: 98, bp: '152/94', hr: 104, temp: 36.2, gcs: 15, evm: [4, 5, 6], pain: 8 },
+      { time: '1950', rr: 16, o2: 'RA', spo2: 98, bp: '142/88', hr: 90, temp: 36.2, gcs: 15, evm: [4, 5, 6], pain: 4 },
+      { time: '2010', rr: 14, o2: 'RA', spo2: 98, bp: '138/86', hr: 86, temp: 36.3, gcs: 15, evm: [4, 5, 6], pain: 3 }
+    ],
+    drugs: [
+      ['1905', 'Paracetamol', '1000', 'mg', 'Oral'],
+      ['1907', 'Methoxyflurane', '3', 'mL', 'Inhaler'],
+      ['1915', 'Splint L leg, CSM checked'],
+      ['1926', 'EOC Clinician consult'],
+      ['1928', 'Ketamine wafer (EOC)', '25', 'mg', 'Sublingual'],
+      ['1943', 'Ketamine wafer (EOC)', '25', 'mg', 'Sublingual'],
+      ['1945', 'Methoxyflurane (2nd)', '3', 'mL', 'Inhaler'],
+      ['1950', 'Carry sheet, 80 m carry']
+    ],
+    marks: [['front', 60, 195, 'F S', 6], ['front', 86, 128, 'A', 6]]
   }
 };

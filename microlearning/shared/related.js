@@ -43,7 +43,8 @@ window.RELATED = {
   ],
   "CPP-013-AO": [
     { kind: "Microlearning module", title: "Pain management", href: "/microlearning/pain/", text: "Multimodal analgesia, the sedation score, the IN fentanyl checker and sublingual ketamine for authorised AOs." },
-    { kind: "Walk-through scenario", title: "Pain Management - AO: Gary, 58", href: "/modules/pain-management/", text: "Two-person AO crew, a tib/fib fracture after a fall from a shed roof near Cummins: Penthrox, ibuprofen withheld, and a ketamine wafer. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Pain Management - AO: Gary, 58", href: "/modules/pain-management/", text: "Two-person AO crew, a tib/fib fracture after a fall from a shed roof near Cummins: Penthrox, ibuprofen withheld, and a ketamine wafer. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Gary's patient care record", href: "/tools/pcr/#job=gary", text: "After the walk-through: write the PCR on a copy of the card, including the pain scores, every analgesic with times and why ibuprofen was withheld. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-045-AO": [
     { kind: "Microlearning module", title: "Falls", href: "/microlearning/falls/", text: "Mobility assessment, transport criteria, the FROP falls screen with Country Referral Unit referral, and the Braden pressure injury screen." },
@@ -52,11 +53,13 @@ window.RELATED = {
   ],
   "CPP-062-AO": [
     { kind: "Microlearning module", title: "Sepsis", href: "/microlearning/sepsis/", text: "NEWS2, the SBP 100 threshold, IM ceftriaxone and the sepsis checker, with a quiz." },
-    { kind: "Walk-through scenario", title: "Sepsis - AO: Robert, 71", href: "/modules/sepsis/", text: "Two-person AO crew, suspected septic shock near Tumby Bay, with ceftriaxone practice. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Sepsis - AO: Robert, 71", href: "/modules/sepsis/", text: "Two-person AO crew, suspected septic shock near Tumby Bay, with ceftriaxone practice. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Robert's patient care record", href: "/tools/pcr/#job=robert", text: "After the walk-through: write the PCR on a copy of the card, including the deteriorating obs and the ceftriaxone decision. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-009-AO": [
     { kind: "Microlearning module", title: "Hypoglycaemia", href: "/microlearning/hypoglycaemia/", text: "Oral glucose, glucagon on EOC Clinician advice and the treatment checker, with a narrated video and quiz." },
-    { kind: "Walk-through scenario", title: "Hypoglycaemia - AO: Ron, 67", href: "/modules/hypoglycaemia-ao/", text: "Two-person AO crew, an insulin-treated farmer near Cummins. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Hypoglycaemia - AO: Ron, 67", href: "/modules/hypoglycaemia-ao/", text: "Two-person AO crew, an insulin-treated farmer near Cummins. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Ron's patient care record", href: "/tools/pcr/#job=ron", text: "After the walk-through: write the PCR on a copy of the card, including the BGL trend, oral glucose and glucagon. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-016-AO": [
     { kind: "Microlearning module", title: "Stroke", href: "/microlearning/stroke/", text: "BGL, ROSIER, the Code Stroke criteria and the eligibility checker, with a narrated video and quiz." },
@@ -65,11 +68,13 @@ window.RELATED = {
   ],
   "CPP-003-AO": [
     { kind: "Microlearning module", title: "Anaphylaxis", href: "/microlearning/anaphylaxis/", text: "The adrenaline pathway, the auto-injector and the adrenaline checker, with a narrated video and quiz." },
-    { kind: "Walk-through scenario", title: "Anaphylaxis - AO: David, 54", href: "/modules/anaphylaxis/", text: "Two-person AO crew, bee sting with an expired EpiPen at a rural property. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Anaphylaxis - AO: David, 54", href: "/modules/anaphylaxis/", text: "Two-person AO crew, bee sting with an expired EpiPen at a rural property. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write David's patient care record", href: "/tools/pcr/#job=david", text: "After the walk-through: write the PCR on a copy of the card, including both adrenaline doses with times and the expired EpiPen. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-008-AO": [
     { kind: "Microlearning module", title: "Envenomation", href: "/microlearning/envenomation/", text: "Bites and stings, the pressure bandage and immobilisation, with a quiz." },
-    { kind: "Walk-through scenario", title: "Envenomation - AO: Greg, 52", href: "/modules/envenomation/", text: "Two-person AO crew, brown snake bite to the leg at a rural property. Facilitator and student versions." }
+    { kind: "Walk-through scenario", title: "Envenomation - AO: Greg, 52", href: "/modules/envenomation/", text: "Two-person AO crew, brown snake bite to the leg at a rural property. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Greg's patient care record", href: "/tools/pcr/#job=greg", text: "After the walk-through: write the PCR on a copy of the card, including the bite time, first aid and the bandage still on. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-007-AO": [
     { kind: "Microlearning module", title: "Chest pain", href: "/microlearning/chest-pain/", text: "Aspirin, the GTN limits and the GTN checker, with a narrated video and quiz." },
