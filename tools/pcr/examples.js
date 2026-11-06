@@ -9,19 +9,20 @@ window.PCR_EXAMPLES = {
       allergies: 'Nil known',
       communicable: 'Nil known',
       clinical:
-        'Fall at home ~0300, long lie ~3.5 hrs, unable to get up.\n' +
-        'PHx: HTN, high cholesterol, OA knees. 2nd fall this year (garden, March, nil injury). Walking frame indoors. Lives alone.\n' +
-        'Medn: perindopril (dose increased by GP last week), atorvastatin, paracetamol. Nil anticoagulants (med box checked).\n' +
-        'Hx: Got up to toilet ~0300, "my feet went from under me". Denies head strike. Unable to get up. Pressed pendant 0624.\n' +
+        'Fall at home ~0300, long lie ~3.5 hrs, unable to get up.\n\n' +
+        'PHx: HTN, high cholesterol, OA knees. 2nd fall this year (garden, March, nil injury). Walking frame indoors. Lives alone.\n\n' +
+        'Medn: perindopril (dose increased by GP last week), atorvastatin, paracetamol. Nil anticoagulants (med box checked).\n\n' +
+        'Hx: Got up to toilet ~0300, "my feet went from under me". Denies head strike. Unable to get up. Pressed pendant 0624.\n\n' +
         'O/A: 81F supine on bathroom floor between toilet and bath, nightie + towel, shivering. House cold. Incontinent of urine, ' +
-        'nightie damp. Alert, talking, apologetic, wants to get up.\n' +
+        'nightie damp. Alert, talking, apologetic, wants to get up.\n\n' +
         'O/E: CNS - A on AVPU, GCS 15, oriented, PEARL, moves all 4 limbs. SKIN - cool, hands + feet cold, red skin sacrum + both heels.\n' +
         'CVS - pulse 82 regular, peripheral pulses present, nil blood loss. RESP - RR 16, normal effort, equal chest rise, SpO2 95% RA. ' +
-        'PAIN - nil, 0/10.  2* survey: Head/neck NAD, nil neck pain. Chest/back NAD, nil spinal pain. Abdo NAD. ' +
-        'Hips/pelvis NAD, legs straight. Limbs NAD, nil deformity.\n' +
+        'PAIN - nil, 0/10.\n' +
+        '2* survey: Head/neck NAD, nil neck pain. Chest/back NAD, nil spinal pain. Abdo NAD. ' +
+        'Hips/pelvis NAD, legs straight. Limbs NAD, nil deformity.\n\n' +
         'Mobility (CPPRO-001) lying: SLR yes, head lift yes, rolls with help, unable to bridge. Raizer lift to sitting 0702. ' +
         '~1 min later pale, dizzy ("swimmy"), BP 104/66 P 98. States same feeling getting off the toilet just before the fall. ' +
-        'Raizer lowered, sx settled. 0708 BP 126/76 P 86. Not stood. Transport.\n' +
+        'Raizer lowered, sx settled. 0708 BP 126/76 P 86. Not stood. Transport.\n\n' +
         'Braden 14 (medium risk). Wet nightie off, skin dried, dry clothes + fresh pad. Slide sheet to stretcher, kept warm.\n' +
         'Med box, glasses + frame with pt. House locked, key returned to key safe. Daughter Sue (Port Lincoln) informed.',
       provisional: 'Fall with long lie (~3.5 hrs). ?Medical cause: dizzy with BP drop on sitting up, perindopril increased last week.',
