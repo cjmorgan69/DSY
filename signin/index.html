@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../training/theme.css?v=20261017a">
+<style>[hidden]{display:none!important}</style>
 </head>
 <body>
 <main class="wrap">
@@ -20,17 +21,21 @@
       <label>Password<input id="f-pass" name="pass" type="password" minlength="8" autocomplete="current-password" required></label>
       <p class="small muted" id="hint" hidden>Choose a password of at least 8 characters. Your ID number is only used to check you are approved and so your instructors know who you are. No email address needed.</p>
       <p class="small" id="msg" role="alert" style="color:var(--danger)" hidden></p>
+      <div class="small" id="starterNote" style="background:var(--brand-soft);border-radius:10px;padding:.7rem .85rem">
+        <b>Got a starter or temporary password from your instructor?</b><br>
+        Sign in here with your ambulance ID and that password. The next screen asks you to choose your own password. From then on you use your own.
+      </div>
       <button class="btn" type="submit" id="go">Sign in</button>
       <button class="btn ghost" type="button" id="swap">First time here? Create an account</button>
-      <p class="small muted">Your ID has to be on the list your instructor keeps. Forgotten your password? Ask your instructor to reset it.</p>
+      <p class="small muted">Your ID has to be on the list your instructor keeps. Forgotten your password? Ask your instructor to reset it. They will give you a temporary one, and you will choose a new one when you sign in.</p>
     </form>
     <form class="panel pad stack" id="changeForm" autocomplete="on" hidden>
-      <h2>Choose your own password</h2>
-      <p class="small muted">You signed in with a starter password. Choose one that only you know. At least 8 characters.</p>
+      <h2>Step 2: choose your own password</h2>
+      <p class="small muted">The password your instructor gave you was only to get you in. Choose a new one that only you know, at least 8 characters. From now on, sign in with your ambulance ID and this new password. Your phone may offer to save it: say yes.</p>
       <label>New password<input id="c-pass" type="password" minlength="8" autocomplete="new-password" required></label>
       <label>New password again<input id="c-pass2" type="password" minlength="8" autocomplete="new-password" required></label>
       <p class="small" id="cmsg" role="alert" style="color:var(--danger)" hidden></p>
-      <button class="btn" type="submit" id="cgo">Save my password</button>
+      <button class="btn" type="submit" id="cgo">Save and continue</button>
     </form>
     <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
   </div>
@@ -50,7 +55,7 @@
   function say(t) { $("msg").textContent = t || ""; $("msg").hidden = !t; }
   function mode(createMode) {
     up = createMode;
-    $("nameRow").hidden = !up; $("f-name").required = up; $("hint").hidden = !up;
+    $("nameRow").hidden = !up; $("f-name").required = up; $("hint").hidden = !up; $("starterNote").hidden = up;
     $("f-pass").setAttribute("autocomplete", up ? "new-password" : "current-password");
     $("idLabel").textContent = up ? "Ambulance ID number" : "Ambulance ID number (or email)";
     $("go").textContent = up ? "Create account" : "Sign in";
@@ -67,7 +72,7 @@
     });
   } else if (params.get("change")) {
     sb.auth.getSession().then(function (r) {
-      if (r.data && r.data.session) { $("form").hidden = true; $("changeForm").hidden = false; $("sub").textContent = "One quick step before you go in."; }
+      if (r.data && r.data.session) { $("form").hidden = true; $("changeForm").hidden = false; $("sub").textContent = "Nearly there. One more step before you go in."; }
     });
   } else {
     sb.auth.getSession().then(function (r) { if (r.data && r.data.session) location.replace(next); });

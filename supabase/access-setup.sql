@@ -238,3 +238,7 @@ set must_change_password = true
 from auth.users u
 where u.id = p.id and p.role = 'member'
   and u.created_at >= '2026-10-14' and u.created_at < '2026-10-15';
+
+
+-- PART 4 (facilitators resetting their own students' passwords) was built and then removed on 7 Nov 2026 as too complex.
+-- The functions my_students() and facilitator_set_password() were dropped from the live project.

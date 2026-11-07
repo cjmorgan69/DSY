@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../training/theme.css?v=20261017a">
 <style>
+[hidden]{display:none!important}
 textarea{width:100%;min-height:7rem;font:inherit;padding:.6rem .75rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
 .row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.6rem}
@@ -54,7 +55,7 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
     <div class="scroll"><table><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
     <p class="small muted" id="empty" hidden>Nobody matches.</p>
   </section>
-  <p class="small muted">Removing someone switches their account off: they cannot sign in again, and a session already open ends within about an hour. Add them back to restore it. Leaders cannot be switched off here. Passwords are reset from the People tab in <a href="../training/">Team Training</a>.</p>
+  <p class="small muted">Removing someone switches their account off: they cannot sign in again, and a session already open ends within about an hour. Add them back to restore it. Leaders cannot be switched off here. Use Reset password to give someone a temporary one; they choose their own when they next sign in.</p>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="../training/config.js"></script>
@@ -116,12 +117,28 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
       if (x.role !== "leader") {
         if (x.listed && !x.off) {
           acts.appendChild(btn(x.role === "facilitator" ? "Make student" : "Make facilitator", function () { setRole(x, x.role === "facilitator" ? "member" : "facilitator"); }, true));
+          if (x.p) acts.appendChild(btn("Reset password", function () { resetForm(acts, x); }, true));
           acts.appendChild(btn("Remove", function () { remove(x); }, true, true));
         } else acts.appendChild(btn("Add back", function () { addBack(x); }, true));
       }
       a.appendChild(acts); tr.appendChild(a); tb.appendChild(tr);
     });
     $("empty").hidden = rows.length > 0;
+  }
+  /* a leader's reset gives a starter password; the person must choose their own at the next sign-in */
+  function resetForm(box, x) {
+    box.textContent = "";
+    var inp = el("input"); inp.type = "text"; inp.placeholder = "Temporary password (8+ characters)"; inp.setAttribute("aria-label", "Temporary password"); inp.autocapitalize = "none"; inp.autocomplete = "off"; inp.spellcheck = false; inp.style.maxWidth = "11rem";
+    var save = btn("Set password", function () {
+      var pw = inp.value.trim();
+      if (pw.length < 8) return say("Use at least 8 characters.", true);
+      save.disabled = true;
+      sb.rpc("leader_set_password", { member: x.p.id, new_password: pw }).then(must).then(function () {
+        say("Done. Tell " + (x.note || x.id) + " to sign in with ID " + x.id + " and the password " + pw + ". They will then choose their own."); return load();
+      }).catch(function (e) { save.disabled = false; say((e && e.message) || "Could not reset the password.", true); });
+    }, true);
+    box.appendChild(inp); box.appendChild(save); box.appendChild(btn("Cancel", draw, true));
+    inp.focus();
   }
   function btn(text, fn, small, danger) { var b = el("button", "btn" + (small ? " small" : "") + (danger ? " danger" : " ghost"), text); b.type = "button"; b.addEventListener("click", fn); return b; }
 
