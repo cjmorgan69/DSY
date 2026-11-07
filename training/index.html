@@ -121,6 +121,7 @@
   function load() {
     return q(sb.from("profiles").select("*").eq("id", S.user.id)).then(function (rows) {
       S.profile = rows[0] || { id: S.user.id, full_name: "", role: "member" };
+      if (S.profile.must_change_password) { location.replace("/signin/?change=1&next=" + encodeURIComponent("/training/")); return new Promise(function () {}); }
       return isLeader() ? loadLeader() : loadMember();
     });
   }

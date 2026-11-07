@@ -167,3 +167,74 @@ drop trigger if exists require_allowed_id on auth.users;
 create trigger require_allowed_id
   before insert on auth.users
   for each row execute function public.require_allowed_id();
+
+
+-- ===================== PART 3: starter passwords must be changed (run before the merge) =====================
+-- The 54 accounts made on 14 Oct 2026 share a starter password. Each one is asked to choose their own the first time
+-- they sign in. A leader who resets someone's password also forces a change on their next sign-in.
+alter table public.profiles add column if not exists must_change_password boolean not null default false;
+
+create or replace function public.protect_profile_fields()
+returns trigger
+language plpgsql
+security definer
+set search_path to 'public'
+as $$
+begin
+  if auth.uid() is not null and not public.is_leader() then
+    if new.role is distinct from old.role then
+      raise exception 'Only a leader can change a role';
+    end if;
+    if new.staff_id is distinct from old.staff_id then
+      raise exception 'Only a leader can change an ambulance ID';
+    end if;
+    if new.id is distinct from old.id then
+      raise exception 'Cannot change the account id';
+    end if;
+    if new.must_change_password is distinct from old.must_change_password
+       and not (old.must_change_password and not new.must_change_password
+                and coalesce(current_setting('dsy.password_changed', true), '') = '1') then
+      raise exception 'Only a leader can change that';
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+-- Called by the sign-in page right after the person has chosen their own password.
+create or replace function public.password_changed()
+returns void
+language plpgsql
+security definer
+set search_path to 'public'
+as $$
+begin
+  perform set_config('dsy.password_changed', '1', true);
+  update public.profiles set must_change_password = false where id = (select auth.uid());
+end;
+$$;
+revoke execute on function public.password_changed() from public, anon;
+grant execute on function public.password_changed() to authenticated;
+
+-- A leader's password reset is a starter password too.
+create or replace function public.leader_set_password(member uuid, new_password text)
+returns void
+language plpgsql
+security definer
+set search_path to 'public', 'auth', 'extensions'
+as $$
+begin
+  if not public.is_leader() then raise exception 'Only a team leader can reset passwords'; end if;
+  if length(coalesce(new_password, '')) < 8 then raise exception 'Password must be at least 8 characters'; end if;
+  update auth.users set encrypted_password = extensions.crypt(new_password, extensions.gen_salt('bf')), updated_at = now() where id = member;
+  if not found then raise exception 'No such account'; end if;
+  update public.profiles set must_change_password = true where id = member and role <> 'leader';
+end;
+$$;
+
+-- Flag the accounts made on 14 Oct 2026.
+update public.profiles p
+set must_change_password = true
+from auth.users u
+where u.id = p.id and p.role = 'member'
+  and u.created_at >= '2026-10-14' and u.created_at < '2026-10-15';

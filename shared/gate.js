@@ -66,10 +66,16 @@
         return j;
       });
   }
-  function fetchProfile(s) {
-    return fetch(URL_ + "/rest/v1/profiles?select=full_name,role&id=eq." + encodeURIComponent(s.user.id), { headers: { apikey: KEY, Authorization: "Bearer " + s.access_token } })
-      .then(function (r) { if (r.status === 401 || r.status === 403) throw { status: r.status }; if (!r.ok) throw new Error("profile"); return r.json(); })
-      .then(function (rows) { return rows[0] || { full_name: "", role: "member" }; });
+  function fetchProfile(s, cols) {
+    cols = cols || "full_name,role,must_change_password";
+    return fetch(URL_ + "/rest/v1/profiles?select=" + cols + "&id=eq." + encodeURIComponent(s.user.id), { headers: { apikey: KEY, Authorization: "Bearer " + s.access_token } })
+      .then(function (r) {
+        if (r.status === 401 || r.status === 403) throw { status: r.status };
+        if (r.status === 400 && cols.indexOf("must_change_password") > -1) return fetchProfile(s, "full_name,role");   /* column not added yet */
+        if (!r.ok) throw new Error("profile");
+        return r.json();
+      })
+      .then(function (rows) { return Array.isArray(rows) ? (rows[0] || { full_name: "", role: "member" }) : rows; });
   }
   function cached(uid) {
     try { var c = JSON.parse(localStorage.getItem(CACHE) || "null"); if (c && c.uid === uid && Date.now() - c.t < CACHE_HOURS * 3600000) return c; } catch (e) {}
@@ -96,6 +102,7 @@
         return p;
       });
     }).then(function (p) {
+      if (p.must_change_password) return location.replace("/signin/?change=1&next=" + encodeURIComponent(location.pathname + location.search + location.hash));
       me = { role: p.role, name: p.full_name };
       decide(); resolveReady({ role: me.role, name: me.name, facilitator: RANK[me.role] >= 2 });
     }).catch(function (e) {

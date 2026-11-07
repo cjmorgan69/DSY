@@ -24,6 +24,14 @@
       <button class="btn ghost" type="button" id="swap">First time here? Create an account</button>
       <p class="small muted">Your ID has to be on the list your instructor keeps. Forgotten your password? Ask your instructor to reset it.</p>
     </form>
+    <form class="panel pad stack" id="changeForm" autocomplete="on" hidden>
+      <h2>Choose your own password</h2>
+      <p class="small muted">You signed in with a starter password. Choose one that only you know. At least 8 characters.</p>
+      <label>New password<input id="c-pass" type="password" minlength="8" autocomplete="new-password" required></label>
+      <label>New password again<input id="c-pass2" type="password" minlength="8" autocomplete="new-password" required></label>
+      <p class="small" id="cmsg" role="alert" style="color:var(--danger)" hidden></p>
+      <button class="btn" type="submit" id="cgo">Save my password</button>
+    </form>
     <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
   </div>
 </main>
@@ -56,9 +64,26 @@
       try { localStorage.removeItem("dsy-gate-role"); } catch (e) {}
       $("sub").textContent = "You are signed out.";
     });
+  } else if (params.get("change")) {
+    sb.auth.getSession().then(function (r) {
+      if (r.data && r.data.session) { $("form").hidden = true; $("changeForm").hidden = false; $("sub").textContent = "One quick step before you go in."; }
+    });
   } else {
     sb.auth.getSession().then(function (r) { if (r.data && r.data.session) location.replace(next); });
   }
+
+  $("changeForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var a = $("c-pass").value, b = $("c-pass2").value, cm = $("cmsg");
+    function bad(t) { cm.textContent = t; cm.hidden = !t; }
+    bad("");
+    if (a.length < 8) return bad("Use at least 8 characters.");
+    if (a !== b) return bad("The two passwords do not match.");
+    $("cgo").disabled = true;
+    sb.auth.updateUser({ password: a }).then(function (r) { if (r.error) throw r.error; return sb.rpc("password_changed"); })
+      .then(function (r) { if (r.error) throw r.error; location.replace(next); })
+      .catch(function (err) { $("cgo").disabled = false; bad((err && err.message) || "Something went wrong. Try again."); });
+  });
 
   $("form").addEventListener("submit", function (e) {
     e.preventDefault(); say("");
