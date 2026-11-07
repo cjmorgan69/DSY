@@ -16,7 +16,7 @@
       <div><h1>DSY Training</h1><p id="sub">Sign in to open the training pages.</p></div></a>
     <form class="panel pad stack" id="form" autocomplete="on">
       <label id="nameRow" hidden>Your name<input id="f-name" name="name" autocomplete="name"></label>
-      <label>Ambulance ID number<input id="f-id" name="id" autocomplete="username" autocapitalize="none" spellcheck="false" inputmode="text" required></label>
+      <label><span id="idLabel">Ambulance ID number (or email)</span><input id="f-id" name="id" autocomplete="username" autocapitalize="none" spellcheck="false" inputmode="text" required></label>
       <label>Password<input id="f-pass" name="pass" type="password" minlength="8" autocomplete="current-password" required></label>
       <p class="small muted" id="hint" hidden>Choose a password of at least 8 characters. Your ID number is only used to check you are approved and so your instructors know who you are. No email address needed.</p>
       <p class="small" id="msg" role="alert" style="color:var(--danger)" hidden></p>
@@ -46,12 +46,13 @@
   var next = params.get("next") || "/hub/learn/";
   if (next.charAt(0) !== "/" || next.charAt(1) === "/" || next.charAt(1) === "\\") next = "/hub/learn/";
 
-  function loginEmail(v) { return String(v || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "") + "@id.dsytraining.com"; }
+  function loginEmail(v) { v = String(v || "").trim(); if (v.indexOf("@") > -1) return v.toLowerCase(); return v.toLowerCase().replace(/[^a-z0-9]/g, "") + "@id.dsytraining.com"; }
   function say(t) { $("msg").textContent = t || ""; $("msg").hidden = !t; }
   function mode(createMode) {
     up = createMode;
     $("nameRow").hidden = !up; $("f-name").required = up; $("hint").hidden = !up;
     $("f-pass").setAttribute("autocomplete", up ? "new-password" : "current-password");
+    $("idLabel").textContent = up ? "Ambulance ID number" : "Ambulance ID number (or email)";
     $("go").textContent = up ? "Create account" : "Sign in";
     $("swap").textContent = up ? "I already have an account" : "First time here? Create an account";
     $("sub").textContent = up ? "Create your account with your ambulance ID." : "Sign in to open the training pages.";
@@ -88,7 +89,7 @@
   $("form").addEventListener("submit", function (e) {
     e.preventDefault(); say("");
     var raw = $("f-id").value.trim(), pass = $("f-pass").value, btn = $("go");
-    if (raw.indexOf("@") > -1) return say("Enter your ambulance ID number, not an email address.");
+    if (up && raw.indexOf("@") > -1) return say("Enter your ambulance ID number, not an email address.");
     if (!/[0-9a-z]/i.test(raw)) return say("Enter your ambulance ID number.");
     btn.disabled = true;
     var email = loginEmail(raw), job;
