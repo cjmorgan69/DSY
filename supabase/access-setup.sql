@@ -238,3 +238,55 @@ set must_change_password = true
 from auth.users u
 where u.id = p.id and p.role = 'member'
   and u.created_at >= '2026-10-14' and u.created_at < '2026-10-15';
+
+
+-- ===================== PART 4: facilitators can reset passwords for their own students =====================
+-- "Their own students" = members of the groups that have a session they facilitate. Leaders see every student.
+create or replace function public.my_students()
+returns table (member_id uuid, full_name text, staff_id text, group_names text, must_change_password boolean, switched_off boolean)
+language plpgsql
+stable
+security definer
+set search_path to 'public', 'auth'
+as $$
+begin
+  if not public.is_facilitator() then raise exception 'Facilitators only'; end if;
+  return query
+    select p.id, p.full_name, p.staff_id, string_agg(distinct g.name, ', '), p.must_change_password,
+           (u.banned_until is not null and u.banned_until > now())
+    from public.sessions s
+    join public.groups g on g.id = s.group_id
+    join public.memberships m on m.group_id = s.group_id
+    join public.profiles p on p.id = m.member_id
+    join auth.users u on u.id = p.id
+    where p.role = 'member' and (public.is_leader() or s.facilitator_id = (select auth.uid()))
+    group by p.id, p.full_name, p.staff_id, p.must_change_password, u.banned_until
+    order by p.full_name;
+end;
+$$;
+revoke execute on function public.my_students() from public, anon;
+grant execute on function public.my_students() to authenticated;
+
+create or replace function public.facilitator_set_password(member uuid, new_password text)
+returns void
+language plpgsql
+security definer
+set search_path to 'public', 'auth', 'extensions'
+as $$
+begin
+  if not public.is_facilitator() then raise exception 'Facilitators only'; end if;
+  if length(coalesce(new_password, '')) < 8 then raise exception 'Password must be at least 8 characters'; end if;
+  if not public.is_leader() and not exists (
+       select 1 from public.sessions s
+       join public.memberships m on m.group_id = s.group_id
+       join public.profiles p on p.id = m.member_id
+       where s.facilitator_id = (select auth.uid()) and m.member_id = member and p.role = 'member') then
+    raise exception 'You can only reset passwords for students in your own groups';
+  end if;
+  update auth.users set encrypted_password = extensions.crypt(new_password, extensions.gen_salt('bf')), updated_at = now() where id = member;
+  if not found then raise exception 'No such account'; end if;
+  update public.profiles set must_change_password = true where id = member and role <> 'leader';
+end;
+$$;
+revoke execute on function public.facilitator_set_password(uuid, text) from public, anon;
+grant execute on function public.facilitator_set_password(uuid, text) to authenticated;
