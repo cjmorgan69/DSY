@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Grant access - DSY Training</title>
+<script src="/shared/gate.js?v=20261107a" data-level="leader"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../training/theme.css?v=20261017a">
+<style>
+textarea{width:100%;min-height:7rem;font:inherit;padding:.6rem .75rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.6rem}
+.stat{border:1px solid var(--line);border-radius:10px;padding:.6rem .8rem;background:var(--surface)}
+.stat b{display:block;font-family:var(--font-head);font-size:1.5rem;line-height:1.1}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:.92rem}
+th,td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.chip{display:inline-block;padding:.1rem .55rem;border-radius:999px;font-size:.78rem;background:var(--brand-soft);color:var(--brand)}
+.chip.off{background:color-mix(in srgb,var(--danger) 12%,var(--surface));color:var(--danger)}
+.chip.wait{background:color-mix(in srgb,var(--accent) 22%,var(--surface));color:var(--ink)}
+input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.acts{display:flex;gap:.4rem;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <a class="brand" href="../" style="text-decoration:none;color:inherit"><div class="brand-icon"><img src="../microlearning/shared/dsy-logo.png" alt="" width="36" height="36"></div>
+      <div><h1>Grant access</h1><p>Approved ambulance IDs</p></div></a>
+  </header>
+
+  <section class="panel pad stack">
+    <h2>Add IDs</h2>
+    <p class="small muted">One per line, or separated by commas. Add a name after the ID if you like: <code>12345, Sam Taylor</code>. A CSV file works too: ID in the first column, name in the second.</p>
+    <textarea id="ids" aria-label="Ambulance IDs" placeholder="12345, Sam Taylor&#10;67890"></textarea>
+    <div class="row">
+      <label class="small">Add as <select id="role"><option value="member">Student</option><option value="facilitator">Facilitator</option></select></label>
+      <button class="btn" id="add" type="button">Add to the list</button>
+      <label class="btn ghost small" style="cursor:pointer">Choose a CSV file<input id="csv" type="file" accept=".csv,.txt,text/csv,text/plain" hidden></label>
+    </div>
+    <p class="small" id="msg" role="status"></p>
+  </section>
+
+  <section class="panel pad stack">
+    <h2>The list</h2>
+    <div class="stats" id="stats"></div>
+    <div class="row"><input id="q" type="search" placeholder="Search name or ID" aria-label="Search" style="flex:1;min-width:10rem">
+      <select id="filter" aria-label="Show"><option value="all">Everyone</option><option value="wait">Not signed up yet</option><option value="facilitator">Facilitators</option><option value="off">Switched off</option></select></div>
+    <div class="scroll"><table><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+    <p class="small muted" id="empty" hidden>Nobody matches.</p>
+  </section>
+  <p class="small muted">Removing someone switches their account off: they cannot sign in again, and a session already open ends within about an hour. Add them back to restore it. Leaders cannot be switched off here. Passwords are reset from the People tab in <a href="../training/">Team Training</a>.</p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="../training/config.js"></script>
+<script>
+(function () {
+  var C = window.TRAINING_APP, sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
+  var $ = function (id) { return document.getElementById(id); };
+  var S = { allowed: [], profiles: [], off: {} };
+  function norm(t) { return String(t || "").toLowerCase().replace(/[^a-z0-9]/g, ""); }
+  function say(t, bad) { $("msg").textContent = t; $("msg").style.color = bad ? "var(--danger)" : "var(--ink)"; }
+  function must(r) { if (r.error) throw r.error; return r.data || []; }
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+
+  function load() {
+    return Promise.all([
+      sb.from("allowed_ids").select("staff_id,note,role,added_at").order("added_at", { ascending: false }).then(must),
+      sb.from("profiles").select("id,full_name,staff_id,role").then(must),
+      sb.rpc("leader_access_status").then(must)
+    ]).then(function (r) {
+      S.allowed = r[0]; S.profiles = r[1]; S.off = {};
+      r[2].forEach(function (a) { S.off[a.member_id] = a.switched_off; });
+      draw();
+    });
+  }
+  /* one line per approved ID, plus accounts that exist but are no longer on the list */
+  function people() {
+    var byId = {}; S.profiles.forEach(function (p) { var k = norm(p.staff_id); if (k) byId[k] = p; });
+    var out = S.allowed.map(function (a) {
+      var p = byId[a.staff_id]; delete byId[a.staff_id];
+      return { id: a.staff_id, note: a.note, role: p && p.role === "leader" ? "leader" : a.role, p: p, listed: true, off: !!(p && S.off[p.id]) };
+    });
+    Object.keys(byId).forEach(function (k) { var p = byId[k]; out.push({ id: k, note: p.full_name, role: p.role, p: p, listed: false, off: !!S.off[p.id] }); });
+    return out;
+  }
+  function status(x) { return x.off ? ["Switched off", "off"] : !x.p ? ["Not signed up yet", "wait"] : !x.listed ? ["Signed up, not on list", "wait"] : ["Signed up", ""]; }
+
+  function draw() {
+    var all = people(), q = norm($("q").value), qt = $("q").value.trim().toLowerCase(), f = $("filter").value;
+    var count = function (fn) { return all.filter(fn).length; };
+    var stats = $("stats"); stats.textContent = "";
+    [["On the list", count(function (x) { return x.listed; })], ["Signed up", count(function (x) { return x.p && !x.off; })],
+     ["Not signed up", count(function (x) { return !x.p; })], ["Facilitators", count(function (x) { return x.role === "facilitator" || x.role === "leader"; })]].forEach(function (s) {
+      var d = el("div", "stat"); d.appendChild(el("b", null, String(s[1]))); d.appendChild(el("span", "small muted", s[0])); stats.appendChild(d);
+    });
+    var rows = all.filter(function (x) {
+      if (f === "wait" && x.p) return false;
+      if (f === "facilitator" && x.role === "member") return false;
+      if (f === "off" && !x.off) return false;
+      if (!qt) return true;
+      return (q && x.id.indexOf(q) > -1) || String(x.note || "").toLowerCase().indexOf(qt) > -1;
+    }).sort(function (a, b) { return String(a.note || a.id).toLowerCase() < String(b.note || b.id).toLowerCase() ? -1 : 1; });
+    var tb = $("rows"); tb.textContent = "";
+    rows.forEach(function (x) {
+      var tr = el("tr"), st = status(x);
+      tr.appendChild(el("td", null, x.id)); tr.appendChild(el("td", null, x.note || ""));
+      tr.appendChild(el("td", null, x.role === "member" ? "Student" : x.role === "leader" ? "Leader" : "Facilitator"));
+      var s = el("td"); s.appendChild(el("span", "chip " + st[1], st[0])); tr.appendChild(s);
+      var a = el("td"), acts = el("div", "acts");
+      if (x.role !== "leader") {
+        if (x.listed && !x.off) {
+          acts.appendChild(btn(x.role === "facilitator" ? "Make student" : "Make facilitator", function () { setRole(x, x.role === "facilitator" ? "member" : "facilitator"); }, true));
+          acts.appendChild(btn("Remove", function () { remove(x); }, true, true));
+        } else acts.appendChild(btn("Add back", function () { addBack(x); }, true));
+      }
+      a.appendChild(acts); tr.appendChild(a); tb.appendChild(tr);
+    });
+    $("empty").hidden = rows.length > 0;
+  }
+  function btn(text, fn, small, danger) { var b = el("button", "btn" + (small ? " small" : "") + (danger ? " danger" : " ghost"), text); b.type = "button"; b.addEventListener("click", fn); return b; }
+
+  /* "12345, Sam Taylor" per line; also reads CSV rows with a header row such as "id,name" */
+  function parse(text) {
+    var out = [], seen = {};
+    text.split(/\r?\n|;/).forEach(function (line) {
+      var parts = line.split(/[,\t]/).map(function (s) { return s.replace(/^["'\s]+|["'\s]+$/g, ""); });
+      if (!parts.length || !parts[0]) return;
+      var id = norm(parts[0]);
+      if (!id || /^(id|staffid|ambulanceid|number)$/.test(id) || seen[id]) return;
+      seen[id] = 1; out.push({ staff_id: id, note: parts.slice(1).filter(Boolean).join(" ") || null });
+    });
+    return out;
+  }
+  function safe(fn) { return function () { var a = arguments; return Promise.resolve().then(function () { return fn.apply(null, a); }).catch(function (e) { say((e && e.message) || "Something went wrong.", true); }); }; }
+
+  var add = safe(function () {
+    var list = parse($("ids").value), role = $("role").value;
+    if (!list.length) return say("Type or paste at least one ID first.", true);
+    var rows = list.map(function (x) { return { staff_id: x.staff_id, note: x.note, role: role }; });
+    /* keep an existing name when the new line has none */
+    var have = {}; S.allowed.forEach(function (a) { have[a.staff_id] = a; });
+    rows.forEach(function (r) { if (!r.note && have[r.staff_id]) r.note = have[r.staff_id].note; });
+    return sb.from("allowed_ids").upsert(rows, { onConflict: "staff_id" }).then(must).then(function () {
+      var byId = {}; S.profiles.forEach(function (p) { byId[norm(p.staff_id)] = p; });
+      var ops = [];
+      rows.forEach(function (r) {
+        var p = byId[r.staff_id]; if (!p) return;
+        if (S.off[p.id]) ops.push(sb.rpc("leader_set_access", { member: p.id, allowed: true }).then(must));
+        if (p.role !== "leader" && p.role !== r.role) ops.push(sb.from("profiles").update({ role: r.role }).eq("id", p.id).then(must));
+      });
+      return Promise.all(ops);
+    }).then(function () { $("ids").value = ""; say("Added " + rows.length + (rows.length === 1 ? " ID." : " IDs.")); return load(); });
+  });
+  var setRole = safe(function (x, role) {
+    return sb.from("allowed_ids").update({ role: role }).eq("staff_id", x.id).then(must).then(function () {
+      if (x.p && x.p.role !== "leader") return sb.from("profiles").update({ role: role }).eq("id", x.p.id).then(must);
+    }).then(function () { say((x.note || x.id) + " is now a " + (role === "member" ? "student" : "facilitator") + "."); return load(); });
+  });
+  var remove = safe(function (x) {
+    return sb.from("allowed_ids").delete().eq("staff_id", x.id).then(must).then(function () {
+      if (x.p && x.p.role !== "leader") return sb.rpc("leader_set_access", { member: x.p.id, allowed: false }).then(must);
+    }).then(function () { say((x.note || x.id) + " removed" + (x.p ? " and switched off." : ".")); return load(); });
+  });
+  var addBack = safe(function (x) {
+    return sb.from("allowed_ids").upsert({ staff_id: x.id, note: x.note, role: x.role === "facilitator" ? "facilitator" : "member" }, { onConflict: "staff_id" }).then(must).then(function () {
+      if (x.p && x.off) return sb.rpc("leader_set_access", { member: x.p.id, allowed: true }).then(must);
+    }).then(function () { say((x.note || x.id) + " added back."); return load(); });
+  });
+
+  $("add").addEventListener("click", add);
+  $("csv").addEventListener("change", function () {
+    var f = this.files[0]; if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function () { $("ids").value = String(rd.result); say("Loaded " + parse(String(rd.result)).length + " IDs from " + f.name + ". Check them, then tap Add to the list."); };
+    rd.readAsText(f); this.value = "";
+  });
+  $("q").addEventListener("input", draw); $("filter").addEventListener("change", draw);
+  /* the gate has already confirmed a leader; load once it lets the page show */
+  (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve()).then(function () { return load(); }).catch(function (e) { say((e && e.message) || "Could not load the list.", true); });
+})();
+</script>
+</body>
+</html>

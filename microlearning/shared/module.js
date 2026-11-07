@@ -442,6 +442,9 @@
       if (push && window.history && history.replaceState) history.replaceState(null, "", location.pathname + (m === "student" ? "?mode=student" : "") + location.hash);
     };
     intro.appendChild(bar); intro.appendChild(mnote); setMode(cur, false);
+    /* students (approved, signed in) only get the student version; the site gate says who is a facilitator */
+    var modeBar = bar;   /* `bar` is reused further down this function */
+    if (window.DSY_GATE && window.DSY_GATE.ready) window.DSY_GATE.ready.then(function (g) { if (!g.facilitator) { modeBar.style.display = "none"; setMode("student", false); } });
     /* print the version on screen (or save it as a PDF from the print screen) */
     var prow = el("div", "row print-row"), pbtn = el("button", "btn print-btn", "Print or save as PDF"); pbtn.type = "button";
     pbtn.addEventListener("click", function () { openForPrint(); window.print(); });
