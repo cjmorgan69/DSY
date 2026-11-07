@@ -39,11 +39,15 @@
       </ol>
       <h3>After</h3>
       <ol>
-        <li>Log the session in the training app.</li>
+        <li>Log the session in the Session planner.</li>
         <li>Send the student link so the crew can revisit the topic on their own.</li>
       </ol>
     </div>
   </details>
+  <a class="panel pad" href="../../training/" style="text-decoration:none;color:inherit;display:block">
+    <b>Session planner</b><br>
+    <span class="small muted">Plan and log training nights: the calendar, who is facilitating and who attended.</span>
+  </a>
   <a class="panel pad" href="../../stations/ar-day6/" style="text-decoration:none;color:inherit;display:block">
     <b>Ambulance Responder course: Day 6 stations</b><br>
     <span class="small muted">Eight skills stations on the AR protocols: nebs, IM adrenaline, GTN, the IV line for the paramedic, birth, newborn APGAR, asthma, anaphylaxis, chest pain, diabetic emergencies.</span>
@@ -78,7 +82,7 @@
       if (navigator.share) { navigator.share({ title: "DSY Training: " + t.title, text: text }).catch(function () {}); return; }
       (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Student link for " + t.title + " copied."; }, function () { msg.textContent = text; });
     });
-    var row = el("div", "kit"); row.appendChild(share); row.appendChild(link("Log the session", "../../training/", true));
+    var row = el("div", "kit"); row.appendChild(share);
     body.appendChild(row);
     body.appendChild(el("p", "note", t.protocol + (t.custom ? " · customisable" : "") + (t.mdt ? " · MDT job ready" : "") + (t.stations ? " · skills stations" : "")));
     d.appendChild(body);
