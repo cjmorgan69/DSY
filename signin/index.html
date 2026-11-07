@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sign in - DSY Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../training/theme.css?v=20261017a">
+</head>
+<body>
+<main class="wrap">
+  <div class="auth stack" style="margin-top:1.5rem">
+    <a class="brand" href="../" style="text-decoration:none;color:inherit"><div class="brand-icon"><img src="../microlearning/shared/dsy-logo.png" alt="" width="36" height="36"></div>
+      <div><h1>DSY Training</h1><p id="sub">Sign in to open the training pages.</p></div></a>
+    <form class="panel pad stack" id="form" autocomplete="on">
+      <label id="nameRow" hidden>Your name<input id="f-name" name="name" autocomplete="name"></label>
+      <label>Ambulance ID number<input id="f-id" name="id" autocomplete="username" autocapitalize="none" spellcheck="false" inputmode="text" required></label>
+      <label>Password<input id="f-pass" name="pass" type="password" minlength="8" autocomplete="current-password" required></label>
+      <p class="small muted" id="hint" hidden>Choose a password of at least 8 characters. Your ID number is only used to check you are approved and so your instructors know who you are. No email address needed.</p>
+      <p class="small" id="msg" role="alert" style="color:var(--danger)" hidden></p>
+      <button class="btn" type="submit" id="go">Sign in</button>
+      <button class="btn ghost" type="button" id="swap">First time here? Create an account</button>
+      <p class="small muted">Your ID has to be on the list your instructor keeps. Forgotten your password? Ask your instructor to reset it.</p>
+    </form>
+    <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="../training/config.js"></script>
+<script>
+(function () {
+  var C = window.TRAINING_APP, sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
+  var $ = function (id) { return document.getElementById(id); };
+  var up = false, params = new URLSearchParams(location.search);
+  /* only go to a page on this site */
+  var next = params.get("next") || "/hub/learn/";
+  if (next.charAt(0) !== "/" || next.charAt(1) === "/" || next.charAt(1) === "\\") next = "/hub/learn/";
+
+  function loginEmail(v) { return String(v || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "") + "@id.dsytraining.com"; }
+  function say(t) { $("msg").textContent = t || ""; $("msg").hidden = !t; }
+  function mode(createMode) {
+    up = createMode;
+    $("nameRow").hidden = !up; $("f-name").required = up; $("hint").hidden = !up;
+    $("f-pass").setAttribute("autocomplete", up ? "new-password" : "current-password");
+    $("go").textContent = up ? "Create account" : "Sign in";
+    $("swap").textContent = up ? "I already have an account" : "First time here? Create an account";
+    $("sub").textContent = up ? "Create your account with your ambulance ID." : "Sign in to open the training pages.";
+    say("");
+  }
+  $("swap").addEventListener("click", function () { mode(!up); });
+
+  if (params.get("out")) {
+    sb.auth.signOut().then(function () {
+      try { localStorage.removeItem("dsy-gate-role"); } catch (e) {}
+      $("sub").textContent = "You are signed out.";
+    });
+  } else {
+    sb.auth.getSession().then(function (r) { if (r.data && r.data.session) location.replace(next); });
+  }
+
+  $("form").addEventListener("submit", function (e) {
+    e.preventDefault(); say("");
+    var raw = $("f-id").value.trim(), pass = $("f-pass").value, btn = $("go");
+    if (raw.indexOf("@") > -1) return say("Enter your ambulance ID number, not an email address.");
+    if (!/[0-9a-z]/i.test(raw)) return say("Enter your ambulance ID number.");
+    btn.disabled = true;
+    var email = loginEmail(raw), job;
+    if (up) {
+      job = sb.auth.signUp({ email: email, password: pass, options: { data: { full_name: $("f-name").value.trim(), staff_id: raw } } }).then(function (r) {
+        if (r.error) throw r.error;
+        if (!r.data.session) return sb.auth.signInWithPassword({ email: email, password: pass }).then(function (x) { if (x.error) throw x.error; });
+      });
+    } else {
+      job = sb.auth.signInWithPassword({ email: email, password: pass }).then(function (r) { if (r.error) throw r.error; });
+    }
+    job.then(function () { location.replace(next); }).catch(function (err) {
+      btn.disabled = false;
+      var m = String((err && err.message) || "");
+      if (up && /database error|not on the approved/i.test(m)) say("That ID is not on the approved list yet. Ask your instructor to add it, then try again.");
+      else if (up && /already registered|already been registered/i.test(m)) say("That ID already has an account. Tap \"I already have an account\" and sign in.");
+      else if (/invalid login|invalid credentials/i.test(m)) say("That ID and password do not match. Check them and try again, or ask your instructor to reset your password.");
+      else if (/banned|disabled/i.test(m)) say("This account has been switched off. Ask your instructor.");
+      else say(m || "Something went wrong. Try again.");
+    });
+  });
+})();
+</script>
+</body>
+</html>
