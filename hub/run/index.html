@@ -40,7 +40,7 @@
       <h3>After</h3>
       <ol>
         <li>Log the session in the training app.</li>
-        <li>Send the student links so the crew can revisit the call on their own.</li>
+        <li>Send the student link so the crew can revisit the topic on their own.</li>
       </ol>
     </div>
   </details>
@@ -71,15 +71,12 @@
     if (t.pcr) kit.appendChild(link("PCR trainer", "../../tools/pcr/#job=" + t.pcr, true));
     kit.appendChild(link("Microlearning", "../../microlearning/" + t.module + "/", true));
     body.appendChild(kit);
-    var share = el("button", "btn ghost small", "Copy the student links");
+    var share = el("button", "btn ghost small", "Copy the student link");
     share.type = "button";
     share.addEventListener("click", function () {
-      var text = "DSY Training: " + t.title + "\nLearn: " + root + "microlearning/" + t.module + "/" +
-        (t.walk ? "\nPractise the call: " + root + t.walk.slice(1) + "?mode=student" : "") +
-        (t.mdt ? "\nDrill the MDT: " + root + "mdt/#job=" + t.mdt + "&self=1" : "") +
-        (t.pcr ? "\nWrite the PCR: " + root + "tools/pcr/#job=" + t.pcr : "");
+      var text = "DSY Training: " + t.title + "\nLearn: " + root + "microlearning/" + t.module + "/";
       if (navigator.share) { navigator.share({ title: "DSY Training: " + t.title, text: text }).catch(function () {}); return; }
-      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Student links for " + t.title + " copied."; }, function () { msg.textContent = text; });
+      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Student link for " + t.title + " copied."; }, function () { msg.textContent = text; });
     });
     var row = el("div", "kit"); row.appendChild(share); row.appendChild(link("Log the session", "../../training/", true));
     body.appendChild(row);
