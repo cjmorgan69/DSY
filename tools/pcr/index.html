@@ -147,6 +147,7 @@ body.model [contenteditable] { pointer-events: none; }
   <button id="zoom" type="button">Zoom in</button>
   <button id="clear" type="button">Clear</button>
   <button type="button" onclick="print()">Print or save as PDF</button>
+  <a href="build/" id="buildLink" hidden>Build a job</a>
 </div>
 <div class="intro" id="intro"></div>
 <p class="note">Tap a box to write in it. Tap an <u style="text-decoration-style:dotted">underlined heading</u> to see what goes there. For training only: not a SAAS record. Your card is kept on this device only, never sent. On a phone, turn it sideways or use Zoom in.</p>
@@ -383,20 +384,42 @@ body.model [contenteditable] { pointer-events: none; }
     if (document.body.classList.contains('model')) setModel(false);
     job = JOBS[id] || null; pick.value = job ? id : '';
     modelBtn.hidden = !job; helpEl.classList.remove('open');
-    intro.innerHTML = job ? '<b>' + esc(job.label) + '.</b> First work through the <a href="' + job.walk + '?mode=student" target="_blank" rel="noopener">student walk-through</a>, then write the card as if you were the crew. '
+    intro.innerHTML = job ? '<b>' + esc(job.label) + '.</b> ' + (job.walk ? 'First work through the <a href="' + job.walk + '?mode=student" target="_blank" rel="noopener">student walk-through</a>, then write the card as if you were the crew. '
+          : 'Read the <a href="#" id="caseBtn">case card</a> (it stays one tap away), then write the card as if you were the crew. ')
         + 'Tap an underlined heading to see what goes there and a possible entry, or <b>Show model card</b> to compare the whole card. ' + (job.note ? esc(job.note) : '')
       : '<b>Blank card.</b> Write any job on it, or choose a walk-through job from the list. Tap an underlined heading to see what goes there.';
-    history.replaceState(null, '', job ? '#job=' + id : location.pathname);
+    if (id !== 'shared') history.replaceState(null, '', job ? '#job=' + id : location.pathname);
     load();
   }
-  Object.keys(JOBS).forEach(function (k) { var o = document.createElement('option'); o.value = k; o.textContent = JOBS[k].label; pick.appendChild(o); });
+  // custom jobs from the job builder (/tools/pcr/build/): saved on this device, or shared in the link (#c=...)
+  function dec(t) { return JSON.parse(decodeURIComponent(escape(atob(t.replace(/-/g, '+').replace(/_/g, '/'))))); }
+  var MINE = {}; try { MINE = JSON.parse(localStorage.getItem('dsy-pcr-custom') || '{}'); } catch (e) {}
+  var shared = location.hash.match(/[#&]c=([\w-]+)/); if (shared) { try { JOBS.shared = dec(shared[1]); } catch (e) { shared = null; } }
+  function group(label, keys, src) {
+    if (!keys.length) return; var g = document.createElement('optgroup'); g.label = label;
+    keys.forEach(function (k) { if (src !== JOBS) JOBS[k] = src[k]; var o = document.createElement('option'); o.value = k; o.textContent = JOBS[k].label; g.appendChild(o); });
+    pick.appendChild(g);
+  }
+  group('Walk-through jobs', Object.keys(JOBS).filter(function (k) { return k !== 'shared'; }), JOBS);
+  group('Shared with me', shared ? ['shared'] : [], JOBS);
+  group('My jobs (this device)', Object.keys(MINE), MINE);
+  function caseCard(j) {
+    var c = j.caseCard || {}, rows = [['Dispatch', c.dispatch], ['On arrival', c.arrival], ['History', c.history], ['What happens', c.course]];
+    return '<h3>Case card: ' + esc(j.label) + '</h3>' + (j.protocol ? '<div class="tip">Protocol: ' + esc(j.protocol) + '</div>' : '')
+      + rows.filter(function (r) { return r[1]; }).map(function (r) { return '<h4>' + r[0] + '</h4><div style="white-space:pre-wrap">' + esc(r[1]) + '</div>'; }).join('')
+      + (j.obs && j.obs.length ? '<h4>Observations</h4>' + obsTable(j.obs) : '')
+      + (j.drugs && j.drugs.length ? '<h4>What the crew did</h4><table>' + j.drugs.map(function (r) { return '<tr>' + r.map(function (x) { return '<td>' + esc(x || '') + '</td>'; }).join('') + '</tr>'; }).join('') + '</table>' : '')
+      + '<div class="tip">Case written by your instructor. Write the card as if you were the crew.</div>';
+  }
+  document.addEventListener('click', function (ev) { if (ev.target.id === 'caseBtn') { ev.preventDefault(); ev.stopPropagation(); helpBody.innerHTML = caseCard(job); helpEl.classList.add('open'); helpEl.scrollTop = 0; } }, true);
   pick.addEventListener('change', function () { choose(pick.value); });
   document.getElementById('clear').addEventListener('click', function () {
     if (document.body.classList.contains('model')) setModel(false);
     if (!confirm('Clear everything you have written on this card?')) return;
     clear(); try { localStorage.removeItem(key()); } catch (e) {}
   });
-  var m = location.hash.match(/(?:job|ex)=([\w-]+)/); choose(m ? m[1] : '');
+  if (window.DSY_GATE) window.DSY_GATE.ready.then(function (g) { if (g && g.facilitator) document.getElementById('buildLink').hidden = false; });
+  var m = location.hash.match(/(?:job|ex)=([\w-]+)/); choose(shared ? 'shared' : (m ? m[1] : ''));
 
   // ---- Scale the A4 sheet to the screen ----
   var sheet = document.getElementById('sheet'), fit = document.getElementById('fit');
