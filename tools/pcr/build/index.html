@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<script src="/shared/gate.js?v=20261107a" data-level="facilitator"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>PCR job builder - DSY Training</title>
+<style>
+/* PCR job builder: the instructor sets up a custom PCR trainer job (case card, first obs set, how the patient responds,
+   treatments, model entries). Later obs sets are generated from the first set and the response, then editable.
+   Saved on the device (localStorage dsy-pcr-custom) or shared as a link (/tools/pcr/#c=...). Nothing is sent anywhere. */
+:root { --brand: #1f5b43; --ink: #1d2320; --muted: #5b6660; --line: #d5dcd8; --bg: #eef2f0; --card: #fff; --hi: #f3ee6e; --warn: #fff6d6; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+header { background: var(--brand); color: #fff; padding: .8rem 1rem; display: flex; gap: .8rem; align-items: center; flex-wrap: wrap; position: sticky; top: 0; z-index: 5; }
+header b { font-size: 1.1rem; margin-right: auto; } header a { color: #fff; font-weight: 600; }
+main { max-width: 52rem; margin: 0 auto; padding: 1rem 1rem 6rem; display: grid; gap: 1rem; }
+section { min-width: 0; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1rem; }
+h2 { margin: 0 0 .2rem; font-size: 1.15rem; color: var(--brand); display: flex; gap: .5rem; align-items: center; }
+h2 .n { background: var(--brand); color: #fff; border-radius: 999px; width: 1.6rem; height: 1.6rem; display: inline-grid; place-items: center; font-size: .9rem; flex: none; }
+.sub { color: var(--muted); font-size: .9rem; margin: 0 0 .8rem; }
+.grid { display: grid; gap: .7rem; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); }
+.grid.wide { grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+label { display: grid; gap: .2rem; font-size: .85rem; font-weight: 600; color: var(--muted); }
+input, select, textarea { font: inherit; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: .5rem .6rem; background: #fff; width: 100%; }
+textarea { min-height: 4.2rem; resize: vertical; }
+.full { grid-column: 1 / -1; }
+.seg { display: flex; flex-wrap: wrap; gap: .4rem; }
+.seg button { flex: 1 1 8rem; border: 2px solid var(--line); background: #fff; border-radius: 10px; padding: .6rem; font: inherit; font-weight: 600; cursor: pointer; }
+.seg button.on { border-color: var(--brand); background: #e5f0ea; }
+.seg button small { display: block; font-weight: 400; color: var(--muted); font-size: .8rem; }
+.btn { border: 0; background: var(--brand); color: #fff; border-radius: 999px; padding: .55rem 1rem; font: inherit; font-weight: 600; cursor: pointer; }
+.btn.ghost { background: #fff; color: var(--brand); border: 1px solid var(--brand); }
+.row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-top: .7rem; }
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0 .6rem; }
+.chips button { border: 1px solid var(--line); background: #f6f8f7; border-radius: 999px; padding: .3rem .7rem; font: inherit; font-size: .85rem; cursor: pointer; }
+.scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; font-size: .9rem; min-width: 100%; }
+th, td { border: 1px solid var(--line); padding: 0; text-align: left; }
+th { background: #f3f6f4; padding: .3rem .4rem; font-size: .8rem; white-space: nowrap; }
+td input { border: 0; border-radius: 0; padding: .35rem .4rem; min-width: 4.2rem; }
+td.x { width: 2rem; text-align: center; } td.x button { border: 0; background: none; font-size: 1.1rem; cursor: pointer; color: #a33; }
+.note { background: var(--warn); border-left: 4px solid #c9a227; padding: .5rem .7rem; border-radius: 6px; font-size: .88rem; }
+.model label { color: #a0362c; }
+.model textarea { font-family: "Patrick Hand", "Bradley Hand", cursive, system-ui; color: #1a3a9c; font-size: 1.02rem; }
+#out { display: none; } #out.on { display: block; }
+#link { font-size: .8rem; word-break: break-all; background: #f6f8f7; border: 1px dashed var(--line); padding: .5rem; border-radius: 8px; }
+.saved { display: grid; gap: .4rem; } .saved div { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding: .3rem 0; }
+.saved div span { margin-right: auto; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+</head>
+<body>
+<header><b>PCR job builder</b><a href="../">PCR trainer</a></header>
+<main>
+  <p class="sub" style="margin:0">Set up your own PCR trainer job. Students read your case card, write the PCR, then compare with your model card. Everything stays on this device until you share the link.</p>
+
+  <section id="mine" hidden><h2>My saved jobs</h2><div class="saved" id="savedList"></div></section>
+
+  <section>
+    <h2><span class="n">1</span>The case</h2>
+    <p class="sub">What the student needs to know to write the card. This becomes the case card.</p>
+    <div class="grid">
+      <label>Patient first name<input id="name" placeholder="e.g. Pat"></label>
+      <label>Age<input id="age" inputmode="numeric" placeholder="68"></label>
+      <label>Sex<select id="sex"><option>F</option><option>M</option></select></label>
+      <label>Crew level<select id="level"><option>AO</option><option>AR</option><option>Paramedic</option></select></label>
+      <label class="full">Protocol the treatment is based on<select id="protocol"></select></label>
+      <label class="full" id="otherWrap" hidden>Other protocol (code and name)<input id="other" placeholder="e.g. CPP-0xx-AO ..."></label>
+      <label class="full">Presenting complaint (one line)<input id="pc" placeholder="e.g. Central chest pain 30 min, not settling"></label>
+      <label class="full">Dispatch (the MDT, time, place)<textarea id="dispatch" placeholder="P2, 1430, chest pain 68F, farm 10 km west of Cummins. Husband calling."></textarea></label>
+      <label class="full">On arrival (what the crew sees)<textarea id="arrival" placeholder="1442. Sitting in a kitchen chair, pale, hand on her chest..."></textarea></label>
+      <label class="full">Story (what happened, from patient or bystanders)<textarea id="story"></textarea></label>
+      <label>Past history<textarea id="phx" placeholder="HTN, T2DM"></textarea></label>
+      <label>Medications<textarea id="meds" placeholder="Metformin, perindopril"></textarea></label>
+      <label>Allergies<input id="allergies" value="Nil known"></label>
+      <label>Communicable diseases<input id="comm" value="Nil known"></label>
+      <label class="full">Other findings (skin, chest sounds, injuries...)<textarea id="findings" placeholder="Pale, sweaty. Chest clear both sides."></textarea></label>
+      <label class="full"><span><input type="checkbox" id="trauma" style="width:auto"> Trauma involved (adds the secondary survey)</span></label>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>First set of obs</h2>
+    <p class="sub">Only the first set. The later sets are worked out from step 3, and you can change any number.</p>
+    <div class="grid">
+      <label>Time<input id="t0" inputmode="numeric" placeholder="1445"></label>
+      <label>Resp rate<input id="rr" inputmode="numeric" placeholder="18"></label>
+      <label>SpO2 %<input id="spo2" inputmode="numeric" placeholder="97"></label>
+      <label>O2 (RA or L/min)<input id="o2" value="RA"></label>
+      <label>BP<input id="bp" placeholder="132/80"></label>
+      <label>Pulse<input id="hr" inputmode="numeric" placeholder="88"></label>
+      <label>Temp<input id="temp" inputmode="decimal" placeholder="36.8"></label>
+      <label>GCS<input id="gcs" inputmode="numeric" value="15"></label>
+      <label>Pain /10<input id="pain" inputmode="numeric" placeholder="0"></label>
+      <label>BGL<input id="bgl" inputmode="decimal" placeholder="6.0"></label>
+      <label>Pupils<select id="pupils"><option value="+">Equal, reacting</option><option value="">Not recorded</option><option value="-">Abnormal</option></select></label>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>What happens</h2>
+    <p class="sub">How the patient responds after the first set.</p>
+    <div class="seg" id="trend">
+      <button type="button" data-v="improve" class="on">Responds to treatment<small>Obs move back toward normal</small></button>
+      <button type="button" data-v="same">Stays the same<small>Small changes only</small></button>
+      <button type="button" data-v="worse">Deteriorates<small>Obs move away from normal</small></button>
+    </div>
+    <div class="grid" style="margin-top:.8rem">
+      <label>Number of sets<select id="sets"><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label>
+      <label>Minutes between sets<select id="gap"><option>5</option><option selected>10</option><option>15</option><option>20</option></select></label>
+      <label class="full">What happens (in words, for the case card)<textarea id="course" placeholder="Pain eases after the GTN. BP stays within limits. Transported to Cummins Hospital."></textarea></label>
+    </div>
+    <div class="row"><button class="btn" type="button" id="gen">Work out the obs</button></div>
+    <div class="scroll" style="margin-top:.8rem"><table id="obsTable"></table></div>
+    <p class="note" id="obsNote" hidden>These numbers are worked out by a simple rule, not by the protocol. Check each one makes clinical sense and change any that don't.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>What the crew did</h2>
+    <p class="sub">Treatments and events with times. Tap a suggestion to add it, then fix the time and dose.</p>
+    <div class="chips" id="chips"></div>
+    <div class="scroll"><table id="drugTable"></table></div>
+    <div class="row"><button class="btn ghost" type="button" id="addDrug">Add a row</button></div>
+    <div class="grid wide" style="margin-top:.8rem">
+      <label>Outcome<select id="outcome"><option value="t">Transported</option><option value="n">Not transported (TNT)</option></select></label>
+      <label>Destination<input id="dest" placeholder="Cummins Hospital"></label>
+      <label><span><input type="checkbox" id="consult" style="width:auto"> EOC Clinician consulted</span></label>
+      <label><span><input type="checkbox" id="medsHanded" style="width:auto" checked> Pt's meds taken and handed over</span></label>
+      <label class="full">Working diagnosis<input id="dx" placeholder="?Acute coronary syndrome"></label>
+    </div>
+  </section>
+
+  <section class="model">
+    <h2><span class="n">5</span>Model card</h2>
+    <p class="sub">A first draft from what you've entered, in the guide-card layout. Edit it into the write-up you want students to compare with.</p>
+    <div class="row" style="margin-top:0"><button class="btn" type="button" id="draft">Draft the model card</button></div>
+    <div class="grid wide" id="modelBox" style="margin-top:.8rem"></div>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>Save and share</h2>
+    <div class="row" style="margin-top:0">
+      <button class="btn" type="button" id="save">Save on this device</button>
+      <button class="btn ghost" type="button" id="open">Open in the PCR trainer</button>
+      <button class="btn ghost" type="button" id="share">Copy the student link</button>
+    </div>
+    <div id="out"><p class="sub" style="margin:.7rem 0 .3rem">Student link (the whole job is in the link: nothing is uploaded):</p><div id="link"></div></div>
+    <p class="note" style="margin-top:.8rem">Training only: use made-up patients, never a real patient's details. Your case and model card are your own writing: check them against the protocol before you share.</p>
+  </section>
+</main>
+
+<script src="../../../hub/topics.js?v=20261106d"></script>
+<script src="../jobs.js?v=20261106d"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var TOPICS = window.DSY_TOPICS || [], JOBS = window.PCR_JOBS || {}, KEY = 'dsy-pcr-custom';
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  // ---- protocols: the hub topics, plus Other ----
+  $('protocol').innerHTML = TOPICS.map(function (t) { return '<option value="' + t.id + '">' + esc(t.title + ' (' + t.protocol + ')') + '</option>'; }).join('') + '<option value="other">Other protocol...</option>';
+  $('protocol').addEventListener('change', function () { $('otherWrap').hidden = this.value !== 'other'; chips(); });
+
+  // ---- step 3: trend buttons ----
+  var trend = 'improve';
+  $('trend').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; trend = b.dataset.v;
+    [].forEach.call(this.children, function (c) { c.classList.toggle('on', c === b); }); });
+
+  // ---- obs: generate later sets from the first set and the trend (a simple DSY rule, editable) ----
+  var COLS = [['time', 'Time'], ['rr', 'RR'], ['o2', 'O2'], ['spo2', 'SpO2'], ['bp', 'BP'], ['hr', 'Pulse'], ['temp', 'Temp'], ['gcs', 'GCS'], ['pain', 'Pain'], ['bgl', 'BGL']];
+  var obs = [];
+  function num(v) { var n = parseFloat(v); return isNaN(n) ? null : n; }
+  function addMin(t, m) { t = String(t || '').replace(/\D/g, ''); if (t.length < 3) return ''; var h = +t.slice(0, -2), mi = +t.slice(-2) + m; h = (h + Math.floor(mi / 60)) % 24; mi = mi % 60; return ('0' + h).slice(-2) + ('0' + mi).slice(-2); }
+  function toward(v, target, step) { if (v == null) return null; return Math.abs(v - target) <= step ? target : v + (v < target ? step : -step); }
+  function away(v, target, step) { if (v == null) return null; return v + (v < target ? -step : step); }
+  function first() {
+    return { time: $('t0').value.trim(), rr: num($('rr').value), o2: $('o2').value.trim() || 'RA', spo2: num($('spo2').value), bp: $('bp').value.trim(),
+      hr: num($('hr').value), temp: num($('temp').value), gcs: num($('gcs').value), pain: num($('pain').value), bgl: num($('bgl').value) };
+  }
+  function next(p, k) {
+    var s = JSON.parse(JSON.stringify(p)), sb = p.bp ? num(p.bp.split('/')[0]) : null, db = p.bp ? num(p.bp.split('/')[1]) : null;
+    if (trend === 'improve') {
+      s.rr = toward(p.rr, 16, 3); s.hr = toward(p.hr, 80, 8); s.spo2 = p.spo2 == null ? null : Math.min(99, toward(p.spo2, 97, 2));
+      sb = toward(sb, 125, 8); db = toward(db, 78, 4); s.gcs = p.gcs == null ? null : Math.min(15, p.gcs + 1);
+      s.pain = p.pain == null ? null : Math.max(0, p.pain - 2); s.temp = toward(p.temp, 36.8, 0.2);
+      s.bgl = p.bgl == null ? null : (p.bgl < 4 ? +(p.bgl + 2.5).toFixed(1) : p.bgl);
+    } else if (trend === 'worse') {
+      s.rr = p.rr == null ? null : p.rr + 3; s.hr = away(p.hr, 80, 8); s.spo2 = p.spo2 == null ? null : Math.max(82, p.spo2 - 2);
+      sb = sb == null ? null : sb - 8; db = db == null ? null : db - 4; s.gcs = p.gcs == null ? null : (k % 2 ? Math.max(3, p.gcs - 1) : p.gcs);
+      s.pain = p.pain == null ? null : Math.min(10, p.pain + 1); s.bgl = p.bgl == null ? null : (p.bgl < 4 ? +(p.bgl - 0.3).toFixed(1) : p.bgl);
+    } else {
+      var w = k % 2 ? 2 : -2; s.hr = p.hr == null ? null : p.hr + w; sb = sb == null ? null : sb - w * 2;
+    }
+    if (s.temp != null) s.temp = +(+s.temp).toFixed(1);
+    if (sb != null) s.bp = Math.round(sb) + (db != null ? '/' + Math.round(db) : '');
+    s.time = addMin(p.time, +$('gap').value);
+    return s;
+  }
+  function drawObs() {
+    $('obsTable').innerHTML = '<tr><th>Set</th>' + COLS.map(function (c) { return '<th>' + c[1] + '</th>'; }).join('') + '<td class="x"></td></tr>'
+      + obs.map(function (o, i) { return '<tr><th>' + (i + 1) + '</th>' + COLS.map(function (c) { return '<td><input data-i="' + i + '" data-k="' + c[0] + '" value="' + esc(o[c[0]] == null ? '' : o[c[0]]) + '"></td>'; }).join('')
+        + '<td class="x">' + (i ? '<button type="button" data-del="' + i + '" aria-label="Remove set">&times;</button>' : '') + '</td></tr>'; }).join('');
+    $('obsNote').hidden = obs.length < 2;
+  }
+  $('obsTable').addEventListener('input', function (e) { var t = e.target; if (t.dataset.k) obs[+t.dataset.i][t.dataset.k] = t.value; });
+  $('obsTable').addEventListener('click', function (e) { var d = e.target.dataset.del; if (d) { obs.splice(+d, 1); drawObs(); } });
+  $('gen').addEventListener('click', function () { obs = [first()]; for (var k = 1; k < +$('sets').value; k++) obs.push(next(obs[k - 1], k)); drawObs(); });
+
+  // ---- step 4: treatments, with suggestions from the protocol's walk-through job ----
+  var drugs = [];
+  var GENERIC = [['Oxygen', '', 'L/min', ''], ['Clinical support requested'], ['EOC Clinician consult'], ['Carry chair to stretcher'], ['Monitor on']];
+  function chips() {
+    var t = TOPICS.filter(function (x) { return x.id === $('protocol').value; })[0], j = t && t.pcr && JOBS[t.pcr], seen = {}, list = [];
+    ((j && j.drugs) || []).concat(GENERIC).forEach(function (r) { var k = r[0]; if (!seen[k] && /[a-z]/i.test(k)) { seen[k] = 1; list.push(r.slice(1, 5)); list[list.length - 1].unshift(k); } });
+    $('chips').innerHTML = list.map(function (r, i) { return '<button type="button" data-c="' + i + '">+ ' + esc(r[0]) + (r[1] ? ' ' + esc(r[1]) + ' ' + esc(r[2] || '') : '') + '</button>'; }).join('');
+    $('chips').onclick = function (e) { var i = e.target.dataset.c; if (i == null) return; var r = list[+i]; var last = drugs.length ? drugs[drugs.length - 1][0] : (obs[0] && obs[0].time) || $('t0').value;
+      drugs.push([addMin(last, 2) || '', r[0], r[1] || '', r[2] || '', r[3] || '']); drawDrugs(); };
+  }
+  function drawDrugs() {
+    $('drugTable').innerHTML = '<tr><th>Time</th><th>Drug or intervention</th><th>Dose</th><th>Units</th><th>Route</th><td class="x"></td></tr>'
+      + drugs.map(function (r, i) { return '<tr>' + r.map(function (v, c) { return '<td><input data-r="' + i + '" data-c="' + c + '" value="' + esc(v) + '"' + (c === 1 ? ' style="min-width:12rem"' : '') + '></td>'; }).join('')
+        + '<td class="x"><button type="button" data-del="' + i + '" aria-label="Remove row">&times;</button></td></tr>'; }).join('');
+  }
+  $('drugTable').addEventListener('input', function (e) { var t = e.target; if (t.dataset.r != null) drugs[+t.dataset.r][+t.dataset.c] = t.value; });
+  $('drugTable').addEventListener('click', function (e) { var d = e.target.dataset.del; if (d != null) { drugs.splice(+d, 1); drawDrugs(); } });
+  $('addDrug').addEventListener('click', function () { drugs.push(['', '', '', '', '']); drawDrugs(); });
+
+  // ---- step 5: draft the model card from what's been entered ----
+  var SECS = [['pc', 'Presenting complaint'], ['phx', 'PHx'], ['medn', "Med'n"], ['hx', 'Hx'], ['oa', 'O/A'], ['cns', 'O/E: CNS'], ['skin', 'SKIN'], ['cvs', 'CVS'],
+    ['resp', 'RESP'], ['pain', 'PAIN'], ['survey', '2* SURVEY'], ['care', 'Care + events'], ['provisional', 'Provisional diagnosis'], ['recommendation', 'Recommendation']];
+  var model = {};
+  function drawModel() {
+    $('modelBox').innerHTML = SECS.filter(function (s) { return s[0] !== 'survey' || $('trauma').checked; })
+      .map(function (s) { return '<label class="' + (/care|recommendation|hx|oa/.test(s[0]) ? 'full' : '') + '">' + s[1] + '<textarea data-m="' + s[0] + '">' + esc(model[s[0]] || '') + '</textarea></label>'; }).join('');
+  }
+  $('modelBox').addEventListener('input', function (e) { if (e.target.dataset.m) model[e.target.dataset.m] = e.target.value; });
+  $('trauma').addEventListener('change', drawModel);
+  $('draft').addEventListener('click', function () {
+    if (!obs.length) $('gen').click();
+    var o = obs[0] || {}, L = obs[obs.length - 1] || {}, g = num(o.gcs), sex = $('sex').value, age = $('age').value;
+    var rr = num(o.rr), sp = num(o.spo2), pn = num(o.pain);
+    model = {
+      pc: $('pc').value, phx: $('phx').value || 'Nil.', medn: $('meds').value || 'Nil regular.',
+      hx: $('story').value, oa: (age + sex + ' ' + ($('arrival').value || '')).trim(),
+      cns: (g === 15 ? 'A on AVPU, GCS 15, oriented.' : g != null ? 'GCS ' + g + '.' : '') + ($('pupils').value === '+' ? ' PEARL.' : ''),
+      skin: $('findings').value,
+      cvs: [o.hr != null && o.hr !== '' ? 'Pulse ' + o.hr + '.' : '', o.bp ? 'BP ' + o.bp + '.' : ''].join(' ').trim(),
+      resp: [rr != null ? 'RR ' + rr + (rr >= 11 && rr <= 20 && (sp == null || sp >= 95) ? ', nil resp distress' : '') + '.' : '', sp != null ? 'SpO2 ' + sp + '% ' + (o.o2 || 'RA') + '.' : ''].join(' ').trim(),
+      pain: pn === 0 ? 'Nil pain, 0/10.' : pn != null ? pn + '/10.' + (L.pain != null && L.pain !== o.pain ? ' ' + L.pain + '/10 at ' + L.time + '.' : '') : '',
+      survey: $('trauma').checked ? 'Head/neck: . Chest/back: . Abdo: . Hips/pelvis: . Limbs: .' : '',
+      care: drugs.map(function (r) { return (r[0] ? r[0] + ' ' : '') + r[1] + (r[2] ? ' ' + r[2] + ' ' + r[3] : '') + (r[4] ? ' ' + r[4] : ''); }).join('. ')
+        + (obs.length > 1 ? '.\n' + L.time + ': ' + ({ improve: 'improving', same: 'unchanged', worse: 'deteriorating' })[trend] + ': HR ' + L.hr + ', BP ' + L.bp + ', RR ' + L.rr + ', SpO2 ' + L.spo2 + '%.' : ''),
+      provisional: $('dx').value,
+      recommendation: ($('outcome').value === 't' ? 'Transported to ' + ($('dest').value || '___') + ', notified. ' : 'Not transported. Referral plan: ___. Advised to seek review if: ___. ')
+        + ($('consult').checked ? 'EOC Clinician consulted. ' : '')
+        + (obs.length > 1 ? 'Obs ' + ({ improve: 'improving', same: 'unchanged', worse: 'deteriorating' })[trend] + ': HR ' + o.hr + ' to ' + L.hr + ', BP ' + o.bp + ' to ' + L.bp
+          + (o.pain != null && o.pain !== '' ? ', pain ' + o.pain + ' to ' + L.pain + '/10' : '') + '.' : '')
+    };
+    drawModel();
+  });
+
+  // ---- step 6: build the job, save, share ----
+  function build() {
+    var t = TOPICS.filter(function (x) { return x.id === $('protocol').value; })[0], name = $('name').value.trim() || 'Patient', age = $('age').value.trim();
+    var prot = t ? t.title + ' (' + t.protocol + ')' : $('other').value;
+    var job = {
+      label: name + (age ? ', ' + age : '') + ': ' + (t ? t.title.toLowerCase() : 'custom') + ' (' + $('level').value + ', custom)',
+      short: name, protocol: prot, custom: true,
+      caseCard: { dispatch: $('dispatch').value, arrival: $('arrival').value,
+        history: [$('story').value, $('phx').value && 'Past history: ' + $('phx').value, $('meds').value && 'Medications: ' + $('meds').value,
+          'Allergies: ' + ($('allergies').value || 'unknown'), $('findings').value && 'Findings: ' + $('findings').value].filter(Boolean).join('\n'),
+        course: $('course').value },
+      text: { allergies: $('allergies').value, communicable: $('comm').value, provisional: model.provisional || $('dx').value, recommendation: model.recommendation || '' },
+      sections: {}, ticks: [], marks: [],
+      obs: obs.map(function (o, i) {
+        var r = {}; COLS.forEach(function (c) { var v = o[c[0]]; if (v !== '' && v != null) r[c[0]] = c[0] === 'time' || c[0] === 'bp' || c[0] === 'o2' ? String(v) : (isNaN(+v) ? v : +v); });
+        var ox = drugs.filter(function (d) { return /oxygen/i.test(d[1]) && d[0] && r.time && +d[0] <= +r.time; }).pop();
+        if (i && ox && (!r.o2 || /^ra$/i.test(r.o2))) r.o2 = ox[2] || 'O2';
+        if (+r.gcs === 15) r.evm = [4, 5, 6]; if (i === 0 && $('pupils').value) r.pupils = [$('pupils').value, $('pupils').value]; return r; }),
+      drugs: drugs.filter(function (r) { return r[1]; })
+    };
+    ['pc', 'phx', 'medn', 'hx', 'oa', 'cns', 'skin', 'cvs', 'resp', 'pain', 'survey', 'care'].forEach(function (k) { if (model[k]) job.sections[k] = model[k]; });
+    if ($('consult').checked) job.ticks.push('consult'); if ($('medsHanded').checked) job.ticks.push('medsHanded');
+    job.form = formState();
+    return job;
+  }
+  function formState() {
+    var f = {}; document.querySelectorAll('main input[id], main select[id], main textarea[id]').forEach(function (el) { f[el.id] = el.type === 'checkbox' ? el.checked : el.value; });
+    return { f: f, trend: trend, obs: obs, drugs: drugs, model: model };
+  }
+  function restore(st) {
+    Object.keys(st.f || {}).forEach(function (id) { var el = $(id); if (!el) return; if (el.type === 'checkbox') el.checked = st.f[id]; else el.value = st.f[id]; });
+    trend = st.trend || 'improve'; [].forEach.call($('trend').children, function (c) { c.classList.toggle('on', c.dataset.v === trend); });
+    obs = st.obs || []; drugs = st.drugs || []; model = st.model || {};
+    $('otherWrap').hidden = $('protocol').value !== 'other'; chips(); drawObs(); drawDrugs(); drawModel();
+  }
+  function enc(o) { return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+  function mine() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
+  var editing = null;
+  function save() {
+    var j = build(), all = mine(); editing = editing || 'my-' + Date.now().toString(36); all[editing] = j;
+    try { localStorage.setItem(KEY, JSON.stringify(all)); } catch (e) { alert('Could not save on this device.'); }
+    listSaved(); return editing;
+  }
+  $('save').addEventListener('click', function () { save(); this.textContent = 'Saved'; var b = this; setTimeout(function () { b.textContent = 'Save on this device'; }, 1500); });
+  $('open').addEventListener('click', function () { location.href = '../#job=' + save(); });
+  $('share').addEventListener('click', function () {
+    var j = build(); delete j.form; var url = new URL('../#c=' + enc(j), location.href).href;
+    $('link').textContent = url; $('out').classList.add('on');
+    if (navigator.share) navigator.share({ title: 'PCR trainer: ' + j.label, url: url }).catch(function () {});
+    else if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { $('share').textContent = 'Link copied'; });
+  });
+  function listSaved() {
+    var all = mine(), keys = Object.keys(all); $('mine').hidden = !keys.length;
+    $('savedList').innerHTML = keys.map(function (k) { return '<div><span>' + esc(all[k].label) + '</span><button class="btn ghost" data-edit="' + k + '">Edit</button><a class="btn ghost" href="../#job=' + k + '">Open</a><button class="btn ghost" data-delj="' + k + '">Delete</button></div>'; }).join('');
+  }
+  $('savedList').addEventListener('click', function (e) {
+    var k = e.target.dataset.edit, d = e.target.dataset.delj, all = mine();
+    if (k && all[k] && all[k].form) { editing = k; restore(all[k].form); scrollTo(0, 0); }
+    if (d && confirm('Delete "' + all[d].label + '" from this device?')) { delete all[d]; localStorage.setItem(KEY, JSON.stringify(all)); if (editing === d) editing = null; listSaved(); }
+  });
+
+  // ---- example to show the idea (Example button in the header) ----
+  var EX = { f: { name: 'Pat', age: '68', sex: 'F', level: 'AO', protocol: 'chest-pain', pc: 'Central chest pain ~30 min, not settling with rest.',
+    dispatch: 'P2, 1430, chest pain 68F. Farm 10 km west of Cummins. Husband calling. ~15 min.',
+    arrival: '1445. Sitting at the kitchen table, pale, hand flat on her chest. Husband anxious at the door.',
+    story: 'Hanging out washing at 1400: heavy central chest pain, into the jaw. Sweaty, nauseated. Never had it before.', phx: 'HTN, high cholesterol.',
+    meds: 'Perindopril, atorvastatin.', allergies: 'Nil known', comm: 'Nil known', findings: 'Pale, sweaty. Chest clear both sides.',
+    trauma: false, t0: '1447', rr: '20', spo2: '94', o2: 'RA', bp: '148/88', hr: '96', temp: '36.6', gcs: '15', pain: '7', bgl: '7.1', pupils: '+', sets: '3', gap: '10',
+    course: 'Pain eases a little after aspirin. EOC Clinician consulted. Transported to Cummins Hospital.', outcome: 't', dest: 'Cummins Hospital',
+    consult: true, medsHanded: true, dx: '?Acute coronary syndrome' }, trend: 'improve', obs: [],
+    drugs: [['1448', 'Aspirin (chewed)', '300', 'mg', 'Oral'], ['1449', 'Oxygen', '2', 'L/min', 'Nasal cannula'], ['1452', 'EOC Clinician consult'], ['1500', 'Carry chair to stretcher']], model: {} };
+  var exBtn = document.createElement('button'); exBtn.className = 'btn ghost'; exBtn.type = 'button'; exBtn.textContent = 'Fill an example'; exBtn.style.background = '#fff';
+  exBtn.addEventListener('click', function () { editing = null; restore(JSON.parse(JSON.stringify(EX))); $('gen').click(); $('draft').click(); });
+  document.querySelector('header').insertBefore(exBtn, document.querySelector('header a'));
+
+  chips(); drawObs(); drawDrugs(); drawModel(); listSaved();
+})();
+</script>
+</body>
+</html>
