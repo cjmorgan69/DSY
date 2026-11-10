@@ -36,5 +36,5 @@ window.DSY_TOPICS = [
   { id:'spinal', title:'Spinal precautions', protocol:'CPP-018-AO', patient:'Neil, 67: ladder fall, walked to the kitchen table',
     module:'spinal', walk:'/modules/spinal-ao/', stations:'/stations/spinal/', pcr:'neil' },
   { id:'dementia', title:'Dementia and changed behaviours', protocol:'CPP-017-AO', patient:'Joan, 84: doesn\'t recognise her husband tonight',
-    module:'dementia', walk:'/modules/dementia-ao/' }
+    module:'dementia', walk:'/modules/dementia-ao/', mdt:'dementia', custom:'dementia-ao', stations:'/stations/dementia/', pcr:'joan' }
 ];
