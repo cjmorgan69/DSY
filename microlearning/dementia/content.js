@@ -12,7 +12,7 @@
 
 var M = window.MODULE = {
   flow: true,
-  draft: true,                        // the session's de-escalation video slot waits for the owner's link
+  draft: false,                       // the de-escalation video slot (De-escalate panel) is hidden until its src is set
   title: "Dementia and changed behaviours",
   subtitle: "Ambulance Officer microlearning",
   headline: "Behaviour is communication",
@@ -52,7 +52,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "", title: "Behaviour is communication", notes: "Narrated intro video to be built." } },
+      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Behaviour is communication" } },
       { text: "People living with dementia often need ambulance care. Changed behaviours can be one of the hardest parts of that care: agitation, aggression, anxiety, refusing assessment, wandering, asking the same question again and again, or distress during transport or treatment." },
       { text: "It's easy to focus on the behaviour itself. This module looks at what may be driving it, and how understanding the cause can make care safer and kinder, for the patient and for you." },
       { box: { title: "Three ideas to carry through", tone: "warn", items: [
@@ -256,7 +256,7 @@ var M = window.MODULE = {
         "Acknowledge and redirect. \"They're trying to take my baby.\" Don't disagree: ask the baby's name",
         "Keep modulating in the ambulance: quiet, the lights down, a familiar person or object close by. Sensory tools may help: think about when to offer them"
       ] } },
-      { video: { src: "", title: "De-escalation video (CEP Dementia session)", notes: "Link from the lead instructor to be added." } },
+      { video: { src: "", title: "De-escalation video (CEP Dementia session)" } },  // owner to send the link
       { box: { title: "Talking points for the video (CEP session)", items: [
         "Which de-escalation skills were used? Which ones worked?",
         "Why was it important to take time, and to listen to the staff, who had probably been with her for hours?",
