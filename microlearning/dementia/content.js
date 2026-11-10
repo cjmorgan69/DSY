@@ -8,7 +8,7 @@
    The PLST and NDB models, the stressors, unmet needs and de-escalation points are from the SAAS CEP Semester 2 2026
    Dementia session (facilitator guide and PowerPoint, owner's files, not in the repo).
    Words: Dementia Australia "Dementia Language Guidelines" (2021, owner's PDF).
-   The case (Joan), checker scenarios and the practical are DSY-written for the owner to review. */
+   The case (Jo-Anne), checker scenarios and the practical are DSY-written for the owner to review. */
 
 var M = window.MODULE = {
   flow: true,
@@ -35,7 +35,7 @@ var M = window.MODULE = {
   footerNotes: [
     "The PLST and need-driven behaviour models, the stressors and the de-escalation points come from the SAAS CEP Semester 2 2026 Dementia session. Preferred words are from the Dementia Australia Dementia Language Guidelines (2021).",
     "CPP-017-AO v7.1 shows no review date. Check the SAAS Clinical app for newer versions.",
-    "Joan's case, the PAINAD scenarios, the practical and the notes marked \"DSY\" were written for training and should be checked by your lead instructor."
+    "Jo-Anne's case, the PAINAD scenarios, the practical and the notes marked \"DSY\" were written for training and should be checked by your lead instructor."
   ],
 
   session: {
@@ -46,7 +46,7 @@ var M = window.MODULE = {
       { t: "Need-driven behaviour", time: "12 min", text: "Read the NDB section. Ask: \"How might hearing loss change a patient's response to our assessment?\" and \"A patient suddenly becomes agitated: which physical causes do you think of first?\" Then the group exercise: for each behaviour, what unmet need might sit behind it?" },
       { t: "The video", time: "15 min", text: "Play the de-escalation video. Pause once the clinician has rapport and discuss the techniques used. Then finish it and discuss sensory tools, care en route, and pain: what was her PAINAD?" },
       { t: "The protocol", time: "10 min", text: "Read the CPP-017-AO sections. Check everyone can say what the EOC Clinician may recommend, and why restrictive practices are a last resort." },
-      { t: "Summary and quiz", time: "10 min", text: "Read the take-home messages aloud. Then everyone does the quiz alone. Next time: Joan's walk-through." }
+      { t: "Summary and quiz", time: "10 min", text: "Read the take-home messages aloud. Then everyone does the quiz alone. Next time: Jo-Anne's walk-through." }
     ]
   },
 
@@ -61,10 +61,10 @@ var M = window.MODULE = {
         "Understanding the reason behind the behaviour often improves patient outcomes and clinician safety"
       ] } },
       { box: { title: "Before you read on", items: [
-        "Joan, 84, has Alzheimer's disease. Tonight she doesn't recognise her husband Ray, says there's a strange man in the house, and pushed his hand away when he tried to help her",
-        "Instead of asking \"What's wrong with her?\", what is Joan trying to tell you?"
+        "Jo-Anne, 84, has Alzheimer's disease. Tonight she doesn't recognise her husband Ray, says there's a strange man in the house, and pushed his hand away when he tried to help her",
+        "Instead of asking \"What's wrong with her?\", what is Jo-Anne trying to tell you?"
       ] } },
-      { note: "Joan's case: DSY-written. Her full story is in the walk-through scenario." }
+      { note: "Jo-Anne's case: DSY-written. Her full story is in the walk-through scenario." }
     ] },
 
     { title: "Words matter", blocks: [
@@ -87,7 +87,7 @@ var M = window.MODULE = {
     { title: "Why behaviour changes: two models", blocks: [
       { text: "Two models help explain changed behaviours. Neither one sees the behaviour as deliberate misconduct. Both see it as a response to stress, the environment, or unmet needs." },
       { box: { title: "Progressively Lowered Stress Threshold (PLST)", tone: "warn",
-        check: { q: "Joan was calm when you arrived. Twenty minutes later, after obs, questions and the stretcher, she's shouting. What does the PLST model suggest?", a: "Stress has built up through her day and through your job, one thing after another, until she's past the point where she can regulate her emotions and behaviour. It's accumulated stress, not a reaction to one event. Take away what you can: slow down, one voice, less noise, fewer people." },
+        check: { q: "Jo-Anne was calm when you arrived. Twenty minutes later, after obs, questions and the stretcher, she's shouting. What does the PLST model suggest?", a: "Stress has built up through her day and through your job, one thing after another, until she's past the point where she can regulate her emotions and behaviour. It's accumulated stress, not a reaction to one event. Take away what you can: slow down, one voice, less noise, fewer people." },
         items: [
           "Dementia gradually lowers a person's tolerance to stress",
           "Stress builds up through the day",
@@ -179,9 +179,9 @@ var M = window.MODULE = {
         },
         scenariosNote: "Written for training by DSY. Score each one yourself before pressing the button.",
         scenarios: [
-          { title: "Joan in the kitchen", text: "Moaning now and then, frowning, grimaces when she shifts in the chair, pushed Ray's hand away, can't be settled by him. Breathing normal.",
+          { title: "Jo-Anne in the kitchen", text: "Moaning now and then, frowning, grimaces when she shifts in the chair, pushed Ray's hand away, can't be settled by him. Breathing normal.",
             values: { breath: "0", voc: "1", face: "2", body: "2", cons: "2" } },
-          { title: "Joan, 30 minutes later", text: "Quiet, hearing aids in, holding Ray's hand, a slight frown, a little fidgety, settles when spoken to. Breathing normal.",
+          { title: "Jo-Anne, 30 minutes later", text: "Quiet, hearing aids in, holding Ray's hand, a slight frown, a little fidgety, settles when spoken to. Breathing normal.",
             values: { breath: "0", voc: "0", face: "1", body: "1", cons: "1" } },
           { title: "Resting comfortably", text: "Asleep in her chair, relaxed, breathing quietly, no sounds.",
             values: { breath: "0", voc: "0", face: "0", body: "0", cons: "0" } }
@@ -274,7 +274,7 @@ var M = window.MODULE = {
         "Use caution in patients who may have used other drugs, such as psychostimulants or other CNS depressants"
       ] } },
       { box: { title: "De-escalation unsuccessful or agitation persists", tone: "no",
-        check: { q: "Joan is still very agitated after everything you've tried, and it isn't safe to move her. What does CPP-017-AO say next?", a: "Consider clinical support and consult the EOC Clinician, who may recommend oral lorazepam 1 to 3 mg or oral olanzapine 5 to 10 mg. If symptoms continue after 30 minutes, consult again. Monitor the respiratory rate and regular vital signs. Consider SAPOL where necessary, then facilitate transport for medical assessment." },
+        check: { q: "Jo-Anne is still very agitated after everything you've tried, and it isn't safe to move her. What does CPP-017-AO say next?", a: "Consider clinical support and consult the EOC Clinician, who may recommend oral lorazepam 1 to 3 mg or oral olanzapine 5 to 10 mg. If symptoms continue after 30 minutes, consult again. Monitor the respiratory rate and regular vital signs. Consider SAPOL where necessary, then facilitate transport for medical assessment." },
         steps: [
           { t: "Clinical support", text: "Consider it." },
           { t: "Consult the EOC Clinician", text: "Who may recommend oral lorazepam 1 mg to 3 mg, or oral olanzapine 5 to 10 mg." },
@@ -350,12 +350,12 @@ var M = window.MODULE = {
     ] } }] },
 
     { title: "Practical: the kitchen table", optional: true, collapsed: true, chip: "Optional", blocks: [
-      { text: "Optional. In threes: one person plays Joan, two are the crew. Swap after each round. The lead instructor can swap in a different activity." },
+      { text: "Optional. In threes: one person plays Jo-Anne, two are the crew. Swap after each round. The lead instructor can swap in a different activity." },
       { steps: [
-        { t: "Round 1: the rushed crew", text: "Both crew members talk at once, the TV stays on, and the crew contradicts Joan (\"That's your husband, Joan\"). Joan's player reacts honestly." },
+        { t: "Round 1: the rushed crew", text: "Both crew members talk at once, the TV stays on, and the crew contradicts Jo-Anne (\"That's your husband, Jo-Anne\"). Jo-Anne's player reacts honestly." },
         { t: "Round 2: LOWLINE", text: "One crew member talks. TV off, sit at her level, ask small permissions. Acknowledge and redirect: ask about her mum, where she grew up. The other watches for STAMP signs." },
-        { t: "Score it", text: "Joan's player says what made them calmer or more upset. The crew scores PAINAD and SAT for each round." },
-        { t: "Hand over", text: "Give a one-minute handover that includes what helped Joan and her PAINAD." }
+        { t: "Score it", text: "Jo-Anne's player says what made them calmer or more upset. The crew scores PAINAD and SAT for each round." },
+        { t: "Hand over", text: "Give a one-minute handover that includes what helped Jo-Anne and her PAINAD." }
       ] },
       { box: { title: "What good looks like", items: ["One voice, at her level, unhurried", "No contradicting or correcting", "Small permissions before each touch", "PAINAD and SAT scored and said in the handover"] } },
       { note: "Suggested activity written for training by DSY. Check it with your lead instructor." }
