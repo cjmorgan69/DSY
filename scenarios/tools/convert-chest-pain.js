@@ -11,7 +11,7 @@ const OUT = "/tmp/scenario-chest-pain"; fs.mkdirSync(OUT, { recursive: true });
 const SETTING_FARM_NEAR = "{{#setting=farm}}a rural property{{#town}} near {{town}},{{/town}}{{/setting}}{{#setting=town}}his home{{#town}} in {{town}},{{/town}}{{/setting}}";
 const WEATHER = "{{#sky=winter-dark}}Dark and cold.{{/sky}}{{#sky=winter-light}}Cold and overcast.{{/sky}}{{#sky=summer-dark}}Dark, and still warm.{{/sky}}{{#sky=summer-light}}Hot and dry.{{/sky}}";
 const PARTNER_PERSON = "{{#partner=wife}}a woman{{/partner}}{{#partner=husband}}a man{{/partner}}{{#partner=partner}}someone{{/partner}}";
-const BK = "{{backup_name|ICP}}";
+const BK = "{{backup_name|paramedic crew}}";
 const HOSP = "{{hospital|Cleve Hospital}}";
 
 // [exact text in content.js, template text]; each must match at least once
@@ -21,7 +21,7 @@ const swaps = [
   ["A 62 year old man", "A {{age}} year old man"],
   ["at a rural property 20 minutes from the nearest hospital", "at " + SETTING_FARM_NEAR + " {{transport}} minutes from the nearest hospital"],
   ["blankets (winter night)", "blankets{{#sky=winter-dark}} (winter night){{/sky}}"],
-  ["\"Nearest ICP: 55 minutes\"", "\"Nearest " + BK + ": {{backup_mins}} minutes\""],
+  ["\"Nearest paramedic crew: 55 minutes\"", "\"Nearest " + BK + ": {{backup_mins}} minutes\""],
   ["\"Cleve Hospital: 20 minutes\"", "\"" + HOSP + ": {{transport}} minutes\""],
   ["Clinician (AO1):", "Clinician (AO1{{#clinician}}, {{clinician}}{{/clinician}}):"],
   ["Driver (AO2):", "Driver (AO2{{#driver}}, {{driver}}{{/driver}}):"],
@@ -31,10 +31,10 @@ const swaps = [
   ["Wife on scene", "{{Partner}} on scene"],
   ["Access: sealed road then 2 km dirt. Gate open, lights on",
    "{{#setting=farm}}Access: sealed road then 2 km dirt. Gate open{{#dark}}, lights on{{/dark}}{{/setting}}{{#setting=town}}Access: sealed street, house number visible from the road{{#dark}}, porch light on{{/dark}}{{/setting}}"],
-  ["Backup: nearest ICP 55 minutes", "Backup: nearest " + BK + " {{backup_mins}} minutes"],
+  ["Backup: nearest paramedic crew 55 minutes", "Backup: nearest " + BK + " {{backup_mins}} minutes"],
   ["Destination: Cleve Hospital, 20 minutes", "Destination: " + HOSP + ", {{transport}} minutes"],
-  ["The ICP is 55 minutes away and the hospital 20.", "The " + BK + " is {{backup_mins}} minutes away and the hospital {{transport}}."],
-  ["knowing the hospital is closer than the ICP",
+  ["The paramedic crew is 55 minutes away and the hospital 20.", "The " + BK + " is {{backup_mins}} minutes away and the hospital {{transport}}."],
+  ["knowing the hospital is closer than the paramedic crew",
    "{{#closer=hospital}}knowing the hospital is closer than the " + BK + "{{/closer}}{{#closer=backup}}knowing the " + BK + " could reach you before you reach the hospital{{/closer}}{{#closer=same}}knowing the hospital and the " + BK + " are about the same distance away{{/closer}}"],
   ["The drive gives you 10 to 15 minutes of planning time.", "The drive gives you about {{response}} minutes of planning time."],
   ["2132. The gate is open. A well-lit farmhouse; a woman waves",
@@ -42,8 +42,8 @@ const swaps = [
   ["Started about 45 minutes ago while I was watching the footy.",
    "Started about 45 minutes ago {{#tod=evening}}while I was watching the footy{{/tod}}{{#tod=day}}while I was sitting reading the paper{{/tod}}{{#tod=night}}and woke me up{{/tod}}."],
   ["Last meal: dinner at 1830", "Last meal: {{#tod=day}}about 2 hours before the pain started{{/tod}}{{^tod=day}}dinner at 1830{{/tod}}"],
-  ["(ICP 55 minutes, hospital 20)", "(" + BK + " {{backup_mins}} minutes, hospital {{transport}})"],
-  ["They agree that transport is faster than waiting for the ICP.",
+  ["(paramedic crew 55 minutes, hospital 20)", "(" + BK + " {{backup_mins}} minutes, hospital {{transport}})"],
+  ["They agree that transport is faster than waiting for the paramedic crew.",
    "{{#closer=hospital}}They agree that transport is faster than waiting for the " + BK + ".{{/closer}}{{#closer=backup}}They agree to start transport now and, if the EOC arranges it, meet the " + BK + " on the way.{{/closer}}{{#closer=same}}They agree to start transport now rather than wait on scene.{{/closer}}"],
   ["This is [name], AO crew from [station].", "This is {{clinician|[name]}}, AO crew from {{station|[station]}}."],
   ["We're 20 minutes from Cleve Hospital.", "We're {{transport}} minutes from " + HOSP + "."],
@@ -80,7 +80,7 @@ const fields = [
   { key: "station", label: "Your station", type: "text", default: "", max: 30, group: "Place", placeholder: "e.g. Tumby Bay", help: "Used in the EOC Clinician call and the handover." },
   { key: "hospital", label: "Receiving hospital", type: "text", default: "", max: 30, help: "Leave blank for Cleve Hospital.", group: "Place", placeholder: "e.g. Port Lincoln Hospital" },
   { key: "transport", label: "Transport time to hospital (min)", type: "number", default: 20, min: 10, max: 120, group: "Place" },
-  { key: "backup_name", label: "Nearest clinical support", type: "text", default: "ICP", max: 30, group: "Place", help: "For example ICP or paramedic crew." },
+  { key: "backup_name", label: "Nearest clinical support", type: "text", default: "paramedic crew", max: 30, group: "Place", help: "For example paramedic crew or ICP." },
   { key: "backup_mins", label: "Clinical support time away (min)", type: "number", default: 55, min: 10, max: 180, group: "Place" },
   { key: "dispatch", label: "Time of the page", type: "time", default: "21:15", group: "Time" },
   { key: "season", label: "Season", type: "choice", default: "winter", group: "Time",
