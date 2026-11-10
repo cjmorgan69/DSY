@@ -13,7 +13,7 @@ const OUT = path.join(__dirname, '..', 'img');
   await p.goto('http://localhost:8765/mdt/');
   await p.evaluate(() => {
     const c = jobConfig(JOBS.find(j => j.id === 'chest-pain'), example());
-    Object.assign(c, { logon: 'no', speed: '1', gps: 'off' });
+    Object.assign(c, { logon: 'no', speed: '1', gps: 'off', callsign: 'CL81' }); // CL81 = Cleve (owner, 11 Nov 2026)
     startSim(c);
   });
   const dev = p.locator('#device');
