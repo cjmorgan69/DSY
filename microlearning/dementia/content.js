@@ -34,6 +34,7 @@ var M = window.MODULE = {
   relatedCodes: ["CPP-013-AO"],
   footerNotes: [
     "The PLST and need-driven behaviour models, the stressors and the de-escalation points come from the SAAS CEP Semester 2 2026 Dementia session. Preferred words are from the Dementia Australia Dementia Language Guidelines (2021).",
+    "The de-escalation video in the De-escalate section is from SA Ambulance Service (CEP Semester 2 2026, Dementia session). Credit and all rights belong to SA Ambulance Service; it is shown only to support SAAS volunteer training.",
     "CPP-017-AO v7.1 shows no review date. Check the SAAS Clinical app for newer versions.",
     "Jo-Anne's case, the PAINAD scenarios, the practical and the notes marked \"DSY\" were written for training and should be checked by your lead instructor."
   ],
@@ -257,7 +258,8 @@ var M = window.MODULE = {
         "Keep modulating in the ambulance: quiet, the lights down, a familiar person or object close by. Sensory tools may help: think about when to offer them"
       ] } },
       { text: "Watch the clinician in this video. In a session, pause once the clinician has built rapport with the patient and talk about the techniques used, then play the rest." },
-      { video: { src: "https://www.youtube.com/embed/vWBHc2wJUh8", title: "Dementia de-escalation (CEP Dementia session)" } },
+      { video: { src: "https://www.youtube.com/embed/vWBHc2wJUh8", title: "Dementia de-escalation (SA Ambulance Service, CEP Dementia session)" } },
+      { text: "Video: SA Ambulance Service, Clinical Education Program (CEP) Semester 2 2026, Dementia session. Credit and all rights belong to SA Ambulance Service. Shown here only to support training for SAAS volunteer crews.", muted: true },
       { box: { title: "Talking points for the video (CEP session)", items: [
         "Which de-escalation skills were used? Which ones worked?",
         "Why was it important to take time, and to listen to the staff, who had probably been with her for hours?",
