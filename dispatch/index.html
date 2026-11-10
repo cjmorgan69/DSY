@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Dispatch Week</title>
+<meta name="theme-color" content="#3a4552">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Patrick+Hand&display=swap">
+<style>
+/* Leaders-only dispatch timeline. One road per day; each job is an ambulance at its dispatch time.
+   Data: Supabase public.paging_jobs (row-level security lets leaders read). No data is stored in this file. */
+:root{
+  --bg:#e9f0f5; --card:#ffffff; --fg:#1d2a35; --muted:#5b6b79; --line:#c6d3de;
+  --road:#3a4552; --road-edge:#c9d2db; --night:rgba(10,25,60,.16); --tick:rgba(255,255,255,.14);
+  --accent:#0f6fb5; --chip:#ffffff; --danger:#b3392b;
+  --head:"Caveat Brush","Segoe Print","Comic Sans MS",cursive;
+  --body:"Patrick Hand","Segoe Print","Comic Sans MS",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1720; --card:#17222d; --fg:#e6edf3; --muted:#93a4b4; --line:#2b3947;
+    --road:#27303a; --road-edge:#56626f; --night:rgba(0,0,0,.28); --tick:rgba(255,255,255,.08);
+    --accent:#5fb0f0; --chip:#e6edf3; --danger:#ff8a7a; color-scheme:dark;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.35;
+  padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  -webkit-text-size-adjust:100%}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1{font-family:var(--head);font-weight:400;font-size:clamp(34px,7vw,52px);line-height:1;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0}
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.links{display:flex;gap:14px;flex-wrap:wrap;font-size:16px}
+.links a,.links button{color:var(--accent);background:none;border:0;font:inherit;cursor:pointer;text-decoration:underline;padding:0}
+.nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+button{font:inherit}
+.nav button{color:var(--fg);background:var(--card);border:2px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.nav button:disabled{opacity:.4;cursor:default}
+.nav .wk{font-family:var(--head);font-size:24px}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chips .lab{font-family:var(--head);font-size:22px;margin-right:2px}
+.chip{color:var(--fg);background:var(--card);border:2px solid var(--line);border-radius:999px;padding:5px 13px 5px 9px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.chip i{width:14px;height:14px;border-radius:50%;background:var(--tc);flex:none}
+.chip[aria-pressed="true"]{border-color:var(--tc)}
+.chip[aria-pressed="false"]{opacity:.55}
+.chip[aria-pressed="false"] i{background:transparent;border:2px solid var(--tc)}
+.chips .all{color:var(--accent);background:none;border:0;cursor:pointer;text-decoration:underline;padding:4px}
+.stats{display:flex;flex-wrap:wrap;gap:10px}
+.stat{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px 14px;min-width:0;flex:1 1 150px}
+.stat b{display:block;font-family:var(--head);font-weight:400;font-size:28px;line-height:1.05}
+.stat span{color:var(--muted);font-size:15px}
+.scroll{overflow-x:auto;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px 0 8px}
+.board{min-width:920px}
+.row{display:grid;grid-template-columns:84px 1fr;align-items:stretch;margin-bottom:8px}
+.dl{position:sticky;left:0;z-index:3;background:var(--card);padding:0 8px 0 14px;display:flex;flex-direction:column;justify-content:center}
+.dl b{font-family:var(--head);font-weight:400;font-size:24px;line-height:1}
+.dl span{color:var(--muted);font-size:15px}
+.dl em{font-style:normal;font-size:14px;color:var(--accent)}
+.axis{height:22px;margin-bottom:4px}
+.axis .track{position:relative}
+.axis i{position:absolute;top:0;font-style:normal;font-size:14px;color:var(--muted);transform:translateX(-50%)}
+.track{position:relative;margin-right:14px}
+.road{position:relative;background:var(--road);border-radius:10px;overflow:hidden;border-top:3px dashed var(--road-edge);border-bottom:3px dashed var(--road-edge)}
+.road .night{position:absolute;top:0;bottom:0;background:var(--night)}
+.road .tick{position:absolute;top:0;bottom:0;width:1px;background:var(--tick)}
+.road .quiet{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--road-edge);font-family:var(--head);font-size:20px;white-space:nowrap}
+.ab{position:absolute;transform:translateX(-50%);width:32px;height:32px;border-radius:50%;background:var(--tc,#7c8a98);border:3px solid var(--chip);font-size:18px;line-height:24px;text-align:center;padding:0;cursor:pointer}
+.ab::before{content:attr(data-pl);position:absolute;left:-9px;bottom:-9px;font-size:11px;line-height:1;background:var(--card);color:var(--fg);border:1.5px solid var(--line);border-radius:8px;padding:1px 4px}
+.ab.sel{box-shadow:0 0 0 3px var(--accent);z-index:2}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--muted);font-size:15px}
+.detail{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 16px;min-height:76px}
+.detail b{font-family:var(--head);font-weight:400;font-size:26px;display:block}
+.detail p{margin:2px 0 0;color:var(--muted)}
+.note{color:var(--muted);font-size:15px;margin:0}
+.auth{max-width:380px;margin:8vh auto 0;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.auth label{display:flex;flex-direction:column;gap:4px;font-size:16px}
+.auth input{font:inherit;font-size:17px;padding:9px 12px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg)}
+.auth .go{background:var(--road);color:#fff;border:0;border-radius:999px;padding:10px 16px;cursor:pointer}
+.err{color:var(--danger)}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:no-preference){.ab{transition:box-shadow .12s}}
+</style>
+<script src="../training/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+<div class="wrap" id="app"><p class="sub">Loading...</p></div>
+
+<script>
+(function () {
+  "use strict";
+  var C = window.TRAINING_APP;
+  var sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
+  var app = document.getElementById("app");
+
+  var DAYN = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  // Team = call sign letters. Only CU is a confirmed team name (Cummins); the rest are shown by code.
+  var TEAMS = {"CU":["Cummins","#0e9f8e"],"CO":["CO","#8a5cf6"],"EL":["EL","#e0752b"],"SB":["SB","#2f7fe0"],"PK":["PK","#d6457f"],"PL":["Port Lincoln (PL)","#64748b"]};
+  var EXTRA = ["#b8860b","#2a9d8f","#c2410c","#7e22ce","#0369a1","#be123c"];
+  var TRACK_PX = 860, PAD = 16, CHIP = 34;
+
+  var S = { weekStart: null, bounds: null, jobs: [], active: { PL: 0 }, selected: null, cache: {}, busy: false };
+
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function toDate(s) { var p = s.split("-"); return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); }
+  function iso(d) { return d.toISOString().slice(0, 10); }
+  function mondayOf(s) { var d = toDate(s), k = (d.getUTCDay() + 6) % 7; d.setUTCDate(d.getUTCDate() - k); return d; }
+  function mins(t) { var p = String(t).split(":"); return +p[0] * 60 + +p[1]; }
+  function hhmm(t) { return String(t).slice(0, 5); }
+  function todayAdelaide() { return new Intl.DateTimeFormat("en-CA", { timeZone: "Australia/Adelaide" }).format(new Date()); }
+  function frac(m) { return m / 1440; }
+  function pos(m) { return "calc(" + PAD + "px + (100% - " + (PAD * 2) + "px) * " + frac(m) + ")"; }
+  function codeOf(j) { return String(j.unit || "").replace(/\d+$/, ""); }
+  var extraMap = {};
+  function teamOf(j) {
+    var c = codeOf(j);
+    if (TEAMS[c]) return TEAMS[c];
+    if (!extraMap[c]) extraMap[c] = [c || "?", EXTRA[Object.keys(extraMap).length % EXTRA.length]];
+    return extraMap[c];
+  }
+
+  /* ---------- sign in ---------- */
+  function loginEmail(v) { v = String(v || "").trim(); if (v.indexOf("@") > -1) return v.toLowerCase(); return v.toLowerCase().replace(/[^a-z0-9]/g, "") + "@id.dsytraining.com"; }
+  function renderAuth(msg) {
+    app.textContent = "";
+    var f = el("form", "auth");
+    f.appendChild(el("h1", null, "Dispatch Week 🚑"));
+    f.appendChild(el("p", "sub", "Leaders only. Sign in with the same details as the team training app."));
+    var l1 = el("label", null, "Ambulance ID number (or email)"), i1 = el("input"); i1.id = "f-id"; i1.name = "id"; i1.autocomplete = "username"; i1.autocapitalize = "none"; i1.spellcheck = false; i1.required = true; l1.appendChild(i1); f.appendChild(l1);
+    var l2 = el("label", null, "Password"), i2 = el("input"); i2.id = "f-pw"; i2.name = "pw"; i2.type = "password"; i2.autocomplete = "current-password"; i2.required = true; l2.appendChild(i2); f.appendChild(l2);
+    var m = el("p", "err", msg || ""); m.id = "auth-msg"; m.hidden = !msg; f.appendChild(m);
+    var b = el("button", "go", "Sign in"); b.type = "submit"; f.appendChild(b);
+    f.addEventListener("submit", function (e) {
+      e.preventDefault(); b.disabled = true;
+      sb.auth.signInWithPassword({ email: loginEmail(i1.value), password: i2.value }).then(function (r) {
+        if (r.error) { b.disabled = false; m.textContent = "That sign in did not work. Check the ID number and password."; m.hidden = false; }
+      });
+    });
+    app.appendChild(f);
+  }
+  function renderDenied() {
+    app.textContent = "";
+    var f = el("div", "auth");
+    f.appendChild(el("h1", null, "Leaders only"));
+    f.appendChild(el("p", "sub", "This page shows job details and is only open to team leaders. If you should have access, ask the lead instructor."));
+    var b = el("button", "go", "Sign out"); b.type = "button"; b.addEventListener("click", function () { sb.auth.signOut(); }); f.appendChild(b);
+    app.appendChild(f);
+  }
+
+  /* ---------- data ---------- */
+  function q(p) { return p.then(function (r) { if (r.error) throw r.error; return r.data; }); }
+  function loadBounds() {
+    return Promise.all([
+      q(sb.from("paging_jobs").select("job_date").order("job_date", { ascending: true }).limit(1)),
+      q(sb.from("paging_jobs").select("job_date,dispatched_at").order("dispatched_at", { ascending: false }).limit(1))
+    ]).then(function (r) {
+      if (!r[0].length) return null;
+      return { min: r[0][0].job_date, max: r[1][0].job_date, latest: r[1][0].dispatched_at };
+    });
+  }
+  function loadWeek(mon) {
+    var key = iso(mon);
+    if (S.cache[key] && key !== iso(mondayOf(todayAdelaide()))) return Promise.resolve(S.cache[key]);
+    var sun = new Date(mon); sun.setUTCDate(sun.getUTCDate() + 6);
+    return q(sb.from("paging_jobs").select("job_key,job_date,job_time,locality,job_type,priority,unit,job_no")
+      .gte("job_date", key).lte("job_date", iso(sun)).order("dispatched_at", { ascending: true }).limit(1000))
+      .then(function (rows) { S.cache[key] = rows; return rows; });
+  }
+
+  /* ---------- timeline ---------- */
+  function shell() {
+    app.textContent = "";
+    var top = el("div", "top"), left = el("div");
+    left.appendChild(el("h1", null, "Dispatch Week 🚑"));
+    left.appendChild(el("p", "sub", "SAAS jobs paged for postcodes 5605, 5606, 5607 and 5631. Pick which teams to show. Port Lincoln (PL) starts switched off. Times are Adelaide local."));
+    var lk = el("div", "links");
+    var home = el("a", null, "DSY home"); home.href = "../"; lk.appendChild(home);
+    var so = el("button", null, "Sign out"); so.type = "button"; so.addEventListener("click", function () { sb.auth.signOut(); }); lk.appendChild(so);
+    left.appendChild(lk);
+    top.appendChild(left);
+    var nav = el("div", "nav");
+    var pv = el("button", null, "‹ Earlier"); pv.type = "button"; pv.id = "prev";
+    var wk = el("span", "wk"); wk.id = "wk";
+    var nx = el("button", null, "Later ›"); nx.type = "button"; nx.id = "next";
+    pv.addEventListener("click", function () { step(-7); }); nx.addEventListener("click", function () { step(7); });
+    nav.appendChild(pv); nav.appendChild(wk); nav.appendChild(nx);
+    top.appendChild(nav);
+    app.appendChild(top);
+    var chips = el("div", "chips"); chips.id = "chips"; chips.setAttribute("role", "group"); chips.setAttribute("aria-label", "Teams to show"); app.appendChild(chips);
+    var st = el("div", "stats"); st.id = "stats"; app.appendChild(st);
+    var sc = el("div", "scroll"), bd = el("div", "board"); bd.id = "board"; sc.appendChild(bd); app.appendChild(sc);
+    var lg = el("div", "legend");
+    ["Colour = team (call sign letters)", "Small P number = priority", "Shaded = overnight (before 6am, after 6pm)"].forEach(function (t) { lg.appendChild(el("span", null, t)); });
+    app.appendChild(lg);
+    var dt = el("div", "detail"); dt.id = "detail"; dt.setAttribute("aria-live", "polite");
+    dt.appendChild(el("b", null, "Tap an ambulance")); dt.appendChild(el("p", null, "You will see the time, place and type of job."));
+    app.appendChild(dt);
+    var nt = el("p", "note"); nt.id = "note"; app.appendChild(nt);
+  }
+  function step(days) {
+    var d = new Date(S.weekStart); d.setUTCDate(d.getUTCDate() + days);
+    if (iso(d) < iso(mondayOf(S.bounds.min)) || iso(d) > iso(mondayOf(S.bounds.max))) return;
+    S.weekStart = d; showWeek();
+  }
+  function showWeek() {
+    var mon = S.weekStart;
+    document.getElementById("board").style.opacity = ".5";
+    loadWeek(mon).then(function (rows) {
+      if (mon !== S.weekStart) return;
+      S.jobs = rows; document.getElementById("board").style.opacity = ""; render();
+    }).catch(function (e) { document.getElementById("note").textContent = "Could not load this week: " + (e && e.message || e); });
+  }
+  function drawChips(weekAll) {
+    var box = document.getElementById("chips"); box.textContent = "";
+    box.appendChild(el("span", "lab", "Teams"));
+    var seen = {}, codes = [];
+    Object.keys(TEAMS).forEach(function (c) { seen[c] = 1; codes.push(c); });
+    weekAll.forEach(function (j) { var c = codeOf(j); if (!seen[c]) { seen[c] = 1; codes.push(c); } });
+    codes = codes.filter(function (c) { return c === "PL" || weekAll.some(function (j) { return codeOf(j) === c; }) || TEAMS[c]; });
+    codes.forEach(function (c) {
+      var n = weekAll.filter(function (j) { return codeOf(j) === c; }).length;
+      if (!n) return; // only teams with jobs in the week on screen
+      var t = TEAMS[c] || extraMap[c] || [c, "#7c8a98"];
+      var b = el("button", "chip"); b.type = "button"; b.setAttribute("aria-pressed", S.active[c] === 0 ? "false" : "true");
+      b.style.setProperty("--tc", t[1]); b.appendChild(el("i")); b.appendChild(document.createTextNode(t[0] + " · " + n));
+      b.addEventListener("click", function () { S.active[c] = S.active[c] === 0 ? 1 : 0; render(); });
+      box.appendChild(b);
+    });
+    var all = el("button", "all", "Show all"); all.type = "button";
+    all.addEventListener("click", function () { Object.keys(S.active).forEach(function (c) { S.active[c] = 1; }); render(); });
+    box.appendChild(all);
+  }
+  function show(j) {
+    var d = document.getElementById("detail"); d.textContent = "";
+    var dt = toDate(j.job_date);
+    d.appendChild(el("b", null, hhmm(j.job_time) + "  " + j.job_type));
+    d.appendChild(el("p", null, j.locality + " · " + DAYN[dt.getUTCDay()] + " " + dt.getUTCDate() + " " + MON[dt.getUTCMonth()]));
+    d.appendChild(el("p", null, "Priority " + j.priority + " · call sign " + j.unit + " (" + teamOf(j)[0] + ") · job " + j.job_no));
+  }
+  function render() {
+    var mon = S.weekStart, days = [], today = todayAdelaide();
+    teamsPrime(S.jobs);
+    for (var i = 0; i < 7; i++) { var d = new Date(mon); d.setUTCDate(d.getUTCDate() + i); days.push(d); }
+    var sun = days[6];
+    document.getElementById("wk").textContent = "Mon " + mon.getUTCDate() + " " + MON[mon.getUTCMonth()] + " to Sun " + sun.getUTCDate() + " " + MON[sun.getUTCMonth()];
+    document.getElementById("prev").disabled = iso(mon) <= iso(mondayOf(S.bounds.min));
+    document.getElementById("next").disabled = iso(mon) >= iso(mondayOf(S.bounds.max));
+    var weekAll = S.jobs, inWeek = weekAll.filter(function (j) { return S.active[codeOf(j)] !== 0; });
+    drawChips(weekAll);
+
+    var byDay = {}, byType = {};
+    inWeek.forEach(function (j) { byDay[j.job_date] = (byDay[j.job_date] || 0) + 1; byType[j.job_type] = (byType[j.job_type] || 0) + 1; });
+    var busiest = null; Object.keys(byDay).forEach(function (k) { if (!busiest || byDay[k] > byDay[busiest]) busiest = k; });
+    var topType = null; Object.keys(byType).forEach(function (k) { if (!topType || byType[k] > byType[topType]) topType = k; });
+    var stats = document.getElementById("stats"); stats.textContent = "";
+    function stat(big, small) { var s = el("div", "stat"); s.appendChild(el("b", null, big)); s.appendChild(el("span", null, small)); stats.appendChild(s); }
+    stat(String(inWeek.length), "jobs this week");
+    if (busiest) { var bd = toDate(busiest); stat(DAYN[bd.getUTCDay()] + " " + bd.getUTCDate() + " " + MON[bd.getUTCMonth()], busiest === today ? "busiest so far (" + byDay[busiest] + " jobs)" : "busiest day (" + byDay[busiest] + " jobs)"); }
+    if (topType) stat(topType, "most common (" + byType[topType] + ")");
+
+    var board = document.getElementById("board"); board.textContent = "";
+    var ax = el("div", "row axis"); ax.appendChild(el("div", "dl"));
+    var at = el("div", "track");
+    [0, 3, 6, 9, 12, 15, 18, 21].forEach(function (h) { var i = el("i", null, h === 0 ? "12am" : h === 12 ? "12pm" : h < 12 ? h + "am" : (h - 12) + "pm"); i.style.left = pos(h * 60); at.appendChild(i); });
+    ax.appendChild(at); board.appendChild(ax);
+
+    days.forEach(function (day) {
+      var key = iso(day), js = inWeek.filter(function (j) { return j.job_date === key; }).sort(function (a, b) { return mins(a.job_time) - mins(b.job_time); });
+      var row = el("div", "row"), dl = el("div", "dl");
+      dl.appendChild(el("b", null, DAYN[day.getUTCDay()])); dl.appendChild(el("span", null, day.getUTCDate() + " " + MON[day.getUTCMonth()]));
+      var future = key > today;
+      dl.appendChild(el("em", null, future ? "" : (js.length + (js.length === 1 ? " job" : " jobs") + (key === today ? " so far" : ""))));
+      row.appendChild(dl);
+      var lanes = [], place = js.map(function (j) {
+        var x = PAD + (TRACK_PX - PAD * 2) * frac(mins(j.job_time)), l = 0;
+        while (lanes[l] !== undefined && x - lanes[l] < CHIP + 2) l++;
+        lanes[l] = x; return l;
+      });
+      var nl = Math.max(1, lanes.length), h = nl * (CHIP + 4) + 10;
+      var track = el("div", "track"), road = el("div", "road"); road.style.height = h + "px";
+      var n1 = el("div", "night"); n1.style.left = "0"; n1.style.width = "calc((100% - " + (PAD * 2) + "px) * .25 + " + PAD + "px)"; road.appendChild(n1);
+      var n2 = el("div", "night"); n2.style.left = pos(1080); n2.style.width = "calc((100% - " + (PAD * 2) + "px) * .25 + " + PAD + "px)"; road.appendChild(n2);
+      for (var hh = 3; hh < 24; hh += 3) { var t = el("div", "tick"); t.style.left = pos(hh * 60); road.appendChild(t); }
+      if (!js.length) road.appendChild(el("div", "quiet", future ? "not yet" : "quiet day"));
+      js.forEach(function (j, idx) {
+        var b = el("button", "ab", "🚑"); b.type = "button"; b.dataset.pl = "P" + j.priority; b.style.setProperty("--tc", teamOf(j)[1]);
+        b.style.left = pos(mins(j.job_time)); b.style.top = (5 + place[idx] * (CHIP + 4)) + "px";
+        b.setAttribute("aria-label", hhmm(j.job_time) + " " + j.job_type + ", " + j.locality + ", priority " + j.priority);
+        b.addEventListener("click", function () { S.selected = j.job_key; show(j); render(); });
+        if (S.selected === j.job_key) b.classList.add("sel");
+        road.appendChild(b);
+      });
+      track.appendChild(road); row.appendChild(track); board.appendChild(row);
+    });
+    var latest = S.bounds.latest ? new Date(S.bounds.latest).toLocaleString("en-AU", { timeZone: "Australia/Adelaide", weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "";
+    document.getElementById("note").textContent = "Live from the paging feed, which is captured once a day at about 9am. Latest job in the data: " + latest + ". It shows jobs only, nothing about who was on duty. Colours follow the letters of the call sign (CU181 is Cummins); other codes are not named.";
+  }
+  function teamsPrime(rows) { rows.forEach(teamOf); }
+
+  /* ---------- start ---------- */
+  function start(session) {
+    if (!session) { renderAuth(); return; }
+    q(sb.from("profiles").select("role").eq("id", session.user.id)).then(function (rows) {
+      if (!rows.length || rows[0].role !== "leader") { renderDenied(); return; }
+      return loadBounds().then(function (b) {
+        if (!b) { app.textContent = ""; app.appendChild(el("p", "sub", "No jobs have been captured yet.")); return; }
+        S.bounds = b; S.weekStart = mondayOf(b.max); shell(); showWeek();
+      });
+    }).catch(function (e) { app.textContent = ""; app.appendChild(el("p", "err", "Something went wrong: " + (e && e.message || e))); });
+  }
+  var started = false;
+  sb.auth.onAuthStateChange(function (event, session) {
+    if (event === "TOKEN_REFRESHED") return;
+    if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "SIGNED_OUT") {
+      if (event === "SIGNED_IN" && started && session) return;
+      started = !!session; S.cache = {}; start(session);
+    }
+  });
+})();
+</script>
+</body>
+</html>
