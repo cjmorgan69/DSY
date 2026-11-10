@@ -3,10 +3,11 @@
    module: folder under /microlearning/   walk: walk-through page (add ?mode=student for students)
    mdt: job id in /mdt/jobs.js   stations: practical skills stations page, if any
    custom: slug in the scenario customiser (/scenarios/), if it can be customised
-   pcr: job id in /tools/pcr/jobs.js (PCR trainer: write the patient care record after the walk-through) */
+   pcr: job id in /tools/pcr/jobs.js (PCR trainer: write the patient care record after the walk-through)
+   slides: classroom case-night deck (video, walk-through, MDT, PCR in one slide show), if any */
 window.DSY_TOPICS = [
   { id:'chest-pain', title:'Chest pain', protocol:'CPP-007-AO', patient:'Graham, 62: chest pain not settling with his own GTN',
-    module:'chest-pain', walk:'/modules/chest-pain/', mdt:'chest-pain', custom:'chest-pain-ao', stations:'/stations/chest-pain-acpo/', pcr:'graham' },
+    module:'chest-pain', walk:'/modules/chest-pain/', mdt:'chest-pain', custom:'chest-pain-ao', stations:'/stations/chest-pain-acpo/', pcr:'graham', slides:'/classroom/chest-pain/' },
   { id:'asthma', title:'Asthma', protocol:'CPP-050-AO', patient:'Karen, 45: more severe asthma at 2 am',
     module:'asthma', walk:'/modules/asthma-ao/', mdt:'asthma', custom:'asthma-ao', stations:'/stations/asthma/', pcr:'karen' },
   { id:'anaphylaxis', title:'Anaphylaxis', protocol:'CPP-003-AO', patient:'David, 54: bee sting and an expired EpiPen',
