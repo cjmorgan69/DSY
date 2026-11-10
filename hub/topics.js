@@ -34,5 +34,7 @@ window.DSY_TOPICS = [
   { id:'mva-baseline', title:'Baseline obs at a high-speed MVA', protocol:'CPP-063-AO', patient:'Jason, 34: rollover near Cummins, walking and "fine"',
     module:'mva-baseline', walk:'/modules/mva-ao/', mdt:'mva', custom:'mva-ao', stations:'/stations/mva/', pcr:'jason' },
   { id:'spinal', title:'Spinal precautions', protocol:'CPP-018-AO', patient:'Neil, 67: ladder fall, walked to the kitchen table',
-    module:'spinal', walk:'/modules/spinal-ao/', stations:'/stations/spinal/', pcr:'neil' }
+    module:'spinal', walk:'/modules/spinal-ao/', stations:'/stations/spinal/', pcr:'neil' },
+  { id:'dementia', title:'Dementia and changed behaviours', protocol:'CPP-017-AO', patient:'Joan, 84: doesn\'t recognise her husband tonight',
+    module:'dementia', walk:'/modules/dementia-ao/' }
 ];

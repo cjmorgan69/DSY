@@ -2,6 +2,10 @@
    codes in its relatedCodes). Each page lists the others under "Built on the same protocol" and leaves itself out.
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
+  "CPP-017-AO": [
+    { kind: "Microlearning module", title: "Dementia and changed behaviours", href: "/microlearning/dementia/", text: "Behaviour is communication: the PLST and need-driven behaviour models, looking for the cause first, PAINAD, STAMP and LOWLINE, and the AO Acute Behavioural Disturbance protocol." },
+    { kind: "Walk-through scenario", title: "Dementia - AO: Joan, 84", href: "/modules/dementia-ao/", text: "Two-person AO crew near Cummins: a woman living with Alzheimer's disease who doesn't recognise her husband tonight. Risk assessment, de-escalation, pain and a possible infection, PAINAD, voluntary care and a calm trip. Facilitator and student versions." }
+  ],
   "CPP-018-AO": [
     { kind: "Microlearning module", title: "Walked in, still not cleared", href: "/microlearning/spinal/", text: "A ladder fall, a knock-out and a patient who denies neck pain: the CPP-018-AO red flags, self-extrication risk factors, the modified towel roll, pain relief and ondansetron." },
     { kind: "Walk-through scenario", title: "Spinal precautions - AO: Neil, 67", href: "/modules/spinal-ao/", text: "Two-person AO crew in Tumby Bay: a ladder fall, a knock-out, a patient who walked to the kitchen table, the towel roll, pain relief, ondansetron and the handover. Facilitator and student versions." },
