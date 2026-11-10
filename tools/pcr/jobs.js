@@ -825,9 +825,9 @@ window.PCR_JOBS = {
     marks: [['back', 54, 10, 'S', 7], ['front', 60, 110, 'P', 6]]
   },
 
-  joan: {
-    label: 'Joan, 84: dementia and changed behaviour (AO)',
-    short: 'Joan',
+  joanne: {
+    label: 'Jo-Anne, 84: dementia and changed behaviour (AO)',
+    short: 'Jo-Anne',
     walk: '/modules/dementia-ao/',
     note: 'Main path: she settles and goes voluntarily to Cummins Hospital with Ray.',
     // From /modules/dementia-ao/. Times 1855 (TV off) and 1948 (left scene) are DSY's; the rest are the walk-through's.

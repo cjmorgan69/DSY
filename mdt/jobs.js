@@ -150,9 +150,9 @@ window.MDT_JOBS = [
     unitLoc:'CUMMINS AMBULANCE STATION',
     remarks:'PENDANT ALARM ACTIVATED - PT ANSWERED MONITORING SERVICE\nPT ON BATHROOM FLOOR - CANT GET UP\nPT STATES ON FLOOR "SINCE ABOUT 3"\nLIVES ALONE - KEY SAFE BY FRONT DOOR - CODE 4471\nDAUGHTER (SUE) IN PORT LINCOLN NOTIFIED\n+3 MONITORING SERVICE: PT STILL TALKING - SAYS SHE IS COLD\n+6 FRONT PORCH LIGHT ON',
     expected:'CUMMINS HOSPITAL, about 5 minutes (scenario)' },
-  { id:'dementia', label:'Dementia: Joan, 84 (farmhouse near Cummins, 1840)', scenario:'/modules/dementia-ao/',
+  { id:'dementia', label:'Dementia: Jo-Anne, 84 (farmhouse near Cummins, 1840)', scenario:'/modules/dementia-ao/',
     priority:'2', startTime:'18:40', typeName:'Behavioural disturbance', town:'Cummins', street:'FARMHOUSE 12 KM NORTH',
-    note:'84F AGITATED - HX DEMENTIA', patient:'PEDLER, JOAN', age:'84Y', weight:'', caller:'HUSBAND - RAY (ON SCENE)',
+    note:'84F AGITATED - HX DEMENTIA', patient:'SMITH, JO-ANNE', age:'84Y', weight:'', caller:'HUSBAND - RAY (ON SCENE)',
     unitLoc:'CUMMINS AMBULANCE STATION',
     remarks:'HX DEMENTIA - AGITATED - DOES NOT RECOGNISE HUSBAND\nPUSHED HUSBAND AWAY - NO INJURIES\nNO WEAPONS - NO THREATS\nHUSBAND SAFE - WILL WAIT AT FRONT DOOR\n+4 HUSBAND: PT WALKING UP AND DOWN KITCHEN - SAYS SHE WANTS TO GO HOME TO MUM\n+9 HUSBAND HAS TURNED TV DOWN - FRONT LIGHT ON',
     expected:'CUMMINS HOSPITAL, about 15 minutes (scenario)' }
@@ -206,6 +206,6 @@ window.MDT_JOBS = [
     v => U(v.hospital || 'Cummins District Hospital'));
   link('falls', 'falls-ao', { patient:'Mavis', age:'81', town:'Cummins', station:'Cummins', hospital_town:'Cummins', response:'8', transport:'5', dispatch:'06:30' },
     town('hospital_town', 'Cummins'));
-  link('dementia', 'dementia-ao', { patient:'Joan', age:'84', partner:'husband', partner_name:'Ray', town:'Cummins', station:'Cummins', hospital_town:'Cummins', response:'12', transport:'15', dispatch:'18:40' },
+  link('dementia', 'dementia-ao', { patient:'Jo-Anne', age:'84', partner:'husband', partner_name:'Ray', town:'Cummins', station:'Cummins', hospital_town:'Cummins', response:'12', transport:'15', dispatch:'18:40' },
     town('hospital_town', 'Cummins'));
 })();
