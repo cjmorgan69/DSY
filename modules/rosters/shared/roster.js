@@ -2656,7 +2656,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
          * The user is only asked to phone when the backend has not
          * confirmed an automatic email.
          */
-        function showHardCopyChangeOutcome(action, data) {
+        function showHardCopyChangeOutcome(action, data, calendarEvent) {
             const messages = {
                 booked: {
                     done: "Your shift was booked successfully.",
@@ -2664,24 +2664,32 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                     phone: "Your shift was booked."
                 },
                 cancelled: {
-                    done: "Shift cancelled.",
+                    done: "Shift cancelled. If it's in your calendar, delete it there too.",
                     emailed: "Shift cancelled. Country Rostering has been notified by email.",
                     phone: "Shift cancelled."
                 },
                 changed: {
-                    done: "Shift changed.",
+                    done: "Shift changed. If it's in your calendar, update it there too.",
                     emailed: "Shift changed. Country Rostering has been notified by email.",
                     phone: "Shift changed."
                 }
             }[action] || {};
 
+            // After a booking, offer the shift as a calendar file.
+            const calendarAction = calendarEvent
+                ? {
+                    label: "📅 Add to calendar",
+                    onClick: () => downloadShiftCalendarFile(calendarEvent)
+                }
+                : undefined;
+
             if (!data.requiresCentralNotification) {
-                showToast(messages.done);
+                showToast(messages.done, calendarAction);
                 return;
             }
 
             if (data.countryRosteringEmailed === true) {
-                showToast(messages.emailed);
+                showToast(messages.emailed, calendarAction);
                 return;
             }
 
@@ -2691,6 +2699,10 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 "\n\nPlease phone Country Rostering now to advise them " +
                 "of the change on 1300 850 985."
             );
+
+            if (calendarAction) {
+                showToast(messages.phone, calendarAction);
+            }
         }
 
         async function bookSelectedShift() {
@@ -2787,7 +2799,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 lastCentralRosteringWarningKey = "";
 
                showThankYouConfetti();
-                showHardCopyChangeOutcome("booked", data);
+                showHardCopyChangeOutcome("booked", data, newEvent);
 
                 // No extra reload: the save response supplied the roster.
                 showLoadedConnectionStatus();
@@ -5477,9 +5489,18 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                         () => openShiftEditor(event, item)
                     );
 
+                    const calendarButton = document.createElement("button");
+                    calendarButton.className = "btn-secondary btn-small";
+                    calendarButton.type = "button";
+                    calendarButton.textContent = "📅 Add to calendar";
+                    calendarButton.addEventListener(
+                        "click",
+                        () => downloadShiftCalendarFile(event)
+                    );
+
                     const actions = document.createElement("div");
                     actions.className = "shift-actions";
-                    actions.append(editButton, deleteButton);
+                    actions.append(calendarButton, editButton, deleteButton);
 
                     item.append(information, actions);
                 } else {
@@ -8126,14 +8147,95 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 .replace(/'/g, "&#039;");
         }
 
-        function showToast(message) {
+        function showToast(message, action) {
             clearTimeout(toastTimer);
             toast.textContent = message;
+            toast.classList.toggle("has-action", Boolean(action));
+
+            // Optional button, e.g. "Add to calendar" after a booking.
+            if (action) {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "toast-action";
+                button.textContent = action.label;
+                button.addEventListener("click", () => {
+                    toast.classList.remove("show");
+                    action.onClick();
+                });
+                toast.append(" ", button);
+            }
+
             toast.classList.add("show");
 
             toastTimer = setTimeout(() => {
                 toast.classList.remove("show");
-            }, 5000);
+            }, action ? 10000 : 5000);
+        }
+
+        /* ----- Calendar file for a shift -----
+         *
+         * Builds a standard .ics event (no alarm) and downloads it. iPhones
+         * offer to view the file, then "Add to Calendar"; other phones and
+         * computers open the downloaded file in their calendar app. The event does not update if the
+         * shift is later changed or cancelled.
+         */
+        function icsText(value) {
+            return String(value ?? "")
+                .replace(/\\/g, "\\\\")
+                .replace(/\r?\n/g, "\\n")
+                .replace(/([,;])/g, "\\$1");
+        }
+
+        function icsDate(value) {
+            return new Date(value).toISOString()
+                .replace(/[-:]/g, "")
+                .replace(/\.\d{3}/, "");
+        }
+
+        function buildShiftCalendarFile(event) {
+            const pageUrl = location.href.split("#")[0];
+            const details = [
+                `${event.user} · ${event.clinicalLevel || "Level not set"} · ` +
+                    `Flexibility ${event.restriction || "N"}`,
+                `${TEAM_NAME} roster: ${pageUrl}`,
+                "If this shift changes or is cancelled, update your calendar too."
+            ].join("\n");
+
+            return [
+                "BEGIN:VCALENDAR",
+                "VERSION:2.0",
+                "PRODID:-//DSY Training//Crew Shift Roster//EN",
+                "CALSCALE:GREGORIAN",
+                "METHOD:PUBLISH",
+                "BEGIN:VEVENT",
+                `UID:${icsText(event.id)}@dsytraining.com`,
+                `DTSTAMP:${icsDate(new Date())}`,
+                `DTSTART:${icsDate(event.start)}`,
+                `DTEND:${icsDate(event.end)}`,
+                `SUMMARY:${icsText(`Ambulance shift – ${TEAM_NAME}`)}`,
+                `DESCRIPTION:${icsText(details)}`,
+                `URL:${pageUrl}`,
+                "END:VEVENT",
+                "END:VCALENDAR",
+                ""
+            ].join("\r\n");
+        }
+
+        function downloadShiftCalendarFile(event) {
+            const ics = buildShiftCalendarFile(event);
+            const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download =
+                `${TEAM_NAME.replace(/\s+/g, "-")}-shift-` +
+                `${formatDateKey(new Date(event.start))}.ics`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
 
          /*
