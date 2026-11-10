@@ -12,7 +12,7 @@
 
 var M = window.MODULE = {
   flow: true,
-  draft: false,                       // the de-escalation video slot (De-escalate panel) is hidden until its src is set
+  draft: false,
   title: "Dementia and changed behaviours",
   subtitle: "Ambulance Officer microlearning",
   headline: "Behaviour is communication",
@@ -256,7 +256,8 @@ var M = window.MODULE = {
         "Acknowledge and redirect. \"They're trying to take my baby.\" Don't disagree: ask the baby's name",
         "Keep modulating in the ambulance: quiet, the lights down, a familiar person or object close by. Sensory tools may help: think about when to offer them"
       ] } },
-      { video: { src: "", title: "De-escalation video (CEP Dementia session)" } },  // owner to send the link
+      { text: "Watch the clinician in this video. In a session, pause once the clinician has built rapport with the patient and talk about the techniques used, then play the rest." },
+      { video: { src: "https://www.youtube.com/embed/vWBHc2wJUh8", title: "Dementia de-escalation (CEP Dementia session)" } },
       { box: { title: "Talking points for the video (CEP session)", items: [
         "Which de-escalation skills were used? Which ones worked?",
         "Why was it important to take time, and to listen to the staff, who had probably been with her for hours?",
