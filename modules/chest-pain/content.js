@@ -48,9 +48,8 @@ window.MODULE = {
       ] } },
       { box: { title: "Timing and resources", items: [
         "Pre-brief about 10 minutes; walk-through about 65 minutes; debrief 10 to 15 minutes",
-        "Nearest ICP: 55 minutes",
+        "Nearest paramedic crew: 60 minutes",
         "Cleve Hospital: 20 minutes",
-        "MedSTAR retrieval: to be confirmed",
         "EOC Clinician: available by phone"
       ] } },
       { box: { title: "Crew roles", items: [
@@ -104,17 +103,17 @@ window.MODULE = {
         "62 year old male, chest pain for 30 minutes",
         "Known angina, has own GTN. Pain not resolving with own GTN. Wife on scene",
         "Access: sealed road then 2 km dirt. Gate open, lights on",
-        "Backup: nearest ICP 55 minutes. MedSTAR to be confirmed",
+        "Backup: nearest paramedic crew 60 minutes",
         "Destination: Cleve Hospital, 20 minutes"
       ] } },
       { breakpoint: { title: "En-route planning", type: "Discussion",
-        prompts: ["What does the MDT tell you about this patient and the urgency?", "His own GTN has not settled the pain. What does that suggest?", "What kit goes to the door, and who carries what?", "What is your plan if he goes into cardiac arrest?", "The ICP is 55 minutes away and the hospital 20. What is your clinical support plan?"],
+        prompts: ["What does the MDT tell you about this patient and the urgency?", "His own GTN has not settled the pain. What does that suggest?", "What kit goes to the door, and who carries what?", "What is your plan if he goes into cardiac arrest?", "The paramedic crew is 60 minutes away and the hospital 20. What is your clinical support plan?"],
         expected: [
           "Suspect cardiac ischaemia: the protocol says to suspect it unless there is an obvious alternative",
           "Pain not settling with his own GTN suggests this is different from his usual angina: time critical (\"time is muscle\")",
           "Driver: Corpuls3 powered on with defib pads ready. Clinician: Red Kit (aspirin, GTN), Response Bag, oxygen",
           "Cardiac arrest plan agreed before arrival",
-          "Consider clinical support early (protocol), knowing the hospital is closer than the ICP"
+          "Consider clinical support early (protocol), knowing the hospital is closer than the paramedic crew"
         ],
         teaching: ["The MDT gives you the working picture before you arrive", "Allocating kit en route saves time at the door", "Always have a cardiac arrest plan: cardiac ischaemia carries a risk of life-threatening rhythm changes (CPP-007-AO)"],
         realJob: "The drive gives you 10 to 15 minutes of planning time. Use it: roles, kit, the worst case. The crew that arrives with a plan works faster than the crew that plans on the doorstep.",
@@ -217,7 +216,7 @@ window.MODULE = {
         "Aspirin 300 mg, chewed",
         "Oxygen via nasal cannula to bring SpO2 above 94%",
         "GTN: crew gives the first dose (limits met), then consult the EOC Clinician for a plan",
-        "Clinical support: considered (ICP 55 minutes, hospital 20)",
+        "Clinical support: considered (paramedic crew 60 minutes, hospital 20)",
         "Transport and notify the receiving facility"
       ] } }
     ] },
@@ -262,7 +261,7 @@ window.MODULE = {
       { table: { title: "Observations", table: { head: ["", "2135", "2142 (4 min after GTN)"], rows: [
         ["HR", "92", "88"], ["BP", "138/86", "118/74"], ["SpO2", "94% (air)", "96% (nasal cannula)"], ["RR", "20", "18"], ["Pain", "8/10", "6/10"], ["ECG", "Sinus rhythm", "Sinus rhythm"]
       ] } } },
-      { text: "Graham says it is \"better but still there\", and he has a mild headache. At 2144 the Clinician consults the EOC Clinician. In the scenario, the EOC Clinician counts his two sprays and the crew's dose as three doses: no further GTN, transport now, notify the hospital, and call back if BP or HR fall outside the limits or the pain changes. They agree that transport is faster than waiting for the ICP.", muted: true },
+      { text: "Graham says it is \"better but still there\", and he has a mild headache. At 2144 the Clinician consults the EOC Clinician. In the scenario, the EOC Clinician counts his two sprays and the crew's dose as three doses: no further GTN, transport now, notify the hospital, and call back if BP or HR fall outside the limits or the pain changes. They agree that transport is faster than waiting for the paramedic crew.", muted: true },
       { breakpoint: { title: "Reassessment and escalation decision", type: "Decision making",
         prompts: ["Compare the two sets of obs. What has changed?", "Pain 8 down to 6: good response or a concern?", "BP 138 to 118: expected? Still within the limits?", "Why consult the EOC Clinician now?", "How will you structure the call?"],
         expected: [
