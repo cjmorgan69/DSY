@@ -72,7 +72,7 @@
   </details>
   <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
 </main>
-<script src="../topics.js?v=20261110c"></script>
+<script src="../topics.js?v=20261110d"></script>
 <script src="../glossary.js?v=20261110a"></script>
 <script>
 (function () {
@@ -85,6 +85,7 @@
     var sub = el("span", "small muted", t.walk ? "· " + t.patient : "· microlearning only so far"); s.appendChild(sub);
     d.appendChild(s);
     var body = el("div", "stack"), kit = el("div", "kit");
+    if (t.slides) kit.appendChild(link("Case night slides", "../.." + t.slides));
     if (t.walk) kit.appendChild(link("Facilitator walk-through", "../.." + t.walk));
     if (t.custom) kit.appendChild(link("Customise for your area", "../../scenarios/#s=" + t.custom, true));
     if (t.stations) kit.appendChild(link("Skills stations (team runs it)", "../.." + t.stations));
