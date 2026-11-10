@@ -10,6 +10,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../training/theme.css?v=20261017a">
 <link rel="stylesheet" href="../../hub/hub.css?v=1">
+<style>
+.gloss { border: 1px solid var(--line); border-radius: var(--radius); padding: .6rem .8rem; background: var(--surface); }
+.gloss summary { font-weight: 600; cursor: pointer; }
+.gloss h4 { margin: .9rem 0 .3rem; font-size: .95rem; }
+.gloss dl { margin: 0; display: grid; gap: .15rem; }
+.gloss dt { font-weight: 600; margin-top: .45rem; display: flex; gap: .4rem; align-items: baseline; flex-wrap: wrap; }
+.gloss dd { margin: 0; }
+.gloss .gsrc { font-size: .72rem; font-weight: 600; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 .45rem; }
+</style>
 </head>
 <body>
 <main class="wrap">
@@ -64,6 +73,7 @@
   <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
 </main>
 <script src="../topics.js?v=20261106d"></script>
+<script src="../glossary.js?v=20261110a"></script>
 <script>
 (function () {
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
@@ -91,6 +101,23 @@
     });
     var row = el("div", "kit"); row.appendChild(share);
     body.appendChild(row);
+    var G = (window.DSY_GLOSSARY || {})[t.id];
+    if (G) {
+      var gd = el("details", "gloss"), n = 0;
+      G.groups.forEach(function (g) { n += g.terms.length; });
+      gd.appendChild(el("summary", null, "Glossary (" + n + " terms)"));
+      if (G.note) gd.appendChild(el("p", "small muted", G.note + " Unmarked meanings are written by DSY: check them before the session."));
+      G.groups.forEach(function (g) {
+        gd.appendChild(el("h4", null, g.title));
+        var dl = el("dl");
+        g.terms.forEach(function (x) {
+          var dt = el("dt", null, x[0]); if (x[2]) dt.appendChild(el("span", "gsrc", x[2]));
+          dl.appendChild(dt); dl.appendChild(el("dd", null, x[1]));
+        });
+        gd.appendChild(dl);
+      });
+      body.appendChild(gd);
+    }
     body.appendChild(el("p", "note", t.protocol + (t.custom ? " · customisable" : "") + (t.mdt ? " · MDT job ready" : "") + (t.stations ? " · skills stations" : "")));
     d.appendChild(body);
     list.appendChild(d);
