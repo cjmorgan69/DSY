@@ -823,5 +823,65 @@ window.PCR_JOBS = {
       ['1512', 'Handover Tumby Bay Hosp']
     ],
     marks: [['back', 54, 10, 'S', 7], ['front', 60, 110, 'P', 6]]
+  },
+
+  joan: {
+    label: 'Joan, 84: dementia and changed behaviour (AO)',
+    short: 'Joan',
+    walk: '/modules/dementia-ao/',
+    note: 'Main path: she settles and goes voluntarily to Cummins Hospital with Ray.',
+    // From /modules/dementia-ao/. Times 1855 (TV off) and 1948 (left scene) are DSY's; the rest are the walk-through's.
+    // Pain is scored with PAINAD (CTL-094, 0 to 10) because she can't rate her pain with a number.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Acute behavioural disturbance in a person living with Alzheimer\'s disease. ?Delirium, ?UTI. Lower abdo pain (PAINAD 7).',
+      recommendation:
+        'Transported voluntarily to Cummins Hospital with husband Ray (EOC Clinician, no medication). More confused than her usual since yesterday, ' +
+        'urinary frequency + stinging, PAINAD 7 to 2, SAT +2 to 0. NEWS2 4 (new confusion). Paracetamol 1 g 1922. What helped: one voice, TV off, ' +
+        'hearing aids in, Ray beside her, not correcting her. Handed over 2003 (ISBAR).'
+    },
+    sections: {
+      pc: 'Agitated since this evening, not recognising husband, pushed his hand away. More confused than her usual since yesterday.',
+      phx: 'Alzheimer\'s disease (dx 6 yrs). HTN. OA knees. Hearing aids. Usually knows husband + home, needs help with dressing + tablets.',
+      medn: 'Donepezil, amlodipine, paracetamol 1 g mane (last 0800). Nil allergies.',
+      hx: 'Per husband Ray: since yesterday more confused, up most of last night, urinary frequency, says it stings, urine smells strong. Hardly drinking, skipped tea. Tonight says "a strange man" is in the house, wants to go home to Mum. Pushed Ray\'s hand away when he helped with her cardigan. Nil falls, nil head strike. Ray has hardly slept for 2 nights.',
+      oa: '84F walking between kitchen table + hallway door, cardigan half on. Staring, raised voice, repeating the same questions. TV loud. Husband at front door, tired, no injuries. Nil weapons, nil threats. SAT +2.',
+      cns: 'GCS 14 (E4 V4 M6), confused, oriented to person only (usually knows Ray + home). PEARL. Moves all 4 limbs. BGL 7.2.\nMSE: Appearance: cardigan half on, unsteady. Behaviour: pacing, restless. Conversation: loud, fast, repetitive. Mood: anxious, frightened. Perception: believes a stranger is in the house (does not recognise husband). Cognition: as above. Insight: poor.',
+      skin: 'Warm, dry, normal colour. Temp 37.6.',
+      cvs: 'Pulse 96 regular. BP 128/74.',
+      resp: 'RR 18, nil resp distress. SpO2 96% RA.',
+      pain: 'Unable to rate with a number. Rubbing lower abdo, grimaces when she shifts. PAINAD 7 (breathing 0, vocalisation 1, face 2, body 2, consolability 2). PAINAD 3 at 1935, 2 at 2000.',
+      care: 'Risk assessment (CTL-011): dementia a risk factor, nil high-risk behaviours. One crew member talking, TV off, husband to the lounge with AO2. LOWLINE, acknowledged + redirected (talked about her mum, the farm at Lock), not corrected. Hearing aids found on bench, she put them in herself. SAT +1.\nObs one step at a time with consent. Walked to the toilet with Ray 1918, calmer after. 1922 paracetamol 1 g oral, taken from Ray. NEWS2 4.\n1935 EOC Clinician: de-escalation worked, nil medication, transport to Cummins Hospital if she agrees. Agreed to go with Ray (voluntary). Walked to stretcher with her rug. Nil lights or sirens, cabin lights low, Ray beside her. SAT 0, PAINAD 2 en route.'
+    },
+    tips: {
+      pc: 'Use person-first words: "a person living with dementia", "changed behaviour", not "demented" or "difficult".',
+      cns: 'CPP-017-AO: an MSE must be completed and documented. Put it here or in the clinical text, under its headings.',
+      pain: 'PAINAD goes on the obs chart\'s pain line as a 0 to 10 score: write "PAINAD" next to it so nobody reads it as her own rating.',
+      care: 'Times and wording will differ. The key facts: the risk assessment, what you changed, what settled her, PAINAD and SAT before and after, the consult, and that care was voluntary.',
+      provisional: 'Other fair answers: "Agitation, ?delirium secondary to UTI", "BPSD with ?UTI". Keep the "?" when you can\'t confirm it.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Not a falls job. Leave blank.',
+      body: 'Front figure: P (pain) over the lower abdomen.',
+      ecg: 'Nothing: no ECG on this job.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted at 1935.'
+    },
+    ticks: ['medsHanded', 'consult'],
+    obs: [
+      { time: '1912', rr: 18, o2: 'RA', spo2: 96, bp: '128/74', hr: 96, temp: 37.6, gcs: 14, evm: [4, 4, 6], pupils: ['+', '+'], pain: 7, bgl: 7.2 },
+      { time: '1935', pain: 3 },
+      { time: '2000', rr: 16, o2: 'RA', spo2: 96, bp: '124/72', hr: 90, temp: 37.5, gcs: 14, evm: [4, 4, 6], pain: 2 }
+    ],
+    drugs: [
+      ['1855', 'TV off, one voice, LOWLINE'],
+      ['1912', 'Obs, BGL, PAINAD 7, SAT +2'],
+      ['1918', 'Toilet (with husband)'],
+      ['1922', 'Paracetamol', '1000', 'mg', 'Oral'],
+      ['1935', 'EOC Clinician consult'],
+      ['1948', 'Walked to stretcher'],
+      ['2003', 'Handover Cummins Hosp']
+    ],
+    marks: [['front', 50, 98, 'P', 6]]
   }
 };
