@@ -12,17 +12,17 @@ const SETTING_FARM_NEAR = "{{#setting=farm}}a rural property{{#town}} near {{tow
 const WEATHER = "{{#sky=winter-dark}}Dark and cold.{{/sky}}{{#sky=winter-light}}Cold and overcast.{{/sky}}{{#sky=summer-dark}}Dark, and still warm.{{/sky}}{{#sky=summer-light}}Hot and dry.{{/sky}}";
 const PARTNER_PERSON = "{{#partner=wife}}a woman{{/partner}}{{#partner=husband}}a man{{/partner}}{{#partner=partner}}someone{{/partner}}";
 const BK = "{{backup_name|ICP}}";
-const HOSP = "{{hospital|regional hospital}}";
+const HOSP = "{{hospital|Cleve Hospital}}";
 
 // [exact text in content.js, template text]; each must match at least once
 const swaps = [
   ["Graham, 62: chest pain not settling with his own GTN, rural property, 2115",
    "{{patient}}, {{age}}: chest pain not settling with his own GTN, {{#setting=farm}}rural property{{#town}} near {{town}}{{/town}}{{/setting}}{{#setting=town}}at home{{#town}} in {{town}}{{/town}}{{/setting}}, {{t+0}}"],
   ["A 62 year old man", "A {{age}} year old man"],
-  ["at a rural property 35 minutes from the nearest hospital", "at " + SETTING_FARM_NEAR + " {{transport}} minutes from the nearest hospital"],
+  ["at a rural property 20 minutes from the nearest hospital", "at " + SETTING_FARM_NEAR + " {{transport}} minutes from the nearest hospital"],
   ["blankets (winter night)", "blankets{{#sky=winter-dark}} (winter night){{/sky}}"],
   ["\"Nearest ICP: 55 minutes\"", "\"Nearest " + BK + ": {{backup_mins}} minutes\""],
-  ["\"Regional hospital: 35 minutes\"", "\"{{hospital|Regional hospital}}: {{transport}} minutes\""],
+  ["\"Cleve Hospital: 20 minutes\"", "\"" + HOSP + ": {{transport}} minutes\""],
   ["Clinician (AO1):", "Clinician (AO1{{#clinician}}, {{clinician}}{{/clinician}}):"],
   ["Driver (AO2):", "Driver (AO2{{#driver}}, {{driver}}{{/driver}}):"],
   ["Winter, 2115. Dark and cold. You and your crew partner are paged to a rural farming property.",
@@ -32,25 +32,25 @@ const swaps = [
   ["Access: sealed road then 2 km dirt. Gate open, lights on",
    "{{#setting=farm}}Access: sealed road then 2 km dirt. Gate open{{#dark}}, lights on{{/dark}}{{/setting}}{{#setting=town}}Access: sealed street, house number visible from the road{{#dark}}, porch light on{{/dark}}{{/setting}}"],
   ["Backup: nearest ICP 55 minutes", "Backup: nearest " + BK + " {{backup_mins}} minutes"],
-  ["Destination: regional hospital, 35 minutes", "Destination: " + HOSP + ", {{transport}} minutes"],
-  ["The ICP is 55 minutes away and the hospital 35.", "The " + BK + " is {{backup_mins}} minutes away and the hospital {{transport}}."],
+  ["Destination: Cleve Hospital, 20 minutes", "Destination: " + HOSP + ", {{transport}} minutes"],
+  ["The ICP is 55 minutes away and the hospital 20.", "The " + BK + " is {{backup_mins}} minutes away and the hospital {{transport}}."],
   ["knowing the hospital is closer than the ICP",
    "{{#closer=hospital}}knowing the hospital is closer than the " + BK + "{{/closer}}{{#closer=backup}}knowing the " + BK + " could reach you before you reach the hospital{{/closer}}{{#closer=same}}knowing the hospital and the " + BK + " are about the same distance away{{/closer}}"],
   ["The drive gives you 10 to 15 minutes of planning time.", "The drive gives you about {{response}} minutes of planning time."],
   ["2132. The gate is open. A well-lit farmhouse; a woman waves",
    "{{a+0}}. {{#setting=farm}}The gate is open. {{#dark}}A well-lit farmhouse{{/dark}}{{^dark}}A farmhouse at the end of the track{{/dark}}{{/setting}}{{#setting=town}}{{#dark}}The porch light is on at a brick house on a quiet street{{/dark}}{{^dark}}A brick house on a quiet street{{/dark}}{{/setting}}; " + PARTNER_PERSON + " waves"],
-  ["Started about 40 minutes ago while I was watching the footy.",
-   "Started about 40 minutes ago {{#tod=evening}}while I was watching the footy{{/tod}}{{#tod=day}}while I was sitting reading the paper{{/tod}}{{#tod=night}}and woke me up{{/tod}}."],
+  ["Started about 45 minutes ago while I was watching the footy.",
+   "Started about 45 minutes ago {{#tod=evening}}while I was watching the footy{{/tod}}{{#tod=day}}while I was sitting reading the paper{{/tod}}{{#tod=night}}and woke me up{{/tod}}."],
   ["Last meal: dinner at 1830", "Last meal: {{#tod=day}}about 2 hours before the pain started{{/tod}}{{^tod=day}}dinner at 1830{{/tod}}"],
-  ["(ICP 55 minutes, hospital 35)", "(" + BK + " {{backup_mins}} minutes, hospital {{transport}})"],
+  ["(ICP 55 minutes, hospital 20)", "(" + BK + " {{backup_mins}} minutes, hospital {{transport}})"],
   ["They agree that transport is faster than waiting for the ICP.",
    "{{#closer=hospital}}They agree that transport is faster than waiting for the " + BK + ".{{/closer}}{{#closer=backup}}They agree to start transport now and, if the EOC arranges it, meet the " + BK + " on the way.{{/closer}}{{#closer=same}}They agree to start transport now rather than wait on scene.{{/closer}}"],
   ["This is [name], AO crew from [station].", "This is {{clinician|[name]}}, AO crew from {{station|[station]}}."],
-  ["We're 35 minutes from [hospital].", "We're {{transport}} minutes from {{hospital|[hospital]}}."],
-  ["What are you watching for over 35 minutes?", "What are you watching for over {{transport}} minutes?"],
+  ["We're 20 minutes from Cleve Hospital.", "We're {{transport}} minutes from " + HOSP + "."],
+  ["What are you watching for over 20 minutes?", "What are you watching for over {{transport}} minutes?"],
   ["blanket on a cold night",
    "{{#season=winter}}blanket {{#dark}}on a cold night{{/dark}}{{^dark}}against the cold{{/dark}}{{/season}}{{#season=summer}}out of the sun, cabin air-conditioning on{{/season}}"],
-  ["2210, regional hospital ED.", "{{h+0}}, " + HOSP + " ED."],
+  ["2210, Cleve Hospital ED.", "{{h+0}}, " + HOSP + " ED."],
   ["I'm [name], Ambulance Officer from [station].", "I'm {{clinician|[name]}}, Ambulance Officer from {{station|[station]}}."],
   ["give her a job", "give {{#partner=wife}}her{{/partner}}{{#partner=husband}}him{{/partner}}{{#partner=partner}}them{{/partner}} a job"],
   // times (after the longer phrases above)
@@ -67,6 +67,7 @@ for (const [from, to] of swaps) {
   body = body.split(from).join(to);
 }
 const template = load(body);
+template.sceneMinutes = 18; // arrival 2132, EOC call 2144, leaving 2150, Cleve Hospital 2210 after 20 minutes
 
 const fields = [
   { key: "patient", label: "Patient's first name", type: "text", default: "Graham", max: 20, group: "Patient", help: "The patient stays a man in his 50s to 70s: the PDE-5 inhibitor questions are written for him." },
@@ -77,8 +78,8 @@ const fields = [
     options: [{ value: "farm", label: "Rural property (dirt road, gate)" }, { value: "town", label: "House in town" }] },
   { key: "town", label: "Town or district", type: "text", default: "", max: 30, group: "Place", placeholder: "e.g. Cummins", help: "Leave blank to keep it unnamed." },
   { key: "station", label: "Your station", type: "text", default: "", max: 30, group: "Place", placeholder: "e.g. Tumby Bay", help: "Used in the EOC Clinician call and the handover." },
-  { key: "hospital", label: "Receiving hospital", type: "text", default: "", max: 30, group: "Place", placeholder: "e.g. Port Lincoln Hospital" },
-  { key: "transport", label: "Transport time to hospital (min)", type: "number", default: 35, min: 10, max: 120, group: "Place" },
+  { key: "hospital", label: "Receiving hospital", type: "text", default: "", max: 30, help: "Leave blank for Cleve Hospital.", group: "Place", placeholder: "e.g. Port Lincoln Hospital" },
+  { key: "transport", label: "Transport time to hospital (min)", type: "number", default: 20, min: 10, max: 120, group: "Place" },
   { key: "backup_name", label: "Nearest clinical support", type: "text", default: "ICP", max: 30, group: "Place", help: "For example ICP or paramedic crew." },
   { key: "backup_mins", label: "Clinical support time away (min)", type: "number", default: 55, min: 10, max: 180, group: "Place" },
   { key: "dispatch", label: "Time of the page", type: "time", default: "21:15", group: "Time" },

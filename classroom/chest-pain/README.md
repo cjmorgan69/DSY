@@ -1,8 +1,8 @@
 # Chest pain case night (instructor-led slides)
 
 One classroom night that runs a whole job from start to finish (owner's idea, 10 Nov 2026): the intro video and protocol
-key points, Graham's walk-through with its eight break points and decision tiles, the MDT on students' phones (QR code),
-then the PCR trainer and the debrief. The skills stations are kept for the following week (owner): the last slides
+key points, Graham's walk-through with its eight break points and decision tiles, MDT screenshots at each status
+(owner, 11 Nov 2026: pictures, not the live MDT, which was a distraction), then the PCR trainer and the debrief. The skills stations are kept for the following week (owner): the last slides
 link `/stations/chest-pain-acpo/`.
 
 Same slide engine as `/classroom/manual-tasks/` and `/classroom/medical-conditions/` (arrows, slide list, Notes,
@@ -18,7 +18,9 @@ per click), `decision` (A/B/C, next click shows the answer and why), `qr` (QR co
 button to open it on the big screen), plus `kicker` on light slides, `mdt` (MDT status cue in the corner), headed
 items on `numbered`, and `noStep` on tables. Notes can also have `listen` (expected answers), `teach` and `real`.
 
-MDT: `/mdt/#job=chest-pain&self=1`. PCR: `/tools/pcr/#job=graham`. Linked from Run a session (`slides` in
+MDT screenshots: `img/mdt-*.png`, taken by `tools/mdt-shots.js` (Playwright with a fixed clock, so the screens show
+the walk-through's times: page 2115, scene 2132, mobile 2150, Cleve Hospital 2210). Retake them if the MDT screens or
+Graham's job change. PCR: `/tools/pcr/#job=graham`. Linked from Run a session (`slides` in
 `hub/topics.js`). About 110 minutes in total (times in the notes).
 
 To make another topic's night: copy this folder, change the two content paths in `data/manifest.js`, and change the

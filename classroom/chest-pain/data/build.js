@@ -32,12 +32,12 @@
   DRIVE_SECTIONS.push({
     id: 'welcome', name: 'Part 1', title: 'Welcome', audience: 'Volunteer Ambulance Officers',
     slides: [
-      { type: 'title', title: 'Chest pain', subtitle: 'Case night: Graham, 62', lines: ['The intro video, a walk-through with the MDT, then the PCR', WT.protocol.code + ' ' + WT.protocol.name + ' ' + WT.protocol.version],
-        notes: { time: 2, say: ['Welcome. Tonight is one job from start to finish: the video, the walk-through, the MDT on your phones, then the patient report card.'],
-          tip: DSY + ' Before the night: check the video plays with sound, the projector shows the QR codes clearly, and everyone has signed in to dsytraining.com on their phone (the MDT and PCR pages ask for a sign-in).' } },
+      { type: 'title', title: 'Chest pain', subtitle: 'Case night: Graham, 62', lines: ['The intro video, the walk-through with the MDT screens, then the PCR', WT.protocol.code + ' ' + WT.protocol.name + ' ' + WT.protocol.version],
+        notes: { time: 2, say: ['Welcome. Tonight is one job from start to finish: the video, the walk-through with the MDT screens, then the patient report card.'],
+          tip: DSY + ' Before the night: check the video plays with sound, the projector shows the QR codes clearly, and everyone has signed in to dsytraining.com on their phone (the PCR page asks for a sign-in).' } },
       { type: 'numbered', title: 'Tonight', items: [
           'Intro video and the protocol key points',
-          'The job: Graham, 62, chest pain. Eight break points, with the MDT running on your phones',
+          'The job: Graham, 62, chest pain. Eight break points, with the MDT screens along the way',
           'Write the patient report card (PCR) and compare it with the model card',
           'Next week: the chest pain and ACPO skills stations'],
         notes: { time: 1, tip: 'DSY-written overview. The skills stations are a separate session (owner, 10 Nov 2026).' } },
@@ -76,7 +76,25 @@
 
   /* ---------- Part 3: The job (walk-through break points, MDT on phones) ---------- */
   var jobPanels = ['Dispatch and en route', 'On arrival', 'Patient contact and primary survey', 'Working diagnosis and the protocol', 'Treatment phase', 'Reassessment and escalation', 'Extrication and transport', 'Handover'];
-  var mdtCue = { 'Dispatch and en route': 'Ack, then Enroute', 'On arrival': 'Time Scene', 'Extrication and transport': 'Mobile: pick the destination', 'Handover': 'Arrive Dest, then Clear' };
+  // MDT screenshots (img/mdt-*.png, taken by tools/mdt-shots.js from Graham's MDT job with the walk-through's times).
+  function shot(n, title, points, say) {
+    return { type: 'image', kicker: 'The MDT', title: title, img: 'img/mdt-' + n + '.png', alt: 'MDT screen: ' + title, points: points, fs: 38, wide: true,
+      notes: { time: 1, say: say ? [say] : [], tip: 'Screenshot of the DSY MDT simulator (fictional data). Students can drill the same job later from Learn on your own.' } };
+  }
+  var mdtAt = {
+    dispatch: [
+      shot('1-dispatch', '2115: the job arrives', ['Priority 2, the address and the problem at the top', 'Tap Ack'], 'What does the MDT tell you before you even leave the station?'),
+      shot('2-enroute', '2116: Enroute', ['F6 sends ENROUTE (no confirm)', 'The status bar shows what the EOC sees', 'The F6 button now offers Time Scene'], ''),
+      shot('3-remarks', 'The remarks keep coming', ['2119: wife says pain unchanged, pale and sweaty', '2125: gate open, lights on, wife at the front door', 'Newest at the top: check the REMARKS tab on the way'], 'What does "pale and sweaty, pain unchanged" add to your plan?')
+    ],
+    arrival: [shot('4-confirm-scene', '2132: Time Scene', ['F6, then Confirm', 'Press it when you arrive, not when you reach the patient'], '')],
+    mobile: [
+      shot('6-destination', '2150: Mobile, pick the hospital', ['F6 opens the destination list', 'Closest puts Cleve Hospital first', 'About 20 minutes to Cleve'], ''),
+      shot('7-confirm-mobile', 'Confirm the destination', ['Check it is the hospital the EOC Clinician agreed', 'Then Confirm'], '')
+    ],
+    arrive: [shot('8-arrive-dest', '2210: Arrive Dest', ['F6 sends ARRIVE DEST. (no confirm)', 'Status bar: arrived at Cleve Hospital'], '')],
+    clear: [shot('9-clear', 'After handover: Clear', ['F6, then Confirm', 'Tick Direct Admission to Ward only if that is where he went'], '')]
+  };
   var nBP = 0, totalBP = 0;
   jobPanels.forEach(function (t) { panel(t).blocks.forEach(function (b) { if (b.breakpoint) totalBP++; }); });
 
@@ -94,13 +112,7 @@
         job.push({ type: 'statement', kicker: b.box.title, text: b.box.text, notes: { time: 2, activity: 'In pairs: one makes the call, the other plays the EOC Clinician and repeats the advice back. Swap.' } });
       } else if (b.box) {
         job.push({ type: 'bullets', kicker: title, title: b.box.title, points: b.box.items, notes: { time: 1 } });
-        if (b.box.title === 'MDT display') {
-          job.push({ type: 'qr', kicker: 'MDT on your phone', title: 'Run the job on the MDT', url: '/mdt/#job=chest-pain&self=1', button: 'Show the MDT on the big screen',
-            text: 'Scan the code. Graham\'s job is dispatched to you.',
-            points: ['Ack, then Enroute now', 'Read the remarks as they come in', 'Keep it open: the slides tell you when to press the next status'],
-            notes: { time: 3, say: ['Scan the code and keep the MDT open on your phone for the whole job.'],
-              tip: 'The simulator clock runs 3 times faster, so the live remarks (wife: pain unchanged, pale and sweaty; gate open, wife waiting at the door) arrive during the en-route discussion. Students need to be signed in.' } });
-        }
+        if (b.box.title === 'MDT display') job = job.concat(mdtAt.dispatch);
       } else if (b.steps) {
         job.push({ type: 'numbered', kicker: title, title: 'What the crew does', items: b.steps.map(step), notes: { time: 1 } });
       } else if (b.table) {
@@ -116,7 +128,9 @@
         });
       }
     });
-    if (mdtCue[title] && job[first]) job[first].mdt = mdtCue[title];
+    if (title === 'On arrival') job.splice(first, 0, mdtAt.arrival[0]);
+    if (title === 'Extrication and transport') job = job.concat(mdtAt.mobile);
+    if (title === 'Handover') { job.splice(first, 0, mdtAt.arrive[0]); job = job.concat(mdtAt.clear); }
   });
   DRIVE_SECTIONS.push({ id: 'job', name: 'Part 3', title: 'The job: ' + WT.headline.split(':')[0], audience: 'Volunteer Ambulance Officers', slides: job });
 
