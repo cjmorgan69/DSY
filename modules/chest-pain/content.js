@@ -48,7 +48,8 @@ window.MODULE = {
       ] } },
       { box: { title: "Timing and resources", items: [
         "Pre-brief about 10 minutes; walk-through about 65 minutes; debrief 10 to 15 minutes",
-        "Nearest paramedic crew: 60 minutes",
+        "Nearest paramedic crew: 55 minutes",
+        "MedSTAR: may be available once more information is known",
         "Cleve Hospital: 20 minutes",
         "EOC Clinician: available by phone"
       ] } },
@@ -103,11 +104,11 @@ window.MODULE = {
         "62 year old male, chest pain for 30 minutes",
         "Known angina, has own GTN. Pain not resolving with own GTN. Wife on scene",
         "Access: sealed road then 2 km dirt. Gate open, lights on",
-        "Backup: nearest paramedic crew 60 minutes",
+        "Backup: nearest paramedic crew 55 minutes. MedSTAR may be available once more information is known",
         "Destination: Cleve Hospital, 20 minutes"
       ] } },
       { breakpoint: { title: "En-route planning", type: "Discussion",
-        prompts: ["What does the MDT tell you about this patient and the urgency?", "His own GTN has not settled the pain. What does that suggest?", "What kit goes to the door, and who carries what?", "What is your plan if he goes into cardiac arrest?", "The paramedic crew is 60 minutes away and the hospital 20. What is your clinical support plan?"],
+        prompts: ["What does the MDT tell you about this patient and the urgency?", "His own GTN has not settled the pain. What does that suggest?", "What kit goes to the door, and who carries what?", "What is your plan if he goes into cardiac arrest?", "The paramedic crew is 55 minutes away and the hospital 20. What is your clinical support plan?"],
         expected: [
           "Suspect cardiac ischaemia: the protocol says to suspect it unless there is an obvious alternative",
           "Pain not settling with his own GTN suggests this is different from his usual angina: time critical (\"time is muscle\")",
@@ -216,7 +217,7 @@ window.MODULE = {
         "Aspirin 300 mg, chewed",
         "Oxygen via nasal cannula to bring SpO2 above 94%",
         "GTN: crew gives the first dose (limits met), then consult the EOC Clinician for a plan",
-        "Clinical support: considered (paramedic crew 60 minutes, hospital 20)",
+        "Clinical support: considered (paramedic crew 55 minutes, hospital 20)",
         "Transport and notify the receiving facility"
       ] } }
     ] },

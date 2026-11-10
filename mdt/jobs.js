@@ -13,13 +13,13 @@ window.MDT_JOBS = [
   { id:'chest-pain', label:'Chest pain: Graham, 62 (rural property, 2115)', scenario:'/modules/chest-pain/',
     priority:'2', startTime:'21:15', typeName:'Chest pain', town:'Arno Bay', street:'FARM 9 KM WEST',
     note:'62M CHEST PAIN - CARDIAC HX', patient:'HOLLOWAY, GRAHAM', age:'62Y', weight:'', caller:'WIFE (ON SCENE)',
-    remarks:'CHEST PAIN FOR 30 MINUTES\nKNOWN ANGINA - HAS OWN GTN - PAIN NOT RESOLVING WITH OWN GTN\nWIFE ON SCENE\nSEALED ROAD THEN 2 KM DIRT - GATE OPEN - LIGHTS ON\nNEAREST PARAMEDIC CREW 60 MINUTES\n+4 WIFE ADVISES PAIN UNCHANGED - PT PALE AND SWEATY\n+10 GATE OPEN - LIGHTS ON - WIFE WILL WAIT AT FRONT DOOR',
+    remarks:'CHEST PAIN FOR 30 MINUTES\nKNOWN ANGINA - HAS OWN GTN - PAIN NOT RESOLVING WITH OWN GTN\nWIFE ON SCENE\nSEALED ROAD THEN 2 KM DIRT - GATE OPEN - LIGHTS ON\nNEAREST PARAMEDIC CREW 55 MINUTES - MEDSTAR TBC\n+4 WIFE ADVISES PAIN UNCHANGED - PT PALE AND SWEATY\n+10 GATE OPEN - LIGHTS ON - WIFE WILL WAIT AT FRONT DOOR',
     expected:'CLEVE HOSPITAL, about 20 minutes (scenario)',
     // Link from the scenario customiser (Supabase public.scenarios, slug chest-pain-ao).
     // Town-house wording and the remark timing below are DSY-written.
     customSlug:'chest-pain-ao',
     customDefaults:{ patient:'Graham', age:'62', partner:'wife', setting:'farm', town:'', station:'', hospital:'',
-      transport:'20', backup_name:'paramedic crew', backup_mins:'60', dispatch:'21:15', response:'17' },
+      transport:'20', backup_name:'paramedic crew', backup_mins:'55', dispatch:'21:15', response:'17' },
     custom(v){
       const U = x => String(x||'').trim().toUpperCase(), P = U(v.partner) || 'WIFE', farm = v.setting !== 'town';
       const town = String(v.town||'').trim() || 'Arno Bay', drive = Math.max(5, +v.response || 17);
@@ -31,7 +31,7 @@ window.MDT_JOBS = [
         note:(+v.age || 62) + 'M CHEST PAIN - CARDIAC HX',
         remarks:['CHEST PAIN FOR 30 MINUTES','KNOWN ANGINA - HAS OWN GTN - PAIN NOT RESOLVING WITH OWN GTN', P + ' ON SCENE',
           farm ? 'SEALED ROAD THEN 2 KM DIRT - GATE OPEN - LIGHTS ON' : 'HOUSE IN TOWN - LIGHTS ON',
-          'NEAREST ' + (U(v.backup_name) || 'PARAMEDIC CREW') + ' ' + (+v.backup_mins || 60) + ' MINUTES',
+          'NEAREST ' + (U(v.backup_name) || 'PARAMEDIC CREW') + ' ' + (+v.backup_mins || 55) + ' MINUTES - MEDSTAR TBC',
           '+' + early + ' ' + P + ' ADVISES PAIN UNCHANGED - PT PALE AND SWEATY',
           '+' + late + ' ' + (farm ? 'GATE OPEN - ' : '') + 'LIGHTS ON - ' + P + ' WILL WAIT AT FRONT DOOR'].join('\n'),
         expected:(String(v.hospital||'').trim() || 'Cleve Hospital') + ', about ' + (+v.transport || 20) + ' minutes (customised scenario)'
