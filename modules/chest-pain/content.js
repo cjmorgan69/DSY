@@ -26,7 +26,7 @@ window.MODULE = {
 
   panels: [
     { title: "Overview", blocks: [
-      { text: "A 62 year old man with known angina has central chest pain spreading to his left arm, at a rural property 35 minutes from the nearest hospital. He has his own prescribed GTN spray, and it has not settled the pain." },
+      { text: "A 62 year old man with known angina has central chest pain spreading to his left arm, at a rural property 20 minutes from the nearest hospital. He has his own prescribed GTN spray, and it has not settled the pain." },
       { box: { title: "Learning objectives", items: [
         "Recognise the signs and symptoms of cardiac ischaemia, including presentations without classic chest pain",
         "Work through basic care and the primary survey, with ECG monitoring early",
@@ -49,7 +49,7 @@ window.MODULE = {
       { box: { title: "Timing and resources", items: [
         "Pre-brief about 10 minutes; walk-through about 65 minutes; debrief 10 to 15 minutes",
         "Nearest ICP: 55 minutes",
-        "Regional hospital: 35 minutes",
+        "Cleve Hospital: 20 minutes",
         "MedSTAR retrieval: to be confirmed",
         "EOC Clinician: available by phone"
       ] } },
@@ -105,10 +105,10 @@ window.MODULE = {
         "Known angina, has own GTN. Pain not resolving with own GTN. Wife on scene",
         "Access: sealed road then 2 km dirt. Gate open, lights on",
         "Backup: nearest ICP 55 minutes. MedSTAR to be confirmed",
-        "Destination: regional hospital, 35 minutes"
+        "Destination: Cleve Hospital, 20 minutes"
       ] } },
       { breakpoint: { title: "En-route planning", type: "Discussion",
-        prompts: ["What does the MDT tell you about this patient and the urgency?", "His own GTN has not settled the pain. What does that suggest?", "What kit goes to the door, and who carries what?", "What is your plan if he goes into cardiac arrest?", "The ICP is 55 minutes away and the hospital 35. What is your clinical support plan?"],
+        prompts: ["What does the MDT tell you about this patient and the urgency?", "His own GTN has not settled the pain. What does that suggest?", "What kit goes to the door, and who carries what?", "What is your plan if he goes into cardiac arrest?", "The ICP is 55 minutes away and the hospital 20. What is your clinical support plan?"],
         expected: [
           "Suspect cardiac ischaemia: the protocol says to suspect it unless there is an obvious alternative",
           "Pain not settling with his own GTN suggests this is different from his usual angina: time critical (\"time is muscle\")",
@@ -147,9 +147,9 @@ window.MODULE = {
     ] },
 
     { title: "Patient contact and primary survey", blocks: [
-      { text: "Graham, 62. Alert and oriented, speaking in full sentences, distressed and sweaty. \"I've got this heavy pressure right across my chest. It's going down my left arm. Started about 40 minutes ago while I was watching the footy.\"" },
+      { text: "Graham, 62. Alert and oriented, speaking in full sentences, distressed and sweaty. \"I've got this heavy pressure right across my chest. It's going down my left arm. Started about 45 minutes ago while I was watching the footy.\"" },
       { box: { title: "History (Graham and his wife)", items: [
-        "Heavy, weight-like pressure; started at rest about 40 minutes ago",
+        "Heavy, weight-like pressure; started at rest about 45 minutes ago",
         "Centre of the chest, into the left arm and a little into the jaw",
         "\"Worse than my usual angina. Normally my spray fixes it. Not tonight.\"",
         "Used his own GTN spray twice over 30 minutes: a little relief, then it came straight back",
@@ -217,7 +217,7 @@ window.MODULE = {
         "Aspirin 300 mg, chewed",
         "Oxygen via nasal cannula to bring SpO2 above 94%",
         "GTN: crew gives the first dose (limits met), then consult the EOC Clinician for a plan",
-        "Clinical support: considered (ICP 55 minutes, hospital 35)",
+        "Clinical support: considered (ICP 55 minutes, hospital 20)",
         "Transport and notify the receiving facility"
       ] } }
     ] },
@@ -280,12 +280,12 @@ window.MODULE = {
           "Transport without calling" ], answer: 1,
           why: "CPP-007-AO: consult the EOC Clinician if chest pain remains unresolved, if BP or HR fall outside the limits, or if resolved pain returns. Then transport and notify the receiving facility." }]
       } },
-      { box: { title: "Practise the EOC Clinician call", text: "\"This is [name], AO crew from [station]. 62 year old male, 40 minutes of central chest pressure into the left arm and jaw. Known angina. He used two sprays of his own GTN before we arrived. We gave aspirin 300 mg at 2136 and one GTN dose at 2138. Pain is down from 8 to 6 but not resolved. BP 118/74, HR 88 regular, SpO2 96% on nasal cannula, GCS 15, sinus rhythm. No PDE-5 inhibitors. We're 35 minutes from [hospital]. Requesting a plan.\"" } }
+      { box: { title: "Practise the EOC Clinician call", text: "\"This is [name], AO crew from [station]. 62 year old male, 45 minutes of central chest pressure into the left arm and jaw. Known angina. He used two sprays of his own GTN before we arrived. We gave aspirin 300 mg at 2136 and one GTN dose at 2138. Pain is down from 8 to 6 but not resolved. BP 118/74, HR 88 regular, SpO2 96% on nasal cannula, GCS 15, sinus rhythm. No PDE-5 inhibitors. We're 20 minutes from Cleve Hospital. Requesting a plan.\"" } }
     ] },
 
     { title: "Extrication and transport", blocks: [
       { breakpoint: { title: "Extrication and transport planning", type: "Practical skill",
-        prompts: ["How will you move Graham to the ambulance?", "Why not let him walk?", "What stays connected during the move?", "Who drives and who rides in the back?", "What are you watching for over 35 minutes?"],
+        prompts: ["How will you move Graham to the ambulance?", "Why not let him walk?", "What stays connected during the move?", "Who drives and who rides in the back?", "What are you watching for over 20 minutes?"],
         expected: [
           "Green carry chair from the recliner; stand and pivot only, then onto the stretcher",
           "Walking increases the heart's workload: avoid exertion",
@@ -308,13 +308,13 @@ window.MODULE = {
     ] },
 
     { title: "Handover", blocks: [
-      { text: "2210, regional hospital ED. Graham's pain is 5/10 and his obs stayed stable on the way." },
+      { text: "2210, Cleve Hospital ED. Graham's pain is 5/10 and his obs stayed stable on the way." },
       { table: { title: "Observations", table: { head: ["", "2135", "2142", "2208"], rows: [
         ["HR", "92", "88", "84"], ["BP", "138/86", "118/74", "122/76"], ["SpO2", "94% (air)", "96% (NC)", "97% (NC)"], ["RR", "20", "18", "16"], ["Pain", "8/10", "6/10", "5/10"], ["ECG", "Sinus", "Sinus", "Sinus"]
       ] } } },
       { table: { title: "ISBAR", table: { head: ["", "Example"], rows: [
         ["I", "\"I'm [name], Ambulance Officer from [station]. This is Graham, 62.\""],
-        ["S", "\"40 minutes of central chest pressure into his left arm and jaw, worse than his usual angina and not settled by his own GTN.\""],
+        ["S", "\"45 minutes of central chest pressure into his left arm and jaw, worse than his usual angina and not settled by his own GTN.\""],
         ["B", "\"Angina for 4 years, hypertension, high cholesterol. On daily aspirin, atorvastatin, metoprolol, perindopril and his own GTN spray. No known allergies. No PDE-5 inhibitors.\""],
         ["A", "\"On arrival: pale and sweaty, HR 92, BP 138/86, SpO2 94% on air, pain 8/10, sinus rhythm. Now: HR 84, BP 122/76, SpO2 97% on nasal cannula, pain 5/10, still sinus rhythm.\""],
         ["R", "\"Two sprays of his own GTN before we arrived. We gave aspirin 300 mg at 2136 and GTN at 2138: three GTN doses in total. EOC Clinician consulted at 2144: no further GTN, transport. Headache since the GTN. Pain improved but not resolved.\""]

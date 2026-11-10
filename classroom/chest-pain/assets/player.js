@@ -89,7 +89,7 @@
     },
     image: function (s, it) {
       var pic = '<figure class="pic"><img src="' + E(s.img) + '" alt="' + E(s.alt || s.title) + '">' + (s.caption ? '<figcaption>' + E(s.caption) + '</figcaption>' : '') + '</figure>';
-      return '<div class="slide light"><h1 class="t">' + E(s.title) + '</h1><div class="body imgbody' + (s.points ? ' two' : '') + '" style="--fs:' + (s.fs || 40) + 'px">' +
+      return '<div class="slide light">' + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body imgbody' + (s.points ? ' two' : '') + (s.wide ? ' wide' : '') + '" style="--fs:' + (s.fs || 40) + 'px">' +
         (s.points ? '<div>' + pts(s.points, true) + (s.callout ? callout(s.callout).replace('class="callout"', 'class="callout step" data-step="' + (s.points.length + 1) + '"') : '') + '</div>' : '') + pic + '</div>' + lab(it) + '</div>';
     },
     video: function (s, it) {

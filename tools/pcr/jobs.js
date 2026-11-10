@@ -80,11 +80,11 @@ window.PCR_JOBS = {
       allergies: 'Nil known',
       communicable: 'Nil known',
       provisional: '?Acute coronary syndrome (suspected cardiac ischaemia): chest pain not settling with own GTN.',
-      recommendation: 'Transported to regional hospital ED. Aspirin 300 mg 2136, GTN 2138 (3 doses incl. 2 own sprays). Pain 8/10 to 5/10, not resolved. EOC Clinician consulted 2144: nil further GTN, transport. Headache since GTN. Needs ongoing cardiac monitoring + review. Handed over 2210 (ISBAR).',
+      recommendation: 'Transported to Cleve Hospital ED. Aspirin 300 mg 2136, GTN 2138 (3 doses incl. 2 own sprays). Pain 8/10 to 5/10, not resolved. EOC Clinician consulted 2144: nil further GTN, transport. Headache since GTN. Needs ongoing cardiac monitoring + review. Handed over 2210 (ISBAR).',
       ecg: 'Sinus rhythm (4-lead), unchanged throughout. 12-lead not available.'
     },
     sections: {
-      pc: 'Central chest pressure ~40 min, radiating to L arm + jaw, not settling with own GTN.',
+      pc: 'Central chest pressure ~45 min, radiating to L arm + jaw, not settling with own GTN.',
       phx: 'Angina (4 yrs), HTN, high cholesterol.',
       medn: 'Aspirin 100 mg daily, atorvastatin, metoprolol, perindopril, own GTN spray. Nil PDE-5 inhibitors (pt + wife).',
       hx: 'Watching TV ~2050, onset of heavy, weight-like central chest pressure at rest. "Worse than my usual angina." Own GTN spray x2 over 30 min: little relief, then pain returned. Nausea (nil vomiting), sweating, mildly SOB. Wife called SAAS. Last meal 1830.',
@@ -93,7 +93,7 @@ window.PCR_JOBS = {
       skin: 'Pale, sweaty (diaphoretic).',
       cvs: 'Pulse 92 regular. BP 138/86. ECG sinus rhythm. Nil blood loss.',
       resp: 'RR 20, mildly SOB, speaking full sentences, nil resp distress. SpO2 94% RA, 96% on NC.',
-      pain: 'Central heavy pressure, radiating to L arm + jaw, onset at rest ~2050, 8/10. After GTN 6/10, on arrival at hospital 5/10.',
+      pain: 'Central heavy pressure, radiating to L arm + jaw, onset at rest ~2045, 8/10. After GTN 6/10, on arrival at hospital 5/10.',
       survey: '',
       care: 'Aspirin 300 mg chewed 2136. NC O2 for SpO2 94%. GTN limits checked aloud (SBP 138, HR 92, nil PDE-5): GTN 400 microg SL spray 2138. 2142 BP 118/74, HR 88, pain 6/10, mild headache.\nEOC Clinician 2144: counted 3 GTN doses, nil further GTN, transport now, call back if BP/HR outside limits or pain changes. Carry chair (stand + pivot), stretcher, monitor + O2 on, kept warm. Obs every 3-5 min en route, stable.'
     },
