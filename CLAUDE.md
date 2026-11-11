@@ -20,7 +20,8 @@ settings or play files you leave in the container: send files with the file tool
   student versions). The other `/modules/*` pages are still the old standalone style.
 - `/scenarios/` - trial scenario customiser: pick a walk-through and change its local details (names, places, times).
   Templates are in Supabase `public.scenarios`. Read `scenarios/README.md`. All 11 converted walk-throughs.
-- `/training/` - the training-session app (Supabase). `/teams/`, `/region/` - team and region pages.
+- `/training/` - the training-session app (Supabase). `/teams/`, `/region/` - team and region pages. A session can
+  have several lessons (`sessions.lesson_ids`, in order; a trigger keeps `lesson_id` = the first one).
 
 ## Skills
 
