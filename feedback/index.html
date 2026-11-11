@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Feedback - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../training/theme.css?v=20261017a">
+<style>
+/* One feedback form per topic: /feedback/?t=<topic id from hub/topics.js>&from=<where the link was>.
+   ?show=1 shows a big QR code of the form for the room (Run a session). Answers go to Supabase public.feedback. */
+.top a { color: inherit; text-decoration: none; }
+fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .5rem; min-width: 0; }
+legend { font-weight: 700; padding: 0; margin-bottom: .4rem; }
+.q { display: flex; flex-direction: column; gap: .5rem; }
+.stars { display: flex; gap: .35rem; flex-wrap: wrap; }
+.stars button { width: 48px; height: 48px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.stars button.on { color: #c98a00; border-color: #c98a00; background: color-mix(in srgb, #c98a00 12%, var(--surface)); }
+.stars .lab { align-self: center; font-size: .85rem; color: var(--muted); margin-left: .3rem; }
+.picks { display: flex; flex-wrap: wrap; gap: .5rem; }
+.pick { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; padding: .4rem .9rem; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 600; font-size: .95rem; cursor: pointer; }
+.pick input { width: 1.1rem; height: 1.1rem; min-height: 0; margin: 0; accent-color: var(--brand); }
+.pick:has(input:checked) { border-color: var(--brand); background: var(--brand-soft); color: var(--brand); }
+.part { border: 1px solid var(--line); border-left: 6px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; display: flex; flex-direction: column; gap: .6rem; background: var(--surface); }
+.part h3 { font-size: 1.05rem; }
+.part[hidden] { display: none; }
+textarea { min-height: 5rem; }
+.err { color: var(--danger); font-weight: 600; }
+.thanks { text-align: center; padding: 2rem 1.2rem; }
+.thanks h2 { color: var(--brand); margin-bottom: .5rem; }
+/* room display */
+.show { text-align: center; align-items: center; }
+.show h2 { font-size: clamp(1.6rem, 5vw, 2.6rem); color: var(--brand); }
+.show .qr { background: #fff; padding: 16px; border-radius: 16px; display: inline-block; }
+.show .qr img, .show .qr canvas { width: min(70vw, 420px) !important; height: auto !important; display: block; }
+.show .url { font-size: 1.1rem; font-weight: 600; overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <a class="brand" href="../"><div class="brand-icon"><img src="../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>
+      <div><h1>DSY Training</h1><p>Feedback</p></div></a>
+  </header>
+  <div id="app" class="stack"></div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../training/config.js"></script>
+<script src="../hub/topics.js?v=20261111b"></script>
+<script>
+(function () {
+  "use strict";
+  var PARTS = [
+    { k: "micro", name: "Microlearning", hint: "the video, checker and knowledge check", has: function (t) { return !!t.module; } },
+    { k: "walk", name: "Walk-through", hint: "the scenario with break points", has: function (t) { return !!t.walk; } },
+    { k: "stations", name: "Skills stations", hint: "the hands-on practice", has: function (t) { return !!t.stations; } },
+    { k: "mdt", name: "MDT simulator", hint: "the iPad job", has: function (t) { return !!t.mdt; } },
+    { k: "pcr", name: "PCR trainer", hint: "writing the case card", has: function (t) { return !!t.pcr; } },
+    { k: "slides", name: "Presentation slides", hint: "the case night slide show", has: function (t) { return !!t.slides; } }
+  ];
+  var TOPICS = (window.DSY_TOPICS || []).slice();
+  var GENERAL = { id: "general", title: "The website in general", module: 1, walk: 1, stations: 1, mdt: 1, pcr: 1, slides: 1 };
+  TOPICS.push(GENERAL);
+  var DB = window.TRAINING_APP;
+  var qs = new URLSearchParams(location.search);
+  var app = document.getElementById("app");
+
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function topicById(id) { for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].id === id) return TOPICS[i]; return null; }
+  var topic = topicById(qs.get("t") || "") || null;
+  var source = (qs.get("from") || "").replace(/[^a-z0-9-]/gi, "").slice(0, 40) || null;
+
+  /* ---------- room display: a big QR code of the form ---------- */
+  if (qs.get("show") === "1") {
+    var u = new URL(location.href); u.searchParams.delete("show"); if (!u.searchParams.get("from")) u.searchParams.set("from", "qr");
+    var url = u.href;
+    var box = el("section", "panel pad stack show");
+    box.appendChild(el("p", "chip hi", "Tell us what you thought"));
+    box.appendChild(el("h2", null, topic ? topic.title : "DSY Training"));
+    box.appendChild(el("p", "muted", "Scan with your phone camera. It takes about two minutes, and your name is optional."));
+    var q = el("div", "qr"); box.appendChild(q);
+    box.appendChild(el("p", "url", url.replace(/^https?:\/\//, "")));
+    var a = el("a", "btn ghost small", "Open the form here"); a.href = url; box.appendChild(a);
+    app.appendChild(box);
+    if (window.QRCode) new QRCode(q, { text: url, width: 420, height: 420, colorDark: "#005340", colorLight: "#ffffff" });
+    return;
+  }
+
+  /* ---------- the form ---------- */
+  var state = { overall: 0, parts: {} };
+
+  function stars(onPick, label) {
+    var wrap = el("div", "stars"), btns = [], lab = el("span", "lab", label || "");
+    var words = ["", "Poor", "Fair", "Good", "Very good", "Excellent"];
+    for (var i = 1; i <= 5; i++) (function (n) {
+      var b = el("button", null, "★"); b.type = "button"; b.setAttribute("aria-label", n + " of 5: " + words[n]); b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", function () {
+        btns.forEach(function (x, j) { x.classList.toggle("on", j < n); x.setAttribute("aria-pressed", j === n - 1 ? "true" : "false"); });
+        lab.textContent = words[n]; onPick(n);
+      });
+      btns.push(b); wrap.appendChild(b);
+    })(i);
+    wrap.appendChild(lab);
+    return wrap;
+  }
+
+  function render() {
+    app.textContent = "";
+    var form = el("form", "stack"); form.noValidate = true;
+
+    var intro = el("section", "panel pad stack");
+    intro.appendChild(el("h2", null, topic ? "Feedback: " + topic.title : "Feedback"));
+    intro.appendChild(el("p", "muted", "Tell us what helped and what we should change. The instructors read every reply and use it to improve the training. Your name is optional."));
+    var tl = el("label", null, "Topic");
+    var sel = el("select"); sel.id = "topic";
+    if (!topic) { var o0 = el("option", null, "Choose a topic"); o0.value = ""; sel.appendChild(o0); }
+    TOPICS.forEach(function (t) { var o = el("option", null, t.title); o.value = t.id; if (topic && t.id === topic.id) o.selected = true; sel.appendChild(o); });
+    sel.addEventListener("change", function () { topic = topicById(sel.value); state.parts = {}; drawParts(); });
+    tl.appendChild(sel); intro.appendChild(tl);
+    form.appendChild(intro);
+
+    var ov = el("section", "panel pad q");
+    ov.appendChild(el("h3", null, "Overall, how useful was this topic?"));
+    ov.appendChild(stars(function (n) { state.overall = n; }));
+    form.appendChild(ov);
+
+    var pp = el("section", "panel pad stack");
+    var fs = el("fieldset"); fs.appendChild(el("legend", null, "Would you like to give feedback on a particular part?"));
+    fs.appendChild(el("p", "small muted", "Tick any you used. Leave them all blank if you only want to give general feedback."));
+    var picks = el("div", "picks"); fs.appendChild(picks);
+    pp.appendChild(fs);
+    var partBoxes = el("div", "stack"); pp.appendChild(partBoxes);
+    form.appendChild(pp);
+
+    function drawParts() {
+      picks.textContent = ""; partBoxes.textContent = "";
+      var list = PARTS.filter(function (p) { return !topic || p.has(topic); });
+      list.forEach(function (p) {
+        var lab = el("label", "pick"), cb = el("input"); cb.type = "checkbox"; cb.value = p.k;
+        lab.appendChild(cb); lab.appendChild(document.createTextNode(p.name)); picks.appendChild(lab);
+        var box = el("div", "part"); box.hidden = true;
+        box.appendChild(el("h3", null, p.name));
+        box.appendChild(el("p", "small muted", "How useful was " + p.hint + "?"));
+        box.appendChild(stars(function (n) { state.parts[p.k].rating = n; }));
+        var cl = el("label", null, "Comments on the " + (p.k === "mdt" || p.k === "pcr" ? p.name : p.name.toLowerCase()) + " (optional)"), ta = el("textarea"); ta.maxLength = 1000;
+        ta.placeholder = "What worked, what was confusing, anything wrong or missing";
+        ta.addEventListener("input", function () { state.parts[p.k].comment = ta.value; });
+        cl.appendChild(ta); box.appendChild(cl);
+        partBoxes.appendChild(box);
+        cb.addEventListener("change", function () {
+          box.hidden = !cb.checked;
+          if (cb.checked) state.parts[p.k] = state.parts[p.k] || { rating: 0, comment: ta.value };
+          else delete state.parts[p.k];
+        });
+      });
+    }
+    drawParts();
+
+    var gen = el("section", "panel pad stack");
+    var l1 = el("label", null, "What worked well?"), t1 = el("textarea"); t1.id = "liked"; t1.maxLength = 2000; l1.appendChild(t1); gen.appendChild(l1);
+    var l2 = el("label", null, "What should we change or add?"), t2 = el("textarea"); t2.id = "change"; t2.maxLength = 2000; l2.appendChild(t2); gen.appendChild(l2);
+    var l3 = el("label", null, "I am"), s3 = el("select"); s3.id = "role";
+    ["", "Ambulance Officer (volunteer)", "Ambulance Responder", "Paramedic", "Nurse", "Facilitator or instructor", "Other"].forEach(function (r) {
+      var o = el("option", null, r || "Choose (optional)"); o.value = r; s3.appendChild(o);
+    });
+    l3.appendChild(s3); gen.appendChild(l3);
+    var l4 = el("label", null, "Your name (optional)"), i4 = el("input"); i4.id = "name"; i4.maxLength = 80; i4.autocomplete = "name"; l4.appendChild(i4); gen.appendChild(l4);
+    form.appendChild(gen);
+
+    var err = el("p", "err"); err.setAttribute("aria-live", "polite");
+    var send = el("button", "btn", "Send feedback"); send.type = "submit";
+    form.appendChild(err); form.appendChild(send);
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); err.textContent = "";
+      if (!topic) { err.textContent = "Please choose a topic."; sel.focus(); return; }
+      var parts = {}, any = false;
+      Object.keys(state.parts).forEach(function (k) {
+        var p = state.parts[k], c = (p.comment || "").trim();
+        if (p.rating || c) { parts[k] = { rating: p.rating || null, comment: c || null }; any = true; }
+      });
+      var liked = t1.value.trim(), change = t2.value.trim();
+      if (!state.overall && !any && !liked && !change) { err.textContent = "Please give a rating or write a comment first."; return; }
+      send.disabled = true; send.textContent = "Sending…";
+      fetch(DB.supabaseUrl + "/rest/v1/feedback", {
+        method: "POST",
+        headers: { apikey: DB.supabaseKey, Authorization: "Bearer " + DB.supabaseKey, "Content-Type": "application/json", Prefer: "return=minimal" },
+        body: JSON.stringify({ topic: topic.id, overall: state.overall || null, parts: parts, liked: liked || null, change: change || null,
+          role: s3.value || null, name: i4.value.trim() || null, source: source })
+      }).then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        thanks();
+      }).catch(function () {
+        send.disabled = false; send.textContent = "Send feedback";
+        err.textContent = "Could not send it. Check your connection and try again.";
+      });
+    });
+    app.appendChild(form);
+  }
+
+  function thanks() {
+    app.textContent = "";
+    var b = el("section", "panel thanks stack");
+    b.appendChild(el("h2", null, "Thank you"));
+    b.appendChild(el("p", null, "Your feedback on " + topic.title.toLowerCase() + " has been sent to the DSY instructors."));
+    var a = el("a", "btn ghost", "Back to DSY Training"); a.href = "../"; b.appendChild(a);
+    app.appendChild(b); window.scrollTo(0, 0);
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

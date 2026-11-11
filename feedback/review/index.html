@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<script src="/shared/gate.js?v=20261107a" data-level="facilitator"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Feedback review - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261017a">
+<style>
+/* Facilitators and leaders read the feedback sent from /feedback/ (Supabase public.feedback). */
+.top a { color: inherit; text-decoration: none; }
+.filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .6rem; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; padding: .45rem .5rem; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--muted); font-weight: 600; font-size: .8rem; }
+td.num { text-align: center; }
+tr.click { cursor: pointer; } tr.click:hover td { background: var(--brand-soft); }
+.entry { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: .9rem 1rem; display: flex; flex-direction: column; gap: .45rem; }
+.entry .meta { display: flex; flex-wrap: wrap; gap: .35rem .5rem; align-items: center; font-size: .82rem; color: var(--muted); }
+.entry .st { color: #c98a00; letter-spacing: 1px; }
+.entry p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.entry .lbl { font-weight: 700; color: var(--brand); }
+.entry .pt { border-left: 4px solid var(--brand-soft); padding-left: .6rem; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <a class="brand" href="../../hub/run/"><div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>
+      <div><h1>DSY Training</h1><p>Feedback review</p></div></a>
+  </header>
+  <section class="panel pad stack">
+    <p class="small muted">Feedback sent from the QR codes and links on Run a session and the case night slides. Only facilitators and leaders can read it. Tap a topic in the summary to see its replies.</p>
+    <div class="filters">
+      <label>Topic<select id="fTopic"></select></label>
+      <label>Part<select id="fPart"></select></label>
+      <label>Since<select id="fSince">
+        <option value="">All time</option><option value="30">Last 30 days</option><option value="90">Last 3 months</option><option value="365">Last 12 months</option>
+      </select></label>
+    </div>
+    <div class="kit" style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <button class="btn ghost small" id="csv" type="button">Download as a spreadsheet (CSV)</button>
+      <a class="btn ghost small" href="../" target="_blank" rel="noopener">Open the blank form</a>
+    </div>
+  </section>
+  <p class="small muted" id="msg" aria-live="polite">Loading&hellip;</p>
+  <section class="panel pad stack"><h2>Summary</h2><div class="tablewrap"><table id="sum"></table></div>
+    <p class="small muted">Ratings are averages out of 5; the number in brackets is how many people rated it.</p></section>
+  <section class="stack"><h2 id="listHead">Replies</h2><div class="stack" id="list"></div></section>
+</main>
+<script src="../../training/config.js"></script>
+<script src="../../hub/topics.js?v=20261111b"></script>
+<script>
+(function () {
+  "use strict";
+  var PARTS = [["micro", "Microlearning"], ["walk", "Walk-through"], ["stations", "Skills stations"], ["mdt", "MDT simulator"], ["pcr", "PCR trainer"], ["slides", "Slides"]];
+  var PNAME = {}; PARTS.forEach(function (p) { PNAME[p[0]] = p[1]; });
+  var TITLE = { general: "The website in general" };
+  (window.DSY_TOPICS || []).forEach(function (t) { TITLE[t.id] = t.title; });
+  var DB = window.TRAINING_APP, STORE = "sb-ekaodnbnpsuayvmxvxbm-auth-token";
+  var rows = [], $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function name(id) { return TITLE[id] || id; }
+  function starsText(n) { return n ? "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n) : ""; }
+
+  var fT = $("fTopic"), fP = $("fPart"), fS = $("fSince");
+  [["", "All topics"]].concat(Object.keys(TITLE).map(function (k) { return [k, TITLE[k]]; })).forEach(function (o) {
+    var x = el("option", null, o[1]); x.value = o[0]; fT.appendChild(x);
+  });
+  [["", "Any part"]].concat(PARTS).forEach(function (o) { var x = el("option", null, o[1]); x.value = o[0]; fP.appendChild(x); });
+  [fT, fP, fS].forEach(function (s) { s.addEventListener("change", draw); });
+
+  function filtered() {
+    var since = fS.value ? Date.now() - fS.value * 864e5 : 0;
+    return rows.filter(function (r) {
+      if (fT.value && r.topic !== fT.value) return false;
+      if (fP.value && !(r.parts && r.parts[fP.value])) return false;
+      if (since && new Date(r.created_at).getTime() < since) return false;
+      return true;
+    });
+  }
+  function avg(list) { if (!list.length) return ""; var s = 0; list.forEach(function (x) { s += x; }); return (s / list.length).toFixed(1) + " (" + list.length + ")"; }
+
+  function draw() {
+    var list = filtered();
+    /* summary by topic (topic filter ignored so the table stays useful) */
+    var since = fS.value ? Date.now() - fS.value * 864e5 : 0, by = {};
+    rows.forEach(function (r) {
+      if (since && new Date(r.created_at).getTime() < since) return;
+      if (fP.value && !(r.parts && r.parts[fP.value])) return;
+      var b = by[r.topic] || (by[r.topic] = { n: 0, overall: [], parts: {} });
+      b.n++; if (r.overall) b.overall.push(r.overall);
+      Object.keys(r.parts || {}).forEach(function (k) { var p = r.parts[k]; (b.parts[k] = b.parts[k] || []); if (p && p.rating) b.parts[k].push(p.rating); });
+    });
+    var t = $("sum"); t.textContent = "";
+    var hr = el("tr"); ["Topic", "Replies", "Overall"].concat(PARTS.map(function (p) { return p[1]; })).forEach(function (h) { hr.appendChild(el("th", null, h)); });
+    var th = el("thead"); th.appendChild(hr); t.appendChild(th);
+    var tb = el("tbody");
+    Object.keys(by).sort(function (a, b) { return by[b].n - by[a].n; }).forEach(function (k) {
+      var b = by[k], tr = el("tr", "click");
+      tr.appendChild(el("td", null, name(k))); tr.appendChild(el("td", "num", String(b.n))); tr.appendChild(el("td", "num", avg(b.overall)));
+      PARTS.forEach(function (p) { tr.appendChild(el("td", "num", b.parts[p[0]] ? (avg(b.parts[p[0]]) || "comment only") : "")); });
+      tr.addEventListener("click", function () { fT.value = k; draw(); $("listHead").scrollIntoView({ behavior: "smooth" }); });
+      tb.appendChild(tr);
+    });
+    if (!tb.children.length) { var e = el("tr"), td = el("td", "muted", "No feedback yet."); td.colSpan = 3 + PARTS.length; e.appendChild(td); tb.appendChild(e); }
+    t.appendChild(tb);
+
+    $("listHead").textContent = "Replies (" + list.length + ")" + (fT.value ? ": " + name(fT.value) : "");
+    var box = $("list"); box.textContent = "";
+    list.forEach(function (r) {
+      var c = el("article", "entry"), m = el("div", "meta");
+      m.appendChild(el("b", null, name(r.topic)));
+      m.appendChild(el("span", null, new Date(r.created_at).toLocaleString("en-AU", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })));
+      if (r.overall) m.appendChild(el("span", "st", starsText(r.overall)));
+      if (r.role) m.appendChild(el("span", "chip", r.role));
+      m.appendChild(el("span", "chip", r.name || "Anonymous"));
+      if (r.source) m.appendChild(el("span", "chip", "via " + r.source));
+      c.appendChild(m);
+      Object.keys(r.parts || {}).forEach(function (k) {
+        if (fP.value && k !== fP.value) return;
+        var p = r.parts[k] || {}, d = el("div", "pt"), h = el("p");
+        h.appendChild(el("span", "lbl", PNAME[k] || k)); if (p.rating) { h.appendChild(document.createTextNode(" ")); h.appendChild(el("span", "st", starsText(p.rating))); }
+        d.appendChild(h); if (p.comment) d.appendChild(el("p", null, p.comment));
+        c.appendChild(d);
+      });
+      if (r.liked) { var a = el("p"); a.appendChild(el("span", "lbl", "Worked well: ")); a.appendChild(document.createTextNode(r.liked)); c.appendChild(a); }
+      if (r.change) { var b2 = el("p"); b2.appendChild(el("span", "lbl", "Change or add: ")); b2.appendChild(document.createTextNode(r.change)); c.appendChild(b2); }
+      box.appendChild(c);
+    });
+  }
+
+  $("csv").addEventListener("click", function () {
+    var head = ["Date", "Topic", "Overall", "Role", "Name", "Via"];
+    PARTS.forEach(function (p) { head.push(p[1] + " rating", p[1] + " comment"); });
+    head.push("Worked well", "Change or add");
+    var out = [head];
+    filtered().forEach(function (r) {
+      var line = [r.created_at, name(r.topic), r.overall || "", r.role || "", r.name || "", r.source || ""];
+      PARTS.forEach(function (p) { var x = (r.parts || {})[p[0]] || {}; line.push(x.rating || "", x.comment || ""); });
+      line.push(r.liked || "", r.change || "");
+      out.push(line);
+    });
+    var csv = out.map(function (l) { return l.map(function (v) { v = String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(","); }).join("\r\n");
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv" }));
+    a.download = "dsy-feedback-" + new Date().toISOString().slice(0, 10) + ".csv";
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve()).then(function () {
+    var s = null; try { s = JSON.parse(localStorage.getItem(STORE) || "null"); } catch (e) {}
+    if (!s || !s.access_token) throw new Error("Not signed in.");
+    return fetch(DB.supabaseUrl + "/rest/v1/feedback?select=*&order=created_at.desc&limit=2000", { headers: { apikey: DB.supabaseKey, Authorization: "Bearer " + s.access_token } });
+  }).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(function (j) { rows = j; $("msg").textContent = j.length + " repl" + (j.length === 1 ? "y" : "ies") + " in total."; draw(); })
+    .catch(function (e) { $("msg").textContent = "Could not load the feedback (" + e.message + "). Try again, or sign in again."; });
+})();
+</script>
+</body>
+</html>

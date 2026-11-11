@@ -167,7 +167,11 @@
       { type: 'qr', kicker: 'Before next week', title: 'Revise on your own', url: '/microlearning/chest-pain/',
         text: 'The chest pain module: the video again, the GTN checker and the knowledge check.',
         points: ['Learn on your own on dsytraining.com also has Graham\'s walk-through and the MDT drill'],
-        notes: { time: 1 } }
+        notes: { time: 1 } },
+      { type: 'qr', kicker: 'Before you go', title: 'Tell us what you thought', url: '/feedback/?t=chest-pain&from=slides',
+        text: 'Two minutes on your phone. Your name is optional.',
+        points: ['Rate the night overall', 'Tick the parts you want to comment on: slides, walk-through, MDT, PCR trainer, microlearning', 'What worked, and what should we change'],
+        notes: { time: 2, tip: 'Leave this up while people pack up. Facilitators can read the replies on Run a session (Feedback).' } }
     ]
   });
 })();

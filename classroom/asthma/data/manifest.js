@@ -5,7 +5,7 @@
 // saved under its own name straight after it loads. build.js then turns them into slide sections.
 window.DRIVE_SECTIONS = [];
 (function () {
-  var v = '?v=20261111f';
+  var v = '?v=20261111g';
   document.write('<script src="/microlearning/asthma/content.js' + v + '" charset="utf-8"><\/script>');
   document.write('<script>window.AS_ML = window.MODULE;<\/script>');
   document.write('<script src="/modules/asthma-ao/content.js' + v + '" charset="utf-8"><\/script>');
