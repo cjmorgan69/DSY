@@ -17,6 +17,19 @@
 .gloss dl { margin: 0; display: grid; gap: .15rem; }
 .gloss dt { font-weight: 600; margin-top: .45rem; display: flex; gap: .4rem; align-items: baseline; flex-wrap: wrap; }
 .gloss dd { margin: 0; }
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+@media (min-width: 620px) { .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.tile { display: flex; flex-direction: column; justify-content: center; gap: .1rem; min-height: 64px; padding: .55rem .75rem; border: 1px solid var(--line); border-left: 5px solid var(--brand);
+  border-radius: 12px; background: var(--surface); color: var(--ink); text-decoration: none; text-align: left; font: inherit; cursor: pointer; }
+.tile b { color: var(--brand); font-size: 1rem; }
+.tile small { color: var(--muted); font-size: .78rem; line-height: 1.25; }
+.tile:hover { border-color: var(--brand); }
+.tile.off { border-left-color: var(--line); border-style: dashed; opacity: .5; cursor: default; pointer-events: none; }
+.tile.off b { color: var(--muted); }
+.tile.fb { border-left-color: var(--accent); }
+.tile.share { border-left-color: var(--line); background: var(--brand-soft); }
+.tiles + .tiles { margin-top: -.1rem; }
+.ghead { font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: -.35rem; }
 .gloss .gsrc { font-size: .72rem; font-weight: 600; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 .45rem; }
 </style>
 </head>
@@ -34,27 +47,27 @@
       <p class="note">Written by DSY as a suggested shape for a training night. Adjust it to your group.</p>
       <h3>Before the night</h3>
       <ol>
-        <li>Pick a topic below and read the facilitator walk-through, including the debrief.</li>
-        <li>If the topic can be customised, set your own town, station, hospital and times.</li>
+        <li>Pick a topic below and read the scenario (facilitator version), including the debrief.</li>
+        <li>If the topic can be customised (Customise), set your own town, station, hospital and times.</li>
         <li>Load the MDT job on the iPad and check the setup screen.</li>
-        <li>If the topic has skills stations, decide whether to run them before the walk-through or after it.</li>
+        <li>If the topic has skills stations, decide whether to run them before the scenario or after it.</li>
         <li>Send the students the Learn link so they can do the microlearning first.</li>
       </ol>
       <h3>On the night</h3>
       <ol>
         <li><b>Skills stations (optional, before):</b> if the topic has them, run the stations first to warm up the hands-on skills. The team can run them without you.</li>
         <li><b>Page out:</b> hand a pair the iPad. They log on, acknowledge and go en route, and talk through their plan while the live remarks arrive.</li>
-        <li><b>On scene:</b> run the walk-through with its break points, skills practice and decisions.</li>
+        <li><b>On scene:</b> run the scenario with its break points, skills practice and decisions.</li>
         <li><b>Transport:</b> back to the MDT to choose the hospital, go mobile, arrive and clear.</li>
         <li><b>Debrief:</b> use the scenario's debrief points and the MDT run log (times, remarks read, hospital chosen).</li>
-        <li><b>PCR trainer:</b> after the scenario, each student writes the patient care record for the job, then compares it with the model card.</li>
+        <li><b>PCR:</b> after the scenario, each student writes the patient care record for the job, then compares it with the model card.</li>
         <li><b>Skills stations (optional, after):</b> if you did not run them first, run them now to practise what came up in the scenario.</li>
       </ol>
       <h3>After</h3>
       <ol>
         <li>Log the session in the Session planner.</li>
         <li>Send the student link so the crew can revisit the topic on their own.</li>
-        <li>Show the topic's feedback QR code (or send the feedback link) so the crew can tell us what worked.</li>
+        <li>Show the topic's Feedback QR (or send the feedback link) so the crew can tell us what worked.</li>
       </ol>
     </div>
   </details>
@@ -89,34 +102,42 @@
     s.appendChild(document.createTextNode(t.title + " "));
     var sub = el("span", "small muted", t.walk ? "· " + t.patient : "· microlearning only so far"); s.appendChild(sub);
     d.appendChild(s);
-    var body = el("div", "stack"), kit = el("div", "kit");
-    if (t.slides) kit.appendChild(link("Case night slides", "../.." + t.slides));
-    if (t.walk) kit.appendChild(link("Facilitator walk-through", "../.." + t.walk));
-    if (t.custom) kit.appendChild(link("Customise for your area", "../../scenarios/#s=" + t.custom, true));
-    if (t.stations) kit.appendChild(link("Skills stations (team runs it)", "../.." + t.stations));
-    if (t.mdt) kit.appendChild(link("Load the MDT job", "../../mdt/#job=" + t.mdt, true));
-    if (t.pcr) kit.appendChild(link("PCR trainer", "../../tools/pcr/#job=" + t.pcr, true));
-    kit.appendChild(link("Microlearning", "../../microlearning/" + t.module + "/", true));
-    body.appendChild(kit);
-    var fb = el("div", "kit");
-    fb.appendChild(link("Feedback QR for the room", "../../feedback/?t=" + t.id + "&show=1"));
-    var fcopy = el("button", "btn ghost small", "Copy the feedback link"); fcopy.type = "button";
-    fcopy.addEventListener("click", function () {
-      var url = root + "feedback/?t=" + t.id + "&from=link", text = "DSY Training: " + t.title + "\nTell us what you thought: " + url;
-      if (navigator.share) { navigator.share({ title: "DSY Training feedback: " + t.title, text: text }).catch(function () {}); return; }
-      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { msg.textContent = "Feedback link for " + t.title + " copied."; }, function () { msg.textContent = url; });
-    });
-    fb.appendChild(fcopy);
-    body.appendChild(fb);
-    var share = el("button", "btn ghost small", "Copy the student link");
-    share.type = "button";
-    share.addEventListener("click", function () {
-      var text = "DSY Training: " + t.title + "\nLearn: " + root + "microlearning/" + t.module + "/";
-      if (navigator.share) { navigator.share({ title: "DSY Training: " + t.title, text: text }).catch(function () {}); return; }
-      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Student link for " + t.title + " copied."; }, function () { msg.textContent = text; });
-    });
-    var row = el("div", "kit"); row.appendChild(share);
-    body.appendChild(row);
+    var body = el("div", "stack");
+    function tile(name, hint, href, cls) {
+      var a = el(href ? "a" : "span", "tile" + (href ? "" : " off") + (cls ? " " + cls : ""));
+      a.appendChild(el("b", null, name)); a.appendChild(el("small", null, href ? hint : "Not made yet"));
+      if (href) { a.href = href; a.target = "_blank"; a.rel = "noopener"; }
+      return a;
+    }
+    function copyTile(name, hint, text, url, done) {
+      var bt = el("button", "tile share"); bt.type = "button";
+      bt.appendChild(el("b", null, name)); bt.appendChild(el("small", null, hint));
+      bt.addEventListener("click", function () {
+        if (navigator.share) { navigator.share({ title: "DSY Training: " + t.title, text: text }).catch(function () {}); return; }
+        (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = done; }, function () { msg.textContent = url; });
+      });
+      return bt;
+    }
+    /* Same eight tiles in the same place for every topic; a part not made yet stays as a faint placeholder. */
+    body.appendChild(el("p", "ghead", "On the night"));
+    var g1 = el("div", "tiles");
+    g1.appendChild(tile("Presentation", "Slide show for the night", t.slides && "../.." + t.slides));
+    g1.appendChild(tile("Scenario", "Facilitator version", t.walk && "../.." + t.walk));
+    g1.appendChild(tile("MDT", "Load the job on the iPad", t.mdt && "../../mdt/#job=" + t.mdt));
+    g1.appendChild(tile("PCR", "Write the patient report card", t.pcr && "../../tools/pcr/#job=" + t.pcr));
+    body.appendChild(g1);
+    body.appendChild(el("p", "ghead", "Before and after"));
+    var g2 = el("div", "tiles");
+    g2.appendChild(tile("Stations", "Hands-on skills, team runs it", t.stations && "../.." + t.stations));
+    g2.appendChild(tile("Microlearning", "The module to do first", "../../microlearning/" + t.module + "/"));
+    g2.appendChild(tile("Customise", "Your town, hospital, times", t.custom && "../../scenarios/#s=" + t.custom));
+    g2.appendChild(tile("Feedback QR", "Show it to the room", "../../feedback/?t=" + t.id + "&show=1", "fb"));
+    body.appendChild(g2);
+    var g3 = el("div", "tiles");
+    var learn = root + "microlearning/" + t.module + "/", fbUrl = root + "feedback/?t=" + t.id + "&from=link";
+    g3.appendChild(copyTile("Student link", "Copy or share", "DSY Training: " + t.title + "\nLearn: " + learn, learn, "Student link for " + t.title + " copied."));
+    g3.appendChild(copyTile("Feedback link", "Copy or share", "DSY Training: " + t.title + "\nTell us what you thought: " + fbUrl, fbUrl, "Feedback link for " + t.title + " copied."));
+    body.appendChild(g3);
     var G = (window.DSY_GLOSSARY || {})[t.id];
     if (G) {
       var gd = el("details", "gloss"), n = 0;
@@ -134,7 +155,7 @@
       });
       body.appendChild(gd);
     }
-    body.appendChild(el("p", "note", t.protocol + (t.custom ? " · customisable" : "") + (t.mdt ? " · MDT job ready" : "") + (t.stations ? " · skills stations" : "")));
+    body.appendChild(el("p", "note", "Protocol: " + t.protocol));
     d.appendChild(body);
     list.appendChild(d);
   });
