@@ -21,6 +21,11 @@
     return '<div class="callout">' + (c.head ? '<h3>' + E(c.head) + '</h3>' : '') + '<p>' + E(c.text) + '</p></div>';
   }
   // Small label above a slide title ("Break point 3 of 8 · Practical skill").
+  // Step lists go into two columns when they are long, or when there are 5 or more steps with sub-text.
+  function twoCols(items) {
+    var sub = items.some(function (x) { return typeof x !== 'string' && x.t; });
+    return (items.length > 3 && JSON.stringify(items).length > 380) || (items.length > 4 && sub);
+  }
   function kick(s) { return s.kicker ? '<div class="kicker">' + E(s.kicker) + '</div>' : ''; }
   // MDT cue in the top corner of a slide ("MDT: Time Scene").
   function mdt(s) { return s.mdt ? '<div class="mdtchip"><span>MDT</span>' + E(s.mdt) + '</div>' : ''; }
@@ -59,9 +64,9 @@
         }).join('') + '</div>' + (s.callout ? '<div class="callout-band step" data-step="' + (s.items.length + 1) + '">' + E(s.callout.text) + '</div>' : '') + '</div>' + lab(it) + '</div>';
     },
     numbered: function (s, it) {
-      return '<div class="slide light">' + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body"' + (s.items.length > 4 ? ' style="--fs:42px"' : '') + '><div class="nums' + (JSON.stringify(s.items).length > 600 ? ' two' : '') + '">' +
+      return '<div class="slide light">' + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body"' + (s.items.length > 4 && !twoCols(s.items) ? ' style="--fs:42px"' : '') + '><div class="nums' + (twoCols(s.items) ? ' two' : '') + '">' +
         s.items.map(function (t, i) {
-          return '<div class="num step" data-step="' + (i + 1) + '"><div class="bd">' + (i + 1) + '</div><div>' +
+          return '<div class="num step" data-step="' + (i + 1) + '"><div class="bd">' + (i + 1 + (s.start || 0)) + '</div><div>' +
             (typeof t === 'string' ? E(t) : '<b>' + E(t.h) + '</b>' + (t.t ? '<div class="tx">' + E(t.t) + '</div>' : '')) + '</div></div>';
         }).join('') + '</div></div>' + lab(it) + '</div>';
     },
@@ -120,13 +125,13 @@
     prompts: function (s, it) {
       return '<div class="slide light bp">' + mdt(s) + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body" style="--fs:48px"><div class="nums">' +
         s.prompts.map(function (t, i) {
-          return '<div class="num step" data-step="' + (i + 1) + '"><div class="bd">' + (i + 1) + '</div><div>' + E(t) + '</div></div>';
+          return '<div class="num step" data-step="' + (i + 1) + '"><div class="bd">' + (i + 1 + (s.start || 0)) + '</div><div>' + E(t) + '</div></div>';
         }).join('') + '</div></div>' + lab(it) + '</div>';
     },
     // Decision tile: the room votes, the next click shows the answer and why.
     decision: function (s, it) {
       var L = 'ABCDE';
-      return '<div class="slide light dec">' + mdt(s) + kick(s) + '<h1 class="t q">' + E(s.q) + '</h1><div class="body" style="--fs:46px"><div class="opts">' +
+      return '<div class="slide light dec">' + mdt(s) + kick(s) + '<h1 class="t q">' + E(s.q) + '</h1><div class="body" style="--fs:52px"><div class="opts">' +
         s.options.map(function (o, i) {
           return '<div class="opt' + (i === s.answer ? ' ans' : '') + '"><div class="bd">' + L[i] + '</div><div class="ot">' + E(o) + '</div>' +
             (i === s.answer ? '<div class="tick step" data-step="1">&#10003;</div>' : '') + '</div>';

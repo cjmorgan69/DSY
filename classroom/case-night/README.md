@@ -56,3 +56,11 @@ Cummins Hospital 0325, call sign CU181), the PCR trainer (`karen`) and next week
 the owner moved Karen's homestead to 20 km north of Cummins (it was 14 km north of Lock, which is about 45 minutes from
 any hospital) and named Cummins Hospital, 30 minutes; MedSTAR now reads "may be available once more information is known".
 Long step lists show in two columns (`numbered` slides with more than about 600 characters).
+
+## Text size in tiles (owner, 11 Nov 2026)
+
+The owner found the text inside tiles too small. Now: tile text is 0.9 of the slide size (was 0.8), step sub-text 0.86
+(was 0.74), tables start at 44 px (was 34) and decision slides at 52 px (was 46); every slide still shrinks to fit. Step
+lists with 5 or more steps (or long ones) show in two columns at full size. A 'cards' or 'numbered' slide with more than
+4 items and over about 700 characters is split into "(1 of 2)" and "(2 of 2)" (`common.js`), so the Giving GTN and MDI
+and spacer tiles each become two slides. The smallest text left is the CTL-071 severity table (28 px at full size).

@@ -19,8 +19,8 @@
   function step(t) { return t.text ? { h: t.t, t: t.text } : t.t; }
   function split(x) { var k = x.indexOf(': '); return k > 0 ? { h: x.slice(0, k), t: x.slice(k + 2) } : { h: x }; }
   function tableSlide(tb, extra) {
-    var t = tb.table, s = { type: 'table', title: tb.title, noStep: true, fs: 34 };
-    if (t.rows.length === 1 && t.head.length > 4) { s.head = ['Observation', 'Value']; s.rows = t.head.map(function (h, i) { return [h, t.rows[0][i]]; }); s.fs = 40; }
+    var t = tb.table, s = { type: 'table', title: tb.title, noStep: true, fs: 44 };
+    if (t.rows.length === 1 && t.head.length > 4) { s.head = ['Observation', 'Value']; s.rows = t.head.map(function (h, i) { return [h, t.rows[0][i]]; }); s.fs = 46; }
     else { s.head = t.head; s.rows = t.rows; }
     for (var k in extra) s[k] = extra[k];
     return s;
