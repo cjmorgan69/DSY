@@ -133,7 +133,7 @@ window.PCR_JOBS = {
       allergies: 'Penicillin (rash)',
       communicable: 'Nil known',
       provisional: 'Acute asthma, more severe (CTL-071). Triggers: URTI, dust, preventer ran out.',
-      recommendation: 'Transported to country hospital ED. Improved after neb + MDI/spacer but not at baseline: needs O2 + ongoing monitoring, and review of her preventer (Seretide ran out 2 wks ago). Handed over 0325 (ISBAR).',
+      recommendation: 'Transported to Cummins Hospital ED. Improved after neb + MDI/spacer but not at baseline: needs O2 + ongoing monitoring, and review of her preventer (Seretide ran out 2 wks ago). Handed over 0325 (ISBAR).',
       ecg: 'Sinus tachycardia (3-lead) on arrival.'
     },
     sections: {

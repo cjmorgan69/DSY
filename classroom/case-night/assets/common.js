@@ -2,6 +2,27 @@
 (function () {
   var D = window.DRIVE = { sections: window.DRIVE_SECTIONS || [] };
 
+  // Long tile or step slides are split in two so the text in each tile can be larger (owner, 11 Nov 2026):
+  // a 'cards' or 'numbered' slide with more than 4 items and more than about 700 characters becomes
+  // "Title (1 of 2)" and "Title (2 of 2)". The notes stay with the first half.
+  D.sections.forEach(function (sec) {
+    var out = [];
+    sec.slides.forEach(function (sl) {
+      var long = (sl.type === 'cards' || sl.type === 'numbered') && sl.items && sl.items.length > 4 && JSON.stringify(sl.items).length > 700;
+      if (!long) { out.push(sl); return; }
+      var half = Math.ceil(sl.items.length / 2);
+      [sl.items.slice(0, half), sl.items.slice(half)].forEach(function (part, i) {
+        var c = {}; for (var k in sl) c[k] = sl[k];
+        c.items = part; c.title = sl.title + ' (' + (i + 1) + ' of 2)';
+        if (sl.type === 'cards') c.cols = part.length === 4 ? 2 : Math.min(part.length, 3);
+        if (sl.type === 'numbered') c.start = i ? half : 0;
+        if (i) { c.notes = { time: 1 }; delete c.callout; }
+        out.push(c);
+      });
+    });
+    sec.slides = out;
+  });
+
   D.secName = function (sec) { return sec.name || ('Part ' + sec.number); };
 
   D.esc = function (s) {

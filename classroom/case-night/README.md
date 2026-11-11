@@ -1,6 +1,7 @@
 # Case nights (instructor-led slides)
 
-Decks: `/classroom/chest-pain/` (Graham, 62) and `/classroom/acpo/` (Kevin, 72, 11 Nov 2026). Each deck folder has its
+Decks: `/classroom/chest-pain/` (Graham, 62), `/classroom/acpo/` (Kevin, 72, 11 Nov 2026) and `/classroom/asthma/`
+(Karen, 45, 11 Nov 2026). Each deck folder has its
 own `index.html`, `presenter.html`, `guide.html`, `data/manifest.js`, `data/build.js` and `img/`; the slide engine is shared
 here in `assets/` (deck name from `window.DECK_NAME`) and the MDT screenshots come from `tools/mdt-shots.js <deck>`.
 
@@ -45,3 +46,21 @@ Same order as chest pain: the module's intro video and its "The protocol" boxes,
 background, Kevin's eight break points with decision tiles and MDT screenshots (page 0247, Enroute 0248, scene 0300,
 Mobile 0322, Tumby Bay Hospital 0352, owner's choice; call sign PT181, Port Neill at night), the PCR trainer (`kevin`), the debrief and five variations, then next week's chest pain and ACPO
 stations. The walk-through has no safety brief box, so the "Before we start" slide is DSY-written. About 110 minutes.
+
+
+## The asthma night
+
+Built like the chest pain night (the asthma module has `keyPoints` and a top-level `video`), with the CTL-071 table and the
+pre-brief reminders, Karen's eight break points, MDT screenshots (page 0215, Enroute 0216, scene 0227, Mobile 0255,
+Cummins Hospital 0325, call sign CU181), the PCR trainer (`karen`) and next week's asthma stations. Before it was built
+the owner moved Karen's homestead to 20 km north of Cummins (it was 14 km north of Lock, which is about 45 minutes from
+any hospital) and named Cummins Hospital, 30 minutes; MedSTAR now reads "may be available once more information is known".
+Long step lists show in two columns (`numbered` slides with more than about 600 characters).
+
+## Text size in tiles (owner, 11 Nov 2026)
+
+The owner found the text inside tiles too small. Now: tile text is 0.9 of the slide size (was 0.8), step sub-text 0.86
+(was 0.74), tables start at 44 px (was 34) and decision slides at 52 px (was 46); every slide still shrinks to fit. Step
+lists with 5 or more steps (or long ones) show in two columns at full size. A 'cards' or 'numbered' slide with more than
+4 items and over about 700 characters is split into "(1 of 2)" and "(2 of 2)" (`common.js`), so the Giving GTN and MDI
+and spacer tiles each become two slides. The smallest text left is the CTL-071 severity table (28 px at full size).

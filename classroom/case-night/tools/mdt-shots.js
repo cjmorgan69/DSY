@@ -13,7 +13,11 @@ const SHOTS = {
     toEnroute: 1, toRemarks: 10, toScene: 6, onScene: 18, transport: 20 },
   // Kevin: page 0247, Enroute 0248, scene 0300, Mobile 0322, Tumby Bay Hospital 0352 (owner chose Tumby Bay, 11 Nov 2026).
   'acpo': { job: 'acpo', start: '02:46:50', callsign: 'PT181', hospital: 'TUMBY BAY HOSPITAL',
-    toEnroute: 1, toRemarks: 8, toScene: 4, onScene: 22, transport: 30 }
+    toEnroute: 1, toRemarks: 8, toScene: 4, onScene: 22, transport: 30 },
+  // Karen: page 0215, Enroute 0216, scene 0227, Mobile 0255, Cummins Hospital 0325 (owner moved the homestead to
+  // 20 km north of Cummins, 11 Nov 2026). CU181 = Cummins at night (owner).
+  'asthma': { job: 'asthma', start: '02:14:50', callsign: 'CU181', hospital: 'CUMMINS HOSPITAL',
+    toEnroute: 1, toRemarks: 8, toScene: 3, onScene: 28, transport: 30 }
 };
 const deck = process.argv[2], S = SHOTS[deck];
 if (!S) { console.log('Usage: node mdt-shots.js ' + Object.keys(SHOTS).join('|')); process.exit(1); }
