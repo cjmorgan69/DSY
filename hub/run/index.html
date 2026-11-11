@@ -17,6 +17,19 @@
 .gloss dl { margin: 0; display: grid; gap: .15rem; }
 .gloss dt { font-weight: 600; margin-top: .45rem; display: flex; gap: .4rem; align-items: baseline; flex-wrap: wrap; }
 .gloss dd { margin: 0; }
+.cats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
+@media (min-width: 620px) { .cats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.cat { display: flex; flex-direction: column; justify-content: center; gap: .2rem; min-height: 84px; padding: .8rem .9rem; border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--surface); color: var(--ink); text-align: left; font: inherit; cursor: pointer; box-shadow: 0 1px 2px rgba(20, 40, 30, .05); }
+.cat b { color: var(--brand); font-family: var(--font-head); font-size: 1.08rem; line-height: 1.2; }
+.cat small { color: var(--muted); font-size: .8rem; }
+.cat:hover { border-color: var(--brand); }
+.cat.on { background: var(--brand); border-color: var(--brand); }
+.cat.on b, .cat.on small { color: var(--brand-ink); }
+.gtitle { font-size: 1.2rem; margin-top: .3rem; }
+.soon { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .9rem 1.2rem; }
+.soon > div { display: flex; flex-direction: column; gap: .1rem; min-width: 0; }
+.soon b { color: var(--muted); }
 .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
 @media (min-width: 620px) { .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .tile { display: flex; flex-direction: column; justify-content: center; gap: .1rem; min-height: 64px; padding: .55rem .75rem; border: 1px solid var(--line); border-left: 5px solid var(--brand);
@@ -79,6 +92,7 @@
     <b>Session planner</b><br>
     <span class="small muted">Plan and log training nights: the calendar, who is facilitating and who attended.</span>
   </a>
+  <h2 style="margin-bottom:-.6rem">Topics</h2>
   <section class="stack" id="list"></section>
   <p class="small muted" id="msg" aria-live="polite"></p>
   <details class="panel">
@@ -90,14 +104,14 @@
   </details>
   <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
 </main>
-<script src="../topics.js?v=20261111b"></script>
+<script src="../topics.js?v=20261111c"></script>
 <script src="../glossary.js?v=20261110a"></script>
 <script>
 (function () {
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   function link(text, href, ghost) { var a = el("a", "btn small" + (ghost ? " ghost" : ""), text); a.href = href; a.target = "_blank"; a.rel = "noopener"; return a; }
   var list = document.getElementById("list"), msg = document.getElementById("msg"), root = new URL("../../", location.href).href;
-  window.DSY_TOPICS.forEach(function (t) {
+  function makeTopic(t) {
     var d = el("details", "panel"), s = el("summary");
     s.appendChild(document.createTextNode(t.title + " "));
     var sub = el("span", "small muted", t.walk ? "· " + t.patient : "· microlearning only so far"); s.appendChild(sub);
@@ -157,8 +171,43 @@
     }
     body.appendChild(el("p", "note", "Protocol: " + t.protocol));
     d.appendChild(body);
-    list.appendChild(d);
+    return d;
+  }
+
+  /* Category tiles: tap one to show its topics underneath. Planned topics show as "Coming soon". */
+  var groups = window.DSY_GROUPS || [], planned = window.DSY_PLANNED || [], KEY = "dsy-run-group";
+  var cats = el("div", "cats"), shown = el("div", "stack"), current = null, tiles = {};
+  list.appendChild(cats); list.appendChild(shown);
+  function count(g) {
+    var made = window.DSY_TOPICS.filter(function (t) { return t.group === g.id; }).length;
+    var soon = planned.filter(function (x) { return x.group === g.id; }).length;
+    return (made ? made + " topic" + (made === 1 ? "" : "s") : "No topics yet") + (soon ? " · " + soon + " coming soon" : "");
+  }
+  function pick(id, scroll) {
+    current = current === id ? null : id;
+    Object.keys(tiles).forEach(function (k) { tiles[k].classList.toggle("on", k === current); tiles[k].setAttribute("aria-expanded", k === current ? "true" : "false"); });
+    try { if (current) localStorage.setItem(KEY, current); else localStorage.removeItem(KEY); } catch (e) {}
+    shown.textContent = "";
+    if (!current) return;
+    var g = groups.filter(function (x) { return x.id === current; })[0];
+    shown.appendChild(el("h2", "gtitle", g.title));
+    window.DSY_TOPICS.filter(function (t) { return t.group === current; }).forEach(function (t) { shown.appendChild(makeTopic(t)); });
+    planned.filter(function (x) { return x.group === current; }).forEach(function (x) {
+      var c = el("div", "panel soon"), h = el("div");
+      h.appendChild(el("b", null, x.title)); h.appendChild(el("span", "small muted", x.protocol));
+      c.appendChild(h); c.appendChild(el("span", "chip warn", "Coming soon"));
+      shown.appendChild(c);
+    });
+    if (scroll) shown.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  groups.forEach(function (g) {
+    var b = el("button", "cat"); b.type = "button"; b.setAttribute("aria-expanded", "false");
+    b.appendChild(el("b", null, g.title)); b.appendChild(el("small", null, count(g)));
+    b.addEventListener("click", function () { pick(g.id, true); });
+    tiles[g.id] = b; cats.appendChild(b);
   });
+  var last = null; try { last = localStorage.getItem(KEY); } catch (e) {}
+  if (last && tiles[last]) pick(last, false);
 })();
 </script>
 </body>
