@@ -1,5 +1,6 @@
 (function () {
   var D = window.DRIVE, E = D.esc;
+  var DECK = window.DECK_NAME || 'Case night';
   var ART = !!window.ARTIFACT;
   var slides = D.flat();
   var stage = document.getElementById('stage');
@@ -23,7 +24,7 @@
   function kick(s) { return s.kicker ? '<div class="kicker">' + E(s.kicker) + '</div>' : ''; }
   // MDT cue in the top corner of a slide ("MDT: Time Scene").
   function mdt(s) { return s.mdt ? '<div class="mdtchip"><span>MDT</span>' + E(s.mdt) + '</div>' : ''; }
-  function lab(it) { return '<div class="lab">Chest pain case night  |  ' + D.secName(it.sec) + ': ' + E(it.sec.title) + '</div>'; }
+  function lab(it) { return '<div class="lab">' + E(DECK) + '  |  ' + D.secName(it.sec) + ': ' + E(it.sec.title) + '</div>'; }
 
   var R = {
     title: function (s, it) {
@@ -205,7 +206,7 @@
     // chrome
     document.getElementById('count').textContent = '' + D.secName(it.sec) + ' · ' + it.n + ' / ' + it.sec.slides.length;
     document.getElementById('progress').style.width = ((cur + 1) / slides.length * 100) + '%';
-    document.title = 'Chest pain: ' + D.title(it.s);
+    document.title = DECK + ': ' + D.title(it.s);
     if (!ART) history.replaceState(null, '', '#' + it.sec.id + '/' + it.n);
     var links = document.querySelectorAll('#menu a');
     links.forEach(function (a, idx) { a.classList.toggle('cur', idx === cur); });
@@ -247,7 +248,7 @@
 
   /* ---------- guide overlay (in-page) ---------- */
   function guideHTML() {
-    var h = '<button class="gclose" id="gClose">Close guide (Esc)</button><h1>Chest pain case night facilitator guide</h1><p class="small">Slide-by-slide notes. Times are suggestions only.</p>';
+    var h = '<button class="gclose" id="gClose">Close guide (Esc)</button><h1>' + E(DECK) + ' facilitator guide</h1><p class="small">Slide-by-slide notes. Times are suggestions only.</p>';
     D.sections.forEach(function (sec) {
       var total = 0; sec.slides.forEach(function (s) { total += (s.notes && s.notes.time) || 0; });
       h += '<h2>' + D.secName(sec) + ': ' + E(sec.title) + '</h2><p class="small">' + sec.slides.length + ' slides · suggested time about ' + total + ' min</p>';

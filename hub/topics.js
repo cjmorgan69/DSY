@@ -23,7 +23,7 @@ window.DSY_TOPICS = [
   { id:'pain', title:'Pain management', protocol:'CPP-013-AO', patient:'Gary, 58: fall from a shed roof at dusk',
     module:'pain', walk:'/modules/pain-management/', mdt:'pain', custom:'pain-ao', pcr:'gary' },
   { id:'acpo', title:'ACPO', protocol:'CPP-001-AO', patient:'Kevin, 72: woke at 2 am gasping',
-    module:'acpo', walk:'/modules/APO/', mdt:'acpo', custom:'acpo-ao', stations:'/stations/chest-pain-acpo/', pcr:'kevin' },
+    module:'acpo', walk:'/modules/APO/', mdt:'acpo', custom:'acpo-ao', stations:'/stations/chest-pain-acpo/', pcr:'kevin', slides:'/classroom/acpo/' },
   { id:'headache', title:'Headache', protocol:'CPP-061-AO', patient:'Ian, 62: sudden severe headache at the caravan park',
     module:'headache', walk:'/modules/headache%20-ao/', mdt:'headache', custom:'headache-ao', stations:'/stations/headache-nausea/', pcr:'ian' },
   { id:'nausea', title:'Nausea and vomiting', protocol:'CPP-047-AO', patient:'Helen, 62: eight hours of vomiting',
