@@ -19,6 +19,16 @@
 .gloss dd { margin: 0; }
 .cats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
 @media (min-width: 620px) { .cats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+#homeExtras[hidden] { display: none; }
+.vtitle { font-size: 1.35rem; }
+.back { align-self: flex-start; display: inline-flex; align-items: center; min-height: 40px; padding: .3rem .9rem; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-weight: 600; text-decoration: none; margin-bottom: -.2rem; }
+.thead p { margin-top: .2rem; }
+.trow { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .95rem 1.1rem; text-decoration: none; color: var(--ink); }
+.trow > div { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
+.trow b { color: var(--brand); font-size: 1.05rem; }
+.trow .chev { font-size: 1.8rem; line-height: 1; color: var(--muted); }
+.trow:hover { border-color: var(--brand); }
+.cat { text-decoration: none; }
 .cat { display: flex; flex-direction: column; justify-content: center; gap: .2rem; min-height: 84px; padding: .8rem .9rem; border: 1px solid var(--line); border-radius: var(--radius);
   background: var(--surface); color: var(--ink); text-align: left; font: inherit; cursor: pointer; box-shadow: 0 1px 2px rgba(20, 40, 30, .05); }
 .cat b { color: var(--brand); font-family: var(--font-head); font-size: 1.08rem; line-height: 1.2; }
@@ -54,17 +64,18 @@
   </header>
   <p class="small muted" id="leaderLinks" hidden><a href="../../access/">Grant access</a> (leaders)</p>
   <script>try{var c=JSON.parse(localStorage.getItem("dsy-gate-role")||"null");if(c&&c.role==="leader")document.getElementById("leaderLinks").hidden=false;}catch(e){}</script>
-  <h2 style="margin-bottom:-.6rem">Topics</h2>
   <section class="stack" id="list"></section>
   <p class="small muted" id="msg" aria-live="polite"></p>
+  <div class="stack" id="homeExtras" hidden>
   <a class="panel pad" href="../../feedback/review/" style="text-decoration:none;color:inherit;display:block">
     <b>Feedback</b><br>
-    <span class="small muted">Read what the crews said about each topic. Each topic above has a Feedback QR to show at the end of the night.</span>
+    <span class="small muted">Read what the crews said about each topic. Each topic has a Feedback QR to show at the end of the night.</span>
   </a>
   <a class="panel pad" href="../../training/" style="text-decoration:none;color:inherit;display:block">
     <b>Session planner</b><br>
     <span class="small muted">Plan and log training nights: the calendar, who is facilitating and who attended.</span>
   </a>
+  </div>
   <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
 </main>
 <script src="../topics.js?v=20261111d"></script>
@@ -75,10 +86,6 @@
   function link(text, href, ghost) { var a = el("a", "btn small" + (ghost ? " ghost" : ""), text); a.href = href; a.target = "_blank"; a.rel = "noopener"; return a; }
   var list = document.getElementById("list"), msg = document.getElementById("msg"), root = new URL("../../", location.href).href;
   function makeTopic(t) {
-    var d = el("details", "panel"), s = el("summary");
-    s.appendChild(document.createTextNode(t.title + " "));
-    var sub = el("span", "small muted", t.walk ? "· " + t.patient : "· microlearning only so far"); s.appendChild(sub);
-    d.appendChild(s);
     var body = el("div", "stack");
     function tile(name, hint, href, cls) {
       var a = el(href ? "a" : "span", "tile" + (href ? "" : " off") + (cls ? " " + cls : ""));
@@ -133,44 +140,65 @@
       body.appendChild(gd);
     }
     body.appendChild(el("p", "note", "Protocol: " + t.protocol));
-    d.appendChild(body);
-    return d;
+    return body;
   }
 
-  /* Category tiles: tap one to show its topics underneath. Planned topics show as "Coming soon". */
-  var groups = window.DSY_GROUPS || [], planned = window.DSY_PLANNED || [], KEY = "dsy-run-group";
-  var cats = el("div", "cats"), shown = el("div", "stack"), current = null, tiles = {};
-  list.appendChild(cats); list.appendChild(shown);
+  /* Three screens on one page, chosen by the address: #  = categories, #g=<group> = its topics, #t=<topic> = the topic's tiles.
+     Each is a link, so the phone's back button steps back a level. Planned topics show as "Coming soon". */
+  var groups = window.DSY_GROUPS || [], planned = window.DSY_PLANNED || [], topics = window.DSY_TOPICS;
+  var extras = document.getElementById("homeExtras");
+  function find(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
   function count(g) {
-    var made = window.DSY_TOPICS.filter(function (t) { return t.group === g.id; }).length;
+    var made = topics.filter(function (t) { return t.group === g.id; }).length;
     var soon = planned.filter(function (x) { return x.group === g.id; }).length;
     return (made ? made + " topic" + (made === 1 ? "" : "s") : "No topics yet") + (soon ? " · " + soon + " coming soon" : "");
   }
-  function pick(id, scroll) {
-    current = current === id ? null : id;
-    Object.keys(tiles).forEach(function (k) { tiles[k].classList.toggle("on", k === current); tiles[k].setAttribute("aria-expanded", k === current ? "true" : "false"); });
-    try { if (current) localStorage.setItem(KEY, current); else localStorage.removeItem(KEY); } catch (e) {}
-    shown.textContent = "";
-    if (!current) return;
-    var g = groups.filter(function (x) { return x.id === current; })[0];
-    shown.appendChild(el("h2", "gtitle", g.title));
-    window.DSY_TOPICS.filter(function (t) { return t.group === current; }).forEach(function (t) { shown.appendChild(makeTopic(t)); });
-    planned.filter(function (x) { return x.group === current; }).forEach(function (x) {
+  function back(text, href) { var a = el("a", "back", "\u2039 " + text); a.href = href; return a; }
+  function home() {
+    list.appendChild(el("h2", "vtitle", "Topics"));
+    var cats = el("div", "cats");
+    groups.forEach(function (g) {
+      var a = el("a", "cat"); a.href = "#g=" + g.id;
+      a.appendChild(el("b", null, g.title)); a.appendChild(el("small", null, count(g)));
+      cats.appendChild(a);
+    });
+    list.appendChild(cats);
+  }
+  function group(g) {
+    list.appendChild(back("All categories", "#"));
+    list.appendChild(el("h2", "vtitle", g.title));
+    topics.filter(function (t) { return t.group === g.id; }).forEach(function (t) {
+      var a = el("a", "panel trow"); a.href = "#t=" + t.id;
+      var d = el("div"); d.appendChild(el("b", null, t.title)); d.appendChild(el("span", "small muted", t.patient));
+      a.appendChild(d); a.appendChild(el("span", "chev", "\u203a"));
+      list.appendChild(a);
+    });
+    planned.filter(function (x) { return x.group === g.id; }).forEach(function (x) {
       var c = el("div", "panel soon"), h = el("div");
       h.appendChild(el("b", null, x.title)); h.appendChild(el("span", "small muted", x.protocol));
       c.appendChild(h); c.appendChild(el("span", "chip warn", "Coming soon"));
-      shown.appendChild(c);
+      list.appendChild(c);
     });
-    if (scroll) shown.scrollIntoView({ behavior: "smooth", block: "start" });
   }
-  groups.forEach(function (g) {
-    var b = el("button", "cat"); b.type = "button"; b.setAttribute("aria-expanded", "false");
-    b.appendChild(el("b", null, g.title)); b.appendChild(el("small", null, count(g)));
-    b.addEventListener("click", function () { pick(g.id, true); });
-    tiles[g.id] = b; cats.appendChild(b);
-  });
-  var last = null; try { last = localStorage.getItem(KEY); } catch (e) {}
-  if (last && tiles[last]) pick(last, false);
+  function topic(t) {
+    var g = find(groups, t.group);
+    list.appendChild(back(g ? g.title : "All categories", g ? "#g=" + g.id : "#"));
+    var h = el("div", "thead"); h.appendChild(el("h2", "vtitle", t.title)); h.appendChild(el("p", "small muted", t.patient));
+    list.appendChild(h);
+    var card = el("div", "panel pad"); card.appendChild(makeTopic(t)); list.appendChild(card);
+  }
+  function route() {
+    var h = location.hash, m, g = null, t = null;
+    if ((m = /^#t=([\w-]+)/.exec(h))) t = find(topics, m[1]);
+    else if ((m = /^#g=([\w-]+)/.exec(h))) g = find(groups, m[1]);
+    list.textContent = ""; msg.textContent = "";
+    if (t) topic(t); else if (g) group(g); else home();
+    extras.hidden = !!(t || g);
+    document.title = (t ? t.title + " - " : g ? g.title + " - " : "") + "Run a session - DSY Training";
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", route);
+  route();
 })();
 </script>
 </body>
