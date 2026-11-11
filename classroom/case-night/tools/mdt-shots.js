@@ -6,12 +6,13 @@
 const { chromium } = require('playwright');
 const path = require('path');
 const SHOTS = {
-  // Graham: page 2115, Enroute 2116, scene 2132, Mobile 2150, Cleve Hospital 2210. CL81 = Cleve (owner, 11 Nov 2026).
-  'chest-pain': { job: 'chest-pain', start: '21:14:50', callsign: 'CL81', hospital: 'CLEVE HOSPITAL',
+  // Call signs (owner, 11 Nov 2026): Eyre Peninsula units are XX81 for jobs between 0800 and 1800 and XX181 between
+  // 1800 and 0800 (Tumby Bay TB81 / TB181, Cleve CL81 / CL181, Port Neill PT181 at night).
+  // Graham: page 2115 (night, so CL181), Enroute 2116, scene 2132, Mobile 2150, Cleve Hospital 2210.
+  'chest-pain': { job: 'chest-pain', start: '21:14:50', callsign: 'CL181', hospital: 'CLEVE HOSPITAL',
     toEnroute: 1, toRemarks: 10, toScene: 6, onScene: 18, transport: 20 },
   // Kevin: page 0247, Enroute 0248, scene 0300, Mobile 0322, Tumby Bay Hospital 0352 (owner chose Tumby Bay, 11 Nov 2026).
-  // Call sign: the simulator's default until the owner gives the Port Neill one.
-  'acpo': { job: 'acpo', start: '02:46:50', callsign: '', hospital: 'TUMBY BAY HOSPITAL',
+  'acpo': { job: 'acpo', start: '02:46:50', callsign: 'PT181', hospital: 'TUMBY BAY HOSPITAL',
     toEnroute: 1, toRemarks: 8, toScene: 4, onScene: 22, transport: 30 }
 };
 const deck = process.argv[2], S = SHOTS[deck];

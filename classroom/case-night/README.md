@@ -34,7 +34,8 @@ Graham's job change. PCR: `/tools/pcr/#job=graham`. Linked from Run a session (`
 Copy `/classroom/acpo/` (its `build.js` finds the job panels from "Dispatch and en route" to "Handover" and reads a
 module built from panels). Change the two content paths in `data/manifest.js`, `DECK_NAME` in the three pages, and in
 `build.js` the module panel names, MDT captions, PCR job and stations. Add the deck to `SHOTS` in `tools/mdt-shots.js`
-(job id, start time, minutes between statuses, hospital, call sign), check the MDT job matches the walk-through's
+(job id, start time, minutes between statuses, hospital, call sign: XX81 for jobs 0800 to 1800, XX181 for 1800 to
+0800, owner), check the MDT job matches the walk-through's
 times, place and hospital, then take the screenshots. Add `slides:` to the topic in `hub/topics.js` and bump its tag.
 Bump the `?v=` tags in the deck's pages and `data/manifest.js` whenever the deck or the shared engine changes.
 
@@ -42,6 +43,5 @@ Bump the `?v=` tags in the deck's pages and `data/manifest.js` whenever the deck
 
 Same order as chest pain: the module's intro video and its "The protocol" boxes, the walk-through's principle and
 background, Kevin's eight break points with decision tiles and MDT screenshots (page 0247, Enroute 0248, scene 0300,
-Mobile 0322, Tumby Bay Hospital 0352, owner's choice; call sign is the simulator default TB85 until the owner gives the
-Port Neill one), the PCR trainer (`kevin`), the debrief and five variations, then next week's chest pain and ACPO
+Mobile 0322, Tumby Bay Hospital 0352, owner's choice; call sign PT181, Port Neill at night), the PCR trainer (`kevin`), the debrief and five variations, then next week's chest pain and ACPO
 stations. The walk-through has no safety brief box, so the "Before we start" slide is DSY-written. About 110 minutes.
