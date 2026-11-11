@@ -106,7 +106,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
   var EXTRA = ["#b8860b","#2a9d8f","#c2410c","#7e22ce","#0369a1","#be123c"];
   var TRACK_PX = 860, PAD = 16, CHIP = 34;
 
-  var S = { weekStart: null, bounds: null, jobs: [], active: { PL: 0 }, selected: null, cache: {}, busy: false };
+  var S = { weekStart: null, bounds: null, jobs: [], active: { PL: 0 }, town: {}, selected: null, cache: {}, busy: false };
 
   function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
   function toDate(s) { var p = s.split("-"); return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); }
@@ -119,6 +119,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
   function pos(m) { return "calc(" + PAD + "px + (100% - " + (PAD * 2) + "px) * " + frac(m) + ")"; }
   function codeOf(j) { return String(j.unit || "").replace(/\d+$/, ""); }
   var extraMap = {};
+  function townOf(j) { return j.locality || "No town"; }
   function teamOf(j) {
     var c = codeOf(j);
     if (TEAMS[c]) return TEAMS[c];
@@ -179,7 +180,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
     app.textContent = "";
     var top = el("div", "top"), left = el("div");
     left.appendChild(el("h1", null, "Dispatch Week 🚑"));
-    left.appendChild(el("p", "sub", "SAAS jobs paged for postcodes 5605, 5606, 5607 and 5631. Pick which teams to show. Port Lincoln (PL) starts switched off. Times are Adelaide local."));
+    left.appendChild(el("p", "sub", "SAAS jobs paged for postcodes 5605, 5606, 5607 and 5631. Pick which teams and which towns (where the job was) to show. Port Lincoln (PL) crews start switched off. Times are Adelaide local."));
     var lk = el("div", "links");
     var home = el("a", null, "DSY home"); home.href = "../"; lk.appendChild(home);
     var so = el("button", null, "Sign out"); so.type = "button"; so.addEventListener("click", function () { sb.auth.signOut(); }); lk.appendChild(so);
@@ -194,6 +195,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
     top.appendChild(nav);
     app.appendChild(top);
     var chips = el("div", "chips"); chips.id = "chips"; chips.setAttribute("role", "group"); chips.setAttribute("aria-label", "Teams to show"); app.appendChild(chips);
+    var tch = el("div", "chips"); tch.id = "townchips"; tch.setAttribute("role", "group"); tch.setAttribute("aria-label", "Towns to show (where the job was)"); app.appendChild(tch);
     var st = el("div", "stats"); st.id = "stats"; app.appendChild(st);
     var sc = el("div", "scroll"), bd = el("div", "board"); bd.id = "board"; sc.appendChild(bd); app.appendChild(sc);
     var lg = el("div", "legend");
@@ -237,6 +239,21 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
     all.addEventListener("click", function () { Object.keys(S.active).forEach(function (c) { S.active[c] = 1; }); render(); });
     box.appendChild(all);
   }
+  function drawTowns(weekAll) {
+    var box = document.getElementById("townchips"); box.textContent = "";
+    box.appendChild(el("span", "lab", "Towns"));
+    var cnt = {};
+    weekAll.forEach(function (j) { var t = townOf(j); if (cnt[t] === undefined) cnt[t] = 0; if (S.active[codeOf(j)] !== 0) cnt[t]++; });
+    Object.keys(cnt).sort(function (a, b) { return cnt[b] - cnt[a] || (a < b ? -1 : 1); }).forEach(function (t) {
+      var b = el("button", "chip"); b.type = "button"; b.setAttribute("aria-pressed", S.town[t] === 0 ? "false" : "true");
+      b.style.setProperty("--tc", "#0e7c86"); b.appendChild(el("i")); b.appendChild(document.createTextNode(t + " · " + cnt[t]));
+      b.addEventListener("click", function () { S.town[t] = S.town[t] === 0 ? 1 : 0; render(); });
+      box.appendChild(b);
+    });
+    var all = el("button", "all", "Show all towns"); all.type = "button";
+    all.addEventListener("click", function () { Object.keys(S.town).forEach(function (t) { S.town[t] = 1; }); render(); });
+    box.appendChild(all);
+  }
   function show(j) {
     var d = document.getElementById("detail"); d.textContent = "";
     var dt = toDate(j.job_date);
@@ -252,8 +269,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
     document.getElementById("wk").textContent = "Mon " + mon.getUTCDate() + " " + MON[mon.getUTCMonth()] + " to Sun " + sun.getUTCDate() + " " + MON[sun.getUTCMonth()];
     document.getElementById("prev").disabled = iso(mon) <= iso(mondayOf(S.bounds.min));
     document.getElementById("next").disabled = iso(mon) >= iso(mondayOf(S.bounds.max));
-    var weekAll = S.jobs, inWeek = weekAll.filter(function (j) { return S.active[codeOf(j)] !== 0; });
+    var weekAll = S.jobs, inWeek = weekAll.filter(function (j) { return S.active[codeOf(j)] !== 0 && S.town[townOf(j)] !== 0; });
     drawChips(weekAll);
+    drawTowns(weekAll);
 
     var byDay = {}, byType = {};
     inWeek.forEach(function (j) { byDay[j.job_date] = (byDay[j.job_date] || 0) + 1; byType[j.job_type] = (byType[j.job_type] || 0) + 1; });
