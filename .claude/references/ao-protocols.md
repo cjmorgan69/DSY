@@ -8,10 +8,10 @@ The category tiles on Run a session come from `group` in `hub/topics.js`; planne
 
 | Code | Protocol | DSY topic | Group |
 |---|---|---|---|
-| CPP-001-AO | Acute Cardiogenic Pulmonary Oedema | ACPO | Heart and breathing |
-| CPP-003-AO | Anaphylaxis | Anaphylaxis | Heart and breathing |
-| CPP-007-AO | Chest Pain | Chest pain | Heart and breathing |
-| CPP-050-AO | Asthma | Asthma | Heart and breathing |
+| CPP-001-AO | Acute Cardiogenic Pulmonary Oedema | ACPO | Cardiac and respiratory |
+| CPP-003-AO | Anaphylaxis | Anaphylaxis | Cardiac and respiratory |
+| CPP-007-AO | Chest Pain | Chest pain | Cardiac and respiratory |
+| CPP-050-AO | Asthma | Asthma | Cardiac and respiratory |
 | CPP-006-AO | Burns | Burns | Trauma and injury |
 | CPP-013-AO | Pain Management | Pain management | Trauma and injury |
 | CPP-018-AO | Spinal Injury | Spinal precautions | Trauma and injury |
@@ -29,8 +29,8 @@ Partly used: CPP-004-AO Basic Care and Life Support (every scenario), CPP-042-AO
 
 ## Not covered yet (suggested order, "Coming soon" on Run a session)
 
-1. Cardiac arrest: CPP-002-AO Adult, CPP-043-AO Paediatric, CPP-020-AO Non-Initiation of CPR (old page `/modules/cardiac-arrest/` to convert; owner said no CPR detail in scenarios, so ask) - Heart and breathing
-2. Birth and babies: CPP-059-AO Pregnancy and Birth, CPP-053-AO Primary Postpartum Haemorrhage, CPP-012-AO Newborn Care and Resuscitation (old page `/modules/childbirth/`; pairs with `/tools/obstetric/`)
+1. Cardiac arrest: CPP-002-AO Adult, CPP-043-AO Paediatric, CPP-020-AO Non-Initiation of CPR (old page `/modules/cardiac-arrest/` to convert; owner said no CPR detail in scenarios, so ask) - Cardiac and respiratory
+2. Birth and newborns: CPP-059-AO Pregnancy and Birth, CPP-053-AO Primary Postpartum Haemorrhage, CPP-012-AO Newborn Care and Resuscitation (old page `/modules/childbirth/`; pairs with `/tools/obstetric/`)
 3. CPP-014-AO Seizures - Brain and behaviour
 4. CPP-042-AO Amputation and Haemorrhage (tourniquet and pelvic sling already in the MVA stations) - Trauma and injury
 5. CPP-011-AO Narcotic Overdose (old page `/modules/narcotic_od/`) - Medical

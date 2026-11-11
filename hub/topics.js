@@ -43,11 +43,11 @@ window.DSY_TOPICS = [
 
 /* Categories on Run a session (11 Nov 2026, owner). */
 window.DSY_GROUPS = [
-  { id:'heart', title:'Heart and breathing' },
+  { id:'heart', title:'Cardiac and respiratory' },
   { id:'trauma', title:'Trauma and injury' },
   { id:'brain', title:'Brain and behaviour' },
   { id:'medical', title:'Medical' },
-  { id:'birth', title:'Birth and babies' },
+  { id:'birth', title:'Birth and newborns' },
   { id:'decisions', title:'Decisions' }
 ];
 
