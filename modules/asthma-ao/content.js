@@ -42,8 +42,8 @@ window.MODULE = {
       { box: { title: "Timing and resources", items: [
         "Pre-brief about 10 minutes; walk-through 40 to 50 minutes; debrief 10 to 15 minutes",
         "Nearest paramedic backup: 50 minutes",
-        "Nearest country hospital: 30 minutes",
-        "MedSTAR (air): 90 minutes",
+        "Cummins Hospital: 30 minutes",
+        "MedSTAR: may be available once more information is known",
         "EOC Clinician: available by phone"
       ] } },
       { box: { title: "Crew roles", items: [
@@ -189,7 +189,7 @@ window.MODULE = {
         "Treatment: nebulised salbutamol 5 mg and ipratropium 500 microg",
         "Clinical support: request early (paramedic 50 minutes away)",
         "EOC Clinician: consult for further doses and the transport plan",
-        "Transport: country hospital, 30 minutes. Do not delay"
+        "Transport: Cummins Hospital, 30 minutes. Do not delay"
       ] } }
     ] },
 
@@ -285,7 +285,7 @@ window.MODULE = {
     ] },
 
     { title: "Handover", blocks: [
-      { text: "You arrive at the country hospital ED at 0325. One nurse meets you in the ambulance bay. Karen is sitting upright with a mild wheeze, SpO2 96% on oxygen, speaking in full sentences." },
+      { text: "You arrive at Cummins Hospital ED at 0325. One nurse meets you in the ambulance bay. Karen is sitting upright with a mild wheeze, SpO2 96% on oxygen, speaking in full sentences." },
       { table: { title: "ISBAR", table: { head: ["", "Example"], rows: [
         ["I", "\"I'm [name], Ambulance Officer from [station]. This is Karen Mitchell, 45.\""],
         ["S", "\"Called at 0215 with acute asthma, no relief from her own Ventolin at home.\""],

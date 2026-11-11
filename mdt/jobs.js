@@ -6,10 +6,10 @@
    Type codes are left blank because the real SACAD codes are not known. */
 window.MDT_JOBS = [
   { id:'asthma', label:'Asthma: Karen, 45 (rural homestead, 0215)', scenario:'/modules/asthma-ao/',
-    priority:'2', startTime:'02:15', typeName:'Breathing problems', town:'Lock', street:'HOMESTEAD 14 KM NORTH',
+    priority:'2', startTime:'02:15', typeName:'Breathing problems', town:'Cummins', street:'HOMESTEAD 20 KM NORTH',
     note:'45F DIFFICULTY BREATHING', patient:'MERCER, KAREN', age:'45Y', weight:'', caller:'HUSBAND (ON SCENE)',
     remarks:'DIFFICULTY BREATHING - "CANT GET HER BREATH"\nKNOWN ASTHMATIC - USING VENTOLIN WITHOUT RELIEF\nPATIENT AWAKE AND SITTING UP\nRURAL HOMESTEAD - SEALED ROAD ACCESS\n+3 HUSBAND: SHE IS USING HER PUFFER AGAIN - NO BETTER\n+8 HUSBAND WILL MEET CREW AT THE DOOR - PORCH LIGHT ON',
-    expected:'Country hospital ED, about 30 minutes (scenario)' },
+    expected:'CUMMINS HOSPITAL, about 30 minutes (scenario)' },
   { id:'chest-pain', label:'Chest pain: Graham, 62 (rural property, 2115)', scenario:'/modules/chest-pain/',
     priority:'2', startTime:'21:15', typeName:'Chest pain', town:'Arno Bay', street:'FARM 9 KM WEST',
     note:'62M CHEST PAIN - CARDIAC HX', patient:'HOLLOWAY, GRAHAM', age:'62Y', weight:'', caller:'WIFE (ON SCENE)',
@@ -189,7 +189,7 @@ window.MDT_JOBS = [
   };
   const town = (key, d) => v => U(v[key] || d) + ' HOSPITAL';
   link('asthma', 'asthma-ao', { patient:'Karen', age:'45', partner:'husband', response:'12', transport:'30', dispatch:'02:15' },
-    v => String(v.hospital || '').trim() || 'Country hospital ED');
+    v => String(v.hospital || '').trim() || 'Cummins Hospital');
   link('stroke', 'stroke-ao', { patient:'Frank', age:'78', partner:'wife', partner_name:'Margaret', town:'Coffin Bay', station:'Coffin Bay', sts:'Port Lincoln', transport:'35' },
     v => U(v.sts || 'Port Lincoln') + ' HOSPITAL (STS)');
   link('hypo', 'hypoglycaemia-ao', { patient:'Ron', age:'67', partner:'wife', partner_name:'Lyn', town:'Cummins', station:'Cummins', hospital_town:'Cummins', response:'10', transport:'10', dispatch:'17:15' },

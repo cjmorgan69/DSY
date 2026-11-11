@@ -1,6 +1,7 @@
 # Case nights (instructor-led slides)
 
-Decks: `/classroom/chest-pain/` (Graham, 62) and `/classroom/acpo/` (Kevin, 72, 11 Nov 2026). Each deck folder has its
+Decks: `/classroom/chest-pain/` (Graham, 62), `/classroom/acpo/` (Kevin, 72, 11 Nov 2026) and `/classroom/asthma/`
+(Karen, 45, 11 Nov 2026). Each deck folder has its
 own `index.html`, `presenter.html`, `guide.html`, `data/manifest.js`, `data/build.js` and `img/`; the slide engine is shared
 here in `assets/` (deck name from `window.DECK_NAME`) and the MDT screenshots come from `tools/mdt-shots.js <deck>`.
 
@@ -45,3 +46,13 @@ Same order as chest pain: the module's intro video and its "The protocol" boxes,
 background, Kevin's eight break points with decision tiles and MDT screenshots (page 0247, Enroute 0248, scene 0300,
 Mobile 0322, Tumby Bay Hospital 0352, owner's choice; call sign PT181, Port Neill at night), the PCR trainer (`kevin`), the debrief and five variations, then next week's chest pain and ACPO
 stations. The walk-through has no safety brief box, so the "Before we start" slide is DSY-written. About 110 minutes.
+
+
+## The asthma night
+
+Built like the chest pain night (the asthma module has `keyPoints` and a top-level `video`), with the CTL-071 table and the
+pre-brief reminders, Karen's eight break points, MDT screenshots (page 0215, Enroute 0216, scene 0227, Mobile 0255,
+Cummins Hospital 0325, call sign CU181), the PCR trainer (`karen`) and next week's asthma stations. Before it was built
+the owner moved Karen's homestead to 20 km north of Cummins (it was 14 km north of Lock, which is about 45 minutes from
+any hospital) and named Cummins Hospital, 30 minutes; MedSTAR now reads "may be available once more information is known".
+Long step lists show in two columns (`numbered` slides with more than about 600 characters).

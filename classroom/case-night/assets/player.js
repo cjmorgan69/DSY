@@ -59,7 +59,7 @@
         }).join('') + '</div>' + (s.callout ? '<div class="callout-band step" data-step="' + (s.items.length + 1) + '">' + E(s.callout.text) + '</div>' : '') + '</div>' + lab(it) + '</div>';
     },
     numbered: function (s, it) {
-      return '<div class="slide light">' + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body"' + (s.items.length > 4 ? ' style="--fs:42px"' : '') + '><div class="nums">' +
+      return '<div class="slide light">' + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body"' + (s.items.length > 4 ? ' style="--fs:42px"' : '') + '><div class="nums' + (JSON.stringify(s.items).length > 600 ? ' two' : '') + '">' +
         s.items.map(function (t, i) {
           return '<div class="num step" data-step="' + (i + 1) + '"><div class="bd">' + (i + 1) + '</div><div>' +
             (typeof t === 'string' ? E(t) : '<b>' + E(t.h) + '</b>' + (t.t ? '<div class="tx">' + E(t.t) + '</div>' : '')) + '</div></div>';
