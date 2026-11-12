@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <title>Motor vehicle log sheet - DSY Training</title>
 <style>
 /* A training copy of the SA Health Motor Vehicle Log Sheet (owner's photo, 12 Nov 2026). A4 landscape.
@@ -68,6 +69,11 @@ td.num input { text-align: right; }
 .lines { font-size: 8.5pt; font-weight: bold; line-height: 1.55; margin-top: .5mm; }
 .lines input { border: 0; border-bottom: .3mm dotted #333; background: transparent; font: bold 8.5pt Arial, sans-serif; text-align: center; height: 4mm; }
 
+/* handwriting look: ?hand=1 or the Handwriting button */
+body.hand .sheet input { font-family: "Nanum Pen Script", cursive; color: #1f3a8a; font-weight: normal; }
+body.hand td input { font-size: 13.5pt; }
+body.hand .ids input { font-size: 17pt; }
+body.hand .totbox input { font-size: 14pt; }
 @media print {
   html, body { background: #fff; }
   .bar { display: none; }
@@ -79,7 +85,7 @@ td.num input { text-align: right; }
 </style>
 </head>
 <body>
-<div class="bar"><span id="what">Motor vehicle log sheet (training copy)</span><button id="clear">Clear</button><button onclick="print()">Print</button></div>
+<div class="bar"><span id="what">Motor vehicle log sheet (training copy)</span><button id="hand">Handwriting</button><button id="clear">Clear</button><button onclick="print()">Print</button></div>
 <div class="wrap" id="wrap"></div>
 <script src="example.js?v=20261112a"></script>
 <script>
@@ -179,6 +185,20 @@ td.num input { text-align: right; }
       slot.style.height = (sh.offsetHeight * k) + 'px';
     });
   }
+  var hb = document.getElementById('hand');
+  // shrink any entry that would be cut off so the whole word shows
+  function shrink() {
+    wrap.querySelectorAll('td input').forEach(function (x) {
+      x.style.fontSize = '';
+      var size = parseFloat(getComputedStyle(x).fontSize);
+      while (x.value && x.scrollWidth > x.clientWidth + 1 && size > 6) { size -= 0.5; x.style.fontSize = size + 'px'; }
+    });
+  }
+  wrap.addEventListener('input', function (e) { if (e.target.matches('td input')) shrink(); });
+  function setHand(on) { document.body.classList.toggle('hand', on); hb.textContent = on ? 'Typed' : 'Handwriting'; shrink(); }
+  if (document.fonts) document.fonts.ready.then(shrink);
+  setHand(new URLSearchParams(location.search).get('hand') === '1');
+  hb.onclick = function () { setHand(!document.body.classList.contains('hand')); };
   window.addEventListener('resize', fit);
   window.addEventListener('afterprint', fit);
   fit();

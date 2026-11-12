@@ -7,7 +7,7 @@ window.VEHICLE_LOG_EXAMPLES = {
  "serial": 1234002,
  "rows": [
   {
-   "date": "03/08/2026",
+   "date": "3/8/26",
    "startOdo": 60320,
    "endOdo": 60420,
    "business": 100,
@@ -15,7 +15,7 @@ window.VEHICLE_LOG_EXAMPLES = {
    "dest": "Tumby Bay return"
   },
   {
-   "date": "18/08/2026",
+   "date": "18/8/26",
    "startOdo": 60420,
    "endOdo": 60720,
    "business": 300,
@@ -23,15 +23,16 @@ window.VEHICLE_LOG_EXAMPLES = {
    "dest": "Venus Bay, Elliston, Venus Bay"
   },
   {
-   "date": "19/08/2026",
+   "date": "19/8/26",
    "startOdo": 60720,
    "endOdo": 60920,
    "business": 200,
    "purpose": "TR/BM",
-   "dest": "Elliston, Coffin Bay, Port Lincoln return"
+   "dest": "Elliston, Coffin Bay,",
+   "dest2": "Port Lincoln return"
   },
   {
-   "date": "20/08/2026",
+   "date": "20/8/26",
    "startOdo": 60920,
    "endOdo": 61020,
    "business": 100,
@@ -39,7 +40,7 @@ window.VEHICLE_LOG_EXAMPLES = {
    "dest": "Tumby Bay return"
   },
   {
-   "date": "21/08/2026",
+   "date": "21/8/26",
    "startOdo": 61020,
    "endOdo": 61300,
    "business": 280,
@@ -47,7 +48,7 @@ window.VEHICLE_LOG_EXAMPLES = {
    "dest": "Whyalla"
   },
   {
-   "date": "22/08/2026",
+   "date": "22/8/26",
    "startOdo": 61300,
    "endOdo": 61580,
    "business": 280,
@@ -55,7 +56,7 @@ window.VEHICLE_LOG_EXAMPLES = {
    "dest": "Whyalla to home"
   },
   {
-   "date": "23/08/2026",
+   "date": "23/8/26",
    "startOdo": 61580,
    "endOdo": 61830,
    "business": 250,
@@ -63,7 +64,7 @@ window.VEHICLE_LOG_EXAMPLES = {
    "dest": "LEP return"
   },
   {
-   "date": "24/08/2026",
+   "date": "24/8/26",
    "startOdo": 61830,
    "endOdo": 62030,
    "business": 200,
@@ -71,7 +72,7 @@ window.VEHICLE_LOG_EXAMPLES = {
    "dest": "Port Neill return"
   },
   {
-   "date": "25/08/2026",
+   "date": "25/8/26",
    "startOdo": 62030,
    "endOdo": 62190,
    "business": 160,
@@ -79,7 +80,7 @@ window.VEHICLE_LOG_EXAMPLES = {
    "dest": "Cummins return"
   },
   {
-   "date": "26/08/2026",
+   "date": "26/8/26",
    "startOdo": 62190,
    "endOdo": 62290,
    "business": 100,
@@ -87,7 +88,7 @@ window.VEHICLE_LOG_EXAMPLES = {
    "dest": "Coffin Bay return"
   },
   {
-   "date": "28/08/2026",
+   "date": "28/8/26",
    "startOdo": 62290,
    "endOdo": 62450,
    "business": 160,
@@ -95,7 +96,7 @@ window.VEHICLE_LOG_EXAMPLES = {
    "dest": "Cummins return"
   },
   {
-   "date": "29/08/2026",
+   "date": "29/8/26",
    "startOdo": 62450,
    "endOdo": 62610,
    "business": 160,
@@ -103,7 +104,7 @@ window.VEHICLE_LOG_EXAMPLES = {
    "dest": "Cummins return"
   },
   {
-   "date": "30/08/2026",
+   "date": "30/8/26",
    "startOdo": 62610,
    "endOdo": 62710,
    "business": 100,
@@ -111,7 +112,7 @@ window.VEHICLE_LOG_EXAMPLES = {
    "dest": "Tumby Bay return"
   },
   {
-   "date": "31/08/2026",
+   "date": "31/8/26",
    "startOdo": 62710,
    "endOdo": 62810,
    "business": 100,
