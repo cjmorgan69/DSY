@@ -15,3 +15,12 @@ wy Whyalla, lep LEP, ceduna Ceduna, "<code> area" = "<place> area", "x2" = "<pla
 
 Serial numbers run on from the last sheet: August 2026 used 1234002 and 1234003, September 2026 used 1234004 to 1234006, October 2026 used 1234007 to 1234009, so the next sheet is 1234010.
 Update this line after each month.
+
+## Travel Diary (from November 2026)
+
+The owner says each day's trip on a private page: https://claude.ai/artifact/GnuNYP3ebCTaPAVh6Tcy3T (only the owner can
+open it). Trips are in its database, collection `trips`, one document per day (id `YYYY-MM-DD`; fields date, startOdo,
+endOdo, km, codes = the same codes as above, where, said). `meta/start` holds the odometer the first trip starts from
+(70165, end of October 2026). At month end: `ArtifactData` list `trips` with that url, keep the month's rows, write one
+line per trip in the spreadsheet format (`Monday, 2 November 2026<TAB>start<TAB>end<TAB>km<TAB>codes`), run make.js,
+check the odometer chain (each start = the previous end) and ask about any gap or unknown place before sending.
