@@ -9,7 +9,7 @@ const fs = require('fs'), path = require('path');
 const { chromium } = require('playwright');
 
 const PLACES = { tb: 'Tumby Bay', cu: 'Cummins', pt: 'Port Neill', cf: 'Coffin Bay', pl: 'Port Lincoln',
-  vb: 'Venus Bay', el: 'Elliston', wy: 'Whyalla', lep: 'LEP' };
+  vb: 'Venus Bay', el: 'Elliston', wy: 'Whyalla', lep: 'LEP', ceduna: 'Ceduna' };
 const SETTINGS = { reg: 'S366BQH', unit: 'SAAS', location: 'LEP' };
 const MONTHS = ['january','february','march','april','may','june','july','august','september','october','november','december'];
 
@@ -29,7 +29,7 @@ for (const line of fs.readFileSync(file, 'utf8').split(/\r?\n/)) {
   if (!km || !/^\d+$/.test(km) || Number(km) === 0) continue;
   const mon = MONTHS.indexOf(m[2].toLowerCase()) + 1;
   year = m[3]; month = mon;
-  const codes = codeParts.join(' ').toLowerCase().split(/\s+/).filter(Boolean);
+  const codes = codeParts.join(' ').toLowerCase().replace(/,/g, ' ').split(/\s+/).filter(Boolean);
   let dest;
   if (codes.length === 1 && codes[0] === 'ret') {
     dest = (prevDest || 'Away') + ' to home';
@@ -37,13 +37,18 @@ for (const line of fs.readFileSync(file, 'utf8').split(/\r?\n/)) {
     if (last) { last.dest = last.dest.replace(/ return$/, ''); last.dest2 = last.dest2.replace(/ return$/, ''); }
   }
   else {
-    const names = codes.map(c => PLACES[c] || (unknown.add(c), c.toUpperCase()));
-    dest = names.join(', ') + (names.length > 1 && names[0] === names[names.length - 1] ? '' : ' return');
+    const names = [];
+    for (const c of codes) { // "tb area" = "Tumby Bay area"
+      if (c === 'area' && names.length) names[names.length - 1] += ' area';
+      else names.push(PLACES[c] || (unknown.add(c), c.toUpperCase()));
+    }
+    if (!names.length) console.warn(`NO DESTINATION: ${m[0]} (${km} km)`);
+    dest = !names.length ? '' : names.join(', ') + (names.length > 1 && names[0] === names[names.length - 1] ? '' : ' return');
     prevDest = names[names.length - 1];
   }
   let dest2 = '';
-  if (dest.length > 30 && dest.includes(', ')) { // spread a long one over the entry's two lines
-    const cut = dest.lastIndexOf(', ', 30); dest2 = dest.slice(cut + 2); dest = dest.slice(0, cut + 1);
+  if (dest.length > 25 && dest.includes(', ')) { // spread a long one over the entry's two lines
+    const cut = dest.lastIndexOf(', ', 25); dest2 = dest.slice(cut + 2); dest = dest.slice(0, cut + 1);
   }
   rows.push({ date: `${Number(m[1])}/${mon}/${year.slice(2)}`, startOdo: Number(startOdo), endOdo: Number(endOdo),
     purpose: 'TR/BM', dest, dest2, business: Number(km) });
