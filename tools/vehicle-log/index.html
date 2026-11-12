@@ -9,7 +9,7 @@
 <style>
 /* A training copy of the SA Health Motor Vehicle Log Sheet (owner's photo, 12 Nov 2026). A4 landscape.
    Every box can be typed in on screen; tap Wk or Hm to circle it. Print gives one A4 landscape page.
-   The SA Government crest is not reproduced: a plain circle stands in for it. */
+   Crest image supplied by the owner (crest.png). */
 @page { size: A4 landscape; margin: 0; }
 :root { --red: #c0262d; --ink: #1d1d1f; --pink: #f7e6e6; --thin: #9a9a9a; }
 * { box-sizing: border-box; }
@@ -26,7 +26,7 @@ html, body { margin: 0; background: #d9d9d9; color: var(--ink); font-family: Ari
 /* header */
 .top { display: flex; align-items: flex-start; height: 17mm; }
 .gov { display: flex; align-items: flex-start; gap: 2mm; width: 70mm; }
-.crest { width: 11mm; height: 11mm; border: .5mm solid #333; border-radius: 50%; margin-top: 1mm; flex: none; }
+.crest { width: 12mm; height: 12mm; margin-top: .5mm; flex: none; object-fit: contain; }
 .gov .t1 { font-size: 9pt; font-weight: bold; border-bottom: .5mm solid #333; padding: 1mm 0 .6mm; }
 .gov .t2 { font-size: 8.5pt; padding-top: 1mm; }
 h1 { flex: 1; text-align: center; font-size: 21pt; margin: 4mm 0 0 8mm; letter-spacing: .2pt; }
@@ -114,7 +114,7 @@ body.hand .totbox input { font-size: 14pt; }
     }
     return '<div class="slot"><div class="sheet">' +
 '  <div class="top">' +
-'    <div class="gov"><div class="crest"></div><div><div class="t1">Government of South Australia</div><div class="t2">SA Health</div></div></div>' +
+'    <div class="gov"><img class="crest" src="crest.png" alt=""><div><div class="t1">Government of South Australia</div><div class="t2">SA Health</div></div></div>' +
 '    <h1>SA HEALTH MOTOR VEHICLE LOG SHEET</h1>' +
 '  </div>' +
 '  <div class="ids">' +
