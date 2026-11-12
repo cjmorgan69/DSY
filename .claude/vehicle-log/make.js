@@ -31,7 +31,9 @@ for (const line of fs.readFileSync(file, 'utf8').split(/\r?\n/)) {
   year = m[3]; month = mon;
   const codes = codeParts.join(' ').toLowerCase().replace(/,/g, ' ').split(/\s+/).filter(Boolean);
   let dest;
-  if (codes.length === 1 && codes[0] === 'ret') {
+  if (codes[0] === 'ret' && codes[1] === 'from' && codes.length > 2) { // "ret from cu" = Cummins to home
+    dest = codes.slice(2).map(c => PLACES[c] || (unknown.add(c), c.toUpperCase())).join(', ') + ' to home';
+  } else if (codes.length === 1 && codes[0] === 'ret') {
     dest = (prevDest || 'Away') + ' to home';
     const last = rows[rows.length - 1]; // the day before went out and stayed, so not a return trip
     if (last) { last.dest = last.dest.replace(/ return$/, ''); last.dest2 = last.dest2.replace(/ return$/, ''); }
