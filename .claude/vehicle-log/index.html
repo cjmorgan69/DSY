@@ -87,10 +87,9 @@ body.hand .totbox input { font-size: 14pt; }
 <body>
 <div class="bar"><span id="what">Motor vehicle log sheet (training copy)</span><button id="hand">Handwriting</button><button id="clear">Clear</button><button onclick="print()">Print</button></div>
 <div class="wrap" id="wrap"></div>
-<script src="example.js?v=20261112a"></script>
 <script>
-/* One sheet per 10 entries. Blank by default; ?example=aug2026 fills sheets from example.js
-   (VEHICLE_LOG_EXAMPLES[name] = { year, serial, rows: [{date, startOdo, endOdo, purpose, dest, business, private}] }). */
+/* One sheet per 10 entries. Blank by default; make.js sets window.VEHICLE_LOG_DATA
+   = { title, year, serial, reg, unit, location, rows: [{date, startOdo, endOdo, purpose, dest, dest2, business, private}] }. */
 (function () {
   var COLS = ['date', 'endDate', 'startOdo', 'endOdo', 'purpose', 'dest', 'business', 'private', 'total'];
   function esc(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
@@ -156,13 +155,12 @@ body.hand .totbox input { font-size: 14pt; }
   }
 
   var wrap = document.getElementById('wrap');
-  var name = new URLSearchParams(location.search).get('example');
-  var ex = name && window.VEHICLE_LOG_EXAMPLES && VEHICLE_LOG_EXAMPLES[name];
+  var ex = window.VEHICLE_LOG_DATA;
   if (ex) {
     var html = '';
     for (var k = 0; k < ex.rows.length; k += 10) html += sheet(ex.rows.slice(k, k + 10), ex.serial + k / 10, ex.year, ex);
     wrap.innerHTML = html;
-    document.getElementById('what').textContent = 'Example: ' + ex.title + ' (' + Math.ceil(ex.rows.length / 10) + ' pages)';
+    document.getElementById('what').textContent = ex.title + ' (' + Math.ceil(ex.rows.length / 10) + ' pages)';
   } else {
     wrap.innerHTML = sheet([], 1234002, '');
   }

@@ -22,6 +22,11 @@ settings or play files you leave in the container: send files with the file tool
   Templates are in Supabase `public.scenarios`. Read `scenarios/README.md`. All 11 converted walk-throughs.
 - `/training/` - the training-session app (Supabase). `/teams/`, `/region/` - team and region pages.
 
+## Owner's monthly vehicle log
+
+Not part of the website. When the owner pastes a month of travel rows, read `.claude/vehicle-log/README.md`, run
+`make.js` and send the PDF (serials run on; update the README).
+
 ## Skills
 
 - `build-microlearning-module` - build or update a microlearning module from a SAAS protocol.
