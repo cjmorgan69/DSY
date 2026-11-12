@@ -37,13 +37,14 @@ for (const line of fs.readFileSync(file, 'utf8').split(/\r?\n/)) {
     if (last) { last.dest = last.dest.replace(/ return$/, ''); last.dest2 = last.dest2.replace(/ return$/, ''); }
   }
   else {
-    const names = [];
-    for (const c of codes) { // "tb area" = "Tumby Bay area"
+    const names = []; let times = '';
+    for (const c of codes) {
+      if (/^x\d+$/.test(c)) { times = ' ' + c; continue; } // "tb x2" = Tumby Bay return x2 // "tb area" = "Tumby Bay area"
       if (c === 'area' && names.length) names[names.length - 1] += ' area';
       else names.push(PLACES[c] || (unknown.add(c), c.toUpperCase()));
     }
     if (!names.length) console.warn(`NO DESTINATION: ${m[0]} (${km} km)`);
-    dest = !names.length ? '' : names.join(', ') + (names.length > 1 && names[0] === names[names.length - 1] ? '' : ' return');
+    dest = !names.length ? '' : names.join(', ') + (names.length > 1 && names[0] === names[names.length - 1] ? '' : ' return') + times;
     prevDest = names[names.length - 1];
   }
   let dest2 = '';
