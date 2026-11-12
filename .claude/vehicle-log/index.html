@@ -62,7 +62,7 @@ td.num input { text-align: right; }
 .foot { position: relative; }
 .totals { display: flex; justify-content: flex-start; margin-left: calc(var(--bus-left)); }
 .totrow { display: flex; align-items: flex-start; }
-.totlabel { width: 59.6%; font-weight: bold; font-size: 8.3pt; line-height: 1.1; text-align: right; padding: .6mm 2mm 0 0; }
+.totlabel { width: 61.35%; font-weight: bold; font-size: 8.3pt; line-height: 1.1; text-align: right; padding: .6mm 2mm 0 0; }
 .totbox { flex: none; height: 9mm; border: .5mm solid #222; border-top: 0; }
 .totbox input { width: 100%; height: 100%; border: 0; background: transparent; font: 9pt Arial, sans-serif; text-align: right; padding: 0 1mm; }
 .serial { position: absolute; right: 12mm; top: 3mm; color: var(--red); font-size: 17pt; letter-spacing: 2pt; font-family: Arial, Helvetica, sans-serif; }
@@ -71,9 +71,11 @@ td.num input { text-align: right; }
 
 /* handwriting look: ?hand=1 or the Handwriting button */
 body.hand .sheet input { font-family: "Nanum Pen Script", cursive; color: #1f3a8a; font-weight: normal; }
-body.hand td input { font-size: 13.5pt; }
-body.hand .ids input { font-size: 17pt; }
-body.hand .totbox input { font-size: 14pt; }
+body.hand td input { font-size: 16.5pt; padding: 0 .6mm; }
+body.hand td.num input { font-size: 19.5pt; }
+body.hand tr.a td:nth-child(-n+2) input { letter-spacing: -.3px; }
+body.hand .ids input { font-size: 21pt; }
+body.hand .totbox input { font-size: 17pt; }
 @media print {
   html, body { background: #fff; }
   .bar { display: none; }
@@ -129,9 +131,9 @@ body.hand .totbox input { font-size: 14pt; }
 '    <div class="w2">Dual business/private purpose journeys must be entered separately.</div>' +
 '  </div>' +
 '  <table><colgroup>' +
-'    <col style="width:6.25%"><col style="width:7.2%"><col style="width:6.7%"><col style="width:6.6%">' +
+'    <col style="width:7.3%"><col style="width:7.9%"><col style="width:6.7%"><col style="width:6.6%">' +
 '    <col style="width:14.35%"><col style="width:18.5%"><col style="width:5.8%"><col style="width:5.3%">' +
-'    <col style="width:5.1%"><col style="width:2.15%"><col style="width:2.15%"><col style="width:19.9%">' +
+'    <col style="width:5.1%"><col style="width:2.15%"><col style="width:2.15%"><col style="width:18.15%">' +
 '  </colgroup><thead><tr>' +
 '    <th>Journey Start Date &amp; Start Time</th><th>Journey End Date &amp; End Time</th>' +
 '    <th class="big">Start Odometer</th><th class="big">End Odometer</th>' +
@@ -191,6 +193,10 @@ body.hand .totbox input { font-size: 14pt; }
       var size = parseFloat(getComputedStyle(x).fontSize);
       while (x.value && x.scrollWidth > x.clientWidth + 1 && size > 6) { size -= 0.5; x.style.fontSize = size + 'px'; }
     });
+    // both date columns written the same size, like one hand would
+    var dates = wrap.querySelectorAll('tr.a td:nth-child(1) input, tr.a td:nth-child(2) input'), min = 99;
+    dates.forEach(function (x) { if (x.value) min = Math.min(min, parseFloat(getComputedStyle(x).fontSize)); });
+    if (min < 99) dates.forEach(function (x) { x.style.fontSize = min + 'px'; });
   }
   wrap.addEventListener('input', function (e) { if (e.target.matches('td input')) shrink(); });
   function setHand(on) { document.body.classList.toggle('hand', on); hb.textContent = on ? 'Typed' : 'Handwriting'; shrink(); }
