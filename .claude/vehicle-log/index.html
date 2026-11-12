@@ -71,9 +71,9 @@ td.num input { text-align: right; }
 
 /* handwriting look: ?hand=1 or the Handwriting button */
 body.hand .sheet input { font-family: "Nanum Pen Script", cursive; color: #1f3a8a; font-weight: normal; }
-body.hand td input { font-size: 13.5pt; }
-body.hand .ids input { font-size: 17pt; }
-body.hand .totbox input { font-size: 14pt; }
+body.hand td input { font-size: 16.5pt; padding: 0 .6mm; }
+body.hand .ids input { font-size: 21pt; }
+body.hand .totbox input { font-size: 17pt; }
 @media print {
   html, body { background: #fff; }
   .bar { display: none; }
@@ -191,6 +191,10 @@ body.hand .totbox input { font-size: 14pt; }
       var size = parseFloat(getComputedStyle(x).fontSize);
       while (x.value && x.scrollWidth > x.clientWidth + 1 && size > 6) { size -= 0.5; x.style.fontSize = size + 'px'; }
     });
+    // both date columns written the same size, like one hand would
+    var dates = wrap.querySelectorAll('tr.a td:nth-child(1) input, tr.a td:nth-child(2) input'), min = 99;
+    dates.forEach(function (x) { if (x.value) min = Math.min(min, parseFloat(getComputedStyle(x).fontSize)); });
+    if (min < 99) dates.forEach(function (x) { x.style.fontSize = min + 'px'; });
   }
   wrap.addEventListener('input', function (e) { if (e.target.matches('td input')) shrink(); });
   function setHand(on) { document.body.classList.toggle('hand', on); hb.textContent = on ? 'Typed' : 'Handwriting'; shrink(); }
