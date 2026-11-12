@@ -1,21 +1,11 @@
 /* Example data for the log sheet (owner, 12 Nov 2026): August 2026. Open ?example=aug2026.
-   Codes not given by the owner are guesses: vb Venus Bay, el Elliston, wy Whyalla, ret = return from Whyalla, lep shown as LEP. Annual leave days left out (owner). */
+   Codes not given by the owner are guesses: vb Venus Bay, el Elliston, wy Whyalla, ret = return from Whyalla, lep shown as LEP. Days with no travel are left out (owner). */
 window.VEHICLE_LOG_EXAMPLES = {
   aug2026: {
  "title": "August 2026",
  "year": "26",
  "serial": 1234002,
  "rows": [
-  {
-   "date": "01/08/2026",
-   "startOdo": 60320,
-   "endOdo": 60320
-  },
-  {
-   "date": "02/08/2026",
-   "startOdo": 60320,
-   "endOdo": 60320
-  },
   {
    "date": "03/08/2026",
    "startOdo": 60320,
@@ -95,11 +85,6 @@ window.VEHICLE_LOG_EXAMPLES = {
    "business": 100,
    "purpose": "TR/BM",
    "dest": "Coffin Bay return"
-  },
-  {
-   "date": "27/08/2026",
-   "startOdo": 62290,
-   "endOdo": 62290
   },
   {
    "date": "28/08/2026",
