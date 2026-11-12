@@ -11,7 +11,7 @@ Owner's rules (12 Nov 2026): one line per day with travel, days with no travel (
 start and end date the same, no times; purpose always TR/BM; all km business; destination "<place> return".
 Rego S366BQH, health unit SAAS, work location LEP (edit SETTINGS in make.js if they change).
 Codes: tb Tumby Bay, cu Cummins, pt Port Neill, cf Coffin Bay, pl Port Lincoln, vb Venus Bay, el Elliston,
-wy Whyalla, lep LEP, ceduna Ceduna, "<code> area" = "<place> area", "x2" = "<place> return x2", ret = home from the previous day's place, "ret from cu" = "Cummins to home". Ask the owner about any new code.
+wy Whyalla, lep LEP, ceduna Ceduna, cleve Cleve, lock Lock, arno Arno Bay, wudinna Wudinna, "<code> area" = "<place> area", "x2" = "<place> return x2", ret = home from the previous day's place, "ret from cu" = "Cummins to home". Ask the owner about any new code.
 
 Serial numbers run on from the last sheet: July 2026 (16 to 31 July) used 1234001 and 1234002, August 1234003 and 1234004, September 1234005 to 1234007, October 1234008 to 1234010, so the next sheet is 1234011.
 Update this line after each month.
@@ -24,3 +24,8 @@ endOdo, km, codes = the same codes as above, where, said). `meta/start` holds th
 (70165, end of October 2026). At month end: `ArtifactData` list `trips` with that url, keep the month's rows, write one
 line per trip in the spreadsheet format (`Monday, 2 November 2026<TAB>start<TAB>end<TAB>km<TAB>codes`), run make.js,
 check the odometer chain (each start = the previous end) and ask about any gap or unknown place before sending.
+
+Odometer photos (12 Nov 2026): the diary has a photo button. Claude (the page's sample capability) reads the odometer;
+the photo's time and GPS (exifr) name the nearest town (list in the page). A photo near Port Lincoln (home base, within
+8 km) is the closing reading; elsewhere it names the destination. Each trip saved with photos keeps a `photos` list
+(kind away/home, time, lat, lon, town, odo) as an evidence log; the owner keeps the original photos in their iPhone Photos.

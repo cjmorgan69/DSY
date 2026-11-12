@@ -9,7 +9,8 @@ const fs = require('fs'), path = require('path');
 const { chromium } = require('playwright');
 
 const PLACES = { tb: 'Tumby Bay', cu: 'Cummins', pt: 'Port Neill', cf: 'Coffin Bay', pl: 'Port Lincoln',
-  vb: 'Venus Bay', el: 'Elliston', wy: 'Whyalla', lep: 'LEP', ceduna: 'Ceduna' };
+  vb: 'Venus Bay', el: 'Elliston', wy: 'Whyalla', lep: 'LEP', ceduna: 'Ceduna',
+  cleve: 'Cleve', lock: 'Lock', arno: 'Arno Bay', wudinna: 'Wudinna' };
 const SETTINGS = { reg: 'S366BQH', unit: 'SAAS', location: 'LEP' };
 const MONTHS = ['january','february','march','april','may','june','july','august','september','october','november','december'];
 
