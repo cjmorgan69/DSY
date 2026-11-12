@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Motor vehicle log sheet - DSY Training</title>
+<style>
+/* A training copy of the SA Health Motor Vehicle Log Sheet (owner's photo, 12 Nov 2026). A4 landscape.
+   Every box can be typed in on screen; tap Wk or Hm to circle it. Print gives one A4 landscape page.
+   The SA Government crest is not reproduced: a plain circle stands in for it. */
+@page { size: A4 landscape; margin: 0; }
+:root { --red: #c0262d; --ink: #1d1d1f; --pink: #f7e6e6; --thin: #9a9a9a; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #d9d9d9; color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
+.bar { position: sticky; top: 0; z-index: 5; display: flex; gap: 8px; align-items: center; padding: 8px 16px;
+  background: #1d1d1f; color: #fff; font-size: 14px; }
+.bar button { font: inherit; padding: 6px 12px; border-radius: 6px; border: 0; background: #fff; color: #1d1d1f; }
+.bar span { flex: 1; }
+.wrap { padding: 16px; overflow: hidden; }
+.sheet { width: 297mm; height: 210mm; background: #fcfcfb; padding: 7mm 9mm 6mm 11mm; position: relative;
+  transform-origin: top left; box-shadow: 0 2px 10px rgba(0,0,0,.25); }
+
+/* header */
+.top { display: flex; align-items: flex-start; height: 17mm; }
+.gov { display: flex; align-items: flex-start; gap: 2mm; width: 70mm; }
+.crest { width: 11mm; height: 11mm; border: .5mm solid #333; border-radius: 50%; margin-top: 1mm; flex: none; }
+.gov .t1 { font-size: 9pt; font-weight: bold; border-bottom: .5mm solid #333; padding: 1mm 0 .6mm; }
+.gov .t2 { font-size: 8.5pt; padding-top: 1mm; }
+h1 { flex: 1; text-align: center; font-size: 21pt; margin: 4mm 0 0 8mm; letter-spacing: .2pt; }
+.ids { display: flex; align-items: center; font-weight: bold; font-size: 9pt; height: 13mm; }
+.ids label { line-height: 1.2; }
+.ids input { height: 9.5mm; border: .45mm solid #333; background: transparent; font: 11pt Arial, sans-serif; padding: 0 2mm; }
+.ids .reg { width: 13mm; margin-right: 3mm; }
+.ids .regbox { width: 50mm; margin-right: 11mm; }
+.ids .hu { margin-right: 4mm; }
+.ids .hubox, .ids .wlbox { width: 43mm; margin-right: 4mm; }
+.ids .year { margin-left: auto; margin-right: 2mm; }
+.ids .year input { border: 0; border-bottom: .3mm dotted #333; width: 18mm; height: 6mm; font-weight: bold; }
+.warn { color: var(--red); font-weight: bold; margin: 2.5mm 0 0; line-height: 1.25; text-transform: uppercase; }
+.warn .w1 { font-size: 11.4pt; }
+.warn .w2 { font-size: 8.4pt; }
+.warn .gap { display: inline-block; width: 14mm; }
+
+/* table */
+table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 2.2mm; }
+th { background: var(--pink); border: .3mm solid var(--red); font-size: 6.8pt; font-weight: bold; height: 13mm;
+  padding: 0 1mm; line-height: 1.3; }
+th.big { font-size: 7.3pt; }
+td { border-left: .2mm solid var(--thin); border-right: .2mm solid var(--thin); height: 5.5mm; padding: 0; }
+tbody { border: .5mm solid #222; }
+tr.a td { border-top: .5mm solid #222; }
+tr.a td.half, tr.a td.name { border-bottom: .15mm solid var(--thin); }
+td.on { font-size: 8pt; text-align: center; border: .3mm solid #222; }
+tr.a td.on { border-top: .5mm solid #222; }
+td.wk, td.hm { cursor: pointer; user-select: none; }
+td.wk.sel, td.hm.sel { background: radial-gradient(circle, transparent 52%, #222 55%, #222 62%, transparent 65%); }
+td input { display: block; width: 100%; height: 5mm; border: 0; background: transparent; font: 8pt Arial, sans-serif; padding: 0 1mm; }
+td.num input { text-align: right; }
+.foot { position: relative; }
+.totals { display: flex; justify-content: flex-start; margin-left: calc(var(--bus-left)); }
+.totrow { display: flex; align-items: flex-start; }
+.totlabel { font-weight: bold; font-size: 8.3pt; line-height: 1.1; text-align: right; padding: .6mm 2mm 0 0; }
+.totbox { height: 9mm; border: .5mm solid #222; border-top: 0; }
+.totbox input { width: 100%; height: 100%; border: 0; background: transparent; font: 9pt Arial, sans-serif; text-align: right; padding: 0 1mm; }
+.serial { position: absolute; right: 12mm; top: 3mm; color: var(--red); font-size: 17pt; letter-spacing: 1pt; font-family: "Courier New", monospace; }
+.lines { font-size: 8.5pt; font-weight: bold; line-height: 1.55; margin-top: .5mm; }
+.lines input { border: 0; border-bottom: .3mm dotted #333; background: transparent; font: bold 8.5pt Arial, sans-serif; text-align: center; height: 4mm; }
+
+@media print {
+  html, body { background: #fff; }
+  .bar { display: none; }
+  .wrap { padding: 0; }
+  .sheet { box-shadow: none; transform: none !important; background: #fff; }
+  .wrap { height: auto !important; }
+}
+</style>
+</head>
+<body>
+<div class="bar"><span>Motor vehicle log sheet (training copy)</span><button id="clear">Clear</button><button onclick="print()">Print</button></div>
+<div class="wrap" id="wrap">
+<div class="sheet" id="sheet">
+  <div class="top">
+    <div class="gov"><div class="crest"></div><div><div class="t1">Government of South Australia</div><div class="t2">SA Health</div></div></div>
+    <h1>SA HEALTH MOTOR VEHICLE LOG SHEET</h1>
+  </div>
+  <div class="ids">
+    <label class="reg">REG'N NUMBER</label><input class="regbox" aria-label="Registration number">
+    <label class="hu">HEALTH UNIT</label><input class="hubox" aria-label="Health unit">
+    <label class="hu">WORK LOCATION</label><input class="wlbox" aria-label="Work location">
+    <label class="year">YEAR 20<input aria-label="Year" maxlength="2"></label>
+  </div>
+  <div class="warn">
+    <div class="w1">Incomplete or illegible entries and missing kms will be treated as private and may affect your salary sacrifice.</div>
+    <div class="w2">Your entry is a declaration that the information is true and correct and in accordance with log book instructions.</div>
+    <div class="w2">At least one entry is required per day of use.<span class="gap"></span>Refer to the front cover for usage codes.</div>
+    <div class="w2">Dual business/private purpose journeys must be entered separately.</div>
+  </div>
+  <table>
+    <colgroup>
+      <col style="width:6.25%"><col style="width:7.2%"><col style="width:6.7%"><col style="width:6.6%">
+      <col style="width:14.35%"><col style="width:18.5%"><col style="width:5.8%"><col style="width:5.3%">
+      <col style="width:5.1%"><col style="width:2.15%"><col style="width:2.15%"><col style="width:19.9%">
+    </colgroup>
+    <thead><tr>
+      <th>Journey Start Date &amp; Start Time</th><th>Journey End Date &amp; End Time</th>
+      <th class="big">Start Odometer</th><th class="big">End Odometer</th>
+      <th class="big">Purpose of journey (Or Use valid code)</th><th class="big">Destination (Start &amp; End)</th>
+      <th class="big">Business Km</th><th class="big">Private Km</th><th class="big">Total Km</th>
+      <th colspan="2" class="big">O'Night Garage Wk/Hm</th><th class="big">Employee Full Name (PLEASE PRINT) &amp; Signature</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div class="foot">
+    <div class="totrow" id="totrow">
+      <div class="totlabel" id="totlabel">TOTAL<br>KMS</div>
+      <div class="totbox" id="tb1"><input aria-label="Total business km"></div>
+      <div class="totbox" id="tb2"><input aria-label="Total private km"></div>
+      <div class="totbox" id="tb3"><input aria-label="Total km"></div>
+    </div>
+    <div class="serial">1234002</div>
+    <div class="lines">
+      <div>TOTAL NUMBER OF WORK DAYS THAT THE VEHICLE WAS NOT USED DURING THE MONTH<input style="width:16mm" aria-label="Days not used"></div>
+      <div>VEHICLE SERVICED <input style="width:8mm" aria-label="Day">/<input style="width:9mm" aria-label="Month">/<input style="width:9mm" aria-label="Year"> AT <input style="width:22mm" aria-label="Kms">KMS.</div>
+      <div>PLEASE CHECK THE TYRE PRESSURE REGULARLY AND ENSURE THE VEHICLE IS SERVICED IN ACCORDANCE WITH FLEET SA INSTRUCTIONS.</div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+(function () {
+  var rows = document.getElementById('rows'), html = '';
+  var inp = '<input>';
+  for (var i = 0; i < 10; i++) {
+    html += '<tr class="a">' +
+      '<td class="half">' + inp + '</td><td class="half">' + inp + '</td>' +
+      '<td rowspan="2" class="num">' + inp + '</td><td rowspan="2" class="num">' + inp + '</td>' +
+      '<td class="half">' + inp + '</td><td class="half">' + inp + '</td>' +
+      '<td rowspan="2" class="num">' + inp + '</td><td rowspan="2" class="num">' + inp + '</td><td rowspan="2" class="num">' + inp + '</td>' +
+      '<td colspan="2" class="on">Garage</td><td class="name">' + inp + '</td></tr>' +
+      '<tr class="b"><td>' + inp + '</td><td>' + inp + '</td><td>' + inp + '</td><td>' + inp + '</td>' +
+      '<td class="on wk">Wk</td><td class="on hm">Hm</td><td>' + inp + '</td></tr>';
+  }
+  rows.innerHTML = html;
+  rows.addEventListener('click', function (e) {
+    var td = e.target.closest('td.wk, td.hm');
+    if (!td) return;
+    var other = td.classList.contains('wk') ? td.nextElementSibling : td.previousElementSibling;
+    td.classList.toggle('sel'); other.classList.remove('sel');
+  });
+
+  // line the TOTAL KMS boxes up under the Business, Private and Total columns
+  function placeTotals() {
+    var th = document.querySelectorAll('thead th'), sheet = document.getElementById('sheet');
+    var s = sheet.getBoundingClientRect(), scale = s.width / sheet.offsetWidth;
+    var row = document.getElementById('totrow'), lab = document.getElementById('totlabel');
+    var b = th[6].getBoundingClientRect(), left = (b.left - s.left) / scale - sheet.clientLeft;
+    var pad = parseFloat(getComputedStyle(sheet).paddingLeft);
+    lab.style.width = (left - pad) + 'px';
+    ['tb1', 'tb2', 'tb3'].forEach(function (id, k) {
+      document.getElementById(id).style.width = (th[6 + k].getBoundingClientRect().width / scale) + 'px';
+    });
+  }
+  function fit() {
+    var wrap = document.getElementById('wrap'), sheet = document.getElementById('sheet');
+    sheet.style.transform = 'none';
+    var avail = wrap.clientWidth - 32, w = sheet.offsetWidth;
+    var k = Math.min(1, avail / w);
+    sheet.style.transform = 'scale(' + k + ')';
+    wrap.style.height = (sheet.offsetHeight * k + 32) + 'px';
+    placeTotals();
+  }
+  window.addEventListener('resize', fit);
+  window.addEventListener('beforeprint', function () { document.getElementById('sheet').style.transform = 'none'; placeTotals(); });
+  window.addEventListener('afterprint', fit);
+  fit();
+
+  document.getElementById('clear').onclick = function () {
+    if (!confirm('Clear everything on the sheet?')) return;
+    document.querySelectorAll('#sheet input').forEach(function (x) { x.value = ''; });
+    document.querySelectorAll('td.sel').forEach(function (x) { x.classList.remove('sel'); });
+  };
+})();
+</script>
+</body>
+</html>
