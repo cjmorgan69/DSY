@@ -187,7 +187,28 @@ body.hand .totbox input { font-size: 17pt; }
   }
   var hb = document.getElementById('hand');
   // shrink any entry that would be cut off so the whole word shows
+  // a destination too long for its line carries on into the entry's second line (owner, 12 Nov 2026)
+  function wrapDest() {
+    wrap.querySelectorAll('tr.a').forEach(function (tr) {
+      var top = tr.children[5].querySelector('input'), low = tr.nextElementSibling.children[3].querySelector('input');
+      if (top.dataset.full == null) top.dataset.full = top.value; else if (top.dataset.split) { top.value = top.dataset.full; low.value = ''; }
+      delete top.dataset.split;
+      top.style.fontSize = '';
+      if (!top.value || low.value || top.scrollWidth <= top.clientWidth + 1) return;
+      var words = top.value.split(' '), rest = [];
+      while (words.length > 1 && top.scrollWidth > top.clientWidth + 1) { rest.unshift(words.pop()); top.value = words.join(' '); }
+      // break after a comma when there is one in the first line
+      var c = top.value.lastIndexOf(',');
+      if (c > 0 && c < top.value.length - 1) { rest.unshift(top.value.slice(c + 1).trim()); top.value = top.value.slice(0, c + 1); }
+      low.value = rest.join(' '); top.dataset.split = '1';
+    });
+  }
   function shrink() {
+    if (document.body.classList.contains('hand')) wrapDest();
+    else wrap.querySelectorAll('input[data-split]').forEach(function (top) { // typed: back on one line
+      top.value = top.dataset.full; delete top.dataset.split;
+      top.closest('tr').nextElementSibling.children[3].querySelector('input').value = '';
+    });
     wrap.querySelectorAll('td input').forEach(function (x) {
       x.style.fontSize = '';
       var size = parseFloat(getComputedStyle(x).fontSize);
