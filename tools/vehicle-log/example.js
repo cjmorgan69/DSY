@@ -1,5 +1,5 @@
 /* Example data for the log sheet (owner, 12 Nov 2026): August 2026. Open ?example=aug2026.
-   Codes not given by the owner are guesses: vb Venus Bay, el Elliston, wy Whyalla, ret = return from Whyalla, lep shown as LEP. */
+   Codes not given by the owner are guesses: vb Venus Bay, el Elliston, wy Whyalla, ret = return from Whyalla, lep shown as LEP. Annual leave days left out (owner). */
 window.VEHICLE_LOG_EXAMPLES = {
   aug2026: {
  "title": "August 2026",
@@ -23,90 +23,6 @@ window.VEHICLE_LOG_EXAMPLES = {
    "business": 100,
    "purpose": "TR/BM",
    "dest": "Tumby Bay return"
-  },
-  {
-   "date": "04/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "05/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "06/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "07/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "08/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "09/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "10/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "11/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "12/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "13/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "14/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "15/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "16/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
-  },
-  {
-   "date": "17/08/2026",
-   "startOdo": 60420,
-   "endOdo": 60420,
-   "purpose": "A/L"
   },
   {
    "date": "18/08/2026",
@@ -217,6 +133,9 @@ window.VEHICLE_LOG_EXAMPLES = {
    "purpose": "TR/BM",
    "dest": "Tumby Bay return"
   }
- ]
+ ],
+ "reg": "S366BQH",
+ "unit": "SAAS",
+ "location": "LEP"
 }
 };

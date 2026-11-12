@@ -90,7 +90,8 @@ td.num input { text-align: right; }
   function esc(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
   function inp(v, label) { return '<input value="' + esc(v) + '"' + (label ? ' aria-label="' + label + '"' : '') + '>'; }
 
-  function sheet(rows, serial, year) {
+  function sheet(rows, serial, year, ex) {
+    ex = ex || {};
     var r = '', bus = 0, priv = 0, any = false;
     for (var i = 0; i < 10; i++) {
       var e = rows[i] || {};
@@ -111,9 +112,9 @@ td.num input { text-align: right; }
 '    <h1>SA HEALTH MOTOR VEHICLE LOG SHEET</h1>' +
 '  </div>' +
 '  <div class="ids">' +
-'    <label class="reg">REG\'N NUMBER</label><input class="regbox" aria-label="Registration number">' +
-'    <label class="hu">HEALTH UNIT</label><input class="hubox" aria-label="Health unit">' +
-'    <label class="hu">WORK LOCATION</label><input class="wlbox" aria-label="Work location">' +
+'    <label class="reg">REG\'N NUMBER</label><input class="regbox" aria-label="Registration number" value="' + esc(ex.reg) + '">' +
+'    <label class="hu">HEALTH UNIT</label><input class="hubox" aria-label="Health unit" value="' + esc(ex.unit) + '">' +
+'    <label class="hu">WORK LOCATION</label><input class="wlbox" aria-label="Work location" value="' + esc(ex.location) + '">' +
 '    <label class="year">YEAR 20<input aria-label="Year" maxlength="2" value="' + esc(year) + '"></label>' +
 '  </div>' +
 '  <div class="warn">' +
@@ -153,7 +154,7 @@ td.num input { text-align: right; }
   var ex = name && window.VEHICLE_LOG_EXAMPLES && VEHICLE_LOG_EXAMPLES[name];
   if (ex) {
     var html = '';
-    for (var k = 0; k < ex.rows.length; k += 10) html += sheet(ex.rows.slice(k, k + 10), ex.serial + k / 10, ex.year);
+    for (var k = 0; k < ex.rows.length; k += 10) html += sheet(ex.rows.slice(k, k + 10), ex.serial + k / 10, ex.year, ex);
     wrap.innerHTML = html;
     document.getElementById('what').textContent = 'Example: ' + ex.title + ' (' + Math.ceil(ex.rows.length / 10) + ' pages)';
   } else {
