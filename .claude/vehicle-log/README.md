@@ -11,9 +11,9 @@ Owner's rules (12 Nov 2026): one line per day with travel, days with no travel (
 start and end date the same, no times; purpose always TR/BM; all km business; destination "<place> return".
 Rego S366BQH, health unit SAAS, work location LEP (edit SETTINGS in make.js if they change).
 Codes: tb Tumby Bay, cu Cummins, pt Port Neill, cf Coffin Bay, pl Port Lincoln, vb Venus Bay, el Elliston,
-wy Whyalla, lep LEP, ceduna Ceduna, "<code> area" = "<place> area", "x2" = "<place> return x2", ret = home from the previous day's place. Ask the owner about any new code.
+wy Whyalla, lep LEP, ceduna Ceduna, "<code> area" = "<place> area", "x2" = "<place> return x2", ret = home from the previous day's place, "ret from cu" = "Cummins to home". Ask the owner about any new code.
 
-Serial numbers run on from the last sheet: August 2026 used 1234002 and 1234003, September 2026 used 1234004 to 1234006, October 2026 used 1234007 to 1234009, so the next sheet is 1234010.
+Serial numbers run on from the last sheet: July 2026 (16 to 31 July) used 1234001 and 1234002, August 1234003 and 1234004, September 1234005 to 1234007, October 1234008 to 1234010, so the next sheet is 1234011.
 Update this line after each month.
 
 ## Travel Diary (from November 2026)
