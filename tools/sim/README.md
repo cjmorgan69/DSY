@@ -3,7 +3,7 @@
 A first-person job on a phone or iPad. The student talks or taps; the patient, family, driver and EOC Clinician
 answer in recorded voices; the obs change with time and treatment; a debrief compares what was done with the protocol.
 First case: David, 54, bee sting anaphylaxis (the walk-through `/modules/anaphylaxis/`). Student sign-in gate.
-Not linked from any page yet.
+Live 12 Nov 2026. Not linked from any page yet.
 
 ## Files
 
