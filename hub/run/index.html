@@ -78,7 +78,7 @@
   </div>
   <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
 </main>
-<script src="../topics.js?v=20261111d"></script>
+<script src="../topics.js?v=20261113a"></script>
 <script src="../glossary.js?v=20261110a"></script>
 <script>
 (function () {
@@ -105,7 +105,7 @@
     /* Same eight tiles in the same place for every topic; a part not made yet stays as a faint placeholder. */
     body.appendChild(el("p", "ghead", "On the night"));
     var g1 = el("div", "tiles");
-    g1.appendChild(tile("Presentation", "Slide show for the night", t.slides && "../.." + t.slides));
+    g1.appendChild(tile("Presentation", "Slide show for the night", t.slides && (/^https?:/.test(t.slides) ? t.slides : "../.." + t.slides)));
     g1.appendChild(tile("Scenario", "Facilitator version", t.walk && "../.." + t.walk));
     g1.appendChild(tile("MDT", "Load the job on the iPad", t.mdt && "../../mdt/#job=" + t.mdt));
     g1.appendChild(tile("PCR", "Write the patient report card", t.pcr && "../../tools/pcr/#job=" + t.pcr));
@@ -113,12 +113,12 @@
     body.appendChild(el("p", "ghead", "Before and after"));
     var g2 = el("div", "tiles");
     g2.appendChild(tile("Stations", "Hands-on skills, team runs it", t.stations && "../.." + t.stations));
-    g2.appendChild(tile("Microlearning", "The module to do first", "../../microlearning/" + t.module + "/"));
+    g2.appendChild(tile("Microlearning", "The module to do first", t.module && "../../microlearning/" + t.module + "/"));
     g2.appendChild(tile("Customise", "Your town, hospital, times", t.custom && "../../scenarios/#s=" + t.custom));
     g2.appendChild(tile("Feedback QR", "Show it to the room", "../../feedback/?t=" + t.id + "&show=1", "fb"));
     body.appendChild(g2);
     var g3 = el("div", "tiles");
-    var learn = root + "microlearning/" + t.module + "/", fbUrl = root + "feedback/?t=" + t.id + "&from=link";
+    var learn = t.module ? root + "microlearning/" + t.module + "/" : root + (t.stations || "").replace(/^\//, ""), fbUrl = root + "feedback/?t=" + t.id + "&from=link";
     g3.appendChild(copyTile("Student link", "Copy or share", "DSY Training: " + t.title + "\nLearn: " + learn, learn, "Student link for " + t.title + " copied."));
     g3.appendChild(copyTile("Feedback link", "Copy or share", "DSY Training: " + t.title + "\nTell us what you thought: " + fbUrl, fbUrl, "Feedback link for " + t.title + " copied."));
     body.appendChild(g3);
