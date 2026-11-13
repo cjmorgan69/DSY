@@ -18,7 +18,8 @@
    how long the front takes (PRO-239: several minutes; deck: 5 to 10), when to get out (PRO-239: when the sound of the
    fire has passed), the shift afterwards (PRO-239: decided after the medical officer's review; deck: should not
    continue), which window to break (PRO-239: side or back, never the windscreen). PRO-239 is followed in each case.
-   The opening questions, quiz wording and practical are DSY-written for the owner to review. No narrated video yet. */
+   The opening questions, quiz wording and practical are DSY-written for the owner to review.
+   Narrated intro video (13 Nov 2026): Lee on eleven_v4, two takes, script in video-src/script.json (owner to watch). */
 
 var M = window.MODULE = {
   flow: true,
@@ -57,6 +58,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
+      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Bushfire and burnover" } },
       { text: "A bushfire burnover is when a fast-moving fire front overtakes and engulfs people and vehicles. It's extremely dangerous. The best protection is being prepared and not putting yourself where a burnover could happen." },
       { text: "But SAAS crews do work near fires: on standby at a base camp or staging area, treating people hurt by a fire, on ordinary jobs close to fire activity, or just driving to a shift. PRO-239 applies to all staff, including commuting in a vehicle on a high-risk day." },
       { box: { title: "Good to know (PRO-239)", items: [
