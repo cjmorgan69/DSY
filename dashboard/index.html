@@ -33,10 +33,15 @@
 .hbtn:hover { background:rgba(255,255,255,.24); }
 .hbtn.light { background:#fff; color:#1f5b43; border-color:#fff; font-weight:600; }
 .hbtn.tiny { padding:.5rem .7rem; }
-.grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:1rem; }
-.card { grid-column:span 12; background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:1rem 1.1rem; display:flex; flex-direction:column; gap:.8rem; min-width:0;
+.card { background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:1rem 1.1rem; display:flex; flex-direction:column; gap:.8rem; min-width:0;
   box-shadow:0 1px 2px rgba(20,40,30,.05),0 8px 22px -16px rgba(20,40,30,.25); }
-@media (min-width:900px) { .w7 { grid-column:span 7; } .w5 { grid-column:span 5; } .w8 { grid-column:span 8; } .w4 { grid-column:span 4; } }
+.col { display:contents; }
+.o1 { order:1; } .o2 { order:2; } .o3 { order:3; } .o4 { order:4; } .o5 { order:5; }
+.grid { display:flex; flex-direction:column; gap:1rem; }
+@media (min-width:900px) {
+  .grid { display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); align-items:start; }
+  .col { display:flex; flex-direction:column; gap:1rem; min-width:0; }
+}
 .ch { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.3rem .8rem; }
 .ch h2 { font-size:1.2rem; }
 .ch a { font-size:.88rem; color:var(--brand); }
@@ -72,6 +77,25 @@
 .heat .cl { font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding-top:.5rem; }
 .legend { display:flex; flex-wrap:wrap; gap:.3rem 1rem; font-size:.8rem; color:var(--muted); }
 .legend i { display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:.3rem; vertical-align:-1px; }
+
+/* tasks */
+.tadd { display:flex; flex-wrap:wrap; gap:.4rem; }
+.tadd input { font:inherit; padding:.5rem .7rem; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink); min-width:0; }
+.tadd input[type=text] { flex:1 1 180px; } .tadd input[type=date] { flex:0 1 150px; }
+.tadd button, .tmore { border:0; border-radius:999px; padding:.5rem 1rem; background:var(--brand); color:var(--brand-ink); font-weight:600; }
+.tmore { background:none; color:var(--brand); padding:.2rem 0; font-weight:500; font-size:.85rem; align-self:flex-start; }
+.tasks li { display:grid; grid-template-columns:26px 1fr auto auto; gap:.5rem; align-items:center; padding:.45rem 0; border-top:1px solid var(--line); }
+.tasks li:first-child { border-top:0; }
+.tasks input[type=checkbox] { width:20px; height:20px; accent-color:var(--brand); margin:0; cursor:pointer; }
+.tasks .tt { min-width:0; overflow-wrap:anywhere; cursor:text; border-radius:6px; }
+.tasks .tt:focus { outline:2px solid var(--accent); outline-offset:2px; }
+.tasks li.done .tt { text-decoration:line-through; color:var(--muted); }
+.tasks .due { font-size:.74rem; font-weight:700; border-radius:999px; padding:.1rem .5rem; background:var(--bg); color:var(--muted); white-space:nowrap; }
+.tasks .due.late { background:color-mix(in srgb,var(--r) 15%,var(--surface)); color:var(--r); }
+.tasks .due.soon { background:color-mix(in srgb,var(--y) 22%,var(--surface)); color:color-mix(in srgb,var(--y) 40%,var(--ink)); }
+.tasks .del { border:0; background:none; color:var(--muted); font-size:1.1rem; line-height:1; padding:.2rem .35rem; border-radius:6px; }
+.tasks .del:hover { color:var(--r); background:var(--bg); }
+.tempty { color:var(--muted); font-size:.9rem; padding:.3rem 0; }
 
 /* who is on */
 .crew { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:.5rem; }
@@ -167,7 +191,8 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
   </header>
 
   <div class="grid">
-    <section class="card w7" aria-labelledby="hRoster">
+    <div class="col">
+    <section class="card o1" aria-labelledby="hRoster">
       <div class="ch"><h2 id="hRoster">Roster today</h2><a href="/modules/rosters/operations/">Operations overview →</a></div>
       <div class="stats" id="rStats"></div>
       <div class="chips" id="rFilter" role="group" aria-label="Clusters"></div>
@@ -177,23 +202,32 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
       <div id="cBody"><p class="note">Loading names from the team rosters…</p></div>
       <p class="note" id="rNote"></p>
     </section>
-
-    <section class="card w5" aria-labelledby="hTrain">
-      <div class="ch"><h2 id="hTrain">Training sessions</h2><a href="/training/">Open training app →</a></div>
-      <div id="tBody"><div class="skel"></div></div>
-    </section>
-
-    <section class="card w7" aria-labelledby="hDisp">
+    <section class="card o4" aria-labelledby="hDisp">
       <div class="ch"><h2 id="hDisp">Dispatch · last 7 days</h2><a href="/dispatch/">Full dispatch screen →</a></div>
       <div id="dBody"><div class="skel"></div></div>
     </section>
-
-    <section class="card w5" aria-labelledby="hWx">
+    </div>
+    <div class="col">
+    <section class="card o2" aria-labelledby="hTasks">
+      <div class="ch"><h2 id="hTasks">Tasks</h2><span class="note" id="tCount"></span></div>
+      <form class="tadd" id="tForm" autocomplete="off">
+        <input type="text" id="tTitle" maxlength="300" placeholder="Add a task" aria-label="New task" required>
+        <input type="date" id="tDue" aria-label="Due date (optional)">
+        <button type="submit">Add</button>
+      </form>
+      <div id="tList"><p class="tempty">Loading…</p></div>
+    </section>
+    <section class="card o3" aria-labelledby="hTrain">
+      <div class="ch"><h2 id="hTrain">Training sessions</h2><a href="/training/">Open training app →</a></div>
+      <div id="tBody"><div class="skel"></div></div>
+    </section>
+    <section class="card o5" aria-labelledby="hWx">
       <div class="ch"><h2 id="hWx">Weather · next 7 days</h2><a id="wxMore" href="https://www.bom.gov.au/sa/forecasts/eyre-peninsula.shtml" target="_blank" rel="noopener">BOM forecast →</a></div>
       <div class="chips" id="wxTowns" role="group" aria-label="Town"></div>
       <div id="wxBody"><div class="skel"></div></div>
       <p class="note">Forecast from Open-Meteo. Check the BOM and CFS for warnings and fire danger.</p>
     </section>
+    </div>
   </div>
 
   <footer class="foot"><span id="updated"></span><span><a href="/">dsytraining.com</a> · <a href="/signin/?out=1">Sign out</a></span></footer>
@@ -386,6 +420,76 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
   });
   $("cNow").addEventListener("click", function () { selHour = null; drawRoster(); drawCrew(); });
 
+  /* ---------- tasks (Supabase public.dashboard_tasks, leaders only) ---------- */
+  var tasks = [], showDone = false;
+  function loadTasks() {
+    return sb.from("dashboard_tasks").select("id,title,due_date,done,done_at,created_at").order("created_at")
+      .then(function (r) { if (r.error) throw r.error; tasks = r.data || []; drawTasks(); })
+      .catch(function (e) { $("tList").innerHTML = '<p class="err">Could not load tasks: ' + esc(e.message || e) + "</p>"; });
+  }
+  function taskErr(e) { alert("That didn't save: " + (e && e.message || e) + ". Refresh and try again."); loadTasks(); }
+  function dueTag(d, t) {
+    if (!d) return "";
+    var n = Math.round((dOf(d) - dOf(t)) / 864e5);
+    var txt = n === 0 ? "Today" : n === 1 ? "Tomorrow" : n === -1 ? "Yesterday" : n < 0 ? (-n) + " days late" : n < 7 ? DAYS[dOf(d).getUTCDay()] : nice(d);
+    return '<span class="due' + (n < 0 ? " late" : n <= 2 ? " soon" : "") + '" title="Due ' + nice(d) + '">' + txt + "</span>";
+  }
+  function drawTasks() {
+    var t = todayIso();
+    var open = tasks.filter(function (x) { return !x.done; }).sort(function (a, b) {
+      if (a.due_date && b.due_date) return a.due_date < b.due_date ? -1 : a.due_date > b.due_date ? 1 : 0;
+      if (a.due_date) return -1; if (b.due_date) return 1; return a.created_at < b.created_at ? -1 : 1;
+    });
+    var done = tasks.filter(function (x) { return x.done; }).sort(function (a, b) { return String(b.done_at) < String(a.done_at) ? -1 : 1; }).slice(0, 20);
+    var late = open.filter(function (x) { return x.due_date && x.due_date < t; }).length;
+    $("tCount").textContent = open.length ? open.length + " to do" + (late ? " · " + late + " overdue" : "") : "";
+    function row(x) {
+      return '<li data-id="' + x.id + '"' + (x.done ? ' class="done"' : "") + '><input type="checkbox" aria-label="Done"' + (x.done ? " checked" : "") + '>' +
+        '<span class="tt" tabindex="0" title="Tap to edit">' + esc(x.title) + "</span>" + (x.done ? "<span></span>" : dueTag(x.due_date, t)) +
+        '<button class="del" type="button" aria-label="Delete task" title="Delete">×</button></li>';
+    }
+    var html = open.length ? '<ul class="tasks">' + open.map(row).join("") + "</ul>" : '<p class="tempty">Nothing to do. 🎉</p>';
+    if (done.length) {
+      html += '<button class="tmore" type="button" id="tToggle">' + (showDone ? "Hide done" : "Show done (" + done.length + ")") + "</button>";
+      if (showDone) html += '<ul class="tasks">' + done.map(row).join("") + "</ul>";
+    }
+    $("tList").innerHTML = html;
+  }
+  function byId(id) { return tasks.filter(function (x) { return x.id === id; })[0]; }
+  $("tForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var title = $("tTitle").value.trim(), due = $("tDue").value || null; if (!title) return;
+    $("tTitle").value = ""; $("tDue").value = "";
+    sb.from("dashboard_tasks").insert({ title: title, due_date: due }).select("id,title,due_date,done,done_at,created_at")
+      .then(function (r) { if (r.error) throw r.error; tasks = tasks.concat(r.data); drawTasks(); }).catch(taskErr);
+    $("tTitle").focus();
+  });
+  $("tList").addEventListener("click", function (e) {
+    if (e.target.id === "tToggle") { showDone = !showDone; drawTasks(); return; }
+    var li = e.target.closest("li[data-id]"); if (!li) return;
+    var x = byId(li.dataset.id); if (!x) return;
+    if (e.target.matches("input[type=checkbox]")) {
+      x.done = e.target.checked; x.done_at = x.done ? new Date().toISOString() : null; drawTasks();
+      sb.from("dashboard_tasks").update({ done: x.done, done_at: x.done_at }).eq("id", x.id).then(function (r) { if (r.error) taskErr(r.error); });
+    } else if (e.target.closest(".del")) {
+      if (!confirm('Delete "' + x.title + '"?')) return;
+      tasks = tasks.filter(function (y) { return y !== x; }); drawTasks();
+      sb.from("dashboard_tasks").delete().eq("id", x.id).then(function (r) { if (r.error) taskErr(r.error); });
+    } else if (e.target.closest(".tt") && !e.target.isContentEditable) {
+      var sp = e.target.closest(".tt"); sp.contentEditable = "true"; sp.focus();
+      var rg = document.createRange(); rg.selectNodeContents(sp); rg.collapse(false); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(rg);
+      function finish(save) {
+        sp.removeEventListener("blur", onBlur); sp.removeEventListener("keydown", onKey);
+        var v = sp.textContent.trim().slice(0, 300);
+        if (save && v && v !== x.title) { x.title = v; sb.from("dashboard_tasks").update({ title: v }).eq("id", x.id).then(function (r) { if (r.error) taskErr(r.error); }); }
+        drawTasks();
+      }
+      function onBlur() { finish(true); }
+      function onKey(k) { if (k.key === "Enter") { k.preventDefault(); sp.blur(); } else if (k.key === "Escape") { sp.removeEventListener("blur", onBlur); finish(false); } }
+      sp.addEventListener("blur", onBlur); sp.addEventListener("keydown", onKey);
+    }
+  });
+
   /* ---------- training sessions ---------- */
   function hasLesson(s) { return !!s.lesson_id || (Array.isArray(s.lesson_ids) && s.lesson_ids.length > 0); }
   function loadSessions() {
@@ -515,13 +619,13 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
 
   /* ---------- start and refresh ---------- */
   function stamp() { $("updated").textContent = "Updated " + new Intl.DateTimeFormat("en-AU", { timeZone: TZ, hour: "numeric", minute: "2-digit" }).format(new Date()); }
-  function loadAll() { stamp(); loadRoster(); loadCrew(); loadSessions(); loadDispatch(); loadWeather(); }
+  function loadAll() { stamp(); loadRoster(); loadCrew(); loadTasks(); loadSessions(); loadDispatch(); loadWeather(); }
   drawTowns();
   (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve({})).then(function (me) {
     if (me && me.name) { window.__name = String(me.name).split(" ")[0]; tick(); }
     loadAll();
     setInterval(function () { drawRoster(); drawCrew(); }, 60000);   // move the "now" outline
-    setInterval(function () { stamp(); loadRoster(); loadCrew(); loadSessions(); loadDispatch(); }, 10 * 60000);
+    setInterval(function () { stamp(); loadRoster(); loadCrew(); loadSessions(); loadDispatch(); if (!document.querySelector("#tList [contenteditable=true]") && document.activeElement !== $("tTitle")) loadTasks(); }, 10 * 60000);
     setInterval(loadWeather, 60 * 60000);
   });
   $("refresh").addEventListener("click", loadAll);
