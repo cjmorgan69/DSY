@@ -4,7 +4,8 @@
    mdt: job id in /mdt/jobs.js   stations: practical skills stations page, if any
    custom: slug in the scenario customiser (/scenarios/), if it can be customised
    pcr: job id in /tools/pcr/jobs.js (PCR trainer: write the patient care record after the walk-through)
-   slides: classroom case-night deck (video, walk-through, MDT, PCR in one slide show), if any
+   slides: classroom case-night deck (video, walk-through, MDT, PCR in one slide show), if any; a full https link
+           (e.g. a SAAS Google Slides deck) opens as it is
    group: id in DSY_GROUPS (the category tiles on Run a session) */
 window.DSY_TOPICS = [
   { id:'chest-pain', group:'heart', title:'Chest pain', protocol:'CPP-007-AO', patient:'Graham, 62: chest pain not settling with his own GTN',
@@ -38,7 +39,9 @@ window.DSY_TOPICS = [
   { id:'spinal', group:'trauma', title:'Spinal precautions', protocol:'CPP-018-AO', patient:'Neil, 67: ladder fall, walked to the kitchen table',
     module:'spinal', walk:'/modules/spinal-ao/', stations:'/stations/spinal/', pcr:'neil' },
   { id:'dementia', group:'brain', title:'Dementia and changed behaviours', protocol:'CPP-017-AO', patient:'Jo-Anne, 84: doesn\'t recognise her husband tonight',
-    module:'dementia', walk:'/modules/dementia-ao/', mdt:'dementia', custom:'dementia-ao', stations:'/stations/dementia/', pcr:'joanne' }
+    module:'dementia', walk:'/modules/dementia-ao/', mdt:'dementia', custom:'dementia-ao', stations:'/stations/dementia/', pcr:'joanne' },
+  { id:'bushfire', group:'safety', title:'Bushfire and burnover', protocol:'PRO-239', patient:'Crew safety on a fire day, and the burnover drill',
+    module:'bushfire', stations:'/stations/burnover/', slides:'https://docs.google.com/presentation/d/1SQdORJyJlNf7aV2fLu5gcXrDIkWu7eLa/edit?usp=sharing' }
 ];
 
 /* Categories on Run a session (11 Nov 2026, owner). */
@@ -48,7 +51,8 @@ window.DSY_GROUPS = [
   { id:'brain', title:'Brain and behaviour' },
   { id:'medical', title:'Medical' },
   { id:'birth', title:'Birth and newborns' },
-  { id:'decisions', title:'Decisions' }
+  { id:'decisions', title:'Decisions' },
+  { id:'safety', title:'Crew safety' }
 ];
 
 /* AO protocols with no DSY topic yet, shown as "Coming soon" under their category.
