@@ -18,7 +18,8 @@ insert into public.roster_name_aliases (alias, member_name) values
   ('Evelyn', 'Evelyn Chin'),
   ('Lemmy Secker', 'Lynette Lemmey-Secker'),
   ('Meg Haensel Fuss', 'Meg Haensel-Fuss'),
-  ('Vicky Devries', 'Vicky DeVries')
+  ('Vicky Devries', 'Vicky DeVries'),
+  ('Ian maccrimmon', 'Ian MacCrimmon')
 on conflict (alias) do update set member_name = excluded.member_name;
 
 -- Bookings with the alias applied; the views and the function read from this.
