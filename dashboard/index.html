@@ -56,16 +56,38 @@
 
 /* roster heat strip */
 .heat { overflow-x:auto; }
-.heat table { border-collapse:separate; border-spacing:2px; width:100%; min-width:640px; font-size:.78rem; }
-.heat th { font-weight:600; color:var(--muted); text-align:left; white-space:nowrap; padding-right:.4rem; }
-.heat thead th { text-align:center; font-weight:500; padding:0; }
-.heat td { height:22px; border-radius:4px; text-align:center; color:#fff; font-weight:700; font-size:.72rem; }
+.heat table { border-collapse:separate; border-spacing:2px; width:100%; min-width:640px; font-size:.78rem; table-layout:fixed; }
+.heat thead th:first-child { width:96px; }
+.heat thead th:first-child, .heat tbody th { position:sticky; left:0; z-index:1; background:var(--surface); }
+.heat td.gap { background:none; cursor:default; } .heat th.cl { overflow:visible; background:none; }
+.ct.none a { color:inherit; }
+.heat th { font-weight:600; color:var(--muted); text-align:left; white-space:nowrap; padding-right:.4rem; overflow:hidden; text-overflow:ellipsis; }
+.heat tbody th a { color:inherit; text-decoration:none; } .heat tbody th a:hover { text-decoration:underline; }
+.heat thead th { text-align:center; font-weight:500; padding:0; overflow:visible; }
+.heat td { height:22px; padding:0; border-radius:4px; text-align:center; color:#fff; font-weight:700; font-size:.72rem; cursor:pointer; }
+.heat td.sel { box-shadow:inset 0 0 0 2px var(--accent); }
 .heat td.g { background:var(--g); } .heat td.y { background:var(--y); color:#3b2c00; } .heat td.r { background:var(--r); } .heat td.n { background:var(--none); }
 .heat td.now, .heat thead th.now { box-shadow:inset 0 0 0 2px var(--ink); }
 .heat thead th.now { color:var(--ink); font-weight:800; border-radius:4px; }
 .heat .cl { font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding-top:.5rem; }
 .legend { display:flex; flex-wrap:wrap; gap:.3rem 1rem; font-size:.8rem; color:var(--muted); }
 .legend i { display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:.3rem; vertical-align:-1px; }
+
+/* who is on */
+.crew { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:.5rem; }
+.ct { border:1px solid var(--line); border-radius:12px; padding:.5rem .65rem; display:flex; flex-direction:column; gap:.25rem; min-width:0; }
+.ct.none { background:color-mix(in srgb,var(--r) 8%,var(--surface)); }
+.ct h3 { font-size:.92rem; display:flex; justify-content:space-between; gap:.4rem; }
+.ct h3 a { color:inherit; text-decoration:none; } .ct h3 a:hover { text-decoration:underline; }
+.ct h3 span { font-family:var(--font-body); font-weight:600; font-size:.72rem; color:var(--muted); }
+.ct li { display:flex; align-items:baseline; gap:.35rem; font-size:.85rem; min-width:0; }
+.ct li b { font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+.ct li em { font-style:normal; font-size:.68rem; font-weight:700; border-radius:6px; padding:0 .3rem; background:var(--brand-soft); color:var(--brand); }
+.ct li small { color:var(--muted); font-size:.74rem; white-space:nowrap; }
+.ct .nc { font-size:.82rem; color:var(--r); font-weight:600; }
+.crewbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.4rem; }
+.crewbar h3 { font-size:1rem; }
+.crewbar button { border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; padding:.25rem .7rem; font-size:.8rem; }
 
 /* sessions */
 .banner { border-radius:14px; padding:.8rem .95rem; background:var(--brand-soft); display:flex; flex-direction:column; gap:.15rem; }
@@ -125,6 +147,7 @@ dialog .row button { border-radius:999px; padding:.5rem 1rem; border:1px solid v
 dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border-color:var(--brand); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="/modules/rosters/shared/teams.js?v=2026-11-10.1"></script>
 </head>
 <body>
 <main class="dash">
@@ -149,7 +172,9 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
       <div class="stats" id="rStats"></div>
       <div class="chips" id="rFilter" role="group" aria-label="Clusters"></div>
       <div class="heat" id="rHeat"><div class="skel"></div></div>
-      <div class="legend"><span><i style="background:var(--g)"></i>2 or more crew</span><span><i style="background:var(--y)"></i>1 crew</span><span><i style="background:var(--r)"></i>no crew</span><span>Outlined = this hour</span></div>
+      <div class="legend"><span><i style="background:var(--g)"></i>2 or more crew</span><span><i style="background:var(--y)"></i>1 crew</span><span><i style="background:var(--r)"></i>no crew</span><span>Outlined = this hour · tap a square to see who is on</span></div>
+      <div class="crewbar"><h3 id="cTitle">On shift now</h3><button type="button" id="cNow" hidden>Back to now</button></div>
+      <div id="cBody"><p class="note">Loading names from the team rosters…</p></div>
       <p class="note" id="rNote"></p>
     </section>
 
@@ -234,7 +259,7 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
     { key: "westcoast", name: "West Coast", url: "https://script.google.com/macros/s/AKfycbxrcfdjF7kUZQBkHuw2mqrYXhqz54VrK9Agv-zzOyBG8BbAbC-lrDkY6zGK91VAwB_z/exec" }
   ];
   var EXCLUDED = ["summer bay"];
-  var RF = "dsy-dash-cluster", rFilter = store(RF) || "all", rData = null;
+  var RF = "dsy-dash-cluster", rFilter = store(RF) || "all", rData = null, selHour = null, crew = null, crewErr = [];
   function opDate() { var p = parts(); var d = p.year + "-" + p.month + "-" + p.day; return +p.hour < 8 ? addDays(d, -1) : d; }
   function loadRoster() {
     var date = opDate();
@@ -258,7 +283,8 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
         });
       });
       rData = { hours: hours, teams: teams, problems: res.filter(function (r) { return r.err; }), date: date };
-      drawRoster();
+      if (selHour != null && selHour >= hours.length) selHour = null;
+      drawRoster(); drawCrew();
     });
   }
   function drawRoster() {
@@ -269,7 +295,7 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
     [{ key: "all", name: "All clusters" }].concat(CLUSTERS).forEach(function (c) {
       var b = document.createElement("button"); b.type = "button"; b.className = "chip2"; b.textContent = c.name;
       b.setAttribute("aria-pressed", rFilter === c.key ? "true" : "false");
-      b.addEventListener("click", function () { rFilter = c.key; store(RF, c.key); drawRoster(); }); fb.appendChild(b);
+      b.addEventListener("click", function () { rFilter = c.key; store(RF, c.key); drawRoster(); drawCrew(); }); fb.appendChild(b);
     });
     var teams = rData.teams.filter(function (t) { return rFilter === "all" || t.cluster.key === rFilter; });
     var g = 0, y = 0, r = 0, gapH = 0;
@@ -285,11 +311,12 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
     html += "</tr></thead><tbody>";
     var last = null;
     teams.forEach(function (t) {
-      if (rFilter === "all" && t.cluster.key !== last) { html += '<tr><th class="cl" colspan="' + (rData.hours.length + 1) + '">' + esc(t.cluster.name) + "</th></tr>"; last = t.cluster.key; }
-      html += "<tr><th>" + esc(t.name) + "</th>";
+      if (rFilter === "all" && t.cluster.key !== last) { html += '<tr><th class="cl">' + esc(t.cluster.name) + '</th><td class="gap" colspan="' + rData.hours.length + '"></td></tr>'; last = t.cluster.key; }
+      var rl = rosterLink(t.name);
+      html += "<tr><th>" + (rl ? '<a href="' + rl + '">' + esc(t.name) + "</a>" : esc(t.name)) + "</th>";
       t.counts.forEach(function (c, i) {
         var cls = c == null ? "n" : c >= 2 ? "g" : c === 1 ? "y" : "r";
-        html += '<td class="' + cls + (i === ni ? " now" : "") + '" title="' + esc(t.name + " " + rData.hours[i].label + ": " + (c == null ? "no data" : c + " crew")) + '">' + (c ? c : "") + "</td>";
+        html += '<td data-i="' + i + '" class="' + cls + (i === ni ? " now" : "") + (i === selHour ? " sel" : "") + '" title="' + esc(t.name + " " + rData.hours[i].label + ": " + (c == null ? "no data" : c + " crew")) + '">' + (c ? c : "") + "</td>";
       });
       html += "</tr>";
     });
@@ -298,6 +325,66 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
     if (rData.problems.length) note += " Not loaded: " + rData.problems.map(function (p) { return p.c.name + " (" + p.err + ")"; }).join(", ") + ".";
     $("rNote").textContent = note;
   }
+
+  /* ---------- who is on shift (each team's own roster, getBookings) ---------- */
+  function rosterTeams() {
+    var T = window.DSY_ROSTER_TEAMS || {}, out = [];
+    Object.keys(T).forEach(function (id) { if (id !== "test" && EXCLUDED.indexOf(T[id].name.toLowerCase()) < 0) out.push({ id: id, name: T[id].name, cluster: T[id].cluster, api: T[id].apiUrl }); });
+    return out;
+  }
+  var CL_DIR = { "Lower Eyre": "lowereyre", "Central Eyre": "centraleyre", "West Coast": "westcoast" };
+  function rosterLink(name) {
+    var t = rosterTeams().filter(function (x) { return x.name.toLowerCase() === String(name).toLowerCase(); })[0];
+    return t && CL_DIR[t.cluster] ? "/modules/rosters/" + CL_DIR[t.cluster] + "/" + t.id + "/" : "";
+  }
+  function loadCrew() {
+    var teams = rosterTeams();
+    if (!teams.length) { $("cBody").innerHTML = '<p class="err">Team list did not load.</p>'; return Promise.resolve(); }
+    return Promise.all(teams.map(function (t) {
+      var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 60000);
+      return fetch(t.api, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "getBookings", team: t.name }), redirect: "follow", credentials: "omit", signal: ctl.signal })
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (d) { if (!Array.isArray(d.bookings)) throw new Error(d.error || "unexpected reply"); return { t: t, b: d.bookings }; })
+        .catch(function (e) { return { t: t, err: e.name === "AbortError" ? "timed out" : e.message }; })
+        .finally(function () { clearTimeout(to); });
+    })).then(function (res) {
+      crew = {}; crewErr = [];
+      res.forEach(function (r) { if (r.err) crewErr.push(r.t.name + " (" + r.err + ")"); else crew[r.t.name.toLowerCase()] = r.b; });
+      drawCrew();
+    });
+  }
+  function hm(ms) { return new Intl.DateTimeFormat("en-AU", { timeZone: TZ, hour: "numeric", minute: "2-digit", hour12: true }).format(new Date(ms)).replace(" ", ""); }
+  function drawCrew() {
+    var at = Date.now(), title = "On shift now";
+    if (selHour != null && rData) { var h = rData.hours[selHour]; at = Date.parse(h.start) + 1000; title = "On shift at " + h.label + " (" + nice(h.calendarDate) + ")"; }
+    $("cTitle").textContent = title; $("cNow").hidden = selHour == null;
+    if (!crew) return;
+    var teams = rosterTeams().filter(function (t) { return rFilter === "all" || CL_DIR[t.cluster] === rFilter; });
+    var empty = [];
+    var html = '<div class="crew">' + teams.map(function (t) {
+      var b = crew[t.name.toLowerCase()];
+      if (!b) return '<div class="ct"><h3>' + esc(t.name) + '</h3><span class="note">Not loaded</span></div>';
+      var on = b.filter(function (x) { return Date.parse(x.start) <= at && at < Date.parse(x.end); })
+        .sort(function (a, c) { return String(a.user).localeCompare(String(c.user)); });
+      var link = rosterLink(t.name);
+      if (!on.length) { empty.push(link ? '<a href="' + link + '">' + esc(t.name) + "</a>" : esc(t.name)); return ""; }
+      return '<div class="ct"><h3>' + (link ? '<a href="' + link + '">' + esc(t.name) + "</a>" : esc(t.name)) + "<span>" + esc(t.cluster) + "</span></h3>" +
+        (on.length ? "<ul>" + on.map(function (x) {
+          return "<li><b>" + esc(x.user) + "</b>" + (x.clinicalLevel ? "<em>" + esc(x.clinicalLevel) + "</em>" : "") + (x.restriction && x.restriction !== "N" ? "<em>" + esc(x.restriction) + "</em>" : "") +
+            "<small>to " + hm(Date.parse(x.end)) + "</small></li>";
+        }).join("") + "</ul>" : '<span class="nc">No crew booked</span>') + "</div>";
+    }).join("") + "</div>";
+    if (html === '<div class="crew"></div>') html = "";
+    if (empty.length) html += '<div class="ct none"><span class="nc">No crew booked</span><span class="small">' + empty.join(", ") + "</span></div>";
+    if (crewErr.length) html += '<p class="note">Not loaded: ' + esc(crewErr.join(", ")) + ".</p>";
+    html += '<p class="note">From each team\'s roster when the dashboard opened. Tap a team name to open its roster.</p>';
+    $("cBody").innerHTML = html;
+  }
+  $("rHeat").addEventListener("click", function (e) {
+    var td = e.target.closest("td[data-i]"); if (!td) return;
+    var i = +td.dataset.i; selHour = selHour === i ? null : i; drawRoster(); drawCrew();
+  });
+  $("cNow").addEventListener("click", function () { selHour = null; drawRoster(); drawCrew(); });
 
   /* ---------- training sessions ---------- */
   function hasLesson(s) { return !!s.lesson_id || (Array.isArray(s.lesson_ids) && s.lesson_ids.length > 0); }
@@ -428,13 +515,13 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
 
   /* ---------- start and refresh ---------- */
   function stamp() { $("updated").textContent = "Updated " + new Intl.DateTimeFormat("en-AU", { timeZone: TZ, hour: "numeric", minute: "2-digit" }).format(new Date()); }
-  function loadAll() { stamp(); loadRoster(); loadSessions(); loadDispatch(); loadWeather(); }
+  function loadAll() { stamp(); loadRoster(); loadCrew(); loadSessions(); loadDispatch(); loadWeather(); }
   drawTowns();
   (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve({})).then(function (me) {
     if (me && me.name) { window.__name = String(me.name).split(" ")[0]; tick(); }
     loadAll();
-    setInterval(drawRoster, 60000);                       // move the "now" outline
-    setInterval(function () { stamp(); loadRoster(); loadSessions(); loadDispatch(); }, 10 * 60000);
+    setInterval(function () { drawRoster(); drawCrew(); }, 60000);   // move the "now" outline
+    setInterval(function () { stamp(); loadRoster(); loadCrew(); loadSessions(); loadDispatch(); }, 10 * 60000);
     setInterval(loadWeather, 60 * 60000);
   });
   $("refresh").addEventListener("click", loadAll);
