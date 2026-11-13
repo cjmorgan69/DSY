@@ -35,7 +35,7 @@
   var list = document.getElementById("list");
   function steps(t) {
     return [
-      { key: "learn", n: 1, label: "Learn", sub: "Video, key points and quiz", href: "../../microlearning/" + t.module + "/" },
+      { key: "learn", n: 1, label: "Learn", sub: t.module ? "Video, key points and quiz" : "Coming", href: t.module ? "../../microlearning/" + t.module + "/" : null },
       { key: "practise", n: 2, label: "Practise the call", sub: t.walk ? t.patient : "Walk-through coming", href: t.walk ? ".." + "/.." + t.walk + "?mode=student" : null },
       { key: "mdt", n: 3, label: "Drill the MDT", sub: t.mdt ? "Data terminal, dispatch to clear" : "Coming", href: t.mdt ? "../../mdt/#job=" + t.mdt + "&self=1" : null },
       { key: "pcr", n: 4, label: "Write the PCR", sub: t.pcr ? "Patient care record, after the walk-through" : "Coming", href: t.pcr ? "../../tools/pcr/#job=" + t.pcr : null }

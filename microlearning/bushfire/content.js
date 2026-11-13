@@ -314,7 +314,7 @@ var M = window.MODULE = {
 
     { title: "Practical: the burnover drill", optional: true, collapsed: true, chip: "Optional", blocks: [
       { text: "Do the burnover skills stations with a real ambulance, in pairs: getting the vehicle ready, responding in, the burnover drill against the clock, and getting out afterwards." },
-      { links: [{ label: "Burnover skills stations", href: "/stations/burnover/" }] },
+      { links: [{ label: "Burnover skills stations", href: "/stations/burnover/" }, { label: "Health check stations (fire standby)", href: "/stations/health-checks/" }] },
       { note: "Never press the GRN emergency call button in training, and don't open the vacuum-sealed burnover blankets (DSY)." }
     ] }
   ]

@@ -113,12 +113,12 @@
     body.appendChild(el("p", "ghead", "Before and after"));
     var g2 = el("div", "tiles");
     g2.appendChild(tile("Stations", "Hands-on skills, team runs it", t.stations && "../.." + t.stations));
-    g2.appendChild(tile("Microlearning", "The module to do first", "../../microlearning/" + t.module + "/"));
+    g2.appendChild(tile("Microlearning", "The module to do first", t.module && "../../microlearning/" + t.module + "/"));
     g2.appendChild(tile("Customise", "Your town, hospital, times", t.custom && "../../scenarios/#s=" + t.custom));
     g2.appendChild(tile("Feedback QR", "Show it to the room", "../../feedback/?t=" + t.id + "&show=1", "fb"));
     body.appendChild(g2);
     var g3 = el("div", "tiles");
-    var learn = root + "microlearning/" + t.module + "/", fbUrl = root + "feedback/?t=" + t.id + "&from=link";
+    var learn = t.module ? root + "microlearning/" + t.module + "/" : root + (t.stations || "").replace(/^\//, ""), fbUrl = root + "feedback/?t=" + t.id + "&from=link";
     g3.appendChild(copyTile("Student link", "Copy or share", "DSY Training: " + t.title + "\nLearn: " + learn, learn, "Student link for " + t.title + " copied."));
     g3.appendChild(copyTile("Feedback link", "Copy or share", "DSY Training: " + t.title + "\nTell us what you thought: " + fbUrl, fbUrl, "Feedback link for " + t.title + " copied."));
     body.appendChild(g3);

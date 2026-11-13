@@ -6,7 +6,8 @@
    pcr: job id in /tools/pcr/jobs.js (PCR trainer: write the patient care record after the walk-through)
    slides: classroom case-night deck (video, walk-through, MDT, PCR in one slide show), if any; a full https link
            (e.g. a SAAS Google Slides deck) opens as it is
-   group: id in DSY_GROUPS (the category tiles on Run a session) */
+   group: id in DSY_GROUPS (the category tiles on Run a session)
+   module may be left out when a topic has only stations (the hub pages then show it as not made yet) */
 window.DSY_TOPICS = [
   { id:'chest-pain', group:'heart', title:'Chest pain', protocol:'CPP-007-AO', patient:'Graham, 62: chest pain not settling with his own GTN',
     module:'chest-pain', walk:'/modules/chest-pain/', mdt:'chest-pain', custom:'chest-pain-ao', stations:'/stations/chest-pain-acpo/', pcr:'graham', slides:'/classroom/chest-pain/' },
@@ -41,7 +42,9 @@ window.DSY_TOPICS = [
   { id:'dementia', group:'brain', title:'Dementia and changed behaviours', protocol:'CPP-017-AO', patient:'Jo-Anne, 84: doesn\'t recognise her husband tonight',
     module:'dementia', walk:'/modules/dementia-ao/', mdt:'dementia', custom:'dementia-ao', stations:'/stations/dementia/', pcr:'joanne' },
   { id:'bushfire', group:'safety', title:'Bushfire and burnover', protocol:'PRO-239', patient:'Crew safety on a fire day, and the burnover drill',
-    module:'bushfire', stations:'/stations/burnover/', slides:'https://docs.google.com/presentation/d/1SQdORJyJlNf7aV2fLu5gcXrDIkWu7eLa/edit?usp=sharing' }
+    module:'bushfire', stations:'/stations/burnover/', slides:'https://docs.google.com/presentation/d/1SQdORJyJlNf7aV2fLu5gcXrDIkWu7eLa/edit?usp=sharing' },
+  { id:'health-checks', group:'safety', title:'Health checks for emergency services', protocol:'PRO-384', patient:'Fire standby: checking the firefighters off the line',
+    stations:'/stations/health-checks/' }
 ];
 
 /* Categories on Run a session (11 Nov 2026, owner). */

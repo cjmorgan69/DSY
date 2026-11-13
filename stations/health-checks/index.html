@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<script src="/shared/gate.js?v=20261107a" data-level="stations"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Health check stations - DSY Training</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261027c">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end the health check post, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+@media (max-width: 420px) { table.t th, table.t td { padding: .35rem .3rem; font-size: .86rem; } }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Health checks for emergency service personnel: skills stations. Built 13 Nov 2026 at the owner's request, as a
+   separate night from the burnover stations (fire standby, but PRO-384 also covers MFS, SES and SAPOL).
+   Sources: PRO-384 Health Checks for Emergency Service Personnel v1.0 (EMAP, effective 7 Mar 2025, next review
+   January 2026 has passed; owner's PDF, OFFICIAL, not stored in the repo); its Appendix 2 Emergency Services Health
+   Check Form (owner's photo; the form's zone and rest wording is quoted here, the form itself is not reproduced);
+   CTL-070 Adult RDR Chart (exported 31.08.2026) for the zones. The form shows SpO2 89 or less as PURPLE; CTL-070 shows it
+   RED. Both are shown, flagged for the owner. The form needs at least two sets.
+   DSY-written and marked as such: the firefighter cards and their obs, the role-plays, the how-to-run notes and the
+   finish. Owner to review. */
+var SRC = {
+  pro: "PRO-384 Health Checks for Emergency Service Personnel v1.0 (Mar 2025)",
+  form: "Emergency Services Health Check Form (PRO-384 Appendix 2)",
+  rdr: "CTL-070 Adult RDR Chart",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "Asked to do health checks", mins: 15, where: "Table",
+  goal: "Know when SAAS does health checks, who asks, who you check, and how to set up with the agency.",
+  kit: ["The cards below", "A table and two chairs as the 'health check area'"],
+  blocks: [
+    { h: "Only on request", src: ["pro"], tone: "warn", list: [
+      "Health checks are done ONLY when the emergency service asks SAAS for them. Each agency briefs its own people on why and how",
+      "Who may ask: the MFS, the CFS, the SES, and (less often) SAPOL",
+      "SAAS's capacity depends on the ambulances available. In long campaign events St John may be asked to do it instead, under its own command, liaising with SAAS",
+      "SAAS clinicians monitor, assess, advise, treat and transport within their own authority to practise and the clinical protocols"
+    ] },
+    { h: "When it matters most", src: ["pro"], list: [
+      "In or around hazmat environments",
+      "Long shifts or extended timeframes, or several shifts in a row",
+      "High-risk or very active work, such as search and rescue",
+      "Extreme or prolonged events and severe weather: bushfires, industrial fires, heat"
+    ] },
+    { h: "When you arrive", src: ["pro"], steps: [
+      "Name the SAAS liaison: one single point of contact.",
+      "With the agency, get clear what's needed: SAAS or St John, and what work the crews are doing (ask the Agency Commander or Safety Officer).",
+      "Set up a suitable location and area together.",
+      "Brief any SAAS clinicians who arrive after you. Hand over to the SAAS Scene Commander when they arrive.",
+      "Hazmat: make sure, through the agency, that everyone is decontaminated before any check."
+    ] },
+    { h: "Who you check, and when", src: ["pro"], list: [
+      "People exposed to increased environmental hazards or risks",
+      "Anyone who comes to you feeling unwell, or with other health concerns",
+      "Checks may also happen at shift breaks, before going back in, and at the end of the shift",
+      "Include SAAS staff too, if they've been exposed. Keep doing dynamic risk assessments, and watch fatigue"
+    ] },
+    { h: "Cards", src: ["dsy", "pro"], cases: [
+      { who: "A. On standby", text: "You're on standby at a CFS staging area. A firefighter walks over: \"Can you just check my blood pressure?\" Nobody has asked SAAS for health checks.", answer: "Health checks as a service are only done when the agency requests them. But anyone who comes to you unwell is a patient: assess them as usual. Let the EOC know, and the agency can request health checks if they want them." },
+      { who: "B. The request", text: "The CFS Safety Officer asks you to start health checks for crews coming off the fire line. What do you do first?", answer: "Name the SAAS liaison, agree with the Safety Officer what's needed and what work the crews are doing, and set up an area together. Brief SAAS crews who arrive later; hand over to the Scene Commander." },
+      { who: "C. The chemical shed", text: "MFS crews have been fighting a fire in a chemical store. Three of them line up for checks still in their gear.", answer: "Not until they've been decontaminated, through the agency. Then do the checks." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: ["Read the boxes together.", "One of you reads a card, the other answers out loud.", "Swap for the next card."] }
+  ],
+  checks: ["Said: only when the agency requests", "Named the agencies that can ask", "Liaison named, needs agreed, area set up", "Decontamination before any check", "Said who to check and when"] },
+
+{ id: "s2", n: 2, title: "The check: obs on the form", mins: 25, where: "Table",
+  goal: "Take a full set of obs on a partner the way the Health Check Form asks, and put each one in its zone.",
+  kit: ["BP cuff, pulse oximeter, thermometer, a watch", "Health Check Form pads if you have them; otherwise printed CTL-070 Adult RDR Charts", "A partner (at rest: no exercise needed)"],
+  blocks: [
+    { h: "What goes on the form", src: ["form", "pro"], list: [
+      "Personnel details (confidential): name, date of birth, ID number, agency",
+      "Medical history, allergies and medications, as the person chooses to tell you",
+      "At least 2 sets of obs: resp rate, oxygen (room air or L/min), SpO2, BP (systolic and diastolic), CRT, pulse rate, temp, GCS with E-V-M, pupils, pain score, BGL, SAT score, EtCO2",
+      "Record the pulse rate, not the ECG heart rate",
+      "Fires: also check the eyes (debris) and the chest (smoke effects). An ECG if it's possible and needed"
+    ] },
+    { h: "The zones (CTL-070 Adult RDR Chart)", src: ["rdr"], table: { head: ["Obs", "White", "Yellow", "Red", "Purple"], rows: [
+      ["Resp rate", "11 to 20", "21 to 25", "26 to 30, 8 to 10", "31+, 7 or less"],
+      ["SpO2 %", "95+", "90 to 94", "89 or less *", ""],
+      ["Systolic BP", "100 to 169", "170 to 179", "180 to 199, 90 to 99", "200+, 89 or less"],
+      ["Pulse", "60 to 99", "100 to 119, 50 to 59", "120 to 139, 40 to 49", "140+, 39 or less"],
+      ["Temp °C", "35.6 to 38.0", "38.1 to 38.5, 35.1 to 35.5", "38.6+, 35.0 or less", ""],
+      ["GCS", "15", "13 to 14", "9 to 12", "8 or less"],
+      ["Pain", "0 to 4", "5 to 7", "8 to 10", ""]
+    ] } },
+    { h: "* The form and the chart disagree", src: ["form", "rdr"], tone: "warn", text: "SpO2 89% or less is RED on CTL-070 (exported Aug 2026) but PURPLE on the Health Check Form in PRO-384 (Mar 2025). Your instructor will tell you which to use. Either way it needs treatment now, not just rest." },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Take a full set of obs on your partner, at rest, in the order on the form.",
+      "Ask for medical history, allergies and medications. Ask about the eyes and chest as if they'd come off a fire.",
+      "Say the zone for each one out loud.",
+      "Swap."
+    ] }
+  ],
+  checks: ["Personnel details and history asked", "Resp rate counted for a full 30 or 60 seconds", "SpO2 with room air or oxygen noted", "BP systolic and diastolic", "Pulse rate felt, not read off the monitor", "Temp, GCS with E-V-M, pupils, pain", "Eyes and chest checked for a fire", "Zone named for every obs"] },
+
+{ id: "s3", n: 3, title: "Rest, recheck, decide", mins: 30, where: "Table",
+  goal: "Use the zones, the rest rules and the form's four steps to decide: back to work, other duties, treat, or transport.",
+  kit: ["The firefighter cards below", "The form or an RDR chart"],
+  blocks: [
+    { h: "Rest and recovery for firefighters", src: ["pro"], tone: "warn", table: { head: ["After", "Rest for"], rows: [
+      ["One breathing apparatus (SCBA) cylinder with intensive work", "20 minutes"],
+      ["Intensive work with NO breathing apparatus", "40 minutes"]
+    ] } },
+    { h: "What the zones mean (on the form)", src: ["form"], list: [
+      "Purple, potentially critically unwell, high risk: consider clinical support (e.g. ICP, MO, consult), start treatment, transport to the most appropriate facility",
+      "Red, abnormal, moderate risk: call a clinical time out, start treatment and transport. Ambulance officers: consider clinical support",
+      "Yellow, altered, increased risk: call a clinical time out and review decisions"
+    ] },
+    { h: "The form's four steps", src: ["form"], steps: [
+      "20 minutes mandatory rest: take off PPE, equipment and clothing as needed, rehydrate, reassess.",
+      "Still outside the RDR parameters after 20 minutes, or other abnormal symptoms (e.g. cramp): assess further, decide on treatment and transport, and advise the SAAS Commander (or the Agency Commander or Safety Officer).",
+      "Vital signs still abnormal after 20 minutes' rest: they should not return to duty. Tell the person and their Agency Commander or Safety Officer: it's a SAAS recommendation.",
+      "Someone with specific or pre-existing health risks may be suitable for other roles at the incident."
+    ] },
+    { h: "After the check (PRO-384)", src: ["pro"], list: [
+      "Purple trigger: treat and transport without delay",
+      "Other triggers after the required rest: assess further and treat by the protocols, talking to the EOC Clinician as needed",
+      "Give the person your considered opinion on whether going back is safe or likely to make things worse",
+      "If they won't accept your recommendation, tell the SAAS Commander",
+      "No RDR flags and nothing else abnormal: cleared to carry on, as per their agency's procedures",
+      "Any clinical concern at any time: escalate care the usual SAAS way. Don't wait out the rest"
+    ] },
+    { h: "Firefighter cards", src: ["dsy", "pro", "form", "rdr"], cases: [
+      { who: "A. Off the fire line", text: "CFS, 34. An hour of intensive work, no breathing apparatus. RR 22, SpO2 97%, BP 138/84, pulse 112, temp 37.9, GCS 15. Feels fine.", answer: "RR and pulse yellow. 40 minutes' rest (intensive work, no BA): off with the gear, drink, recheck. If everything is back in the white with nothing else wrong, cleared to carry on under the CFS's own procedures." },
+      { who: "B. Smoky", text: "CFS, 51. Coughing, eyes stinging. SpO2 88% on room air, RR 24, pulse 104. Everything else white.", answer: "SpO2 88: red on CTL-070, purple on the form. Either way, don't just rest him: treat now by the protocols and transport; consider clinical support and talk to the EOC Clinician. Check his eyes for debris." },
+      { who: "C. Hot and cramping", text: "MFS, 45. One SCBA cylinder, intensive work. Temp 38.7, pulse 124, cramps in his calves. After 20 minutes' rest: temp 38.6, pulse 118, still cramping.", answer: "Still outside the RDR parameters with abnormal symptoms after 20 minutes: assess further, treat, decide on transport, and advise the SAAS Commander. He should not return to duty: tell him and his Agency Commander or Safety Officer (no medical details)." },
+      { who: "D. 'I'm going back in'", text: "SES, 39. After 20 minutes' rest his pulse is still 126. He says he feels fine and is going back.", answer: "Give him your considered opinion that going back isn't safe, and that it's SAAS's recommendation he doesn't. If he won't accept it, tell the SAAS Commander." },
+      { who: "E. Chest tightness", text: "CFS, 58. Came over because of chest tightness that started 10 minutes ago. Pulse 96, BP 150/90.", answer: "Don't make him wait out a rest period: any clinical concern at any time means escalate care. Treat him as a chest pain patient (CPP-007-AO) and transport." },
+      { who: "F. All clear", text: "CFS, 27. Before going back in: all obs white, no symptoms, eyes and chest fine.", answer: "No RDR flags and nothing abnormal: cleared to continue, as per the CFS's procedures. Record it on the form." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: ["One reads a card. The other says the zones, the rest time and the decision out loud, then checks the answer.", "Swap for each card."] }
+  ],
+  checks: ["Rest times right (20 with BA, 40 without)", "Zones named for each card", "Purple: treat and transport without delay", "Still abnormal after rest: not back to duty, SAAS Commander told", "Escalated straight away for a clinical concern", "Cleared only when no flags and nothing abnormal"] },
+
+{ id: "s4", n: 4, title: "Who you tell, and the paperwork", mins: 20, where: "Table",
+  goal: "Tell the agency what it needs without breaking confidentiality, and get the form, PCR and incident book right.",
+  kit: ["A partner to play the Agency Commander", "A practice PCR if you have one"],
+  blocks: [
+    { h: "Confidential", src: ["pro", "form"], tone: "red", list: [
+      "All personal medical information stays confidential and must not be shared",
+      "No medical information is discussed with anyone except the person, or another clinician",
+      "The Health Check Form is private and confidential: treat it the same as a PCR"
+    ] },
+    { h: "What the SAAS Commander tells the agency", src: ["pro"], list: [
+      "The person's name, without anything about the medical condition",
+      "A recommendation that they don't continue active duties",
+      "Whether they need immediate treatment at a medical facility, or a later review by a doctor",
+      "If immediate treatment isn't needed, whether they're fit to travel other than by ambulance",
+      "Only the details needed to change their work duties. The agency makes the final decision about its people's roles"
+    ] },
+    { h: "The paperwork", src: ["pro"], list: [
+      "A Health Check Form for every person you assess. Each pad has 50 forms with a carbon copy",
+      "Top copy (office) stays with the SAAS Commander. Bottom copy (hospital) goes with the transporting crew if the person goes to hospital",
+      "Needs treatment: start a PCR, attach the Health Check Form. Treat and refer or discharge the usual SAAS way",
+      "On every PCR: the incident name (e.g. \"Cudlee Creek Fire\"), that the patient is emergency service personnel, their agency, and the WC box marked, so the account doesn't go to the person",
+      "SAAS doesn't charge for health checks, or treat and refer or discharge. Transport by ambulance is billed under the Health Care Act",
+      "Incident book: de-identified numbers only: people checked, referred to their commander, treated on scene, transported"
+    ] },
+    { h: "Before you leave", src: ["pro"], list: ["Check with the liaison or Agency Commander that you're released from the incident, and get their OK before any ambulance leaves"] },
+    { h: "Role-play", src: ["dsy", "pro"], cases: [
+      { who: "A. \"What's wrong with him?\"", text: "The CFS Agency Commander asks about card C from station 3 (the hot, cramping firefighter): \"What's wrong with Dave? Is it his heart?\"", answer: "\"Dave's been assessed and I recommend he doesn't continue active duties. He needs treatment at a medical facility now.\" Nothing about his temperature, cramps or history." },
+      { who: "B. The PCR", text: "You transport card B (the smoky firefighter). What goes on the PCR?", answer: "Everything as usual, plus the incident name, that he's emergency service personnel, his agency (CFS), and the WC box marked. Attach the Health Check Form; the hospital copy goes with him." },
+      { who: "C. Packing up", text: "The fire's contained and the crews are going home. Can you leave?", answer: "Only once the liaison or Agency Commander confirms you're released. Then the forms go to SAAS Revenue and the incident book to EMAP." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: ["Play the Agency Commander for your partner, and push for details.", "Then the PCR and packing-up cards.", "Swap."] }
+  ],
+  checks: ["Told the commander the name and the recommendation only", "Didn't share any medical detail when pushed", "Form copies: top stays, bottom goes to hospital", "PCR: incident name, emergency service personnel, agency, WC box", "Released by the agency before leaving"] }
+];
+
+var END = { title: "Run a health check post", mins: 30,
+  steps: [
+    "Set up a 'health check area' at a table. Two of you are the SAAS crew; the others are firefighters coming off the line, each holding one card from station 3 (or a card the instructor writes).",
+    "The crew names the liaison, takes each firefighter's details, reads the obs off the card (or takes real obs at rest), names the zones and decides: rest, recheck, back to work, other duties, treat, or transport.",
+    "After each firefighter, the crew tells the 'Agency Safety Officer' what they need to know, and nothing more.",
+    "Swap so everyone has a turn as the crew.",
+    "Talk it through: where did the rest rule, the zones and the form's four steps help? Where was it hard to say no?"
+  ] };
+
+var KEY = "dsy-stations-health-checks";
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/health-checks/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Health check stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes" + (s.where ? " · " + s.where : "")));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Run a health check post", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Run a health check post"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("CTL-070 Adult RDR Chart (PDF)", "https://clinical.saambulance.sa.gov.au/assets/pdf/checklists/Adult%20RDR%20Chart.pdf", "btn small ghost"));
+  f.appendChild(links);
+  if (print) return f;
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY health check stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Health check stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", src: ["dsy"], table: { head: ["Time", "What"], rows: [
+    ["Before", "Ask everyone to read PRO-384 on SAASnet if they can. If CFS or SES volunteers can come as 'firefighters', even better."],
+    ["0:00", "Split into pairs. Explain: obs are taken at rest only, nobody exercises to raise their numbers; the firefighter cards give the abnormal obs."],
+    ["0:05", "Stations 1 to 4 in order (15 to 30 min each), all at tables. Partners tick the checks on the phone."],
+    ["about 1:35", "Run a health check post together, using the station 3 cards."],
+    ["End", "Talk it through. Share the record with the instructor."]
+  ] } }));
+  f.appendChild(block({ h: "Decide before the night", src: ["form", "rdr"], tone: "warn", list: [
+    "SpO2 89% or less: RED on CTL-070, PURPLE on the Health Check Form. Tell the group which you want them to use",
+    "PRO-384 v1.0 passed its review date (January 2026). Check SAASnet for a newer version"
+  ] }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Health Check Form pads if your station has them (they're printed pads in operational vehicles). If not, print CTL-070 Adult RDR Charts from the SAAS clinical site.",
+    "One obs kit per pair: BP cuff, pulse oximeter, thermometer.",
+    "A table set up as the 'health check area' for station 1 and the finish.",
+    "Tape each station's printed page (with its QR code) to a table, or print one pack per pair.",
+    "Used forms are practice only: no real names or ID numbers. Shred them afterwards."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "When the CFS, MFS, SES or SAPOL asks SAAS to check their people at a fire or other big incident. Four table stations in pairs, then a health check post together. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Read PRO-384 Health Checks for Emergency Service Personnel on SAASnet if you can. Obs are taken at rest: nobody exercises. The cards give the abnormal numbers."));
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes" + (s.where ? " · " + s.where : ""))); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Firefighters through the post, tell the agency, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + SRC.pro + " and its Health Check Form, with zones from " + SRC.rdr + " (exported 31 Aug 2026). PRO-384 passed its review date (January 2026). SpO2 89% or less is red on CTL-070 but purple on the form: your instructor decides. The firefighter cards, role-plays and dashed boxes are DSY-written for practice. Training resource only: it does not replace SAAS procedures, the protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Run a health check post")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>
