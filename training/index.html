@@ -25,7 +25,7 @@
   var $app = document.getElementById("app");
   var $toast = document.getElementById("toast");
   var S = {
-    user: null, profile: null, tab: "calendar", view: null,
+    user: null, profile: null, tab: location.hash === "#lessons" ? "lessons" : "calendar", view: null,
     reflections: {}, attFilter: null, attSession: null, groups: [], lessons: [], sessions: [], bookings: [], profiles: [], memberships: [],
     mySessions: [], myBookings: {}, filter: "all", typeFilter: "all", showPast: false, authMode: "in", detail: null, lessonEdit: null, personEdit: null,
     shared: [], files: [], shares: [], roster: [], rosterSession: null, lessonView: null, memberTab: "sessions", delSession: null
@@ -669,7 +669,7 @@
   /* ---------- start ---------- */
   function onSession(session) {
     S.user = session ? session.user : null;
-    if (!S.user) { S.profile = null; S.detail = null; S.tab = "calendar"; return renderAuth(); }
+    if (!S.user) { S.profile = null; S.detail = null; S.tab = location.hash === "#lessons" ? "lessons" : "calendar"; return renderAuth(); }
     load().then(render).catch(function (e) { fail(e); renderAuth(); });
   }
   sb.auth.onAuthStateChange(function (event, session) {
