@@ -302,16 +302,19 @@
   }
 
   /* ---------- dispatch (paging feed) ---------- */
-  var TEAMS = { CU: ["Cummins", "#0e9f8e"], CO: ["CO", "#8a5cf6"], EL: ["EL", "#e0752b"], SB: ["SB", "#2f7fe0"], PK: ["PK", "#d6457f"], PL: ["Port Lincoln", "#64748b"] };
+  var TEAMS = { CD: ["Ceduna", "#94a3b8"], CU: ["Cummins", "#0e9f8e"], CO: ["CO", "#8a5cf6"], EL: ["EL", "#e0752b"], SB: ["SB", "#2f7fe0"], PK: ["PK", "#d6457f"], PL: ["Port Lincoln", "#64748b"] };
   var EXTRA = ["#b45309", "#15803d", "#be123c", "#0369a1", "#7c3aed", "#4d7c0f"];
   function codeOf(j) { return String(j.unit || "").replace(/\d+$/, ""); }
+  // Port Lincoln (PL) and Ceduna (CD) crews are hidden when the page loads; the button in the tile shows them.
+  var HIDE_CREWS = { PL: "Port Lincoln", CD: "Ceduna" }, showHidden = false, dCache = null;
   function loadDispatch() {
     var t = todayIso(), from = addDays(t, -6);
     return sb.from("paging_jobs").select("job_key,job_date,job_time,locality,job_type,priority,unit").gte("job_date", from).lte("job_date", t).order("job_time")
-      .then(function (r) { if (r.error) throw r.error; drawDispatch(r.data || [], from, t); })
+      .then(function (r) { if (r.error) throw r.error; dCache = [r.data || [], from, t]; drawDispatch(dCache[0], from, t); })
       .catch(function (e) { $("dBody").innerHTML = '<p class="err">Could not load the dispatch feed: ' + esc(e.message || e) + "</p>"; });
   }
-  function drawDispatch(jobs, from, t) {
+  function drawDispatch(all, from, t) {
+    var jobs = showHidden ? all : all.filter(function (j) { return !HIDE_CREWS[codeOf(j)]; }), hidden = all.length - jobs.length;
     var colour = {}, ei = 0;
     function team(c) { if (TEAMS[c]) return TEAMS[c]; if (!colour[c]) colour[c] = [c || "?", EXTRA[ei++ % EXTRA.length]]; return colour[c]; }
     var towns = {}, used = {}, p1 = 0;
@@ -331,9 +334,15 @@
         (iso === t ? '<div class="nowl" style="left:' + (nowM / 14.4).toFixed(2) + '%"></div>' : "") + "</div></div>";
     }
     html += '</div><div class="tl">' + Object.keys(used).map(function (c) { var tm = team(c); return '<span style="--tc:' + tm[1] + '"><i></i>' + esc(tm[0]) + "</span>"; }).join("") + "<span>Shaded = before 6am / after 6pm</span></div>";
+    if (showHidden || hidden) html += '<div class="chips"><button type="button" class="chip2" id="dToggle" aria-pressed="' + showHidden + '">' +
+      (showHidden ? "Hide Port Lincoln and Ceduna crews" : "Show Port Lincoln and Ceduna crews (" + hidden + (hidden === 1 ? " job)" : " jobs)")) + "</button></div>";
     html += '<p class="note">From the SAAS paging feed (postcodes 5605, 5606, 5607, 5631), captured once a day at about 9am, so today may be incomplete. Tap the full screen for job details.</p>';
     $("dBody").innerHTML = html;
   }
+  $("dBody").addEventListener("click", function (e) {
+    if (!e.target.closest("#dToggle") || !dCache) return;
+    showHidden = !showHidden; drawDispatch(dCache[0], dCache[1], dCache[2]);
+  });
 
   /* ---------- weather ---------- */
   var TOWNS = [
