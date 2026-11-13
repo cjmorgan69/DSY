@@ -78,6 +78,17 @@
 .legend { display:flex; flex-wrap:wrap; gap:.3rem 1rem; font-size:.8rem; color:var(--muted); }
 .legend i { display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:.3rem; vertical-align:-1px; }
 
+/* shortcut tiles */
+.shorts { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem; }
+.short { display:flex; align-items:center; gap:.85rem; padding:.9rem 1rem; border-radius:18px; background:var(--surface); border:1px solid var(--line); color:var(--ink); text-decoration:none;
+  box-shadow:0 1px 2px rgba(20,40,30,.05),0 8px 22px -16px rgba(20,40,30,.25); transition:transform .15s ease, border-color .15s ease; }
+.short:hover { border-color:var(--brand); transform:translateY(-1px); }
+.short .si { width:46px; height:46px; flex:none; border-radius:14px; display:grid; place-items:center; font-size:1.5rem; background:var(--brand-soft); }
+.short b { display:block; font-family:var(--font-head); font-size:1.1rem; }
+.short span { font-size:.85rem; color:var(--muted); }
+.short .go { margin-left:auto; color:var(--brand); font-size:1.2rem; }
+@media (prefers-reduced-motion:reduce) { .short { transition:none; } .short:hover { transform:none; } }
+
 /* tasks */
 .tadd { display:flex; flex-wrap:wrap; gap:.4rem; }
 .tadd input { font:inherit; padding:.5rem .7rem; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink); min-width:0; }
@@ -189,6 +200,11 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
       <button class="hbtn" id="refresh" type="button">↻ Refresh</button>
     </div>
   </header>
+
+  <nav class="shorts" aria-label="Shortcuts">
+    <a class="short" href="/microlearning/"><span class="si" aria-hidden="true">📱</span><div><b>Microlearning</b><span>AO, Paramedic and RN modules</span></div><span class="go" aria-hidden="true">→</span></a>
+    <a class="short" href="/training/#lessons"><span class="si" aria-hidden="true">📚</span><div><b>Lessons</b><span id="lessonCount">Lesson library in the training app</span></div><span class="go" aria-hidden="true">→</span></a>
+  </nav>
 
   <div class="grid">
     <div class="col">
@@ -490,6 +506,13 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
     }
   });
 
+  /* ---------- shortcut tile: lesson count ---------- */
+  function loadLessonCount() {
+    return sb.from("lessons").select("id", { count: "exact", head: true }).then(function (r) {
+      if (!r.error && r.count != null) $("lessonCount").textContent = r.count + " lessons in the library";
+    });
+  }
+
   /* ---------- training sessions ---------- */
   function hasLesson(s) { return !!s.lesson_id || (Array.isArray(s.lesson_ids) && s.lesson_ids.length > 0); }
   function loadSessions() {
@@ -619,7 +642,7 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
 
   /* ---------- start and refresh ---------- */
   function stamp() { $("updated").textContent = "Updated " + new Intl.DateTimeFormat("en-AU", { timeZone: TZ, hour: "numeric", minute: "2-digit" }).format(new Date()); }
-  function loadAll() { stamp(); loadRoster(); loadCrew(); loadTasks(); loadSessions(); loadDispatch(); loadWeather(); }
+  function loadAll() { stamp(); loadRoster(); loadCrew(); loadTasks(); loadLessonCount(); loadSessions(); loadDispatch(); loadWeather(); }
   drawTowns();
   (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve({})).then(function (me) {
     if (me && me.name) { window.__name = String(me.name).split(" ")[0]; tick(); }
