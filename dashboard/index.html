@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<script src="/shared/gate.js" data-level="leader"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>DSY Dashboard</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/training/theme.css?v=20261017a">
+<style>
+/* Lead instructor's dashboard. Live data only, nothing stored in this file:
+   roster coverage = each cluster's Apps Script "coverage" request (same as /modules/rosters/operations/),
+   training sessions = Supabase public.sessions + groups, dispatch = Supabase public.paging_jobs (leaders),
+   weather = Open-Meteo (no key). Google Calendar link is kept on this device only. */
+:root { --road:#34424f; --road-edge:#7d8b98; --night:rgba(10,25,60,.22); --g:#2e9d5f; --y:#e3a712; --r:#c9483a; --none:color-mix(in srgb,var(--muted) 25%,transparent); }
+@media (prefers-color-scheme: dark) { :root { --road:#26313b; --road-edge:#56626f; --night:rgba(0,0,0,.3); --g:#4cc27f; --y:#f0bd3a; --r:#e8715f; } }
+.dash { width:min(1220px,100%); margin:0 auto; padding:1rem 16px 3rem; display:flex; flex-direction:column; gap:1rem; }
+.hero { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; padding:1.1rem 1.25rem; border-radius:20px;
+  color:#fff; background:linear-gradient(135deg,#1f5b43 0%,#174a36 55%,#2f6f8f 130%); box-shadow:0 10px 30px -18px rgba(20,40,30,.6); }
+.hero .brand-icon { width:46px; height:46px; background:#fff; }
+.hero .brand-icon img { width:40px; height:40px; border-radius:50%; }
+.hero h1 { font-size:1.45rem; }
+.hero .brand p { color:rgba(255,255,255,.78); }
+.clock { text-align:right; }
+.clock b { display:block; font-family:var(--font-head); font-size:clamp(2rem,6vw,2.8rem); line-height:1; letter-spacing:-.03em; }
+.clock span { color:rgba(255,255,255,.8); font-size:.95rem; }
+.hero .acts { display:flex; flex-wrap:wrap; gap:.5rem; width:100%; }
+.hbtn { display:inline-flex; align-items:center; gap:.4rem; padding:.5rem .95rem; border-radius:999px; background:rgba(255,255,255,.14); color:#fff; text-decoration:none; border:1px solid rgba(255,255,255,.28); font-size:.92rem; }
+.hbtn:hover { background:rgba(255,255,255,.24); }
+.hbtn.light { background:#fff; color:#1f5b43; border-color:#fff; font-weight:600; }
+.hbtn.tiny { padding:.5rem .7rem; }
+.grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:1rem; }
+.card { grid-column:span 12; background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:1rem 1.1rem; display:flex; flex-direction:column; gap:.8rem; min-width:0;
+  box-shadow:0 1px 2px rgba(20,40,30,.05),0 8px 22px -16px rgba(20,40,30,.25); }
+@media (min-width:900px) { .w7 { grid-column:span 7; } .w5 { grid-column:span 5; } .w8 { grid-column:span 8; } .w4 { grid-column:span 4; } }
+.ch { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.3rem .8rem; }
+.ch h2 { font-size:1.2rem; }
+.ch a { font-size:.88rem; color:var(--brand); }
+.note { font-size:.8rem; color:var(--muted); }
+.err { color:var(--danger); font-size:.9rem; }
+.stats { display:flex; flex-wrap:wrap; gap:.6rem; }
+.stat { flex:1 1 110px; background:var(--brand-soft); border-radius:12px; padding:.55rem .75rem; }
+.stat b { display:block; font-family:var(--font-head); font-size:1.5rem; line-height:1.1; }
+.stat span { font-size:.8rem; color:var(--muted); }
+.stat.red { background:color-mix(in srgb,var(--r) 14%,var(--surface)); } .stat.yel { background:color-mix(in srgb,var(--y) 18%,var(--surface)); }
+.chips { display:flex; flex-wrap:wrap; gap:.35rem; }
+.chip2 { border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; padding:.25rem .7rem; font-size:.82rem; }
+.chip2[aria-pressed="true"] { background:var(--brand); color:var(--brand-ink); border-color:var(--brand); }
+.skel { height:120px; border-radius:12px; background:linear-gradient(90deg,var(--line),var(--bg),var(--line)); background-size:200% 100%; animation:sk 1.4s infinite linear; opacity:.6; }
+@keyframes sk { to { background-position:-200% 0; } }
+@media (prefers-reduced-motion:reduce) { .skel { animation:none; } }
+
+/* roster heat strip */
+.heat { overflow-x:auto; }
+.heat table { border-collapse:separate; border-spacing:2px; width:100%; min-width:640px; font-size:.78rem; }
+.heat th { font-weight:600; color:var(--muted); text-align:left; white-space:nowrap; padding-right:.4rem; }
+.heat thead th { text-align:center; font-weight:500; padding:0; }
+.heat td { height:22px; border-radius:4px; text-align:center; color:#fff; font-weight:700; font-size:.72rem; }
+.heat td.g { background:var(--g); } .heat td.y { background:var(--y); color:#3b2c00; } .heat td.r { background:var(--r); } .heat td.n { background:var(--none); }
+.heat td.now, .heat thead th.now { box-shadow:inset 0 0 0 2px var(--ink); }
+.heat thead th.now { color:var(--ink); font-weight:800; border-radius:4px; }
+.heat .cl { font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding-top:.5rem; }
+.legend { display:flex; flex-wrap:wrap; gap:.3rem 1rem; font-size:.8rem; color:var(--muted); }
+.legend i { display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:.3rem; vertical-align:-1px; }
+
+/* sessions */
+.banner { border-radius:14px; padding:.8rem .95rem; background:var(--brand-soft); display:flex; flex-direction:column; gap:.15rem; }
+.banner b { font-family:var(--font-head); font-size:1.15rem; }
+.banner.warn { background:color-mix(in srgb,var(--y) 20%,var(--surface)); border:1px solid color-mix(in srgb,var(--y) 45%,transparent); }
+.banner.warn a { color:inherit; font-weight:600; }
+.cal { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.cal .dn { font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); text-align:center; }
+.cal .d { min-height:46px; border-radius:9px; background:var(--bg); padding:3px 4px; display:flex; flex-direction:column; gap:2px; font-size:.75rem; }
+.cal .d.past { opacity:.45; } .cal .d.today { box-shadow:inset 0 0 0 2px var(--brand); }
+.cal .d em { font-style:normal; color:var(--muted); font-size:.7rem; }
+.cal .d i { display:block; height:6px; border-radius:3px; background:var(--brand); }
+.cal .d i.nl { background:var(--y); }
+.slist { display:flex; flex-direction:column; }
+.slist li { display:grid; grid-template-columns:52px 1fr auto; gap:.6rem; align-items:center; padding:.55rem 0; border-top:1px solid var(--line); }
+.slist .dt { text-align:center; border-radius:10px; background:var(--brand-soft); padding:.2rem 0; line-height:1.1; }
+.slist .dt b { display:block; font-family:var(--font-head); font-size:1.2rem; } .slist .dt span { font-size:.68rem; text-transform:uppercase; color:var(--muted); }
+.slist .t { min-width:0; } .slist .t b { display:block; } .slist .t span { font-size:.82rem; color:var(--muted); }
+.tag { font-size:.72rem; font-weight:700; border-radius:999px; padding:.15rem .55rem; white-space:nowrap; }
+.tag.ok { background:color-mix(in srgb,var(--g) 18%,var(--surface)); color:var(--ok); }
+.tag.need { background:color-mix(in srgb,var(--y) 25%,var(--surface)); color:color-mix(in srgb,var(--y) 40%,var(--ink)); }
+
+/* weather */
+.now-w { display:flex; align-items:center; gap:.8rem; }
+.now-w .ic { font-size:2.6rem; line-height:1; }
+.now-w b { font-family:var(--font-head); font-size:2rem; line-height:1; }
+.wdays { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px; }
+.wd { background:var(--bg); border-radius:12px; padding:.5rem .2rem; text-align:center; display:flex; flex-direction:column; gap:.15rem; align-items:center; font-size:.78rem; }
+.wd.today { background:var(--brand-soft); box-shadow:inset 0 0 0 1.5px var(--brand); }
+.wd .n { font-weight:700; } .wd .ic { font-size:1.5rem; line-height:1.2; }
+.wd .hi { font-weight:700; font-size:.95rem; } .wd .lo { color:var(--muted); }
+.wd .rn { color:#2f6f8f; } .wd .wn { color:var(--muted); font-size:.7rem; }
+@media (prefers-color-scheme: dark) { .wd .rn { color:#7cc0e0; } }
+.wd.hot { box-shadow:inset 0 0 0 1.5px var(--r); }
+.wd .rb { width:70%; height:4px; border-radius:2px; background:var(--line); overflow:hidden; } .wd .rb i { display:block; height:100%; background:#2f6f8f; }
+
+/* dispatch roads */
+.roads { display:flex; flex-direction:column; gap:6px; }
+.rrow { display:grid; grid-template-columns:62px 1fr; gap:.5rem; align-items:center; }
+.rrow .lab { font-size:.78rem; line-height:1.15; } .rrow .lab b { display:block; font-size:.9rem; } .rrow .lab span { color:var(--muted); }
+.road { position:relative; height:30px; background:var(--road); border-radius:8px; border-top:2px dashed var(--road-edge); border-bottom:2px dashed var(--road-edge); overflow:hidden; }
+.road .nt { position:absolute; top:0; bottom:0; background:var(--night); }
+.road .q { position:absolute; inset:0; display:grid; place-items:center; color:var(--road-edge); font-size:.75rem; }
+.road .ab { position:absolute; top:50%; transform:translate(-50%,-50%); width:22px; height:22px; border-radius:50%; background:var(--tc); border:2px solid #fff; font-size:12px; line-height:18px; text-align:center; }
+.road .nowl { position:absolute; top:0; bottom:0; width:2px; background:var(--y); }
+.raxis { display:grid; grid-template-columns:62px 1fr; gap:.5rem; font-size:.7rem; color:var(--muted); }
+.raxis div:last-child { display:flex; justify-content:space-between; }
+.tl { display:flex; flex-wrap:wrap; gap:.3rem .8rem; font-size:.78rem; color:var(--muted); }
+.tl i { display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--tc); margin-right:.3rem; }
+
+.foot { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem; font-size:.8rem; color:var(--muted); }
+.foot a { color:var(--muted); }
+dialog { border:1px solid var(--line); border-radius:16px; background:var(--surface); color:var(--ink); max-width:min(440px,calc(100vw - 32px)); padding:1.1rem; }
+dialog::backdrop { background:rgba(0,0,0,.4); }
+dialog input { width:100%; padding:.6rem .75rem; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink); margin:.6rem 0; }
+dialog .row button { border-radius:999px; padding:.5rem 1rem; border:1px solid var(--line); background:var(--surface); color:var(--ink); }
+dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border-color:var(--brand); }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+<main class="dash">
+  <header class="hero">
+    <a class="brand" href="/" style="text-decoration:none;color:inherit">
+      <div class="brand-icon"><img src="/microlearning/shared/dsy-logo.png" alt=""></div>
+      <div><h1 id="hello">DSY Dashboard</h1><p>Eyre Peninsula ambulance teams · today at a glance</p></div>
+    </a>
+    <div class="clock" aria-live="off"><b id="time">--:--</b><span id="date"></span></div>
+    <div class="acts">
+      <a class="hbtn light" href="/">DSY home</a>
+      <a class="hbtn" id="gcal" href="https://calendar.google.com/calendar/r" target="_blank" rel="noopener">📅 My Google Calendar</a>
+      <button class="hbtn tiny" id="gcalSet" type="button" aria-label="Change the Google Calendar link">⚙︎</button>
+      <a class="hbtn" href="/training/">Training app</a>
+      <button class="hbtn" id="refresh" type="button">↻ Refresh</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <section class="card w7" aria-labelledby="hRoster">
+      <div class="ch"><h2 id="hRoster">Roster today</h2><a href="/modules/rosters/operations/">Operations overview →</a></div>
+      <div class="stats" id="rStats"></div>
+      <div class="chips" id="rFilter" role="group" aria-label="Clusters"></div>
+      <div class="heat" id="rHeat"><div class="skel"></div></div>
+      <div class="legend"><span><i style="background:var(--g)"></i>2 or more crew</span><span><i style="background:var(--y)"></i>1 crew</span><span><i style="background:var(--r)"></i>no crew</span><span>Outlined = this hour</span></div>
+      <p class="note" id="rNote"></p>
+    </section>
+
+    <section class="card w5" aria-labelledby="hTrain">
+      <div class="ch"><h2 id="hTrain">Training sessions</h2><a href="/training/">Open training app →</a></div>
+      <div id="tBody"><div class="skel"></div></div>
+    </section>
+
+    <section class="card w7" aria-labelledby="hDisp">
+      <div class="ch"><h2 id="hDisp">Dispatch · last 7 days</h2><a href="/dispatch/">Full dispatch screen →</a></div>
+      <div id="dBody"><div class="skel"></div></div>
+    </section>
+
+    <section class="card w5" aria-labelledby="hWx">
+      <div class="ch"><h2 id="hWx">Weather · next 7 days</h2><a id="wxMore" href="https://www.bom.gov.au/sa/forecasts/eyre-peninsula.shtml" target="_blank" rel="noopener">BOM forecast →</a></div>
+      <div class="chips" id="wxTowns" role="group" aria-label="Town"></div>
+      <div id="wxBody"><div class="skel"></div></div>
+      <p class="note">Forecast from Open-Meteo. Check the BOM and CFS for warnings and fire danger.</p>
+    </section>
+  </div>
+
+  <footer class="foot"><span id="updated"></span><span><a href="/">dsytraining.com</a> · <a href="/signin/?out=1">Sign out</a></span></footer>
+</main>
+
+<dialog id="gDlg">
+  <form method="dialog">
+    <h3>Your Google Calendar link</h3>
+    <p class="small muted" style="margin-top:.4rem">Paste the link you open your calendar with (for example a shared calendar's link). It is kept on this device only. Leave it empty for your normal Google Calendar.</p>
+    <input id="gUrl" type="url" placeholder="https://calendar.google.com/calendar/r" autocomplete="off">
+    <div class="row"><button class="pri" value="save">Save</button><button value="cancel">Cancel</button></div>
+  </form>
+</dialog>
+
+<script>
+(function () {
+  "use strict";
+  var TZ = "Australia/Adelaide";
+  var SB_URL = "https://ekaodnbnpsuayvmxvxbm.supabase.co";
+  var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW9kbmJucHN1YXl2bXh2eGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzIxMzQsImV4cCI6MjEwNzM0ODEzNH0.q3lTeCQAQjYeMUNl6lwsrxUAsTijJikABW4Ua2N4bmI";
+  var sb = window.supabase.createClient(SB_URL, SB_KEY);
+  var $ = function (id) { return document.getElementById(id); };
+  var DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function parts(d) {
+    var o = {}; new Intl.DateTimeFormat("en-AU", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+      .formatToParts(d || new Date()).forEach(function (p) { o[p.type] = p.value; }); return o;
+  }
+  function todayIso() { var p = parts(); return p.year + "-" + p.month + "-" + p.day; }
+  function addDays(iso, n) { var d = new Date(iso + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+  function dOf(iso) { return new Date(iso + "T12:00:00Z"); }
+  function nice(iso) { var d = dOf(iso); return DAYS[d.getUTCDay()] + " " + d.getUTCDate() + " " + MON[d.getUTCMonth()]; }
+  function t12(t) { var p = String(t).split(":"), h = +p[0], m = p[1]; return (h % 12 || 12) + (m === "00" ? "" : ":" + m) + (h < 12 ? "am" : "pm"); }
+  function mins(t) { var p = String(t).split(":"); return +p[0] * 60 + +p[1]; }
+
+  /* ---------- clock ---------- */
+  function tick() {
+    var now = new Date(), p = parts(now);
+    $("time").textContent = new Intl.DateTimeFormat("en-AU", { timeZone: TZ, hour: "numeric", minute: "2-digit", hour12: true }).format(now).replace(" ", " ");
+    $("date").textContent = new Intl.DateTimeFormat("en-AU", { timeZone: TZ, weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(now);
+    var h = +p.hour, greet = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+    $("hello").textContent = greet + (window.__name ? ", " + window.__name : "");
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ---------- Google Calendar link ---------- */
+  var GKEY = "dsy-dash-gcal";
+  function setG() { var u = store(GKEY); $("gcal").href = u || "https://calendar.google.com/calendar/r"; }
+  setG();
+  $("gcalSet").addEventListener("click", function () { $("gUrl").value = store(GKEY) || ""; $("gDlg").showModal(); });
+  $("gDlg").addEventListener("close", function () {
+    if ($("gDlg").returnValue !== "save") return;
+    var v = $("gUrl").value.trim();
+    if (v && !/^https:\/\//i.test(v)) { alert("Please paste a link that starts with https://"); return; }
+    store(GKEY, v || null); setG();
+  });
+
+  /* ---------- roster coverage ---------- */
+  var CLUSTERS = [
+    { key: "lowereyre", name: "Lower Eyre", url: "https://script.google.com/macros/s/AKfycbxEboPS9reZI5OpUMdlriag0QeAJzIyXFZ2Jy0z_4qBJLEK054R5bDcJgyWAW2YSP6l/exec" },
+    { key: "centraleyre", name: "Central Eyre", url: "https://script.google.com/macros/s/AKfycbwbeUGYW4VaBC8i0k228ASyRQt-B4_7pKKr5F3O5L-CrCmTH0hnx48pN7QTqkjXrfwRDA/exec" },
+    { key: "westcoast", name: "West Coast", url: "https://script.google.com/macros/s/AKfycbxrcfdjF7kUZQBkHuw2mqrYXhqz54VrK9Agv-zzOyBG8BbAbC-lrDkY6zGK91VAwB_z/exec" }
+  ];
+  var EXCLUDED = ["summer bay"];
+  var RF = "dsy-dash-cluster", rFilter = store(RF) || "all", rData = null;
+  function opDate() { var p = parts(); var d = p.year + "-" + p.month + "-" + p.day; return +p.hour < 8 ? addDays(d, -1) : d; }
+  function loadRoster() {
+    var date = opDate();
+    return Promise.all(CLUSTERS.map(function (c) {
+      var u = new URL(c.url); u.searchParams.set("action", "coverage"); u.searchParams.set("date", date); u.searchParams.set("_", Date.now());
+      var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 30000);
+      return fetch(u.toString(), { redirect: "follow", credentials: "omit", signal: ctl.signal })
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (d) { if (!d.ok || !Array.isArray(d.teams) || !Array.isArray(d.hours)) throw new Error(d.error || "unexpected reply"); return { c: c, d: d }; })
+        .catch(function (e) { return { c: c, err: e.name === "AbortError" ? "timed out" : e.message }; })
+        .finally(function () { clearTimeout(to); });
+    })).then(function (res) {
+      var ok = res.filter(function (r) { return r.d; });
+      if (!ok.length) { $("rHeat").innerHTML = '<p class="err">Could not load the rosters: ' + esc(res.map(function (r) { return r.c.name + " " + r.err; }).join("; ")) + "</p>"; $("rStats").innerHTML = ""; return; }
+      var hours = ok[0].d.hours, teams = [];
+      ok.forEach(function (r) {
+        var by = {}; r.d.hours.forEach(function (h) { by[h.label + "|" + h.calendarDate] = h.counts; });
+        r.d.teams.forEach(function (t, i) {
+          if (EXCLUDED.indexOf(String(t.name || "").trim().toLowerCase()) > -1) return;
+          teams.push({ cluster: r.c, name: t.name, counts: hours.map(function (h) { var c = by[h.label + "|" + h.calendarDate]; return c ? c[i] : null; }) });
+        });
+      });
+      rData = { hours: hours, teams: teams, problems: res.filter(function (r) { return r.err; }), date: date };
+      drawRoster();
+    });
+  }
+  function drawRoster() {
+    if (!rData) return;
+    var now = Date.now(), ni = -1;
+    rData.hours.forEach(function (h, i) { if (Date.parse(h.start) <= now && now < Date.parse(h.end)) ni = i; });
+    var fb = $("rFilter"); fb.innerHTML = "";
+    [{ key: "all", name: "All clusters" }].concat(CLUSTERS).forEach(function (c) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "chip2"; b.textContent = c.name;
+      b.setAttribute("aria-pressed", rFilter === c.key ? "true" : "false");
+      b.addEventListener("click", function () { rFilter = c.key; store(RF, c.key); drawRoster(); }); fb.appendChild(b);
+    });
+    var teams = rData.teams.filter(function (t) { return rFilter === "all" || t.cluster.key === rFilter; });
+    var g = 0, y = 0, r = 0, gapH = 0;
+    teams.forEach(function (t) {
+      var c = ni > -1 ? t.counts[ni] : null; if (c != null) { if (c >= 2) g++; else if (c === 1) y++; else r++; }
+      t.counts.forEach(function (v, i) { if (v === 0 && i >= Math.max(ni, 0)) gapH++; });
+    });
+    $("rStats").innerHTML = ni > -1
+      ? '<div class="stat"><b>' + g + '</b><span>teams fully crewed now</span></div><div class="stat yel"><b>' + y + '</b><span>one crew now</span></div><div class="stat red"><b>' + r + '</b><span>no crew now</span></div><div class="stat"><b>' + gapH + '</b><span>uncovered team-hours left today</span></div>'
+      : "";
+    var html = "<table><thead><tr><th></th>";
+    rData.hours.forEach(function (h, i) { html += '<th class="' + (i === ni ? "now" : "") + '">' + (i % 2 === 0 || i === ni ? esc(String(+h.label.slice(0, 2))) : "") + "</th>"; });
+    html += "</tr></thead><tbody>";
+    var last = null;
+    teams.forEach(function (t) {
+      if (rFilter === "all" && t.cluster.key !== last) { html += '<tr><th class="cl" colspan="' + (rData.hours.length + 1) + '">' + esc(t.cluster.name) + "</th></tr>"; last = t.cluster.key; }
+      html += "<tr><th>" + esc(t.name) + "</th>";
+      t.counts.forEach(function (c, i) {
+        var cls = c == null ? "n" : c >= 2 ? "g" : c === 1 ? "y" : "r";
+        html += '<td class="' + cls + (i === ni ? " now" : "") + '" title="' + esc(t.name + " " + rData.hours[i].label + ": " + (c == null ? "no data" : c + " crew")) + '">' + (c ? c : "") + "</td>";
+      });
+      html += "</tr>";
+    });
+    $("rHeat").innerHTML = html + "</tbody></table>";
+    var note = "Operational day " + nice(rData.date) + ", 8am to 8am. Numbers are crew booked each hour.";
+    if (rData.problems.length) note += " Not loaded: " + rData.problems.map(function (p) { return p.c.name + " (" + p.err + ")"; }).join(", ") + ".";
+    $("rNote").textContent = note;
+  }
+
+  /* ---------- training sessions ---------- */
+  function hasLesson(s) { return !!s.lesson_id || (Array.isArray(s.lesson_ids) && s.lesson_ids.length > 0); }
+  function loadSessions() {
+    var t = todayIso(), end = addDays(t, 60);
+    return Promise.all([
+      sb.from("sessions").select("id,group_id,session_date,start_time,end_time,location,session_type,topic,facilitator_name,lesson_id,lesson_ids").gte("session_date", t).lte("session_date", end).order("session_date").order("start_time"),
+      sb.from("groups").select("id,name")
+    ]).then(function (r) {
+      if (r[0].error) throw r[0].error;
+      var gn = {}; (r[1].data || []).forEach(function (g) { gn[g.id] = g.name; });
+      drawSessions(r[0].data || [], gn, t);
+    }).catch(function (e) { $("tBody").innerHTML = '<p class="err">Could not load sessions: ' + esc(e.message || e) + "</p>"; });
+  }
+  function drawSessions(rows, gn, t) {
+    var nowM = mins(parts().hour + ":" + parts().minute);
+    rows = rows.filter(function (s) { return s.session_date > t || mins(s.end_time || s.start_time) > nowM; });
+    var html = "";
+    if (!rows.length) { $("tBody").innerHTML = '<div class="banner"><b>No sessions booked in the next 2 months</b><span class="small">Add them in the training app.</span></div>'; return; }
+    var n = rows[0], days = Math.round((dOf(n.session_date) - dOf(t)) / 864e5);
+    var when = days === 0 ? "Tonight" : days === 1 ? "Tomorrow" : "In " + days + " days";
+    if (days === 0 && mins(n.start_time) < 17 * 60) when = "Today";
+    html += '<div class="banner"><span class="eyebrow">Next session · ' + when + '</span><b>' + esc(gn[n.group_id] || "Team") + (n.topic ? " · " + esc(n.topic) : "") + "</b>" +
+      '<span class="small">' + nice(n.session_date) + ", " + t12(n.start_time) + (n.end_time ? " to " + t12(n.end_time) : "") + (n.location ? " · " + esc(n.location) : "") + " · " + (n.session_type === "team" ? "Team-led" : "Leader-led") +
+      (n.facilitator_name ? " · " + esc(n.facilitator_name) : "") + "</span>" + (hasLesson(n) ? "" : '<span class="small"><b style="font-size:inherit;font-family:inherit">No lesson yet</b>: pick one in the training app.</span>') + "</div>";
+    var soon = rows.filter(function (s) { return s.session_date <= addDays(t, 27); }), need = soon.filter(function (s) { return !hasLesson(s); });
+    if (need.length) html += '<div class="banner warn"><span><b style="font-size:1rem">' + need.length + " of " + soon.length + "</b> sessions in the next 4 weeks have no lesson. " +
+      '<a href="/training/">Allocate lessons →</a></span></div>';
+    else if (soon.length) html += '<div class="banner"><span class="small">Every session in the next 4 weeks has a lesson. 👍</span></div>';
+    // 4-week calendar from this week's Monday
+    var d0 = dOf(t), k = (d0.getUTCDay() + 6) % 7, mon = addDays(t, -k);
+    html += '<div class="cal">' + ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(function (x) { return '<div class="dn">' + x + "</div>"; }).join("");
+    for (var i = 0; i < 28; i++) {
+      var iso = addDays(mon, i), dd = dOf(iso), on = rows.filter(function (s) { return s.session_date === iso; });
+      html += '<div class="d' + (iso < t ? " past" : "") + (iso === t ? " today" : "") + '" title="' + esc(on.map(function (s) { return (gn[s.group_id] || "") + " " + t12(s.start_time) + (hasLesson(s) ? "" : " (no lesson)"); }).join("\n")) + '"><em>' +
+        dd.getUTCDate() + (dd.getUTCDate() === 1 || i === 0 ? " " + MON[dd.getUTCMonth()] : "") + "</em>" + on.map(function (s) { return '<i class="' + (hasLesson(s) ? "" : "nl") + '"></i>'; }).join("") + "</div>";
+    }
+    html += '</div><div class="legend"><span><i style="background:var(--brand)"></i>lesson set</span><span><i style="background:var(--y)"></i>needs a lesson</span></div>';
+    html += '<ul class="slist">' + rows.slice(0, 6).map(function (s) {
+      var dd = dOf(s.session_date);
+      return '<li><div class="dt"><span>' + DAYS[dd.getUTCDay()] + "</span><b>" + dd.getUTCDate() + "</b><span>" + MON[dd.getUTCMonth()] + '</span></div><div class="t"><b>' + esc(gn[s.group_id] || "Team") + (s.topic ? " · " + esc(s.topic) : "") +
+        "</b><span>" + t12(s.start_time) + " · " + (s.session_type === "team" ? "Team-led" : "Leader-led") + (s.location ? " · " + esc(s.location) : "") + "</span></div>" +
+        (hasLesson(s) ? '<span class="tag ok">Lesson set</span>' : '<span class="tag need">Needs lesson</span>') + "</li>";
+    }).join("") + "</ul>";
+    if (rows.length > 6) html += '<p class="note">+ ' + (rows.length - 6) + ' more in the next 2 months.</p>';
+    $("tBody").innerHTML = html;
+  }
+
+  /* ---------- dispatch (paging feed) ---------- */
+  var TEAMS = { CU: ["Cummins", "#0e9f8e"], CO: ["CO", "#8a5cf6"], EL: ["EL", "#e0752b"], SB: ["SB", "#2f7fe0"], PK: ["PK", "#d6457f"], PL: ["Port Lincoln", "#64748b"] };
+  var EXTRA = ["#b45309", "#15803d", "#be123c", "#0369a1", "#7c3aed", "#4d7c0f"];
+  function codeOf(j) { return String(j.unit || "").replace(/\d+$/, ""); }
+  function loadDispatch() {
+    var t = todayIso(), from = addDays(t, -6);
+    return sb.from("paging_jobs").select("job_key,job_date,job_time,locality,job_type,priority,unit").gte("job_date", from).lte("job_date", t).order("job_time")
+      .then(function (r) { if (r.error) throw r.error; drawDispatch(r.data || [], from, t); })
+      .catch(function (e) { $("dBody").innerHTML = '<p class="err">Could not load the dispatch feed: ' + esc(e.message || e) + "</p>"; });
+  }
+  function drawDispatch(jobs, from, t) {
+    var colour = {}, ei = 0;
+    function team(c) { if (TEAMS[c]) return TEAMS[c]; if (!colour[c]) colour[c] = [c || "?", EXTRA[ei++ % EXTRA.length]]; return colour[c]; }
+    var towns = {}, used = {}, p1 = 0;
+    jobs.forEach(function (j) { towns[j.locality || "No town"] = (towns[j.locality || "No town"] || 0) + 1; used[codeOf(j)] = 1; if (+j.priority === 1) p1++; });
+    var top = Object.keys(towns).sort(function (a, b) { return towns[b] - towns[a]; })[0];
+    var todayN = jobs.filter(function (j) { return j.job_date === t; }).length;
+    var html = '<div class="stats"><div class="stat"><b>' + jobs.length + '</b><span>jobs in 7 days</span></div><div class="stat"><b>' + todayN + '</b><span>today so far</span></div><div class="stat red"><b>' + p1 + '</b><span>priority 1</span></div>' +
+      (top ? '<div class="stat"><b style="font-size:1.1rem">' + esc(top) + '</b><span>busiest town (' + towns[top] + ")</span></div>" : "") + "</div>";
+    html += '<div class="raxis"><div></div><div><span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>12am</span></div></div><div class="roads">';
+    var p = parts(), nowM = +p.hour * 60 + +p.minute;
+    for (var i = 0; i < 7; i++) {
+      var iso = addDays(from, i), dd = dOf(iso), js = jobs.filter(function (j) { return j.job_date === iso; });
+      html += '<div class="rrow"><div class="lab"><b>' + (iso === t ? "Today" : DAYS[dd.getUTCDay()]) + "</b><span>" + dd.getUTCDate() + " " + MON[dd.getUTCMonth()] + " · " + js.length + '</span></div><div class="road">' +
+        '<div class="nt" style="left:0;width:25%"></div><div class="nt" style="left:75%;width:25%"></div>' +
+        (js.length ? "" : '<div class="q">quiet day</div>') +
+        js.map(function (j) { var tm = team(codeOf(j)); return '<span class="ab" style="left:' + (mins(j.job_time) / 14.4).toFixed(2) + "%;--tc:" + tm[1] + '" title="' + esc(String(j.job_time).slice(0, 5) + " " + j.job_type + " · " + (j.locality || "") + " · P" + j.priority + " · " + j.unit) + '">🚑</span>'; }).join("") +
+        (iso === t ? '<div class="nowl" style="left:' + (nowM / 14.4).toFixed(2) + '%"></div>' : "") + "</div></div>";
+    }
+    html += '</div><div class="tl">' + Object.keys(used).map(function (c) { var tm = team(c); return '<span style="--tc:' + tm[1] + '"><i></i>' + esc(tm[0]) + "</span>"; }).join("") + "<span>Shaded = before 6am / after 6pm</span></div>";
+    html += '<p class="note">From the SAAS paging feed (postcodes 5605, 5606, 5607, 5631), captured once a day at about 9am, so today may be incomplete. Tap the full screen for job details.</p>';
+    $("dBody").innerHTML = html;
+  }
+
+  /* ---------- weather ---------- */
+  var TOWNS = [
+    ["Tumby Bay", -34.375, 136.103], ["Port Neill", -34.118, 136.350], ["Cummins", -34.264, 135.727], ["Coffin Bay", -34.620, 135.468], ["Port Lincoln", -34.726, 135.858],
+    ["Cleve", -33.700, 136.494], ["Cowell", -33.682, 136.921], ["Lock", -33.567, 135.757], ["Elliston", -33.648, 134.889], ["Wudinna", -33.049, 135.463],
+    ["Kimba", -33.141, 136.418], ["Streaky Bay", -32.797, 134.212], ["Port Kenny", -33.171, 134.687]
+  ];
+  var WK = "dsy-dash-town", town = store(WK) || "Tumby Bay";
+  if (!TOWNS.some(function (x) { return x[0] === town; })) town = "Tumby Bay";
+  var WMO = { 0: ["☀️", "Clear"], 1: ["🌤️", "Mostly sunny"], 2: ["⛅", "Partly cloudy"], 3: ["☁️", "Cloudy"], 45: ["🌫️", "Fog"], 48: ["🌫️", "Fog"],
+    51: ["🌦️", "Drizzle"], 53: ["🌦️", "Drizzle"], 55: ["🌦️", "Drizzle"], 56: ["🌧️", "Freezing drizzle"], 57: ["🌧️", "Freezing drizzle"],
+    61: ["🌧️", "Light rain"], 63: ["🌧️", "Rain"], 65: ["🌧️", "Heavy rain"], 66: ["🌧️", "Freezing rain"], 67: ["🌧️", "Freezing rain"],
+    71: ["🌨️", "Snow"], 73: ["🌨️", "Snow"], 75: ["🌨️", "Snow"], 77: ["🌨️", "Snow"], 80: ["🌦️", "Showers"], 81: ["🌧️", "Showers"], 82: ["⛈️", "Heavy showers"],
+    85: ["🌨️", "Snow showers"], 86: ["🌨️", "Snow showers"], 95: ["⛈️", "Thunderstorm"], 96: ["⛈️", "Storm, hail"], 99: ["⛈️", "Storm, hail"] };
+  function wmo(c) { return WMO[c] || ["🌡️", ""]; }
+  function compass(deg) { return ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.round(((deg % 360) + 360) % 360 / 45) % 8]; }
+  function drawTowns() {
+    var b = $("wxTowns"); b.innerHTML = "";
+    TOWNS.forEach(function (x) {
+      var e = document.createElement("button"); e.type = "button"; e.className = "chip2"; e.textContent = x[0]; e.setAttribute("aria-pressed", x[0] === town ? "true" : "false");
+      e.addEventListener("click", function () { town = x[0]; store(WK, town); drawTowns(); loadWeather(); }); b.appendChild(e);
+    });
+  }
+  function loadWeather() {
+    var x = TOWNS.filter(function (z) { return z[0] === town; })[0];
+    var u = "https://api.open-meteo.com/v1/forecast?latitude=" + x[1] + "&longitude=" + x[2] +
+      "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant" +
+      "&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m&timezone=Australia%2FAdelaide&forecast_days=7";
+    $("wxBody").innerHTML = '<div class="skel"></div>';
+    return fetch(u).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }).then(function (w) {
+      var c = w.current, d = w.daily, t = todayIso();
+      var html = '<div class="now-w"><span class="ic">' + wmo(c.weather_code)[0] + "</span><div><b>" + Math.round(c.temperature_2m) + '°</b> <span class="muted small">feels ' + Math.round(c.apparent_temperature) + "°</span>" +
+        '<div class="small muted">' + esc(town) + " now · " + wmo(c.weather_code)[1] + " · wind " + compass(c.wind_direction_10m) + " " + Math.round(c.wind_speed_10m) + " km/h</div></div></div>";
+      var warn = [];
+      html += '<div class="wdays">' + d.time.map(function (iso, i) {
+        var dd = dOf(iso), hot = d.temperature_2m_max[i] >= 35 && d.wind_gusts_10m_max[i] >= 40, rain = d.precipitation_probability_max[i] || 0;
+        if (hot) warn.push(nice(iso));
+        return '<div class="wd' + (iso === t ? " today" : "") + (hot ? " hot" : "") + '" title="' + esc(wmo(d.weather_code[i])[1] + ", " + (d.precipitation_sum[i] || 0) + " mm, gusts " + Math.round(d.wind_gusts_10m_max[i]) + " km/h") + '">' +
+          '<span class="n">' + (iso === t ? "Today" : DAYS[dd.getUTCDay()]) + '</span><span class="ic">' + wmo(d.weather_code[i])[0] + '</span><span class="hi">' + Math.round(d.temperature_2m_max[i]) + '°</span><span class="lo">' + Math.round(d.temperature_2m_min[i]) + "°</span>" +
+          '<span class="rb"><i style="width:' + rain + '%"></i></span><span class="rn">' + rain + '%</span><span class="wn">' + compass(d.wind_direction_10m_dominant[i]) + " " + Math.round(d.wind_speed_10m_max[i]) + "</span></div>";
+      }).join("") + "</div>";
+      if (warn.length) html += '<div class="banner warn"><span class="small"><b style="font-size:inherit;font-family:inherit">Hot and windy</b> (35°+ with strong gusts): ' + esc(warn.join(", ")) + '. Check the <a href="https://www.cfs.sa.gov.au/warnings-restrictions/" target="_blank" rel="noopener">CFS fire danger</a>.</span></div>';
+      html += '<p class="note">Rain % = chance of rain. Wind = direction and top speed in km/h.</p>';
+      $("wxBody").innerHTML = html;
+    }).catch(function (e) { $("wxBody").innerHTML = '<p class="err">Could not load the weather: ' + esc(e.message || e) + "</p>"; });
+  }
+
+  /* ---------- start and refresh ---------- */
+  function stamp() { $("updated").textContent = "Updated " + new Intl.DateTimeFormat("en-AU", { timeZone: TZ, hour: "numeric", minute: "2-digit" }).format(new Date()); }
+  function loadAll() { stamp(); loadRoster(); loadSessions(); loadDispatch(); loadWeather(); }
+  drawTowns();
+  (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve({})).then(function (me) {
+    if (me && me.name) { window.__name = String(me.name).split(" ")[0]; tick(); }
+    loadAll();
+    setInterval(drawRoster, 60000);                       // move the "now" outline
+    setInterval(function () { stamp(); loadRoster(); loadSessions(); loadDispatch(); }, 10 * 60000);
+    setInterval(loadWeather, 60 * 60000);
+  });
+  $("refresh").addEventListener("click", loadAll);
+})();
+</script>
+</body>
+</html>
