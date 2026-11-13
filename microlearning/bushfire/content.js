@@ -3,6 +3,11 @@
    - PRO-239 Bushfire Burnover v2.6 (EMAP, effective 30 Sep 2026, next review October 2027), owner's PDF (OFFICIAL, not
      stored in the repo), including Appendix 1 kit contents, Appendix 2 ABC radio, Appendix 3 action card, Appendix 5
      Bushfire Safer Places and Last Resort Refuges. PRO-239 wins wherever the presentation differs.
+   - PRO-082 Response to Rural Fires (including bushfires) v3.5 (effective 5 Jan 2023, review date Oct 2024 passed;
+     owner's PDF, not in the repo), added 13 Nov 2026 at the owner's request: warning levels, ratings issued by 1700 for
+     4 days (replaces the deck's "after 4:30 pm for the next day"), CFS SOP 2.21 (appendix 4, under review), aged care
+     shelter in place, Catastrophic days and personal bushfire plans (appendix 5). PRO-384 Health Checks for Emergency
+     Service Personnel was read but kept for a separate session.
    - The SAAS presentation "Bushfire Preparedness for SAAS Clinicians" V3.0 (EMAP, 8 Oct 2025), slides and facilitator
      notes (owner's Google Slides link, not stored in the repo): Fire Danger Ratings, fire behaviour, shift preparation,
      driving near a fire, the Pinery case study. Its Extreme/Catastrophic day points probably come from PRO-081
@@ -26,11 +31,15 @@ var M = window.MODULE = {
 
   protocol: {
     code: "PRO-239", name: "Bushfire Burnover", version: "v2.6 (30 September 2026, review due October 2027)",
-    also: [{ code: "EMAP", name: "Bushfire Preparedness for SAAS Clinicians (presentation)", version: "V3.0 (8 October 2025)" }]
+    also: [
+      { code: "PRO-082", name: "Response to Rural Fires (including bushfires)", version: "v3.5 (5 January 2023)" },
+      { code: "EMAP", name: "Bushfire Preparedness for SAAS Clinicians (presentation)", version: "V3.0 (8 October 2025)" }
+    ]
   },
   footerNotes: [
     "PRO-239 Bushfire Burnover v2.6 is a SAAS intranet procedure (effective 30 Sep 2026, next review October 2027). Where the October 2025 presentation differs, this page follows PRO-239.",
-    "Points marked \"presentation\" come from the presentation's slides and notes. Read PRO-081 Catastrophic/Extreme Fire Days and PRO-082 Bushfire Response on SAASnet too.",
+    "PRO-082 Response to Rural Fires v3.5 (effective 5 Jan 2023) passed its review date (October 2024). Its CFS SOP 2.21 appendix is marked \"under review\".",
+    "Points marked \"presentation\" come from the presentation's slides and notes. Read PRO-081 Catastrophic/Extreme Fire Days on SAASnet too.",
     "The opening questions, quiz wording and practical marked \"DSY\" were written for training and should be checked by your lead instructor.",
     "If any of this brings up hard memories, Peer Support and the EAP are there for you."
   ],
@@ -63,7 +72,7 @@ var M = window.MODULE = {
     ] },
 
     { title: "Read the day", blocks: [
-      { text: "The Fire Danger Rating doesn't tell you how likely a fire is to start. It tells you how a fire would behave, and the harm it could do, if one starts. The Bureau of Meteorology forecasts it, and ratings come out after 4:30 pm each day in the fire season for the next day (presentation)." },
+      { text: "The Fire Danger Rating doesn't tell you how likely a fire is to start. It tells you how a fire would behave, and the harm it could do, if one starts. In the fire season the Bureau of Meteorology issues ratings by 1700 each day for the next 4 days. They're a preliminary guide and can change with the conditions (PRO-082)." },
       { table: { title: "Australian Fire Danger Rating System (presentation)", table: { head: ["Rating", "Message"], rows: [
         ["No rating", "No proactive action needed. Fires can still happen, but they're less likely to threaten the community"],
         ["Moderate", "Plan and prepare"],
@@ -80,6 +89,11 @@ var M = window.MODULE = {
           "Embers can travel several kilometres ahead of the front. Smoke getting denser may mean the fire is closer than you think",
           "Fire makes its own weather and can move very quickly"
         ] } },
+      { table: { title: "Bushfire warning levels (PRO-082)", table: { head: ["Warning", "Means"], rows: [
+        ["Advice", "A fire has started but there's no immediate danger. Stay alert, watch for signs of fire, keep up to date"],
+        ["Watch and Act", "A heightened level of threat. Conditions are changing: start taking action now"],
+        ["Emergency Warning", "You may be in danger and need to take action immediately. Any delay puts lives at risk"]
+      ] }, items: ["Every bushfire that had a warning ends with an \"Advice: reduced threat\" message"] } },
       { box: { title: "Warnings (PRO-239)", items: [
         "Monitor your local ABC AM radio for emergency warnings. Eyre Peninsula and West Coast: ABC Port Lincoln, 1485 AM",
         "Current alerts are on the ABC and CFS websites",
@@ -113,6 +127,12 @@ var M = window.MODULE = {
         "Fleet at least three-quarters full of fuel at all times. Fuel stations may be closed (presentation)",
         "Both crew carry their GRN radios whenever away from the vehicle (presentation)",
         "Thirds and observers: the Operations Manager decides, once SAAS is told of a Catastrophic or Extreme day forecast, usually at 1600 the day before (PRO-239)"
+      ] } },
+      { box: { title: "Catastrophic days and you (PRO-082)", items: [
+        "If you're rostered on a Catastrophic day, you're expected to work",
+        "Have your own bushfire survival plan, especially if you live in a high-risk area",
+        "If getting to or from the station means driving through a Catastrophic area, talk it through with your manager beforehand",
+        "Know where you'd go: a Bushfire Safer Place if you leave early, a Last Resort Refuge only if your plan has failed"
       ] } }
     ] },
 
@@ -125,6 +145,13 @@ var M = window.MODULE = {
           "Where possible the CFS brings patients to SAAS at a safer area, such as a base camp or staging area",
           "Otherwise the CFS provides a fire vehicle to escort the ambulance to the case. No ambulance goes to casualties on an active fireground without at least one fire appliance as escort"
         ] } },
+      { box: { title: "How the CFS handles a medical emergency (CFS SOP 2.21, in PRO-082)", items: [
+        "The CFS is the control agency for rural fires. SAAS is a support agency",
+        "CFS crews give first aid and triage their own people, then decide whether SAAS is needed",
+        "Can walk, not life threatening: the CFS brings them out to a staging area, group base or other safe place for SAAS",
+        "Can't walk, serious or life threatening: the CFS rings 000, sets up a safe area for the casualty and SAAS, and liaises with SAAS about access and transport on a multi-agency talk group",
+        "The CFS provides an escort vehicle for each SAAS vehicle entering an active fireground"
+      ] } },
       { box: { title: "Entering the fireground (PRO-239 checklist)", steps: [
         { t: "Lights", text: "All vehicle lights on: headlights, hazards and emergency beacons, unless the fire authority asks you not to." },
         { t: "Turn-around spots", text: "Look for places to turn around for a quick escape." },
@@ -143,6 +170,11 @@ var M = window.MODULE = {
         "A Bushfire Safer Place is a place of relative safety, such as some regional townships: low fuel, away from continuous bush, with gardens, lawns and roads to interrupt a fire",
         "A Bushfire Last Resort Refuge is a signed paddock or oval. Use it only if plans have failed and you can't reach a Safer Place. It may be very uncomfortable and unsafe in an extreme fire, but it's better than being caught on the road or on foot",
         "Know them for your area and the areas you drive through. The CFS website lists them all (presentation)"
+      ] } },
+      { box: { title: "Hospitals and aged care (PRO-082)", items: [
+        "Facilities have their own plans with the CFS, including moving patients early to other facilities if needed",
+        "Patients are NOT evacuated under immediate threat of fire: the risk is too great. Fire services help the facility shelter in place until the threat has passed",
+        "If the facility isn't safe afterwards, SAAS is contacted to help move patients"
       ] } },
       { links: [{ label: "CFS: Bushfire Safer Places", href: "https://www.cfs.sa.gov.au/plan-prepare/before-a-fire-be-prepared/bushfire-safer-places/" }] }
     ] },
@@ -229,7 +261,7 @@ var M = window.MODULE = {
       { box: { title: "SAAS procedures (SAASnet)", items: [
         "PRO-239 Bushfire Burnover v2.6",
         "PRO-081 Catastrophic/Extreme Fire Days",
-        "PRO-082 Bushfire Response",
+        "PRO-082 Response to Rural Fires (including bushfires) v3.5",
         "PRO-080 Extreme Heat Event"
       ], note: "All staff must comply with PRO-239. Ask your team leader if you can't find these." } },
       { table: { title: "ABC emergency broadcasters in SA (PRO-239 Appendix 2)", table: { head: ["Area", "Station", "Frequency"], rows: [
@@ -243,11 +275,15 @@ var M = window.MODULE = {
       ] }
     ] },
 
-    { title: "Knowledge check", blocks: [{ quiz: { intro: "Questions drawn from PRO-239 Bushfire Burnover and the SAAS Bushfire Preparedness presentation. Pick an answer for each, then check.", questions: [
+    { title: "Knowledge check", blocks: [{ quiz: { intro: "Questions drawn from PRO-239 Bushfire Burnover, PRO-082 Response to Rural Fires and the SAAS Bushfire Preparedness presentation. Pick an answer for each, then check.", questions: [
       { q: "What does the Fire Danger Rating tell you?", options: ["How likely a fire is to start today", "How a fire would behave, and the harm it could do, if one starts", "Where today's fires are"], answer: 1,
         why: "Ratings show the potential behaviour and impact should a fire start, not the likelihood of one starting (presentation)." },
       { q: "What is the message for a Catastrophic day?", options: ["Be ready to act", "Take action now to protect life and property", "For your survival, leave bushfire risk areas"], answer: 2,
         why: "Moderate: plan and prepare. High: be ready to act. Extreme: take action now. Catastrophic: for your survival, leave bushfire risk areas." },
+      { q: "Which bushfire warning means \"you may be in danger and need to take action immediately\"?", options: ["Advice", "Watch and Act", "Emergency Warning"], answer: 2,
+        why: "PRO-082: Advice (no immediate danger), Watch and Act (heightened threat, start taking action), Emergency Warning (take action immediately; any delay puts your life at risk)." },
+      { q: "A fire front is about to reach the town's aged care home. What happens to the residents?", options: ["SAAS evacuates them by ambulance straight away", "They shelter in place with fire service support until the threat has passed", "Staff drive them to the oval"], answer: 1,
+        why: "PRO-082: patients are not evacuated under immediate threat of fire as the risk is too great. Fire services support the facility to shelter in place; SAAS helps move patients afterwards if the facility isn't safe." },
       { q: "You're rostered in an Extreme Fire Danger area and there's no burnover kit in the vehicle. What do you do?", options: ["Carry on, it's only needed on Catastrophic days", "Tell your Operations Manager or shift ACTL or CTL straight away, at the start of the shift", "Borrow one from the CFS if you're sent to a fire"], answer: 1,
         why: "PRO-239: working in a Catastrophic or Extreme rated area, or an area of active fire, you must have adequate PPE and a burnover kit. If not, advise your Operations Manager or shift ACTL/CTL immediately." },
       { q: "Who directs SAAS crews to a case within a known bushfire area?", options: ["The CFS incident controller", "The EOC", "The crew decides"], answer: 1,
