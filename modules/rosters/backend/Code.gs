@@ -73,8 +73,8 @@
  *       to phone instead.
  * - The emails lead with the operational restriction to enter in
  *   GRS for each affected time block inside the sent period, before
- *   and after the change. The person's flexibility is shown below
- *   that as background only.
+ *   and after the change. The person's own flexibility choice is
+ *   not shown in the emails (it is already part of that code).
  * - Email failures never block the roster change. The response flag
  *   countryRosteringEmailed is true only when that email was sent.
  * - Emails are sent AFTER the roster lock is released.
@@ -776,13 +776,8 @@ function sendHardCopyChangeNotifications(details) {
       ? "RESTRICTION TO ENTER IN GRS (whole crew, sent roster period)\n" +
         operationalSummaryText(blocks) + "\n\n" +
         "This is worked out by our roster from everyone booked for " +
-        "each hour. Please use it rather than the individual " +
-        "flexibility shown below.\n\n"
+        "each hour.\n\n"
       : "";
-
-    const flexibilityChanged =
-      details.previousRestriction &&
-      details.previousRestriction !== details.restriction;
 
     const shiftDetails =
       "CREW CHANGE\n" +
@@ -797,9 +792,6 @@ function sendHardCopyChangeNotifications(details) {
           formatNotificationDateTime(details.previousStart) + " to " +
           formatNotificationDateTime(details.previousEnd) + "\n"
         : "") +
-      "Their flexibility choice: " + (details.restriction || "N") +
-      (flexibilityChanged ? " (was " + details.previousRestriction + ")" : "") +
-      " (already included in the restriction above; not a GRS code)\n" +
       "Change made: " + formatNotificationDateTime(new Date()) +
       " (Adelaide time)";
 
