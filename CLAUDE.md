@@ -29,6 +29,12 @@ Diary, or asks for a month's vehicle log / log book sheets ("print November's lo
 Travel Diary page, URL in the README), read `.claude/vehicle-log/README.md`, run
 `make.js` and send the PDF (serials run on; update the README).
 
+## Owner's team newsletter
+
+Not part of the website. When the owner asks for the newsletter ("do the newsletter for November"): monthly PDF for
+Coffin Bay, Cummins, Tumby Bay and Port Neill (roster hours, pages, training, weather). Read
+`.claude/newsletter/README.md` (steps, chatty first-names tone, privacy rules) and send the PDF.
+
 ## Skills
 
 - `build-microlearning-module` - build or update a microlearning module from a SAAS protocol.
