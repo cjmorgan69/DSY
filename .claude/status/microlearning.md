@@ -103,7 +103,11 @@ Rural ED nursing module: Asthma or COPD? In the rural ED (`/microlearning/asthma
 the RN page, 25 Oct 2026). Sources: Australian Asthma Handbook v3.0 (2025) ED page (quotes TSANZ 2022 oxygen: 88 to
 92% if at risk of hypercapnoea, including asthma with COPD), CARPA Standard Treatment Manual 8th ed (free PDF from
 remotephcmanuals.com.au), COPD-X v2.78 (Dec 2025, read via the web fetch tool; copdx.org.au blocks curl). NSW ECAT
-A2.2/A2.4 and the LearnEM EDcare handbook (free login) could not be read: the owner may paste them. Severity and
+A2.2 (asthma) and A2.4 (COPD) added 25 Oct 2026 from PDFs the owner uploaded (ACI blocks automated access; PR #119,
+folded into the 15 Nov 2026 health check PR #236): each protocol switches to the other for asthma with COPD, the
+A2.4 oxygen caveat (88 to 92% only without distress; under 88% or distressed = more oxygen), no prednisolone after
+hydrocortisone, no magnesium in either and no steroid in A2.4, plus ECAT doses, red flags and tests tables. The
+LearnEM EDcare handbook (free login) was not read. Severity and
 oxygen checker, ambulance handover section; narrated by Lee (two takes). On main and listed on the RN page (checked
 15 Nov 2026); the owner did not want it added as a lesson.
 

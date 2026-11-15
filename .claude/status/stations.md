@@ -110,3 +110,10 @@ Spinal skills stations `/stations/spinal/` (same engine): 1 red flags (cards), 2
 (limb check DSY; chair-to-stretcher left to the lead instructor), 3 modified towel roll and collar
 contraindications, 4 vacuum mattress and log roll (CSSG), 5 pain and nausea (methoxyflurane, ondansetron; no real
 medicines). On main (checked 15 Nov 2026).
+
+## Sepsis
+
+Sepsis skills stations (`/stations/sepsis/`, built 27 Oct 2026 in PR #133, folded into the 15 Nov 2026 health check
+PR #236 with the sign-in gate added). Sources as printed on the page: CPP-062-AO Sepsis v1.0 (Dec 2025) and CTL-062
+NEWS2 Adult Sepsis Screening Tool v1.1, with the Clinical Skills Study Guide for the skills. Patient cards and any
+EOC replies are DSY-written (owner to review). Linked from the sepsis hub topic. No lesson added yet.

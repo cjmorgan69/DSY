@@ -121,8 +121,9 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 
 - 44 active accounts (38 students, 6 facilitators) are still on the shared starter password; "must change password" is
   enforced by the pages only.
-- The copies of pager jobs and roster bookings in Supabase (`paging_jobs`, `roster_bookings`) last updated 14 Nov 2026
-  11:26 Adelaide time; what feeds them is not in the repo. Ask the owner before relying on them.
+- Pager and roster copies in Supabase (`paging_jobs`, `roster_bookings`): fed by a scheduled run in the owner's Claude
+  desktop app on their PC, every day at 9 am (owner, 15 Nov 2026); it is not in this repo. On 15 Nov 2026 the owner
+  said it ran at 9:30, but the newest rows were still from 14 Nov 11:26 Adelaide time: the owner is checking the run.
 - Supabase advisor tidy-up: leaked-password protection off; `protect_profile_fields()` and `require_allowed_id()`
   callable by anon (trigger functions, harmless); `norm_id`, `course_today`, `course_starts_at` have no fixed search
   path; anon holds full grants on most tables, so RLS is the only barrier. The `upcoming_sessions` view is security
@@ -141,10 +142,10 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 
 ## Open work
 
-- Open PRs: #155 (more than one lesson per session: the database side is live, the `/training/` page on main does not
-  use it yet), #133 (sepsis skills stations), #119 (NSW ECAT protocols for the rural ED asthma/COPD module). Owner to
-  say merge or close for each.
-- Stations still to build: snake bite, sepsis (PR #133), pain.
+- PRs #155 (more than one lesson per session), #133 (sepsis skills stations) and #119 (NSW ECAT protocols in the
+  rural ED asthma/COPD module) were folded into the health check PR #236 on 15 Nov 2026 (owner: merge them as long
+  as nothing newer is overwritten). The rural ED module's intro video was narrated before the ECAT additions.
+- Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario
   (`/modules/hypo/`) is to be converted when asked.
