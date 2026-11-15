@@ -99,8 +99,8 @@ The header logo is `shared/dsy-logo.png`, the hub logo recoloured to the app gre
 The site caches scripts and styles for about 4 hours (pages for 10 minutes), so phones can run an old `module.js`
 with a new page. Every `index.html` under `/microlearning/` loads its CSS and JS with `?v=<tag>` (and the landing page
 sets `window.ASSET_VERSION` for the content.js files it loads). **Whenever you change `shared/`, `training/theme.css`
-or a module's `content.js`, change the tag in every `index.html`** (one `sed` over `microlearning/index.html` and
-`microlearning/*/index.html`). New modules copy the current tag.
+or a module's `content.js`, run `node .claude/tools/stamp.js`**: it puts one new tag on every page of the site.
+Do not edit tags by hand. New modules copy the current tag.
 
 ## Walk-through scenarios and related links
 

@@ -22,7 +22,7 @@ window.DSY_TOPICS = [
   { id:'hypoglycaemia', group:'medical', title:'Hypoglycaemia', protocol:'CPP-009-AO', patient:'Ron, 67: confused and sweaty in the shed',
     module:'hypoglycaemia', walk:'/modules/hypoglycaemia-ao/', mdt:'hypo', custom:'hypoglycaemia-ao', stations:'/stations/hypoglycaemia/', pcr:'ron' },
   { id:'sepsis', group:'medical', title:'Sepsis', protocol:'CPP-062-AO', patient:'Robert, 71: hot, confused and hard to rouse',
-    module:'sepsis', walk:'/modules/sepsis/', mdt:'sepsis', custom:'sepsis-ao', pcr:'robert' },
+    module:'sepsis', walk:'/modules/sepsis/', mdt:'sepsis', custom:'sepsis-ao', stations:'/stations/sepsis/', pcr:'robert' },
   { id:'pain', group:'trauma', title:'Pain management', protocol:'CPP-013-AO', patient:'Gary, 58: fall from a shed roof at dusk',
     module:'pain', walk:'/modules/pain-management/', mdt:'pain', custom:'pain-ao', pcr:'gary' },
   { id:'acpo', group:'heart', title:'ACPO', protocol:'CPP-001-AO', patient:'Kevin, 72: woke at 2 am gasping',

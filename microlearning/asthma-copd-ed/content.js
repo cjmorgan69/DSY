@@ -7,8 +7,10 @@
    - CARPA Standard Treatment Manual, 8th edition (Remote Primary Health Care Manuals, (c) 2022/2026, PDF V1.03):
      "Asthma in adults" (pp 421-424) and "COPD and bronchiectasis in adults" (pp 441-443).
    - COPD-X Plan v2.78 (December 2025), "X: Manage eXacerbations", key recommendations.
-   The NSW ECAT protocols A2.2 and A2.4 could not be read (the ACI site blocks automated access), so nothing here is
-   from ECAT. Where the documents differ, the page says so: it does not choose. Staff follow their own health
+   - NSW ACI Adult ECAT protocols (PDFs printed 25 October 2026, supplied by the owner): A2.2 Shortness of breath with a
+     history of asthma (published Dec 2023, updated May 2024), A2.4 ... with a history of COPD (published Dec 2023),
+     plus A2.1 and A2.3. No review date is shown.
+   Where the documents differ, the page says so: it does not choose. Staff follow their own health
    service's policy, standing orders and scope of practice. */
 var AE_TALK = [
   { value: "sentence", label: "Finishes a sentence" },
@@ -28,21 +30,23 @@ var M = window.MODULE = {
   title: "Asthma or COPD? In the rural ED",
   subtitle: "Rural nursing microlearning",
   headline: "Severe wheeze in a patient with COPD: grade it, get the oxygen right, and escalate early",
-  lead: "A patient with COPD on home oxygen arrives with a severe asthma attack. This module covers the first hour in a rural ED from the national asthma guideline, the CARPA manual and COPD-X: grading, the oxygen target, bronchodilators, steroids, magnesium, and when to escalate.",
+  lead: "A patient with COPD on home oxygen arrives with a severe asthma attack. This module covers the first hour in a rural ED from the national asthma guideline, the CARPA manual, COPD-X and the NSW ECAT protocols: grading, the oxygen target, bronchodilators, steroids, magnesium, and when to escalate.",
   minutes: 25,
-  disclaimer: "Training resource only. It does not replace the Australian Asthma Handbook, the CARPA manual, COPD-X, your health service's policy and standing orders, or advice from the medical officer.",
+  disclaimer: "Training resource only. It does not replace the Australian Asthma Handbook, the CARPA manual, COPD-X, the ECAT protocols, your health service's policy and standing orders, or advice from the medical officer.",
 
   protocol: {
     code: "AAH v3.0", name: "Australian Asthma Handbook: Managing acute asthma in adults and adolescents in the ED", version: "Version 3.0 (2025)", exported: "25 October 2026",
     also: [
       { code: "CARPA STM", name: "CARPA Standard Treatment Manual: Asthma in adults; COPD and bronchiectasis in adults", version: "8th edition (2022/2026, V1.03)" },
-      { code: "COPD-X", name: "COPD-X Plan: Manage eXacerbations", version: "v2.78 (December 2025)" }
+      { code: "COPD-X", name: "COPD-X Plan: Manage eXacerbations", version: "v2.78 (December 2025)" },
+      { code: "ECAT A2.2", name: "NSW Adult ECAT: Shortness of breath with a history of asthma", version: "Dec 2023, updated May 2024" },
+      { code: "ECAT A2.4", name: "NSW Adult ECAT: Shortness of breath with a history of COPD", version: "Dec 2023" }
     ]
   },
   relatedCodes: ["CPG-113-P"],
   footerNotes: [
     "These are national (Asthma Handbook, COPD-X) and remote-practice (CARPA) guidelines. Follow your own health service's policy, standing orders, scope of practice and escalation process.",
-    "The NSW ECAT protocols (A2.2 asthma, A2.4 COPD) were not available for this module.",
+    "The NSW ECAT protocols are nurse-initiated protocols for NSW Health staff under PD2025_025, and some sections need extra education. Check your own health service's equivalent.",
     "The scenarios, practical and the notes marked \"DSY\" were written for training and should be checked by your lead instructor."
   ],
 
@@ -62,9 +66,10 @@ var M = window.MODULE = {
       { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Asthma or COPD? In the rural ED" } },
       { text: "Asthma and COPD often occur together. Among people with COPD, about 27 to 28% also have asthma. People with both have more frequent and more severe flare-ups and hospital admissions than people with either alone (Asthma Handbook)." },
       { text: "CARPA: COPD is common over 40 and often co-exists with asthma, especially with a significant smoking history. Not all wheeze or shortness of breath is asthma: consider chest infection or pneumonia, heart failure and other lung disease." },
+      { text: "NSW ECAT has no single protocol for asthma with COPD. The asthma protocol (A2.2) says to switch to the COPD protocol if the patient has COPD, and the COPD protocol (A2.4) says to switch to the asthma protocol if the patient has asthma. So the nurse has to pick the one that fits best, and escalate as per the local escalation process." },
       { box: { title: "Three things to take away", tone: "warn", items: [
         "Grade it fast: one severe or life-threatening sign is enough",
-        "Asthma with COPD is at risk of CO2 retention: aim for SpO2 88 to 92% and don't over-oxygenate",
+        "Asthma with COPD is at risk of CO2 retention: aim for SpO2 88 to 92% and don't over-oxygenate. But never withhold oxygen from a hypoxic, distressed patient",
         "Severe or life-threatening: call the medical officer now and plan for transfer to higher-level care"
       ] } }
     ] },
@@ -89,7 +94,7 @@ var M = window.MODULE = {
         "A raised PaCO2 means she's tiring and may need ventilatory support",
         "If more than one category fits, record the higher one. Not sure if mild or moderate? Treat as moderate (CARPA)"
       ] } },
-      { note: "The Asthma Handbook's immediate treatment table uses room-air SpO2 over 94% (mild to moderate), 94% or less (severe) and under 92% (life-threatening). CARPA's life-threatening cut-off is under 90%. Pulse oximetry may overestimate SpO2 in people with darker skin." }
+      { note: "The Asthma Handbook's immediate treatment table uses room-air SpO2 over 94% (mild to moderate), 94% or less (severe) and under 92% (life-threatening). CARPA's life-threatening cut-off is under 90%. ECAT asthma (A2.2): life-threatening under 90% or cyanosis; severe 90 to 94% or RR over 25; mild to moderate over 94% and RR under 25. Pulse oximetry may overestimate SpO2 in people with darker skin." }
     ] },
 
     { title: "The oxygen target", blocks: [
@@ -107,10 +112,18 @@ var M = window.MODULE = {
         "Life-threatening asthma: continuous salbutamol neb driven by oxygen, still aiming for the SpO2 target",
         "COPD (CARPA): monitor SpO2 continuously, aim for 88 to 92%, and watch for drowsiness and slowing breathing"
       ] } },
+      { box: { title: "Don't let the target cause hypoxia (ECAT A2.4)", tone: "no", items: [
+        "88 to 92% is acceptable in COPD only when there's no respiratory distress or other sign of acute deterioration",
+        "If SpO2 is under 88%, or she's in respiratory distress, use higher-flow oxygen to resolve the hypoxia",
+        "Don't withhold oxygen if she's severely short of breath, hypoxic or critically unwell. The goal is PaO2 over 60 mmHg and SaO2 over 90%",
+        "A falling conscious state can mean worsening hypoxia or rising CO2. Get an early venous blood gas for the PaCO2",
+        "High-flow nasal cannula if your facility supports it, weaning the FiO2 to reduce the risk of hypercapnia. Caution in known CO2 retainers"
+      ] } },
       { table: { title: "The targets side by side", table: { head: ["Guideline", "Asthma", "COPD"], rows: [
         ["Asthma Handbook (TSANZ)", "92 to 96%, or 88 to 92% if at risk of hypercapnoea (including asthma with COPD)", "88 to 92%"],
         ["CARPA", "Start if under 92%, target 93 to 95%, don't over-oxygenate", "88 to 92%"],
-        ["COPD-X", "", "88 to 92%, controlled oxygen 0.5 to 2 L/min"]
+        ["COPD-X", "", "88 to 92%, controlled oxygen 0.5 to 2 L/min"],
+        ["ECAT", "Severe: oxygen if SpO2 under 92%. Life-threatening: apply oxygen", "88 to 92% if no distress. Under 88% or distressed: higher-flow oxygen. Don't withhold oxygen"]
       ] } } },
       { note: "CARPA doesn't say which target to use when a patient has both. The Asthma Handbook does: 88 to 92%. Nebulisers carry a high risk of spreading infection: wear full PPE and follow your infection control policy." }
     ] },
@@ -135,10 +148,12 @@ var M = window.MODULE = {
         "Asthma Handbook: start within 1 hour for all severe and life-threatening asthma. Prednisolone 37.5 to 50 mg oral daily for 5 to 10 days (or dexamethasone 16 mg for 2 days). IV hydrocortisone if she can't take oral, then switch to oral",
         "CARPA (asthma): prednisolone 50 mg oral, or hydrocortisone 100 mg IV every 6 hours if oral isn't possible",
         "CARPA (COPD, severe): medical consult, consider hydrocortisone 100 mg IV every 6 hours. Milder: prednisolone 50 mg daily for 5 days",
-        "COPD-X: 30 to 50 mg daily for 5 days, oral when possible"
+        "COPD-X: 30 to 50 mg daily for 5 days, oral when possible",
+        "ECAT asthma (A2.2): prednisolone 50 mg oral once, or hydrocortisone 100 mg IV/IO once if she can't take oral or the asthma is life-threatening. Don't give prednisolone if hydrocortisone has already been given",
+        "ECAT COPD (A2.4) has no steroid: it needs a medical officer's order"
       ] } },
       { box: { title: "If not improving", tone: "warn", check: { q: "After the first hour she's no better. What does the Asthma Handbook add?", a: "Repeat the bronchodilator, add ipratropium if not already given, and consider IV magnesium sulfate 0.2 mmol/kg (max 10 mmol) as a single infusion over 20 minutes. Not nebulised magnesium." }, items: [
-        "IV magnesium sulfate: Asthma Handbook 0.2 mmol/kg, max 10 mmol, single infusion over 20 min. CARPA 10 mmol (2.5 g) over 20 min. A second-line agent, never instead of salbutamol. Nebulised magnesium is not recommended",
+        "IV magnesium sulfate: Asthma Handbook 0.2 mmol/kg, max 10 mmol, single infusion over 20 min. CARPA 10 mmol (2.5 g) over 20 min. A second-line agent, never instead of salbutamol. Nebulised magnesium is not recommended. Neither ECAT protocol includes it: it needs a medical officer's order",
         "Adrenaline: Asthma Handbook says not routine; only if she can't inhale bronchodilators, is unresponsive or peri-arrest, or anaphylaxis is suspected. CARPA: IM 0.5 mg if severe or unresponsive",
         "Non-invasive ventilation: COPD-X says NIV improves survival in COPD with acute hypercapnic respiratory failure. Asthma Handbook: on NIV, give salbutamol inline or through the circuit; no sedatives; if no improvement, intubate",
         "Antibiotics for COPD only with signs of infection (fever, sputum change): amoxicillin 1 g bd, or doxycycline 100 mg bd, for 5 days (CARPA, COPD-X)"
@@ -149,7 +164,7 @@ var M = window.MODULE = {
       { text: "Before she reaches you, SAAS may already have treated her. Paramedics follow the asthma and COPD guidelines (CPG-113, CPG-115); Intensive Care Paramedics can give more." },
       { box: { title: "Ask what's been given, and when", items: [
         "Nebs: how many, salbutamol dose, ipratropium doses",
-        "Steroid: SAAS gives prednisolone 50 mg, or the ICP gives hydrocortisone 250 mg IV as a single dose. Hospital guidelines use other doses (CARPA 100 mg 6 hourly): tell the medical officer what she's had",
+        "Steroid: SAAS gives prednisolone 50 mg, or the ICP gives hydrocortisone 250 mg IV as a single dose. Hospital guidelines use other doses (CARPA 100 mg 6 hourly): tell the medical officer what she's had. ECAT: don't give prednisolone if hydrocortisone has been given",
         "Magnesium (ICP): 10 mmol over 20 min by syringe driver or bag. How much went in? A part-dose isn't covered by any guideline here: tell the medical officer",
         "CPAP (ICP, COPD only): start time, flow rate (8 L/min = about 5 cm H2O), and her BP",
         "Adrenaline: given or not"
@@ -190,6 +205,7 @@ var M = window.MODULE = {
 
           var target = v.hyper ? "88 to 92%" : "92 to 96%";
           if (v.hyper) alerts.push("At risk of hypercapnoea: target SpO2 88 to 92%. Avoid over-oxygenation. Use an air-driven neb with nasal cannula oxygen for intermittent nebs");
+          if (v.hyper && s !== null && s < 88) alerts.push("SpO2 " + s + "% is under 88%: use higher-flow oxygen to resolve the hypoxia. Don't withhold oxygen from a hypoxic, distressed patient (ECAT A2.4)");
           if (v.hyper && onO2 && s !== null && s > 92) alerts.push("SpO2 " + s + "% on oxygen is above her target: turn the oxygen down and watch her conscious state");
 
           if (lt) {
@@ -228,13 +244,27 @@ var M = window.MODULE = {
     ] },
 
     { title: "Reference", collapsed: true, blocks: [
-      { table: { title: "Doses (adult)", table: { head: ["Medicine", "Asthma Handbook (ED)", "CARPA"], rows: [
-        ["Salbutamol", "Severe: 12 puffs by spacer, or 5 mg neb. Life-threatening: 2 x 5 mg continuous neb", "5 mg neb as needed (severe). 4 to 12 puffs by spacer (moderate)"],
-        ["Ipratropium", "8 puffs (21 microg) or 500 microg neb every 20 min for the first hour, then 4 to 6 hourly", "500 microg neb as needed, can mix with salbutamol"],
-        ["Prednisolone", "37.5 to 50 mg daily for 5 to 10 days (or dexamethasone 16 mg for 2 days)", "50 mg, then daily for 5 days"],
-        ["Hydrocortisone IV", "If oral not possible; switch to oral when possible", "100 mg every 6 hours"],
-        ["Magnesium sulfate IV", "0.2 mmol/kg, max 10 mmol, over 20 min, single dose", "10 mmol (2.5 g) over 20 min, single dose"],
-        ["Adrenaline", "Not routine. Can't inhale, peri-arrest or anaphylaxis", "IM 0.5 mg if severe or unresponsive"]
+      { table: { title: "Doses (adult)", table: { head: ["Medicine", "Asthma Handbook (ED)", "CARPA", "ECAT (nurse-initiated)"], rows: [
+        ["Salbutamol", "Severe: 12 puffs by spacer, or 5 mg neb. Life-threatening: 2 x 5 mg continuous neb", "5 mg neb as needed (severe). 4 to 12 puffs by spacer (moderate)", "12 puffs by spacer, or 5 mg neb if she can't use a spacer, every 20 min for 3 doses. Asthma, life-threatening: 2 x 5 mg continuous neb until dyspnoea improves"],
+        ["Ipratropium", "8 puffs (21 microg) or 500 microg neb every 20 min for the first hour, then 4 to 6 hourly", "500 microg neb as needed, can mix with salbutamol", "Asthma: 8 puffs. COPD: 4 puffs. Or 500 microg neb. Every 20 min for 3 doses"],
+        ["Neb driven by", "Air-driven compressor for intermittent nebs; oxygen for continuous", "", "Asthma: 8 to 10 L oxygen. COPD: 8 to 10 L air"],
+        ["Prednisolone", "37.5 to 50 mg daily for 5 to 10 days (or dexamethasone 16 mg for 2 days)", "50 mg, then daily for 5 days", "Asthma: 50 mg once. Not if hydrocortisone has been given. COPD: not in the protocol"],
+        ["Hydrocortisone IV", "If oral not possible; switch to oral when possible", "100 mg every 6 hours", "Asthma: 100 mg IV/IO once (life-threatening, or can't take oral). COPD: not in the protocol"],
+        ["Magnesium sulfate IV", "0.2 mmol/kg, max 10 mmol, over 20 min, single dose", "10 mmol (2.5 g) over 20 min, single dose", "Not in either protocol"],
+        ["Adrenaline", "Not routine. Can't inhale, peri-arrest or anaphylaxis", "IM 0.5 mg if severe or unresponsive", "Asthma: 0.5 mg (0.5 mL of 1:1000) IM once, peri-arrest only"],
+        ["Sodium chloride 0.9%", "", "", "Signs of shock or SBP under 90: 250 mL IV/IO bolus, repeat every 10 min up to 1000 mL"],
+        ["Pain relief", "", "", "Asthma: paracetamol 1000 mg oral once. COPD: paracetamol 1000 mg and/or ibuprofen 400 mg oral once"]
+      ] } } },
+      { table: { title: "Red flags (ECAT)", table: { head: ["", "Asthma (A2.2)", "COPD (A2.4)"], rows: [
+        ["History", "Unresponsive to prehospital treatment; previous intubation or ICU; current or recent steroids; repeated admissions for asthma; pregnant or within 3 months postpartum; recent long-haul travel", "Unresponsive to prehospital treatment; previous intubation or ICU; malignancy"],
+        ["Clinical", "Altered conscious state; tripod position; hypoxia; severe distress; words only; bradypnoea; silent chest; cyanosis; chest pain; exhaustion; pre-syncope", "Altered conscious state; confusion, agitation or irritability; tripod position; central cyanosis; words only; severe distress; hypoventilation; exhaustion"]
+      ] } } },
+      { table: { title: "Tests and monitoring (ECAT)", table: { head: ["", "Asthma (A2.2)", "COPD (A2.4)"], rows: [
+        ["Cardiac monitor and 12-lead ECG", "If BP or HR in the yellow or red zone, or irregular pulse, palpitations, syncope, shock, respiratory compromise, cardiac history or concern", "Everyone"],
+        ["Chest X-ray", "If life-threatening or pneumothorax is a concern", "Everyone"],
+        ["Bloods", "Severe or life-threatening: FBC, UEC, VBG", "FBC, UEC, ABG (if trained) or VBG"],
+        ["Blood cultures", "Temp under 35 or 38.5 and over: two sets from two sites", "Temp under 35 or 38.5 and over: two sets from two sites"],
+        ["Other", "BGL if indicated (under 4: hypoglycaemia protocol)", "Sputum for MC&S if productive cough. BGL if indicated"]
       ] } } },
       { table: { title: "Before discharge (Asthma Handbook)", items: [
         "Observe at least 4 hours after distress settles; repeat spirometry",

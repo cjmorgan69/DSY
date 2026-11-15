@@ -1,5 +1,5 @@
 /* Dashboard logic, shared by /dashboard/ (phone and tablet) and /dashboard/wide/ (widescreen).
-   Both pages use the same element ids; each page has its own layout and styles. Bump the ?v= tag in both when this changes. */
+   Both pages use the same element ids; each page has its own layout and styles. Run node .claude/tools/stamp.js when this changes (it bumps the tag in both). */
 (function () {
   "use strict";
   var TZ = "Australia/Adelaide";

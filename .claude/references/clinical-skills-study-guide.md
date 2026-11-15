@@ -42,7 +42,7 @@ out (it lists Manual BP at 25; it starts on 24).
 | Slings (arm sling, collar and cuff, elevation sling) | 78 to 81 | yes / yes / yes |
 | Splint: cardboard splint (neurovascular checks on 84) | 82 to 84 | yes / yes / yes |
 | Splint: vacuum mattress (strap colours and order, suction) | 85 to 87 | no / yes / yes |
-| Tympanic temperature measurement (Braun ThermoScan; cold or hot exposure affects readings) | 88 to 89 | yes / yes / yes |
+| Tympanic temperature measurement (Braun ThermoScan: new cover, ready beep, snug not deep, POS = reposition; not with blood or drainage in the canal; hearing aids out 20 min; cold or hot exposure affects readings) | 88 to 89 | yes / yes / yes |
 
 Pages without a scope entry have not been read yet; check the page before quoting it.
 

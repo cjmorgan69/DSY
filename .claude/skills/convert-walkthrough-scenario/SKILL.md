@@ -37,7 +37,7 @@ scenarios and related links") first. The content rules in the `build-microlearni
 6. **Link it.** Add the scenario under its protocol code in `microlearning/shared/related.js` (with the module), and
    make sure the module's and the scenario's `index.html` load `related.js`. Update the scenario's card text on
    `/ao/index.html` if it described the old content.
-7. **Bump the cache tag** in every converted and microlearning `index.html`.
+7. **Bump the cache tag:** run `node .claude/tools/stamp.js` (one new tag on every page; do not edit tags by hand), then run `node .claude/tools/check.js` and fix anything under PROBLEMS.
 8. **Test** with Playwright at phone width (390 px): no console errors, no sideways scroll; Facilitator shows prompts,
    expected reasoning and teaching and no decision tiles; Student hides every `.fac-only` and shows the tiles and
    cards; every decision's correct option says "Yes"; `?mode=student` opens the student version; the module and the
