@@ -4,7 +4,7 @@
 
 Say plainly whether a thing is on main or still on a branch.
 
-## What it is (15 Nov 2026, on a branch, not merged; the database part is already applied)
+## What it is (15 Nov 2026, live, PR #238 merged)
 
 The owner sent SAAS FRM-384 Volunteer Vehicle Checklist - Mercedes VS 30, version 2.2 (30.10.2025) and asked for a
 web app the crew can use to check the ambulance: separate sections so several crew can check at once, every check
