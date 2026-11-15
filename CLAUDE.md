@@ -22,6 +22,7 @@ settings or play files you leave in the container: send files with the file tool
   Templates are in Supabase `public.scenarios`. Read `scenarios/README.md`. 15 templates (every converted walk-through except spinal).
 - `/training/` - the training-session app (Supabase). `/teams/`, `/region/` - team and region pages. A session can
   have several lessons (`sessions.lesson_ids`, in order; a trigger keeps `lesson_id` = the first one).
+- `/vehicle-check/` - the crew's ambulance check (FRM-384, Mercedes VS30) with a stock-to-order list (Supabase).
 - `/.claude/tools/` - `stamp.js` (cache tag) and `check.js` (site check). `/.claude/status/` - notes per area.
 
 ## Owner's monthly vehicle log
@@ -104,6 +105,7 @@ working in before changing anything there; do not load them all.
 | `rosters.md` | Roster Apps Script backend and the decisions for the Supabase roster move |
 | `ar-course.md` | Ambulance Responder course page, bookings, Day 6 stations and slides |
 | `tools.md` | Obstetric companion, treatment simulator |
+| `vehicle-check.md` | Vehicle check app (`/vehicle-check/`), FRM-384 checklist data, stock-to-order list, Supabase tables |
 
 What exists for each topic (module, walk-through, MDT job, customiser, stations, PCR job, slides) is listed in
 `hub/topics.js`; the check script confirms each entry points at something real. The 34 AO protocols, what is covered
