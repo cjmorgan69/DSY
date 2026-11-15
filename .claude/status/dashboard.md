@@ -53,3 +53,14 @@ bookings (paramedic cover, placeholders like "LEP40") hidden unless ticked. Supa
 only through table RLS); SQL in `supabase/contribution-setup.sql`, applied by Claude 13 Nov 2026. `paging_jobs.team`
 is blank for most jobs before 7 Nov 2026, so matching falls back to `paging_team(unit)` (TB, CU, PT, CF). Roster
 history in Supabase starts 3 Nov 2026 (the sync keeps past bookings).
+
+## Retro car dash
+
+`/dashboard/car/` (15 Nov 2026, the owner's just-for-fun idea; leader gate; linked from both dashboard footers): an
+old-school instrument cluster (walnut panel, chrome-rimmed cream dials, ignition needle sweep on load). Its own inline
+script reads the same live sources as `dash.js`: fuel = share of team-hours left in today's operational day with crew,
+speedometer = crew on shift now (0 to 24), tacho = jobs in the last 24 h without Port Lincoln and Ceduna crews (red
+from 6), tasks gauge = open tasks (green 0-5, amber 5-10, red 10-15), temperature = today's top for the chosen town
+(tap to change; shares `dsy-dash-town`). Warning lights: low crew (cover under 25%), P1 in 24 h, overdue task, lessons
+needed in the next 4 weeks, hot and windy day in 7, no signal (a source failed), lights (after 6 pm), all good.
+Odometer = jobs in 7 days, trip = next training session, DSY FM radio cycles messages. Gauges link to their pages.
