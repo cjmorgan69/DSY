@@ -101,8 +101,8 @@ Reference modules: `microlearning/stroke/` (shorthand keys, decision aid, narrat
    or `rn`) so it shows on that group page (`/microlearning/ao/` etc.) and in the hub tile count, and check the card
    there (title, protocol version, video and quiz chips). Set `minutes` in `content.js` so the card shows a time.
 8b. **Bump the cache tag.** Scripts are cached for about 4 hours, so if you changed `shared/`, `theme.css` or any
-   `content.js`, change the `?v=` tag in every `microlearning/index.html` and `microlearning/*/index.html` (and
-   `window.ASSET_VERSION` in the landing page) to a new value, e.g. the date plus a letter. See the README.
+   `content.js`, run `node .claude/tools/stamp.js`: it puts one new tag on every page and on `window.ASSET_VERSION`.
+   Do not edit tags by hand. Then run `node .claude/tools/check.js` and fix anything under PROBLEMS.
 8c. **Link it.** Add the module to `microlearning/shared/related.js` under its protocol code, so it links each way with
    any walk-through scenario (in `/modules/`) on the same protocol. To convert an old scenario to the template, see
    "Walk-through scenarios" in the README: check every clinical point against the protocol first and list the changes

@@ -42,7 +42,7 @@ Not linked from any page yet.
 Text sent to the voice spells numbers and letters out ("I M adrenaline, five hundred micrograms", "E O C",
 "one mil"). Each file is trimmed, loudness-evened (`loudnorm I=-17`) and saved mono 64 kbps. ElevenLabs flow:
 "DSY treatment simulator: David (anaphylaxis) voices". To change a line: change its `text` in `cases/david.js`,
-record that one line again (ask the owner first: it costs credits) and bump the `?v=` tags in `index.html`.
+record that one line again (ask the owner first: it costs credits) and bump the cache tag (`node .claude/tools/stamp.js`).
 
 ## Adding a case
 

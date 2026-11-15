@@ -37,8 +37,8 @@ module built from panels). Change the two content paths in `data/manifest.js`, `
 `build.js` the module panel names, MDT captions, PCR job and stations. Add the deck to `SHOTS` in `tools/mdt-shots.js`
 (job id, start time, minutes between statuses, hospital, call sign: XX81 for jobs 0800 to 1800, XX181 for 1800 to
 0800, owner), check the MDT job matches the walk-through's
-times, place and hospital, then take the screenshots. Add `slides:` to the topic in `hub/topics.js` and bump its tag.
-Bump the `?v=` tags in the deck's pages and `data/manifest.js` whenever the deck or the shared engine changes.
+times, place and hospital, then take the screenshots. Add `slides:` to the topic in `hub/topics.js` and bump the cache tag:
+run `node .claude/tools/stamp.js` (one new tag on every page; do not edit tags by hand) whenever the deck or the shared engine changes.
 
 ## The ACPO night
 
