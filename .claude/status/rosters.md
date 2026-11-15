@@ -32,3 +32,28 @@ bookings default to the signed-in person (name, ID, level pre-filled), managers 
 separate "Not on the list" option takes a free-text name for paramedics, LEP40 and other outside crew (no ID,
 excluded from volunteer hours), old typed-name bookings matched to people once with doubtful ones shown to the
 owner. Planned order: a whole-repo health check thread (report first, no changes), then the Supabase roster thread.
+
+## Supabase roster move: staged plan and decisions (15 Nov 2026)
+
+Plan agreed with the owner on 15 Nov 2026. NOTHING BUILT YET. Stages: 1 database foundation (clusters, 12 teams,
+call-sign prefixes, live-from date, roster tables, booking rules in the database); 2 people (accounts for Central
+Eyre and West Coast crews, clinical level on the person); 3 email (sending service on dsytraining.com, leaders-only
+settings page, all TRIAL-addressed); 4 new roster on the test team (Summer Bay) only; 5 import rehearsal from the
+three sheets and one-off name matching; 6 dashboards (manager, operations, coverage gaps, lead dashboard) rebuilt
+beside the current ones and compared; 7 switch day, all three clusters together, sheets left untouched so going back
+is one line per cluster in `teams.js`; 8 tidy up (stop the daily PC copy, archive the Apps Scripts, sheets read-only).
+
+Owner's decisions (15 Nov 2026):
+
+- Lower Eyre's "live from" date is set on switch day (it already emails Country Rostering); Central Eyre and West
+  Coast start as trial.
+- Manager passwords go: a manager is a signed-in person with a manager role for their team.
+- "Must change password" is enforced in the database in stage 2, before more accounts are made.
+- A Team Leader (TL) must be able to enter someone else on the roster, and to enter placeholders such as "LEP40"
+  (the "Not on the list" free-text entry: no ID, excluded from volunteer hours). Claude's reading, not yet confirmed
+  by the owner: placeholders are for TLs and managers only, and the page also gets a "Not you? Switch person" step
+  for shared devices.
+
+Still needed from the owner before stage 1: call-sign prefixes for the 12 teams, the TL for each cluster and the
+operations manager, the managers for each team. The manager dashboard file (`getManagerDashboard`) is not in the
+repo: the owner pastes it for stage 6.
