@@ -715,23 +715,6 @@ function operationalSummaryText(blocks, change) {
   }).join("\n");
 }
 
-/*
- * For the subject line: the one code to enter, if every block ends
- * on the same code.
- */
-function singleOperationalCode(blocks) {
-  if (!blocks.length) {
-    return "";
-  }
-
-  const code = blocks[0].after;
-
-  return blocks.every(function(block) { return block.after === code; })
-    ? code
-    : "";
-}
-
-
 /* =========================================================
  * HARD-COPY CHANGE EMAIL NOTIFICATIONS
  *
@@ -785,8 +768,6 @@ function sendHardCopyChangeNotifications(details) {
       );
     }
 
-    const singleCode = singleOperationalCode(blocks);
-
     const restrictionLines = blocks.length
       ? operationalSummaryText(blocks, details.operational) + "\n"
       : "";
@@ -817,8 +798,7 @@ function sendHardCopyChangeNotifications(details) {
             "Roster change: " + details.action +
             " — " + details.team +
             " — " + details.memberName +
-            " — " + formatNotificationDateTime(details.start) +
-            (singleCode ? " — GRS restriction " + operationalCodeLabel(singleCode) : ""),
+            " — " + formatNotificationDateTime(details.start),
 
           body:
             "Hello Country Rostering,\n\n" +
