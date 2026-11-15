@@ -133,6 +133,9 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - Not linked from anywhere, owner to say which can go: `/LOGO files/`, `/modules/asthma/`, `/modules/rural-ed/`,
   `/tools/roster-share/`, `/modules/rosters/lowereyre/test/`, `/modules/rosters/lowereyre/coverage-gaps-6h/`.
   `/modules/hypoglycaemia/` is an old page replaced by the new module and walk-through.
+- Old branches: 50 are fully merged into main and safe to delete, 41 more hold one or two commits that never reached
+  main (mostly notes or superseded roster work). Claude's session is not allowed to delete branches: the owner
+  deletes them on GitHub (Branches page), or turns on "Automatically delete head branches" in the repo settings.
 - The test row in `public.feedback` (id 1, source `test`) is still there: the delete needs the owner's approval prompt.
 
 ## Open work
