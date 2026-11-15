@@ -71,9 +71,10 @@
  *     - Country Rostering is emailed only when the shift starts MORE
  *       than 24 hours from now. Within 24 hours, the user is asked
  *       to phone instead.
- * - The emails lead with the operational restriction to enter in
- *   GRS for each affected time block inside the sent period, before
- *   and after the change. The person's own flexibility choice is
+ * - Below the shift times, the emails give the operational
+ *   restriction for the hours affected inside the sent period
+ *   ("will be B" or "remains unchanged"), by time block if it
+ *   differs across the shift. The person's own flexibility choice is
  *   not shown in the emails (it is already part of that code).
  * - Email failures never block the roster change. The response flag
  *   countryRosteringEmailed is true only when that email was sent.
@@ -684,18 +685,32 @@ function formatBlockRange(startMs, endMs) {
   );
 }
 
-function operationalSummaryText(blocks) {
+/*
+ * One line per block, e.g. "The restriction for this shift will be B."
+ * or "The restriction for this shift remains unchanged." "This shift"
+ * is used when one block covers all the hours affected; otherwise
+ * each block names its times.
+ */
+function operationalSummaryText(blocks, change) {
   if (!blocks.length) {
     return "";
   }
 
+  const wholeShift =
+    blocks.length === 1 &&
+    change &&
+    blocks[0].startMs === change.fromMs &&
+    blocks[0].endMs === change.toMs;
+
   return blocks.map(function(block) {
     return (
-      "  " + formatBlockRange(block.startMs, block.endMs) + ":  " +
-      operationalCodeLabel(block.after) +
+      "The restriction for " +
+      (wholeShift
+        ? "this shift"
+        : formatBlockRange(block.startMs, block.endMs)) +
       (block.after === block.before
-        ? "  (no change)"
-        : "  (was " + operationalCodeLabel(block.before) + ")")
+        ? " remains unchanged."
+        : " will be " + operationalCodeLabel(block.after) + ".")
     );
   }).join("\n");
 }
@@ -772,15 +787,11 @@ function sendHardCopyChangeNotifications(details) {
 
     const singleCode = singleOperationalCode(blocks);
 
-    const restrictionSection = blocks.length
-      ? "RESTRICTION TO ENTER IN GRS (whole crew, sent roster period)\n" +
-        operationalSummaryText(blocks) + "\n\n" +
-        "This is worked out by our roster from everyone booked for " +
-        "each hour.\n\n"
+    const restrictionLines = blocks.length
+      ? operationalSummaryText(blocks, details.operational) + "\n"
       : "";
 
     const shiftDetails =
-      "CREW CHANGE\n" +
       "Change: " + details.action + "\n" +
       "Team: " + details.team + "\n" +
       "Crew member: " + details.memberName + "\n" +
@@ -792,6 +803,7 @@ function sendHardCopyChangeNotifications(details) {
           formatNotificationDateTime(details.previousStart) + " to " +
           formatNotificationDateTime(details.previousEnd) + "\n"
         : "") +
+      restrictionLines +
       "Change made: " + formatNotificationDateTime(new Date()) +
       " (Adelaide time)";
 
@@ -812,7 +824,6 @@ function sendHardCopyChangeNotifications(details) {
             "Hello Country Rostering,\n\n" +
             "Could you please update the roster already submitted " +
             "for " + details.team + ".\n\n" +
-            restrictionSection +
             shiftDetails + "\n\n" +
             "Thanks heaps.\n" +
             "Kind regards,\n" +
@@ -878,7 +889,6 @@ function sendHardCopyChangeNotifications(details) {
     const managerBody =
       "A change has been made within the roster already submitted " +
       "to Country Rostering.\n\n" +
-      restrictionSection +
       shiftDetails + "\n" +
       "Hours until shift start: " + hoursUntilShift.toFixed(1) + "\n\n" +
       "Country Rostering notification:\n" +
