@@ -20,7 +20,8 @@ settings or play files you leave in the container: send files with the file tool
   versions (their `index.html` loads `microlearning/shared/module.js`); the rest are the old standalone style.
 - `/scenarios/` - trial scenario customiser: pick a walk-through and change its local details (names, places, times).
   Templates are in Supabase `public.scenarios`. Read `scenarios/README.md`. 15 templates (every converted walk-through except spinal).
-- `/training/` - the training-session app (Supabase). `/teams/`, `/region/` - team and region pages.
+- `/training/` - the training-session app (Supabase). `/teams/`, `/region/` - team and region pages. A session can
+  have several lessons (`sessions.lesson_ids`, in order; a trigger keeps `lesson_id` = the first one).
 - `/.claude/tools/` - `stamp.js` (cache tag) and `check.js` (site check). `/.claude/status/` - notes per area.
 
 ## Owner's monthly vehicle log

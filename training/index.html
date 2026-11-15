@@ -156,7 +156,8 @@
         '<span class="small muted">' + timeRange(s) + (s.location ? " - " + esc(s.location) : "") + "</span>" +
         (ledBy(s) ? '<span class="small muted">' + esc(ledBy(s)) + "</span>" : "") +
         '<span class="row">' + groupChip({ name: s.group_name, type: s.group_type }) + typeChip(s.session_type) + (mine ? '<span class="chip good">You are facilitating</span>' : "") + "</span>" +
-        (s.lesson_summary ? '<span class="small muted">' + esc(s.lesson_summary) + "</span>" : "") + "</div>" +
+        (s.lessons && s.lessons.length > 1 ? s.lessons.map(function (l) { return '<span class="small muted"><strong>' + esc(l.title) + "</strong>" + (l.summary ? " - " + esc(l.summary) : "") + "</span>"; }).join("")
+          : s.lesson_summary ? '<span class="small muted">' + esc(s.lesson_summary) + "</span>" : "") + "</div>" +
         '<div class="act">' + (mine ? '<button class="btn ghost small" type="button" data-act="roster" data-id="' + s.id + '">Team list</button>' : "") +
         (booked ? '<span class="chip good">Booked</span><button class="btn danger small" data-act="cancel" data-id="' + s.id + '">Cancel</button>'
           : '<button class="btn small" data-act="book" data-id="' + s.id + '">Book a spot</button>') + "</div></div></li>";
@@ -215,7 +216,19 @@
 
   /* ---------- leader: shared pieces ---------- */
   function bookedCount(sid) { return S.bookings.filter(function (b) { return b.session_id === sid && b.status === "booked"; }).length; }
-  function lessonOf(s) { return s.lesson_id ? by(s.lesson_id, S.lessons) : null; }
+  function lessonIds(s) { return s.lesson_ids && s.lesson_ids.length ? s.lesson_ids : s.lesson_id ? [s.lesson_id] : []; }
+  function lessonsOf(s) { return lessonIds(s).map(function (id) { return by(id, S.lessons); }).filter(Boolean); }
+  function lessonPicker(ids) {
+    var chosen = ids.map(function (id) { return by(id, S.lessons); }).filter(Boolean);
+    var rest = S.lessons.filter(function (l) { return ids.indexOf(l.id) < 0; }).sort(function (a, b) { return a.title.localeCompare(b.title); });
+    return '<span style="font-size:.85rem;font-weight:600;color:var(--muted)">Lessons</span>' +
+      (chosen.length ? '<ul class="stack">' + chosen.map(function (l, i) {
+        return '<li class="row" style="justify-content:space-between"><input type="hidden" name="lesson" value="' + l.id + '"><span>' + (i + 1) + ". " + esc(l.title) + '</span><button class="link" type="button" data-act="droplesson" data-id="' + l.id + '">Remove</button></li>';
+      }).join("") + "</ul>" : '<p class="small muted">No lesson yet.</p>') +
+      (rest.length ? '<label>Add a lesson<select id="s-addlesson" data-act="addlesson"><option value="">Choose a lesson to add</option>' + rest.map(function (l) { return '<option value="' + l.id + '">' + esc(l.title) + "</option>"; }).join("") + "</select></label>" : "");
+  }
+  function pickedLessons() { return Array.prototype.map.call(document.querySelectorAll('#s-lessons input[name="lesson"]'), function (x) { return x.value; }); }
+  function redrawPicker(ids) { var b = document.getElementById("s-lessons"); if (b) b.innerHTML = lessonPicker(ids); }
 
   function renderLeader() {
     var html = header("Team leader - " + nameOf(S.profile));
@@ -240,10 +253,10 @@
       }).join("") + '<button aria-pressed="' + S.showPast + '" data-act="past">Show past</button></div>';
     if (!list.length) return html + '<div class="panel empty">No sessions to show.</div>';
     return html + '<ul class="panel list">' + list.map(function (s) {
-      var l = lessonOf(s), n = bookedCount(s.id), team = s.session_type === "team";
-      var set = l ? '<span class="chip good">Lesson set</span>' : s.topic ? '<span class="chip hi">Topic set</span>' : '<span class="chip warn">' + (team ? "Needs topic" : "Needs lesson") + "</span>";
+      var ls = lessonsOf(s), n = bookedCount(s.id), team = s.session_type === "team";
+      var set = ls.length ? '<span class="chip good">' + (ls.length > 1 ? ls.length + " lessons" : "Lesson set") + "</span>" : s.topic ? '<span class="chip hi">Topic set</span>' : '<span class="chip warn">' + (team ? "Needs topic" : "Needs lesson") + "</span>";
       return '<li><button class="item" data-act="open" data-id="' + s.id + '">' + tile(s.session_date) +
-        '<div class="what"><span class="t">' + (l ? esc(l.title) : s.topic ? esc(s.topic) : '<span class="muted">' + (team ? "No topic yet" : "No lesson yet") + "</span>") + "</span>" +
+        '<div class="what"><span class="t">' + (ls.length ? esc(ls.map(function (l) { return l.title; }).join(" + ")) : s.topic ? esc(s.topic) : '<span class="muted">' + (team ? "No topic yet" : "No lesson yet") + "</span>") + "</span>" +
         '<span class="small muted">' + timeRange(s) + (s.location ? " - " + esc(s.location) : "") + (ledBy(s) ? " - " + esc(ledBy(s)) : "") + '</span><span class="row">' + groupChip(groupOf(s.group_id)) + typeChip(s.session_type) + "</span></div>" +
         '<div class="act">' + set + (team && !s.facilitator_name ? '<span class="chip warn">Needs facilitator</span>' : "") + '<span class="chip">' + n + " booked</span>" + (S.reflections[s.id] ? '<span class="chip good">Reflection</span>' : s.session_date < t ? '<span class="chip warn">Needs reflection</span>' : "") + "</div></button></li>";
     }).join("") + "</ul>";
@@ -265,9 +278,9 @@
       '<label>Who leads<select id="s-type" name="type"><option value="leader"' + (s.session_type === "leader" ? " selected" : "") + '>Leader-led</option><option value="team"' + (s.session_type === "team" ? " selected" : "") + ">Team-led</option></select></label>" +
       '<label>Facilitator<select id="s-fac" name="fac">' + facOpts + "</select></label></div>" +
       '<label>Visitor or other name (leave blank when choosing from the list)<input id="s-facname" name="facname" value="' + esc(visitor) + '" autocomplete="off"></label>' +
-      '<div class="grid2"><label>Lesson<select id="s-lesson" name="lesson"><option value="">No lesson yet</option>' + S.lessons.map(function (l) { return '<option value="' + l.id + '"' + (l.id === s.lesson_id ? " selected" : "") + ">" + esc(l.title) + "</option>"; }).join("") + "</select></label>" +
-      '<label>Location<input id="s-loc" name="location" value="' + esc(s.location || "") + '"></label></div>' +
-      '<label>Session name (shown when there is no lesson)<input id="s-topic" name="topic" value="' + esc(s.topic || "") + '"></label>' +
+      '<div class="stack" id="s-lessons">' + lessonPicker(lessonIds(s)) + "</div>" +
+      '<label>Location<input id="s-loc" name="location" value="' + esc(s.location || "") + '"></label>' +
+      '<label>Session name (shown when there are no lessons)<input id="s-topic" name="topic" value="' + esc(s.topic || "") + '"></label>' +
       '<label>Notes for you<input id="s-notes" name="notes" value="' + esc(s.notes || "") + '"></label>' +
       '<div class="row"><button class="btn" type="submit">Save session</button>' + (S.delSession === s.id ? "" : '<button class="btn danger" type="button" data-act="asksession" data-id="' + s.id + '">Delete session</button>') + "</div></form>" +
       (S.delSession === s.id ? '<div class="notice stack"><p><strong>Delete this session?</strong> Its bookings and attendance are removed too. This cannot be undone.</p><div class="row"><button class="btn danger small" type="button" data-act="deletesession" data-id="' + s.id + '">Yes, delete session</button><button class="btn ghost small" type="button" data-act="keepsession">Keep it</button></div></div>' : "") + "</section>" +
@@ -310,7 +323,7 @@
     else if (fid) { fname = nameOf(by(fid, S.profiles)); }
     else if (type === "leader") { fid = S.profile.id; fname = nameOf(S.profile); }
     return sb.from("sessions").update({
-      lesson_id: f.get("lesson") || null, location: f.get("location") || null, notes: f.get("notes") || null,
+      lesson_ids: f.getAll("lesson"), location: f.get("location") || null, notes: f.get("notes") || null,
       session_type: type, facilitator_id: fid, facilitator_name: fname, topic: f.get("topic").trim() || null
     }).eq("id", id)
       .then(function (r) { if (r.error) throw r.error; toast("Session saved."); return load().then(render); }).catch(fail);
@@ -326,7 +339,7 @@
     var html = '<div class="row"><button class="btn" data-act="newlesson">New lesson</button></div>';
     if (!S.lessons.length) return html + '<div class="panel empty">No lessons yet. Add your first one, then assign it to sessions.</div>';
     return html + '<ul class="panel list">' + S.lessons.map(function (l) {
-      var n = S.sessions.filter(function (s) { return s.lesson_id === l.id; }).length;
+      var n = S.sessions.filter(function (s) { return lessonIds(s).indexOf(l.id) > -1; }).length;
       var sh = S.shares.filter(function (x) { return x.lesson_id === l.id; }).length;
       return '<li><button class="item" data-act="editlesson" data-id="' + l.id + '"><div class="what"><span class="t">' + esc(l.title) + "</span>" +
         (l.summary ? '<span class="small muted">' + esc(l.summary) + "</span>" : "") + '</div><div class="act">' + (sh ? '<span class="chip hi">Shared with ' + sh + "</span>" : "") + '<span class="chip ' + (n ? "good" : "warn") + '">' + n + " session" + (n === 1 ? "" : "s") + "</span></div></button></li>";
@@ -351,8 +364,8 @@
       '<div class="stack"><h3>Share with</h3><p class="small muted">Chosen people can open this lesson, its links and its files from their own login. They need an account.</p>' + shareList(l) + "</div>" +
       '<h3>Use this lesson in</h3>' +
       (upcoming.length ? '<ul>' + upcoming.map(function (s) {
-        return '<li><label class="check"><input type="checkbox" name="sess" value="' + s.id + '"' + (l.id && s.lesson_id === l.id ? " checked" : "") + "> <span>" + esc(parseDate(s.session_date).toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" })) + " - " + esc((groupOf(s.group_id) || {}).name) + "</span>" +
-          (s.lesson_id && s.lesson_id !== l.id ? ' <span class="chip warn">Has another lesson</span>' : "") + "</label></li>";
+        return '<li><label class="check"><input type="checkbox" name="sess" value="' + s.id + '"' + (l.id && lessonIds(s).indexOf(l.id) > -1 ? " checked" : "") + "> <span>" + esc(parseDate(s.session_date).toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" })) + " - " + esc((groupOf(s.group_id) || {}).name) + "</span>" +
+          (function (k) { return k ? ' <span class="chip">Also ' + k + " other lesson" + (k > 1 ? "s" : "") + "</span>" : ""; })(lessonIds(s).filter(function (x) { return x !== l.id; }).length) + "</label></li>";
       }).join("") + "</ul>" : '<p class="muted">No upcoming sessions.</p>') +
       '<div class="row"><button class="btn" type="submit">Save lesson</button>' + (l.id ? '<button class="btn danger" type="button" data-act="deletelesson" data-id="' + l.id + '">Delete</button>' : "") + "</div></form>";
   }
@@ -423,10 +436,13 @@
     return p.then(function (r) {
       if (r.error) throw r.error;
       var lid = r.data.id, t = todayStr();
-      var off = S.sessions.filter(function (s) { return s.lesson_id === lid && s.session_date >= t && checked.indexOf(s.id) < 0; }).map(function (s) { return s.id; });
       var ops = [];
-      if (checked.length) ops.push(sb.from("sessions").update({ lesson_id: lid }).in("id", checked));
-      if (off.length) ops.push(sb.from("sessions").update({ lesson_id: null }).in("id", off));
+      S.sessions.forEach(function (s) {
+        if (s.session_date < t) return;
+        var ids = lessonIds(s), has = ids.indexOf(lid) > -1, want = checked.indexOf(s.id) > -1;
+        if (want && !has) ops.push(sb.from("sessions").update({ lesson_ids: ids.concat(lid) }).eq("id", s.id));
+        else if (!want && has) ops.push(sb.from("sessions").update({ lesson_ids: ids.filter(function (x) { return x !== lid; }) }).eq("id", s.id));
+      });
       var want = f.getAll("share"), have = S.shares.filter(function (x) { return x.lesson_id === lid; }).map(function (x) { return x.member_id; });
       var addS = want.filter(function (m) { return have.indexOf(m) < 0; }), delS = have.filter(function (m) { return want.indexOf(m) < 0; });
       if (addS.length) ops.push(sb.from("lesson_shares").insert(addS.map(function (m) { return { lesson_id: lid, member_id: m }; })));
@@ -601,6 +617,7 @@
     },
     openfile: function (d) { return openFile(d.id); },
     removefile: function (d) { return removeFile(d.id); },
+    droplesson: function (d) { redrawPicker(pickedLessons().filter(function (x) { return x !== d.id; })); },
     editperson: function (d) { S.personEdit = d.id; render(); window.scrollTo(0, 0); },
     personback: function () { S.personEdit = null; render(); }
   };
@@ -620,6 +637,7 @@
     else if (t.dataset.act === "role") setRole(t.dataset.mid, t.value);
     else if (t.dataset.act === "upload") uploadFiles(t.dataset.lid, t.files, t);
     else if (t.dataset.act === "uploadphoto") uploadPhoto(t.dataset.gid, t.files);
+    else if (t.dataset.act === "addlesson" && t.value) { redrawPicker(pickedLessons().concat(t.value)); var a = document.getElementById("s-addlesson"); if (a) a.focus(); }
   });
   /* drag and drop: highlight the drop zone, and stop the browser opening a file dropped elsewhere */
   function hasFiles(e) { return e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], "Files") >= 0; }
