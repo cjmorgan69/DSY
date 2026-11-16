@@ -177,7 +177,7 @@
   });
   $("cNow").addEventListener("click", function () { selHour = null; drawRoster(); drawCrew(); });
 
-  /* ---------- tasks (Supabase public.dashboard_tasks, leaders only) ---------- */
+  /* ---------- tasks (Supabase public.dashboard_tasks: each leader sees only their own) ---------- */
   var tasks = [], showDone = false;
   function loadTasks() {
     return sb.from("dashboard_tasks").select("id,title,due_date,done,done_at,created_at").order("created_at")

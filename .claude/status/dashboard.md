@@ -84,3 +84,12 @@ Team chips; team -> cluster from `modules/rosters/shared/teams.js`; remembered i
 - The pager feed now covers all Eyre Peninsula postcodes (owner): the old "postcodes 5605, 5606, 5607, 5631" note on
   the dashboard was replaced.
 - Later: move Lower Eyre's copy to `roster-sync` too so nothing depends on the owner's PC.
+
+## Tasks are per leader (16 Nov 2026)
+
+Owner: each Team Leader has their own task list. `dashboard_tasks` policies now allow a leader to read, add, change and
+delete only rows where `created_by` = themselves (the column defaults to the signed-in user). `quick_add_keys.owner_id`
+says whose list a key adds to; the Siri key belongs to the lead instructor, and `quick_add_task` writes
+`created_by = owner_id`. The 3 existing tasks (all the lead instructor's) were given to them. Checked: the lead
+instructor sees 3, Campbell 0; Siri still answers. SQL `supabase/tasks-per-leader.sql`, applied by Claude 16 Nov 2026.
+Another leader who wants Siri needs their own key (a new `quick_add_keys` row with their `owner_id`).
