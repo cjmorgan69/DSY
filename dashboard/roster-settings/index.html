@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<script src="/shared/gate.js?v=20261117b" data-level="leader"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Roster Email Settings</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/training/theme.css?v=20261117b">
+<style>
+/* Roster email settings (stage 3 of the Supabase roster, 16 Nov 2026): who gets the roster change emails.
+   Leaders see every cluster and edit their own; the lead instructor sets each cluster's "live from" date.
+   Database: supabase/roster-stage3.sql (roster_settings_* functions); sender: supabase/functions/roster-email. */
+.wrap { width:min(820px,100%); }
+.hero { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.8rem; padding:1.1rem 1.25rem; border-radius:20px;
+  color:#fff; background:linear-gradient(135deg,#1f5b43 0%,#174a36 55%,#2f6f8f 130%); }
+.hero h1 { font-size:1.4rem; } .hero p { color:rgba(255,255,255,.82); font-size:.92rem; margin-top:.2rem; }
+.hbtn { display:inline-flex; align-items:center; padding:.45rem .9rem; border-radius:999px; background:rgba(255,255,255,.14); color:#fff; text-decoration:none; border:1px solid rgba(255,255,255,.28); font-size:.9rem; }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:1rem 1.1rem; display:flex; flex-direction:column; gap:.8rem; }
+.card h2 { font-size:1.15rem; display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; }
+.card h3 { font-size:1rem; margin-top:.3rem; }
+label { display:flex; flex-direction:column; gap:.3rem; font-size:.9rem; min-width:0; }
+select, input { font:inherit; padding:.55rem .7rem; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink); min-width:0; width:100%; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:.7rem; } @media (max-width:560px) { .grid2 { grid-template-columns:1fr; } }
+.row { display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; }
+.btn { border:0; border-radius:999px; padding:.55rem 1.05rem; background:var(--brand); color:var(--brand-ink); font-weight:600; cursor:pointer; font-size:.92rem; }
+.btn.ghost { background:none; color:var(--ink); border:1px solid var(--line); font-weight:500; }
+.btn.small { padding:.35rem .8rem; font-size:.85rem; }
+.btn.danger { background:none; color:var(--danger); border:1px solid var(--line); font-weight:500; }
+.tag { font-size:.74rem; font-weight:700; border-radius:999px; padding:.15rem .6rem; white-space:nowrap; }
+.tag.trial { background:color-mix(in srgb,var(--accent) 22%,var(--surface)); color:color-mix(in srgb,var(--accent) 45%,var(--ink)); }
+.tag.live { background:color-mix(in srgb,var(--ok) 18%,var(--surface)); color:var(--ok); }
+.tag.off { background:var(--bg); color:var(--muted); }
+.team { border-top:1px solid var(--line); padding-top:.7rem; display:flex; flex-direction:column; gap:.5rem; }
+.mgr { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto auto; gap:.5rem; align-items:center; }
+@media (max-width:560px) { .mgr { grid-template-columns:1fr; } }
+.mgr b { font-size:.92rem; } .mgr span { font-size:.8rem; color:var(--muted); }
+.msg { font-size:.88rem; } .msg.ok { color:var(--ok); } .msg.err { color:var(--danger); }
+.note { font-size:.82rem; color:var(--muted); }
+.log li { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.4rem; padding:.45rem 0; border-top:1px solid var(--line); font-size:.86rem; }
+.log li:first-child { border-top:0; }
+[hidden] { display:none !important; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero">
+    <div><h1>Roster email settings</h1><p>Who gets the roster change emails, for each cluster and team</p></div>
+    <a class="hbtn" href="/dashboard/">← Dashboard</a>
+  </header>
+  <p class="note">Emails come from "<i>Team</i> Team Roster" &lt;EProsters@dsytraining.com&gt;; replies go to the team's managers.
+    While a cluster is on <b>trial</b>, every roster email goes only to its trial address, marked TRIAL, and nothing reaches Country Rostering or the managers.
+    These settings are for the new roster; the current Google Sheet rosters keep their own email settings until switch day.</p>
+  <div id="clusters"><p class="note">Loading…</p></div>
+  <section class="card"><h2>Recent roster emails</h2><ul class="log" id="recent"><li class="note">Loading…</li></ul></section>
+</main>
+<script>
+(function () {
+  "use strict";
+  var sb = window.supabase.createClient("https://ekaodnbnpsuayvmxvxbm.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW9kbmJucHN1YXl2bXh2eGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzIxMzQsImV4cCI6MjEwNzM0ODEzNH0.q3lTeCQAQjYeMUNl6lwsrxUAsTijJikABW4Ua2N4bmI");
+  var $ = function (id) { return document.getElementById(id); };
+  var TZ = "Australia/Adelaide", data = null;
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function when(iso) { return new Intl.DateTimeFormat("en-AU", { timeZone: TZ, weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }).format(new Date(iso)); }
+  function today() { return new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date()); }
+  function input(id, label, value, disabled, type) {
+    return '<label>' + label + '<input id="' + id + '" type="' + (type || "email") + '" value="' + esc(value || "") + '"' + (disabled ? " disabled" : "") +
+      (type === "date" ? "" : ' inputmode="email" autocomplete="off" spellcheck="false"') + '></label>';
+  }
+  function status(c) {
+    if (!c.live_from) return '<span class="tag trial">Trial</span>';
+    return c.live_from > today() ? '<span class="tag trial">Trial until ' + esc(c.live_from) + '</span>' : '<span class="tag live">Live since ' + esc(c.live_from) + '</span>';
+  }
+  function render() {
+    var html = data.clusters.map(function (c, i) {
+      var ed = c.can_edit, k = "c" + i;
+      var teams = data.teams.filter(function (t) { return t.cluster === c.cluster; }).map(function (t, j) {
+        var mg = t.managers.map(function (m, n) {
+          var id = k + "t" + j + "m" + n;
+          return '<div class="mgr"><div><b>' + esc(m.name) + '</b><br><span>' + esc(m.staff_id || "") + '</span></div>' +
+            '<input id="' + id + '" type="email" inputmode="email" autocomplete="off" spellcheck="false" placeholder="Email for roster alerts" value="' + esc(m.notify_email || "") + '"' + (t.can_edit ? "" : " disabled") + '>' +
+            (t.can_edit ? '<button class="btn small" type="button" data-save-mgr="' + id + '" data-g="' + t.group_id + '" data-m="' + m.member_id + '">Save</button>' +
+              '<button class="btn small danger" type="button" data-del-mgr data-g="' + t.group_id + '" data-m="' + m.member_id + '" data-name="' + esc(m.name) + '">Remove</button>' : "") + '</div>';
+        }).join("");
+        var add = "";
+        if (t.can_edit && t.members) {
+          var have = {}; t.managers.forEach(function (m) { have[m.member_id] = 1; });
+          var opts = t.members.filter(function (m) { return !have[m.member_id]; }).map(function (m) {
+            return '<option value="' + m.member_id + '">' + esc(m.name) + (m.staff_id ? " (" + esc(m.staff_id) + ")" : "") + '</option>'; }).join("");
+          add = opts ? '<div class="row"><select id="' + k + "t" + j + 'add"><option value="">Add a manager from the team…</option>' + opts + '</select>' +
+            '<button class="btn small ghost" type="button" data-add-mgr="' + k + "t" + j + 'add" data-g="' + t.group_id + '">Add</button></div>' : "";
+        }
+        return '<div class="team"><h3>' + esc(t.team) + '</h3>' + (mg || '<p class="note">No roster manager yet' + (t.can_edit ? "" : "") + '. The cluster\'s Team Leader stands in.</p>') + add + '</div>';
+      }).join("");
+      return '<section class="card" data-cluster="' + esc(c.cluster) + '"><h2>' + esc(c.cluster) + ' ' + status(c) + '</h2>' +
+        (data.all_clusters ? '<div class="row">' + '<label style="flex:1 1 12rem">Live from (blank = trial)<input id="' + k + 'live" type="date" value="' + esc(c.live_from || "") + '"></label>' +
+          '<button class="btn small ghost" type="button" data-live="' + k + 'live" style="align-self:flex-end">Set date</button></div>' : "") +
+        '<div class="grid2">' + input(k + "trial", "Trial address", c.trial_email, !ed) + input(k + "area", "Area manager", c.area_manager_email, !ed) +
+        input(k + "cr", "Country Rostering", c.country_rostering_email, !ed) + input(k + "cc", "Country Rostering copy (optional)", c.country_rostering_cc, !ed) + '</div>' +
+        (ed ? '<div class="row"><button class="btn" type="button" data-save-cluster="' + k + '">Save addresses</button>' +
+          '<button class="btn ghost" type="button" data-test="' + esc(c.cluster) + '">Send a test email</button><span class="msg" id="' + k + 'msg"></span></div>'
+          : '<p class="note">View only: another cluster.</p>') +
+        '<h3>Team managers</h3><p class="note">They get the roster alerts, and replies to roster emails go to them.</p>' + teams + '</section>';
+    }).join("");
+    $("clusters").innerHTML = html;
+    var r = data.recent || [];
+    $("recent").innerHTML = r.length ? r.map(function (x) {
+      var what = x.kind === "test" ? "Test email · " + esc(x.cluster) : esc(x.action || "Change") + " · " + esc(x.team || x.cluster);
+      var st = x.sent_at ? '<span class="tag live">Sent ' + esc(when(x.sent_at)) + '</span>'
+        : x.error ? '<span class="tag off" title="' + esc(x.error) + '">Not sent (' + x.attempts + ' tries): ' + esc(String(x.error).slice(0, 80)) + '</span>'
+        : '<span class="tag trial">Waiting</span>';
+      return '<li><span>' + what + ' · ' + esc(when(x.created_at)) + '</span>' + st + '</li>';
+    }).join("") : '<li class="note">No roster emails yet.</li>';
+  }
+  function load() {
+    return sb.rpc("roster_settings_get").then(function (r) {
+      if (r.error) throw r.error; data = r.data; render();
+    }).catch(function (e) { $("clusters").innerHTML = '<p class="msg err">Could not load: ' + esc(e.message || e) + '</p>'; });
+  }
+  function say(k, text, ok) { var m = $(k + "msg"); if (m) { m.textContent = text; m.className = "msg " + (ok ? "ok" : "err"); } }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    var k, cl;
+    if ((k = b.getAttribute("data-save-cluster"))) {
+      cl = b.closest("[data-cluster]").getAttribute("data-cluster");
+      sb.rpc("roster_settings_save_cluster", { p_cluster: cl, p_trial: $(k + "trial").value, p_area: $(k + "area").value, p_cr: $(k + "cr").value, p_cc: $(k + "cc").value })
+        .then(function (r) { if (r.error) say(k, r.error.message); else { say(k, "Saved.", true); } });
+    } else if ((cl = b.getAttribute("data-test"))) {
+      k = b.closest("[data-cluster]").querySelector("[data-save-cluster]").getAttribute("data-save-cluster");
+      sb.rpc("roster_send_test", { p_cluster: cl }).then(function (r) {
+        if (r.error) say(k, r.error.message); else { say(k, "Test sent to the trial address. Check the inbox (and spam) in a minute.", true); setTimeout(load, 8000); }
+      });
+    } else if ((k = b.getAttribute("data-save-mgr"))) {
+      sb.rpc("roster_settings_save_manager", { p_group: b.getAttribute("data-g"), p_member: b.getAttribute("data-m"), p_email: $(k).value })
+        .then(function (r) { if (r.error) alert(r.error.message); else { b.textContent = "Saved"; setTimeout(function () { b.textContent = "Save"; }, 2000); } });
+    } else if (b.hasAttribute("data-del-mgr")) {
+      if (!confirm("Remove " + b.getAttribute("data-name") + " as a roster manager for this team?")) return;
+      sb.from("roster_managers").delete().eq("group_id", b.getAttribute("data-g")).eq("member_id", b.getAttribute("data-m"))
+        .then(function (r) { if (r.error) alert(r.error.message); load(); });
+    } else if ((k = b.getAttribute("data-add-mgr"))) {
+      var who = $(k).value; if (!who) return;
+      sb.from("roster_managers").insert({ group_id: b.getAttribute("data-g"), member_id: who })
+        .then(function (r) { if (r.error) alert(r.error.message); load(); });
+    } else if ((k = b.getAttribute("data-live"))) {
+      cl = b.closest("[data-cluster]").getAttribute("data-cluster");
+      var v = $(k).value || null;
+      var q = v ? cl + " goes LIVE from " + v + ": from then on, roster emails go to Country Rostering and the managers, not the trial address. Set it?"
+                : cl + " goes back to TRIAL: roster emails go only to the trial address. Set it?";
+      if (!confirm(q)) return;
+      sb.rpc("roster_settings_set_live", { p_cluster: cl, p_date: v }).then(function (r) { if (r.error) alert(r.error.message); load(); });
+    }
+  });
+  (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve()).then(load);
+})();
+</script>
+</body>
+</html>
