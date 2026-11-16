@@ -108,3 +108,7 @@ only need ambulance ID and name (level optional). Rehearsed in a rolled-back run
 
 Email sender name (owner, 16 Nov 2026): unique to each team, "<Team> Team Roster" (e.g. "Tumby Bay Team Roster",
 "Port Kenny Team Roster"), replacing "Crew Shift Roster". Sending address on dsytraining.com: not chosen yet.
+Email decisions (owner, 16 Nov 2026): sending address roster@dsytraining.com; Reply-To = that team's roster
+manager; trial address = the owner's personal Gmail (goes in the Supabase settings in stage 3, never in this public
+repo). Still to do by the owner, at a computer: Resend account, DNS records in Cloudflare (dsytraining.com is on
+Cloudflare and has no email records yet), RESEND_API_KEY as a Supabase Edge Function secret.
