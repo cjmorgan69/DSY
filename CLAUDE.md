@@ -155,6 +155,6 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario
   (`/modules/hypo/`) is to be converted when asked.
 - Retire `/course/` (Google Sheet app) once the current AR group finishes; `/ar/course/` replaces it.
-- Planned: a request portal (`/request/`) with an inbox panel on the dashboard; the Supabase roster (see `rosters.md`; stage 1 of 8, the database, done 16 Nov 2026).
+- Planned: a request portal (`/request/`) with an inbox panel on the dashboard; the Supabase roster (see `rosters.md`; stages 1 (database) and 3 (emails) of 8 done 16 Nov 2026).
 
 Update this list as work is done.

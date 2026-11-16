@@ -128,3 +128,25 @@ early). Tumby Bay (the owner's team) is the first to use it. Idea raised by the 
 push app notifications first (roster page installable as a Home Screen app with a "Turn on reminders" button; iPhone
 needs iOS 16.4+ and the Home Screen icon; free), planned for stage 4 with the scheduled send. SMS (ClickSend or
 MessageMedia, opt-in, own mobile number) only if too few people turn notifications on.
+
+## Stage 3 done (16 Nov 2026): roster emails, applied by Claude
+
+- Resend account and the dsytraining.com DNS records in Cloudflare set up by the owner; the key is the Supabase Edge
+  Function secret `RESEND_API_KEY` (never in the repo).
+- SQL `supabase/roster-stage3.sql` (migration `roster_stage3_email`), rehearsed first in a rolled-back run:
+  `roster_contacts` per cluster (trial, area manager, Country Rostering, CC; leaders only), `roster_managers.notify_email`
+  (hidden from crews), `roster_email_queue`. `roster_book` / `roster_edit` / `roster_cancel` queue a change email when
+  the shift is before the team's sent cut-off, with the hour-by-hour restriction before and after (to the cut-off).
+  A trigger wakes the edge function; pg_cron job `roster-email-retry` (every 15 min) retries anything unsent, 3 tries.
+- Edge function `roster-email` (`supabase/functions/roster-email/index.ts`, verify_jwt on): same rules and wording as
+  Code.gs. Live: Country Rostering only if the shift is more than 24 h away (Reply-To the team managers, optional CC),
+  then one alert to the team managers and area manager. Trial (no live date, or before it): one email to the trial
+  address only, subject "TRIAL — ...", showing what Country Rostering and the managers would get. Never emails Country
+  Rostering twice.
+- Trial address for all three clusters: the owner's personal Gmail (in Supabase only). Live dates, area manager,
+  Country Rostering and manager emails still blank: fill on the settings page before a cluster goes live.
+- `/dashboard/roster-settings/` (leader gate; "Roster emails" link in both dashboard footers): addresses per cluster,
+  manager emails, add or remove team managers, "Send a test email", the live-from date (lead instructor only), and
+  the last 15 roster emails with any error.
+- Tested 16 Nov 2026: a test email and a sample TRIAL change email for Tumby Bay sent through Resend.
+- Nothing calls this from the live roster pages yet: the change emails start with the new roster page (stage 4).
