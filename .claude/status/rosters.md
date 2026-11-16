@@ -277,3 +277,12 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
 - The old alias list points at spellings that no longer match the account names (e.g. Cathy / Catherine Haarsma),
   so those came out as "check" or "none". The doubtful Lower Eyre names were put to the owner on 17 Nov 2026:
   decisions not yet given. Nothing has been copied into `roster_shifts`.
+- Owner's decisions on the Lower Eyre names (17 Nov 2026, "all yes"), applied by Claude: 15 typed names accepted
+  as their accounts (Bernadette = Bernie Crettenden, Cathy Haarsma / Harrsma = Catherine Haarsma, David = Dave
+  Chapman, Midge = Michelle Guidera, Fi = Fiona Dahlitz, Vicky DeVries = Victoria De Vries, Bec = Rebecca
+  Rutherford, and the people below); 10 placeholders (LEP40 and CO85 variants, J Wadsworth, TT); "RTL Test Only"
+  left out. Accounts given full names: Anike Helder, Peter Foster, Michelle Parker (were first names only).
+  Added to team lists: Pauline Britza and Paul Rice to Tumby Bay (also Coffin Bay), Ian MacCrimmon to Cummins.
+- Dry run of the Lower Eyre import: 618 of 620 active shifts ready (the 2 left out are the test entry); every
+  shift is on whole hours, a valid length, level and flexibility; nobody overlaps themselves; no hour has more than
+  3 people. Still nothing copied into `roster_shifts`: the real copy happens on switch day (stage 7).
