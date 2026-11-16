@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261117h" data-level="leader"></script>
+<script src="/shared/gate.js?v=20261117k" data-level="leader"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/training/theme.css?v=20261117h">
+<link rel="stylesheet" href="/training/theme.css?v=20261117k">
 <style>
 /* Crewing gaps (16 Nov 2026, owner): each Team Leader sets their own rules for the minimum crew across their teams
    (which teams are checked together, how many are needed, which clinical levels count, how long a gap must be to
@@ -73,7 +73,7 @@ details.fold[open] > summary::after { content:"▲"; }
 [hidden] { display:none !important; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="/modules/rosters/shared/teams.js?v=20261117h"></script>
+<script src="/modules/rosters/shared/teams.js?v=20261117k"></script>
 </head>
 <body>
 <main class="wrap">
@@ -182,7 +182,7 @@ details.fold[open] > summary::after { content:"▲"; }
     var withs = LEVELS.filter(function (l) { return g.levels[l] === "with"; });
     var t = "Minimum " + g.min + (g.teams.length > 1 ? " across " + g.teams.join(", ") : " at " + g.teams[0]) + ". Counted: " + (full.join(", ") || "nobody");
     if (withs.length) t += "; " + withs.join(", ") + " only with " + (full.length === 1 ? "a " + full[0] : "one of those") + " in the same town";
-    t += ". " + (g.minHours ? "Gaps of " + g.minHours + " h or more." : "Every gap.");
+    t += ". " + (g.minHours ? "Gaps of " + g.minHours + " h or more" : "Every gap") + ", counted by shift (Day 08:00–18:00, Night 18:00–08:00).";
     return t;
   }
 
@@ -236,8 +236,24 @@ details.fold[open] > summary::after { content:"▲"; }
       x.highest = Math.max.apply(null, x.parts.map(function (p) { return p.count; }));
     });
     empty = empty.filter(keep).sort(function (a, b) { return a.from - b.from; });
-    return { from: from, to: to, list: list, gaps: gaps, empty: empty };
+    // Each gap is counted and listed by volunteer shift (owner, 16 Nov 2026): Day 08:00-18:00 and Night 18:00-08:00.
+    // The rule's gap length is judged on the whole joined gap; a long gap then shows as one entry per shift.
+    var segs = [];
+    gaps.forEach(function (gp) {
+      for (var date = addDays(dateOf(gp.from), -1); at(date, 8) < gp.to; date = addDays(date, 1)) {
+        [["Day", at(date, 8), at(date, 18)], ["Night", at(date, 18), at(addDays(date, 1), 8)]].forEach(function (w) {
+          var f = Math.max(w[1], gp.from), t = Math.min(w[2], gp.to);
+          if (t <= f || f >= to || t <= now) return;
+          var ps = gp.parts.filter(function (p) { return p.from < t && p.to > f; }).map(function (p) { return { from: Math.max(p.from, f), to: Math.min(p.to, t), count: p.count }; });
+          segs.push({ from: f, to: t, minutes: (t - f) / MINUTE, parts: ps, date: date, name: w[0], whole: gp,
+            lowest: Math.min.apply(null, ps.map(function (p) { return p.count; })), highest: Math.max.apply(null, ps.map(function (p) { return p.count; })) });
+        });
+      }
+    });
+    return { from: from, to: to, list: list, gaps: gaps, segs: segs, empty: empty };
   }
+  function segTitle(sg) { return dayLabel(sg.date) + " " + sg.name + " · " + time(sg.from) + "–" + time(sg.to) + " · " + duration(sg.minutes); }
+  function longer(sg) { return sg.whole.minutes > sg.minutes ? "Part of a longer gap: " + when(sg.whole) + " (" + howLong(sg.whole) + ")" : ""; }
   function booked(g, gap) { return (gap.lowest === gap.highest ? gap.lowest : gap.lowest + "–" + gap.highest) + " of " + g.min; }
   // "18:00–22:00 1 of 2, 22:00–08:00 0 of 2" when the number booked changes during a gap.
   function breakdown(g, gap) {
@@ -280,10 +296,10 @@ details.fold[open] > summary::after { content:"▲"; }
   }
   function copyText(g, r) {
     var lines = [groupTitle(g) + ": crewing below the minimum, " + dayLabel(startDate) + " to " + dayLabel(addDays(startDate, DAYS - 1)), ruleText(g), ""];
-    if (!r.gaps.length) lines.push("No gaps.");
-    r.gaps.forEach(function (gp) {
-      var extra = breakdown(g, gp);
-      lines.push("- " + when(gp) + " (" + howLong(gp) + "), " + booked(g, gp) + " booked" + (extra ? ": " + extra : ""));
+    if (!r.segs.length) lines.push("No gaps.");
+    r.segs.forEach(function (sg) {
+      var extra = breakdown(g, sg);
+      lines.push("- " + segTitle(sg).replace(/ · /g, ", ") + ", " + booked(g, sg) + " booked" + (extra ? ": " + extra : ""));
     });
     if (r.empty.length) {
       lines.push("", "Town with nobody counted in their own right:");
@@ -301,19 +317,20 @@ details.fold[open] > summary::after { content:"▲"; }
 
     var total = r.gaps.reduce(function (s, x) { return s + (Math.min(x.to, r.to) - Math.max(x.from, r.from)) / MINUTE; }, 0);
     var totals = el("div", null, "totals"), t1 = el("div", null, "total"), t2 = el("div", null, "total");
-    t1.appendChild(el("strong", String(r.gaps.length))); t1.appendChild(el("span", r.gaps.length === 1 ? "gap" : "gaps"));
+    t1.appendChild(el("strong", String(r.segs.length))); t1.appendChild(el("span", (r.segs.length === 1 ? "gap" : "gaps") + ", counted by shift"));
     t2.appendChild(el("strong", total ? duration(total) : "0 h")); t2.appendChild(el("span", "below the minimum in these 8 days"));
     totals.appendChild(t1); totals.appendChild(t2); card.appendChild(totals);
     card.appendChild(strip(r));
     card.appendChild(el("p", "Each bar is one day, 08:00 to 08:00, with a mark at 18:00. Red is a listed gap.", "note"));
 
     var ul = el("ul", null, "gaps");
-    if (!r.gaps.length) ul.appendChild(el("li", g.minHours ? "No gaps of " + g.minHours + " hours or more." : "No gaps. The minimum is met for the whole period."));
-    r.gaps.forEach(function (gp) {
-      var li = el("li"); li.appendChild(el("strong", when(gp) + " · " + howLong(gp)));
+    if (!r.segs.length) ul.appendChild(el("li", g.minHours ? "No gaps of " + g.minHours + " hours or more." : "No gaps. The minimum is met for the whole period."));
+    r.segs.forEach(function (gp) {
+      var li = el("li"); li.appendChild(el("strong", segTitle(gp)));
       var sub = el("span", null, "sub"); sub.appendChild(el("span", booked(g, gp) + " booked", gp.highest === 0 ? "tag none" : "tag some"));
       var extra = breakdown(g, gp); if (extra) sub.appendChild(document.createTextNode(" " + extra));
-      li.appendChild(sub); li.appendChild(whoBlock(g, r, gp)); ul.appendChild(li);
+      li.appendChild(sub); var more = longer(gp); if (more) li.appendChild(el("span", more, "sub"));
+      li.appendChild(whoBlock(g, r, gp)); ul.appendChild(li);
     });
     card.appendChild(ul);
 
