@@ -56,10 +56,13 @@ const STANDARD_FEATURES = [
 
 const ROSTER_TEAM_LIST = {
     // Lower Eyre (plus the test roster)
+    // Summer Bay runs on the new Supabase roster (sign-in needed); its
+    // page also loads roster-supabase.js. apiUrl is not used by it.
     test: {
         name: "Summer Bay",
         cluster: "Lower Eyre",
-        apiUrl: TEST_API
+        apiUrl: TEST_API,
+        backend: "supabase"
     },
     tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },

@@ -151,3 +151,24 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
 - Tested 16 Nov 2026: a test email and a sample TRIAL change email for Tumby Bay sent through Resend; the owner
   confirmed both arrived and look good. On main (PR #245, merged 16 Nov 2026); the settings page is live.
 - Nothing calls this from the live roster pages yet: the change emails start with the new roster page (stage 4).
+
+## Stage 4a (17 Nov 2026): the roster page on Supabase for the test team, Summer Bay
+
+- `modules/rosters/shared/roster-supabase.js`: answers the same requests as the Apps Script (same shapes) from
+  Supabase, for any team with `backend: "supabase"` in `teams.js` (only `test` = Summer Bay so far). Its page
+  (`lowereyre/test/`) loads gate.js (student), supabase-js and the adapter before `roster.js`.
+- `roster.js` changes are all behind `ROSTER_BACKEND`: requests go to the adapter; manager passwords are not asked
+  (`askManagerPassword`); the name box is replaced by the signed-in person, or for managers and leaders a "Booking
+  for" list (Me, each team member, "Not on the list…" with a free-text box for placeholders such as LEP40); own
+  notes get Delete; the PDF window marks the roster sent with the manager's sign-in. Real team pages are unchanged.
+- Names: unique per page; a second person showing the same name gets "(2)". "Change the name shown" saves
+  `profiles.preferred_name`; "Not you? Switch person" signs out to `/signin/`. Manager controls are hidden for crew.
+- While trial, nobody is told to phone Country Rostering (owner's decision).
+- SQL `supabase/roster-stage4a.sql` (migration `roster_stage4a_test_team`, applied by Claude): group type `test`
+  (Summer Bay, cluster Lower Eyre, the lead instructor as member and manager), `roster_me(team)`,
+  `roster_snapshot(group, from, to)`, `roster_book` accepts test teams. The email function treats a test team as
+  always trial (deployed, version 2).
+- Tested with a stand-in database in a headless browser (book self, book another member, placeholder, cancel, post
+  a note, crew view) and the database functions as the owner in SQL. NOT yet tried with a real sign-in: owner to try.
+- Still to build in stage 4: Send roster to Country Rostering (PDF, full names and IDs), Schedule set-up, the
+  24-hour app-notification reminder, then moving the real teams (stage 7).

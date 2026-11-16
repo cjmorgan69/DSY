@@ -532,6 +532,18 @@ const TEAM_FEATURES = new Set(TEAM_CONFIG.features || []);
 
 const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
+/*
+ * Teams with backend: "supabase" in teams.js load roster-supabase.js
+ * first. It signs the person in, answers the same requests the Apps
+ * Script does (callRosterApi) and fills in the name and level.
+ * Manager actions are decided by the person's sign-in, not a password.
+ */
+const ROSTER_BACKEND = window.DSY_ROSTER_BACKEND || null;
+
+function askManagerPassword(question) {
+    return ROSTER_BACKEND ? "signed-in" : window.prompt(question);
+}
+
         const MAX_CREW = 3;
         const HOURS_PER_DAY = 24;
         const MAX_SHIFT_HOURS = 24;
@@ -878,6 +890,23 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             nameInput.value = currentUser;
             clinicalLevelSelect.value = currentClinicalLevel;
             restrictionSelect.value = "N";
+
+            if (ROSTER_BACKEND) {
+                // The signed-in person (or, for a manager, the person
+                // chosen in "Booking for") replaces the typed name.
+                ROSTER_BACKEND.attach({
+                    nameInput,
+                    clinicalLevelSelect,
+                    setIdentity(name, level) {
+                        nameInput.value = name || "";
+                        handleNameChange();
+                        if (level === undefined) return;
+                        clinicalLevelSelect.value =
+                            CLINICAL_LEVELS.includes(level) ? level : "";
+                        clinicalLevelSelect.dispatchEvent(new Event("change"));
+                    }
+                });
+            }
 
             const today = startOfDay(new Date());
             bookingDateInput.min = formatDateKey(today);
@@ -1324,6 +1353,10 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
         function callRosterApi(action, payload = {}, options = {}) {
             const timeoutMs = options.timeoutMs || 60000;
+
+            if (ROSTER_BACKEND) {
+                return ROSTER_BACKEND.call(action, payload, timeoutMs);
+            }
 
             const requestData = {
                 ...payload,
@@ -2165,7 +2198,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
                 if (!window.confirm(message)) return;
 
-                const managerPassword = window.prompt(
+                const managerPassword = askManagerPassword(
                     "Enter the roster manager password:"
                 );
 
@@ -2308,7 +2341,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
 
                 if (!confirmed) return;
 
-                const managerPassword = window.prompt(
+                const managerPassword = askManagerPassword(
                     "Enter the roster manager password to reset the status:"
                 );
 
@@ -4266,7 +4299,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                  * Only this posting browser receives its private
                  * deletion key, so only it gets the normal Delete button.
                  */
-                if (deleteTokens[message.id]) {
+                if (deleteTokens[message.id] || (ROSTER_BACKEND && ROSTER_BACKEND.isMyMessage(message.id))) {
                     const deleteButton =
                         document.createElement("button");
 
@@ -4398,7 +4431,8 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             }
 
             const deleteTokens = readMessageDeleteTokens();
-            const deleteToken = deleteTokens[messageId];
+            const deleteToken =
+                deleteTokens[messageId] || (ROSTER_BACKEND ? "signed-in" : "");
 
             if (!deleteToken) {
                 showToast(
@@ -4448,7 +4482,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 return;
             }
 
-            const managerPassword = window.prompt(
+            const managerPassword = askManagerPassword(
                 "Enter the roster manager password:"
             );
 
@@ -4593,7 +4627,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
             }
 
             if (!teamHoursUnlocked) {
-                const managerPassword = window.prompt(
+                const managerPassword = askManagerPassword(
                     "Enter the roster manager password to view team hours:"
                 );
 
@@ -6687,6 +6721,7 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                         ? rosterSentUntil.toISOString()
                         : null,
                 apiUrl: APPS_SCRIPT_URL,
+                supabase: ROSTER_BACKEND ? ROSTER_BACKEND.restInfo() : null,
                 sentStorageKey: COUNTRY_ROSTER_SENT_STORAGE_KEY,
                 showOnDateChange: TEAM_FEATURES.has("sectionLayout"),
                 generatedAt: new Date().toISOString()
@@ -7755,7 +7790,24 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 let data;
 
                 try {
-                    const response = await fetch(snapshot.apiUrl, {
+                    // Supabase team: the signed-in manager marks it sent.
+                    const sb = snapshot.supabase;
+                    const response = sb
+                        ? await fetch(sb.url + "/rest/v1/rpc/roster_set_sent", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                apikey: sb.key,
+                                Authorization: "Bearer " + sb.token
+                            },
+                            body: JSON.stringify({
+                                p_group: sb.groupId,
+                                p_until: payload.sentUntil,
+                                p_editing: false
+                            }),
+                            signal: controller.signal
+                        })
+                        : await fetch(snapshot.apiUrl, {
                         method: "POST",
                         headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify({
@@ -7767,6 +7819,29 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                         credentials: "omit",
                         signal: controller.signal
                     });
+
+                    if (sb) {
+                        const body = await response.json();
+
+                        if (!response.ok) {
+                            const refused = new Error(
+                                (body && body.message) || "The request was rejected."
+                            );
+                            refused.serverRejected = true;
+                            throw refused;
+                        }
+
+                        return {
+                            success: true,
+                            team: snapshot.teamName,
+                            rosterSubmission: {
+                                team: snapshot.teamName,
+                                sentUntil: body.sent_until,
+                                markedSentAt: body.marked_at,
+                                updatedAt: body.updated_at
+                            }
+                        };
+                    }
 
                     if (!response.ok) {
                         throw new Error(
@@ -7860,15 +7935,24 @@ const APPS_SCRIPT_URL = TEAM_CONFIG.apiUrl;
                 setSentStatus("", "");
 
                 panel.scrollIntoView({ block: "nearest" });
-                document.getElementById("markSentPassword").focus();
+                const passwordInput = document.getElementById("markSentPassword");
+
+                if (snapshot.supabase) {
+                    // Signed-in manager: no password to type.
+                    passwordInput.required = false;
+                    passwordInput.closest("label").hidden = true;
+                } else {
+                    passwordInput.focus();
+                }
             }
 
             async function submitMarkSent(event) {
                 event.preventDefault();
 
                 const cutOff = pendingCutOff;
-                const managerPassword =
-                    document.getElementById("markSentPassword").value;
+                const managerPassword = snapshot.supabase
+                    ? "signed-in"
+                    : document.getElementById("markSentPassword").value;
 
                 if (!cutOff || !managerPassword) return;
 
