@@ -254,3 +254,5 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   Reset sent status stay. Apps Script teams keep the old arrangement until they move.
 - Stage 4 is complete on the test roster. Next: stage 2 (people for Central Eyre and West Coast), stage 5 (import
   rehearsal), stage 6 (dashboards), stage 7 (switch day).
+- Stage 4d is on main and live (PR #250, merged 17 Nov 2026); service worker, manifest and icons checked on the
+  live site; real team pages checked still loading from the Apps Scripts.
