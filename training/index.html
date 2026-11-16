@@ -9,13 +9,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261116g">
+<link rel="stylesheet" href="theme.css?v=20261116h">
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261116g"></script>
+<script src="config.js?v=20261116h"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -133,8 +133,15 @@
     return q(sb.from("profiles").select("*").eq("id", S.user.id)).then(function (rows) {
       S.profile = rows[0] || { id: S.user.id, full_name: "", role: "member" };
       if (S.profile.must_change_password) { location.replace("/signin/?change=1&next=" + encodeURIComponent("/training/")); return new Promise(function () {}); }
-      if (S.cluster === null) S.cluster = myCluster() || "all";
-      return isLeader() ? loadLeader() : loadMember();
+      /* relief cover (16 Nov 2026): someone covering for a leader works as a leader for that leader's cluster */
+      return sb.rpc("my_access").then(function (a) {
+        var x = (a && a.data) || {};
+        S.realLeader = S.profile.role === "leader";
+        S.covering = x.covering || [];
+        if (x.role === "leader" && !S.realLeader) S.profile = Object.assign({}, S.profile, { role: "leader", cluster: x.cluster || null });
+        if (S.cluster === null) S.cluster = myCluster() || "all";
+        return isLeader() ? loadLeader() : loadMember();
+      });
     });
   }
 
@@ -243,7 +250,8 @@
   function redrawPicker(ids) { var b = document.getElementById("s-lessons"); if (b) b.innerHTML = lessonPicker(ids); }
 
   function renderLeader() {
-    var html = header("Team leader - " + nameOf(S.profile) + (myCluster() ? " (" + myCluster() + ")" : ""));
+    var html = header("Team leader - " + nameOf(S.profile) + (myCluster() ? " (" + myCluster() + ")" : "") +
+      ((S.covering || []).length ? " - covering for " + S.covering.map(function (c) { return c.name || "a leader"; }).join(", ") : ""));
     if (S.detail) {
       $app.innerHTML = html + renderSessionDetail();
       var ds = by(S.detail, S.sessions);
@@ -517,8 +525,8 @@
       '<section class="panel pad stack"><h2>' + esc(nameOf(p)) + "</h2><h3>Teams and courses</h3><ul>" +
       S.groups.map(function (g) { return '<li><label class="check"><input type="checkbox" data-act="member" data-mid="' + p.id + '" data-gid="' + g.id + '"' + (inG[g.id] ? " checked" : "") + (canEdit(g.id) ? "" : " disabled") + "> <span>" + esc(g.name) + "</span> " + (g.type === "course" ? '<span class="chip course">Course</span>' : g.cluster ? '<span class="small muted">' + esc(g.cluster) + "</span>" : "") + "</label></li>"; }).join("") + "</ul>" +
       (p.id !== S.profile.id ? '<form class="stack" data-form="resetpw" data-id="' + p.id + '"><h3>Reset password</h3><p class="small muted">Set a temporary password and tell them. They can sign in with it straight away.</p><label>New password (8 or more characters)<input name="pw" type="text" minlength="8" autocomplete="off" required></label><button class="btn small" type="submit">Set password</button></form>' : "") +
-      '<label>Role<select id="p-role" data-act="role" data-mid="' + p.id + '"><option value="member"' + (p.role === "member" ? " selected" : "") + '>Member</option><option value="leader"' + (p.role === "leader" ? " selected" : "") + ">Leader</option></select></label>" +
-      (p.role === "leader" ? (myCluster() ? '<p class="small muted">Cluster: ' + esc(p.cluster || "All clusters") + ". Only the lead instructor can change a leader's cluster.</p>" :
+      (S.realLeader ? '<label>Role<select id="p-role" data-act="role" data-mid="' + p.id + '"><option value="member"' + (p.role === "member" ? " selected" : "") + '>Member</option><option value="leader"' + (p.role === "leader" ? " selected" : "") + ">Leader</option></select></label>" : '<p class="small muted">Role: ' + (p.role === "leader" ? "Leader" : "Member") + " (a relief team leader can't change roles).</p>") +
+      (p.role === "leader" ? (myCluster() || !S.realLeader ? '<p class="small muted">Cluster: ' + esc(p.cluster || "All clusters") + ". Only the lead instructor can change a leader's cluster.</p>" :
         '<label>Cluster (this leader can change sessions and team lists only in their own cluster)<select data-act="pcluster" data-mid="' + p.id + '"><option value="">All clusters</option>' +
         CLUSTERS.map(function (c) { return '<option value="' + c + '"' + (p.cluster === c ? " selected" : "") + ">" + c + "</option>"; }).join("") + "</select></label>") : "") + "</section>";
   }

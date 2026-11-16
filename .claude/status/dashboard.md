@@ -96,8 +96,27 @@ Another leader who wants Siri needs their own key (a new `quick_add_keys` row wi
 
 ## Google Calendar link per account (16 Nov 2026)
 
-Owner asked that the calendar link be unique to each user. It is now saved in `profiles.gcal_url` (https only, up to
-1000 characters; the person updates their own row through `profiles_update_own`) instead of on the device, so it
+Owner asked that the calendar link be unique to each user. It is now saved in the private table `user_settings`
+(`gcal_url`, https only, up to 1000 characters; each person reads and writes only their own row; it was briefly a
+`profiles` column, moved because leaders can read every profile) instead of on the device, so it
 follows the leader to any device and two leaders on one computer don't share it. `dash.js` moves an old on-device link
 (`dsy-dash-gcal`) to the account once and removes it. Blank = Google Calendar for whoever is signed into Google.
 Column added by Claude 16 Nov 2026.
+
+## Relief cover (16 Nov 2026)
+
+`/dashboard/relief/` (leader gate; linked from both dashboard footers). Owner: a leader can hand their access to a
+relief Team Leader until an end date; Campbell and David can set up their own; relievers get Grant access and password
+resets but NOT the leader's Google Calendar link. Table `public.leader_relief` (leader_id, reliever_id, starts_at,
+ends_at, ended_at): only a real leader inserts, for themselves; no updates, `relief_end(id)` ends early (leader,
+reliever or an all-clusters leader); readable by both people and all-clusters leaders. While active,
+`covering_ids()` makes `is_leader()` and `is_facilitator()` true for the reliever, `my_cluster()` = the covered
+leader's cluster, `can_edit_cluster()` / `can_edit_group()` allow the covered cluster, and the tasks policies include
+the covered leader's tasks. Guards: only a real leader can change leader roles (trigger `protect_profile_leader_role`)
+or reset a leader's password (`leader_set_password`), only a real all-clusters leader can change clusters, and a
+reliever can't hand cover on. `my_access()` returns role, real_leader, cluster and covering for the pages:
+`shared/gate.js` (lets a reliever into leader pages), `/training/` (works as a leader, header "covering for", no
+Role or Cluster settings), `dash.js` (banner, covered leader's tasks labelled with their name), car dash. SQL
+`supabase/relief-setup.sql`, applied by Claude 16 Nov 2026; rehearsed in a rolled-back transaction (Chris -> Dave
+Chapman): Dave got leader access and Chris's 3 tasks, was blocked from resetting Chris's password, making himself a
+leader and handing cover on, could not read calendar links, and lost everything when the cover ended.
