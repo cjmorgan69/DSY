@@ -1,0 +1,11 @@
+-- Supabase roster, stage 5 rehearsal (17 Nov 2026): match the names typed on the old rosters to people's accounts.
+-- Applied by Claude as migration roster_stage5_import_rehearsal. It reads public.roster_bookings (the copy of the
+-- three Google Sheet rosters already kept in Supabase: every team's Active bookings back to Sept 2026) and fills
+-- public.roster_import_names: one row per team and typed name, with the suggested person, how it was matched and
+-- whether it is 'sure', 'check' or 'none'. Nothing touches the live rosters or roster_shifts.
+-- Re-run any time (rows the owner has decided are kept):  select * from public.roster_import_match();
+-- Matching, in order: same name on the team's list (sure); the old alias list (sure); same surname and first name
+-- starting the same (check); same first name and nearly the same surname (check); a single first name that only
+-- one team member has (check); the same name on another team's list (check); otherwise none.
+-- See the migration in the Supabase project for the full SQL (table roster_import_names, roster_import_norm,
+-- roster_import_match; leaders can read the table).

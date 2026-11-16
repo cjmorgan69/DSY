@@ -261,3 +261,19 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   a notification `tag` (a same-tag replacement arrives silently on iPhone), and the "Send a test" message tells
   people to look in Notification Centre if a Focus is on.
   On main and live (PR #251, merged 17 Nov 2026). Stage 4 is complete on the Summer Bay test roster.
+
+## Stage 5 rehearsal (17 Nov 2026): name matching
+
+- The owner gave the three sheet links (17 Nov 2026; IDs kept out of this public repo, they are in the
+  conversation only): Lower Eyre "Bookings", "Central Eyre Bookings", "West Coast Bookings", each with tabs
+  Bookings, Change Log, Messages, Teams. Claude can read them through the Google Sheets connector.
+- The Supabase copy `roster_bookings` already holds every team's ACTIVE bookings back to Sept 2026, so the import
+  runs inside the database from that copy. Only in the sheets: cancelled bookings (not needed) and the Change Log
+  (stays in the sheets as the archive unless the owner wants it copied).
+- `roster_import_names` + `roster_import_match()` (migration `roster_stage5_import_rehearsal`; notes in
+  `supabase/roster-stage5-rehearsal.sql`). First run: Lower Eyre 37 names sure (459 shifts), 6 to check
+  (68 shifts), 20 unmatched (93 shifts, about half are placeholders such as LEP40 and CO85). Central Eyre and West
+  Coast: almost nothing matches yet (56 unmatched names) because those crews have no accounts (stage 2).
+- The old alias list points at spellings that no longer match the account names (e.g. Cathy / Catherine Haarsma),
+  so those came out as "check" or "none". The doubtful Lower Eyre names were put to the owner on 17 Nov 2026:
+  decisions not yet given. Nothing has been copied into `roster_shifts`.
