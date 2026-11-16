@@ -897,6 +897,9 @@ function askManagerPassword(question) {
                 ROSTER_BACKEND.attach({
                     nameInput,
                     clinicalLevelSelect,
+                    refresh() {
+                        void refreshRoster();
+                    },
                     setIdentity(name, level) {
                         nameInput.value = name || "";
                         handleNameChange();
