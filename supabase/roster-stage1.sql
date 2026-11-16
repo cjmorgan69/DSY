@@ -254,7 +254,8 @@ begin
     if not exists (select 1 from public.memberships where group_id = p_group and member_id = m) then
       raise exception 'That person is not on this team''s list. Use "Not on the list" instead.';
     end if;
-    select coalesce(clinical_level, upper(btrim(p_level))) into lvl from public.profiles where id = m;
+    -- Level chosen on the booking form wins; otherwise the level saved on the person (owner, 16 Nov 2026)
+    select coalesce(upper(nullif(btrim(p_level), '')), clinical_level) into lvl from public.profiles where id = m;
   end if;
   if lvl is null or lvl not in ('PARA','AO','AR','AA','REC') then raise exception 'Clinical level must be PARA, AO, AR, AA or REC.'; end if;
 
@@ -265,6 +266,8 @@ begin
   perform public.roster_check_capacity(p_group, m, ph, lvl, p_start, p_end, null);
   insert into public.roster_shifts (request_id, group_id, member_id, placeholder_name, clinical_level, flexibility, starts_at, ends_at, created_by)
   values (p_request_id, p_group, m, ph, lvl, flex, p_start, p_end, uid) returning * into r;
+  -- Booking for yourself saves your level to your account, so it is filled in next time on any device
+  if m = uid then update public.profiles set clinical_level = lvl where id = uid and clinical_level is distinct from lvl; end if;
   insert into public.roster_change_log (group_id, by_id, action, shift_id, details)
   values (p_group, uid, 'Booking added', r.id, jsonb_build_object('start', p_start, 'end', p_end, 'level', lvl, 'flexibility', flex,
           'member', m, 'placeholder', ph, 'before_cutoff', public.roster_before_cutoff(p_group, p_start)));

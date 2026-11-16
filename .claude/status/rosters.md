@@ -99,3 +99,9 @@ still run every roster. Added:
   restriction rules: keep it in step with roster.js and Code.gs.
 - Choices Claude made, told to the owner: cancel and change are now own shift or manager/leader (today anyone on the
   page can cancel any booking); notes are not pruned (the list shows the latest 500).
+
+Clinical level at booking (owner, 16 Nov 2026; applied by Claude, migration `roster_book_saves_level`): crews set
+their level on the booking form, as they do now (today it is saved in the browser). The level chosen on the form is
+used for that shift; booking for yourself saves it to your account, so it is pre-filled next time on any device.
+Earlier shifts keep the level they were booked at. A first booking with no level is refused. So the stage 2 lists
+only need ambulance ID and name (level optional). Rehearsed in a rolled-back run first.
