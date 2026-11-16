@@ -282,6 +282,7 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   dashboards in stage 6.
 - Rules table `public.coverage_rules` (`supabase/coverage-rules-setup.sql`): own row only; a relief Team Leader can
   read the rules of the leader they cover.
-- Tested in a headless browser with stand-in rosters and database. On a branch, not merged. The table is in Supabase
+- Tested in a headless browser with stand-in rosters and database. On main and live (PR #252, merged 16 Nov 2026);
+  signed out, the live page goes to the sign-in. NOT yet tried with a real sign-in: owner to try. The table is in Supabase
   (migration `coverage_rules`, applied by Claude 16 Nov 2026; checked in a rolled-back run: a leader sees only their
   own row, another leader and a student see none).
