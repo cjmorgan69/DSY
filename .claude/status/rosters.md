@@ -62,5 +62,5 @@ Names (owner, 16 Nov 2026): every shift, hour and record is keyed to the ambulan
 a name. Each person may set a preferred name in the roster app (blank = full name); a change shows on all past and
 future shifts. The team roster shows the preferred name only; the ambulance ID is NOT shown on the roster. Managers,
 TLs and the change log see full name and ID beside it. The roster sent to Country Rostering and the change emails use
-the FULL name. Claude suggested also putting the ID on those (private to Country Rostering, helps GRS entry): owner
-to confirm. Placeholders (LEP40 etc.) stay free text with no ID.
+the FULL name. The ambulance ID appears ONLY on the roster document prepared for Country Rostering, beside the full
+name (owner, 16 Nov 2026); not on the team roster or the change emails. Placeholders (LEP40 etc.) stay free text with no ID.
