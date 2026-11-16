@@ -1054,7 +1054,8 @@
                     link("Send a test", guard(async () => {
                         await sendTestReminder();
 
-                        return "Test sent: it should appear in a few seconds.";
+                        return "Test sent. If no banner appears, look in Notification " +
+                            "Centre: a Focus (Sleep, Do Not Disturb) hides banners.";
                     })),
                     link("Turn off", guard(turnOffReminders))
                 );
@@ -1064,7 +1065,8 @@
 
                     await sendTestReminder().catch(() => {});
 
-                    return "Reminders are on. A test notification is on its way.";
+                    return "Reminders are on. A test is on its way. If no banner " +
+                        "appears, look in Notification Centre: a Focus hides banners.";
                 })));
             }
 
