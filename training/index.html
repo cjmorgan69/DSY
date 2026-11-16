@@ -9,13 +9,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261115b">
+<link rel="stylesheet" href="theme.css?v=20261116h">
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261115b"></script>
+<script src="config.js?v=20261116h"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -28,7 +28,7 @@
     user: null, profile: null, tab: location.hash === "#lessons" ? "lessons" : "calendar", view: null,
     reflections: {}, attFilter: null, attSession: null, groups: [], lessons: [], sessions: [], bookings: [], profiles: [], memberships: [],
     mySessions: [], myBookings: {}, filter: "all", typeFilter: "all", showPast: false, authMode: "in", detail: null, lessonEdit: null, personEdit: null,
-    shared: [], files: [], shares: [], roster: [], rosterSession: null, lessonView: null, memberTab: "sessions", delSession: null
+    shared: [], files: [], shares: [], roster: [], rosterSession: null, lessonView: null, memberTab: "sessions", delSession: null, cluster: null
   };
 
   /* ---------- helpers ---------- */
@@ -48,6 +48,17 @@
   }
   function fail(err) { toast(err && err.message ? err.message : "Something went wrong. Try again.", true); }
   function isLeader() { return S.profile && S.profile.role === "leader"; }
+  /* clusters (16 Nov 2026): each team has a cluster; a leader with a cluster sees everything but can only change their own.
+     A leader with no cluster (the lead instructor) changes everything. The database enforces the same rule. */
+  var CLUSTERS = ["Lower Eyre", "Central Eyre", "West Coast"];
+  function myCluster() { return (S.profile && S.profile.cluster) || null; }
+  function canEdit(gid) { var g = groupOf(gid), m = myCluster(); return !m || !g || !g.cluster || g.cluster === m; }
+  function inView(g) { return S.cluster === "all" || !g || !g.cluster || g.cluster === S.cluster; }
+  function clusterChips() {
+    return '<div class="filters" role="group" aria-label="Cluster">' + [["all", "All clusters"]].concat(CLUSTERS.map(function (c) { return [c, c + (c === myCluster() ? " (yours)" : "")]; })).map(function (x) {
+      return '<button aria-pressed="' + (S.cluster === x[0]) + '" data-act="cluster" data-c="' + x[0] + '">' + esc(x[1]) + "</button>";
+    }).join("") + "</div>";
+  }
   function groupChip(g) { return '<span class="chip ' + (g && g.type === "course" ? "course" : "hi") + '">' + esc(g ? g.name : "") + "</span>"; }
   function by(id, list) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
   function groupOf(id) { return by(id, S.groups); }
@@ -122,7 +133,15 @@
     return q(sb.from("profiles").select("*").eq("id", S.user.id)).then(function (rows) {
       S.profile = rows[0] || { id: S.user.id, full_name: "", role: "member" };
       if (S.profile.must_change_password) { location.replace("/signin/?change=1&next=" + encodeURIComponent("/training/")); return new Promise(function () {}); }
-      return isLeader() ? loadLeader() : loadMember();
+      /* relief cover (16 Nov 2026): someone covering for a leader works as a leader for that leader's cluster */
+      return sb.rpc("my_access").then(function (a) {
+        var x = (a && a.data) || {};
+        S.realLeader = S.profile.role === "leader";
+        S.covering = x.covering || [];
+        if (x.role === "leader" && !S.realLeader) S.profile = Object.assign({}, S.profile, { role: "leader", cluster: x.cluster || null });
+        if (S.cluster === null) S.cluster = myCluster() || "all";
+        return isLeader() ? loadLeader() : loadMember();
+      });
     });
   }
 
@@ -231,8 +250,20 @@
   function redrawPicker(ids) { var b = document.getElementById("s-lessons"); if (b) b.innerHTML = lessonPicker(ids); }
 
   function renderLeader() {
-    var html = header("Team leader - " + nameOf(S.profile));
-    if (S.detail) { $app.innerHTML = html + renderSessionDetail(); return; }
+    var html = header("Team leader - " + nameOf(S.profile) + (myCluster() ? " (" + myCluster() + ")" : "") +
+      ((S.covering || []).length ? " - covering for " + S.covering.map(function (c) { return c.name || "a leader"; }).join(", ") : ""));
+    if (S.detail) {
+      $app.innerHTML = html + renderSessionDetail();
+      var ds = by(S.detail, S.sessions);
+      if (ds && !canEdit(ds.group_id)) {   // another cluster's session: view only
+        var g0 = groupOf(ds.group_id), back = $app.querySelector(".back");
+        Array.prototype.forEach.call($app.querySelectorAll("main input, main select, main textarea, main button, #app input, #app select, #app textarea, #app button"), function (el) {
+          if (!el.classList.contains("back") && !el.closest("header")) el.disabled = true;
+        });
+        if (back) back.insertAdjacentHTML("afterend", '<div class="notice"><p><strong>View only.</strong> This session belongs to ' + esc((g0 && g0.cluster) || "another cluster") + '. Only its own cluster\'s leader (or the lead instructor) can change it.</p></div>');
+      }
+      return;
+    }
     html += '<div class="tabs" role="tablist">' + [["calendar", "Calendar"], ["lessons", "Lessons"], ["people", "People"]].map(function (t) {
       return '<button role="tab" aria-selected="' + (S.tab === t[0]) + '" data-act="tab" data-tab="' + t[0] + '">' + t[1] + "</button>";
     }).join("") + "</div>";
@@ -243,11 +274,12 @@
   /* ---------- leader: calendar ---------- */
   function renderCalendar() {
     var t = todayStr();
+    if (S.filter !== "all" && !inView(groupOf(S.filter))) S.filter = "all";
     var list = S.sessions.filter(function (s) {
-      return (S.filter === "all" || s.group_id === S.filter) && (S.typeFilter === "all" || s.session_type === S.typeFilter) && (S.showPast || s.session_date >= t);
+      return inView(groupOf(s.group_id)) && (S.filter === "all" || s.group_id === S.filter) && (S.typeFilter === "all" || s.session_type === S.typeFilter) && (S.showPast || s.session_date >= t);
     });
-    var html = '<div class="filters" role="group" aria-label="Filter by team or course"><button aria-pressed="' + (S.filter === "all") + '" data-act="filter" data-g="all">All</button>' +
-      S.groups.map(function (g) { return '<button aria-pressed="' + (S.filter === g.id) + '" data-act="filter" data-g="' + g.id + '">' + esc(g.name) + "</button>"; }).join("") + "</div>" +
+    var html = clusterChips() + '<div class="filters" role="group" aria-label="Filter by team or course"><button aria-pressed="' + (S.filter === "all") + '" data-act="filter" data-g="all">All</button>' +
+      S.groups.filter(inView).map(function (g) { return '<button aria-pressed="' + (S.filter === g.id) + '" data-act="filter" data-g="' + g.id + '">' + esc(g.name) + "</button>"; }).join("") + "</div>" +
       '<div class="filters" role="group" aria-label="Filter by who leads">' + [["all", "Any session"], ["leader", "Leader-led"], ["team", "Team-led"]].map(function (x) {
         return '<button aria-pressed="' + (S.typeFilter === x[0]) + '" data-act="typefilter" data-t="' + x[0] + '">' + x[1] + "</button>";
       }).join("") + '<button aria-pressed="' + S.showPast + '" data-act="past">Show past</button></div>';
@@ -455,10 +487,15 @@
   function renderPeople() {
     if (S.personEdit) return renderPersonForm();
     if (S.pageEdit) return renderPageForm();
-    var html = '<ul class="panel list">' + (S.profiles.length ? S.profiles.map(function (p) {
+    var shownPeople = S.profiles.filter(function (p) {
+      if (S.cluster === "all") return true;
+      var gs = S.memberships.filter(function (m) { return m.member_id === p.id; });
+      return !gs.length || gs.some(function (m) { return inView(groupOf(m.group_id)); }) || p.cluster === S.cluster;
+    });
+    var html = clusterChips() + '<ul class="panel list">' + (shownPeople.length ? shownPeople.map(function (p) {
       var gs = S.memberships.filter(function (m) { return m.member_id === p.id; }).map(function (m) { return groupChip(groupOf(m.group_id)); }).join(" ");
       return '<li><button class="item" data-act="editperson" data-id="' + p.id + '"><div class="what"><span class="t">' + esc(nameOf(p)) + '</span>' + (p.staff_id ? '<span class="small muted">ID ' + esc(p.staff_id) + "</span>" : "") + '<span class="row">' + (gs || '<span class="small muted">Not in any group</span>') + "</span></div>" +
-        '<div class="act">' + (p.role === "leader" ? '<span class="chip warn">Leader</span>' : "") + "</div></button></li>";
+        '<div class="act">' + (p.role === "leader" ? '<span class="chip warn">Leader' + (p.cluster ? " · " + esc(p.cluster) : "") + '</span>' : "") + "</div></button></li>";
     }).join("") : '<li class="empty">No one has signed up yet. Share the app link and ask your teams to create an account.</li>') + "</ul>";
     html += '<section class="panel pad stack"><h3>Team and region pages</h3><p class="small muted">Photos, information, roster links and policy links are now edited from the Region page.</p><div class="row"><a class="link" href="../region/">Open the Region page</a></div></section>';
     var courses = S.groups.filter(function (g) { return g.type === "course"; });
@@ -486,9 +523,12 @@
     var inG = {}; S.memberships.forEach(function (m) { if (m.member_id === p.id) inG[m.group_id] = true; });
     return '<button class="link back" data-act="personback">Back to people</button>' +
       '<section class="panel pad stack"><h2>' + esc(nameOf(p)) + "</h2><h3>Teams and courses</h3><ul>" +
-      S.groups.map(function (g) { return '<li><label class="check"><input type="checkbox" data-act="member" data-mid="' + p.id + '" data-gid="' + g.id + '"' + (inG[g.id] ? " checked" : "") + "> <span>" + esc(g.name) + "</span> " + (g.type === "course" ? '<span class="chip course">Course</span>' : "") + "</label></li>"; }).join("") + "</ul>" +
+      S.groups.map(function (g) { return '<li><label class="check"><input type="checkbox" data-act="member" data-mid="' + p.id + '" data-gid="' + g.id + '"' + (inG[g.id] ? " checked" : "") + (canEdit(g.id) ? "" : " disabled") + "> <span>" + esc(g.name) + "</span> " + (g.type === "course" ? '<span class="chip course">Course</span>' : g.cluster ? '<span class="small muted">' + esc(g.cluster) + "</span>" : "") + "</label></li>"; }).join("") + "</ul>" +
       (p.id !== S.profile.id ? '<form class="stack" data-form="resetpw" data-id="' + p.id + '"><h3>Reset password</h3><p class="small muted">Set a temporary password and tell them. They can sign in with it straight away.</p><label>New password (8 or more characters)<input name="pw" type="text" minlength="8" autocomplete="off" required></label><button class="btn small" type="submit">Set password</button></form>' : "") +
-      '<label>Role<select id="p-role" data-act="role" data-mid="' + p.id + '"><option value="member"' + (p.role === "member" ? " selected" : "") + '>Member</option><option value="leader"' + (p.role === "leader" ? " selected" : "") + ">Leader</option></select></label></section>";
+      (S.realLeader ? '<label>Role<select id="p-role" data-act="role" data-mid="' + p.id + '"><option value="member"' + (p.role === "member" ? " selected" : "") + '>Member</option><option value="leader"' + (p.role === "leader" ? " selected" : "") + ">Leader</option></select></label>" : '<p class="small muted">Role: ' + (p.role === "leader" ? "Leader" : "Member") + " (a relief team leader can't change roles).</p>") +
+      (p.role === "leader" ? (myCluster() || !S.realLeader ? '<p class="small muted">Cluster: ' + esc(p.cluster || "All clusters") + ". Only the lead instructor can change a leader's cluster.</p>" :
+        '<label>Cluster (this leader can change sessions and team lists only in their own cluster)<select data-act="pcluster" data-mid="' + p.id + '"><option value="">All clusters</option>' +
+        CLUSTERS.map(function (c) { return '<option value="' + c + '"' + (p.cluster === c ? " selected" : "") + ">" + c + "</option>"; }).join("") + "</select></label>") : "") + "</section>";
   }
 
   function linksToText(a) { return (Array.isArray(a) ? a : []).map(function (l) { return (l.label || "") + " | " + (l.url || ""); }).join("\n"); }
@@ -553,9 +593,12 @@
   function setRole(mid, role) {
     return sb.from("profiles").update({ role: role }).eq("id", mid).then(function (r) { if (r.error) throw r.error; toast("Role updated."); return refresh(); }).catch(fail);
   }
+  function setCluster(mid, c) {
+    return sb.from("profiles").update({ cluster: c || null }).eq("id", mid).then(function (r) { if (r.error) throw r.error; toast("Cluster updated."); return refresh(); }).catch(fail);
+  }
   function createCourse(form) {
     var f = new FormData(form), name = f.get("name").trim();
-    return sb.from("groups").insert({ name: name, type: "course", year: parseDate(f.get("first")).getFullYear() }).select().single().then(function (r) {
+    return sb.from("groups").insert({ name: name, type: "course", year: parseDate(f.get("first")).getFullYear(), cluster: myCluster() }).select().single().then(function (r) {
       if (r.error) throw r.error;
       return sb.rpc("generate_sessions", { p_group: r.data.id, p_first: f.get("first"), p_last: f.get("last"), p_every: +f.get("every") });
     }).then(function (r) { if (r.error) throw r.error; toast("Course created with " + r.data + " sessions."); return refresh(); }).catch(fail);
@@ -575,6 +618,7 @@
     cancel: function (d) { return cancelBooking(d.id); },
     tab: function (d) { S.tab = d.tab; S.lessonEdit = null; S.personEdit = null; S.pageEdit = null; render(); },
     filter: function (d) { S.filter = d.g; render(); },
+    cluster: function (d) { S.cluster = d.c; render(); },
     typefilter: function (d) { S.typeFilter = d.t; render(); },
     mtab: function (d) { S.memberTab = d.tab; render(); },
     viewlesson: function (d) { S.lessonView = d.id; render(); window.scrollTo(0, 0); },
@@ -635,6 +679,7 @@
     else if (t.dataset.act === "rattend") setRoster(t.dataset.sid, t.dataset.mid, t.checked);
     else if (t.dataset.act === "member") setMembership(t.dataset.mid, t.dataset.gid, t.checked);
     else if (t.dataset.act === "role") setRole(t.dataset.mid, t.value);
+    else if (t.dataset.act === "pcluster") setCluster(t.dataset.mid, t.value);
     else if (t.dataset.act === "upload") uploadFiles(t.dataset.lid, t.files, t);
     else if (t.dataset.act === "uploadphoto") uploadPhoto(t.dataset.gid, t.files);
     else if (t.dataset.act === "addlesson" && t.value) { redrawPicker(pickedLessons().concat(t.value)); var a = document.getElementById("s-addlesson"); if (a) a.focus(); }

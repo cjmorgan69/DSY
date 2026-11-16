@@ -53,3 +53,70 @@ bookings (paramedic cover, placeholders like "LEP40") hidden unless ticked. Supa
 only through table RLS); SQL in `supabase/contribution-setup.sql`, applied by Claude 13 Nov 2026. `paging_jobs.team`
 is blank for most jobs before 7 Nov 2026, so matching falls back to `paging_team(unit)` (TB, CU, PT, CF). Roster
 history in Supabase starts 3 Nov 2026 (the sync keeps past bookings).
+
+## Retro car dash
+
+`/dashboard/car/` (15 Nov 2026, the owner's just-for-fun idea; leader gate; linked from both dashboard footers): an
+old-school instrument cluster (walnut panel, chrome-rimmed cream dials, ignition needle sweep on load). Its own inline
+script reads the same live sources as `dash.js`: fuel = share of team-hours left in today's operational day with crew,
+speedometer = crew on shift now (0 to 24), tacho = jobs in the last 24 h without Port Lincoln and Ceduna crews (red
+from 6), tasks gauge = open tasks (green 0-5, amber 5-10, red 10-15), temperature = today's top for the chosen town
+(tap to change; shares `dsy-dash-town`). Warning lights: low crew (cover under 25%), P1 in 24 h, overdue task, lessons
+needed in the next 4 weeks, hot and windy day in 7, no signal (a source failed), lights (after 6 pm), all good.
+Odometer = jobs in 7 days, trip = next training session, DSY FM radio cycles messages. Gauges link to their pages.
+
+## All three clusters in volunteer contribution (16 Nov 2026)
+
+Owner asked to toggle Lower Eyre / Central Eyre / West Coast on `/dashboard/contribution/` (Cluster chips above the
+Team chips; team -> cluster from `modules/rosters/shared/teams.js`; remembered in `dsy-contrib-cluster`).
+- Rosters: Lower Eyre is still copied into `roster_bookings` by the owner's scheduled run on their PC. The 8 Central
+  Eyre and West Coast teams are copied by the Supabase edge function `roster-sync` (source
+  `supabase/functions/roster-sync/index.ts`, verify_jwt on), run every 2 hours by pg_cron job `roster-sync`
+  (`17 */2 * * *` UTC, pg_net call with the anon key; SQL in `supabase/roster-sync-setup.sql`). It saves each team's
+  `getBookings` list as Active and marks Active rows that vanished as Cancelled, only from the earliest start the
+  roster still returns (history kept). First run 16 Nov 2026: 163 bookings. Those rosters hold little history, so
+  their hours start from mid-Nov 2026.
+- Call signs (owner, 16 Nov 2026): CL Cleve, CW Cowell, KI Kimba, LK Lock, SB Streaky Bay, PK Port Kenny, WU Wudinna,
+  EL Elliston (plus TB, CU, PT, CF) in `paging_team()`, and as team names and colours on `/dispatch/` and the
+  dashboard dispatch tile. CO is NOT Cowell: it is the team leader call sign, the number
+  being the person (CO81, CO85, CO86...); CO jobs are not matched to a team (shown as "Team leader" on the dispatch
+  screens). Cowell = CW only: 88 jobs Jun to Nov 2026.
+- The pager feed now covers all Eyre Peninsula postcodes (owner): the old "postcodes 5605, 5606, 5607, 5631" note on
+  the dashboard was replaced.
+- Later: move Lower Eyre's copy to `roster-sync` too so nothing depends on the owner's PC.
+
+## Tasks are per leader (16 Nov 2026)
+
+Owner: each Team Leader has their own task list. `dashboard_tasks` policies now allow a leader to read, add, change and
+delete only rows where `created_by` = themselves (the column defaults to the signed-in user). `quick_add_keys.owner_id`
+says whose list a key adds to; the Siri key belongs to the lead instructor, and `quick_add_task` writes
+`created_by = owner_id`. The 3 existing tasks (all the lead instructor's) were given to them. Checked: the lead
+instructor sees 3, Campbell 0; Siri still answers. SQL `supabase/tasks-per-leader.sql`, applied by Claude 16 Nov 2026.
+Another leader who wants Siri needs their own key (a new `quick_add_keys` row with their `owner_id`).
+
+## Google Calendar link per account (16 Nov 2026)
+
+Owner asked that the calendar link be unique to each user. It is now saved in the private table `user_settings`
+(`gcal_url`, https only, up to 1000 characters; each person reads and writes only their own row; it was briefly a
+`profiles` column, moved because leaders can read every profile) instead of on the device, so it
+follows the leader to any device and two leaders on one computer don't share it. `dash.js` moves an old on-device link
+(`dsy-dash-gcal`) to the account once and removes it. Blank = Google Calendar for whoever is signed into Google.
+Column added by Claude 16 Nov 2026.
+
+## Relief cover (16 Nov 2026)
+
+`/dashboard/relief/` (leader gate; linked from both dashboard footers). Owner: a leader can hand their access to a
+relief Team Leader until an end date; Campbell and David can set up their own; relievers get Grant access and password
+resets but NOT the leader's Google Calendar link. Table `public.leader_relief` (leader_id, reliever_id, starts_at,
+ends_at, ended_at): only a real leader inserts, for themselves; no updates, `relief_end(id)` ends early (leader,
+reliever or an all-clusters leader); readable by both people and all-clusters leaders. While active,
+`covering_ids()` makes `is_leader()` and `is_facilitator()` true for the reliever, `my_cluster()` = the covered
+leader's cluster, `can_edit_cluster()` / `can_edit_group()` allow the covered cluster, and the tasks policies include
+the covered leader's tasks. Guards: only a real leader can change leader roles (trigger `protect_profile_leader_role`)
+or reset a leader's password (`leader_set_password`), only a real all-clusters leader can change clusters, and a
+reliever can't hand cover on. `my_access()` returns role, real_leader, cluster and covering for the pages:
+`shared/gate.js` (lets a reliever into leader pages), `/training/` (works as a leader, header "covering for", no
+Role or Cluster settings), `dash.js` (banner, covered leader's tasks labelled with their name), car dash. SQL
+`supabase/relief-setup.sql`, applied by Claude 16 Nov 2026; rehearsed in a rolled-back transaction (Chris -> Dave
+Chapman): Dave got leader access and Chris's 3 tasks, was blocked from resetting Chris's password, making himself a
+leader and handing cover on, could not read calendar links, and lost everything when the cover ended.

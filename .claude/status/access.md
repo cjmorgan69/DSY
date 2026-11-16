@@ -43,3 +43,19 @@ except the leader's was reset to the starter password and flagged to change (the
 leader account once shared the starter password, so it was flagged to change; keep the leader password different
 from any shared starter password. 7 people are facilitators (set by the owner). Owner chose: approve all 61 existing
 members, block unlisted sign-ups, gate facilitator walk-throughs and station instructor sheets.
+
+## Training clusters (16 Nov 2026)
+
+Owner asked that each cluster's Team Leader manages only their own cluster's training (decisions of 15 Nov 2026:
+default to own cluster with an All clusters switch; view but not edit other clusters). `groups.cluster` (Lower Eyre,
+Central Eyre, West Coast) on all 12 teams (the 8 Central Eyre and West Coast teams were created 16 Nov 2026, empty);
+`profiles.cluster` on leaders, blank = all clusters (the lead instructor). Leaders: Campbell Forsyth (1002112) =
+Central Eyre, David Coombe (1002517, made a leader and his name completed 16 Nov 2026) = West Coast. Functions
+`my_cluster()`, `can_edit_group(g)`, `can_edit_session(s)`; write policies on sessions, groups, memberships,
+attendance, bookings and session_reflections use them (reading unchanged; lessons stay one shared library); a
+trigger lets only an all-clusters leader change anyone's cluster. SQL `supabase/clusters-setup.sql`, run by the owner
+in the SQL Editor 16 Nov 2026 (the apply_migration approval prompt timed out twice). Checked as Campbell: edit on the
+4 Central Eyre teams, view on the other 8. Pages: `/training/` opens on the leader's own cluster (Cluster chips on
+Calendar and People, other clusters' sessions view-only with a notice, other clusters' team boxes locked, Cluster
+select for leaders on a person's page for all-clusters leaders, a new course takes the creator's cluster); the
+dashboards' training tile and the car dash trip/service light follow the leader's cluster (`dash.js`).

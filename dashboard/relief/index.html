@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<script src="/shared/gate.js?v=20261116g" data-level="leader"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Relief Cover</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/training/theme.css?v=20261116g">
+<style>
+/* Relief cover (16 Nov 2026, owner): a leader hands their access to a relief Team Leader until an end date.
+   Supabase public.leader_relief (insert by the covered leader only; ended early with relief_end()), my_access().
+   What the reliever gets and doesn't get is enforced in the database (supabase/relief-setup.sql). */
+.wrap { width:min(760px,100%); }
+.hero { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.8rem; padding:1.1rem 1.25rem; border-radius:20px;
+  color:#fff; background:linear-gradient(135deg,#1f5b43 0%,#174a36 55%,#2f6f8f 130%); }
+.hero h1 { font-size:1.4rem; } .hero p { color:rgba(255,255,255,.82); font-size:.92rem; margin-top:.2rem; }
+.hbtn { display:inline-flex; align-items:center; padding:.45rem .9rem; border-radius:999px; background:rgba(255,255,255,.14); color:#fff; text-decoration:none; border:1px solid rgba(255,255,255,.28); font-size:.9rem; }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:1rem 1.1rem; display:flex; flex-direction:column; gap:.8rem; }
+.card h2 { font-size:1.1rem; }
+label { display:flex; flex-direction:column; gap:.3rem; font-size:.9rem; }
+select, input { font:inherit; padding:.55rem .7rem; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink); min-width:0; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:.7rem; } @media (max-width:520px) { .grid2 { grid-template-columns:1fr; } }
+.btn { border:0; border-radius:999px; padding:.6rem 1.1rem; background:var(--brand); color:var(--brand-ink); font-weight:600; cursor:pointer; align-self:flex-start; }
+.btn.ghost { background:none; color:var(--danger); border:1px solid var(--line); font-weight:500; padding:.35rem .8rem; font-size:.85rem; }
+.what { display:grid; grid-template-columns:1fr 1fr; gap:.4rem 1rem; font-size:.88rem; } @media (max-width:520px) { .what { grid-template-columns:1fr; } }
+.what ul { margin:0; padding-left:1.1rem; list-style:disc; display:flex; flex-direction:column; gap:.15rem; }
+.what b { display:block; margin-bottom:.2rem; }
+.list li { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.5rem; padding:.6rem 0; border-top:1px solid var(--line); }
+.list li:first-child { border-top:0; }
+.list .who b { display:block; } .list .who span { font-size:.84rem; color:var(--muted); }
+.tag { font-size:.74rem; font-weight:700; border-radius:999px; padding:.15rem .6rem; white-space:nowrap; }
+.tag.on { background:color-mix(in srgb,var(--ok) 18%,var(--surface)); color:var(--ok); }
+.tag.soon { background:color-mix(in srgb,var(--accent) 22%,var(--surface)); color:color-mix(in srgb,var(--accent) 45%,var(--ink)); }
+.tag.off { background:var(--bg); color:var(--muted); }
+.banner { border-radius:14px; padding:.85rem 1rem; background:color-mix(in srgb,var(--accent) 18%,var(--surface)); border:1px solid color-mix(in srgb,var(--accent) 45%,transparent); }
+.err { color:var(--danger); font-size:.9rem; } .note { font-size:.82rem; color:var(--muted); }
+[hidden] { display:none !important; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero">
+    <div><h1>Relief cover</h1><p>Hand your leader access to a relief Team Leader while you're away</p></div>
+    <a class="hbtn" href="/dashboard/">← Dashboard</a>
+  </header>
+  <div id="covering"></div>
+  <section class="card" id="handover" hidden>
+    <h2>Hand over</h2>
+    <form id="form" class="stack" autocomplete="off">
+      <label>Relief Team Leader<select id="who" required><option value="">Choose a person…</option></select></label>
+      <div class="grid2">
+        <label>From<input id="from" type="datetime-local" required></label>
+        <label>Until<input id="until" type="datetime-local" required></label>
+      </div>
+      <div class="what">
+        <div><b>They get, until the end date</b><ul><li>Your dashboards and your task list</li><li>Training for your cluster, with editing</li><li>Volunteer contribution and dispatch</li><li>Grant access and password resets</li></ul></div>
+        <div><b>They don't get</b><ul><li>Your Google Calendar link</li><li>Resetting a leader's password</li><li>Making anyone a leader</li><li>Handing the cover on to someone else</li></ul></div>
+      </div>
+      <button class="btn" type="submit">Start cover</button>
+      <p class="err" id="ferr" hidden></p>
+    </form>
+  </section>
+  <section class="card"><h2>Your covers</h2><ul class="list" id="mine"><li class="note">Loading…</li></ul></section>
+  <section class="card" id="allbox" hidden><h2>All covers</h2><ul class="list" id="all"></ul></section>
+  <p class="note">A cover ends by itself at its end date. You, the relief Team Leader or the lead instructor can end it early. The relief Team Leader may need to refresh an open page when it starts or ends.</p>
+</main>
+<script>
+(function () {
+  "use strict";
+  var sb = window.supabase.createClient("https://ekaodnbnpsuayvmxvxbm.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW9kbmJucHN1YXl2bXh2eGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzIxMzQsImV4cCI6MjEwNzM0ODEzNH0.q3lTeCQAQjYeMUNl6lwsrxUAsTijJikABW4Ua2N4bmI");
+  var $ = function (id) { return document.getElementById(id); };
+  var TZ = "Australia/Adelaide", me = null, acc = {}, people = {};
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function when(iso) { return new Intl.DateTimeFormat("en-AU", { timeZone: TZ, weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }).format(new Date(iso)); }
+  function local(d) { var z = new Date(d.getTime() - d.getTimezoneOffset() * 60000); return z.toISOString().slice(0, 16); }
+  function name(id) { var p = people[id]; return p ? (p.full_name || "No name") + (p.staff_id ? " (" + p.staff_id + ")" : "") : "Someone"; }
+  function state(r) {
+    var now = Date.now();
+    if (r.ended_at) return ["off", "Ended early " + when(r.ended_at)];
+    if (Date.parse(r.ends_at) <= now) return ["off", "Ended " + when(r.ends_at)];
+    if (Date.parse(r.starts_at) > now) return ["soon", "Starts " + when(r.starts_at)];
+    return ["on", "On until " + when(r.ends_at)];
+  }
+  function row(r, label) {
+    var st = state(r), live = st[0] !== "off";
+    return '<li><div class="who"><b>' + label + '</b><span>' + when(r.starts_at) + " to " + when(r.ends_at) + '</span></div><span class="tag ' + st[0] + '">' + esc(st[1]) + "</span>" +
+      (live ? '<button class="btn ghost" type="button" data-end="' + r.id + '">End now</button>' : "") + "</li>";
+  }
+  function load() {
+    return Promise.all([sb.rpc("my_access"), sb.from("profiles").select("id,full_name,staff_id,role").order("full_name"), sb.from("leader_relief").select("*").order("starts_at", { ascending: false }).limit(200)])
+      .then(function (r) {
+        if (r[0].error) throw r[0].error;
+        acc = r[0].data || {}; people = {}; (r[1].data || []).forEach(function (p) { people[p.id] = p; });
+        var rows = r[2].data || [];
+        // someone covering for me / I'm covering for
+        var cov = rows.filter(function (x) { return x.reliever_id === me && state(x)[0] !== "off"; });
+        $("covering").innerHTML = cov.length ? '<div class="banner">You are covering for ' + cov.map(function (x) { return "<b>" + esc(name(x.leader_id)) + "</b> (" + esc(state(x)[1].toLowerCase()) + ')'; }).join(", ") +
+          '. <button class="btn ghost" type="button" data-end="' + cov[0].id + '">End my cover</button></div>' : "";
+        // hand over: real leaders only
+        $("handover").hidden = !acc.real_leader;
+        if (acc.real_leader && $("who").options.length <= 1) {
+          Object.keys(people).map(function (k) { return people[k]; }).filter(function (p) { return p.id !== me; })
+            .sort(function (a, b) { return String(a.full_name || "").localeCompare(String(b.full_name || "")); })
+            .forEach(function (p) { var o = document.createElement("option"); o.value = p.id; o.textContent = name(p.id) + (p.role === "leader" ? " · leader" : p.role === "facilitator" ? " · facilitator" : ""); $("who").appendChild(o); });
+        }
+        var mine = rows.filter(function (x) { return x.leader_id === me; });
+        $("mine").innerHTML = mine.length ? mine.map(function (x) { return row(x, "Covered by " + esc(name(x.reliever_id))); }).join("") : '<li class="note">You haven\'t set up any cover.</li>';
+        var others = rows.filter(function (x) { return x.leader_id !== me && x.reliever_id !== me; });
+        $("allbox").hidden = !(acc.real_leader && !acc.cluster && others.length);
+        $("all").innerHTML = others.map(function (x) { return row(x, esc(name(x.reliever_id)) + " covering for " + esc(name(x.leader_id))); }).join("");
+      }).catch(function (e) { $("mine").innerHTML = '<li class="err">Could not load: ' + esc(e.message || e) + "</li>"; });
+  }
+  $("form").addEventListener("submit", function (e) {
+    e.preventDefault(); $("ferr").hidden = true;
+    var who = $("who").value, f = new Date($("from").value), u = new Date($("until").value);
+    if (!who) return;
+    if (!(u > f)) { $("ferr").textContent = "The end must be after the start."; $("ferr").hidden = false; return; }
+    if (u <= new Date()) { $("ferr").textContent = "The end date has already passed."; $("ferr").hidden = false; return; }
+    if (!confirm(name(who) + " will have your leader access from " + when(f.toISOString()) + " until " + when(u.toISOString()) + ". Start the cover?")) return;
+    sb.from("leader_relief").insert({ leader_id: me, reliever_id: who, starts_at: f.toISOString(), ends_at: u.toISOString() }).then(function (r) {
+      if (r.error) { $("ferr").textContent = "That didn't save: " + r.error.message; $("ferr").hidden = false; return; }
+      $("who").value = ""; load();
+    });
+  });
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-end]"); if (!b) return;
+    if (!confirm("End this cover now?")) return;
+    sb.rpc("relief_end", { p_id: b.getAttribute("data-end") }).then(function (r) { if (r.error) alert(r.error.message); load(); });
+  });
+  var now = new Date(); now.setSeconds(0, 0);
+  var later = new Date(now.getTime() + 7 * 864e5); later.setHours(18, 0, 0, 0);
+  $("from").value = local(now); $("until").value = local(later);
+  (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve()).then(function () {
+    return sb.auth.getSession();
+  }).then(function (x) { me = x && x.data && x.data.session && x.data.session.user && x.data.session.user.id; load(); });
+})();
+</script>
+</body>
+</html>

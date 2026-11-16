@@ -31,16 +31,34 @@
   }
   tick(); setInterval(tick, 1000);
 
-  /* ---------- Google Calendar link ---------- */
-  var GKEY = "dsy-dash-gcal";
-  function setG() { var u = store(GKEY); $("gcal").href = u || "https://calendar.google.com/calendar/r"; }
+  /* ---------- Google Calendar link ----------
+     Saved on the signed-in leader's DSY account (private table user_settings, only they can read it; 16 Nov 2026), so it follows them to any device and
+     is never shared with another leader on the same computer. A link saved the old way (on this device) is moved to the
+     account once. Blank = the normal Google Calendar for whoever is signed into Google. */
+  var GDEF = "https://calendar.google.com/calendar/r", gUid = null, gUrl = null;
+  function setG() { $("gcal").href = gUrl || GDEF; }
   setG();
-  $("gcalSet").addEventListener("click", function () { $("gUrl").value = store(GKEY) || ""; $("gDlg").showModal(); });
+  function saveG(v) {
+    gUrl = v || null; setG();
+    if (!gUid) return Promise.resolve();
+    return sb.from("user_settings").upsert({ user_id: gUid, gcal_url: gUrl, updated_at: new Date().toISOString() }).then(function (r) { if (r.error) alert("The calendar link didn't save: " + r.error.message); });
+  }
+  sb.auth.getSession().then(function (x) {
+    var u = x.data && x.data.session && x.data.session.user; if (!u) return;
+    gUid = u.id;
+    return sb.from("user_settings").select("gcal_url").eq("user_id", gUid).then(function (r) {
+      gUrl = (r.data && r.data[0] && r.data[0].gcal_url) || null;
+      var old = store("dsy-dash-gcal");
+      if (old) { store("dsy-dash-gcal", null); if (!gUrl && /^https:\/\//i.test(old)) return saveG(old); }
+      setG();
+    });
+  });
+  $("gcalSet").addEventListener("click", function () { $("gUrl").value = gUrl || ""; $("gDlg").showModal(); });
   $("gDlg").addEventListener("close", function () {
     if ($("gDlg").returnValue !== "save") return;
     var v = $("gUrl").value.trim();
     if (v && !/^https:\/\//i.test(v)) { alert("Please paste a link that starts with https://"); return; }
-    store(GKEY, v || null); setG();
+    saveG(v);
   });
 
   /* ---------- roster coverage ---------- */
@@ -177,10 +195,26 @@
   });
   $("cNow").addEventListener("click", function () { selHour = null; drawRoster(); drawCrew(); });
 
-  /* ---------- tasks (Supabase public.dashboard_tasks, leaders only) ---------- */
+  /* ---------- relief cover (16 Nov 2026): a relief Team Leader sees the covered leader's tasks too ---------- */
+  var cover = [], coverName = {};
+  sb.rpc("my_access").then(function (r) {
+    if (r.error || !r.data) return;
+    cover = r.data.covering || []; cover.forEach(function (c) { coverName[c.id] = c.name || "the leader"; });
+    if (!cover.length) return;
+    var until = function (c) { return new Intl.DateTimeFormat("en-AU", { timeZone: TZ, weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }).format(new Date(c.until)); };
+    var b = document.createElement("div"); b.className = "banner warn"; b.setAttribute("role", "status");
+    b.innerHTML = "<span><b style=\"font-size:inherit\">Relief cover:</b> you're covering for " + cover.map(function (c) { return esc(c.name || "a leader") + (c.cluster ? " (" + esc(c.cluster) + ")" : "") + " until " + esc(until(c)); }).join("; ") +
+      '. Their tasks are on your list. <a href="/dashboard/relief/">Relief cover</a></span>';
+    var grid = document.querySelector(".grid"), main = document.querySelector("main");
+    if (grid) grid.parentNode.insertBefore(b, grid);              // phone and tablet dashboard
+    else if (main) { b.style.gridColumn = "1 / -1"; main.insertBefore(b, main.firstChild); }   // widescreen
+    if (typeof drawTasks === "function" && tasks.length) drawTasks();
+  });
+
+  /* ---------- tasks (Supabase public.dashboard_tasks: each leader sees only their own, plus a covered leader's) ---------- */
   var tasks = [], showDone = false;
   function loadTasks() {
-    return sb.from("dashboard_tasks").select("id,title,due_date,done,done_at,created_at").order("created_at")
+    return sb.from("dashboard_tasks").select("id,title,due_date,done,done_at,created_at,created_by").order("created_at")
       .then(function (r) { if (r.error) throw r.error; tasks = r.data || []; drawTasks(); })
       .catch(function (e) { $("tList").innerHTML = '<p class="err">Could not load tasks: ' + esc(e.message || e) + "</p>"; });
   }
@@ -202,7 +236,7 @@
     $("tCount").textContent = open.length ? open.length + " to do" + (late ? " · " + late + " overdue" : "") : "";
     function row(x) {
       return '<li data-id="' + x.id + '"' + (x.done ? ' class="done"' : "") + '><input type="checkbox" aria-label="Done"' + (x.done ? " checked" : "") + '>' +
-        '<span class="tt" tabindex="0" title="Tap to edit">' + esc(x.title) + "</span>" + (x.done ? "<span></span>" : dueTag(x.due_date, t)) +
+        '<span class="tt" tabindex="0" title="Tap to edit">' + esc(x.title) + (coverName[x.created_by] ? ' <small class="muted">· ' + esc(coverName[x.created_by]) + "'s</small>" : "") + "</span>" + (x.done ? "<span></span>" : dueTag(x.due_date, t)) +
         '<button class="del" type="button" aria-label="Delete task" title="Delete">×</button></li>';
     }
     var html = open.length ? '<ul class="tasks">' + open.map(row).join("") + "</ul>" : '<p class="tempty">Nothing to do. 🎉</p>';
@@ -256,17 +290,33 @@
 
   /* ---------- training sessions ---------- */
   function hasLesson(s) { return !!s.lesson_id || (Array.isArray(s.lesson_ids) && s.lesson_ids.length > 0); }
+  // Training clusters (16 Nov 2026): a leader with a cluster sees their own cluster's sessions first, with an
+  // "All clusters" switch; a leader with no cluster (the lead instructor) sees everything.
+  var myCl = null, tView = null, tCache = null;
   function loadSessions() {
     var t = todayIso(), end = addDays(t, 60);
     return Promise.all([
       sb.from("sessions").select("id,group_id,session_date,start_time,end_time,location,session_type,topic,facilitator_name,lesson_id,lesson_ids").gte("session_date", t).lte("session_date", end).order("session_date").order("start_time"),
-      sb.from("groups").select("id,name")
+      sb.from("groups").select("id,name,cluster"),
+      sb.rpc("my_access").then(function (x) { return { data: [{ cluster: (x.data && x.data.cluster) || null }] }; })
     ]).then(function (r) {
       if (r[0].error) throw r[0].error;
-      var gn = {}; (r[1].data || []).forEach(function (g) { gn[g.id] = g.name; });
-      drawSessions(r[0].data || [], gn, t);
+      var gn = {}, gc = {}; (r[1].data || []).forEach(function (g) { gn[g.id] = g.name; gc[g.id] = g.cluster; });
+      myCl = (r[2].data && r[2].data[0] && r[2].data[0].cluster) || null;
+      if (tView === null) tView = myCl || "all";
+      tCache = [r[0].data || [], gn, gc, t];
+      drawCluster();
     }).catch(function (e) { $("tBody").innerHTML = '<p class="err">Could not load sessions: ' + esc(e.message || e) + "</p>"; });
   }
+  function drawCluster() {
+    if (!tCache) return;
+    var rows = tCache[0].filter(function (s) { var c = tCache[2][s.group_id]; return tView === "all" || !c || c === tView; });
+    drawSessions(rows, tCache[1], tCache[3]);
+    if (!myCl) return;
+    $("tBody").insertAdjacentHTML("afterbegin", '<div class="chips" role="group" aria-label="Cluster"><button type="button" class="chip2" data-tview="' + esc(myCl) + '" aria-pressed="' + (tView === myCl) + '">' + esc(myCl) +
+      '</button><button type="button" class="chip2" data-tview="all" aria-pressed="' + (tView === "all") + '">All clusters</button></div>');
+  }
+  $("tBody").addEventListener("click", function (e) { var b = e.target.closest("[data-tview]"); if (b) { tView = b.getAttribute("data-tview"); drawCluster(); } });
   function drawSessions(rows, gn, t) {
     var nowM = mins(parts().hour + ":" + parts().minute);
     rows = rows.filter(function (s) { return s.session_date > t || mins(s.end_time || s.start_time) > nowM; });
@@ -302,7 +352,7 @@
   }
 
   /* ---------- dispatch (paging feed) ---------- */
-  var TEAMS = { CD: ["Ceduna", "#94a3b8"], CU: ["Cummins", "#0e9f8e"], CO: ["CO", "#8a5cf6"], EL: ["EL", "#e0752b"], SB: ["SB", "#2f7fe0"], PK: ["PK", "#d6457f"], PL: ["Port Lincoln", "#64748b"] };
+  var TEAMS = {"CU":["Cummins","#0e9f8e"],"TB":["Tumby Bay","#15803d"],"PT":["Port Neill","#0369a1"],"CF":["Coffin Bay","#b45309"],"CL":["Cleve","#be123c"],"CW":["Cowell","#8a5cf6"],"CO":["Team leader","#475569"],"KI":["Kimba","#4d7c0f"],"LK":["Lock","#a16207"],"EL":["Elliston","#e0752b"],"SB":["Streaky Bay","#2f7fe0"],"PK":["Port Kenny","#d6457f"],"WU":["Wudinna","#0e7490"],"CD":["Ceduna","#94a3b8"],"PL":["Port Lincoln","#64748b"]};
   var EXTRA = ["#b45309", "#15803d", "#be123c", "#0369a1", "#7c3aed", "#4d7c0f"];
   function codeOf(j) { return String(j.unit || "").replace(/\d+$/, ""); }
   // Port Lincoln (PL) and Ceduna (CD) crews are hidden when the page loads; the button in the tile shows them.
@@ -336,7 +386,7 @@
     html += '</div><div class="tl">' + Object.keys(used).map(function (c) { var tm = team(c); return '<span style="--tc:' + tm[1] + '"><i></i>' + esc(tm[0]) + "</span>"; }).join("") + "<span>Shaded = before 6am / after 6pm</span></div>";
     if (showHidden || hidden) html += '<div class="chips"><button type="button" class="chip2" id="dToggle" aria-pressed="' + showHidden + '">' +
       (showHidden ? "Hide Port Lincoln and Ceduna crews" : "Show Port Lincoln and Ceduna crews (" + hidden + (hidden === 1 ? " job)" : " jobs)")) + "</button></div>";
-    html += '<p class="note">From the SAAS paging feed (postcodes 5605, 5606, 5607, 5631), captured once a day at about 9am, so today may be incomplete. Tap the full screen for job details.</p>';
+    html += '<p class="note">From the SAAS paging feed for the Eyre Peninsula, captured by a scheduled run, so today may be incomplete. Tap the full screen for job details.</p>';
     $("dBody").innerHTML = html;
   }
   $("dBody").addEventListener("click", function (e) {
