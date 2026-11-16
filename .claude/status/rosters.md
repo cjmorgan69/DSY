@@ -105,3 +105,6 @@ their level on the booking form, as they do now (today it is saved in the browse
 used for that shift; booking for yourself saves it to your account, so it is pre-filled next time on any device.
 Earlier shifts keep the level they were booked at. A first booking with no level is refused. So the stage 2 lists
 only need ambulance ID and name (level optional). Rehearsed in a rolled-back run first.
+
+Email sender name (owner, 16 Nov 2026): unique to each team, "<Team> Team Roster" (e.g. "Tumby Bay Team Roster",
+"Port Kenny Team Roster"), replacing "Crew Shift Roster". Sending address on dsytraining.com: not chosen yet.
