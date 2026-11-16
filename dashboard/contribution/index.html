@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261116a" data-level="leader"></script>
+<script src="/shared/gate.js?v=20261116b" data-level="leader"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/training/theme.css?v=20261116a">
+<link rel="stylesheet" href="/training/theme.css?v=20261116b">
 <style>
 /* Volunteer contribution (leaders only). Live data, nothing stored in this file:
    Supabase public.member_contribution(p_from, p_to) = rostered hours (Active roster_bookings, past part only) and
@@ -53,6 +53,7 @@ table.ct { width:100%; border-collapse:collapse; font-size:.92rem; }
 @media (max-width:560px) { .ct .hide-s { display:none; } }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="/modules/rosters/shared/teams.js?v=20261116b"></script>
 </head>
 <body>
 <main class="wrap">
@@ -63,6 +64,7 @@ table.ct { width:100%; border-collapse:collapse; font-size:.92rem; }
 
   <section class="card">
     <div class="chips" id="period" role="group" aria-label="Period"><span class="lab">Period</span></div>
+    <div class="chips" id="clusters" role="group" aria-label="Cluster"><span class="lab">Cluster</span></div>
     <div class="chips" id="teams" role="group" aria-label="Team"><span class="lab">Team</span></div>
     <label class="tog"><input type="checkbox" id="para"> Include paramedic cover and placeholder bookings (PARA)</label>
     <div class="stats" id="stats"></div>
@@ -121,7 +123,7 @@ table.ct { width:100%; border-collapse:collapse; font-size:.92rem; }
     return { from: null, to: null };
   }
 
-  var state = { period: store("dsy-contrib-period") || "all", team: store("dsy-contrib-team") || "All", para: store("dsy-contrib-para") === "1", sort: "hours", rows: [], open: null };
+  var state = { period: store("dsy-contrib-period") || "all", team: store("dsy-contrib-team") || "All", cluster: store("dsy-contrib-cluster") || "All", para: store("dsy-contrib-para") === "1", sort: "hours", rows: [], open: null };
   $("para").checked = state.para;
 
   function chips(el, items, cur, onPick) {
@@ -133,9 +135,16 @@ table.ct { width:100%; border-collapse:collapse; font-size:.92rem; }
       el.appendChild(b);
     });
   }
+  // team -> cluster, from the roster team list (Lower Eyre, Central Eyre, West Coast)
+  var CLUSTER = {}; Object.keys(window.DSY_ROSTER_TEAMS || {}).forEach(function (id) { var t = window.DSY_ROSTER_TEAMS[id]; if (id !== "test") CLUSTER[t.name] = t.cluster; });
+  var CLUSTERS = ["Lower Eyre", "Central Eyre", "West Coast"];
+  function inCluster(team) { return state.cluster === "All" || CLUSTER[team] === state.cluster; }
   function drawChips() {
     chips($("period"), PERIODS, state.period, function (id) { state.period = id; store("dsy-contrib-period", id); load(); });
-    var names = {}; state.rows.forEach(function (r) { String(r.teams || "").split(", ").forEach(function (t) { if (t) names[t] = 1; }); });
+    if (state.cluster !== "All" && CLUSTERS.indexOf(state.cluster) < 0) state.cluster = "All";
+    chips($("clusters"), [{ id: "All", label: "All clusters" }].concat(CLUSTERS.map(function (c) { return { id: c, label: c }; })), state.cluster,
+      function (id) { state.cluster = id; store("dsy-contrib-cluster", id); state.team = "All"; store("dsy-contrib-team", "All"); state.open = null; draw(); });
+    var names = {}; state.rows.forEach(function (r) { String(r.teams || "").split(", ").forEach(function (t) { if (t && inCluster(t)) names[t] = 1; }); });
     var list = [{ id: "All", label: "All teams" }].concat(Object.keys(names).sort().map(function (t) { return { id: t, label: t }; }));
     if (!names[state.team]) state.team = "All";
     chips($("teams"), list, state.team, function (id) { state.team = id; store("dsy-contrib-team", id); state.open = null; draw(); });
@@ -146,6 +155,7 @@ table.ct { width:100%; border-collapse:collapse; font-size:.92rem; }
     var rows = state.rows.filter(function (r) {
       if (!state.para && isPara(r)) return false;
       if (state.team !== "All" && String(r.teams).split(", ").indexOf(state.team) < 0) return false;
+      if (state.cluster !== "All" && !String(r.teams).split(", ").some(inCluster)) return false;
       return true;
     });
     var k = state.sort;
