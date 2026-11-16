@@ -202,3 +202,4 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
 - Tested: PDF built locally and read back; `roster_send_prepare` as the owner in SQL; the function refuses a
   signed-out caller; the page flow in a headless browser with a stand-in database. NOT yet sent with a real sign-in.
 - Still to build in stage 4: Schedule set-up (weekly send, pause, skip), the 24-hour app-notification reminder.
+- Stage 4b is on main and live (PR #248, merged 17 Nov 2026); real team pages checked still loading.
