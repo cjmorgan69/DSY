@@ -31,16 +31,34 @@
   }
   tick(); setInterval(tick, 1000);
 
-  /* ---------- Google Calendar link ---------- */
-  var GKEY = "dsy-dash-gcal";
-  function setG() { var u = store(GKEY); $("gcal").href = u || "https://calendar.google.com/calendar/r"; }
+  /* ---------- Google Calendar link ----------
+     Saved on the signed-in leader's DSY account (profiles.gcal_url, 16 Nov 2026), so it follows them to any device and
+     is never shared with another leader on the same computer. A link saved the old way (on this device) is moved to the
+     account once. Blank = the normal Google Calendar for whoever is signed into Google. */
+  var GDEF = "https://calendar.google.com/calendar/r", gUid = null, gUrl = null;
+  function setG() { $("gcal").href = gUrl || GDEF; }
   setG();
-  $("gcalSet").addEventListener("click", function () { $("gUrl").value = store(GKEY) || ""; $("gDlg").showModal(); });
+  function saveG(v) {
+    gUrl = v || null; setG();
+    if (!gUid) return Promise.resolve();
+    return sb.from("profiles").update({ gcal_url: gUrl }).eq("id", gUid).then(function (r) { if (r.error) alert("The calendar link didn't save: " + r.error.message); });
+  }
+  sb.auth.getSession().then(function (x) {
+    var u = x.data && x.data.session && x.data.session.user; if (!u) return;
+    gUid = u.id;
+    return sb.from("profiles").select("gcal_url").eq("id", gUid).then(function (r) {
+      gUrl = (r.data && r.data[0] && r.data[0].gcal_url) || null;
+      var old = store("dsy-dash-gcal");
+      if (old) { store("dsy-dash-gcal", null); if (!gUrl && /^https:\/\//i.test(old)) return saveG(old); }
+      setG();
+    });
+  });
+  $("gcalSet").addEventListener("click", function () { $("gUrl").value = gUrl || ""; $("gDlg").showModal(); });
   $("gDlg").addEventListener("close", function () {
     if ($("gDlg").returnValue !== "save") return;
     var v = $("gUrl").value.trim();
     if (v && !/^https:\/\//i.test(v)) { alert("Please paste a link that starts with https://"); return; }
-    store(GKEY, v || null); setG();
+    saveG(v);
   });
 
   /* ---------- roster coverage ---------- */

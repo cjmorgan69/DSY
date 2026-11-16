@@ -93,3 +93,11 @@ says whose list a key adds to; the Siri key belongs to the lead instructor, and 
 `created_by = owner_id`. The 3 existing tasks (all the lead instructor's) were given to them. Checked: the lead
 instructor sees 3, Campbell 0; Siri still answers. SQL `supabase/tasks-per-leader.sql`, applied by Claude 16 Nov 2026.
 Another leader who wants Siri needs their own key (a new `quick_add_keys` row with their `owner_id`).
+
+## Google Calendar link per account (16 Nov 2026)
+
+Owner asked that the calendar link be unique to each user. It is now saved in `profiles.gcal_url` (https only, up to
+1000 characters; the person updates their own row through `profiles_update_own`) instead of on the device, so it
+follows the leader to any device and two leaders on one computer don't share it. `dash.js` moves an old on-device link
+(`dsy-dash-gcal`) to the account once and removes it. Blank = Google Calendar for whoever is signed into Google.
+Column added by Claude 16 Nov 2026.
