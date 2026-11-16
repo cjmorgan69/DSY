@@ -32,3 +32,99 @@ bookings default to the signed-in person (name, ID, level pre-filled), managers 
 separate "Not on the list" option takes a free-text name for paramedics, LEP40 and other outside crew (no ID,
 excluded from volunteer hours), old typed-name bookings matched to people once with doubtful ones shown to the
 owner. Planned order: a whole-repo health check thread (report first, no changes), then the Supabase roster thread.
+
+## Supabase roster move: staged plan and decisions (15 Nov 2026)
+
+Plan agreed with the owner on 15 Nov 2026. NOTHING BUILT YET. Stages: 1 database foundation (clusters, 12 teams,
+call-sign prefixes, live-from date, roster tables, booking rules in the database); 2 people (accounts for Central
+Eyre and West Coast crews, clinical level on the person); 3 email (sending service on dsytraining.com, leaders-only
+settings page, all TRIAL-addressed); 4 new roster on the test team (Summer Bay) only; 5 import rehearsal from the
+three sheets and one-off name matching; 6 dashboards (manager, operations, coverage gaps, lead dashboard) rebuilt
+beside the current ones and compared; 7 switch day, all three clusters together, sheets left untouched so going back
+is one line per cluster in `teams.js`; 8 tidy up (stop the daily PC copy, archive the Apps Scripts, sheets read-only).
+
+Owner's decisions (15 Nov 2026):
+
+- Lower Eyre's "live from" date is set on switch day (it already emails Country Rostering); Central Eyre and West
+  Coast start as trial.
+- Manager passwords go: a manager is a signed-in person with a manager role for their team.
+- "Must change password" is enforced in the database in stage 2, before more accounts are made.
+- A Team Leader (TL) must be able to enter someone else on the roster, and to enter placeholders such as "LEP40"
+  (the "Not on the list" free-text entry: no ID, excluded from volunteer hours). Claude's reading, not yet confirmed
+  by the owner: placeholders are for TLs and managers only, and the page also gets a "Not you? Switch person" step
+  for shared devices.
+
+Still needed from the owner before stage 1: call-sign prefixes for the 12 teams, the TL for each cluster and the
+operations manager, the managers for each team. The manager dashboard file (`getManagerDashboard`) is not in the
+repo: the owner pastes it for stage 6.
+
+Names (owner, 16 Nov 2026): every shift, hour and record is keyed to the ambulance ID (`profiles.staff_id`), never
+a name. Each person may set a preferred name in the roster app (blank = full name); a change shows on all past and
+future shifts. The team roster shows the preferred name only; the ambulance ID is NOT shown on the roster. Managers,
+TLs and the change log see full name and ID beside it. The roster sent to Country Rostering and the change emails use
+the FULL name. The ambulance ID appears ONLY on the roster document prepared for Country Rostering, beside the full
+name (owner, 16 Nov 2026); not on the team roster or the change emails. Placeholders (LEP40 etc.) stay free text with no ID.
+
+Stage 1 inputs (owner, 16 Nov 2026):
+
+- Call-sign letters: already on main from the dashboard thread (CLAUDE.md, `paging_team()`): TB, CU, PT, CF, CL, CW,
+  KI, LK, SB, PK, WU, EL. CO is the team leader call sign, not a team.
+- Clusters and leaders: already on main (`groups.cluster`, `profiles.cluster`, `my_cluster()`, `can_edit_group()`,
+  relief cover). Campbell Forsyth (1002112) Central Eyre, David Coombe (1002517) West Coast, the lead instructor
+  (1003463, cluster blank = all clusters) Lower Eyre and proxy operations manager for now.
+- Lower Eyre roster managers: Cummins John Treloar (900469), Port Neill Christine Snowden (400928), Coffin Bay Kaye
+  Ferguson (400534), Tumby Bay the lead instructor (1003463). Central Eyre and West Coast managers: not yet known.
+- Central Eyre and West Coast rosters are already copied into `roster_bookings` every 2 hours by the edge function
+  `roster-sync`; Lower Eyre still by the owner's PC run.
+
+## Stage 1 done (16 Nov 2026): database foundation, applied by Claude
+
+SQL `supabase/roster-stage1.sql` (migration `roster_stage1`), rehearsed first in a rolled-back run with 23 checks
+(owner, a Port Neill manager and three Tumby Bay members). Nothing on the roster pages uses it yet; the Apps Scripts
+still run every roster. Added:
+
+- `profiles.preferred_name` and `profiles.clinical_level`, both self-editable (owner, 16 Nov 2026: clinical level
+  self-edited too). `groups.call_sign` (TB, CU, PT, CF, CL, CW, KI, LK, SB, PK, WU, EL).
+- `roster_clusters.live_from` (all blank = trial; only the all-clusters leader can set it). `roster_managers`
+  (the 4 Lower Eyre managers; cluster leaders can add or remove; Central Eyre and West Coast leaders count as
+  managers for their teams until names are given).
+- `roster_shifts` (person by account, or a placeholder name; level and flexibility stored on the shift),
+  `roster_sent` (cut-off), `roster_messages`, `roster_change_log`.
+- Functions for the pages (signed-in only, never anon): `roster_book` (self; another member or a placeholder only
+  for managers and leaders), `roster_edit`, `roster_cancel`, `roster_set_sent`, `roster_reset_sent`,
+  `roster_post_message`, `roster_delete_message`, `roster_list` (preferred name for crew; full name and ID only for
+  managers and leaders), `roster_team_members`, `roster_messages_list`, `roster_team_status`, `roster_op_code_at`.
+  Same rules as Code.gs: whole Adelaide hours, 1-24 clock hours, no past starts, 3 people and 1 recruit an hour, no
+  self-overlap in a team, cut-off forward only, safe to repeat. `roster_op_code` is a third copy of the operational
+  restriction rules: keep it in step with roster.js and Code.gs.
+- Choices Claude made, told to the owner: cancel and change are now own shift or manager/leader (today anyone on the
+  page can cancel any booking); notes are not pruned (the list shows the latest 500).
+
+Clinical level at booking (owner, 16 Nov 2026; applied by Claude, migration `roster_book_saves_level`): crews set
+their level on the booking form, as they do now (today it is saved in the browser). The level chosen on the form is
+used for that shift; booking for yourself saves it to your account, so it is pre-filled next time on any device.
+Earlier shifts keep the level they were booked at. A first booking with no level is refused. So the stage 2 lists
+only need ambulance ID and name (level optional). Rehearsed in a rolled-back run first.
+
+Email sender name (owner, 16 Nov 2026): unique to each team, "<Team> Team Roster" (e.g. "Tumby Bay Team Roster",
+"Port Kenny Team Roster"), replacing "Crew Shift Roster". Sending address on dsytraining.com: not chosen yet.
+Email decisions (owner, 16 Nov 2026): sending address EProsters@dsytraining.com (owner changed it from roster@ later on 16 Nov 2026); Reply-To = that team's roster
+manager; trial address = the owner's personal Gmail (goes in the Supabase settings in stage 3, never in this public
+repo). Still to do by the owner, at a computer: Resend account, DNS records in Cloudflare (dsytraining.com is on
+Cloudflare and has no email records yet), RESEND_API_KEY as a Supabase Edge Function secret.
+
+Sending the roster to Country Rostering (owner, 16 Nov 2026), planned for stage 4: a "Send roster to Country
+Rostering" button (preview, then the system builds the PDF with full names and IDs, emails it from "<Team> Team
+Roster" <EProsters@dsytraining.com> with the manager copied and Reply-To the manager, sets the sent cut-off in the
+same step, and keeps the PDF in the change log; Print stays as a backup). Then a weekly scheduled send per team that
+does the same at a set time, so later changes follow the existing rules (more than 24 h away: change email to
+Country Rostering; within 24 h: the person is asked to phone). Trial clusters send to the trial address only. The
+owner is checking that Country Rostering accept rosters from EProsters@dsytraining.com. Still to decide: send day and
+time, the period each send covers, a reminder to the manager beforehand, pausing a week, same for all teams or not.
+Schedule decisions (owner, 16 Nov 2026): each team's manager sets up its own schedule in Manager controls ("Schedule
+set-up": send day and time, period covered, default 7 days but the manager can change it, pause, skip a week, send
+early). Tumby Bay (the owner's team) is the first to use it. Idea raised by the owner: a message to every team member
+24 hours before the cut-off to check their availability, listing the open gaps. Decided (owner, 16 Nov 2026): web
+push app notifications first (roster page installable as a Home Screen app with a "Turn on reminders" button; iPhone
+needs iOS 16.4+ and the Home Screen icon; free), planned for stage 4 with the scheduled send. SMS (ClickSend or
+MessageMedia, opt-in, own mobile number) only if too few people turn notifications on.
