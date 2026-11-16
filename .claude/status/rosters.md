@@ -112,3 +112,12 @@ Email decisions (owner, 16 Nov 2026): sending address EProsters@dsytraining.com 
 manager; trial address = the owner's personal Gmail (goes in the Supabase settings in stage 3, never in this public
 repo). Still to do by the owner, at a computer: Resend account, DNS records in Cloudflare (dsytraining.com is on
 Cloudflare and has no email records yet), RESEND_API_KEY as a Supabase Edge Function secret.
+
+Sending the roster to Country Rostering (owner, 16 Nov 2026), planned for stage 4: a "Send roster to Country
+Rostering" button (preview, then the system builds the PDF with full names and IDs, emails it from "<Team> Team
+Roster" <EProsters@dsytraining.com> with the manager copied and Reply-To the manager, sets the sent cut-off in the
+same step, and keeps the PDF in the change log; Print stays as a backup). Then a weekly scheduled send per team that
+does the same at a set time, so later changes follow the existing rules (more than 24 h away: change email to
+Country Rostering; within 24 h: the person is asked to phone). Trial clusters send to the trial address only. The
+owner is checking that Country Rostering accept rosters from EProsters@dsytraining.com. Still to decide: send day and
+time, the period each send covers, a reminder to the manager beforehand, pausing a week, same for all teams or not.
