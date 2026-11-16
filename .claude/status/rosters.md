@@ -176,3 +176,5 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
 - Fix (17 Nov 2026, owner's first try): the Country Rostering PDF view showed the preferred name. It now shows
   "Full Name (ambulance ID)" for each person (placeholders as typed), as decided on 16 Nov; the team roster still
   shows the preferred name.
+  On main and live (PR #247, merged 17 Nov 2026). The owner's account full name was changed from "Chris" to
+  "Chris Morgan" at their request (17 Nov 2026).
