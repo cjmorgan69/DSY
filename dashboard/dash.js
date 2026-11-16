@@ -31,16 +31,34 @@
   }
   tick(); setInterval(tick, 1000);
 
-  /* ---------- Google Calendar link ---------- */
-  var GKEY = "dsy-dash-gcal";
-  function setG() { var u = store(GKEY); $("gcal").href = u || "https://calendar.google.com/calendar/r"; }
+  /* ---------- Google Calendar link ----------
+     Saved on the signed-in leader's DSY account (private table user_settings, only they can read it; 16 Nov 2026), so it follows them to any device and
+     is never shared with another leader on the same computer. A link saved the old way (on this device) is moved to the
+     account once. Blank = the normal Google Calendar for whoever is signed into Google. */
+  var GDEF = "https://calendar.google.com/calendar/r", gUid = null, gUrl = null;
+  function setG() { $("gcal").href = gUrl || GDEF; }
   setG();
-  $("gcalSet").addEventListener("click", function () { $("gUrl").value = store(GKEY) || ""; $("gDlg").showModal(); });
+  function saveG(v) {
+    gUrl = v || null; setG();
+    if (!gUid) return Promise.resolve();
+    return sb.from("user_settings").upsert({ user_id: gUid, gcal_url: gUrl, updated_at: new Date().toISOString() }).then(function (r) { if (r.error) alert("The calendar link didn't save: " + r.error.message); });
+  }
+  sb.auth.getSession().then(function (x) {
+    var u = x.data && x.data.session && x.data.session.user; if (!u) return;
+    gUid = u.id;
+    return sb.from("user_settings").select("gcal_url").eq("user_id", gUid).then(function (r) {
+      gUrl = (r.data && r.data[0] && r.data[0].gcal_url) || null;
+      var old = store("dsy-dash-gcal");
+      if (old) { store("dsy-dash-gcal", null); if (!gUrl && /^https:\/\//i.test(old)) return saveG(old); }
+      setG();
+    });
+  });
+  $("gcalSet").addEventListener("click", function () { $("gUrl").value = gUrl || ""; $("gDlg").showModal(); });
   $("gDlg").addEventListener("close", function () {
     if ($("gDlg").returnValue !== "save") return;
     var v = $("gUrl").value.trim();
     if (v && !/^https:\/\//i.test(v)) { alert("Please paste a link that starts with https://"); return; }
-    store(GKEY, v || null); setG();
+    saveG(v);
   });
 
   /* ---------- roster coverage ---------- */
@@ -177,10 +195,26 @@
   });
   $("cNow").addEventListener("click", function () { selHour = null; drawRoster(); drawCrew(); });
 
-  /* ---------- tasks (Supabase public.dashboard_tasks: each leader sees only their own) ---------- */
+  /* ---------- relief cover (16 Nov 2026): a relief Team Leader sees the covered leader's tasks too ---------- */
+  var cover = [], coverName = {};
+  sb.rpc("my_access").then(function (r) {
+    if (r.error || !r.data) return;
+    cover = r.data.covering || []; cover.forEach(function (c) { coverName[c.id] = c.name || "the leader"; });
+    if (!cover.length) return;
+    var until = function (c) { return new Intl.DateTimeFormat("en-AU", { timeZone: TZ, weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }).format(new Date(c.until)); };
+    var b = document.createElement("div"); b.className = "banner warn"; b.setAttribute("role", "status");
+    b.innerHTML = "<span><b style=\"font-size:inherit\">Relief cover:</b> you're covering for " + cover.map(function (c) { return esc(c.name || "a leader") + (c.cluster ? " (" + esc(c.cluster) + ")" : "") + " until " + esc(until(c)); }).join("; ") +
+      '. Their tasks are on your list. <a href="/dashboard/relief/">Relief cover</a></span>';
+    var grid = document.querySelector(".grid"), main = document.querySelector("main");
+    if (grid) grid.parentNode.insertBefore(b, grid);              // phone and tablet dashboard
+    else if (main) { b.style.gridColumn = "1 / -1"; main.insertBefore(b, main.firstChild); }   // widescreen
+    if (typeof drawTasks === "function" && tasks.length) drawTasks();
+  });
+
+  /* ---------- tasks (Supabase public.dashboard_tasks: each leader sees only their own, plus a covered leader's) ---------- */
   var tasks = [], showDone = false;
   function loadTasks() {
-    return sb.from("dashboard_tasks").select("id,title,due_date,done,done_at,created_at").order("created_at")
+    return sb.from("dashboard_tasks").select("id,title,due_date,done,done_at,created_at,created_by").order("created_at")
       .then(function (r) { if (r.error) throw r.error; tasks = r.data || []; drawTasks(); })
       .catch(function (e) { $("tList").innerHTML = '<p class="err">Could not load tasks: ' + esc(e.message || e) + "</p>"; });
   }
@@ -202,7 +236,7 @@
     $("tCount").textContent = open.length ? open.length + " to do" + (late ? " · " + late + " overdue" : "") : "";
     function row(x) {
       return '<li data-id="' + x.id + '"' + (x.done ? ' class="done"' : "") + '><input type="checkbox" aria-label="Done"' + (x.done ? " checked" : "") + '>' +
-        '<span class="tt" tabindex="0" title="Tap to edit">' + esc(x.title) + "</span>" + (x.done ? "<span></span>" : dueTag(x.due_date, t)) +
+        '<span class="tt" tabindex="0" title="Tap to edit">' + esc(x.title) + (coverName[x.created_by] ? ' <small class="muted">· ' + esc(coverName[x.created_by]) + "'s</small>" : "") + "</span>" + (x.done ? "<span></span>" : dueTag(x.due_date, t)) +
         '<button class="del" type="button" aria-label="Delete task" title="Delete">×</button></li>';
     }
     var html = open.length ? '<ul class="tasks">' + open.map(row).join("") + "</ul>" : '<p class="tempty">Nothing to do. 🎉</p>';
@@ -264,7 +298,7 @@
     return Promise.all([
       sb.from("sessions").select("id,group_id,session_date,start_time,end_time,location,session_type,topic,facilitator_name,lesson_id,lesson_ids").gte("session_date", t).lte("session_date", end).order("session_date").order("start_time"),
       sb.from("groups").select("id,name,cluster"),
-      sb.auth.getSession().then(function (x) { var u = x.data && x.data.session && x.data.session.user; return u ? sb.from("profiles").select("cluster").eq("id", u.id) : { data: [] }; })
+      sb.rpc("my_access").then(function (x) { return { data: [{ cluster: (x.data && x.data.cluster) || null }] }; })
     ]).then(function (r) {
       if (r[0].error) throw r[0].error;
       var gn = {}, gc = {}; (r[1].data || []).forEach(function (g) { gn[g.id] = g.name; gc[g.id] = g.cluster; });

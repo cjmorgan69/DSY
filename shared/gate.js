@@ -75,7 +75,15 @@
         if (!r.ok) throw new Error("profile");
         return r.json();
       })
-      .then(function (rows) { return Array.isArray(rows) ? (rows[0] || { full_name: "", role: "member" }) : rows; });
+      .then(function (rows) { return Array.isArray(rows) ? (rows[0] || { full_name: "", role: "member" }) : rows; })
+      .then(function (p) {
+        /* relief cover (16 Nov 2026): someone covering for a leader counts as a leader until the cover ends */
+        if (p.role === "leader") return p;
+        return fetch(URL_ + "/rest/v1/rpc/my_access", { method: "POST", headers: { apikey: KEY, Authorization: "Bearer " + s.access_token, "Content-Type": "application/json" }, body: "{}" })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (a) { if (a && a.role === "leader") p.role = "leader"; return p; })
+          .catch(function () { return p; });
+      });
   }
   function cached(uid) {
     try { var c = JSON.parse(localStorage.getItem(CACHE) || "null"); if (c && c.uid === uid && Date.now() - c.t < CACHE_HOURS * 3600000) return c; } catch (e) {}
