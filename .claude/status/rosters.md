@@ -124,4 +124,7 @@ time, the period each send covers, a reminder to the manager beforehand, pausing
 Schedule decisions (owner, 16 Nov 2026): each team's manager sets up its own schedule in Manager controls ("Schedule
 set-up": send day and time, period covered, default 7 days but the manager can change it, pause, skip a week, send
 early). Tumby Bay (the owner's team) is the first to use it. Idea raised by the owner: a message to every team member
-24 hours before the cut-off to check their availability (email, SMS or app notification): options given, not decided.
+24 hours before the cut-off to check their availability, listing the open gaps. Decided (owner, 16 Nov 2026): web
+push app notifications first (roster page installable as a Home Screen app with a "Turn on reminders" button; iPhone
+needs iOS 16.4+ and the Home Screen icon; free), planned for stage 4 with the scheduled send. SMS (ClickSend or
+MessageMedia, opt-in, own mobile number) only if too few people turn notifications on.
