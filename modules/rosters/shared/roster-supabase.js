@@ -48,6 +48,9 @@
     const labelById = {};
     const idByLabel = {};
     const myMessageIds = new Set();
+    // Booking id -> "Full Name (ambulance ID)", for the Country Rostering
+    // document. Only managers and leaders are sent these by the database.
+    const officialNames = {};
 
     client.auth.onAuthStateChange((event, session) => {
         token = session ? session.access_token : "";
@@ -153,7 +156,13 @@
         return {
             success: true,
             team: config.name,
-            bookings: (data.bookings || []).map(row => ({
+            bookings: (data.bookings || []).map(row => {
+                if (!row.placeholder && row.full_name) {
+                    officialNames[row.id] = row.full_name +
+                        (row.staff_id ? " (" + row.staff_id + ")" : "");
+                }
+
+                return {
                 id: row.id,
                 team: config.name,
                 user: row.placeholder
@@ -164,7 +173,8 @@
                 start: new Date(row.starts_at).toISOString(),
                 end: new Date(row.ends_at).toISOString(),
                 createdAt: ""
-            })),
+                };
+            }),
             rosterSubmission: submission(data)
         };
     }
@@ -532,6 +542,10 @@
             // Always after roster.js has finished setting itself up,
             // even when the sign-in answered before it loaded.
             ready.then(() => setTimeout(buildHeader, 0), () => {});
+        },
+
+        officialName(bookingId) {
+            return officialNames[String(bookingId)] || "";
         },
 
         isMyMessage(id) {
