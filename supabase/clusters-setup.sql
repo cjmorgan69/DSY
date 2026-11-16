@@ -82,7 +82,8 @@ end $$;
 drop trigger if exists protect_profile_cluster on public.profiles;
 create trigger protect_profile_cluster before update on public.profiles for each row execute function public.protect_profile_cluster();
 
--- Leaders' clusters (owner, 16 Nov 2026): Campbell Forsyth = Central Eyre; David Coombe (1002517) = West Coast.
+-- Leaders' clusters (owner, 16 Nov 2026): Campbell Forsyth = Central Eyre; David Coombe (1002517) = West Coast,
+-- made a leader and his name completed (owner, 16 Nov 2026).
 -- The lead instructor (1003463) stays blank = all clusters.
 update public.profiles set cluster = 'Central Eyre' where staff_id = '1002112';
-update public.profiles set cluster = 'West Coast' where staff_id = '1002517';
+update public.profiles set cluster = 'West Coast', role = 'leader', full_name = 'David Coombe' where staff_id = '1002517';
