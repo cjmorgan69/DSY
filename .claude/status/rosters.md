@@ -76,3 +76,26 @@ Stage 1 inputs (owner, 16 Nov 2026):
   Ferguson (400534), Tumby Bay the lead instructor (1003463). Central Eyre and West Coast managers: not yet known.
 - Central Eyre and West Coast rosters are already copied into `roster_bookings` every 2 hours by the edge function
   `roster-sync`; Lower Eyre still by the owner's PC run.
+
+## Stage 1 done (16 Nov 2026): database foundation, applied by Claude
+
+SQL `supabase/roster-stage1.sql` (migration `roster_stage1`), rehearsed first in a rolled-back run with 23 checks
+(owner, a Port Neill manager and three Tumby Bay members). Nothing on the roster pages uses it yet; the Apps Scripts
+still run every roster. Added:
+
+- `profiles.preferred_name` and `profiles.clinical_level`, both self-editable (owner, 16 Nov 2026: clinical level
+  self-edited too). `groups.call_sign` (TB, CU, PT, CF, CL, CW, KI, LK, SB, PK, WU, EL).
+- `roster_clusters.live_from` (all blank = trial; only the all-clusters leader can set it). `roster_managers`
+  (the 4 Lower Eyre managers; cluster leaders can add or remove; Central Eyre and West Coast leaders count as
+  managers for their teams until names are given).
+- `roster_shifts` (person by account, or a placeholder name; level and flexibility stored on the shift),
+  `roster_sent` (cut-off), `roster_messages`, `roster_change_log`.
+- Functions for the pages (signed-in only, never anon): `roster_book` (self; another member or a placeholder only
+  for managers and leaders), `roster_edit`, `roster_cancel`, `roster_set_sent`, `roster_reset_sent`,
+  `roster_post_message`, `roster_delete_message`, `roster_list` (preferred name for crew; full name and ID only for
+  managers and leaders), `roster_team_members`, `roster_messages_list`, `roster_team_status`, `roster_op_code_at`.
+  Same rules as Code.gs: whole Adelaide hours, 1-24 clock hours, no past starts, 3 people and 1 recruit an hour, no
+  self-overlap in a team, cut-off forward only, safe to repeat. `roster_op_code` is a third copy of the operational
+  restriction rules: keep it in step with roster.js and Code.gs.
+- Choices Claude made, told to the owner: cancel and change are now own shift or manager/leader (today anyone on the
+  page can cancel any booking); notes are not pruned (the list shows the latest 500).
