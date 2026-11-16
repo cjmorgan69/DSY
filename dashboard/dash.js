@@ -256,17 +256,33 @@
 
   /* ---------- training sessions ---------- */
   function hasLesson(s) { return !!s.lesson_id || (Array.isArray(s.lesson_ids) && s.lesson_ids.length > 0); }
+  // Training clusters (16 Nov 2026): a leader with a cluster sees their own cluster's sessions first, with an
+  // "All clusters" switch; a leader with no cluster (the lead instructor) sees everything.
+  var myCl = null, tView = null, tCache = null;
   function loadSessions() {
     var t = todayIso(), end = addDays(t, 60);
     return Promise.all([
       sb.from("sessions").select("id,group_id,session_date,start_time,end_time,location,session_type,topic,facilitator_name,lesson_id,lesson_ids").gte("session_date", t).lte("session_date", end).order("session_date").order("start_time"),
-      sb.from("groups").select("id,name")
+      sb.from("groups").select("id,name,cluster"),
+      sb.auth.getSession().then(function (x) { var u = x.data && x.data.session && x.data.session.user; return u ? sb.from("profiles").select("cluster").eq("id", u.id) : { data: [] }; })
     ]).then(function (r) {
       if (r[0].error) throw r[0].error;
-      var gn = {}; (r[1].data || []).forEach(function (g) { gn[g.id] = g.name; });
-      drawSessions(r[0].data || [], gn, t);
+      var gn = {}, gc = {}; (r[1].data || []).forEach(function (g) { gn[g.id] = g.name; gc[g.id] = g.cluster; });
+      myCl = (r[2].data && r[2].data[0] && r[2].data[0].cluster) || null;
+      if (tView === null) tView = myCl || "all";
+      tCache = [r[0].data || [], gn, gc, t];
+      drawCluster();
     }).catch(function (e) { $("tBody").innerHTML = '<p class="err">Could not load sessions: ' + esc(e.message || e) + "</p>"; });
   }
+  function drawCluster() {
+    if (!tCache) return;
+    var rows = tCache[0].filter(function (s) { var c = tCache[2][s.group_id]; return tView === "all" || !c || c === tView; });
+    drawSessions(rows, tCache[1], tCache[3]);
+    if (!myCl) return;
+    $("tBody").insertAdjacentHTML("afterbegin", '<div class="chips" role="group" aria-label="Cluster"><button type="button" class="chip2" data-tview="' + esc(myCl) + '" aria-pressed="' + (tView === myCl) + '">' + esc(myCl) +
+      '</button><button type="button" class="chip2" data-tview="all" aria-pressed="' + (tView === "all") + '">All clusters</button></div>');
+  }
+  $("tBody").addEventListener("click", function (e) { var b = e.target.closest("[data-tview]"); if (b) { tView = b.getAttribute("data-tview"); drawCluster(); } });
   function drawSessions(rows, gn, t) {
     var nowM = mins(parts().hour + ":" + parts().minute);
     rows = rows.filter(function (s) { return s.session_date > t || mins(s.end_time || s.start_time) > nowM; });
