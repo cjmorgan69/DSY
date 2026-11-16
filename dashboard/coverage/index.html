@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<script src="/shared/gate.js?v=20261117h" data-level="leader"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Crewing Gaps</title>
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/training/theme.css?v=20261117h">
+<style>
+/* Crewing gaps (16 Nov 2026, owner): each Team Leader sets their own rules for the minimum crew across their teams
+   (which teams are checked together, how many are needed, which clinical levels count, how long a gap must be to
+   be listed). The page only identifies the gaps: what to do about them (a paramedic, other support) is the Team
+   Leader's call. Grown from the Tumby Bay + Cummins trial at /modules/rosters/lowereyre/coverage-gaps-6h/, which
+   keeps the Lower Eyre paramedic request and email.
+   Rules: Supabase public.coverage_rules, one row per leader (supabase/coverage-rules-setup.sql).
+   Rosters: each team's own getBookings, live, the same call the roster pages make. */
+.wrap { width:min(760px,100%); }
+.hero { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.8rem; padding:1.1rem 1.25rem; border-radius:20px;
+  color:#fff; background:linear-gradient(135deg,#1f5b43 0%,#174a36 55%,#2f6f8f 130%); }
+.hero h1 { font-size:1.4rem; } .hero p { color:rgba(255,255,255,.82); font-size:.92rem; margin-top:.2rem; }
+.hbtn { display:inline-flex; align-items:center; padding:.45rem .9rem; border-radius:999px; background:rgba(255,255,255,.14); color:#fff; text-decoration:none; border:1px solid rgba(255,255,255,.28); font-size:.9rem; }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:1rem 1.1rem; display:flex; flex-direction:column; gap:.7rem; }
+.card h2 { font-size:1.1rem; }
+.bar { display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; }
+.bar label { flex-direction:row; align-items:center; gap:.5rem; }
+label { display:flex; flex-direction:column; gap:.3rem; font-size:.9rem; }
+select, input[type=text], input[type=date] { font:inherit; padding:.55rem .7rem; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink); min-width:0; min-height:44px; }
+.btn { border:0; cursor:pointer; font:inherit; font-weight:600; }
+.btn.small { min-height:38px; padding:.35rem .9rem; font-size:.88rem; }
+.note { font-size:.82rem; color:var(--muted); } .err { color:var(--danger); font-size:.9rem; }
+.rule { font-size:.85rem; color:var(--muted); }
+.totals { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+.total { padding:.6rem .75rem; border-radius:12px; background:var(--bg); }
+.total strong { display:block; font-size:1.3rem; } .total span { font-size:.78rem; color:var(--muted); }
+.strip { display:grid; grid-template-columns:auto 1fr; gap:.3rem .6rem; align-items:center; font-size:.78rem; color:var(--muted); }
+.track { position:relative; height:14px; border-radius:7px; background:color-mix(in srgb,var(--ok) 30%,var(--surface)); overflow:hidden; }
+.track i { position:absolute; top:0; bottom:0; background:var(--danger); }
+.track b { position:absolute; top:0; bottom:0; width:1px; background:var(--surface); opacity:.8; }
+.gaps { list-style:none; margin:0; padding:0; }
+.gaps li { padding:.6rem 0; border-top:1px solid var(--line); }
+.gaps li:first-child { border-top:0; }
+.gaps strong { display:block; }
+.gaps .sub { display:block; font-size:.84rem; color:var(--muted); margin-top:.15rem; }
+.tag { display:inline-block; font-size:.74rem; font-weight:700; border-radius:999px; padding:.1rem .55rem; white-space:nowrap; }
+.tag.none { background:color-mix(in srgb,var(--danger) 16%,var(--surface)); color:var(--danger); }
+.tag.some { background:color-mix(in srgb,var(--accent) 26%,var(--surface)); color:var(--ink); }
+.tag.town { background:color-mix(in srgb,#2f6f8f 18%,var(--surface)); color:var(--ink); }
+details.who { margin-top:.3rem; font-size:.84rem; }
+details.who summary { cursor:pointer; color:var(--brand); }
+details.who h4 { margin:.4rem 0 .1rem; font-size:.84rem; }
+details.who ul { margin:0; padding-left:1.1rem; list-style:disc; }
+details.who .nc { color:var(--muted); }
+details.fold > summary { cursor:pointer; font-family:var(--font-head); font-weight:700; font-size:1.1rem; list-style:none; display:flex; justify-content:space-between; align-items:center; }
+details.fold > summary::-webkit-details-marker { display:none; }
+details.fold > summary::after { content:"▼"; font-size:.7rem; color:var(--muted); }
+details.fold[open] > summary::after { content:"▲"; }
+.grp { border:1px solid var(--line); border-radius:14px; padding:.8rem; display:flex; flex-direction:column; gap:.7rem; margin-top:.7rem; }
+.teams { display:flex; flex-wrap:wrap; gap:.4rem; }
+.teams label { flex-direction:row; align-items:center; gap:.35rem; padding:.4rem .7rem; border:1px solid var(--line); border-radius:999px; font-size:.88rem; min-height:40px; }
+.teams input { flex:none; width:18px; height:18px; margin:0; }
+.teams label { white-space:nowrap; }
+.teams .cl { flex-basis:100%; font-size:.76rem; color:var(--muted); font-weight:600; margin-top:.2rem; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; } @media (max-width:520px) { .grid2, .totals { grid-template-columns:1fr; } }
+.levels { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:.4rem .7rem; align-items:center; font-size:.9rem; }
+.levels select { width:100%; }
+@media (max-width:520px) { .levels { grid-template-columns:1fr; gap:.2rem; } .levels select { margin-bottom:.4rem; } }
+.row { display:flex; flex-wrap:wrap; gap:.5rem; align-items:center; }
+[hidden] { display:none !important; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="/modules/rosters/shared/teams.js?v=20261117h"></script>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero">
+    <div><h1>Crewing gaps</h1><p>Where your teams' rosters fall below your minimum, for the next 8 days</p></div>
+    <a class="hbtn" href="/dashboard/">← Dashboard</a>
+  </header>
+
+  <div class="bar">
+    <label>From <input id="start" type="date"></label>
+    <button id="today" class="btn ghost small" type="button">Today</button>
+    <button id="refresh" class="btn ghost small" type="button">Refresh</button>
+  </div>
+
+  <p id="msg" class="note" hidden></p>
+  <div id="covering" class="note" hidden></div>
+  <div id="results" class="stack"></div>
+
+  <section class="card">
+    <details class="fold" id="rulesFold">
+      <summary>Your rules</summary>
+      <p class="note" style="margin-top:.5rem">Teams in one group are checked together: the minimum can be met by people in any of them.
+        These rules are yours only. Other Team Leaders set their own.</p>
+      <div id="groups"></div>
+      <div class="row" style="margin-top:.8rem">
+        <button id="add" class="btn ghost small" type="button">+ Add a group</button>
+        <button id="save" class="btn small" type="button">Save rules</button>
+        <span id="saved" class="note"></span>
+      </div>
+      <p id="rerr" class="err" hidden></p>
+    </details>
+  </section>
+
+  <p id="checked" class="note"></p>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var sb = window.supabase.createClient("https://ekaodnbnpsuayvmxvxbm.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW9kbmJucHN1YXl2bXh2eGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzIxMzQsImV4cCI6MjEwNzM0ODEzNH0.q3lTeCQAQjYeMUNl6lwsrxUAsTijJikABW4Ua2N4bmI");
+  var $ = function (id) { return document.getElementById(id); };
+
+  var TZ = "Australia/Adelaide", MINUTE = 60000, HOUR = 60 * MINUTE, DAYS = 8;
+  var LEVELS = ["PARA", "AO", "AR", "AA", "REC"];
+  var LEVEL_NAMES = { PARA: "Paramedic (PARA)", AO: "Ambulance Officer (AO)", AR: "Ambulance Responder (AR)", AA: "Ambulance Assist (AA)", REC: "Recruit (REC)" };
+  var DEFAULT_LEVELS = { PARA: "full", AO: "full", AR: "full", AA: "with", REC: "no" };
+  var GAP_CHOICES = [0, 1, 2, 3, 4, 6, 8, 12];
+
+  var me = null, acc = {}, groups = [], viewOnly = null;
+  var bookings = {}, problems = [], loadedAt = null, startDate = null, loadRun = 0;
+
+  /* ---------- small helpers ---------- */
+  function el(tag, text, cls) { var n = document.createElement(tag); if (text != null) n.textContent = text; if (cls) n.className = cls; return n; }
+  function msg(text, bad) { $("msg").textContent = text || ""; $("msg").className = bad ? "err" : "note"; $("msg").hidden = !text; }
+
+  var partsFmt = new Intl.DateTimeFormat("en-AU", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  function parts(ms) { var v = {}; partsFmt.formatToParts(new Date(ms)).forEach(function (p) { v[p.type] = Number(p.value); }); return v; }
+  function pad(n) { return String(n).padStart(2, "0"); }
+  function dateOf(ms) { var p = parts(ms); return p.year + "-" + pad(p.month) + "-" + pad(p.day); }
+  // Milliseconds for a wall-clock hour on a date in Adelaide.
+  function at(date, hour) {
+    var d = date.split("-").map(Number), wanted = Date.UTC(d[0], d[1] - 1, d[2], hour, 0), guess = wanted - 630 * MINUTE;
+    for (var i = 0; i < 3; i++) { var p = parts(guess), shown = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute); if (shown === wanted) break; guess += wanted - shown; }
+    return guess;
+  }
+  function addDays(date, n) { var v = new Date(date + "T12:00:00Z"); v.setUTCDate(v.getUTCDate() + n); return v.toISOString().slice(0, 10); }
+  // The volunteer day starts at 08:00: before then it is still yesterday's night shift.
+  function operationalToday() { var p = parts(Date.now()), d = p.year + "-" + pad(p.month) + "-" + pad(p.day); return p.hour < 8 ? addDays(d, -1) : d; }
+  var timeFmt = new Intl.DateTimeFormat("en-AU", { timeZone: TZ, hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  var dayFmt = new Intl.DateTimeFormat("en-AU", { timeZone: "UTC", weekday: "short", day: "numeric", month: "short" });
+  var stampFmt = new Intl.DateTimeFormat("en-AU", { timeZone: TZ, weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  function time(ms) { return timeFmt.format(new Date(ms)); }
+  function dayLabel(date) { return dayFmt.format(new Date(date + "T12:00:00Z")); }
+  function when(x) { return x.open ? dayLabel(dateOf(x.from)) + " " + time(x.from) + " onwards" : span(x.from, x.to); }
+  function howLong(x) { return (x.open ? "more than " : "") + duration(x.minutes); }
+  function span(from, to) {
+    var a = dateOf(from), b = dateOf(to);
+    return dayLabel(a) + " " + time(from) + " to " + (a === b ? "" : dayLabel(b) + " ") + time(to);
+  }
+  function duration(min) { var h = Math.floor(min / 60), m = Math.round(min % 60); return h && m ? h + " h " + m + " min" : h ? h + " h" : m + " min"; }
+
+  /* ---------- teams ---------- */
+  function allTeams() {
+    var T = window.DSY_ROSTER_TEAMS || {}, out = [];
+    Object.keys(T).forEach(function (id) { if (!T[id].testTeam) out.push({ id: id, name: T[id].name, cluster: T[id].cluster, api: T[id].apiUrl }); });
+    return out;
+  }
+  // A cluster's Team Leader picks from their own teams; an all-clusters leader from every team.
+  function myTeams() { return allTeams().filter(function (t) { return !acc.cluster || t.cluster === acc.cluster; }); }
+  function teamByName(name) { return allTeams().filter(function (t) { return t.name === name; })[0]; }
+
+  /* ---------- rules ---------- */
+  function cleanGroup(g) {
+    g = g || {};
+    var levels = {};
+    LEVELS.forEach(function (l) { var v = g.levels && g.levels[l]; levels[l] = v === "full" || v === "with" || v === "no" ? v : DEFAULT_LEVELS[l]; });
+    var min = Math.round(Number(g.min)); if (!(min >= 1 && min <= 8)) min = 2;
+    var hrs = Number(g.minHours); if (GAP_CHOICES.indexOf(hrs) < 0) hrs = 6;
+    var teams = (Array.isArray(g.teams) ? g.teams : []).filter(function (n) { return teamByName(n); });
+    return { name: String(g.name || "").trim().slice(0, 60), teams: teams, min: min, levels: levels, minHours: hrs };
+  }
+  function groupTitle(g) { return g.name || g.teams.join(" + "); }
+  function ruleText(g) {
+    var full = LEVELS.filter(function (l) { return g.levels[l] === "full"; });
+    var withs = LEVELS.filter(function (l) { return g.levels[l] === "with"; });
+    var t = "Minimum " + g.min + (g.teams.length > 1 ? " across " + g.teams.join(", ") : " at " + g.teams[0]) + ". Counted: " + (full.join(", ") || "nobody");
+    if (withs.length) t += "; " + withs.join(", ") + " only with " + (full.length === 1 ? "a " + full[0] : "one of those") + " in the same town";
+    t += ". " + (g.minHours ? "Gaps of " + g.minHours + " h or more." : "Every gap.");
+    return t;
+  }
+
+  /* ---------- coverage ---------- */
+  function groupBookings(g) {
+    var out = [];
+    g.teams.forEach(function (n) { (bookings[n] || []).forEach(function (b) { out.push(b); }); });
+    return out;
+  }
+  // Split [from, to) into pieces with a steady count of counted crew.
+  function pieces(g, list, from, to) {
+    var counted = list.filter(function (b) { return g.levels[b.level] && g.levels[b.level] !== "no" && b.start < to && b.end > from; });
+    var pts = {}; pts[from] = 1; pts[to] = 1;
+    counted.forEach(function (b) { if (b.start > from && b.start < to) pts[b.start] = 1; if (b.end > from && b.end < to) pts[b.end] = 1; });
+    var sorted = Object.keys(pts).map(Number).sort(function (a, b) { return a - b; }), out = [];
+    for (var i = 0; i < sorted.length - 1; i++) {
+      var a = sorted[i], z = sorted[i + 1], count = 0, lead = {};
+      var here = counted.filter(function (x) { return x.start < z && x.end > a; });
+      g.teams.forEach(function (town) {
+        var f = here.filter(function (x) { return x.town === town && g.levels[x.level] === "full"; }).length;
+        var w = here.filter(function (x) { return x.town === town && g.levels[x.level] === "with"; }).length;
+        lead[town] = f; count += f + (f ? w : 0);
+      });
+      out.push({ from: a, to: z, count: count, lead: lead });
+    }
+    return out;
+  }
+  function analyse(g) {
+    var from = at(startDate, 8), to = at(addDays(startDate, DAYS), 8), now = Date.now();
+    var list = groupBookings(g), need = g.minHours * 60;
+    // Look a day past the end so a gap running over the edge is measured at its full length.
+    var ps = pieces(g, list, from, to + 24 * HOUR), gaps = [], empty = [];
+    ps.forEach(function (p) {
+      if (p.count < g.min) {
+        var last = gaps[gaps.length - 1];
+        if (last && last.to === p.from) { last.to = p.to; last.parts.push(p); } else gaps.push({ from: p.from, to: p.to, parts: [p] });
+      }
+      // A town with nobody who counts in their own right, even if the group still meets the minimum.
+      if (g.teams.length > 1) g.teams.forEach(function (town) {
+        if (p.lead[town]) return;
+        var prev = empty.filter(function (x) { return x.town === town; }).pop();
+        if (prev && prev.to === p.from) prev.to = p.to; else empty.push({ town: town, from: p.from, to: p.to });
+      });
+    });
+    function keep(x) { x.minutes = (x.to - x.from) / MINUTE; return x.minutes >= need && x.from < to && x.to > now; }
+    // A stretch still running at the end of the look-ahead has no known end.
+    gaps.concat(empty).forEach(function (x) { x.open = x.to >= to + 24 * HOUR; });
+    gaps = gaps.filter(keep);
+    gaps.forEach(function (x) {
+      x.lowest = Math.min.apply(null, x.parts.map(function (p) { return p.count; }));
+      x.highest = Math.max.apply(null, x.parts.map(function (p) { return p.count; }));
+    });
+    empty = empty.filter(keep).sort(function (a, b) { return a.from - b.from; });
+    return { from: from, to: to, list: list, gaps: gaps, empty: empty };
+  }
+  function booked(g, gap) { return (gap.lowest === gap.highest ? gap.lowest : gap.lowest + "–" + gap.highest) + " of " + g.min; }
+  // "18:00–22:00 1 of 2, 22:00–08:00 0 of 2" when the number booked changes during a gap.
+  function breakdown(g, gap) {
+    if (gap.lowest === gap.highest) return "";
+    var joined = [];
+    gap.parts.forEach(function (p) { var last = joined[joined.length - 1]; if (last && last.count === p.count) last.to = p.to; else joined.push({ from: p.from, to: p.to, count: p.count }); });
+    return joined.map(function (p) { return time(p.from) + "–" + time(p.to) + " " + p.count + " of " + g.min; }).join(", ");
+  }
+
+  /* ---------- results ---------- */
+  function whoBlock(g, r, gap) {
+    var d = el("details", null, "who"); d.appendChild(el("summary", "Who's booked"));
+    g.teams.forEach(function (town) {
+      d.appendChild(el("h4", town));
+      if (!bookings[town]) { d.appendChild(el("div", "Roster not loaded", "nc")); return; }
+      var here = r.list.filter(function (b) { return b.town === town && b.start < gap.to && b.end > gap.from; }).sort(function (a, b) { return a.start - b.start; });
+      if (!here.length) { d.appendChild(el("div", "Nobody booked", "nc")); return; }
+      var ul = el("ul");
+      here.forEach(function (b) {
+        var how = g.levels[b.level] || "no";
+        ul.appendChild(el("li", b.user + " · " + (b.level || "?") + " · " + span(Math.max(b.start, gap.from), Math.min(b.end, gap.to)).replace(/^\S+ \d+ \S+ /, "") +
+          (how === "full" ? "" : how === "with" ? " (counts only with a counted person in " + town + ")" : " (doesn't count)"), how === "full" ? "" : "nc"));
+      });
+      d.appendChild(ul);
+    });
+    return d;
+  }
+  function strip(r) {
+    var box = el("div", null, "strip");
+    for (var i = 0; i < DAYS; i++) {
+      var date = addDays(startDate, i), a = at(date, 8), z = at(addDays(date, 1), 8), track = el("div", null, "track");
+      r.gaps.forEach(function (gp) {
+        var f = Math.max(gp.from, a), t = Math.min(gp.to, z); if (t <= f) return;
+        var bar = el("i"); bar.style.left = (f - a) / (z - a) * 100 + "%"; bar.style.width = (t - f) / (z - a) * 100 + "%"; track.appendChild(bar);
+      });
+      var tick = el("b"); tick.style.left = (at(date, 18) - a) / (z - a) * 100 + "%"; track.appendChild(tick);
+      box.appendChild(el("span", dayLabel(date))); box.appendChild(track);
+    }
+    return box;
+  }
+  function copyText(g, r) {
+    var lines = [groupTitle(g) + ": crewing below the minimum, " + dayLabel(startDate) + " to " + dayLabel(addDays(startDate, DAYS - 1)), ruleText(g), ""];
+    if (!r.gaps.length) lines.push("No gaps.");
+    r.gaps.forEach(function (gp) {
+      var extra = breakdown(g, gp);
+      lines.push("- " + when(gp) + " (" + howLong(gp) + "), " + booked(g, gp) + " booked" + (extra ? ": " + extra : ""));
+    });
+    if (r.empty.length) {
+      lines.push("", "Town with nobody counted in their own right:");
+      r.empty.forEach(function (x) { lines.push("- " + x.town + ": " + when(x) + " (" + howLong(x) + ")"); });
+    }
+    lines.push("", "Checked from the live rosters " + stampFmt.format(loadedAt) + ".");
+    return lines.join("\n");
+  }
+  function groupCard(g) {
+    var card = el("section", null, "card"), r = analyse(g);
+    card.appendChild(el("h2", groupTitle(g)));
+    card.appendChild(el("p", ruleText(g), "rule"));
+    var missing = g.teams.filter(function (n) { return !bookings[n]; });
+    if (missing.length) card.appendChild(el("p", "Roster not loaded for " + missing.join(", ") + ": the gaps below may be wrong. Try Refresh.", "err"));
+
+    var total = r.gaps.reduce(function (s, x) { return s + (Math.min(x.to, r.to) - Math.max(x.from, r.from)) / MINUTE; }, 0);
+    var totals = el("div", null, "totals"), t1 = el("div", null, "total"), t2 = el("div", null, "total");
+    t1.appendChild(el("strong", String(r.gaps.length))); t1.appendChild(el("span", r.gaps.length === 1 ? "gap" : "gaps"));
+    t2.appendChild(el("strong", total ? duration(total) : "0 h")); t2.appendChild(el("span", "below the minimum in these 8 days"));
+    totals.appendChild(t1); totals.appendChild(t2); card.appendChild(totals);
+    card.appendChild(strip(r));
+    card.appendChild(el("p", "Each bar is one day, 08:00 to 08:00, with a mark at 18:00. Red is a listed gap.", "note"));
+
+    var ul = el("ul", null, "gaps");
+    if (!r.gaps.length) ul.appendChild(el("li", g.minHours ? "No gaps of " + g.minHours + " hours or more." : "No gaps. The minimum is met for the whole period."));
+    r.gaps.forEach(function (gp) {
+      var li = el("li"); li.appendChild(el("strong", when(gp) + " · " + howLong(gp)));
+      var sub = el("span", null, "sub"); sub.appendChild(el("span", booked(g, gp) + " booked", gp.highest === 0 ? "tag none" : "tag some"));
+      var extra = breakdown(g, gp); if (extra) sub.appendChild(document.createTextNode(" " + extra));
+      li.appendChild(sub); li.appendChild(whoBlock(g, r, gp)); ul.appendChild(li);
+    });
+    card.appendChild(ul);
+
+    if (r.empty.length) {
+      card.appendChild(el("h3", "Town with nobody counted in their own right"));
+      var ul2 = el("ul", null, "gaps");
+      r.empty.forEach(function (x) {
+        var li = el("li"); li.appendChild(el("strong", when(x) + " · " + howLong(x)));
+        var sub = el("span", null, "sub"); sub.appendChild(el("span", x.town, "tag town")); li.appendChild(sub); ul2.appendChild(li);
+      });
+      card.appendChild(ul2);
+    }
+
+    var copy = el("button", "Copy as text", "btn ghost small"); copy.type = "button";
+    copy.addEventListener("click", function () {
+      var done = function (ok) { copy.textContent = ok ? "Copied" : "Couldn't copy"; setTimeout(function () { copy.textContent = "Copy as text"; }, 2000); };
+      try { navigator.clipboard.writeText(copyText(g, r)).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
+    });
+    var row = el("div", null, "row"); row.appendChild(copy); card.appendChild(row);
+    return card;
+  }
+  function render() {
+    var box = $("results"); box.replaceChildren();
+    var use = groups.filter(function (g) { return g.teams.length; });
+    if (!use.length) {
+      var c = el("section", null, "card");
+      c.appendChild(el("h2", "Set your rules first"));
+      c.appendChild(el("p", "Open \"Your rules\" below, add a group, tick the teams that are checked together and choose your minimum.", "rule"));
+      box.appendChild(c); $("rulesFold").open = true; $("checked").textContent = ""; return;
+    }
+    if (!loadedAt) return;
+    use.forEach(function (g) { box.appendChild(groupCard(g)); });
+    $("checked").textContent = "Checked from the live rosters " + stampFmt.format(loadedAt) + ". Counted to the minute. Gaps already finished are left out.";
+  }
+
+  /* ---------- rosters ---------- */
+  function loadTeam(t) {
+    var ctl = new AbortController(), timer = setTimeout(function () { ctl.abort(); }, 60000);
+    return fetch(t.api, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "getBookings", team: t.name }), redirect: "follow", credentials: "omit", signal: ctl.signal })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (d) {
+        if (!d || !Array.isArray(d.bookings)) throw new Error(d && d.error || "unexpected reply");
+        return { t: t, list: d.bookings.filter(function (b) { return String(b.team || "").trim() === t.name; }).map(function (b) {
+          return { town: t.name, user: String(b.user || "").trim(), level: String(b.clinicalLevel || "").trim().toUpperCase(), start: new Date(b.start).getTime(), end: new Date(b.end).getTime() };
+        }).filter(function (b) { return b.user && isFinite(b.start) && isFinite(b.end) && b.end > b.start; }) };
+      })
+      .catch(function (e) { return { t: t, err: e.name === "AbortError" ? "timed out" : e.message }; })
+      .finally(function () { clearTimeout(timer); });
+  }
+  function loadRosters() {
+    var names = {}; groups.forEach(function (g) { g.teams.forEach(function (n) { names[n] = 1; }); });
+    var teams = Object.keys(names).map(teamByName).filter(Boolean);
+    if (!teams.length) { loadedAt = null; render(); return Promise.resolve(); }
+    var run = ++loadRun;
+    $("refresh").disabled = true; msg("Loading " + teams.length + (teams.length === 1 ? " roster…" : " rosters…"));
+    return Promise.all(teams.map(loadTeam)).then(function (res) {
+      if (run !== loadRun) return;
+      bookings = {}; problems = [];
+      res.forEach(function (r) { if (r.err) problems.push(r.t.name + " (" + r.err + ")"); else bookings[r.t.name] = r.list; });
+      loadedAt = new Date();
+      msg(problems.length ? "Not loaded: " + problems.join(", ") + "." : "", problems.length > 0);
+      $("refresh").disabled = false; render();
+    });
+  }
+
+  /* ---------- rules editor ---------- */
+  function drawEditor() {
+    var box = $("groups"); box.replaceChildren();
+    var lock = !!viewOnly;
+    $("add").hidden = lock; $("save").hidden = lock;
+    if (!groups.length) box.appendChild(el("p", "No groups yet.", "note"));
+    groups.forEach(function (g, i) {
+      var card = el("div", null, "grp");
+      var name = el("label", "Group name (optional)"), ni = el("input"); ni.type = "text"; ni.maxLength = 60; ni.value = g.name; ni.placeholder = "For example: Tumby Bay and Cummins"; ni.disabled = lock;
+      ni.addEventListener("input", function () { g.name = ni.value; dirty(); }); name.appendChild(ni); card.appendChild(name);
+
+      card.appendChild(el("span", "Teams checked together", "note"));
+      var teams = el("div", null, "teams"), lastCluster = "";
+      myTeams().concat(allTeams().filter(function (t) { return g.teams.indexOf(t.name) >= 0 && myTeams().indexOf(t) < 0 && !myTeams().some(function (m) { return m.name === t.name; }); })).forEach(function (t) {
+        if (!acc.cluster && t.cluster !== lastCluster) { teams.appendChild(el("span", t.cluster, "cl")); lastCluster = t.cluster; }
+        var lab = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = g.teams.indexOf(t.name) >= 0; cb.disabled = lock;
+        cb.addEventListener("change", function () {
+          g.teams = g.teams.filter(function (n) { return n !== t.name; }); if (cb.checked) g.teams.push(t.name); dirty();
+        });
+        lab.appendChild(cb); lab.appendChild(document.createTextNode(t.name)); teams.appendChild(lab);
+      });
+      card.appendChild(teams);
+
+      var grid = el("div", null, "grid2");
+      var l1 = el("label", "Minimum crew across the group"), s1 = el("select");
+      for (var n = 1; n <= 8; n++) { var o = el("option", String(n)); o.value = n; s1.appendChild(o); }
+      s1.value = g.min; s1.disabled = lock; s1.addEventListener("change", function () { g.min = Number(s1.value); dirty(); }); l1.appendChild(s1);
+      var l2 = el("label", "List gaps of"), s2 = el("select");
+      GAP_CHOICES.forEach(function (h) { var o = el("option", h ? h + (h === 1 ? " hour" : " hours") + " or more" : "Any length"); o.value = h; s2.appendChild(o); });
+      s2.value = g.minHours; s2.disabled = lock; s2.addEventListener("change", function () { g.minHours = Number(s2.value); dirty(); }); l2.appendChild(s2);
+      grid.appendChild(l1); grid.appendChild(l2); card.appendChild(grid);
+
+      card.appendChild(el("span", "Who counts toward the minimum", "note"));
+      var lv = el("div", null, "levels");
+      LEVELS.forEach(function (l) {
+        lv.appendChild(el("span", LEVEL_NAMES[l]));
+        var s = el("select");
+        [["full", "Counts"], ["with", "Only with a counted person in the same town"], ["no", "Doesn't count"]].forEach(function (c) { var o = el("option", c[1]); o.value = c[0]; s.appendChild(o); });
+        s.value = g.levels[l]; s.disabled = lock; s.setAttribute("aria-label", LEVEL_NAMES[l]);
+        s.addEventListener("change", function () { g.levels[l] = s.value; dirty(); }); lv.appendChild(s);
+      });
+      card.appendChild(lv);
+
+      if (!lock) {
+        var rm = el("button", "Remove this group", "btn danger small"); rm.type = "button";
+        rm.addEventListener("click", function () { if (!confirm("Remove this group?")) return; groups.splice(i, 1); dirty(); drawEditor(); });
+        var row = el("div", null, "row"); row.appendChild(rm); card.appendChild(row);
+      }
+      box.appendChild(card);
+    });
+  }
+  function dirty() { $("saved").textContent = "Not saved yet"; }
+  $("add").addEventListener("click", function () {
+    var mine = myTeams();
+    groups.push(cleanGroup({ teams: mine.length === 1 ? [mine[0].name] : [] })); dirty(); drawEditor();
+  });
+  $("save").addEventListener("click", function () {
+    $("rerr").hidden = true;
+    var bad = groups.filter(function (g) { return !g.teams.length; });
+    if (bad.length) { $("rerr").textContent = "Tick at least one team in each group, or remove the empty group."; $("rerr").hidden = false; return; }
+    groups = groups.map(cleanGroup);
+    $("save").disabled = true;
+    sb.from("coverage_rules").upsert({ owner_id: me, groups: groups, updated_at: new Date().toISOString() }).then(function (r) {
+      $("save").disabled = false;
+      if (r.error) { $("rerr").textContent = "That didn't save: " + r.error.message; $("rerr").hidden = false; return; }
+      $("saved").textContent = "Saved"; drawEditor(); loadRosters();
+    });
+  });
+
+  /* ---------- start ---------- */
+  startDate = operationalToday(); $("start").value = startDate;
+  $("start").addEventListener("change", function () { if (!$("start").value) return; startDate = $("start").value; render(); });
+  $("today").addEventListener("click", function () { startDate = operationalToday(); $("start").value = startDate; render(); });
+  $("refresh").addEventListener("click", loadRosters);
+
+  (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve()).then(function () { return sb.auth.getSession(); }).then(function (x) {
+    me = x && x.data && x.data.session && x.data.session.user && x.data.session.user.id;
+    return Promise.all([sb.rpc("my_access"), sb.from("coverage_rules").select("owner_id,groups")]);
+  }).then(function (r) {
+    if (r[1].error) throw r[1].error;
+    acc = (r[0] && r[0].data) || {};
+    var rows = r[1].data || [], mine = rows.filter(function (x) { return x.owner_id === me; })[0];
+    // A relief Team Leader with no rules of their own sees (but can't change) the rules of the leader they cover.
+    var other = !mine && rows[0];
+    if (other) {
+      viewOnly = other.owner_id;
+      var who = (acc.covering || []).filter(function (c) { return c.id === other.owner_id; })[0];
+      $("covering").textContent = "Showing " + (who && who.name ? who.name + "'s" : "the covered leader's") + " rules while you are covering. You can't change them.";
+      $("covering").hidden = false;
+    }
+    groups = (((mine || other || {}).groups) || []).map(cleanGroup);
+    drawEditor(); render(); return loadRosters();
+  }).catch(function (e) { msg("Could not load: " + (e && e.message || e), true); });
+})();
+</script>
+</body>
+</html>

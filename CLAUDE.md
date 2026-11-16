@@ -157,4 +157,7 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - Retire `/course/` (Google Sheet app) once the current AR group finishes; `/ar/course/` replaces it.
 - Planned: a request portal (`/request/`) with an inbox panel on the dashboard; the Supabase roster (see `rosters.md`; stages 1 (database), 3 (emails) and 4 (new roster page, send, schedule, reminders: on the Summer Bay test roster only) of 8 done 17 Nov 2026; real teams still on the Apps Scripts).
 
+- Crewing gaps for Team Leaders (`/dashboard/coverage/`, own rules per leader; see `rosters.md`): on a branch, not
+  merged; the `coverage_rules` table still needs the owner's approval in Supabase.
+
 Update this list as work is done.
