@@ -64,3 +64,15 @@ future shifts. The team roster shows the preferred name only; the ambulance ID i
 TLs and the change log see full name and ID beside it. The roster sent to Country Rostering and the change emails use
 the FULL name. The ambulance ID appears ONLY on the roster document prepared for Country Rostering, beside the full
 name (owner, 16 Nov 2026); not on the team roster or the change emails. Placeholders (LEP40 etc.) stay free text with no ID.
+
+Stage 1 inputs (owner, 16 Nov 2026):
+
+- Call-sign letters: already on main from the dashboard thread (CLAUDE.md, `paging_team()`): TB, CU, PT, CF, CL, CW,
+  KI, LK, SB, PK, WU, EL. CO is the team leader call sign, not a team.
+- Clusters and leaders: already on main (`groups.cluster`, `profiles.cluster`, `my_cluster()`, `can_edit_group()`,
+  relief cover). Campbell Forsyth (1002112) Central Eyre, David Coombe (1002517) West Coast, the lead instructor
+  (1003463, cluster blank = all clusters) Lower Eyre and proxy operations manager for now.
+- Lower Eyre roster managers: Cummins John Treloar (900469), Port Neill Christine Snowden (400928), Coffin Bay Kaye
+  Ferguson (400534), Tumby Bay the lead instructor (1003463). Central Eyre and West Coast managers: not yet known.
+- Central Eyre and West Coast rosters are already copied into `roster_bookings` every 2 hours by the edge function
+  `roster-sync`; Lower Eyre still by the owner's PC run.
