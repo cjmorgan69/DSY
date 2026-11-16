@@ -260,3 +260,4 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   Notification Centre; the banner was hidden by a Focus (it was 3 am). Follow-up: the service worker no longer sets
   a notification `tag` (a same-tag replacement arrives silently on iPhone), and the "Send a test" message tells
   people to look in Notification Centre if a Focus is on.
+  On main and live (PR #251, merged 17 Nov 2026). Stage 4 is complete on the Summer Bay test roster.
