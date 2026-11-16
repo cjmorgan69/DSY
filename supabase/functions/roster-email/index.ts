@@ -66,7 +66,7 @@ async function handle(job: any) {
     sb.from("roster_contacts").select("*").eq("cluster", cluster).maybeSingle(),
     sb.from("roster_clusters").select("live_from").eq("cluster", cluster).maybeSingle(),
   ]);
-  const trial = !cl?.live_from || adelaideToday() < cl.live_from;
+  let trial = !cl?.live_from || adelaideToday() < cl.live_from;
   const trialTo = uniq([contact?.trial_email]);
 
   if (job.kind === "test") {
@@ -78,7 +78,8 @@ async function handle(job: any) {
   }
 
   const p = job.payload;
-  const { data: team } = await sb.from("groups").select("name").eq("id", job.group_id).single();
+  const { data: team } = await sb.from("groups").select("name,type").eq("id", job.group_id).single();
+  if (team!.type === "test") trial = true; // the test roster (Summer Bay) never emails anyone but the trial address
   const { data: mgrs } = await sb.from("roster_managers").select("notify_email").eq("group_id", job.group_id);
   const teamName = team!.name as string;
   const sender = `${teamName} Team Roster <${FROM}>`;
