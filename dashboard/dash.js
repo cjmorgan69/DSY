@@ -302,7 +302,7 @@
   }
 
   /* ---------- dispatch (paging feed) ---------- */
-  var TEAMS = { CD: ["Ceduna", "#94a3b8"], CU: ["Cummins", "#0e9f8e"], CO: ["CO", "#8a5cf6"], EL: ["EL", "#e0752b"], SB: ["SB", "#2f7fe0"], PK: ["PK", "#d6457f"], PL: ["Port Lincoln", "#64748b"] };
+  var TEAMS = {"CU":["Cummins","#0e9f8e"],"TB":["Tumby Bay","#15803d"],"PT":["Port Neill","#0369a1"],"CF":["Coffin Bay","#b45309"],"CL":["Cleve","#be123c"],"CW":["Cowell","#8a5cf6"],"CO":["Team leader","#475569"],"KI":["Kimba","#4d7c0f"],"LK":["Lock","#a16207"],"EL":["Elliston","#e0752b"],"SB":["Streaky Bay","#2f7fe0"],"PK":["Port Kenny","#d6457f"],"WU":["Wudinna","#0e7490"],"CD":["Ceduna","#94a3b8"],"PL":["Port Lincoln","#64748b"]};
   var EXTRA = ["#b45309", "#15803d", "#be123c", "#0369a1", "#7c3aed", "#4d7c0f"];
   function codeOf(j) { return String(j.unit || "").replace(/\d+$/, ""); }
   // Port Lincoln (PL) and Ceduna (CD) crews are hidden when the page loads; the button in the tile shows them.
@@ -336,7 +336,7 @@
     html += '</div><div class="tl">' + Object.keys(used).map(function (c) { var tm = team(c); return '<span style="--tc:' + tm[1] + '"><i></i>' + esc(tm[0]) + "</span>"; }).join("") + "<span>Shaded = before 6am / after 6pm</span></div>";
     if (showHidden || hidden) html += '<div class="chips"><button type="button" class="chip2" id="dToggle" aria-pressed="' + showHidden + '">' +
       (showHidden ? "Hide Port Lincoln and Ceduna crews" : "Show Port Lincoln and Ceduna crews (" + hidden + (hidden === 1 ? " job)" : " jobs)")) + "</button></div>";
-    html += '<p class="note">From the SAAS paging feed (postcodes 5605, 5606, 5607, 5631), captured once a day at about 9am, so today may be incomplete. Tap the full screen for job details.</p>';
+    html += '<p class="note">From the SAAS paging feed for the Eyre Peninsula, captured by a scheduled run, so today may be incomplete. Tap the full screen for job details.</p>';
     $("dBody").innerHTML = html;
   }
   $("dBody").addEventListener("click", function (e) {

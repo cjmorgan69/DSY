@@ -83,6 +83,9 @@ Travel Diary page, URL in the README), read `.claude/vehicle-log/README.md`, run
   ACPO GTN stays consult-first.
 - Eyre Peninsula call signs (owner, 11 Nov 2026): XX81 for jobs between 0800 and 1800, XX181 between 1800 and 0800
   (Tumby Bay TB81 / TB181, Cleve CL81 / CL181, Port Neill PT181 at night). Use them in MDT screenshots and jobs.
+  Team letters (owner, 16 Nov 2026): TB Tumby Bay, CU Cummins, PT Port Neill, CF Coffin Bay, CL Cleve, CW Cowell,
+  KI Kimba, LK Lock, SB Streaky Bay, PK Port Kenny, WU Wudinna, EL Elliston. CO is the team leader call sign (the
+  number is the person), not Cowell.
 - Resus Room podcast RSS: `https://theresusroom.libsyn.com/rss` (follow redirects). Link only episodes found there.
 
 ## Where the detail is

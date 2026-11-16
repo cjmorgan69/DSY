@@ -64,3 +64,23 @@ from 6), tasks gauge = open tasks (green 0-5, amber 5-10, red 10-15), temperatur
 (tap to change; shares `dsy-dash-town`). Warning lights: low crew (cover under 25%), P1 in 24 h, overdue task, lessons
 needed in the next 4 weeks, hot and windy day in 7, no signal (a source failed), lights (after 6 pm), all good.
 Odometer = jobs in 7 days, trip = next training session, DSY FM radio cycles messages. Gauges link to their pages.
+
+## All three clusters in volunteer contribution (16 Nov 2026)
+
+Owner asked to toggle Lower Eyre / Central Eyre / West Coast on `/dashboard/contribution/` (Cluster chips above the
+Team chips; team -> cluster from `modules/rosters/shared/teams.js`; remembered in `dsy-contrib-cluster`).
+- Rosters: Lower Eyre is still copied into `roster_bookings` by the owner's scheduled run on their PC. The 8 Central
+  Eyre and West Coast teams are copied by the Supabase edge function `roster-sync` (source
+  `supabase/functions/roster-sync/index.ts`, verify_jwt on), run every 2 hours by pg_cron job `roster-sync`
+  (`17 */2 * * *` UTC, pg_net call with the anon key; SQL in `supabase/roster-sync-setup.sql`). It saves each team's
+  `getBookings` list as Active and marks Active rows that vanished as Cancelled, only from the earliest start the
+  roster still returns (history kept). First run 16 Nov 2026: 163 bookings. Those rosters hold little history, so
+  their hours start from mid-Nov 2026.
+- Call signs (owner, 16 Nov 2026): CL Cleve, CW Cowell, KI Kimba, LK Lock, SB Streaky Bay, PK Port Kenny, WU Wudinna,
+  EL Elliston (plus TB, CU, PT, CF) in `paging_team()`, and as team names and colours on `/dispatch/` and the
+  dashboard dispatch tile. CO is NOT Cowell: it is the team leader call sign, the number
+  being the person (CO81, CO85, CO86...); CO jobs are not matched to a team (shown as "Team leader" on the dispatch
+  screens). Cowell = CW only: 88 jobs Jun to Nov 2026.
+- The pager feed now covers all Eyre Peninsula postcodes (owner): the old "postcodes 5605, 5606, 5607, 5631" note on
+  the dashboard was replaced.
+- Later: move Lower Eyre's copy to `roster-sync` too so nothing depends on the owner's PC.
