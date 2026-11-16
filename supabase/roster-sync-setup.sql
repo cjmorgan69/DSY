@@ -5,7 +5,7 @@ returns text language sql immutable set search_path to ''
 as $$
   select case upper(left(unit, 2))
     when 'TB' then 'Tumby Bay'   when 'CU' then 'Cummins'     when 'PT' then 'Port Neill' when 'CF' then 'Coffin Bay'
-    when 'CL' then 'Cleve'       when 'CO' then 'Cowell'      when 'KI' then 'Kimba'      when 'LK' then 'Lock'
+    when 'CL' then 'Cleve'       when 'CO' then 'Cowell'      when 'CW' then 'Cowell'      when 'KI' then 'Kimba'      when 'LK' then 'Lock'
     when 'SB' then 'Streaky Bay' when 'PK' then 'Port Kenny'  when 'WU' then 'Wudinna'    when 'EL' then 'Elliston'
   end
 $$;

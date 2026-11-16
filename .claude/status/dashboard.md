@@ -78,8 +78,8 @@ Team chips; team -> cluster from `modules/rosters/shared/teams.js`; remembered i
   their hours start from mid-Nov 2026.
 - Call signs (owner, 16 Nov 2026): CL Cleve, CO Cowell, KI Kimba, LK Lock, SB Streaky Bay, PK Port Kenny, WU Wudinna,
   EL Elliston (plus TB, CU, PT, CF) in `paging_team()`, and as team names and colours on `/dispatch/` and the
-  dashboard dispatch tile. The pager feed has 88 jobs under "CW81/CW181" (mostly Cowell and Cleve localities, Jun to
-  Nov 2026): not matched to a team, owner to say what CW is.
+  dashboard dispatch tile. CW is also Cowell (owner, 16 Nov 2026): 88 jobs under CW81/CW181 (Jun to Nov 2026) plus 40
+  under CO, 128 Cowell jobs in all.
 - The pager feed now covers all Eyre Peninsula postcodes (owner): the old "postcodes 5605, 5606, 5607, 5631" note on
   the dashboard was replaced.
 - Later: move Lower Eyre's copy to `roster-sync` too so nothing depends on the owner's PC.
