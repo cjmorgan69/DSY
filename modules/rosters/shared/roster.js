@@ -6711,7 +6711,14 @@ function askManagerPassword(question) {
             const initialStartDate = formatDateKey(firstRosterDay);
 
             const snapshot = {
-                events,
+                // The document for Country Rostering shows full names and
+                // ambulance IDs, not the names people choose for the roster.
+                events: ROSTER_BACKEND
+                    ? events.map(event => ({
+                        ...event,
+                        user: ROSTER_BACKEND.officialName(event.id) || event.user
+                    }))
+                    : events,
                 teamName: TEAM_NAME,
                 hoursPerDay: HOURS_PER_DAY,
                 maxCrew: MAX_CREW,

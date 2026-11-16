@@ -173,3 +173,6 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   On main and live (PR #246, merged 17 Nov 2026); real team pages checked still loading from the Apps Scripts.
 - Still to build in stage 4: Send roster to Country Rostering (PDF, full names and IDs), Schedule set-up, the
   24-hour app-notification reminder, then moving the real teams (stage 7).
+- Fix (17 Nov 2026, owner's first try): the Country Rostering PDF view showed the preferred name. It now shows
+  "Full Name (ambulance ID)" for each person (placeholders as typed), as decided on 16 Nov; the team roster still
+  shows the preferred name.
