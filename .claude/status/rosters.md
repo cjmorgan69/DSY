@@ -178,3 +178,27 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   shows the preferred name.
   On main and live (PR #247, merged 17 Nov 2026). The owner's account full name was changed from "Chris" to
   "Chris Morgan" at their request (17 Nov 2026).
+
+## Stage 4b (17 Nov 2026): Send roster to Country Rostering, pretend-live switch (test roster only so far)
+
+- Manager controls on a Supabase roster get "Send roster to Country Rostering": first roster day (defaults to where
+  the last sent roster ended, else today), number of days (7; 1 to 28), Preview (period, who it goes to, "Open the
+  PDF"), then Send now. Print from the PDF view stays as the backup.
+- Edge function `roster-send` (`supabase/functions/roster-send/index.ts` and `pdf.ts`, verify_jwt on, deployed):
+  runs as the signed-in manager (`roster_send_prepare` refuses anyone else), builds the PDF with pdf-lib (same
+  layout and Op colours as the PDF view: 7 roster days a sheet, two pages, "Full Name (ID) (level)", placeholders as
+  typed; long names are shortened, ID and level always kept), emails it from "<Team> Team Roster" with the PDF
+  attached, keeps a copy in the private Storage bucket `roster-sent`, moves the sent cut-off to the end of the
+  period (never backwards) and writes "Roster sent to Country Rostering" to the change log. Live: to Country
+  Rostering, copy to the CC address and the team managers, replies to the managers. Trial or test team: only the
+  trial address, subject "TRIAL — ...", PDF stamped "TRIAL - NOT AN OFFICIAL ROSTER".
+- The email wording to Country Rostering is Claude's draft: owner to review.
+- SQL `supabase/roster-stage4b.sql` (migration `roster_stage4b_send`, applied by Claude).
+- Pretend live (owner, 17 Nov 2026): on the test roster only (`testTeam` in teams.js), managers get "Pretend this
+  roster is live (test only)" under their name. It only changes the messages shown (emailed / phone Country
+  Rostering); emails still go to the trial address. Remembered on the device.
+- Saved roster dropped for Supabase rosters (owner, 17 Nov 2026: it was there because the Apps Script was slow):
+  the test team's feature list leaves out `savedRoster`. Apps Script teams keep it until they move.
+- Tested: PDF built locally and read back; `roster_send_prepare` as the owner in SQL; the function refuses a
+  signed-out caller; the page flow in a headless browser with a stand-in database. NOT yet sent with a real sign-in.
+- Still to build in stage 4: Schedule set-up (weekly send, pause, skip), the 24-hour app-notification reminder.

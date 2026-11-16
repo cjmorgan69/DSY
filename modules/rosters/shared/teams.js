@@ -62,7 +62,14 @@ const ROSTER_TEAM_LIST = {
         name: "Summer Bay",
         cluster: "Lower Eyre",
         apiUrl: TEST_API,
-        backend: "supabase"
+        backend: "supabase",
+        // Test roster only: managers get a "Pretend this roster is live"
+        // switch to see the live messages. Emails still go to the trial
+        // address only.
+        testTeam: true,
+        // No "savedRoster" (last roster shown from the device while it
+        // updates): that was for the slow Apps Script (owner, 17 Nov 2026).
+        features: STANDARD_FEATURES.filter(name => name !== "savedRoster")
     },
     tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
     portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },

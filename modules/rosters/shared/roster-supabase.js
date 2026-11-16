@@ -37,6 +37,7 @@
     const DAY_MS = 86400000;
     const COUNTRY_ROSTERING_EMAIL_MIN_HOURS = 24;
     const NOT_LISTED = "__not_listed__";
+    const PRETEND_LIVE_KEY = "dsy-roster-pretend-live";
 
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -195,7 +196,8 @@
      * trial nobody is asked to phone Country Rostering (owner).
      */
     function outcome(result, noticeIso) {
-        const trial = !lastSnapshot || lastSnapshot.trial;
+        const pretend = pretendLive();
+        const trial = !pretend && (!lastSnapshot || lastSnapshot.trial);
         const requires = !trial && Boolean(result && result.requires_notification);
         const hoursAway = (Date.parse(noticeIso) - Date.now()) / HOUR_MS;
 
@@ -203,9 +205,24 @@
             requiresCentralNotification: requires,
             countryRosteringEmailed:
                 requires &&
-                Boolean(lastSnapshot.cr_set) &&
+                (pretend || Boolean(lastSnapshot.cr_set)) &&
                 hoursAway > COUNTRY_ROSTERING_EMAIL_MIN_HOURS
         };
+    }
+
+    /*
+     * Test roster only (testTeam in teams.js), managers only: show the
+     * messages a live cluster would show. It changes nothing in the
+     * database: every email still goes to the trial address.
+     */
+    function pretendLive() {
+        if (!config.testTeam || !me || !me.can_manage) return false;
+
+        try {
+            return localStorage.getItem(PRETEND_LIVE_KEY) === "1";
+        } catch (error) {
+            return false;
+        }
     }
 
     async function messages(timeoutMs) {
@@ -421,7 +438,7 @@
         const box = document.createElement("div");
 
         box.id = "rosterSignedIn";
-        box.style.cssText = "display:flex;flex-direction:column;gap:.3rem;min-width:0";
+        box.style.cssText = "display:flex;flex-direction:column;gap:.3rem;min-width:0;flex:1 1 0";
         nameInput.style.display = "none";
 
         if (me.can_manage) {
@@ -505,9 +522,221 @@
             const panel = document.getElementById("managerControlsPanel");
 
             if (panel) panel.style.display = "none";
+        } else {
+            buildSendPanel();
+
+            if (config.testTeam) buildPretendLiveSwitch(box);
         }
 
         applyActing();
+    }
+
+    function buildPretendLiveSwitch(box) {
+        const label = document.createElement("label");
+        const tick = document.createElement("input");
+
+        tick.type = "checkbox";
+        tick.checked = pretendLive();
+        tick.style.cssText = "width:auto;margin:0 .4rem 0 0";
+        tick.addEventListener("change", () => {
+            try {
+                localStorage.setItem(PRETEND_LIVE_KEY, tick.checked ? "1" : "0");
+            } catch (error) {
+                // The switch just won't be remembered.
+            }
+        });
+        label.style.cssText = "display:flex;align-items:flex-start;font-size:.82rem;font-weight:400;white-space:normal;text-align:left";
+        label.title =
+            "Shows the phone / emailed messages a live cluster would show. " +
+            "Emails still go only to the trial address.";
+        label.append(tick, "Pretend this roster is live (test only)");
+        box.append(label);
+    }
+
+    /* ---------------------------------------------------------
+     * Manager controls: Send roster to Country Rostering
+     * (edge function roster-send: PDF with full names and IDs,
+     * emailed, and the sent cut-off moved in one step)
+     * --------------------------------------------------------- */
+
+    function dateKey(date) {
+        return date.getFullYear() + "-" +
+            String(date.getMonth() + 1).padStart(2, "0") + "-" +
+            String(date.getDate()).padStart(2, "0");
+    }
+
+    function defaultFirstDay() {
+        // The roster day starts at 08:00. Start where the last roster
+        // sent finished, if that is still ahead; otherwise today.
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        if (now.getHours() < 8) today.setDate(today.getDate() - 1);
+
+        const sent = lastSnapshot && lastSnapshot.sent_until
+            ? new Date(lastSnapshot.sent_until)
+            : null;
+
+        if (sent && sent > now) {
+            const day = new Date(sent.getFullYear(), sent.getMonth(), sent.getDate());
+
+            if (sent.getHours() < 8) day.setDate(day.getDate() - 1);
+
+            return dateKey(day);
+        }
+
+        return dateKey(today);
+    }
+
+    async function sendRequest(mode, first, days) {
+        const result = await withTimeout(client.functions.invoke("roster-send", {
+            body: { group_id: me.group_id, first, days, mode }
+        }), 90000);
+
+        if (result.error) {
+            let message = result.error.message || "The request failed.";
+
+            try {
+                const body = await result.error.context.json();
+
+                if (body && body.error) message = body.error;
+            } catch (error) {
+                // Keep the general message.
+            }
+
+            throw new Error(message);
+        }
+
+        return result.data;
+    }
+
+    function buildSendPanel() {
+        const viewButton = document.getElementById("countryRosterViewButton");
+
+        if (!viewButton || document.getElementById("rosterSendPanel")) return;
+
+        const panel = document.createElement("section");
+
+        panel.id = "rosterSendPanel";
+        panel.className = "notice";
+        panel.style.marginTop = ".8rem";
+        panel.innerHTML =
+            '<h3 style="margin-top:0">Send roster to Country Rostering</h3>' +
+            '<p class="field-help" style="margin-top:0">Emails the roster as a PDF (full names and ' +
+            'ambulance IDs) and moves the sent cut-off to the end of the period, in one step.</p>' +
+            '<div class="form-grid">' +
+            '<div class="field"><label for="rosterSendFirst">First roster day (from 08:00)</label>' +
+            '<input id="rosterSendFirst" type="date" required></div>' +
+            '<div class="field"><label for="rosterSendDays">Number of days</label>' +
+            '<input id="rosterSendDays" type="number" min="1" max="28" value="7" inputmode="numeric" required></div>' +
+            '</div>' +
+            '<div class="action-bar">' +
+            '<button id="rosterSendPreview" class="btn-secondary" type="button">Preview</button>' +
+            '<button id="rosterSendGo" class="btn-primary" type="button" disabled>Send now</button>' +
+            '</div>' +
+            '<div id="rosterSendStatus" aria-live="polite" style="font-size:.9rem"></div>';
+
+        viewButton.closest(".action-bar").after(panel);
+
+        const first = panel.querySelector("#rosterSendFirst");
+        const days = panel.querySelector("#rosterSendDays");
+        const preview = panel.querySelector("#rosterSendPreview");
+        const go = panel.querySelector("#rosterSendGo");
+        const status = panel.querySelector("#rosterSendStatus");
+        let previewed = "";
+        let pdfUrl = "";
+
+        const key = () => first.value + "|" + days.value;
+        const busy = on => { preview.disabled = on; go.disabled = on || previewed !== key(); };
+        const line = (text, strong) => {
+            const p = document.createElement("p");
+
+            p.style.margin = ".3rem 0";
+            if (strong) p.style.fontWeight = "600";
+            p.textContent = text;
+            status.append(p);
+
+            return p;
+        };
+
+        first.addEventListener("focus", () => {
+            if (!first.value) first.value = defaultFirstDay();
+        });
+        [first, days].forEach(input => input.addEventListener("input", () => {
+            go.disabled = previewed !== key();
+        }));
+
+        preview.addEventListener("click", async () => {
+            if (!first.value) first.value = defaultFirstDay();
+
+            status.textContent = "Building the PDF…";
+            busy(true);
+
+            try {
+                const data = await sendRequest("preview", first.value, Number(days.value) || 7);
+                const bytes = Uint8Array.from(atob(data.pdf_base64), c => c.charCodeAt(0));
+
+                if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+                pdfUrl = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+                previewed = data.missing ? "" : key();
+                status.textContent = "";
+                line(data.period, true);
+
+                if (data.trial) {
+                    line("TRIAL: this goes only to the trial address, not to Country Rostering.");
+                }
+
+                line("To: " + (data.to.join(", ") || "nobody yet") +
+                    (data.cc.length ? " · Copy: " + data.cc.join(", ") : ""));
+
+                if (data.missing) line(data.missing + " It can't be sent yet.");
+
+                const open = document.createElement("a");
+
+                open.href = pdfUrl;
+                open.target = "_blank";
+                open.rel = "noopener";
+                open.download = data.filename;
+                open.textContent = "Open the PDF";
+                line("").append(open);
+            } catch (error) {
+                previewed = "";
+                status.textContent = "Could not build the roster: " + error.message;
+            } finally {
+                busy(false);
+            }
+        });
+
+        go.addEventListener("click", async () => {
+            if (previewed !== key()) return;
+
+            if (!window.confirm(
+                "Send this roster now?\n\nIt will be emailed and the sent cut-off " +
+                "moved to the end of the period. Later changes to those shifts " +
+                "will then be notified."
+            )) return;
+
+            status.textContent = "Sending…";
+            busy(true);
+
+            try {
+                const data = await sendRequest("send", first.value, Number(days.value) || 7);
+
+                previewed = "";
+                status.textContent = "";
+                line("Sent to " + data.to.join(", ") + ".", true);
+                line(data.period);
+                (data.warnings || []).forEach(text => line("Please check: " + text));
+
+                if (hooks && hooks.refresh) hooks.refresh();
+            } catch (error) {
+                status.textContent =
+                    "Not sent: " + error.message +
+                    " Check your inbox before trying again.";
+            } finally {
+                busy(false);
+            }
+        });
     }
 
     async function changeName() {
