@@ -286,3 +286,8 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   signed out, the live page goes to the sign-in. NOT yet tried with a real sign-in: owner to try. The table is in Supabase
   (migration `coverage_rules`, applied by Claude 16 Nov 2026; checked in a rolled-back run: a leader sees only their
   own row, another leader and a student see none).
+- Counted by 12-hour segment (owner, 16 Nov 2026, after the first real try, which worked): the rule's gap length
+  is still judged on the whole joined gap, but each gap is then listed and counted once per segment it touches,
+  Day 08:00-20:00 and Night 20:00-08:00 (a 36-hour gap shows as 3). A part-segment shows its real length and "Part
+  of a longer gap". The segment times are fixed, not a rule. Claude's reading of "a gap length in hours is
+  determined by the rules": owner to confirm. On a branch, not merged.
