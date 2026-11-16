@@ -1,4 +1,4 @@
--- Crewing gaps: each Team Leader's own rules (owner, 16 Nov 2026). Used by /dashboard/coverage/.
+-- Crewing gaps: each Team Leader's own rules (owner, 16 Nov 2026). Used by /dashboard/coverage/. Applied by Claude 16 Nov 2026.
 -- One row per leader. `groups` is a list of coverage groups, each:
 --   { "name": text, "teams": [team names], "min": number of crew needed across those teams,
 --     "levels": { "AR": "full" | "with" | "no", ... }   full = counts; with = counts only with a "full"
