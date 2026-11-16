@@ -509,6 +509,7 @@
             })
         );
         box.append(links);
+        box.append(buildReminderControls());
         section.append(box);
 
         const subtitle = document.getElementById("teamSubtitle");
@@ -525,6 +526,7 @@
         } else {
             buildSendPanel();
             buildSchedulePanel();
+            tidyManagerControls();
 
             if (config.testTeam) buildPretendLiveSwitch(box);
         }
@@ -786,6 +788,10 @@
             '<div class="field"><label for="scheduleDays">Number of days</label>' +
             '<input id="scheduleDays" type="number" min="1" max="28" inputmode="numeric"></div>' +
             '</div>' +
+            '<label style="display:flex;align-items:flex-start;gap:.5rem;font-weight:400;margin:.2rem 0 .8rem">' +
+            '<input id="scheduleRemind" type="checkbox" style="flex:0 0 auto;width:1.1rem;height:1.1rem;margin-top:.15rem">' +
+            '<span>Remind the team 24 hours before, with the hours that have no crew ' +
+            '<span id="scheduleRemindCount"></span></span></label>' +
             '<div class="action-bar">' +
             '<button id="scheduleSave" class="btn-primary" type="button">Save and switch on</button>' +
             '<button id="schedulePause" class="btn-secondary" type="button" hidden>Pause</button>' +
@@ -805,6 +811,10 @@
             field("scheduleSendHour").value = data.send_hour;
             field("scheduleFirstDay").value = data.first_dow;
             field("scheduleDays").value = data.days;
+            field("scheduleRemind").checked = data.remind !== false;
+            field("scheduleRemindCount").textContent =
+                "(" + (data.people || 0) + (data.people === 1 ? " person has" : " people have") +
+                " reminders turned on).";
             field("scheduleSave").textContent = data.enabled ? "Save changes" : "Save and switch on";
             field("schedulePause").hidden = !data.enabled;
             field("scheduleSkip").hidden = !data.enabled;
@@ -853,7 +863,8 @@
             p_send_dow: Number(field("scheduleSendDay").value),
             p_send_hour: Number(field("scheduleSendHour").value),
             p_first_dow: Number(field("scheduleFirstDay").value),
-            p_days: Number(field("scheduleDays").value) || 7
+            p_days: Number(field("scheduleDays").value) || 7,
+            p_remind: field("scheduleRemind").checked
         });
 
         field("scheduleSave").addEventListener("click", () =>
@@ -866,6 +877,209 @@
         rpc("roster_schedule_get", { p_group: me.group_id }).then(show, error => {
             status.textContent = "Could not load the schedule: " + error.message;
         });
+    }
+
+    /*
+     * Owner, 17 Nov 2026: on the new roster the manager no longer prints
+     * the roster and emails it themselves, so the PDF view button and its
+     * instructions go, and "Send roster" and "Schedule set-up" fold away
+     * under Manager controls until opened.
+     */
+    function tidyManagerControls() {
+        const viewButton = document.getElementById("countryRosterViewButton");
+
+        if (viewButton) {
+            const bar = viewButton.closest(".action-bar");
+            const help = bar.parentElement.querySelector(":scope > p.field-help");
+
+            bar.style.display = "none";
+            if (help) help.style.display = "none";
+        }
+
+        ["rosterSendPanel", "rosterSchedulePanel"].forEach(id => {
+            const panel = document.getElementById(id);
+
+            if (!panel || panel.closest("details.roster-fold")) return;
+
+            const fold = document.createElement("details");
+            const summary = document.createElement("summary");
+            const heading = panel.querySelector("h3");
+
+            fold.className = "roster-fold";
+            fold.style.cssText = "margin-top:.8rem";
+            summary.textContent = heading ? heading.textContent : "";
+            summary.style.cssText = "cursor:pointer;font-weight:700;padding:.5rem 0";
+            if (heading) heading.remove();
+            panel.style.marginTop = ".4rem";
+            panel.before(fold);
+            fold.append(summary, panel);
+        });
+    }
+
+    /* ---------------------------------------------------------
+     * Reminders: an app notification 24 hours before the team's
+     * roster is sent (edge function roster-remind, service worker
+     * /modules/rosters/sw.js). Each person turns it on per device.
+     * On iPhone the roster must first be added to the Home Screen.
+     * --------------------------------------------------------- */
+
+    const SW_URL = "/modules/rosters/sw.js";
+    const SW_SCOPE = "/modules/rosters/";
+
+    function pushSupported() {
+        return "serviceWorker" in navigator &&
+            "PushManager" in window &&
+            "Notification" in window;
+    }
+
+    async function currentSubscription() {
+        if (!pushSupported()) return null;
+
+        const registration = await navigator.serviceWorker.getRegistration(SW_SCOPE);
+
+        return registration ? registration.pushManager.getSubscription() : null;
+    }
+
+    function keyBytes(base64url) {
+        const padded = (base64url + "===".slice((base64url.length + 3) % 4))
+            .replace(/-/g, "+").replace(/_/g, "/");
+
+        return Uint8Array.from(atob(padded), c => c.charCodeAt(0));
+    }
+
+    async function turnOnReminders() {
+        if (!pushSupported()) {
+            const iPhone = /iPhone|iPad|iPod/.test(navigator.userAgent);
+
+            window.alert(iPhone
+                ? "On an iPhone, add the roster to your Home Screen first:\n\n" +
+                  "1. Tap the Share button in Safari.\n" +
+                  "2. Tap \"Add to Home Screen\".\n" +
+                  "3. Open the roster from the new icon, sign in, and tap " +
+                  "\"Turn on reminders\" again.\n\n(Needs iOS 16.4 or later.)"
+                : "This browser can't show notifications. Try Chrome or Safari.");
+            return false;
+        }
+
+        if ((await Notification.requestPermission()) !== "granted") {
+            window.alert(
+                "Notifications are blocked for the roster. " +
+                "Allow them in your phone's settings, then try again."
+            );
+            return false;
+        }
+
+        const registration = await navigator.serviceWorker.register(
+            SW_URL, { scope: SW_SCOPE }
+        );
+
+        await navigator.serviceWorker.ready;
+
+        let key = await rpc("roster_push_public_key");
+
+        if (!key) {
+            const made = await client.functions.invoke("roster-remind", { body: { mode: "key" } });
+
+            key = made.data && made.data.public_key;
+        }
+
+        if (!key) throw new Error("Reminders are not set up yet.");
+
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: keyBytes(key)
+        });
+        const details = subscription.toJSON();
+
+        await rpc("roster_push_subscribe", {
+            p_endpoint: details.endpoint,
+            p_p256dh: details.keys.p256dh,
+            p_auth: details.keys.auth,
+            p_page: location.pathname
+        });
+
+        return true;
+    }
+
+    async function turnOffReminders() {
+        const subscription = await currentSubscription();
+
+        if (!subscription) return;
+
+        await rpc("roster_push_unsubscribe", { p_endpoint: subscription.endpoint });
+        await subscription.unsubscribe();
+    }
+
+    async function sendTestReminder() {
+        const result = await client.functions.invoke("roster-remind", { body: { mode: "test" } });
+
+        if (result.error || !result.data || !result.data.sent) {
+            throw new Error("The test could not be sent to this device.");
+        }
+    }
+
+    function buildReminderControls() {
+        const row = document.createElement("div");
+
+        row.id = "rosterReminders";
+        row.style.cssText = "display:flex;flex-wrap:wrap;gap:.2rem .8rem;font-size:.82rem";
+
+        const draw = async note => {
+            let on = false;
+
+            try {
+                on = Boolean(await currentSubscription());
+            } catch (error) {
+                on = false;
+            }
+
+            row.textContent = "";
+
+            const guard = action => async () => {
+                try {
+                    const message = await action();
+
+                    await draw(message || "");
+                } catch (error) {
+                    await draw(error.message || "That didn't work.");
+                }
+            };
+
+            if (on) {
+                const label = document.createElement("span");
+
+                label.textContent = "🔔 Reminders are on";
+                row.append(
+                    label,
+                    link("Send a test", guard(async () => {
+                        await sendTestReminder();
+
+                        return "Test sent: it should appear in a few seconds.";
+                    })),
+                    link("Turn off", guard(turnOffReminders))
+                );
+            } else {
+                row.append(link("🔔 Turn on reminders", guard(async () => {
+                    if (!(await turnOnReminders())) return "";
+
+                    await sendTestReminder().catch(() => {});
+
+                    return "Reminders are on. A test notification is on its way.";
+                })));
+            }
+
+            if (note) {
+                const text = document.createElement("span");
+
+                text.style.cssText = "flex-basis:100%;font-weight:400";
+                text.textContent = note;
+                row.append(text);
+            }
+        };
+
+        void draw("");
+
+        return row;
     }
 
     async function changeName() {
