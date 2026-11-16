@@ -202,3 +202,26 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
 - Tested: PDF built locally and read back; `roster_send_prepare` as the owner in SQL; the function refuses a
   signed-out caller; the page flow in a headless browser with a stand-in database. NOT yet sent with a real sign-in.
 - Still to build in stage 4: Schedule set-up (weekly send, pause, skip), the 24-hour app-notification reminder.
+- Stage 4b is on main and live (PR #248, merged 17 Nov 2026); real team pages checked still loading.
+
+## Stage 4c (17 Nov 2026): Schedule set-up (test roster only so far)
+
+- Manager controls get "Schedule set-up": Send every [weekday] at [hour], Roster starts on the next [weekday],
+  Number of days (7), Save and switch on / Save changes, Pause, Skip the next send (and undo). It shows the next
+  send with the period it will cover, and how the last one went. "Send early" is the Send now button.
+- The period continues from where the last roster sent finished (the cut-off) if that is still ahead; otherwise it
+  starts on the chosen weekday after the send day.
+- SQL `supabase/roster-stage4c.sql` (migration `roster_stage4c_schedule`, applied by Claude): `roster_schedules`,
+  `roster_schedule_get/save/skip` (managers and leaders), `roster_schedule_claim/done` and `roster_send_data`
+  (service role only), pg_cron job `roster-schedule` (hourly at :02, only calls out when something is due).
+  A failed send is retried each hour, three tries, then waits for next week; the result shows on the panel.
+- Edge function `roster-send` version 2: `mode: "scheduled"` (takes no input from the caller, so calling it early
+  or twice sends nothing extra). Scheduled emails are signed "<Team> Team Roster" and say they were sent by the
+  weekly schedule.
+- Owner asked (17 Nov 2026) for no "dsytraining.com" in the email footer: removed from the roster email. (It is
+  still in the small print on the PDF and in the leaders' test email.)
+- Tested end to end on Summer Bay, 17 Nov 2026: a due schedule sent the TRIAL email with the PDF to the trial
+  address, moved the cut-off to Wed 2 Dec 08:00, kept the copy and wrote the change log. That test schedule was then
+  switched off (Summer Bay shows "Paused", Thursday 12:00, starts Monday, 7 days). Page tested in a headless
+  browser with a stand-in database.
+- Still to build in stage 4: the 24-hour app-notification reminder.

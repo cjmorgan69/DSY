@@ -524,6 +524,7 @@
             if (panel) panel.style.display = "none";
         } else {
             buildSendPanel();
+            buildSchedulePanel();
 
             if (config.testTeam) buildPretendLiveSwitch(box);
         }
@@ -736,6 +737,134 @@
             } finally {
                 busy(false);
             }
+        });
+    }
+
+    /* ---------------------------------------------------------
+     * Manager controls: Schedule set-up (the roster is sent by
+     * itself each week; pause, or skip the next send)
+     * --------------------------------------------------------- */
+
+    const WEEKDAYS = [
+        "Sunday", "Monday", "Tuesday", "Wednesday",
+        "Thursday", "Friday", "Saturday"
+    ];
+
+    function longDate(value) {
+        return new Intl.DateTimeFormat("en-AU", {
+            weekday: "short", day: "numeric", month: "short"
+        }).format(new Date(value));
+    }
+
+    function buildSchedulePanel() {
+        const sendPanel = document.getElementById("rosterSendPanel");
+
+        if (!sendPanel || document.getElementById("rosterSchedulePanel")) return;
+
+        const options = (list, offset) => list
+            .map((text, index) => '<option value="' + (index + (offset || 0)) + '">' + text + "</option>")
+            .join("");
+        const hours = Array.from({ length: 24 }, (unused, hour) =>
+            String(hour).padStart(2, "0") + ":00");
+        const panel = document.createElement("section");
+
+        panel.id = "rosterSchedulePanel";
+        panel.className = "notice";
+        panel.style.marginTop = ".8rem";
+        panel.innerHTML =
+            '<h3 style="margin-top:0">Schedule set-up</h3>' +
+            '<p class="field-help" style="margin-top:0">Sends the roster to Country Rostering by itself ' +
+            'each week, the same as <strong>Send now</strong>. It continues from where the last roster ' +
+            'sent finished.</p>' +
+            '<div class="form-grid">' +
+            '<div class="field"><label for="scheduleSendDay">Send every</label>' +
+            '<select id="scheduleSendDay">' + options(WEEKDAYS) + '</select></div>' +
+            '<div class="field"><label for="scheduleSendHour">At</label>' +
+            '<select id="scheduleSendHour">' + options(hours) + '</select></div>' +
+            '<div class="field"><label for="scheduleFirstDay">Roster starts on the next</label>' +
+            '<select id="scheduleFirstDay">' + options(WEEKDAYS) + '</select></div>' +
+            '<div class="field"><label for="scheduleDays">Number of days</label>' +
+            '<input id="scheduleDays" type="number" min="1" max="28" inputmode="numeric"></div>' +
+            '</div>' +
+            '<div class="action-bar">' +
+            '<button id="scheduleSave" class="btn-primary" type="button">Save and switch on</button>' +
+            '<button id="schedulePause" class="btn-secondary" type="button" hidden>Pause</button>' +
+            '<button id="scheduleSkip" class="btn-secondary" type="button" hidden>Skip the next send</button>' +
+            '</div>' +
+            '<div id="scheduleStatus" aria-live="polite" style="font-size:.9rem"></div>';
+
+        sendPanel.after(panel);
+
+        const field = id => panel.querySelector("#" + id);
+        const status = field("scheduleStatus");
+        let current = null;
+
+        const show = data => {
+            current = data;
+            field("scheduleSendDay").value = data.send_dow;
+            field("scheduleSendHour").value = data.send_hour;
+            field("scheduleFirstDay").value = data.first_dow;
+            field("scheduleDays").value = data.days;
+            field("scheduleSave").textContent = data.enabled ? "Save changes" : "Save and switch on";
+            field("schedulePause").hidden = !data.enabled;
+            field("scheduleSkip").hidden = !data.enabled;
+            field("scheduleSkip").textContent = data.skipped ? "Don't skip the next send" : "Skip the next send";
+            status.textContent = "";
+
+            const line = (text, strong) => {
+                const p = document.createElement("p");
+
+                p.style.margin = ".3rem 0";
+                if (strong) p.style.fontWeight = "600";
+                p.textContent = text;
+                status.append(p);
+            };
+
+            if (!data.enabled) {
+                line(data.exists ? "Paused: nothing is sent by itself." : "Not switched on yet.", true);
+            } else if (data.skipped) {
+                line("The send on " + longDate(data.next_send_at) + " at " +
+                    hours[data.send_hour] + " will be skipped.", true);
+            } else {
+                line("Next send: " + longDate(data.next_send_at) + " at " + hours[data.send_hour] +
+                    ", for the roster " + longDate(data.next_first + "T12:00:00") + " to " +
+                    longDate(data.next_last + "T12:00:00") + ".", true);
+            }
+
+            if (data.last_result) {
+                line("Last time (" + longDate(data.last_run_at) + "): " + data.last_result);
+            }
+        };
+
+        const run = async (name, args) => {
+            panel.querySelectorAll("button").forEach(button => { button.disabled = true; });
+
+            try {
+                show(await rpc(name, { p_group: me.group_id, ...args }));
+            } catch (error) {
+                status.textContent = "That didn't save: " + error.message;
+            } finally {
+                panel.querySelectorAll("button").forEach(button => { button.disabled = false; });
+            }
+        };
+
+        const settings = enabled => ({
+            p_enabled: enabled,
+            p_send_dow: Number(field("scheduleSendDay").value),
+            p_send_hour: Number(field("scheduleSendHour").value),
+            p_first_dow: Number(field("scheduleFirstDay").value),
+            p_days: Number(field("scheduleDays").value) || 7
+        });
+
+        field("scheduleSave").addEventListener("click", () =>
+            run("roster_schedule_save", settings(true)));
+        field("schedulePause").addEventListener("click", () =>
+            run("roster_schedule_save", settings(false)));
+        field("scheduleSkip").addEventListener("click", () =>
+            run("roster_schedule_skip", { p_skip: !(current && current.skipped) }));
+
+        rpc("roster_schedule_get", { p_group: me.group_id }).then(show, error => {
+            status.textContent = "Could not load the schedule: " + error.message;
         });
     }
 
