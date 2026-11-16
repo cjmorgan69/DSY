@@ -77,7 +77,7 @@ Stage 1 inputs (owner, 16 Nov 2026):
 - Central Eyre and West Coast rosters are already copied into `roster_bookings` every 2 hours by the edge function
   `roster-sync`; Lower Eyre still by the owner's PC run.
 
-## Stage 1 done (16 Nov 2026): database foundation, applied by Claude
+## Stage 1 done (16 Nov 2026): database foundation, applied by Claude; notes and SQL on main (PR #244, merged 16 Nov 2026)
 
 SQL `supabase/roster-stage1.sql` (migration `roster_stage1`), rehearsed first in a rolled-back run with 23 checks
 (owner, a Port Neill manager and three Tumby Bay members). Nothing on the roster pages uses it yet; the Apps Scripts
