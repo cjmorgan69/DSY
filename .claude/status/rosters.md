@@ -148,5 +148,6 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
 - `/dashboard/roster-settings/` (leader gate; "Roster emails" link in both dashboard footers): addresses per cluster,
   manager emails, add or remove team managers, "Send a test email", the live-from date (lead instructor only), and
   the last 15 roster emails with any error.
-- Tested 16 Nov 2026: a test email and a sample TRIAL change email for Tumby Bay sent through Resend.
+- Tested 16 Nov 2026: a test email and a sample TRIAL change email for Tumby Bay sent through Resend; the owner
+  confirmed both arrived and look good. On main (PR #245, merged 16 Nov 2026); the settings page is live.
 - Nothing calls this from the live roster pages yet: the change emails start with the new roster page (stage 4).
