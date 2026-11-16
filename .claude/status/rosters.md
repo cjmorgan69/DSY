@@ -290,6 +290,6 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   is still judged on the whole joined gap, but each gap is then listed and counted once per segment it touches,
   Day 08:00-20:00 and Night 20:00-08:00 (a 36-hour gap shows as 3). A part-segment shows its real length and "Part
   of a longer gap". The segment times are fixed, not a rule. Claude's reading of "a gap length in hours is
-  determined by the rules": owner to confirm. On a branch, not merged.
+  determined by the rules": owner to confirm.
 - Segment times changed to the volunteer shifts (owner, 16 Nov 2026): Day 08:00-18:00 and Night 18:00-08:00,
-  replacing 08:00-20:00 and 20:00-08:00. On a branch, not merged (PR #253).
+  replacing 08:00-20:00 and 20:00-08:00. On main and live (PR #253, merged 16 Nov 2026).
