@@ -225,3 +225,32 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   switched off (Summer Bay shows "Paused", Thursday 12:00, starts Monday, 7 days). Page tested in a headless
   browser with a stand-in database.
 - Still to build in stage 4: the 24-hour app-notification reminder.
+- Stage 4c is on main and live (PR #249, merged 17 Nov 2026). The owner then set a Summer Bay schedule themselves.
+
+## Stage 4d (17 Nov 2026): 24-hour reminder as an app notification; Manager controls tidied (test roster only so far)
+
+- Each person taps "🔔 Turn on reminders" under their name (per device; then "Send a test" and "Turn off"). On
+  iPhone the roster must first be added to the Home Screen (iOS 16.4+), then opened from the icon and signed in
+  again there; the page explains this when tapped in plain Safari. Android Chrome works in the browser.
+- Page pieces: service worker `modules/rosters/sw.js` (scope `/modules/rosters/`, shows the notification and opens
+  the roster; caches nothing), `shared/roster.webmanifest`, `shared/roster-icon-180/192/512.png`, manifest and
+  Home Screen tags on the test page. Real team pages get these tags when they move.
+- Edge function `roster-remind` (verify_jwt on, deployed): `scheduled` (hourly pg_cron job `roster-remind` at :04,
+  only when a send is within 24 hours): once per send, a notification to the team's members who opted in:
+  "The roster goes to Country Rostering Thu 12:00. No crew yet: Mon 18:00 to Tue 08:00, ... and N more. Can you
+  help?" (wording is Claude's draft). `test`: to the caller's own devices. `key`: returns the public key. Devices
+  the push service reports gone are removed. Signing (VAPID) keys are made by the function on first run and kept
+  in `roster_push_keys` (service role only; not in the repo).
+- SQL `supabase/roster-stage4d.sql` (migration `roster_stage4d_reminders`, applied by Claude): `roster_push_subs`,
+  `roster_push_keys`, subscribe / unsubscribe / mine, `roster_reminder_claim`, `roster_schedules.remind` and
+  `reminded_for`. Schedule set-up has a tick "Remind the team 24 hours before" (on by default) and shows how many
+  people have reminders on. A reminder needs the schedule switched on (it is tied to the scheduled send).
+- Tested: the function signed, encrypted and sent to Google's push service for a made-up device, was told it was
+  gone and removed it; the claim ran once per send; page controls in a headless browser. NOT yet tried on a real
+  phone: owner to turn reminders on and tap "Send a test".
+- Manager controls (owner, 17 Nov 2026): on Supabase rosters the "Open Country Rostering PDF view" button and its
+  instructions are hidden (managers no longer email the roster themselves), and "Send roster to Country Rostering"
+  and "Schedule set-up" are fold-out sections, closed until tapped. Team hours, Booking list, Edit sent cut-off and
+  Reset sent status stay. Apps Script teams keep the old arrangement until they move.
+- Stage 4 is complete on the test roster. Next: stage 2 (people for Central Eyre and West Coast), stage 5 (import
+  rehearsal), stage 6 (dashboards), stage 7 (switch day).
