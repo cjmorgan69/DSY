@@ -121,3 +121,7 @@ does the same at a set time, so later changes follow the existing rules (more th
 Country Rostering; within 24 h: the person is asked to phone). Trial clusters send to the trial address only. The
 owner is checking that Country Rostering accept rosters from EProsters@dsytraining.com. Still to decide: send day and
 time, the period each send covers, a reminder to the manager beforehand, pausing a week, same for all teams or not.
+Schedule decisions (owner, 16 Nov 2026): each team's manager sets up its own schedule in Manager controls ("Schedule
+set-up": send day and time, period covered, default 7 days but the manager can change it, pause, skip a week, send
+early). Tumby Bay (the owner's team) is the first to use it. Idea raised by the owner: a message to every team member
+24 hours before the cut-off to check their availability (email, SMS or app notification): options given, not decided.
