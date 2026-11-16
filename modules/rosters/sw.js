@@ -10,8 +10,7 @@ self.addEventListener("push", event => {
   event.waitUntil(self.registration.showNotification(data.title || "Crew Shift Roster", {
     body: data.body || "",
     icon: "/modules/rosters/shared/roster-icon-192.png",
-    badge: "/modules/rosters/shared/roster-icon-192.png",
-    tag: "roster-reminder",
+    // No "tag": on iPhone a notification that replaces an earlier one with the same tag arrives silently.
     data: { url: data.url || "/modules/rosters/" }
   }));
 });
