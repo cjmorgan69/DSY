@@ -537,7 +537,7 @@
 
         tick.type = "checkbox";
         tick.checked = pretendLive();
-        tick.style.cssText = "width:auto;margin:0 .4rem 0 0";
+        tick.style.cssText = "flex:0 0 auto;width:1rem;height:1rem;margin:.1rem .4rem 0 0;padding:0";
         tick.addEventListener("change", () => {
             try {
                 localStorage.setItem(PRETEND_LIVE_KEY, tick.checked ? "1" : "0");
