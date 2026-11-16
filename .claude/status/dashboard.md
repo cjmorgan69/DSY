@@ -76,10 +76,11 @@ Team chips; team -> cluster from `modules/rosters/shared/teams.js`; remembered i
   `getBookings` list as Active and marks Active rows that vanished as Cancelled, only from the earliest start the
   roster still returns (history kept). First run 16 Nov 2026: 163 bookings. Those rosters hold little history, so
   their hours start from mid-Nov 2026.
-- Call signs (owner, 16 Nov 2026): CL Cleve, CO Cowell, KI Kimba, LK Lock, SB Streaky Bay, PK Port Kenny, WU Wudinna,
+- Call signs (owner, 16 Nov 2026): CL Cleve, CW Cowell, KI Kimba, LK Lock, SB Streaky Bay, PK Port Kenny, WU Wudinna,
   EL Elliston (plus TB, CU, PT, CF) in `paging_team()`, and as team names and colours on `/dispatch/` and the
-  dashboard dispatch tile. CW is also Cowell (owner, 16 Nov 2026): 88 jobs under CW81/CW181 (Jun to Nov 2026) plus 40
-  under CO, 128 Cowell jobs in all.
+  dashboard dispatch tile. CO is NOT Cowell: it is the team leader call sign, the number
+  being the person (CO81, CO85, CO86...); CO jobs are not matched to a team (shown as "Team leader" on the dispatch
+  screens). Cowell = CW only: 88 jobs Jun to Nov 2026.
 - The pager feed now covers all Eyre Peninsula postcodes (owner): the old "postcodes 5605, 5606, 5607, 5631" note on
   the dashboard was replaced.
 - Later: move Lower Eyre's copy to `roster-sync` too so nothing depends on the owner's PC.

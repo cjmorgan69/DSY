@@ -1,11 +1,12 @@
 -- Roster copy for Central Eyre and West Coast (16 Nov 2026). Applied by Claude 16 Nov 2026.
 -- 1. Call sign letters -> team (owner, 16 Nov 2026), used to match pager jobs to rostered crews.
+--    CW is Cowell. CO is NOT a team: it is the team leader call sign (the number is the person), so it stays unmatched.
 create or replace function public.paging_team(unit text)
 returns text language sql immutable set search_path to ''
 as $$
   select case upper(left(unit, 2))
     when 'TB' then 'Tumby Bay'   when 'CU' then 'Cummins'     when 'PT' then 'Port Neill' when 'CF' then 'Coffin Bay'
-    when 'CL' then 'Cleve'       when 'CO' then 'Cowell'      when 'CW' then 'Cowell'      when 'KI' then 'Kimba'      when 'LK' then 'Lock'
+    when 'CL' then 'Cleve'       when 'CW' then 'Cowell'      when 'KI' then 'Kimba'      when 'LK' then 'Lock'
     when 'SB' then 'Streaky Bay' when 'PK' then 'Port Kenny'  when 'WU' then 'Wudinna'    when 'EL' then 'Elliston'
   end
 $$;

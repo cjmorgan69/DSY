@@ -302,7 +302,7 @@
   }
 
   /* ---------- dispatch (paging feed) ---------- */
-  var TEAMS = {"CU":["Cummins","#0e9f8e"],"TB":["Tumby Bay","#15803d"],"PT":["Port Neill","#0369a1"],"CF":["Coffin Bay","#b45309"],"CL":["Cleve","#be123c"],"CO":["Cowell","#8a5cf6"],"CW":["Cowell","#8a5cf6"],"KI":["Kimba","#4d7c0f"],"LK":["Lock","#a16207"],"EL":["Elliston","#e0752b"],"SB":["Streaky Bay","#2f7fe0"],"PK":["Port Kenny","#d6457f"],"WU":["Wudinna","#0e7490"],"CD":["Ceduna","#94a3b8"],"PL":["Port Lincoln","#64748b"]};
+  var TEAMS = {"CU":["Cummins","#0e9f8e"],"TB":["Tumby Bay","#15803d"],"PT":["Port Neill","#0369a1"],"CF":["Coffin Bay","#b45309"],"CL":["Cleve","#be123c"],"CW":["Cowell","#8a5cf6"],"CO":["Team leader","#475569"],"KI":["Kimba","#4d7c0f"],"LK":["Lock","#a16207"],"EL":["Elliston","#e0752b"],"SB":["Streaky Bay","#2f7fe0"],"PK":["Port Kenny","#d6457f"],"WU":["Wudinna","#0e7490"],"CD":["Ceduna","#94a3b8"],"PL":["Port Lincoln","#64748b"]};
   var EXTRA = ["#b45309", "#15803d", "#be123c", "#0369a1", "#7c3aed", "#4d7c0f"];
   function codeOf(j) { return String(j.unit || "").replace(/\d+$/, ""); }
   // Port Lincoln (PL) and Ceduna (CD) crews are hidden when the page loads; the button in the tile shows them.
