@@ -440,6 +440,54 @@
     }).catch(function (e) { $("wxBody").innerHTML = '<p class="err">Could not load the weather: ' + esc(e.message || e) + "</p>"; });
   }
 
+  /* ---------- Ask DSY (17 Nov 2026) ----------
+     How-to questions for Team Leaders, answered by the edge function ask-dsy from the live user guides only.
+     The last few turns are kept on the page (not saved) so a follow-up question makes sense. */
+  var aHist = [], aBusy = false;
+  function aFormat(t) {
+    var link = function (s) {
+      return s.replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+        .replace(/(https:\/\/[^\s<)]+[^\s<).,])/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')
+        .replace(/(^|[\s(])(\/(?:userguides|dashboard|training|access|signin|dispatch|modules|microlearning|hub)\/[^\s<)]*[^\s<).,])/g, '$1<a href="$2">$2</a>');
+    };
+    var html = "", list = null;
+    esc(t).split(/\n+/).forEach(function (line) {
+      var m = line.match(/^\s*(\d+[.)]|[-*•])\s+(.*)$/);
+      if (m) {
+        var kind = /\d/.test(m[1]) ? "ol" : "ul";
+        if (list !== kind) { if (list) html += "</" + list + ">"; html += "<" + kind + ">"; list = kind; }
+        html += "<li>" + link(m[2]) + "</li>";
+      } else {
+        if (list) { html += "</" + list + ">"; list = null; }
+        if (line.trim()) html += "<p>" + link(line) + "</p>";
+      }
+    });
+    return html + (list ? "</" + list + ">" : "");
+  }
+  function aAdd(cls, html) { var d = document.createElement("div"); d.className = "amsg " + cls; d.innerHTML = html; $("aLog").appendChild(d); $("aLog").scrollTop = $("aLog").scrollHeight; return d; }
+  $("aForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var q = $("aQ").value.trim(); if (!q || aBusy) return;
+    aBusy = true; $("aGo").disabled = true; $("aQ").value = "";
+    aAdd("q", esc(q));
+    var wait = aAdd("a", '<p class="note">Looking in the guides…</p>');
+    sb.functions.invoke("ask-dsy", { body: { question: q, history: aHist.slice(-6) } }).then(function (r) {
+      var d = r.data;
+      if (!d && r.error && r.error.context && r.error.context.json) return r.error.context.json().catch(function () { return null; });
+      return d;
+    }).then(function (d) {
+      if (d && d.ok) {
+        wait.innerHTML = aFormat(d.answer);
+        aHist.push({ role: "user", content: q }, { role: "assistant", content: d.answer });
+      } else {
+        wait.classList.add("err"); wait.innerHTML = "<p>" + esc((d && d.message) || "Ask DSY didn't answer. Try again in a minute.") + "</p>";
+      }
+    }).catch(function () {
+      wait.classList.add("err"); wait.innerHTML = "<p>Ask DSY didn't answer. Check your reception and try again.</p>";
+    }).then(function () { aBusy = false; $("aGo").disabled = false; $("aClear").hidden = false; });
+  });
+  $("aClear").addEventListener("click", function () { aHist = []; $("aLog").innerHTML = ""; $("aClear").hidden = true; $("aQ").focus(); });
+
   /* ---------- start and refresh ---------- */
   function stamp() { $("updated").textContent = "Updated " + new Intl.DateTimeFormat("en-AU", { timeZone: TZ, hour: "numeric", minute: "2-digit" }).format(new Date()); }
   function loadAll() { stamp(); loadRoster(); loadCrew(); loadTasks(); loadLessonCount(); loadSessions(); loadDispatch(); loadWeather(); }

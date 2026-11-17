@@ -260,6 +260,7 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   Notification Centre; the banner was hidden by a Focus (it was 3 am). Follow-up: the service worker no longer sets
   a notification `tag` (a same-tag replacement arrives silently on iPhone), and the "Send a test" message tells
   people to look in Notification Centre if a Focus is on.
+<<<<<<< HEAD
   On main and live (PR #251, merged 17 Nov 2026). Stage 4 is complete on the Summer Bay test roster.
 
 ## Stage 5 rehearsal (17 Nov 2026): name matching
@@ -320,3 +321,47 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   `canEdit()` in `training/index.html` matches. Checked in SQL: Campbell and David can manage Summer Bay and their
   own cluster's teams only; a member can manage nothing. A person still needs an account before they can be added,
   and a leader must tick Summer Bay for themselves to book their own shifts on it.
+=======
+
+## Crewing gaps for Team Leaders (16 Nov 2026, owner)
+
+- Grown from the Tumby Bay + Cummins trial (`lowereyre/coverage-gaps/` and `coverage-gaps-6h/`, PR #201, still on
+  main, not linked; they keep the Port Lincoln paramedic matching and the "Email the operations manager" draft,
+  which apply to Lower Eyre only).
+- Owner's decision: a generic step one back. The page only identifies the gaps; each Team Leader sets their own
+  rules and decides what to do with a gap (paramedic or other support).
+- `/dashboard/coverage/` (leader gate; "Crewing gaps" link in both dashboard footers). Rules per leader, in groups:
+  teams checked together, minimum crew across the group (1 to 8), each level (PARA, AO, AR, AA, REC) set to Counts /
+  Only with a counted person in the same town / Doesn't count, and the shortest gap listed (any, 1, 2, 3, 4, 6, 8 or
+  12 h). A new group starts with the trial's rule: minimum 2, PARA/AO/AR count, AA only with one of those in the
+  same town, REC doesn't count, gaps of 6 h or more. A cluster's leader picks from their own cluster's teams; the
+  all-clusters leader from all 12.
+- Shows, per group, 8 days from the chosen date: gap count and hours, a bar per day, each gap with how many were
+  booked and who, towns with nobody counted in their own right (groups of two or more teams), and "Copy as text".
+  Gaps are joined across shift changes and midnight; gaps already finished are left out. No paramedic matching and
+  no email.
+- Data: each team's live `getBookings` (Apps Script), like the trial. To move to the Supabase roster with the other
+  dashboards in stage 6.
+- Rules table `public.coverage_rules` (`supabase/coverage-rules-setup.sql`): own row only; a relief Team Leader can
+  read the rules of the leader they cover.
+- Tested in a headless browser with stand-in rosters and database. On main and live (PR #252, merged 16 Nov 2026);
+  signed out, the live page goes to the sign-in. NOT yet tried with a real sign-in: owner to try. The table is in Supabase
+  (migration `coverage_rules`, applied by Claude 16 Nov 2026; checked in a rolled-back run: a leader sees only their
+  own row, another leader and a student see none).
+- Counted by 12-hour segment (owner, 16 Nov 2026, after the first real try, which worked): the rule's gap length
+  is still judged on the whole joined gap, but each gap is then listed and counted once per segment it touches,
+  Day 08:00-20:00 and Night 20:00-08:00 (a 36-hour gap shows as 3). A part-segment shows its real length and "Part
+  of a longer gap". The segment times are fixed, not a rule. Claude's reading of "a gap length in hours is
+  determined by the rules": owner to confirm. On a branch, not merged.
+- Segment times changed to the volunteer shifts (owner, 16 Nov 2026): Day 08:00-18:00 and Night 18:00-08:00,
+  replacing 08:00-20:00 and 20:00-08:00. On a branch, not merged (PR #253).
+
+## Roster user guide updated for the Supabase roster (17 Nov 2026, owner asked)
+
+`/userguides/rosters/` Part 3 "The new roster (sign-in)", sections 16 to 21: sign-in instead of a typed name, preferred
+name, Switch person, level saved to the account, own shifts only for crew; reminders (Home Screen on iPhone, Send a
+test, Focus note); manager controls without a password, Booking for and Not on the list (placeholders); Send roster to
+Country Rostering (Preview, Open the PDF, Send now, cut-off moves); Schedule set-up (pause, skip, retries); change emails
+and trial rosters. Parts 1 and 2 still describe the Apps Script rosters. On switch day (stage 7) rewrite Parts 1 and 2
+from Part 3 and drop the password, saved-roster, PDF-view and Google Sheet Change Log sections.
+>>>>>>> origin/main

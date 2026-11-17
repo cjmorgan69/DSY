@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261117i" data-level="leader"></script>
+<<<<<<< HEAD
+<script src="/shared/gate.js?v=20261117p" data-level="leader"></script>
+=======
+<script src="/shared/gate.js?v=20261117p" data-level="leader"></script>
+>>>>>>> origin/main
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
@@ -198,9 +202,23 @@ dialog input { width:100%; padding:8px 10px; border:1px solid var(--line); borde
 dialog .row { display:flex; gap:8px; }
 dialog .row button { border-radius:8px; padding:7px 14px; border:1px solid var(--line); background:none; color:var(--ink); }
 dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border-color:var(--brand); }
+
+/* Ask DSY */
+.alog { display:flex; flex-direction:column; gap:.5rem; max-height:420px; overflow-y:auto; }
+.alog:empty { display:none; }
+.amsg { padding:.55rem .75rem; border-radius:12px; font-size:.92rem; line-height:1.45; overflow-wrap:anywhere; }
+.amsg.q { align-self:flex-end; max-width:85%; background:var(--brand); color:var(--brand-ink); }
+.amsg.a { align-self:flex-start; max-width:100%; background:var(--bg); border:1px solid var(--line); }
+.amsg.a ol, .amsg.a ul { margin:.3rem 0; padding-left:1.2rem; }
+.amsg.a p { margin:.25rem 0; }
+.amsg.err { color:var(--r); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="/modules/rosters/shared/teams.js?v=20261117i"></script>
+<<<<<<< HEAD
+<script src="/modules/rosters/shared/teams.js?v=20261117p"></script>
+=======
+<script src="/modules/rosters/shared/teams.js?v=20261117p"></script>
+>>>>>>> origin/main
 </head>
 <body>
 <header class="bar">
@@ -261,13 +279,23 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
       </form>
       <div id="tList"><p class="tempty">Loading…</p></div>
     </section>
+    <section class="card" aria-labelledby="hAsk">
+      <div class="ch"><h2 id="hAsk">Ask DSY</h2><a href="/userguides/leaders/">Team Leader guide →</a></div>
+      <p class="note">How-to questions about the DSY site, answered by AI from the Team Leader and roster guides. Not for clinical questions or patient details.</p>
+      <div class="alog" id="aLog" aria-live="polite"></div>
+      <form class="tadd" id="aForm" autocomplete="off">
+        <input type="text" id="aQ" maxlength="500" placeholder="e.g. How do I set up relief cover?" aria-label="Your question" required>
+        <button type="submit" id="aGo">Ask</button>
+      </form>
+      <button class="tmore" type="button" id="aClear" hidden>Start again</button>
+    </section>
     <section class="card" aria-labelledby="hTrain">
       <div class="ch"><h2 id="hTrain">Training sessions</h2><a href="/training/">Open training app →</a></div>
       <div id="tBody"><div class="skel"></div></div>
     </section>
   </div>
 
-  <footer class="foot"><span id="updated"></span><span><a href="/dashboard/">Phone and tablet version</a> · <a href="/dashboard/car/">Retro car dash</a> · <a href="/dashboard/relief/">Relief cover</a> · <a href="/dashboard/roster-settings/">Roster emails</a> · <a href="/signin/?out=1">Sign out</a></span></footer>
+  <footer class="foot"><span id="updated"></span><span><a href="/dashboard/">Phone and tablet version</a> · <a href="/dashboard/car/">Retro car dash</a> · <a href="/dashboard/coverage/">Crewing gaps</a> · <a href="/dashboard/relief/">Relief cover</a> · <a href="/dashboard/roster-settings/">Roster emails</a> · <a href="/signin/?out=1">Sign out</a></span></footer>
 </main>
 
 <dialog id="gDlg">
@@ -279,6 +307,10 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
   </form>
 </dialog>
 
-<script src="/dashboard/dash.js?v=20261117i"></script>
+<<<<<<< HEAD
+<script src="/dashboard/dash.js?v=20261117p"></script>
+=======
+<script src="/dashboard/dash.js?v=20261117p"></script>
+>>>>>>> origin/main
 </body>
 </html>
