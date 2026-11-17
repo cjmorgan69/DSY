@@ -15,8 +15,9 @@ const GUIDES = [
   { path: "/userguides/leaders/", title: "Team Leader Guide" },
   { path: "/userguides/rosters/", title: "Crew Shift Roster User Guide" },
 ];
-// gemini-flash-latest is Google's alias for the current Flash model; gemini-2.5-flash is tried if the alias is refused.
-const MODELS = ["gemini-flash-latest", "gemini-2.5-flash"];
+// gemini-flash-latest is Google's alias for the current Flash model. The next ones are tried in turn if a model is
+// missing, overloaded (503, seen 17 Nov 2026) or busy.
+const MODELS = ["gemini-flash-latest", "gemini-2.5-flash", "gemini-2.5-flash-lite"];
 const KEY_NAMES = ["GEMINI_API_KEY", "GOOGLE_API_KEY", "GOOGLE_GEMINI_API_KEY", "GOOGLE_AI_API_KEY"];
 const DAILY_LIMIT = 40;
 const CORS = {
@@ -135,16 +136,15 @@ Deno.serve(async (req: Request) => {
     try {
       const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
         method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: payload,
-        signal: AbortSignal.timeout(55000),
+        signal: AbortSignal.timeout(40000),
       });
       step(`${model} answered ${r.status}`);
       const d = await r.json().catch(() => ({}));
-      if (r.status === 404) { lastError = `${model}: not found`; continue; }
+      if (r.status === 404 || r.status === 429 || r.status >= 500) { lastError = `${model}: ${r.status} ${String(d?.error?.message ?? "").slice(0, 200)}`; continue; }
       if (!r.ok) {
         lastError = `${model}: ${r.status} ${String(d?.error?.message ?? "").slice(0, 300)}`;
         await log({ model, error: lastError });
-        const message = r.status === 429 ? "Ask DSY is busy or over its Gemini quota. Try again later."
-          : r.status === 400 || r.status === 401 || r.status === 403 ? "Ask DSY's Gemini key isn't working. Tell the lead instructor."
+        const message = r.status === 400 || r.status === 401 || r.status === 403 ? "Ask DSY's Gemini key isn't working. Tell the lead instructor."
           : "Ask DSY didn't get an answer. Try again in a minute.";
         return json({ ok: false, message }, 502);
       }
@@ -164,5 +164,5 @@ Deno.serve(async (req: Request) => {
     }
   }
   await log({ error: lastError || "no model answered" });
-  return json({ ok: false, message: "Ask DSY didn't get an answer. Try again in a minute." }, 502);
+  return json({ ok: false, message: "Gemini is busy right now. Try again in a few minutes." }, 502);
 });
