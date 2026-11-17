@@ -362,3 +362,8 @@ test, Focus note); manager controls without a password, Booking for and Not on t
 Country Rostering (Preview, Open the PDF, Send now, cut-off moves); Schedule set-up (pause, skip, retries); change emails
 and trial rosters. Parts 1 and 2 still describe the Apps Script rosters. On switch day (stage 7) rewrite Parts 1 and 2
 from Part 3 and drop the password, saved-roster, PDF-view and Google Sheet Change Log sections.
+- The Summer Bay tick box for other clusters' Team Leaders is on main and live (PR #258, merged 17 Nov 2026).
+  Central Eyre people sign up themselves and choose their own password: no temporary password is involved unless
+  an account has to be made for someone on switch day.
+- Sign-in for people whose account was made for them (Lower Eyre now, anyone on a switch day later): no starter
+  password, they claim the account once on `/signin/` (see `access.md`, 17 Nov 2026).

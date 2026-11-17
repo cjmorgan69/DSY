@@ -59,3 +59,23 @@ in the SQL Editor 16 Nov 2026 (the apply_migration approval prompt timed out twi
 Calendar and People, other clusters' sessions view-only with a notice, other clusters' team boxes locked, Cluster
 select for leaders on a person's page for all-clusters leaders, a new course takes the creator's cluster); the
 dashboards' training tile and the car dash trip/service light follow the leader's cluster (`dash.js`).
+
+## First sign-in without a starter password (17 Nov 2026, owner)
+
+- Owner: Lower Eyre people should not need a starter password (Central Eyre people sign up themselves). Accounts
+  that were made for someone can now be claimed once: on `/signin/`, "First time here? Set up your sign-in", enter
+  the ambulance ID and choose a password. If the ID has no account it signs up as before (ID must be on the
+  approved list); if an account was made for it and nobody has set its password, `claim_account(id, password)` sets
+  the chosen password and signs them in; if it already has its own password they are told to sign in or ask for a
+  reset.
+- SQL `supabase/claim-account.sql` (migration `claim_account`, applied by Claude, rehearsed in a rolled-back run):
+  `profiles.claim_open` (true for the 44 non-leader accounts still on the starter password on 17 Nov 2026),
+  `claim_account()` (anon may call it; returns ok / none / closed / off; never for leaders or switched-off
+  accounts), audit table `account_claims` (leaders can read), `password_changed()` also closes the claim, trigger
+  `protect_claim_open` stops a person reopening their own.
+- A leader's password reset does NOT reopen claiming: a forgotten password still needs the temporary password from
+  the leader. Risk told to the owner: until a person claims their account, anyone who knows their ambulance ID could
+  claim it first (the shared starter password had the same weakness). The starter password still works on
+  unclaimed accounts until they are claimed.
+- Page text: the note on `/signin/` now says no starter password is needed; the button reads "First time here? Set
+  up your sign-in".
