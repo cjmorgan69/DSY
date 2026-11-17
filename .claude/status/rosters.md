@@ -260,7 +260,6 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   Notification Centre; the banner was hidden by a Focus (it was 3 am). Follow-up: the service worker no longer sets
   a notification `tag` (a same-tag replacement arrives silently on iPhone), and the "Send a test" message tells
   people to look in Notification Centre if a Focus is on.
-<<<<<<< HEAD
   On main and live (PR #251, merged 17 Nov 2026). Stage 4 is complete on the Summer Bay test roster.
 
 ## Stage 5 rehearsal (17 Nov 2026): name matching
@@ -321,7 +320,6 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   `canEdit()` in `training/index.html` matches. Checked in SQL: Campbell and David can manage Summer Bay and their
   own cluster's teams only; a member can manage nothing. A person still needs an account before they can be added,
   and a leader must tick Summer Bay for themselves to book their own shifts on it.
-=======
 
 ## Crewing gaps for Team Leaders (16 Nov 2026, owner)
 
@@ -364,4 +362,3 @@ test, Focus note); manager controls without a password, Booking for and Not on t
 Country Rostering (Preview, Open the PDF, Send now, cut-off moves); Schedule set-up (pause, skip, retries); change emails
 and trial rosters. Parts 1 and 2 still describe the Apps Script rosters. On switch day (stage 7) rewrite Parts 1 and 2
 from Part 3 and drop the password, saved-roster, PDF-view and Google Sheet Change Log sections.
->>>>>>> origin/main
