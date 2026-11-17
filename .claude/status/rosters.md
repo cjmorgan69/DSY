@@ -260,6 +260,66 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   Notification Centre; the banner was hidden by a Focus (it was 3 am). Follow-up: the service worker no longer sets
   a notification `tag` (a same-tag replacement arrives silently on iPhone), and the "Send a test" message tells
   people to look in Notification Centre if a Focus is on.
+  On main and live (PR #251, merged 17 Nov 2026). Stage 4 is complete on the Summer Bay test roster.
+
+## Stage 5 rehearsal (17 Nov 2026): name matching
+
+- The owner gave the three sheet links (17 Nov 2026; IDs kept out of this public repo, they are in the
+  conversation only): Lower Eyre "Bookings", "Central Eyre Bookings", "West Coast Bookings", each with tabs
+  Bookings, Change Log, Messages, Teams. Claude can read them through the Google Sheets connector.
+- The Supabase copy `roster_bookings` already holds every team's ACTIVE bookings back to Sept 2026, so the import
+  runs inside the database from that copy. Only in the sheets: cancelled bookings (not needed) and the Change Log
+  (stays in the sheets as the archive unless the owner wants it copied).
+- `roster_import_names` + `roster_import_match()` (migration `roster_stage5_import_rehearsal`; notes in
+  `supabase/roster-stage5-rehearsal.sql`). First run: Lower Eyre 37 names sure (459 shifts), 6 to check
+  (68 shifts), 20 unmatched (93 shifts, about half are placeholders such as LEP40 and CO85). Central Eyre and West
+  Coast: almost nothing matches yet (56 unmatched names) because those crews have no accounts (stage 2).
+- The old alias list points at spellings that no longer match the account names (e.g. Cathy / Catherine Haarsma),
+  so those came out as "check" or "none". The doubtful Lower Eyre names were put to the owner on 17 Nov 2026:
+  decisions not yet given. Nothing has been copied into `roster_shifts`.
+- Owner's decisions on the Lower Eyre names (17 Nov 2026, "all yes"), applied by Claude: 15 typed names accepted
+  as their accounts (Bernadette = Bernie Crettenden, Cathy Haarsma / Harrsma = Catherine Haarsma, David = Dave
+  Chapman, Midge = Michelle Guidera, Fi = Fiona Dahlitz, Vicky DeVries = Victoria De Vries, Bec = Rebecca
+  Rutherford, and the people below); 10 placeholders (LEP40 and CO85 variants, J Wadsworth, TT); "RTL Test Only"
+  left out. Accounts given full names: Anike Helder, Peter Foster, Michelle Parker (were first names only).
+  Added to team lists: Pauline Britza and Paul Rice to Tumby Bay (also Coffin Bay), Ian MacCrimmon to Cummins.
+- Dry run of the Lower Eyre import: 618 of 620 active shifts ready (the 2 left out are the test entry); every
+  shift is on whole hours, a valid length, level and flexibility; nobody overlaps themselves; no hour has more than
+  3 people. Still nothing copied into `roster_shifts`: the real copy happens on switch day (stage 7).
+
+## Stage 2 (people): Central Eyre list from Campbell (17 Nov 2026)
+
+- The owner passed on Campbell's list: 49 people (Cleve 13, Cowell 16, Elliston 13, Lock 7) with ambulance ID, name
+  and station. None had an account. Applied by Claude (migration `roster_stage2_expected_members`; notes in
+  `supabase/roster-stage2-expected-members.sql`): the list is in `public.expected_members` (not in this public
+  repo), every ID is on `allowed_ids`, and the sign-up trigger `handle_new_user()` now gives a listed person their
+  listed full name and team when they sign up at `/signin/` (what they typed becomes their name shown if it
+  differs). Rehearsed in a rolled-back run. NO accounts were created and no shared starter password was used:
+  each person chooses their own password when they sign up.
+- Name matching now also matches by ambulance ID to people who have not signed up yet (migration
+  `roster_stage5_match_expected`). Central Eyre after the list: 28 typed names sure, 7 to check, 6 unmatched
+  (5 look like test or joke entries: Norma Gene, Juicy Lucy, Julia Gulia, Boof, Tay Tay; plus "Graeme" at Lock).
+  Put to the owner 17 Nov 2026: decisions not yet given.
+- Open for switch day: a shift can only be linked to a person once they have an account, so anyone who has not
+  signed up by then needs an account made for them (or their shifts come across as placeholders). Owner to decide.
+- West Coast: still waiting on Dave's list.
+- Owner's decisions (17 Nov 2026, "all yes"), applied by Claude: Central Eyre typed names accepted: Lorna = Lorna
+  Lush, Julie = Julie Magnay, Jessie = Jessica Jacobs, Tim = Timothy Brierley, Campbell = Campbell Forsyth,
+  Gabriel = Gabby Zerk, Lisa Kammerman = Lisa Kammermann, Graeme = Graham Spiers; left out as test entries:
+  Norma Gene, Juicy Lucy, Julia Gulia, Boof, Tay Tay. All 37 Central Eyre names are now resolved (24 exact, 8
+  confirmed, 5 left out; an earlier message to the owner said 28 exact, which was a miscount).
+- Dry run of the Central Eyre import: 102 of 107 active shifts ready (5 are the test entries); whole hours, valid
+  lengths and levels, nobody overlapping themselves, no hour over 3 people.
+- Switch day decision (owner, 17 Nov 2026): anyone on a leader's list who has NOT signed up by switch day gets an
+  account made for them on the day, so their shifts and hours link properly; their Team Leader gives them a
+  temporary password when they first sign in. Today that would be 25 Central Eyre people with shifts on the roster.
+  Not built yet: do it as part of stage 7.
+- Summer Bay open to every Team Leader (owner, 17 Nov 2026): `can_edit_group()` returns true for any leader on a
+  group of type `test` (migration `roster_test_team_open_to_leaders`, `supabase/roster-test-team-leaders.sql`), so
+  Campbell and David can tick "Summer Bay" for their people in `/training/` People and use its Manager controls;
+  `canEdit()` in `training/index.html` matches. Checked in SQL: Campbell and David can manage Summer Bay and their
+  own cluster's teams only; a member can manage nothing. A person still needs an account before they can be added,
+  and a leader must tick Summer Bay for themselves to book their own shifts on it.
 
 ## Crewing gaps for Team Leaders (16 Nov 2026, owner)
 
