@@ -16,8 +16,8 @@ const GUIDES = [
   { path: "/userguides/rosters/", title: "Crew Shift Roster User Guide" },
 ];
 // gemini-flash-latest is Google's alias for the current Flash model. The next ones are tried in turn if a model is
-// missing, overloaded (503, seen 17 Nov 2026) or busy.
-const MODELS = ["gemini-flash-latest", "gemini-2.5-flash", "gemini-2.5-flash-lite"];
+// missing, overloaded (503, seen 17 Nov 2026) or busy. The 2.5 models are closed to new accounts (Google, 17 Nov 2026).
+const MODELS = ["gemini-flash-latest", "gemini-flash-lite-latest", "gemini-3.5-flash-lite"];
 const KEY_NAMES = ["GEMINI_API_KEY", "GOOGLE_API_KEY", "GOOGLE_GEMINI_API_KEY", "GOOGLE_AI_API_KEY"];
 const DAILY_LIMIT = 40;
 const CORS = {
@@ -136,7 +136,7 @@ Deno.serve(async (req: Request) => {
     try {
       const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
         method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: payload,
-        signal: AbortSignal.timeout(40000),
+        signal: AbortSignal.timeout(35000),
       });
       step(`${model} answered ${r.status}`);
       const d = await r.json().catch(() => ({}));
