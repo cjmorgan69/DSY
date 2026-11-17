@@ -367,3 +367,9 @@ from Part 3 and drop the password, saved-roster, PDF-view and Google Sheet Chang
   an account has to be made for someone on switch day.
 - Sign-in for people whose account was made for them (Lower Eyre now, anyone on a switch day later): no starter
   password, they claim the account once on `/signin/` (see `access.md`, 17 Nov 2026).
+
+## Operations overview: team names link to their rosters (17 Nov 2026)
+
+Owner asked for a quick link to each team's roster without new buttons. On `/modules/rosters/operations/` the team
+names are now links (dotted underline): the column headings (CU, TB…), the "Needs attention" list and the team key.
+Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id); the page now loads that file.

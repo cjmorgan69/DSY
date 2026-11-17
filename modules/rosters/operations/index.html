@@ -343,6 +343,17 @@
       font-size: 11px;
     }
 
+    a.team-link {
+      color: inherit;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+    }
+
+    a.team-link:hover {
+      text-decoration-style: solid;
+    }
+
     .legend {
       display: flex;
       justify-content: center;
@@ -518,6 +529,7 @@
     </section>
   </main>
 
+  <script src="../shared/teams.js?v=20261118a"></script>
   <script>
     "use strict";
 
@@ -552,6 +564,26 @@
     const FILTER_STORAGE_KEY = "dsyOperationsOverviewFilter";
 
     const $ = (id) => document.getElementById(id);
+
+    /*
+     * Each team name links to that team's own roster page (owner, 17 Nov 2026):
+     * the column headings, the "needs attention" list and the team key.
+     * Addresses come from the shared team list (teams.js).
+     */
+    const CLUSTER_DIR = { "Lower Eyre": "lowereyre", "Central Eyre": "centraleyre", "West Coast": "westcoast" };
+    function rosterUrl(name) {
+      const teams = window.DSY_ROSTER_TEAMS || {};
+      const id = Object.keys(teams).find((k) => k !== "test" && String(teams[k].name).toLowerCase() === String(name || "").trim().toLowerCase());
+      return id && CLUSTER_DIR[teams[id].cluster] ? "../" + CLUSTER_DIR[teams[id].cluster] + "/" + id + "/" : "";
+    }
+    function teamLink(name, text, className) {
+      const url = rosterUrl(name);
+      if (!url) return element("span", text, className);
+      const a = element("a", text, ((className || "") + " team-link").trim());
+      a.href = url;
+      a.title = "Open the " + name + " roster";
+      return a;
+    }
 
     let selectedDate = currentOperationalDate();
     let overview = null;
@@ -845,7 +877,7 @@
         const item = element("li");
         const total = runs.reduce((sum, run) => sum + run.hours, 0);
 
-        item.appendChild(element("span", team.name, "team"));
+        item.appendChild(teamLink(team.name, team.name, "team"));
         item.appendChild(
           element(
             "span",
@@ -951,9 +983,10 @@
       const teamRow = element("tr");
 
       visibleTeams.forEach((team, index) => {
-        const heading = element("th", team.shortName);
+        const heading = element("th");
+        heading.appendChild(teamLink(team.name, team.shortName));
         heading.scope = "col";
-        heading.title = team.name;
+        heading.title = "Open the " + team.name + " roster";
         heading.setAttribute("aria-label", team.name);
 
         if (index === 0 || visibleTeams[index - 1].cluster !== team.cluster) {
@@ -1024,7 +1057,7 @@
       visibleTeams.forEach((team) => {
         const item = element("span");
         item.appendChild(element("strong", team.shortName + " "));
-        item.appendChild(document.createTextNode(team.name));
+        item.appendChild(teamLink(team.name, team.name));
         $("team-key").appendChild(item);
       });
 
