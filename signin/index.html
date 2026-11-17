@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261117o">
+<link rel="stylesheet" href="../training/theme.css?v=20261117q">
 <style>[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -17,14 +17,13 @@
       <div><h1>DSY Training</h1><p id="sub">Sign in to open the training pages.</p></div></a>
     <form class="panel pad stack" id="form" autocomplete="on">
       <label id="nameRow" hidden>Your name<input id="f-name" name="name" autocomplete="name"></label>
-      <label><span id="idLabel">Ambulance ID number (or email)</span><input id="f-id" name="id" autocomplete="username" autocapitalize="none" spellcheck="false" inputmode="text" required></label>
+      <label><span id="idLabel">Ambulance ID number</span><input id="f-id" name="id" autocomplete="username" autocapitalize="none" spellcheck="false" inputmode="text" required></label>
       <label>Password<input id="f-pass" name="pass" type="password" minlength="8" autocomplete="current-password" required></label>
-      <p class="small muted" id="hint" hidden>Choose a password of at least 8 characters. Your ID number is only used to check you are approved and so your instructors know who you are. No email address needed.</p>
+      <p class="small muted" id="hint" hidden>Choose a password of at least 8 characters. Your ID number is only used to check you are approved and so your instructors know who you are.</p>
       <p class="small" id="msg" role="alert" style="color:var(--danger)" hidden></p>
       <div class="small" id="starterNote" style="background:var(--brand-soft);border-radius:10px;padding:.7rem .85rem">
         <b>Never signed in before?</b><br>
-        Tap <b>First time here?</b> below, enter your ambulance ID and choose your own password. You don't need a starter password.<br>
-        <b>Been given a temporary password?</b> Sign in here with it, then choose your own on the next screen.
+        Tap <b>First time here?</b> below, enter your ambulance ID and choose your own password. You don't need a starter password.
       </div>
       <button class="btn" type="submit" id="go">Sign in</button>
       <button class="btn ghost" type="button" id="swap">First time here? Set up your sign-in</button>
@@ -42,7 +41,7 @@
   </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="../training/config.js?v=20261117o"></script>
+<script src="../training/config.js?v=20261117q"></script>
 <script>
 (function () {
   var C = window.TRAINING_APP, sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
@@ -58,7 +57,7 @@
     up = createMode;
     $("nameRow").hidden = !up; $("f-name").required = up; $("hint").hidden = !up; $("starterNote").hidden = up;
     $("f-pass").setAttribute("autocomplete", up ? "new-password" : "current-password");
-    $("idLabel").textContent = up ? "Ambulance ID number" : "Ambulance ID number (or email)";
+    /* the label no longer mentions email (owner, 17 Nov 2026); an email typed here still works for an old email account */
     $("go").textContent = up ? "Set up my sign-in" : "Sign in";
     $("swap").textContent = up ? "I already have an account" : "First time here? Set up your sign-in";
     $("sub").textContent = up ? "Set up your sign-in with your ambulance ID." : "Sign in to open the training pages.";
