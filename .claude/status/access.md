@@ -85,3 +85,5 @@ dashboards' training tile and the car dash trip/service light follow the leader'
 - Owner (17 Nov 2026): the "Been given a temporary password?" line was taken out of the highlighted box on
   `/signin/`; the box now only explains first-time set-up. The small line under the buttons still says a forgotten
   password is reset by the instructor with a temporary one (that is still how resets work).
+  The page also no longer mentions email: the ID box is labelled "Ambulance ID number" and the "No email address
+  needed" sentence is gone. An email typed in the box still signs in an old email account.
