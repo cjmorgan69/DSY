@@ -365,3 +365,5 @@ from Part 3 and drop the password, saved-roster, PDF-view and Google Sheet Chang
 - The Summer Bay tick box for other clusters' Team Leaders is on main and live (PR #258, merged 17 Nov 2026).
   Central Eyre people sign up themselves and choose their own password: no temporary password is involved unless
   an account has to be made for someone on switch day.
+- Sign-in for people whose account was made for them (Lower Eyre now, anyone on a switch day later): no starter
+  password, they claim the account once on `/signin/` (see `access.md`, 17 Nov 2026).

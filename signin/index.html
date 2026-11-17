@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261117n">
+<link rel="stylesheet" href="../training/theme.css?v=20261117o">
 <style>[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -22,11 +22,12 @@
       <p class="small muted" id="hint" hidden>Choose a password of at least 8 characters. Your ID number is only used to check you are approved and so your instructors know who you are. No email address needed.</p>
       <p class="small" id="msg" role="alert" style="color:var(--danger)" hidden></p>
       <div class="small" id="starterNote" style="background:var(--brand-soft);border-radius:10px;padding:.7rem .85rem">
-        <b>Got a starter or temporary password from your instructor?</b><br>
-        Sign in here with your ambulance ID and that password. The next screen asks you to choose your own password. From then on you use your own.
+        <b>Never signed in before?</b><br>
+        Tap <b>First time here?</b> below, enter your ambulance ID and choose your own password. You don't need a starter password.<br>
+        <b>Been given a temporary password?</b> Sign in here with it, then choose your own on the next screen.
       </div>
       <button class="btn" type="submit" id="go">Sign in</button>
-      <button class="btn ghost" type="button" id="swap">First time here? Create an account</button>
+      <button class="btn ghost" type="button" id="swap">First time here? Set up your sign-in</button>
       <p class="small muted">Your ID has to be on the list your instructor keeps. Forgotten your password? Ask your instructor to reset it. They will give you a temporary one, and you will choose a new one when you sign in.</p>
     </form>
     <form class="panel pad stack" id="changeForm" autocomplete="on" hidden>
@@ -41,7 +42,7 @@
   </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="../training/config.js?v=20261117n"></script>
+<script src="../training/config.js?v=20261117o"></script>
 <script>
 (function () {
   var C = window.TRAINING_APP, sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
@@ -58,9 +59,9 @@
     $("nameRow").hidden = !up; $("f-name").required = up; $("hint").hidden = !up; $("starterNote").hidden = up;
     $("f-pass").setAttribute("autocomplete", up ? "new-password" : "current-password");
     $("idLabel").textContent = up ? "Ambulance ID number" : "Ambulance ID number (or email)";
-    $("go").textContent = up ? "Create account" : "Sign in";
-    $("swap").textContent = up ? "I already have an account" : "First time here? Create an account";
-    $("sub").textContent = up ? "Create your account with your ambulance ID." : "Sign in to open the training pages.";
+    $("go").textContent = up ? "Set up my sign-in" : "Sign in";
+    $("swap").textContent = up ? "I already have an account" : "First time here? Set up your sign-in";
+    $("sub").textContent = up ? "Set up your sign-in with your ambulance ID." : "Sign in to open the training pages.";
     say("");
   }
   $("swap").addEventListener("click", function () { mode(!up); });
@@ -100,6 +101,15 @@
     var email = loginEmail(raw), job;
     if (up) {
       job = sb.auth.signUp({ email: email, password: pass, options: { data: { full_name: $("f-name").value.trim(), staff_id: raw } } }).then(function (r) {
+        /* An account was already made for this ID (17 Nov 2026): if nobody has set its password yet, this person
+           claims it with the password they just chose (claim_account in supabase/claim-account.sql). One time only. */
+        if (r.error && /already registered|already been registered/i.test(String(r.error.message || ""))) {
+          return sb.rpc("claim_account", { p_staff_id: raw, p_password: pass }).then(function (c) {
+            if (c.error) throw c.error;
+            if (c.data !== "ok") throw new Error("claim:" + c.data);
+            return sb.auth.signInWithPassword({ email: email, password: pass }).then(function (x) { if (x.error) throw x.error; });
+          });
+        }
         if (r.error) throw r.error;
         if (!r.data.session) return sb.auth.signInWithPassword({ email: email, password: pass }).then(function (x) { if (x.error) throw x.error; });
       });
@@ -110,6 +120,9 @@
       btn.disabled = false;
       var m = String((err && err.message) || "");
       if (up && /database error|not on the approved/i.test(m)) say("That ID is not on the approved list yet. Ask your instructor to add it, then try again.");
+      else if (up && /^claim:closed/.test(m)) say("That ID already has its own password. Tap \"I already have an account\" and sign in. Forgotten it? Ask your instructor to reset it.");
+      else if (up && /^claim:off/.test(m)) say("This account has been switched off. Ask your instructor.");
+      else if (up && /^claim:/.test(m)) say("That ID could not be set up. Ask your instructor.");
       else if (up && /already registered|already been registered/i.test(m)) say("That ID already has an account. Tap \"I already have an account\" and sign in.");
       else if (/invalid login|invalid credentials/i.test(m)) say("That ID and password do not match. Check them and try again, or ask your instructor to reset your password.");
       else if (/banned|disabled/i.test(m)) say("This account has been switched off. Ask your instructor.");
