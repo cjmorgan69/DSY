@@ -64,7 +64,7 @@ async function guides() {
   const parts: string[] = [];
   for (const g of GUIDES) {
     try {
-      const r = await fetch(SITE + g.path, { headers: { "User-Agent": "ask-dsy" } });
+      const r = await fetch(SITE + g.path, { headers: { "User-Agent": "ask-dsy" }, signal: AbortSignal.timeout(10000) });
       if (r.ok) parts.push(`<guide title="${g.title}" path="${g.path}">\n${toText(await r.text(), g.path)}\n</guide>`);
     } catch (_e) { /* a guide that doesn't load is left out */ }
   }
@@ -92,6 +92,8 @@ function cleanHistory(h: unknown): Turn[] {
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ ok: false, message: "Use POST." }, 405);
+  const t0 = Date.now();
+  const step = (m: string) => console.log(`ask-dsy ${Date.now() - t0}ms ${m}`);
 
   // who is asking: leaders (and relief Team Leaders while covering) only
   const auth = req.headers.get("Authorization") || "";
@@ -100,6 +102,7 @@ Deno.serve(async (req: Request) => {
   if (!who?.user) return json({ ok: false, message: "Please sign in again." }, 401);
   const acc = await user.rpc("my_access");
   if (acc.error || acc.data?.role !== "leader") return json({ ok: false, message: "Ask DSY is for Team Leaders." }, 403);
+  step("leader checked");
 
   let body: { question?: unknown; history?: unknown } = {};
   try { body = await req.json(); } catch (_e) { /* empty */ }
@@ -116,8 +119,9 @@ Deno.serve(async (req: Request) => {
 
   const log = (row: Record<string, unknown>) => service.from("ask_dsy_log").insert({ user_id: who.user!.id, question, ...row });
 
+  step("signed in, loading guides");
   let guideText: string;
-  try { guideText = await guides(); } catch (_e) { return json({ ok: false, message: "The user guides didn't load. Try again in a minute." }, 502); }
+  try { guideText = await guides(); step(`guides ${guideText.length} chars`); } catch (_e) { return json({ ok: false, message: "The user guides didn't load. Try again in a minute." }, 502); }
 
   const contents = [...cleanHistory(body.history), { role: "user", content: question }]
     .map((t) => ({ role: t.role === "assistant" ? "model" : "user", parts: [{ text: t.content }] }));
@@ -131,7 +135,9 @@ Deno.serve(async (req: Request) => {
     try {
       const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
         method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: payload,
+        signal: AbortSignal.timeout(55000),
       });
+      step(`${model} answered ${r.status}`);
       const d = await r.json().catch(() => ({}));
       if (r.status === 404) { lastError = `${model}: not found`; continue; }
       if (!r.ok) {
@@ -154,6 +160,7 @@ Deno.serve(async (req: Request) => {
       return json({ ok: true, answer, left: Math.max(0, DAILY_LIMIT - (count ?? 0) - 1) });
     } catch (e) {
       lastError = `${model}: ${String((e as Error)?.message ?? e).slice(0, 300)}`;
+      step(lastError);
     }
   }
   await log({ error: lastError || "no model answered" });
