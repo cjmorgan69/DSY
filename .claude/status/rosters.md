@@ -303,3 +303,14 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
 - Open for switch day: a shift can only be linked to a person once they have an account, so anyone who has not
   signed up by then needs an account made for them (or their shifts come across as placeholders). Owner to decide.
 - West Coast: still waiting on Dave's list.
+- Owner's decisions (17 Nov 2026, "all yes"), applied by Claude: Central Eyre typed names accepted: Lorna = Lorna
+  Lush, Julie = Julie Magnay, Jessie = Jessica Jacobs, Tim = Timothy Brierley, Campbell = Campbell Forsyth,
+  Gabriel = Gabby Zerk, Lisa Kammerman = Lisa Kammermann, Graeme = Graham Spiers; left out as test entries:
+  Norma Gene, Juicy Lucy, Julia Gulia, Boof, Tay Tay. All 37 Central Eyre names are now resolved (24 exact, 8
+  confirmed, 5 left out; an earlier message to the owner said 28 exact, which was a miscount).
+- Dry run of the Central Eyre import: 102 of 107 active shifts ready (5 are the test entries); whole hours, valid
+  lengths and levels, nobody overlapping themselves, no hour over 3 people.
+- Switch day decision (owner, 17 Nov 2026): anyone on a leader's list who has NOT signed up by switch day gets an
+  account made for them on the day, so their shifts and hours link properly; their Team Leader gives them a
+  temporary password when they first sign in. Today that would be 25 Central Eyre people with shifts on the roster.
+  Not built yet: do it as part of stage 7.
