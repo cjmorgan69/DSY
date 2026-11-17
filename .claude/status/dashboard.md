@@ -140,4 +140,6 @@ on the dashboard (an AI helper, NOT leader-to-leader messaging: "we already have
   guide link. 40 questions per leader per 24 h. Log table `public.ask_dsy_log` (`supabase/ask-dsy-setup.sql`, migration
   `ask_dsy_log`, applied by Claude): a leader reads own rows, the lead instructor reads all, service role writes.
 - Tested: signed-out calls refused; the panel in a headless browser with a stand-in answer (phone and wide). NOT yet
-  tried with a real sign-in and the real Gemini key: owner to ask a question once merged (the guide must be live first).
+  tried with a real sign-in and the real Gemini key. Live (PR #254, merged 17 Nov 2026; guides and dashboard checked on
+  the live site). The owner's Gemini key is in a different Supabase project: they are adding it to training-sessions as
+  GEMINI_API_KEY.
