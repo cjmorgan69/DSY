@@ -79,3 +79,6 @@ dashboards' training tile and the car dash trip/service light follow the leader'
   unclaimed accounts until they are claimed.
 - Page text: the note on `/signin/` now says no starter password is needed; the button reads "First time here? Set
   up your sign-in".
+- On main and live (PR #259, merged 17 Nov 2026). Checked on the live page: the new note and button show; a wrong
+  password still gives the normal message; first-time set-up on an ID that already has its own password is refused.
+  Not yet used by a real person on an unclaimed account.
