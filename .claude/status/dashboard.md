@@ -120,3 +120,24 @@ Role or Cluster settings), `dash.js` (banner, covered leader's tasks labelled wi
 `supabase/relief-setup.sql`, applied by Claude 16 Nov 2026; rehearsed in a rolled-back transaction (Chris -> Dave
 Chapman): Dave got leader access and Chris's 3 tasks, was blocked from resetting Chris's password, making himself a
 leader and handing cover on, could not read calendar links, and lost everything when the cover ended.
+
+## User guides and Ask DSY (17 Nov 2026, owner)
+
+Owner asked for a user guide for the whole DSY system, Team Leader section first, and a help chat for Team Leaders only
+on the dashboard (an AI helper, NOT leader-to-leader messaging: "we already have enough message medium").
+- `/userguides/` (student gate): guides home with tiles; Getting started, Learning on your own and Running a session
+  are shown as "Coming next" (not built). Shared styles `userguides/guide.css`.
+- `/userguides/leaders/` (leader gate): the Team Leader guide, 14 sections (sign-in and cluster, dashboard panels, tasks
+  and Siri, Ask DSY, crewing gaps, contribution, dispatch, relief cover, training app, Grant access and passwords,
+  rosters, roster email settings, car dash, troubleshooting). Written by Claude from the pages and these notes: owner
+  to review. Keep it true when a leader page changes: Ask DSY answers from it.
+- Ask DSY panel on both dashboards (after Tasks; `dash.js`): question box, answers with links, last 6 turns kept on the
+  page only, Start again. Edge function `ask-dsy` (`supabase/functions/ask-dsy/index.ts`, verify_jwt on, deployed v2):
+  leaders only (`my_access().role = 'leader'`, so relief TLs too), reads the live leader and roster guides from
+  dsytraining.com (30-minute cache), calls Google Gemini (owner's choice: their Gemini key is already a Supabase Edge
+  Function secret; the function looks for GEMINI_API_KEY, GOOGLE_API_KEY, GOOGLE_GEMINI_API_KEY or GOOGLE_AI_API_KEY;
+  model `gemini-flash-latest`, then `gemini-2.5-flash`). Rules: guides only, no clinical answers, short, ends with the
+  guide link. 40 questions per leader per 24 h. Log table `public.ask_dsy_log` (`supabase/ask-dsy-setup.sql`, migration
+  `ask_dsy_log`, applied by Claude): a leader reads own rows, the lead instructor reads all, service role writes.
+- Tested: signed-out calls refused; the panel in a headless browser with a stand-in answer (phone and wide). NOT yet
+  tried with a real sign-in and the real Gemini key: owner to ask a question once merged (the guide must be live first).

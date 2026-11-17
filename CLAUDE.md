@@ -22,6 +22,7 @@ settings or play files you leave in the container: send files with the file tool
   Templates are in Supabase `public.scenarios`. Read `scenarios/README.md`. 15 templates (every converted walk-through except spinal).
 - `/training/` - the training-session app (Supabase). `/teams/`, `/region/` - team and region pages. A session can
   have several lessons (`sessions.lesson_ids`, in order; a trigger keeps `lesson_id` = the first one).
+- `/userguides/` - user guides: home, Team Leaders (`leaders/`, source for the dashboard's Ask DSY helper), rosters, MDT.
 - `/vehicle-check/` - the crew's ambulance check (FRM-384, Mercedes VS30) with a stock-to-order list (Supabase).
 - `/.claude/tools/` - `stamp.js` (cache tag) and `check.js` (site check). `/.claude/status/` - notes per area.
 
@@ -157,6 +158,8 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - Retire `/course/` (Google Sheet app) once the current AR group finishes; `/ar/course/` replaces it.
 - Planned: a request portal (`/request/`) with an inbox panel on the dashboard; the Supabase roster (see `rosters.md`; stages 1 (database), 3 (emails) and 4 (new roster page, send, schedule, reminders: on the Summer Bay test roster only) of 8 done 17 Nov 2026; real teams still on the Apps Scripts).
 
+- User guide (17 Nov 2026): Team Leader section and roster guide Part 3 done; still to write: Getting started, Learning
+  on your own, Running a session. Ask DSY (Gemini) on the dashboard: owner to try once merged.
 - Crewing gaps for Team Leaders (`/dashboard/coverage/`, own rules per leader; see `rosters.md`): live (PR #252,
   merged 16 Nov 2026); owner to try it with a real sign-in. Still reads the Apps Script rosters (stage 6 moves it).
 

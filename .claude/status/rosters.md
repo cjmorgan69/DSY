@@ -293,3 +293,12 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   determined by the rules": owner to confirm. On a branch, not merged.
 - Segment times changed to the volunteer shifts (owner, 16 Nov 2026): Day 08:00-18:00 and Night 18:00-08:00,
   replacing 08:00-20:00 and 20:00-08:00. On a branch, not merged (PR #253).
+
+## Roster user guide updated for the Supabase roster (17 Nov 2026, owner asked)
+
+`/userguides/rosters/` Part 3 "The new roster (sign-in)", sections 16 to 21: sign-in instead of a typed name, preferred
+name, Switch person, level saved to the account, own shifts only for crew; reminders (Home Screen on iPhone, Send a
+test, Focus note); manager controls without a password, Booking for and Not on the list (placeholders); Send roster to
+Country Rostering (Preview, Open the PDF, Send now, cut-off moves); Schedule set-up (pause, skip, retries); change emails
+and trial rosters. Parts 1 and 2 still describe the Apps Script rosters. On switch day (stage 7) rewrite Parts 1 and 2
+from Part 3 and drop the password, saved-roster, PDF-view and Google Sheet Change Log sections.
