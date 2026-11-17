@@ -9,13 +9,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261117h">
+<link rel="stylesheet" href="theme.css?v=20261117i">
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261117h"></script>
+<script src="config.js?v=20261117i"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -52,7 +52,8 @@
      A leader with no cluster (the lead instructor) changes everything. The database enforces the same rule. */
   var CLUSTERS = ["Lower Eyre", "Central Eyre", "West Coast"];
   function myCluster() { return (S.profile && S.profile.cluster) || null; }
-  function canEdit(gid) { var g = groupOf(gid), m = myCluster(); return !m || !g || !g.cluster || g.cluster === m; }
+  // The test roster team (type "test", Summer Bay) is open to every Team Leader, to match can_edit_group() in the database.
+  function canEdit(gid) { var g = groupOf(gid), m = myCluster(); return !m || !g || !g.cluster || g.cluster === m || g.type === "test"; }
   function inView(g) { return S.cluster === "all" || !g || !g.cluster || g.cluster === S.cluster; }
   function clusterChips() {
     return '<div class="filters" role="group" aria-label="Cluster">' + [["all", "All clusters"]].concat(CLUSTERS.map(function (c) { return [c, c + (c === myCluster() ? " (yours)" : "")]; })).map(function (x) {

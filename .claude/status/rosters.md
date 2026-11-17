@@ -314,3 +314,9 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   account made for them on the day, so their shifts and hours link properly; their Team Leader gives them a
   temporary password when they first sign in. Today that would be 25 Central Eyre people with shifts on the roster.
   Not built yet: do it as part of stage 7.
+- Summer Bay open to every Team Leader (owner, 17 Nov 2026): `can_edit_group()` returns true for any leader on a
+  group of type `test` (migration `roster_test_team_open_to_leaders`, `supabase/roster-test-team-leaders.sql`), so
+  Campbell and David can tick "Summer Bay" for their people in `/training/` People and use its Manager controls;
+  `canEdit()` in `training/index.html` matches. Checked in SQL: Campbell and David can manage Summer Bay and their
+  own cluster's teams only; a member can manage nothing. A person still needs an account before they can be added,
+  and a leader must tick Summer Bay for themselves to book their own shifts on it.
