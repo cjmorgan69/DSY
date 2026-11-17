@@ -136,8 +136,10 @@ on the dashboard (an AI helper, NOT leader-to-leader messaging: "we already have
   leaders only (`my_access().role = 'leader'`, so relief TLs too), reads the live leader and roster guides from
   dsytraining.com (30-minute cache), calls Google Gemini (owner's choice: their Gemini key is already a Supabase Edge
   Function secret; the function looks for GEMINI_API_KEY, GOOGLE_API_KEY, GOOGLE_GEMINI_API_KEY or GOOGLE_AI_API_KEY;
-  model `gemini-flash-latest`, then `gemini-2.5-flash`). Rules: guides only, no clinical answers, short, ends with the
+  models `gemini-flash-latest`, `gemini-flash-lite-latest`, `gemini-3.5-flash-lite` in turn when one is overloaded; the 2.5 models are closed to new accounts). Rules: guides only, no clinical answers, short, ends with the
   guide link. 40 questions per leader per 24 h. Log table `public.ask_dsy_log` (`supabase/ask-dsy-setup.sql`, migration
   `ask_dsy_log`, applied by Claude): a leader reads own rows, the lead instructor reads all, service role writes.
 - Tested: signed-out calls refused; the panel in a headless browser with a stand-in answer (phone and wide). NOT yet
-  tried with a real sign-in and the real Gemini key: owner to ask a question once merged (the guide must be live first).
+  tried with a real sign-in and the real Gemini key. Live (PR #254, merged 17 Nov 2026; guides and dashboard checked on
+  the live site). The owner's Gemini key is in a different Supabase project: they are adding it to training-sessions as
+  GEMINI_API_KEY.

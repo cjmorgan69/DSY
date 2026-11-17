@@ -15,8 +15,9 @@ const GUIDES = [
   { path: "/userguides/leaders/", title: "Team Leader Guide" },
   { path: "/userguides/rosters/", title: "Crew Shift Roster User Guide" },
 ];
-// gemini-flash-latest is Google's alias for the current Flash model; gemini-2.5-flash is tried if the alias is refused.
-const MODELS = ["gemini-flash-latest", "gemini-2.5-flash"];
+// gemini-flash-latest is Google's alias for the current Flash model. The next ones are tried in turn if a model is
+// missing, overloaded (503, seen 17 Nov 2026) or busy. The 2.5 models are closed to new accounts (Google, 17 Nov 2026).
+const MODELS = ["gemini-flash-latest", "gemini-flash-lite-latest", "gemini-3.5-flash-lite"];
 const KEY_NAMES = ["GEMINI_API_KEY", "GOOGLE_API_KEY", "GOOGLE_GEMINI_API_KEY", "GOOGLE_AI_API_KEY"];
 const DAILY_LIMIT = 40;
 const CORS = {
@@ -30,7 +31,7 @@ const RULES = `You are Ask DSY, the help assistant on the DSY Training Team Lead
 
 Answer questions about how to use the DSY website using ONLY the user guides given below. If the guides don't cover the question, say so plainly and suggest asking the lead instructor. Never invent buttons, pages or features that are not in the guides.
 
-Do not answer clinical, protocol, medication or patient-care questions. Say that Ask DSY only covers using the DSY site, and point to the SAAS clinical site and app.
+Questions about people, teams, courses, rosters, shifts, training sessions, lessons, accounts and passwords are questions about the DSY site: answer them from the guides. Only if a question is clearly clinical (a patient, a condition, a protocol, a medication or a treatment), say that Ask DSY only covers using the DSY site and point to the SAAS clinical site and app.
 
 Style: Australian English, short and plain. Start with a one-line answer, then numbered steps only if they help. Keep it under about 150 words. No headings and no tables. Use **bold** only for button and page names. Finish with the guide link you used, written as a path exactly as it appears in the guides, for example /userguides/leaders/#relief.
 
@@ -64,7 +65,7 @@ async function guides() {
   const parts: string[] = [];
   for (const g of GUIDES) {
     try {
-      const r = await fetch(SITE + g.path, { headers: { "User-Agent": "ask-dsy" } });
+      const r = await fetch(SITE + g.path, { headers: { "User-Agent": "ask-dsy" }, signal: AbortSignal.timeout(10000) });
       if (r.ok) parts.push(`<guide title="${g.title}" path="${g.path}">\n${toText(await r.text(), g.path)}\n</guide>`);
     } catch (_e) { /* a guide that doesn't load is left out */ }
   }
@@ -92,6 +93,8 @@ function cleanHistory(h: unknown): Turn[] {
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ ok: false, message: "Use POST." }, 405);
+  const t0 = Date.now();
+  const step = (m: string) => console.log(`ask-dsy ${Date.now() - t0}ms ${m}`);
 
   // who is asking: leaders (and relief Team Leaders while covering) only
   const auth = req.headers.get("Authorization") || "";
@@ -100,6 +103,7 @@ Deno.serve(async (req: Request) => {
   if (!who?.user) return json({ ok: false, message: "Please sign in again." }, 401);
   const acc = await user.rpc("my_access");
   if (acc.error || acc.data?.role !== "leader") return json({ ok: false, message: "Ask DSY is for Team Leaders." }, 403);
+  step("leader checked");
 
   let body: { question?: unknown; history?: unknown } = {};
   try { body = await req.json(); } catch (_e) { /* empty */ }
@@ -116,8 +120,9 @@ Deno.serve(async (req: Request) => {
 
   const log = (row: Record<string, unknown>) => service.from("ask_dsy_log").insert({ user_id: who.user!.id, question, ...row });
 
+  step("signed in, loading guides");
   let guideText: string;
-  try { guideText = await guides(); } catch (_e) { return json({ ok: false, message: "The user guides didn't load. Try again in a minute." }, 502); }
+  try { guideText = await guides(); step(`guides ${guideText.length} chars`); } catch (_e) { return json({ ok: false, message: "The user guides didn't load. Try again in a minute." }, 502); }
 
   const contents = [...cleanHistory(body.history), { role: "user", content: question }]
     .map((t) => ({ role: t.role === "assistant" ? "model" : "user", parts: [{ text: t.content }] }));
@@ -131,14 +136,15 @@ Deno.serve(async (req: Request) => {
     try {
       const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
         method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: payload,
+        signal: AbortSignal.timeout(35000),
       });
+      step(`${model} answered ${r.status}`);
       const d = await r.json().catch(() => ({}));
-      if (r.status === 404) { lastError = `${model}: not found`; continue; }
+      if (r.status === 404 || r.status === 429 || r.status >= 500) { lastError = `${model}: ${r.status} ${String(d?.error?.message ?? "").slice(0, 200)}`; continue; }
       if (!r.ok) {
         lastError = `${model}: ${r.status} ${String(d?.error?.message ?? "").slice(0, 300)}`;
         await log({ model, error: lastError });
-        const message = r.status === 429 ? "Ask DSY is busy or over its Gemini quota. Try again later."
-          : r.status === 400 || r.status === 401 || r.status === 403 ? "Ask DSY's Gemini key isn't working. Tell the lead instructor."
+        const message = r.status === 400 || r.status === 401 || r.status === 403 ? "Ask DSY's Gemini key isn't working. Tell the lead instructor."
           : "Ask DSY didn't get an answer. Try again in a minute.";
         return json({ ok: false, message }, 502);
       }
@@ -154,8 +160,9 @@ Deno.serve(async (req: Request) => {
       return json({ ok: true, answer, left: Math.max(0, DAILY_LIMIT - (count ?? 0) - 1) });
     } catch (e) {
       lastError = `${model}: ${String((e as Error)?.message ?? e).slice(0, 300)}`;
+      step(lastError);
     }
   }
   await log({ error: lastError || "no model answered" });
-  return json({ ok: false, message: "Ask DSY didn't get an answer. Try again in a minute." }, 502);
+  return json({ ok: false, message: "Gemini is busy right now. Try again in a few minutes." }, 502);
 });
