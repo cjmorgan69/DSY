@@ -286,3 +286,20 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
 - Dry run of the Lower Eyre import: 618 of 620 active shifts ready (the 2 left out are the test entry); every
   shift is on whole hours, a valid length, level and flexibility; nobody overlaps themselves; no hour has more than
   3 people. Still nothing copied into `roster_shifts`: the real copy happens on switch day (stage 7).
+
+## Stage 2 (people): Central Eyre list from Campbell (17 Nov 2026)
+
+- The owner passed on Campbell's list: 49 people (Cleve 13, Cowell 16, Elliston 13, Lock 7) with ambulance ID, name
+  and station. None had an account. Applied by Claude (migration `roster_stage2_expected_members`; notes in
+  `supabase/roster-stage2-expected-members.sql`): the list is in `public.expected_members` (not in this public
+  repo), every ID is on `allowed_ids`, and the sign-up trigger `handle_new_user()` now gives a listed person their
+  listed full name and team when they sign up at `/signin/` (what they typed becomes their name shown if it
+  differs). Rehearsed in a rolled-back run. NO accounts were created and no shared starter password was used:
+  each person chooses their own password when they sign up.
+- Name matching now also matches by ambulance ID to people who have not signed up yet (migration
+  `roster_stage5_match_expected`). Central Eyre after the list: 28 typed names sure, 7 to check, 6 unmatched
+  (5 look like test or joke entries: Norma Gene, Juicy Lucy, Julia Gulia, Boof, Tay Tay; plus "Graeme" at Lock).
+  Put to the owner 17 Nov 2026: decisions not yet given.
+- Open for switch day: a shift can only be linked to a person once they have an account, so anyone who has not
+  signed up by then needs an account made for them (or their shifts come across as placeholders). Owner to decide.
+- West Coast: still waiting on Dave's list.
