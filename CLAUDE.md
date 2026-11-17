@@ -62,6 +62,9 @@ Travel Diary page, URL in the README), read `.claude/vehicle-log/README.md`, run
   be open to everyone goes on the OPEN list in that file, only when the owner says so.
 - **Keep the notes true.** When work is done, update the matching file in `.claude/status/` and the Open work list
   below. Write "on a branch, not merged" only while that is true, and correct it when the PR merges.
+- **Supabase tools are pre-approved** (owner, 17 Nov 2026: `.claude/settings.json` allows every `mcp__Supabase` tool, so
+  SQL, migrations and function deploys run without a prompt). Still list changes to people's data in chat first, and
+  never delete rows without the owner's say-so.
 - **Names.** Avoid real local surnames for invented patients (Pedler is a common Cummins-district name).
 
 ## SAAS clinical site
