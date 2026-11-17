@@ -87,3 +87,5 @@ dashboards' training tile and the car dash trip/service light follow the leader'
   password is reset by the instructor with a temporary one (that is still how resets work).
   The page also no longer mentions email: the ID box is labelled "Ambulance ID number" and the "No email address
   needed" sentence is gone. An email typed in the box still signs in an old email account.
+  On main and live (PR #260, merged 17 Nov 2026); checked on the live page: no temporary-password line in the box,
+  ID box labelled "Ambulance ID number", no email wording.
