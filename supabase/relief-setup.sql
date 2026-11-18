@@ -132,7 +132,8 @@ begin
   if length(coalesce(new_password, '')) < 8 then raise exception 'Password must be at least 8 characters'; end if;
   update auth.users set encrypted_password = extensions.crypt(new_password, extensions.gen_salt('bf')), updated_at = now() where id = member;
   if not found then raise exception 'No such account'; end if;
-  update public.profiles set must_change_password = true where id = member and role <> 'leader';
+  -- everyone reset by someone else (leaders too, since 18 Nov 2026) chooses their own password at the next sign-in
+  update public.profiles set must_change_password = true where id = member and member <> auth.uid();
 end $$;
 
 -- 4. Tasks: a reliever sees and works on the covered leader's list as well as their own.
