@@ -19,6 +19,8 @@ Not on: roster pages (own roster tile), `/LOGO files/`, video `scene.html` sourc
 home-screen icon. A new page needs the same three `<link>` lines after `<title>`.
 The `/dashboard/` pages have their own icon instead (`shared/dsy-dashboard-32.png`, `-192.png`, `-touch-180.png`:
 gauge with needle and heartbeat line on a green tile, 18 Nov 2026).
+The three Roster Manager pages (`/modules/rosters/<cluster>/manager/`) have a green calendar icon with the cluster's
+letters under it: LEP (Lower Eyre), CEP (Central Eyre), WC (West Coast) (`shared/roster-manager-<cluster>-32/-192/-touch-180.png`).
 
 ## Run a session glossaries
 
