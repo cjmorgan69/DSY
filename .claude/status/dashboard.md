@@ -164,3 +164,12 @@ secret is no longer used. Working with a real sign-in 18 Nov 2026 (owner).
 - Fix (18 Nov 2026, deployed v11): the first three Claude questions failed with "Could not resolve authentication
   method": the Anthropic npm SDK 1.6.0 did not attach the key inside Supabase's Deno runtime (it did in Node). `ask-dsy`
   now calls the Messages API with a plain fetch and the `x-api-key` header (one retry on 429/529/5xx).
+
+## Getting started guide (18 Nov 2026, owner)
+
+`/userguides/start/`: for crews. OPEN (no gate; owner chose 18 Nov 2026 so people who cannot sign in yet can read it; on
+the OPEN list in check.js). 8 sections: first sign-in (set up with ambulance ID, no starter password; pre-loaded crews
+join their team), signing in, forgotten password and the sign-in error messages, home page, Learn on your own (4 steps),
+Training sessions (Book a spot, Shared with you), roster (points to the roster guide), shared phones and privacy.
+Linked from the guides home (first tile) and from `/signin/` ("Help with signing in"). `ask-dsy` (v12) reads it too.
+Written by Claude from the pages: owner to review.

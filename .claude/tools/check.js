@@ -24,7 +24,7 @@ const OPEN = [
   "microlearning/index.html", "microlearning/paramedic/index.html", "microlearning/rn/index.html",
   "microlearning/tbi/index.html", "microlearning/crush/index.html", "microlearning/faint-or-fit/index.html",
   "microlearning/asthma-copd/index.html", "microlearning/asthma-copd-ed/index.html", "microlearning/sepsis-nursing/index.html",
-  "feedback/index.html", "userguides/rosters/index.html", "tools/roster-share/index.html",
+  "feedback/index.html", "userguides/rosters/index.html", "userguides/start/index.html", "tools/roster-share/index.html",
   /* own sign-in (Supabase or Apps Script) */
   "training/index.html", "teams/index.html", "region/index.html", "dispatch/index.html", "course/index.html"
 ];
