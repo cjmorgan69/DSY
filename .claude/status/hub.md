@@ -17,6 +17,8 @@ Favicon (18 Nov 2026): `shared/dsy-favicon-32.png`, `-192.png` and `shared/dsy-t
 DSY, heartbeat line; drawn by Claude from the logo). On every page (PR #269), replacing the old `cdn.simtheory.ai` tab icons.
 Not on: roster pages (own roster tile), `/LOGO files/`, video `scene.html` sources. `/mdt/` keeps its own
 home-screen icon. A new page needs the same three `<link>` lines after `<title>`.
+The `/dashboard/` pages have their own icon instead (`shared/dsy-dashboard-32.png`, `-192.png`, `-touch-180.png`:
+gauge with needle and heartbeat line on a green tile, 18 Nov 2026).
 
 ## Run a session glossaries
 
