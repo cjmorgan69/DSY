@@ -173,3 +173,13 @@ join their team), signing in, forgotten password and the sign-in error messages,
 Training sessions (Book a spot, Shared with you), roster (points to the roster guide), shared phones and privacy.
 Linked from the guides home (first tile) and from `/signin/` ("Help with signing in"). `ask-dsy` (v12) reads it too.
 Written by Claude from the pages: owner to review.
+
+## Running a session guide (18 Nov 2026, owner)
+
+`/userguides/run/` (facilitator gate): 9 sections: finding a topic on Run a session (categories, the two tile rows, "Not
+made yet", glossary), before the night (student link, read the facilitator version, plan in /training/, gear),
+walk-through (Facilitator / Student switch, break points, decision tiles, flash cards), case-night slides (arrows, Notes,
+Presenter view, Full screen, Guide, feedback QR slide), MDT and PCR tiles (points to the MDT guide), stations (Before you
+start, partner ticks, setup sheet, print pack), customiser (local details only), after the night (Feedback QR and link,
+Feedback review, Team list ticks / Attendance), ground rules. Linked from the guides home and a "How to run a session"
+panel at the bottom of Run a session. `ask-dsy` v13 reads it. Written by Claude from the pages: owner to review.
