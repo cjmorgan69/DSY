@@ -1,10 +1,10 @@
 // Ask DSY (17 Nov 2026): the "how do I...?" helper on the Team Leader dashboard.
 // POST { question: string, history?: [{ role: "user" | "assistant", content: string }] } from a signed-in leader
 // (or a relief Team Leader while covering). verify_jwt on.
-// It answers ONLY from the live user guides (the Team Leader guide and the roster guide, read from dsytraining.com and
+// It answers ONLY from the live user guides (the Team Leader, roster, Getting started and Running a session guides, read from dsytraining.com and
 // kept for 30 minutes), so the guides are the single source: update the guide and the answers follow.
-// Uses Google Gemini (owner's choice, 17 Nov 2026: the Gemini key is already a Supabase Edge Function secret; the
-// function looks for it under the usual names, see KEY_NAMES). The key is never in this public repo.
+// Uses Claude (owner, 18 Nov 2026: "rather pay for reliable answers"; Gemini was overloaded or answered badly on
+// 17 Nov). The key is the Supabase Edge Function secret ANTHROPIC_API_KEY, never in this public repo.
 // Every question is logged in public.ask_dsy_log (service role writes; a leader reads their own rows, the lead
 // instructor reads all). Limit: 40 questions per leader per 24 hours.
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -14,11 +14,10 @@ const SITE = "https://dsytraining.com";
 const GUIDES = [
   { path: "/userguides/leaders/", title: "Team Leader Guide" },
   { path: "/userguides/rosters/", title: "Crew Shift Roster User Guide" },
+  { path: "/userguides/start/", title: "Getting Started Guide (for crews)" },
+  { path: "/userguides/run/", title: "Running a Session Guide (for facilitators)" },
 ];
-// gemini-flash-latest is Google's alias for the current Flash model. The next ones are tried in turn if a model is
-// missing, overloaded (503, seen 17 Nov 2026) or busy. The 2.5 models are closed to new accounts (Google, 17 Nov 2026).
-const MODELS = ["gemini-flash-latest", "gemini-flash-lite-latest", "gemini-3.5-flash-lite"];
-const KEY_NAMES = ["GEMINI_API_KEY", "GOOGLE_API_KEY", "GOOGLE_GEMINI_API_KEY", "GOOGLE_AI_API_KEY"];
+const MODEL = "claude-opus-5-5";
 const DAILY_LIMIT = 40;
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -110,8 +109,8 @@ Deno.serve(async (req: Request) => {
   const question = typeof body.question === "string" ? body.question.trim().slice(0, 500) : "";
   if (!question) return json({ ok: false, message: "Type a question first." }, 400);
 
-  const key = KEY_NAMES.map((n) => Deno.env.get(n)).find((v) => v);
-  if (!key) return json({ ok: false, code: "not_set_up", message: "Ask DSY isn't switched on yet: it can't find the Gemini key in Supabase. Tell the lead instructor." }, 503);
+  const key = (Deno.env.get("ANTHROPIC_API_KEY") ?? "").trim();
+  if (!key) return json({ ok: false, code: "not_set_up", message: "Ask DSY isn't switched on yet: it can't find the Claude API key in Supabase. Tell the lead instructor." }, 503);
 
   const service = createClient(URL_, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
   const since = new Date(Date.now() - 24 * 3600000).toISOString();
@@ -124,45 +123,53 @@ Deno.serve(async (req: Request) => {
   let guideText: string;
   try { guideText = await guides(); step(`guides ${guideText.length} chars`); } catch (_e) { return json({ ok: false, message: "The user guides didn't load. Try again in a minute." }, 502); }
 
-  const contents = [...cleanHistory(body.history), { role: "user", content: question }]
-    .map((t) => ({ role: t.role === "assistant" ? "model" : "user", parts: [{ text: t.content }] }));
-  const payload = JSON.stringify({
-    systemInstruction: { parts: [{ text: RULES + "\n\n" + guideText }] },
-    contents,
-    generationConfig: { temperature: 0.2, maxOutputTokens: 4096 },
+  // Plain HTTPS call to the Messages API. The Anthropic SDK (npm 1.6.0) did not attach the key inside Supabase's Deno
+  // runtime on 18 Nov 2026 ("Could not resolve authentication method"), so the key header is set here directly.
+  const call = () => fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+      "anthropic-beta": "server-side-fallback-2026-07-01",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 4000,
+      fallbacks: "default",
+      output_config: { effort: "low" },
+      system: [{ type: "text", text: RULES }, { type: "text", text: guideText, cache_control: { type: "ephemeral" } }],
+      messages: [...cleanHistory(body.history), { role: "user", content: question }],
+    }),
+    signal: AbortSignal.timeout(60000),
   });
-  let lastError = "";
-  for (const model of MODELS) {
-    try {
-      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-        method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: payload,
-        signal: AbortSignal.timeout(35000),
-      });
-      step(`${model} answered ${r.status}`);
-      const d = await r.json().catch(() => ({}));
-      if (r.status === 404 || r.status === 429 || r.status >= 500) { lastError = `${model}: ${r.status} ${String(d?.error?.message ?? "").slice(0, 200)}`; continue; }
-      if (!r.ok) {
-        lastError = `${model}: ${r.status} ${String(d?.error?.message ?? "").slice(0, 300)}`;
-        await log({ model, error: lastError });
-        const message = r.status === 400 || r.status === 401 || r.status === 403 ? "Ask DSY's Gemini key isn't working. Tell the lead instructor."
-          : "Ask DSY didn't get an answer. Try again in a minute.";
-        return json({ ok: false, message }, 502);
-      }
-      const c = d?.candidates?.[0];
-      const answer = (c?.content?.parts ?? []).map((p: { text?: string; thought?: boolean }) => (p.thought ? "" : p.text ?? "")).join("").trim();
-      const u = d?.usageMetadata ?? {};
-      const tokens = { model, input_tokens: u.promptTokenCount ?? null, output_tokens: u.candidatesTokenCount ?? null, cache_read_tokens: u.cachedContentTokenCount ?? 0 };
-      if (!answer) {
-        await log({ ...tokens, error: d?.promptFeedback?.blockReason || c?.finishReason || "empty" });
-        return json({ ok: false, message: "Ask DSY can't answer that one. Try asking another way, or check the Team Leader guide." });
-      }
-      await log({ ...tokens, answer });
-      return json({ ok: true, answer, left: Math.max(0, DAILY_LIMIT - (count ?? 0) - 1) });
-    } catch (e) {
-      lastError = `${model}: ${String((e as Error)?.message ?? e).slice(0, 300)}`;
-      step(lastError);
+  try {
+    let r = await call();
+    if (r.status === 429 || r.status === 529 || r.status >= 500) { step(`claude ${r.status}, trying once more`); await new Promise((ok) => setTimeout(ok, 2000)); r = await call(); }
+    const d = await r.json().catch(() => ({}));
+    step(`claude answered ${r.status} ${d?.stop_reason ?? ""}`);
+    if (!r.ok) {
+      const detail = String(d?.error?.message ?? "");
+      const message = r.status === 401 || r.status === 403 ? "Ask DSY's Claude API key isn't working. Tell the lead instructor."
+        : /credit/i.test(detail) ? "Ask DSY's Claude account is out of credit. Tell the lead instructor."
+        : r.status === 429 || r.status === 529 || r.status >= 500 ? "Claude is busy right now. Try again in a minute."
+        : "Ask DSY couldn't read that question. Try a shorter one.";
+      await log({ model: MODEL, error: `${r.status} ${detail}`.slice(0, 500) });
+      return json({ ok: false, message }, 502);
     }
+    const answer = (d.content ?? []).flatMap((b: { type: string; text?: string }) => (b.type === "text" ? [b.text ?? ""] : [])).join("\n").trim();
+    const u = d.usage ?? {};
+    const tokens = { model: d.model ?? MODEL, input_tokens: u.input_tokens ?? null, output_tokens: u.output_tokens ?? null, cache_read_tokens: u.cache_read_input_tokens ?? 0 };
+    if (d.stop_reason === "refusal" || !answer) {
+      await log({ ...tokens, error: d.stop_reason === "refusal" ? "refusal" : "empty" });
+      return json({ ok: false, message: "Ask DSY can't answer that one. Try asking another way, or check the Team Leader guide." });
+    }
+    await log({ ...tokens, answer });
+    return json({ ok: true, answer, left: Math.max(0, DAILY_LIMIT - (count ?? 0) - 1) });
+  } catch (e) {
+    const err = String((e as Error)?.message ?? e).slice(0, 500);
+    step(err);
+    await log({ model: MODEL, error: err });
+    return json({ ok: false, message: "Ask DSY didn't get an answer. Try again in a minute." }, 502);
   }
-  await log({ error: lastError || "no model answered" });
-  return json({ ok: false, message: "Gemini is busy right now. Try again in a few minutes." }, 502);
 });

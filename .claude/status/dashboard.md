@@ -143,3 +143,43 @@ on the dashboard (an AI helper, NOT leader-to-leader messaging: "we already have
   tried with a real sign-in and the real Gemini key. Live (PR #254, merged 17 Nov 2026; guides and dashboard checked on
   the live site). The owner's Gemini key is in a different Supabase project: they are adding it to training-sessions as
   GEMINI_API_KEY.
+
+## Suggestions panel (18 Nov 2026)
+
+Owner asked for a place on the dashboard where the three Team Leaders suggest improvements. A "Suggestions" card on both
+dashboards (phone: after Weather; widescreen: middle column under Weather): text, which part (Dashboard, Rosters,
+Training app, Learning pages, Sessions and stations, Other), Send. Every leader (and anyone on relief cover) sees all
+suggestions with name, part, date and status; the lead instructor (a real leader with no cluster,
+`is_lead_instructor()`) sets the status (New, Planned, Done, Not now), replies and deletes; an author can withdraw
+their own while it is still New. Table `public.platform_suggestions`; SQL `supabase/suggestions-setup.sql`, run by the owner in the SQL Editor 18 Nov 2026 (the apply_migration approval timed out three times, even after the owner edited the connector). Checked: a Team Leader can add one but not set its status, the lead instructor can set status and reply, a member sees none. Live: PR #265 (replaced #263), merged 18 Nov 2026.
+
+## Ask DSY switched to Claude (18 Nov 2026, owner)
+
+Owner: "I'd rather pay for reliable answers than use Google" (on 17 Nov Gemini Flash was overloaded, the 2.5 models are
+closed to new accounts, and Flash-Lite answered a team question as if it were clinical). The owner made a Claude API
+account and saved the key as the Edge Function secret `ANTHROPIC_API_KEY` in training-sessions. `ask-dsy` (deployed v10)
+now calls Claude (`claude-opus-5-5`, low effort, server-side refusal fallback, guide text prompt-cached), timeout 60 s with
+one retry. Error messages: key not working, out of credit, busy. Guide line now says answers are by Claude. The Gemini
+secret is no longer used. Working with a real sign-in 18 Nov 2026 (owner).
+- Fix (18 Nov 2026, deployed v11): the first three Claude questions failed with "Could not resolve authentication
+  method": the Anthropic npm SDK 1.6.0 did not attach the key inside Supabase's Deno runtime (it did in Node). `ask-dsy`
+  now calls the Messages API with a plain fetch and the `x-api-key` header (one retry on 429/529/5xx).
+
+## Getting started guide (18 Nov 2026, owner)
+
+`/userguides/start/`: for crews. OPEN (no gate; owner chose 18 Nov 2026 so people who cannot sign in yet can read it; on
+the OPEN list in check.js). 8 sections: first sign-in (set up with ambulance ID, no starter password; pre-loaded crews
+join their team), signing in, forgotten password and the sign-in error messages, home page, Learn on your own (4 steps),
+Training sessions (Book a spot, Shared with you), roster (points to the roster guide), shared phones and privacy.
+Linked from the guides home (first tile) and from `/signin/` ("Help with signing in"). `ask-dsy` (v12) reads it too.
+Written by Claude from the pages: owner to review.
+
+## Running a session guide (18 Nov 2026, owner)
+
+`/userguides/run/` (facilitator gate): 9 sections: finding a topic on Run a session (categories, the two tile rows, "Not
+made yet", glossary), before the night (student link, read the facilitator version, plan in /training/, gear),
+walk-through (Facilitator / Student switch, break points, decision tiles, flash cards), case-night slides (arrows, Notes,
+Presenter view, Full screen, Guide, feedback QR slide), MDT and PCR tiles (points to the MDT guide), stations (Before you
+start, partner ticks, setup sheet, print pack), customiser (local details only), after the night (Feedback QR and link,
+Feedback review, Team list ticks / Attendance), ground rules. Linked from the guides home and a "How to run a session"
+panel at the bottom of Run a session. `ask-dsy` v13 reads it. Written by Claude from the pages: owner to review.

@@ -159,11 +159,11 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario
   (`/modules/hypo/`) is to be converted when asked.
 - Retire `/course/` (Google Sheet app) once the current AR group finishes; `/ar/course/` replaces it.
-- Planned: a request portal (`/request/`) with an inbox panel on the dashboard; the Supabase roster (see `rosters.md`; stages 1 (database), 3 (emails) and 4 (new roster page, send, schedule, reminders: on the Summer Bay test roster only) of 8 done 17 Nov 2026; real teams still on the Apps Scripts).
+- Planned: a request portal (`/request/`) with an inbox panel on the dashboard; the Supabase roster (see `rosters.md`; stages 1 to 6 done by 18 Nov 2026 (database, people, emails, new roster page on the Summer Bay test roster, import rehearsal, dashboards); Lower Eyre and Central Eyre switched to the new roster 18 Nov 2026 (stage 7); West Coast still on its Apps Script until Dave's list is loaded; then stage 8 tidy up).
 
-- User guide (17 Nov 2026): Team Leader section and roster guide Part 3 done; still to write: Getting started, Learning
-  on your own, Running a session. Ask DSY (Gemini) on the dashboard: live (PR #254, merged 17 Nov 2026); owner to add
-  GEMINI_API_KEY to the training-sessions project secrets (their key is in another project), then try it.
+- User guide (17 Nov 2026): Team Leader section, roster guide Part 3, Getting started and Running a session done;
+  still to write: Learning on your own. Ask DSY on the dashboard: live, on Claude since 18 Nov 2026 (key `ANTHROPIC_API_KEY` in
+  Supabase secrets); working (owner, 18 Nov 2026).
 - Crewing gaps for Team Leaders (`/dashboard/coverage/`, own rules per leader; see `rosters.md`): live (PR #252,
   merged 16 Nov 2026); owner to try it with a real sign-in. Reads each team from the Apps Script or, once the team has moved, Supabase (stage 6, 18 Nov 2026).
 

@@ -516,7 +516,7 @@
 
         if (subtitle) {
             subtitle.textContent =
-                config.name + " volunteer roster · new roster (trial)";
+                config.name + " volunteer roster" + (config.testTeam ? " · test roster" : "");
         }
 
         if (!me.can_manage) {

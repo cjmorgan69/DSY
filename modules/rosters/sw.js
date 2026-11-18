@@ -9,7 +9,7 @@ self.addEventListener("push", event => {
   try { data = event.data ? event.data.json() : {}; } catch (error) { data = { body: event.data ? event.data.text() : "" }; }
   event.waitUntil(self.registration.showNotification(data.title || "Crew Shift Roster", {
     body: data.body || "",
-    icon: "/modules/rosters/shared/roster-icon-192.png",
+    icon: "/modules/rosters/shared/roster-tile-192.png",
     // No "tag": on iPhone a notification that replaces an earlier one with the same tag arrives silently.
     data: { url: data.url || "/modules/rosters/" }
   }));

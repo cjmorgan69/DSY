@@ -76,7 +76,7 @@
                 type="button"
                 disabled
             >
-                📋 View Team Roster — Next 14 Days
+                📋 View Team Roster — Next 7 Days
             </button>
 
             <h2 class="card-title">Book a shift</h2>
@@ -860,7 +860,7 @@ function askManagerPassword(question) {
          * new ones, so every button keeps its own behaviour:
          * - Home: name and level, Roster and Book a shift buttons, the
          *   everyday buttons, Manager controls at the bottom;
-         * - Roster screen: Timeline and 14 days (opens the printable table);
+         * - Roster screen: Timeline and 7 days (opens the printable table);
          * - Book a shift screen: sent-roster notice and the booking form.
          * Each screen has its own address (#roster, #book), so the phone's
          * back button returns Home. The page always opens on Home; after a
@@ -5278,15 +5278,15 @@ function askManagerPassword(question) {
             homeScreen.after(rosterPanel);
             rosterPanel.after(bookPanel);
 
-            // Roster screen: Timeline | 14 days. The booking list is in
+            // Roster screen: Timeline | 7 days. The booking list is in
             // Manager controls.
             listTab.hidden = true;
 
             const fourteenDayTab = document.createElement("button");
             fourteenDayTab.type = "button";
             fourteenDayTab.className = "view-tab";
-            fourteenDayTab.textContent = "14 days";
-            fourteenDayTab.title = "Opens the 14-day team roster";
+            fourteenDayTab.textContent = "7 days";
+            fourteenDayTab.title = "Opens the 7-day team roster";
             fourteenDayTab.addEventListener("click", () => viewRosterButton.click());
             viewSwitcher.appendChild(fourteenDayTab);
 
@@ -5299,7 +5299,7 @@ function askManagerPassword(question) {
 
             rosterPanel.append(viewSwitcher, timelineSection);
 
-            // Book a shift screen: the booking card, without the 14-day
+            // Book a shift screen: the booking card, without the 7-day
             // button (now a Roster view) and the repeated heading.
             viewRosterButton.hidden = true;
             bookingCard.querySelector(".card-title").hidden = true;
@@ -5371,11 +5371,11 @@ function askManagerPassword(question) {
                 showSection(screenFromHash());
             });
 
-            // The 14-day window's Book a shift button comes back here.
+            // The 7-day window's Book a shift button comes back here.
             window.dsyRosterShowBook = () => goToScreen("book");
 
             // Always start on Home, unless the address asks for a screen
-            // (the 14-day window's fallback uses #book).
+            // (the 7-day window's fallback uses #book).
             showSection(screenFromHash());
         }
 
@@ -5706,7 +5706,7 @@ function askManagerPassword(question) {
         function buildRosterHTML() {
             const today = startOfDay(new Date());
             const initialStartDate = formatDateKey(today);
-            const initialEndDate = formatDateKey(addDays(today, 13));
+            const initialEndDate = formatDateKey(addDays(today, 6));
 
             const snapshot = {
                 events,
@@ -6128,7 +6128,7 @@ function askManagerPassword(question) {
                 class="btn btn-secondary"
                 type="button"
             >
-                Next 14 days
+                Next 7 days
             </button>
 
             <button
@@ -6580,7 +6580,7 @@ function askManagerPassword(question) {
                     const nextStartDate =
                         addDays(selectedDates.endDate, 1);
 
-                    const nextEndDate = addDays(nextStartDate, 13);
+                    const nextEndDate = addDays(nextStartDate, 6);
 
                     document.getElementById("rosterStartDate").value =
                         formatDateForInput(nextStartDate);
@@ -6598,8 +6598,8 @@ function askManagerPassword(question) {
                 .addEventListener("click", () => window.close());
 
             if (snapshot.simpleControls) {
-                // Always the next 14 days from today: no date boxes,
-                // Show roster or Print; Next 14 days and Close stay.
+                // Always the next 7 days from today: no date boxes,
+                // Show roster or Print; Next 7 days and Close stay.
                 document.querySelectorAll(".controls .date-field")
                     .forEach(field => { field.style.display = "none"; });
 
@@ -6631,18 +6631,18 @@ function askManagerPassword(question) {
                     }
                 });
 
-                // Previous 14 days, beside Next 14 days.
+                // Previous 7 days, beside Next 7 days.
                 const previousButton = document.createElement("button");
                 previousButton.type = "button";
                 previousButton.className = "btn btn-secondary";
-                previousButton.textContent = "Previous 14 days";
+                previousButton.textContent = "Previous 7 days";
                 previousButton.addEventListener("click", () => {
                     const selectedDates = getSelectedDates();
 
                     if (!selectedDates) return;
 
                     const previousStartDate =
-                        addDays(selectedDates.startDate, -14);
+                        addDays(selectedDates.startDate, -7);
                     const previousEndDate =
                         addDays(selectedDates.startDate, -1);
 

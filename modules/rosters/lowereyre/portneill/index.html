@@ -1,26 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="/shared/gate.js?v=20261119g" data-level="student"></script>
     <meta charset="UTF-8">
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Crew Shift Roster</title>
     <meta name="theme-color" content="#1f5b43">
+    <!-- Roster tile: browser tab and Home Screen (owner's calendar picture, 18 Nov 2026) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../../shared/roster-tile-32.png">
+    <link rel="apple-touch-icon" href="../../shared/roster-tile-180.png">
+    <!-- Home Screen app (needed on iPhone for the roster reminders) -->
+    <link rel="manifest" href="../../shared/roster.webmanifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Roster">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../shared/roster.css?v=20261119a">
+    <link rel="stylesheet" href="../../shared/roster.css?v=20261119g">
 </head>
 <body>
     <!--
-        Port Neill roster. The page itself is shared by every team:
+        Port Neill roster. On the Supabase roster since 18 Nov 2026 (sign-in:
+        gate.js; roster-supabase.js). The page itself is shared by every team:
         see modules/rosters/shared/ (teams.js, roster.css, roster.js).
         The ?v= release tag makes phones fetch the new shared files
         together after an update; change it on every team page when
         the shared files change.
     -->
     <script>window.DSY_ROSTER_TEAM_ID = "portneill";</script>
-    <script src="../../shared/teams.js?v=20261119a"></script>
-    <script src="../../shared/roster.js?v=20261119a"></script>
+    <script src="../../shared/teams.js?v=20261119g"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="../../shared/roster-supabase.js?v=20261119g"></script>
+    <script src="../../shared/roster.js?v=20261119g"></script>
 </body>
 </html>

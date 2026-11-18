@@ -407,3 +407,46 @@ Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id)
 - Gap to know about: the manager dashboards and operations page are open pages (no sign-in); counts still work
   for moved teams, but nothing on them needs names. The leader pages (dashboard, crewing gaps, contribution) are
   signed in.
+- Stage 6 is on main and live (PR #262, merged 18 Nov 2026). Checked on the live site in a fresh browser: the
+  operations page and all three manager dashboards load with no errors and ask only the Apps Scripts (no team has
+  moved); Tumby Bay's roster page unchanged; the leader dashboard and contribution page ask for sign-in. Not yet
+  seen signed in. Remaining: stage 7 (switch day) and stage 8 (tidy up).
+
+## Stage 7: SWITCH DAY for Lower Eyre and Central Eyre (18 Nov 2026, owner: "go live now")
+
+- Owner filled the addresses first: Lower Eyre has Country Rostering (sa.gov.au), CC, area manager and all four
+  managers; Central Eyre has its four managers (Lorna Lush Cleve, Julie Magnay Cowell, Tim Wilson Elliston, Graham
+  Spiers Lock) but NO Country Rostering address, the same as its Apps Script: managers get alerts, crews are told
+  to phone for changes before the cut-off. West Coast NOT switched (owner to load Dave's list).
+- Steps and SQL record: `supabase/roster-switch-day.sql`. `roster-sync` now also copies Lower Eyre (version 4).
+  Accounts made for all 42 Central Eyre people who had not signed up (claim on /signin/). 782 shifts copied
+  (755 linked to people, 27 placeholders; 7 test entries left out); per team copied + left out = old active count.
+  Lower Eyre sent cut-offs copied. Both clusters live from 2026-11-18.
+- "Prue Holly" (Cleve, AR, Sat 21 Nov) matched nobody at first; owner (18 Nov 2026): it is Prue Stringer (100173),
+  so the shift was linked to her account.
+- Pages: 8 team pages switched (sign-in, roster-supabase.js, Home Screen tags); teams.js `backend: "supabase"`,
+  features without `savedRoster`. Checked locally against the real database with the test account (999123, switched
+  off afterwards): the team pages call only Supabase and refuse non-members; Summer Bay still loads.
+- Not carried over: team messages (they stay in the sheets) and the old Change Log tabs.
+- LIVE: PR #264 merged 18 Nov 2026; all 8 Lower Eyre and Central Eyre pages on the new roster from about 06:24 UTC
+  (4:54 pm Adelaide). First catch-up at 06:24 UTC: nothing booked, changed or cancelled on the old pages since the
+  copy. Checked on the live site in a fresh browser: the 8 team pages ask for sign-in; Kimba (West Coast) unchanged on
+  its Apps Script; operations page reads Lower Eyre and Central Eyre from Supabase and West Coast from its sheet; the
+  Lower Eyre and Central Eyre manager dashboards read Supabase only (numbers match the old sheet; the team column
+  order now follows teams.js). A second catch-up is scheduled for 07:26 UTC.
+
+## 7-day roster table (18 Nov 2026)
+
+Owner asked for the 14-day roster table to show 7 days. `shared/roster.js`: the table opens on today plus 6 days, the
+tab and launch button say "7 days", and the top buttons are "Previous 7 days" / "Next 7 days" (step 7 days). Roster
+user guide section updated to match.
+- Second catch-up (18 Nov 2026, 08:07 UTC, by the scheduled task): nothing new or cancelled on the old pages. One
+  difference (Lou Rossi, Elliston, Fri 20 Nov) was an edit Lou made on the NEW roster at 6:23 pm, so the new roster was
+  kept. Already in use: Jay Forsyth (Elliston) and Lauren Foster (Tumby Bay) booked 2 shifts each on the new roster;
+  the two Tumby Bay bookings were before the sent cut-off and their change emails were sent. No catch-up needed from
+  now on: crews can no longer reach the old pages.
+- Roster tile (owner, 18 Nov 2026): the owner's green calendar picture (1024x1024 PNG) is the roster's browser-tab
+  icon and Home Screen tile: `shared/roster-tile-32/180/192/512.png`, on all 13 team pages (favicon and
+  apple-touch-icon), in `roster.webmanifest` and as the reminder notification icon in `sw.js`. It replaces the
+  calendar icon Claude drew (roster-icon-*.png, removed). New file names so phones don't keep the old picture; a
+  tile already on a Home Screen must be deleted and added again to change.
