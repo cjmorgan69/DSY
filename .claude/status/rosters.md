@@ -422,7 +422,8 @@ Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id)
   Accounts made for all 42 Central Eyre people who had not signed up (claim on /signin/). 782 shifts copied
   (755 linked to people, 27 placeholders; 7 test entries left out); per team copied + left out = old active count.
   Lower Eyre sent cut-offs copied. Both clusters live from 2026-11-18.
-- "Prue Holly" (Cleve, AR, Sat 21 Nov) matched nobody: brought across as a placeholder; owner to say who it is.
+- "Prue Holly" (Cleve, AR, Sat 21 Nov) matched nobody at first; owner (18 Nov 2026): it is Prue Stringer (100173),
+  so the shift was linked to her account.
 - Pages: 8 team pages switched (sign-in, roster-supabase.js, Home Screen tags); teams.js `backend: "supabase"`,
   features without `savedRoster`. Checked locally against the real database with the test account (999123, switched
   off afterwards): the team pages call only Supabase and refuse non-members; Summer Bay still loads.
