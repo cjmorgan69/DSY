@@ -59,4 +59,10 @@ walk-through), each card showing the phone's Learn on your own ticks and opening
 page now gives each topic card an id and scrolls to it). Leaders add, caption, reorder (Move up) and remove gallery
 photos in Training, People, Team pages, below the main photo. A team with only gallery photos counts as having a page.
 Tested with stand-in data in a headless browser (phone width); not yet seen with a real sign-in.
-On a branch, not merged.
+A gallery entry can also be `{url, caption, credit, source}` (a picture not in storage; credit shown under it).
+Town photos (owner, 18 Nov 2026: "one for each team"): one free-licence Wikimedia Commons photo per team (the lead
+photo of each town's Wikipedia article, licence and photographer in the credit line), loaded straight from
+upload.wikimedia.org (this cloud machine was rate-limited by Wikimedia, so they are not copied into the repo).
+Elliston's is the main-street shops, Cleve's the folk museum: swap for better ones if the owner has them. Every team
+now has page content, so members land on the Team Page instead of going straight to the schedule.
+Merged with PR #273 (owner: "merge every thing", 18 Nov 2026).
