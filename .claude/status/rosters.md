@@ -428,3 +428,9 @@ Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id)
   features without `savedRoster`. Checked locally against the real database with the test account (999123, switched
   off afterwards): the team pages call only Supabase and refuse non-members; Summer Bay still loads.
 - Not carried over: team messages (they stay in the sheets) and the old Change Log tabs.
+
+## 7-day roster table (18 Nov 2026)
+
+Owner asked for the 14-day roster table to show 7 days. `shared/roster.js`: the table opens on today plus 6 days, the
+tab and launch button say "7 days", and the top buttons are "Previous 7 days" / "Next 7 days" (step 7 days). Roster
+user guide section updated to match.
