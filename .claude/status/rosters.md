@@ -445,3 +445,8 @@ user guide section updated to match.
   kept. Already in use: Jay Forsyth (Elliston) and Lauren Foster (Tumby Bay) booked 2 shifts each on the new roster;
   the two Tumby Bay bookings were before the sent cut-off and their change emails were sent. No catch-up needed from
   now on: crews can no longer reach the old pages.
+- Roster tile (owner, 18 Nov 2026): the owner's green calendar picture (1024x1024 PNG) is the roster's browser-tab
+  icon and Home Screen tile: `shared/roster-tile-32/180/192/512.png`, on all 13 team pages (favicon and
+  apple-touch-icon), in `roster.webmanifest` and as the reminder notification icon in `sw.js`. It replaces the
+  calendar icon Claude drew (roster-icon-*.png, removed). New file names so phones don't keep the old picture; a
+  tile already on a Home Screen must be deleted and added again to change.
