@@ -13,6 +13,10 @@ saved on the device) and Run a session (`/hub/run/`: DSY-written session guide f
 facilitator walk-through, customise, `/mdt/#job=<id>`, copy student links, log in /training/). Add a topic to
 `hub/topics.js` when a module, walk-through or MDT job is made.
 
+Favicon (18 Nov 2026): `shared/dsy-favicon-32.png`, `-192.png` and `shared/dsy-touch-180.png` (green circle, white
+DSY, heartbeat line; drawn by Claude from the logo). On `/hub/learn/` only so far; other pages can use the same three
+`<link>` lines.
+
 ## Run a session glossaries
 
 Run a session glossaries (`hub/glossary.js`, keyed by topic id, 10 Nov 2026): a fold-out "Glossary (n terms)" in
