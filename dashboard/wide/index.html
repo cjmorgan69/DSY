@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261118d" data-level="leader"></script>
+<script src="/shared/gate.js?v=20261118e" data-level="leader"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
@@ -156,6 +156,23 @@ a { color:var(--brand); text-underline-offset:2px; }
 .tl { display:flex; flex-wrap:wrap; gap:4px 14px; font-size:12px; color:var(--muted); }
 .tl i { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--tc); margin-right:6px; }
 
+/* suggestions */
+.sform { display:flex; flex-direction:column; gap:.4rem; }
+.sform textarea, .sform select { font:inherit; padding:.5rem .7rem; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink); min-width:0; resize:vertical; }
+.sform .srow { display:flex; gap:.4rem; flex-wrap:wrap; }
+.sform .srow select { flex:1 1 160px; }
+.sform button { border:0; border-radius:999px; padding:.5rem 1.1rem; background:var(--brand); color:var(--brand-ink); font-weight:600; cursor:pointer; }
+.sugg li { display:flex; flex-direction:column; gap:.2rem; padding:.55rem 0; border-top:1px solid var(--line); }
+.sugg li:first-child { border-top:0; }
+.sugg .sb { white-space:pre-wrap; overflow-wrap:anywhere; }
+.sugg .sm { display:flex; flex-wrap:wrap; gap:.3rem .6rem; align-items:center; font-size:.78rem; color:var(--muted); }
+.sugg .st { font-weight:700; border-radius:999px; padding:.05rem .5rem; background:var(--bg); }
+.sugg .st.planned { background:color-mix(in srgb,var(--y) 22%,var(--surface)); color:color-mix(in srgb,var(--y) 40%,var(--ink)); }
+.sugg .st.done { background:color-mix(in srgb,var(--g) 18%,var(--surface)); color:var(--ok); }
+.sugg .sr { font-size:.85rem; padding:.35rem .6rem; border-left:3px solid var(--brand); background:var(--brand-soft); border-radius:0 8px 8px 0; white-space:pre-wrap; }
+.sugg .sa { display:flex; gap:.4rem; flex-wrap:wrap; }
+.sugg .sa select, .sugg .sa button { font:inherit; font-size:.8rem; padding:.2rem .5rem; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink); cursor:pointer; }
+
 /* tasks */
 .tadd { display:flex; gap:6px; }
 .tadd input { padding:7px 10px; border:1px solid var(--line); border-radius:8px; background:var(--soft); color:var(--ink); min-width:0; font-size:13px; }
@@ -210,8 +227,8 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
 .amsg.err { color:var(--r); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="/modules/rosters/shared/teams.js?v=20261118d"></script>
-<script src="/modules/rosters/shared/roster-data.js?v=20261118d"></script>
+<script src="/modules/rosters/shared/teams.js?v=20261118e"></script>
+<script src="/modules/rosters/shared/roster-data.js?v=20261118e"></script>
 </head>
 <body>
 <header class="bar">
@@ -260,6 +277,17 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
       <div id="wxBody"><div class="skel"></div></div>
       <p class="note">Forecast from Open-Meteo. Check the BOM and CFS for warnings and fire danger.</p>
     </section>
+    <section class="card" aria-labelledby="hSugg">
+      <div class="ch"><h2 id="hSugg">Suggestions</h2><span class="note" id="sCount"></span></div>
+      <p class="note" style="margin:0">Ideas to make DSY better for your teams. Every Team Leader can see them; the lead instructor replies.</p>
+      <form class="sform" id="sForm" autocomplete="off">
+        <textarea id="sText" maxlength="2000" rows="2" placeholder="Your suggestion" aria-label="Your suggestion" required></textarea>
+        <div class="srow"><select id="sArea" aria-label="Which part">
+          <option>Dashboard</option><option>Rosters</option><option>Training app</option><option>Learning pages</option><option>Sessions and stations</option><option selected>Other</option>
+        </select><button type="submit">Send</button></div>
+      </form>
+      <ul class="sugg" id="sList"><li class="tempty">Loading…</li></ul>
+    </section>
   </div>
 
   <div class="col c3">
@@ -300,6 +328,6 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
   </form>
 </dialog>
 
-<script src="/dashboard/dash.js?v=20261118d"></script>
+<script src="/dashboard/dash.js?v=20261118e"></script>
 </body>
 </html>

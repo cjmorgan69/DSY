@@ -279,6 +279,70 @@
     }
   });
 
+  /* ---------- suggestions from Team Leaders (Supabase public.platform_suggestions, 18 Nov 2026) ----------
+     Any leader adds one and sees them all; the lead instructor sets the status and replies; an author can withdraw
+     their own while it is still new. The database enforces the same rules (supabase/suggestions-setup.sql). */
+  var sRows = [], sNames = {}, sLead = false, sMe = null;
+  var SLABEL = { "new": "New", "planned": "Planned", "done": "Done", "not now": "Not now" };
+  function loadSugg() {
+    if (!$("sList")) return Promise.resolve();
+    return Promise.all([
+      sb.from("platform_suggestions").select("*").order("created_at", { ascending: false }).limit(60),
+      sb.rpc("my_access"),
+      sb.auth.getSession()
+    ]).then(function (r) {
+      if (r[0].error) throw r[0].error;
+      sRows = r[0].data || [];
+      sLead = !!(r[1].data && r[1].data.real_leader && !r[1].data.cluster);
+      sMe = r[2].data && r[2].data.session && r[2].data.session.user && r[2].data.session.user.id;
+      var ids = sRows.map(function (x) { return x.created_by; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; });
+      return ids.length ? sb.from("profiles").select("id,full_name").in("id", ids).then(function (q) { (q.data || []).forEach(function (p) { sNames[p.id] = p.full_name || "A leader"; }); }) : null;
+    }).then(drawSugg).catch(function (e) {
+      $("sList").innerHTML = '<li class="err">' + (/platform_suggestions/.test(String(e && e.message)) ? "Suggestions aren't switched on yet." : "Could not load suggestions: " + esc(e.message || e)) + "</li>";
+    });
+  }
+  function drawSugg() {
+    var n = sRows.filter(function (x) { return x.status === "new"; }).length;
+    $("sCount").textContent = sRows.length ? sRows.length + " · " + n + " new" : "";
+    if (!sRows.length) { $("sList").innerHTML = '<li class="tempty">No suggestions yet. Be the first.</li>'; return; }
+    $("sList").innerHTML = sRows.map(function (x) {
+      var d = new Intl.DateTimeFormat("en-AU", { timeZone: TZ, day: "numeric", month: "short" }).format(new Date(x.created_at));
+      var who = x.created_by === sMe ? "You" : (sNames[x.created_by] || "A leader");
+      var acts = "";
+      if (sLead) {
+        acts = '<div class="sa"><select data-sstatus="' + x.id + '" aria-label="Status">' + Object.keys(SLABEL).map(function (k) { return '<option value="' + k + '"' + (x.status === k ? " selected" : "") + ">" + SLABEL[k] + "</option>"; }).join("") +
+          '</select><button type="button" data-sreply="' + x.id + '">' + (x.reply ? "Edit reply" : "Reply") + '</button><button type="button" data-sdel="' + x.id + '">Delete</button></div>';
+      } else if (x.created_by === sMe && x.status === "new") {
+        acts = '<div class="sa"><button type="button" data-sdel="' + x.id + '">Withdraw</button></div>';
+      }
+      return '<li><span class="sb">' + esc(x.body) + '</span><span class="sm"><span class="st ' + x.status.replace(" ", "") + '">' + SLABEL[x.status] + "</span>" + esc(who) + " · " + esc(x.area) + " · " + d + "</span>" +
+        (x.reply ? '<span class="sr"><b>Reply:</b> ' + esc(x.reply) + "</span>" : "") + acts + "</li>";
+    }).join("");
+  }
+  function suggErr(r) { if (r && r.error) alert("That didn't save: " + r.error.message); return loadSugg(); }
+  if ($("sForm")) {
+    $("sForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var body = $("sText").value.trim(); if (body.length < 3) return;
+      sb.from("platform_suggestions").insert({ body: body, area: $("sArea").value }).then(function (r) { if (!r.error) $("sText").value = ""; return suggErr(r); });
+    });
+    $("sList").addEventListener("change", function (e) {
+      var id = e.target.getAttribute("data-sstatus"); if (!id) return;
+      sb.from("platform_suggestions").update({ status: e.target.value, updated_at: new Date().toISOString() }).eq("id", id).then(suggErr);
+    });
+    $("sList").addEventListener("click", function (e) {
+      var rid = e.target.getAttribute("data-sreply"), did = e.target.getAttribute("data-sdel");
+      if (rid) {
+        var x = sRows.filter(function (y) { return y.id === rid; })[0], v = prompt("Reply (leave empty to remove it):", (x && x.reply) || "");
+        if (v === null) return;
+        sb.from("platform_suggestions").update({ reply: v.trim() || null, updated_at: new Date().toISOString() }).eq("id", rid).then(suggErr);
+      } else if (did) {
+        if (!confirm(sLead ? "Delete this suggestion?" : "Withdraw your suggestion?")) return;
+        sb.from("platform_suggestions").delete().eq("id", did).then(suggErr);
+      }
+    });
+  }
+
   /* ---------- shortcut tile: lesson count ---------- */
   function loadLessonCount() {
     return sb.from("lessons").select("id", { count: "exact", head: true }).then(function (r) {
@@ -488,7 +552,7 @@
 
   /* ---------- start and refresh ---------- */
   function stamp() { $("updated").textContent = "Updated " + new Intl.DateTimeFormat("en-AU", { timeZone: TZ, hour: "numeric", minute: "2-digit" }).format(new Date()); }
-  function loadAll() { stamp(); loadRoster(); loadCrew(); loadTasks(); loadLessonCount(); loadSessions(); loadDispatch(); loadWeather(); }
+  function loadAll() { stamp(); loadRoster(); loadCrew(); loadTasks(); loadLessonCount(); loadSessions(); loadDispatch(); loadWeather(); loadSugg(); }
   drawTowns();
   (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve({})).then(function (me) {
     if (me && me.name) { window.__name = String(me.name).split(" ")[0]; tick(); }
