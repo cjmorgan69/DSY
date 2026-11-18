@@ -66,3 +66,6 @@ upload.wikimedia.org (this cloud machine was rate-limited by Wikimedia, so they 
 Elliston's is the main-street shops, Cleve's the folk museum: swap for better ones if the owner has them. Every team
 now has page content, so members land on the Team Page instead of going straight to the schedule.
 Merged with PR #273 (owner: "merge every thing", 18 Nov 2026).
+
+Learning swipe row removed from the Team Page (owner, 18 Nov 2026: "just have photo tiles"); the photo row and the
+Learn on your own button stay. On a branch, not merged.

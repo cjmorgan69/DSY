@@ -12,34 +12,25 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261118k">
+<link rel="stylesheet" href="../training/theme.css?v=20261119a">
 <style>
-/* Learning swipe row (owner, 18 Nov 2026): one card per topic, opens that topic on Learn on your own. */
+/* Photo swipe row (owner, 18 Nov 2026). */
 .learnrow { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; margin: 0 -1rem; padding: .2rem 1rem .5rem; scroll-padding: 0 1rem; -webkit-overflow-scrolling: touch; }
 .learnrow::-webkit-scrollbar { display: none; }
-.lcard { flex: 0 0 78%; max-width: 19rem; scroll-snap-align: start; display: flex; flex-direction: column; gap: .5rem; padding: 1.1rem 1.2rem; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); color: var(--ink); text-decoration: none; box-shadow: 0 3px 10px rgba(20, 40, 30, .07); }
-.lcard:hover { border-color: var(--brand); }
-.lcard b { font-family: var(--font-head); font-size: 1.12rem; letter-spacing: -.01em; }
-.lcard .p { font-size: .86rem; color: var(--muted); flex: 1; }
-.lcard .bar { height: 6px; border-radius: 99px; background: color-mix(in srgb, var(--ink) 8%, var(--surface)); overflow: hidden; }
-.lcard .bar i { display: block; height: 100%; background: var(--brand); }
-.lcard.all { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); justify-content: center; }
-.lcard.all .p { color: inherit; opacity: .88; flex: 0; }
 .learnhead { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
 .pcard { flex: 0 0 86%; max-width: 30rem; margin: 0; scroll-snap-align: start; border-radius: 18px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); }
 .pcard img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--brand-soft); }
 .pcard figcaption { padding: .6rem .9rem; font-size: .88rem; }
 .pcard .credit { display: block; margin-top: 2px; font-size: .72rem; color: var(--muted); }
 .pcard .credit a { color: inherit; }
-@media (min-width: 700px) { .lcard { flex-basis: 16rem; } .pcard { flex-basis: 24rem; } }
+@media (min-width: 700px) { .pcard { flex-basis: 24rem; } }
 </style>
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261118k"></script>
-<script src="../hub/topics.js?v=20261118k"></script>
+<script src="../training/config.js?v=20261119a"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -121,22 +112,6 @@
     return String(text || "").split(/\n\s*\n/).map(function (p) { return p.trim(); }).filter(Boolean).map(function (p) { return "<p>" + esc(p).replace(/\n/g, "<br>") + "</p>"; }).join("");
   }
 
-  /* Swipe row of learning topics, the same steps as Learn on your own (hub/topics.js); progress ticks are the ones
-     Learn on your own keeps on this phone. */
-  function learnRow() {
-    var T = window.DSY_TOPICS || [], done = {};
-    if (!T.length) return "";
-    try { done = JSON.parse(localStorage.getItem("dsy-hub-progress") || "{}"); } catch (e) {}
-    var cards = T.filter(function (t) { return t.module || t.walk; }).map(function (t) {
-      var keys = [t.module && "learn", t.walk && "practise", t.mdt && "mdt", t.pcr && "pcr"].filter(Boolean);
-      var got = keys.filter(function (k) { return done[t.id + ":" + k]; }).length;
-      return '<a class="lcard" href="../hub/learn/#' + encodeURIComponent(t.id) + '"><span class="chip hi" style="align-self:flex-start">' + esc(t.protocol) + '</span><b>' + esc(t.title) + '</b><span class="p">' + esc(t.patient) + '</span>' +
-        '<span class="small muted">' + (got ? got + " of " + keys.length + " steps done" : keys.length + " steps") + '</span><span class="bar"><i style="width:' + Math.round(100 * got / keys.length) + '%"></i></span></a>';
-    });
-    cards.push('<a class="lcard all" href="../hub/learn/"><b>All topics</b><span class="p">Open Learn on your own</span></a>');
-    return '<section class="stack"><div class="learnhead"><h2>Learning</h2><span class="small muted">Swipe for more</span></div><div class="learnrow">' + cards.join("") + "</div></section>";
-  }
-
   function render() {
     var g = S.current, html = header();
     var pool = isLeader() ? S.groups : S.groups.filter(hasContent);
@@ -158,7 +133,6 @@
     }
     if (S.pics.length) html += '<section class="stack"><div class="learnhead"><h2>Photos</h2>' + (S.pics.length > 1 ? '<span class="small muted">Swipe for more</span>' : "") + '</div><div class="learnrow">' +
       S.pics.map(function (p) { return '<figure class="pcard"><img src="' + esc(p.url) + '" alt="' + esc(p.caption || "Team photo") + '" loading="lazy">' + (p.caption || p.credit ? "<figcaption>" + esc(p.caption) + (p.credit ? '<small class="credit">' + (p.source ? '<a href="' + esc(p.source) + '" rel="noopener">' + esc(p.credit) + "</a>" : esc(p.credit)) + "</small>" : "") + "</figcaption>" : "") + "</figure>"; }).join("") + "</div></section>";
-    html += learnRow();
     if (g.blurb) html += '<section class="panel pad stack"><h2>About ' + esc(g.name) + '</h2><div class="prose">' + paras(g.blurb) + "</div></section>";
     var ls = links(g);
     if (ls.length) html += '<section class="panel pad stack"><h2>Policies, procedures and links</h2><ul class="links">' + ls.map(function (l) { return '<li><a href="' + esc(safeUrl(l.url)) + '" rel="noopener">' + esc(l.label) + "</a></li>"; }).join("") + "</ul></section>";
