@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261118j">
+<link rel="stylesheet" href="../training/theme.css?v=20261118k">
 <style>
 /* Learning swipe row (owner, 18 Nov 2026): one card per topic, opens that topic on Learn on your own. */
 .learnrow { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; margin: 0 -1rem; padding: .2rem 1rem .5rem; scroll-padding: 0 1rem; -webkit-overflow-scrolling: touch; }
@@ -29,6 +29,8 @@
 .pcard { flex: 0 0 86%; max-width: 30rem; margin: 0; scroll-snap-align: start; border-radius: 18px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); }
 .pcard img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--brand-soft); }
 .pcard figcaption { padding: .6rem .9rem; font-size: .88rem; }
+.pcard .credit { display: block; margin-top: 2px; font-size: .72rem; color: var(--muted); }
+.pcard .credit a { color: inherit; }
 @media (min-width: 700px) { .lcard { flex-basis: 16rem; } .pcard { flex-basis: 24rem; } }
 </style>
 </head>
@@ -36,8 +38,8 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261118j"></script>
-<script src="../hub/topics.js?v=20261118j"></script>
+<script src="../training/config.js?v=20261118k"></script>
+<script src="../hub/topics.js?v=20261118k"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -55,7 +57,9 @@
   function hhmm(t) { var h = +String(t).slice(0, 2), m = String(t).slice(3, 5), ap = h >= 12 ? "pm" : "am"; h = h % 12 || 12; return h + (m === "00" ? "" : ":" + m) + ap; }
   function safeUrl(u) { u = String(u || "").trim(); return /^(https?:\/\/|\/)/i.test(u) && u.indexOf("//") !== 0 ? u : (/^https?:\/\//i.test(u) ? u : ""); }
   function links(g) { return Array.isArray(g.links) ? g.links.filter(function (l) { return l && l.label && safeUrl(l.url); }) : []; }
-  function gallery(g) { return Array.isArray(g.photos) ? g.photos.filter(function (x) { return x && x.path; }) : []; }
+  /* Gallery entry: {path} = file in storage bucket team-photos, or {url} = picture kept on the site (/teams/photos/),
+     with an optional credit {credit, source} for free-licence photos. */
+  function gallery(g) { return Array.isArray(g.photos) ? g.photos.filter(function (x) { return x && (x.path || safeUrl(x.url)); }) : []; }
   function hasContent(g) { return !!(g.blurb || g.photo_path || safeUrl(g.roster_url) || links(g).length || gallery(g).length); }
   function isLeader() { return S.profile && S.profile.role === "leader"; }
   function q(p) { return p.then(function (r) { if (r.error) throw r.error; return r.data || []; }); }
@@ -96,10 +100,14 @@
     var g = S.current; S.photoUrl = null; S.next = null; S.pics = [];
     var jobs = [];
     if (g.photo_path) jobs.push(sb.storage.from("team-photos").createSignedUrl(g.photo_path, 3600).then(function (r) { if (!r.error) S.photoUrl = r.data.signedUrl; }));
-    var gl = gallery(g);
-    if (gl.length) jobs.push(sb.storage.from("team-photos").createSignedUrls(gl.map(function (x) { return x.path; }), 3600).then(function (r) {
-      (r.data || []).forEach(function (u, k) { if (u && u.signedUrl) S.pics.push({ url: u.signedUrl, caption: gl[k].caption || "" }); });
+    var gl = gallery(g), stored = gl.filter(function (x) { return x.path; }), signed = {};
+    S.gallery = gl;
+    if (stored.length) jobs.push(sb.storage.from("team-photos").createSignedUrls(stored.map(function (x) { return x.path; }), 3600).then(function (r) {
+      (r.data || []).forEach(function (u, k) { if (u && u.signedUrl) signed[stored[k].path] = u.signedUrl; });
     }));
+    jobs = [Promise.all(jobs).then(function () {
+      S.pics = gl.map(function (x) { return { url: x.path ? signed[x.path] : safeUrl(x.url), caption: x.caption || "", credit: x.credit || "", source: safeUrl(x.source) }; }).filter(function (x) { return x.url; });
+    })];
     jobs.push(sb.from("upcoming_sessions").select("*").eq("group_id", g.id).gte("session_date", todayStr()).order("session_date").order("start_time").limit(1).then(function (r) { if (!r.error && r.data && r.data[0]) S.next = r.data[0]; }));
     return Promise.all(jobs).then(render);
   }
@@ -149,7 +157,7 @@
         '<a class="link" href="../training/">Book</a></section>';
     }
     if (S.pics.length) html += '<section class="stack"><div class="learnhead"><h2>Photos</h2>' + (S.pics.length > 1 ? '<span class="small muted">Swipe for more</span>' : "") + '</div><div class="learnrow">' +
-      S.pics.map(function (p) { return '<figure class="pcard"><img src="' + esc(p.url) + '" alt="' + esc(p.caption || "Team photo") + '" loading="lazy">' + (p.caption ? "<figcaption>" + esc(p.caption) + "</figcaption>" : "") + "</figure>"; }).join("") + "</div></section>";
+      S.pics.map(function (p) { return '<figure class="pcard"><img src="' + esc(p.url) + '" alt="' + esc(p.caption || "Team photo") + '" loading="lazy">' + (p.caption || p.credit ? "<figcaption>" + esc(p.caption) + (p.credit ? '<small class="credit">' + (p.source ? '<a href="' + esc(p.source) + '" rel="noopener">' + esc(p.credit) + "</a>" : esc(p.credit)) + "</small>" : "") + "</figcaption>" : "") + "</figure>"; }).join("") + "</div></section>";
     html += learnRow();
     if (g.blurb) html += '<section class="panel pad stack"><h2>About ' + esc(g.name) + '</h2><div class="prose">' + paras(g.blurb) + "</div></section>";
     var ls = links(g);
