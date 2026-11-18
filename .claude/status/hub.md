@@ -68,10 +68,22 @@ now has page content, so members land on the Team Page instead of going straight
 Merged with PR #273 (owner: "merge every thing", 18 Nov 2026).
 
 Learning swipe row removed from the Team Page (owner, 18 Nov 2026: "just have photo tiles"); the photo row and the
-Learn on your own button stay. On a branch, not merged.
+Learn on your own button stay. Merged (PR #274, 18 Nov 2026).
 
 Main page "Other groups and pages" (18 Nov 2026, owner): the row of links (All AO walk-throughs, Paramedic, Rural ED,
 GP clinic, Rural nursing microlearning, Classic hub, Ambulance Responder course) is hidden from everyone. Leaders
 (role `leader`: Chris Morgan, Campbell Forsyth, David Coombe) see an "Other groups and pages" link next to Dashboard
 and Grant access at the bottom, which shows and hides the row. Uses the same `dsy-gate-role` cache as the leader
 links, so it is a display choice only: the pages themselves are still open to anyone with the address.
+Town photos moved into the team name banner (owner, 18 Nov 2026: "the same way the Tumby Bay page has been set up"):
+new column `groups.hero` jsonb `{url, credit, source}`, used only when `photo_path` is empty; the credit sits small in
+the banner's top corner. The 11 other teams' Wikimedia photos were copied into `hero`; the Team Page leaves a slide out when
+it is the banner photo, so their slide rows are empty (the `photos` entries can be cleared later); Tumby Bay keeps its uploaded banner and its Wikimedia photo in the slides. Uploading a banner photo in
+Training overrides the town photo; Remove photo clears both. On a branch, not merged.
+Editing path for leaders (owner asked for an obvious one, 18 Nov 2026): team pages are edited on the Region page
+(`/region/`, Edit page on a team tile), not in Training (Training's People tab only points there; the page editor and
+gallery code left in `training/index.html` from PR #273 is unreachable). The Region page team form now has Banner photo
+(shows when a town photo is in use; Remove clears `photo_path` and `hero`) and Photo slides (add several, caption,
+Move up, Remove; files under `<group id>/slides/`). Team Page: leaders get an "Edit this page" button that opens
+`/region/#edit=<group id>`. Region tiles show the town photo when no photo is uploaded. Leader guide section 9 has a
+"Team pages: banner photo and photo slides" part. Tested with stand-in data; not yet seen signed in. On a branch, not merged.
