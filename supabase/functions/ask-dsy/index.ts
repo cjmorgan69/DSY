@@ -3,11 +3,12 @@
 // (or a relief Team Leader while covering). verify_jwt on.
 // It answers ONLY from the live user guides (the Team Leader guide and the roster guide, read from dsytraining.com and
 // kept for 30 minutes), so the guides are the single source: update the guide and the answers follow.
-// Uses Google Gemini (owner's choice, 17 Nov 2026: the Gemini key is already a Supabase Edge Function secret; the
-// function looks for it under the usual names, see KEY_NAMES). The key is never in this public repo.
+// Uses Claude (owner, 18 Nov 2026: "rather pay for reliable answers"; Gemini was overloaded or answered badly on
+// 17 Nov). The key is the Supabase Edge Function secret ANTHROPIC_API_KEY, never in this public repo.
 // Every question is logged in public.ask_dsy_log (service role writes; a leader reads their own rows, the lead
 // instructor reads all). Limit: 40 questions per leader per 24 hours.
 import { createClient } from "npm:@supabase/supabase-js@2";
+import Anthropic from "npm:@anthropic-ai/sdk@1.6.0";
 
 const URL_ = Deno.env.get("SUPABASE_URL")!;
 const SITE = "https://dsytraining.com";
@@ -15,10 +16,7 @@ const GUIDES = [
   { path: "/userguides/leaders/", title: "Team Leader Guide" },
   { path: "/userguides/rosters/", title: "Crew Shift Roster User Guide" },
 ];
-// gemini-flash-latest is Google's alias for the current Flash model. The next ones are tried in turn if a model is
-// missing, overloaded (503, seen 17 Nov 2026) or busy. The 2.5 models are closed to new accounts (Google, 17 Nov 2026).
-const MODELS = ["gemini-flash-latest", "gemini-flash-lite-latest", "gemini-3.5-flash-lite"];
-const KEY_NAMES = ["GEMINI_API_KEY", "GOOGLE_API_KEY", "GOOGLE_GEMINI_API_KEY", "GOOGLE_AI_API_KEY"];
+const MODEL = "claude-opus-5-5";
 const DAILY_LIMIT = 40;
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -110,8 +108,8 @@ Deno.serve(async (req: Request) => {
   const question = typeof body.question === "string" ? body.question.trim().slice(0, 500) : "";
   if (!question) return json({ ok: false, message: "Type a question first." }, 400);
 
-  const key = KEY_NAMES.map((n) => Deno.env.get(n)).find((v) => v);
-  if (!key) return json({ ok: false, code: "not_set_up", message: "Ask DSY isn't switched on yet: it can't find the Gemini key in Supabase. Tell the lead instructor." }, 503);
+  const key = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!key) return json({ ok: false, code: "not_set_up", message: "Ask DSY isn't switched on yet: it can't find the Claude API key in Supabase. Tell the lead instructor." }, 503);
 
   const service = createClient(URL_, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
   const since = new Date(Date.now() - 24 * 3600000).toISOString();
@@ -124,45 +122,35 @@ Deno.serve(async (req: Request) => {
   let guideText: string;
   try { guideText = await guides(); step(`guides ${guideText.length} chars`); } catch (_e) { return json({ ok: false, message: "The user guides didn't load. Try again in a minute." }, 502); }
 
-  const contents = [...cleanHistory(body.history), { role: "user", content: question }]
-    .map((t) => ({ role: t.role === "assistant" ? "model" : "user", parts: [{ text: t.content }] }));
-  const payload = JSON.stringify({
-    systemInstruction: { parts: [{ text: RULES + "\n\n" + guideText }] },
-    contents,
-    generationConfig: { temperature: 0.2, maxOutputTokens: 4096 },
-  });
-  let lastError = "";
-  for (const model of MODELS) {
-    try {
-      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-        method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: payload,
-        signal: AbortSignal.timeout(35000),
-      });
-      step(`${model} answered ${r.status}`);
-      const d = await r.json().catch(() => ({}));
-      if (r.status === 404 || r.status === 429 || r.status >= 500) { lastError = `${model}: ${r.status} ${String(d?.error?.message ?? "").slice(0, 200)}`; continue; }
-      if (!r.ok) {
-        lastError = `${model}: ${r.status} ${String(d?.error?.message ?? "").slice(0, 300)}`;
-        await log({ model, error: lastError });
-        const message = r.status === 400 || r.status === 401 || r.status === 403 ? "Ask DSY's Gemini key isn't working. Tell the lead instructor."
-          : "Ask DSY didn't get an answer. Try again in a minute.";
-        return json({ ok: false, message }, 502);
-      }
-      const c = d?.candidates?.[0];
-      const answer = (c?.content?.parts ?? []).map((p: { text?: string; thought?: boolean }) => (p.thought ? "" : p.text ?? "")).join("").trim();
-      const u = d?.usageMetadata ?? {};
-      const tokens = { model, input_tokens: u.promptTokenCount ?? null, output_tokens: u.candidatesTokenCount ?? null, cache_read_tokens: u.cachedContentTokenCount ?? 0 };
-      if (!answer) {
-        await log({ ...tokens, error: d?.promptFeedback?.blockReason || c?.finishReason || "empty" });
-        return json({ ok: false, message: "Ask DSY can't answer that one. Try asking another way, or check the Team Leader guide." });
-      }
-      await log({ ...tokens, answer });
-      return json({ ok: true, answer, left: Math.max(0, DAILY_LIMIT - (count ?? 0) - 1) });
-    } catch (e) {
-      lastError = `${model}: ${String((e as Error)?.message ?? e).slice(0, 300)}`;
-      step(lastError);
+  const client = new Anthropic({ apiKey: key, timeout: 60000, maxRetries: 1 });
+  try {
+    const res = await client.beta.messages.create({
+      model: MODEL,
+      max_tokens: 4000,
+      betas: ["server-side-fallback-2026-07-01"],
+      fallbacks: "default",
+      output_config: { effort: "low" },
+      system: [{ type: "text", text: RULES }, { type: "text", text: guideText, cache_control: { type: "ephemeral" } }],
+      messages: [...cleanHistory(body.history), { role: "user", content: question }],
+    });
+    step(`claude answered ${res.stop_reason}`);
+    const answer = res.content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join("\n").trim();
+    const u = res.usage;
+    const tokens = { model: res.model, input_tokens: u.input_tokens, output_tokens: u.output_tokens, cache_read_tokens: u.cache_read_input_tokens ?? 0 };
+    if (res.stop_reason === "refusal" || !answer) {
+      await log({ ...tokens, error: res.stop_reason === "refusal" ? "refusal" : "empty" });
+      return json({ ok: false, message: "Ask DSY can't answer that one. Try asking another way, or check the Team Leader guide." });
     }
+    await log({ ...tokens, answer });
+    return json({ ok: true, answer, left: Math.max(0, DAILY_LIMIT - (count ?? 0) - 1) });
+  } catch (e) {
+    let message = "Ask DSY didn't get an answer. Try again in a minute.";
+    if (e instanceof Anthropic.AuthenticationError || e instanceof Anthropic.PermissionDeniedError) message = "Ask DSY's Claude API key isn't working. Tell the lead instructor.";
+    else if (e instanceof Anthropic.RateLimitError) message = "Ask DSY is busy. Try again in a minute.";
+    else if (e instanceof Anthropic.BadRequestError) message = /credit/i.test(String((e as Error).message)) ? "Ask DSY's Claude account is out of credit. Tell the lead instructor." : "Ask DSY couldn't read that question. Try a shorter one.";
+    const err = `${(e as { status?: number })?.status ?? ""} ${String((e as Error)?.message ?? e)}`.slice(0, 500);
+    step(err);
+    await log({ model: MODEL, error: err });
+    return json({ ok: false, message }, 502);
   }
-  await log({ error: lastError || "no model answered" });
-  return json({ ok: false, message: "Gemini is busy right now. Try again in a few minutes." }, 502);
 });

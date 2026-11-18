@@ -152,3 +152,12 @@ Training app, Learning pages, Sessions and stations, Other), Send. Every leader 
 suggestions with name, part, date and status; the lead instructor (a real leader with no cluster,
 `is_lead_instructor()`) sets the status (New, Planned, Done, Not now), replies and deletes; an author can withdraw
 their own while it is still New. Table `public.platform_suggestions`; SQL `supabase/suggestions-setup.sql`, run by the owner in the SQL Editor 18 Nov 2026 (the apply_migration approval timed out three times, even after the owner edited the connector). Checked: a Team Leader can add one but not set its status, the lead instructor can set status and reply, a member sees none. Live: PR #265 (replaced #263), merged 18 Nov 2026.
+
+## Ask DSY switched to Claude (18 Nov 2026, owner)
+
+Owner: "I'd rather pay for reliable answers than use Google" (on 17 Nov Gemini Flash was overloaded, the 2.5 models are
+closed to new accounts, and Flash-Lite answered a team question as if it were clinical). The owner made a Claude API
+account and saved the key as the Edge Function secret `ANTHROPIC_API_KEY` in training-sessions. `ask-dsy` (deployed v10)
+now calls Claude (`claude-opus-5-5`, low effort, server-side refusal fallback, guide text prompt-cached), timeout 60 s with
+one retry. Error messages: key not working, out of credit, busy. Guide line now says answers are by Claude. The Gemini
+secret is no longer used. Not yet tried with a real sign-in: owner to ask a question.
