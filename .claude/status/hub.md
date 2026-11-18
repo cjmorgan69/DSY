@@ -79,11 +79,14 @@ Town photos moved into the team name banner (owner, 18 Nov 2026: "the same way t
 new column `groups.hero` jsonb `{url, credit, source}`, used only when `photo_path` is empty; the credit sits small in
 the banner's top corner. The 11 other teams' Wikimedia photos were copied into `hero`; the Team Page leaves a slide out when
 it is the banner photo, so their slide rows are empty (the `photos` entries can be cleared later); Tumby Bay keeps its uploaded banner and its Wikimedia photo in the slides. Uploading a banner photo in
-Training overrides the town photo; Remove photo clears both. On a branch, not merged.
+Training overrides the town photo; Remove photo clears both. Merged (PR #277).
 Editing path for leaders (owner asked for an obvious one, 18 Nov 2026): team pages are edited on the Region page
 (`/region/`, Edit page on a team tile), not in Training (Training's People tab only points there; the page editor and
 gallery code left in `training/index.html` from PR #273 is unreachable). The Region page team form now has Banner photo
 (shows when a town photo is in use; Remove clears `photo_path` and `hero`) and Photo slides (add several, caption,
 Move up, Remove; files under `<group id>/slides/`). Team Page: leaders get an "Edit this page" button that opens
 `/region/#edit=<group id>`. Region tiles show the town photo when no photo is uploaded. Leader guide section 9 has a
-"Team pages: banner photo and photo slides" part. Tested with stand-in data; not yet seen signed in. On a branch, not merged.
+"Team pages: banner photo and photo slides" part. Tested with stand-in data; not yet seen signed in. Merged (PR #277, 18 Nov 2026), checked live with no errors.
+Banner position (owner, 18 Nov 2026: Kimba's galah lost its head): column `groups.banner_y` (0 top to 100 bottom, null
+centre) sets the banner photo's `object-position`; slider with a live preview in the Region page team form (saves on
+release; a new upload resets it). Kimba set to 10. On a branch, not merged.
