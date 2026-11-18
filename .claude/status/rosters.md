@@ -428,3 +428,9 @@ Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id)
   features without `savedRoster`. Checked locally against the real database with the test account (999123, switched
   off afterwards): the team pages call only Supabase and refuse non-members; Summer Bay still loads.
 - Not carried over: team messages (they stay in the sheets) and the old Change Log tabs.
+- LIVE: PR #264 merged 18 Nov 2026; all 8 Lower Eyre and Central Eyre pages on the new roster from about 06:24 UTC
+  (4:54 pm Adelaide). First catch-up at 06:24 UTC: nothing booked, changed or cancelled on the old pages since the
+  copy. Checked on the live site in a fresh browser: the 8 team pages ask for sign-in; Kimba (West Coast) unchanged on
+  its Apps Script; operations page reads Lower Eyre and Central Eyre from Supabase and West Coast from its sheet; the
+  Lower Eyre and Central Eyre manager dashboards read Supabase only (numbers match the old sheet; the team column
+  order now follows teams.js). A second catch-up is scheduled for 07:26 UTC.
