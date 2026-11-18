@@ -8,7 +8,6 @@
 // Every question is logged in public.ask_dsy_log (service role writes; a leader reads their own rows, the lead
 // instructor reads all). Limit: 40 questions per leader per 24 hours.
 import { createClient } from "npm:@supabase/supabase-js@2";
-import Anthropic from "npm:@anthropic-ai/sdk@1.6.0";
 
 const URL_ = Deno.env.get("SUPABASE_URL")!;
 const SITE = "https://dsytraining.com";
@@ -108,7 +107,7 @@ Deno.serve(async (req: Request) => {
   const question = typeof body.question === "string" ? body.question.trim().slice(0, 500) : "";
   if (!question) return json({ ok: false, message: "Type a question first." }, 400);
 
-  const key = Deno.env.get("ANTHROPIC_API_KEY");
+  const key = (Deno.env.get("ANTHROPIC_API_KEY") ?? "").trim();
   if (!key) return json({ ok: false, code: "not_set_up", message: "Ask DSY isn't switched on yet: it can't find the Claude API key in Supabase. Tell the lead instructor." }, 503);
 
   const service = createClient(URL_, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
@@ -122,35 +121,53 @@ Deno.serve(async (req: Request) => {
   let guideText: string;
   try { guideText = await guides(); step(`guides ${guideText.length} chars`); } catch (_e) { return json({ ok: false, message: "The user guides didn't load. Try again in a minute." }, 502); }
 
-  const client = new Anthropic({ apiKey: key, timeout: 60000, maxRetries: 1 });
-  try {
-    const res = await client.beta.messages.create({
+  // Plain HTTPS call to the Messages API. The Anthropic SDK (npm 1.6.0) did not attach the key inside Supabase's Deno
+  // runtime on 18 Nov 2026 ("Could not resolve authentication method"), so the key header is set here directly.
+  const call = () => fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+      "anthropic-beta": "server-side-fallback-2026-07-01",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
       model: MODEL,
       max_tokens: 4000,
-      betas: ["server-side-fallback-2026-07-01"],
       fallbacks: "default",
       output_config: { effort: "low" },
       system: [{ type: "text", text: RULES }, { type: "text", text: guideText, cache_control: { type: "ephemeral" } }],
       messages: [...cleanHistory(body.history), { role: "user", content: question }],
-    });
-    step(`claude answered ${res.stop_reason}`);
-    const answer = res.content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join("\n").trim();
-    const u = res.usage;
-    const tokens = { model: res.model, input_tokens: u.input_tokens, output_tokens: u.output_tokens, cache_read_tokens: u.cache_read_input_tokens ?? 0 };
-    if (res.stop_reason === "refusal" || !answer) {
-      await log({ ...tokens, error: res.stop_reason === "refusal" ? "refusal" : "empty" });
+    }),
+    signal: AbortSignal.timeout(60000),
+  });
+  try {
+    let r = await call();
+    if (r.status === 429 || r.status === 529 || r.status >= 500) { step(`claude ${r.status}, trying once more`); await new Promise((ok) => setTimeout(ok, 2000)); r = await call(); }
+    const d = await r.json().catch(() => ({}));
+    step(`claude answered ${r.status} ${d?.stop_reason ?? ""}`);
+    if (!r.ok) {
+      const detail = String(d?.error?.message ?? "");
+      const message = r.status === 401 || r.status === 403 ? "Ask DSY's Claude API key isn't working. Tell the lead instructor."
+        : /credit/i.test(detail) ? "Ask DSY's Claude account is out of credit. Tell the lead instructor."
+        : r.status === 429 || r.status === 529 || r.status >= 500 ? "Claude is busy right now. Try again in a minute."
+        : "Ask DSY couldn't read that question. Try a shorter one.";
+      await log({ model: MODEL, error: `${r.status} ${detail}`.slice(0, 500) });
+      return json({ ok: false, message }, 502);
+    }
+    const answer = (d.content ?? []).flatMap((b: { type: string; text?: string }) => (b.type === "text" ? [b.text ?? ""] : [])).join("\n").trim();
+    const u = d.usage ?? {};
+    const tokens = { model: d.model ?? MODEL, input_tokens: u.input_tokens ?? null, output_tokens: u.output_tokens ?? null, cache_read_tokens: u.cache_read_input_tokens ?? 0 };
+    if (d.stop_reason === "refusal" || !answer) {
+      await log({ ...tokens, error: d.stop_reason === "refusal" ? "refusal" : "empty" });
       return json({ ok: false, message: "Ask DSY can't answer that one. Try asking another way, or check the Team Leader guide." });
     }
     await log({ ...tokens, answer });
     return json({ ok: true, answer, left: Math.max(0, DAILY_LIMIT - (count ?? 0) - 1) });
   } catch (e) {
-    let message = "Ask DSY didn't get an answer. Try again in a minute.";
-    if (e instanceof Anthropic.AuthenticationError || e instanceof Anthropic.PermissionDeniedError) message = "Ask DSY's Claude API key isn't working. Tell the lead instructor.";
-    else if (e instanceof Anthropic.RateLimitError) message = "Ask DSY is busy. Try again in a minute.";
-    else if (e instanceof Anthropic.BadRequestError) message = /credit/i.test(String((e as Error).message)) ? "Ask DSY's Claude account is out of credit. Tell the lead instructor." : "Ask DSY couldn't read that question. Try a shorter one.";
-    const err = `${(e as { status?: number })?.status ?? ""} ${String((e as Error)?.message ?? e)}`.slice(0, 500);
+    const err = String((e as Error)?.message ?? e).slice(0, 500);
     step(err);
     await log({ model: MODEL, error: err });
-    return json({ ok: false, message }, 502);
+    return json({ ok: false, message: "Ask DSY didn't get an answer. Try again in a minute." }, 502);
   }
 });

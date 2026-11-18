@@ -161,3 +161,6 @@ account and saved the key as the Edge Function secret `ANTHROPIC_API_KEY` in tra
 now calls Claude (`claude-opus-5-5`, low effort, server-side refusal fallback, guide text prompt-cached), timeout 60 s with
 one retry. Error messages: key not working, out of credit, busy. Guide line now says answers are by Claude. The Gemini
 secret is no longer used. Not yet tried with a real sign-in: owner to ask a question.
+- Fix (18 Nov 2026, deployed v11): the first three Claude questions failed with "Could not resolve authentication
+  method": the Anthropic npm SDK 1.6.0 did not attach the key inside Supabase's Deno runtime (it did in Node). `ask-dsy`
+  now calls the Messages API with a plain fetch and the `x-api-key` header (one retry on 429/529/5xx).
