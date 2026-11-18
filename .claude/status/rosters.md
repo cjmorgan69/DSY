@@ -450,3 +450,5 @@ user guide section updated to match.
   apple-touch-icon), in `roster.webmanifest` and as the reminder notification icon in `sw.js`. It replaces the
   calendar icon Claude drew (roster-icon-*.png, removed). New file names so phones don't keep the old picture; a
   tile already on a Home Screen must be deleted and added again to change.
+  On main and live (PR #268, merged 18 Nov 2026): all 13 team pages, the manifest and the service worker point at
+  the new tile; the four tile sizes are served.
