@@ -56,10 +56,11 @@ begin
       from public.roster_list(g.id, coalesce(p_from, now() - interval '60 days'), coalesce(p_to, now() + interval '180 days')) r), '[]'::jsonb));
 end $$;
 
--- 3. Volunteer contribution: teams named in p_supabase_teams are read from roster_shifts (people by account;
---    placeholders such as LEP40 are left out of hours, as decided 15 Nov 2026) instead of the old copy.
-drop function if exists public.member_contribution(timestamptz, timestamptz);
-create or replace function public.member_contribution(p_from timestamptz default null, p_to timestamptz default null, p_supabase_teams text[] default '{}')
+-- 3. Volunteer contribution: member_contribution_v2 is member_contribution plus p_supabase_teams: those teams are read
+--    from roster_shifts (people by account; placeholders such as LEP40 are left out of hours, as decided 15 Nov 2026)
+--    instead of the old copy. A new name, so the old member_contribution is left untouched (replacing it needs a
+--    confirmation that could not reach the owner's phone, 18 Nov 2026). Drop the old one once every team has moved.
+create or replace function public.member_contribution_v2(p_from timestamptz default null, p_to timestamptz default null, p_supabase_teams text[] default '{}')
 returns table (member_name text, teams text, levels text, shifts integer, hours numeric, jobs integer, p1_jobs integer, first_shift timestamptz, last_shift timestamptz)
 language sql stable set search_path to 'public' as $function$
   with w as (
@@ -100,6 +101,6 @@ language sql stable set search_path to 'public' as $function$
 $function$;
 
 revoke all on function public.roster_coverage(text[], date), public.roster_team_bookings(text, timestamptz, timestamptz),
-  public.member_contribution(timestamptz, timestamptz, text[]) from public, anon, authenticated;
+  public.member_contribution_v2(timestamptz, timestamptz, text[]) from public, anon, authenticated;
 grant execute on function public.roster_coverage(text[], date) to anon, authenticated;
-grant execute on function public.roster_team_bookings(text, timestamptz, timestamptz), public.member_contribution(timestamptz, timestamptz, text[]) to authenticated;
+grant execute on function public.roster_team_bookings(text, timestamptz, timestamptz), public.member_contribution_v2(timestamptz, timestamptz, text[]) to authenticated;

@@ -374,7 +374,7 @@ Owner asked for a quick link to each team's roster without new buttons. On `/mod
 names are now links (dotted underline): the column headings (CU, TB…), the "Needs attention" list and the team key.
 Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id); the page now loads that file.
 
-## Stage 6 (dashboards on the new roster): started 18 Nov 2026, NOT applied yet
+## Stage 6 (dashboards on the new roster): 18 Nov 2026
 
 - Pages that read rosters: `dashboard/dash.js` and the car dash (coverage + getBookings), `dashboard/coverage/`
   (getBookings), `modules/rosters/operations/` and the three `*/manager/dashboard/` pages (coverage),
@@ -388,3 +388,22 @@ Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id)
   pages. A rolled-back rehearsal was sent on 18 Nov 2026 but Supabase stopped to ask the owner to confirm it
   (it replaces `member_contribution`) and the question timed out: nothing applied. Waiting for the owner.
 - Still to do: rehearse and apply the SQL, a shared page helper, switch each page over, compare old and new.
+- Done 18 Nov 2026 (supersedes the "NOT applied" lines above): Supabase kept asking the owner to confirm replacing
+  `member_contribution`, and the question never reached their phone (3 timeouts), so the owner chose a new name:
+  `member_contribution_v2(from, to, supabase_teams)`; the old function is untouched (drop it once every team has
+  moved). Migration `roster_stage6_readers` applied: `roster_coverage`, `roster_team_bookings`,
+  `member_contribution_v2`. Rehearsed first: v2 gives identical hours to the old function with no moved teams;
+  coverage counts include recruits and placeholders, 23/25 hours on daylight-saving days, test and unknown teams
+  left out; bookings give full names and refuse other teams' members; with a team "moved" its hours come from
+  `roster_shifts` and placeholders are left out.
+- New `modules/rosters/shared/roster-data.js` (`DSY_ROSTER_DATA.coverage / bookings / movedTeams`): per team, the
+  Apps Script or Supabase (`backend: "supabase"` in teams.js, never the test team); a fully moved cluster no longer
+  asks its Apps Script. Switched over: `dashboard/dash.js` (dashboard and widescreen), car dash, `dashboard/coverage/`,
+  `dashboard/contribution/` (v2 with the moved team names), `modules/rosters/operations/`, the three
+  `*/manager/dashboard/` pages. Not switched: the old unlinked `lowereyre/coverage-gaps*` pages.
+- Tested in a headless browser against the live rosters: with no team moved every page asks only the Apps Scripts
+  and shows the same numbers; with Tumby Bay pretended moved, its column came from Supabase and the other three
+  from the sheet; Tumby Bay names were refused without sign-in. Not yet seen signed in by the owner.
+- Gap to know about: the manager dashboards and operations page are open pages (no sign-in); counts still work
+  for moved teams, but nothing on them needs names. The leader pages (dashboard, crewing gaps, contribution) are
+  signed in.
