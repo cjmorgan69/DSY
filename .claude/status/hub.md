@@ -14,8 +14,9 @@ facilitator walk-through, customise, `/mdt/#job=<id>`, copy student links, log i
 `hub/topics.js` when a module, walk-through or MDT job is made.
 
 Favicon (18 Nov 2026): `shared/dsy-favicon-32.png`, `-192.png` and `shared/dsy-touch-180.png` (green circle, white
-DSY, heartbeat line; drawn by Claude from the logo). On `/hub/learn/` only so far; other pages can use the same three
-`<link>` lines.
+DSY, heartbeat line; drawn by Claude from the logo). On every page (PR #269), replacing the old `cdn.simtheory.ai` tab icons.
+Not on: roster pages (own roster tile), `/LOGO files/`, video `scene.html` sources. `/mdt/` keeps its own
+home-screen icon. A new page needs the same three `<link>` lines after `<title>`.
 
 ## Run a session glossaries
 
