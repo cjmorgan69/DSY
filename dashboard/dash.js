@@ -73,10 +73,9 @@
   function loadRoster() {
     var date = opDate();
     return Promise.all(CLUSTERS.map(function (c) {
-      var u = new URL(c.url); u.searchParams.set("action", "coverage"); u.searchParams.set("date", date); u.searchParams.set("_", Date.now());
       var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 30000);
-      return fetch(u.toString(), { redirect: "follow", credentials: "omit", signal: ctl.signal })
-        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      /* Apps Script, or Supabase for teams that have moved (modules/rosters/shared/roster-data.js) */
+      return window.DSY_ROSTER_DATA.coverage(c.url, date, { signal: ctl.signal })
         .then(function (d) { if (!d.ok || !Array.isArray(d.teams) || !Array.isArray(d.hours)) throw new Error(d.error || "unexpected reply"); return { c: c, d: d }; })
         .catch(function (e) { return { c: c, err: e.name === "AbortError" ? "timed out" : e.message }; })
         .finally(function () { clearTimeout(to); });
@@ -151,8 +150,7 @@
     if (!teams.length) { $("cBody").innerHTML = '<p class="err">Team list did not load.</p>'; return Promise.resolve(); }
     return Promise.all(teams.map(function (t) {
       var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 60000);
-      return fetch(t.api, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "getBookings", team: t.name }), redirect: "follow", credentials: "omit", signal: ctl.signal })
-        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      return window.DSY_ROSTER_DATA.bookings(t.name, t.api, { signal: ctl.signal })
         .then(function (d) { if (!Array.isArray(d.bookings)) throw new Error(d.error || "unexpected reply"); return { t: t, b: d.bookings }; })
         .catch(function (e) { return { t: t, err: e.name === "AbortError" ? "timed out" : e.message }; })
         .finally(function () { clearTimeout(to); });

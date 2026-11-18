@@ -165,6 +165,6 @@ Development" cards. Raised with the owner and NOT yet decided or done:
   on your own, Running a session. Ask DSY (Gemini) on the dashboard: live (PR #254, merged 17 Nov 2026); owner to add
   GEMINI_API_KEY to the training-sessions project secrets (their key is in another project), then try it.
 - Crewing gaps for Team Leaders (`/dashboard/coverage/`, own rules per leader; see `rosters.md`): live (PR #252,
-  merged 16 Nov 2026); owner to try it with a real sign-in. Still reads the Apps Script rosters (stage 6 moves it).
+  merged 16 Nov 2026); owner to try it with a real sign-in. Reads each team from the Apps Script or, once the team has moved, Supabase (stage 6, 18 Nov 2026).
 
 Update this list as work is done.

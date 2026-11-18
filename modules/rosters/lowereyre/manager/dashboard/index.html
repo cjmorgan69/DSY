@@ -393,6 +393,8 @@
     </section>
   </main>
 
+  <script src="../../../shared/teams.js?v=20261118c"></script>
+  <script src="../../../shared/roster-data.js?v=20261118c"></script>
   <script>
     "use strict";
 
@@ -486,23 +488,10 @@
       const timeout = setTimeout(() => controller.abort(), 30000);
 
       try {
-        const url = new URL(API_URL);
-        url.searchParams.set("action", "coverage");
-        url.searchParams.set("date", selectedDate);
-        url.searchParams.set("_", String(Date.now()));
-
-        const response = await fetch(url.toString(), {
-          method: "GET",
-          redirect: "follow",
-          credentials: "omit",
-          signal: controller.signal
-        });
-
-        if (!response.ok) {
-          throw new Error("Server returned HTTP " + response.status + ".");
-        }
-
-        const data = await response.json();
+        // Apps Script, or Supabase for teams that have moved (../../../shared/roster-data.js).
+        const data = await window.DSY_ROSTER_DATA.coverage(
+          API_URL, selectedDate, { signal: controller.signal }
+        );
 
         if (!data.ok) {
           throw new Error(data.error || "Unable to load coverage.");
