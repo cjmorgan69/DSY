@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261119d">
+<link rel="stylesheet" href="../training/theme.css?v=20261119e">
 <style>
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: .9rem; }
 .tile { display: flex; flex-direction: column; overflow: hidden; border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(20, 40, 30, .05); }
@@ -34,7 +34,7 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261119d"></script>
+<script src="../training/config.js?v=20261119e"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -86,9 +86,16 @@
       r[2].forEach(function (s) { if (!S.next[s.group_id]) S.next[s.group_id] = s; });
       var jobs = [];
       S.photos = {}; S.regionPhoto = null;
+      S.groups.forEach(function (g) { if (!g.photo_path && g.hero && safeUrl(g.hero.url)) S.photos[g.id] = safeUrl(g.hero.url); });
       S.groups.forEach(function (g) { if (g.photo_path) jobs.push(sb.storage.from("team-photos").createSignedUrl(g.photo_path, 3600).then(function (x) { if (!x.error) S.photos[g.id] = x.data.signedUrl; })); });
       if (S.region.photo_path) jobs.push(sb.storage.from("team-photos").createSignedUrl(S.region.photo_path, 3600).then(function (x) { if (!x.error) S.regionPhoto = x.data.signedUrl; }));
-      return Promise.all(jobs).then(render);
+      var m = /^#edit=(.+)$/.exec(location.hash || "");
+      if (m && linkTeam(decodeURIComponent(m[1]))) S.editTeam = decodeURIComponent(m[1]);
+      return Promise.all(jobs).then(function () {
+        render();
+        if (m && S.editTeam) { history.replaceState(null, "", location.pathname); var f = document.getElementById("teamform"); if (f) f.scrollIntoView({ block: "start" }); }
+        fillThumbs();
+      });
     });
   }
 
@@ -148,8 +155,55 @@
       '<label>Roster link<input name="roster" value="' + esc(g.roster_url || "") + '" placeholder="/modules/rosters/lowereyre/tumbybay/"></label>' +
       '<label>Policies, procedures and links (one per line: name | address)<textarea name="links" rows="5" placeholder="SAMS intranet | https://...">' + esc(linksToText(g.links)) + "</textarea></label>" +
       '<div class="row"><button class="btn" type="submit">Save team page</button><button class="btn ghost" type="button" id="teamcancel">Close</button></div>' +
-      '<h3>Photo</h3><label class="drop" id="teamdrop"><strong>Drag a photo here</strong><span class="small">or click to choose. JPG, PNG or WebP, up to 10 MB.</span><input id="teamphoto" type="file" accept="image/jpeg,image/png,image/webp"></label>' +
-      (g.photo_path ? '<div class="row"><button class="btn danger small" type="button" id="teamrm">Remove photo</button></div>' : "") + "</form>";
+      '<h3>Banner photo</h3><p class="small muted">The big photo behind the team name. ' +
+      (g.photo_path ? "Your photo is showing. Add a new one to replace it." : g.hero && g.hero.url ? "A town photo is showing (" + esc(g.hero.caption || "Wikimedia Commons") + "). Add your own photo to replace it." : "No photo yet.") + "</p>" +
+      '<label class="drop" id="teamdrop"><strong>Choose a banner photo</strong><span class="small">or drag one here. JPG, PNG or WebP, up to 10 MB.</span><input id="teamphoto" type="file" accept="image/jpeg,image/png,image/webp"></label>' +
+      (g.photo_path || (g.hero && g.hero.url) ? '<div class="row"><button class="btn danger small" type="button" id="teamrm">Remove banner photo</button></div>' : "") +
+      slidesForm(g) + "</form>";
+  }
+  /* Photo slides (owner, 18 Nov 2026): members swipe through these on the Team Page. groups.photos = [{path, caption}]
+     (path in storage bucket team-photos) or [{url, caption, credit, source}]. The banner's town photo is left out. */
+  function slidesOf(g) {
+    var h = g.hero && g.hero.url;
+    return (Array.isArray(g.photos) ? g.photos : []).filter(function (x) { return x && (x.path || x.url) && !(x.url && x.url === h && !g.photo_path); });
+  }
+  function slidesForm(g) {
+    var list = slidesOf(g);
+    return '<h3>Photo slides</h3><p class="small muted">Members swipe through these under the buttons on the Team Page. ' + (list.length ? list.length + (list.length === 1 ? " photo." : " photos.") : "None yet.") + "</p>" +
+      (list.length ? '<ul class="gallery-edit">' + list.map(function (x, i) {
+        return '<li><img ' + (x.path ? 'data-thumb="' + esc(x.path) + '"' : 'src="' + esc(x.url) + '"') + ' alt=""><div class="stack" style="flex:1;gap:6px"><input type="text" maxlength="120" placeholder="Caption (optional)" value="' + esc(x.caption || "") + '" data-cap="' + i + '">' +
+          '<div class="row">' + (i ? '<button class="btn ghost small" type="button" data-up="' + i + '">Move up</button>' : "") + '<button class="btn danger small" type="button" data-rm="' + i + '">Remove</button></div></div></li>';
+      }).join("") + "</ul>" : "") +
+      '<label class="drop" id="slidedrop"><strong>Add slide photos</strong><span class="small">Choose one or more, or drag them here. JPG, PNG or WebP, up to 10 MB each.</span><input id="slidephotos" type="file" multiple accept="image/jpeg,image/png,image/webp"></label>';
+  }
+  function fillThumbs() {
+    var imgs = document.querySelectorAll("img[data-thumb]"); if (!imgs.length) return;
+    sb.storage.from("team-photos").createSignedUrls([].map.call(imgs, function (i) { return i.dataset.thumb; }), 3600).then(function (r) {
+      (r.data || []).forEach(function (u, k) { if (u && u.signedUrl && imgs[k]) imgs[k].src = u.signedUrl; });
+    });
+  }
+  function changeSlides(fn) {
+    var g = linkTeam(S.editTeam); if (!g) return;
+    var keep = (Array.isArray(g.photos) ? g.photos : []).filter(function (x) { return slidesOf(g).indexOf(x) < 0; });
+    var list = slidesOf(g).map(function (x) { return Object.assign({}, x); });
+    var gone = fn(list);
+    return sb.from("groups").update({ photos: list.concat(keep) }).eq("id", g.id).then(function (r) {
+      if (r.error) throw r.error; if (gone) sb.storage.from("team-photos").remove([gone]); return load();
+    }).catch(fail);
+  }
+  function uploadSlides(fileList) {
+    var g = linkTeam(S.editTeam), files = [].slice.call(fileList || []);
+    if (!g || !files.length || S.uploading) return;
+    if (files.some(function (f) { return !/^image\/(jpeg|png|webp)$/.test(f.type) || f.size > 10485760; })) return fail({ message: "Photos must be JPG, PNG or WebP and up to 10 MB each." });
+    S.uploading = true; var added = [];
+    files.reduce(function (p, file, k) {
+      return p.then(function () {
+        var path = g.id + "/slides/" + Date.now() + "-" + k + "-" + file.name.replace(/[^A-Za-z0-9._-]+/g, "_");
+        return sb.storage.from("team-photos").upload(path, file, { contentType: file.type }).then(function (r) { if (r.error) throw r.error; added.push({ path: path, caption: "" }); });
+      });
+    }, Promise.resolve()).then(function () {
+      return changeSlides(function (l) { [].push.apply(l, added); });
+    }).catch(fail).then(function () { S.uploading = false; });
   }
   function saveTeam(form) {
     var f = new FormData(form), id = form.dataset.id;
@@ -190,17 +244,23 @@
     var t = e.target.closest("button"); if (!t) return;
     if (t.dataset.edit) { S.editTeam = t.dataset.edit; render(); var f = document.getElementById("teamform"); if (f) f.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
     if (t.id === "teamcancel") { S.editTeam = null; render(); return; }
-    if (t.id === "teamrm") { var g = linkTeam(S.editTeam), old = g.photo_path; sb.from("groups").update({ photo_path: null }).eq("id", g.id).then(function (r) { if (r.error) throw r.error; if (old) sb.storage.from("team-photos").remove([old]); return load(); }).catch(fail); return; }
+    if (t.id === "teamrm") { var g = linkTeam(S.editTeam), old = g.photo_path; if (!window.confirm("Remove the banner photo?")) return; sb.from("groups").update({ photo_path: null, hero: null }).eq("id", g.id).then(function (r) { if (r.error) throw r.error; if (old) sb.storage.from("team-photos").remove([old]); return load(); }).catch(fail); return; }
+    if (t.dataset.rm != null) { if (window.confirm("Remove this photo from the slides?")) changeSlides(function (l) { return l.splice(+t.dataset.rm, 1)[0].path || null; }); return; }
+    if (t.dataset.up != null) { changeSlides(function (l) { var i = +t.dataset.up, x = l.splice(i, 1)[0]; l.splice(i - 1, 0, x); }); return; }
     if (t.id === "signout") sb.auth.signOut();
     else if (t.id === "swap") { S.authMode = S.authMode === "in" ? "up" : "in"; renderAuth(); }
     else if (t.id === "edit") { S.edit = true; render(); }
     else if (t.id === "cancel") { S.edit = false; render(); }
     else if (t.id === "rmphoto") { var old = S.region.photo_path; sb.from("region_info").update({ photo_path: null }).eq("id", S.region.id || "main").then(function (r) { if (r.error) throw r.error; if (old) sb.storage.from("team-photos").remove([old]); return load(); }).catch(fail); }
   });
-  $app.addEventListener("change", function (e) { if (e.target.id === "regionphoto") uploadRegionPhoto(e.target.files[0]); else if (e.target.id === "teamphoto") uploadTeamPhoto(e.target.files[0]); });
-  document.addEventListener("dragover", function (e) { if (!e.dataTransfer || [].indexOf.call(e.dataTransfer.types || [], "Files") < 0) return; e.preventDefault(); var z = e.target.closest && e.target.closest("#regiondrop, #teamdrop"); e.dataTransfer.dropEffect = z ? "copy" : "none"; if (z) z.classList.add("over"); });
+  $app.addEventListener("change", function (e) {
+    if (e.target.id === "slidephotos") return uploadSlides(e.target.files);
+    if (e.target.dataset && e.target.dataset.cap != null) { var i = +e.target.dataset.cap, v = e.target.value.trim(); return changeSlides(function (l) { l[i].caption = v; }); }
+    if (e.target.id === "regionphoto") uploadRegionPhoto(e.target.files[0]); else if (e.target.id === "teamphoto") uploadTeamPhoto(e.target.files[0]);
+  });
+  document.addEventListener("dragover", function (e) { if (!e.dataTransfer || [].indexOf.call(e.dataTransfer.types || [], "Files") < 0) return; e.preventDefault(); var z = e.target.closest && e.target.closest("#regiondrop, #teamdrop, #slidedrop"); e.dataTransfer.dropEffect = z ? "copy" : "none"; if (z) z.classList.add("over"); });
   document.addEventListener("dragleave", function (e) { if (!e.relatedTarget) [].forEach.call(document.querySelectorAll(".drop"), function (z) { z.classList.remove("over"); }); });
-  document.addEventListener("drop", function (e) { if (!e.dataTransfer || [].indexOf.call(e.dataTransfer.types || [], "Files") < 0) return; e.preventDefault(); var z = e.target.closest && e.target.closest("#regiondrop, #teamdrop"); if (z) { z.classList.remove("over"); if (z.id === "teamdrop") uploadTeamPhoto(e.dataTransfer.files[0]); else uploadRegionPhoto(e.dataTransfer.files[0]); } });
+  document.addEventListener("drop", function (e) { if (!e.dataTransfer || [].indexOf.call(e.dataTransfer.types || [], "Files") < 0) return; e.preventDefault(); var z = e.target.closest && e.target.closest("#regiondrop, #teamdrop, #slidedrop"); if (z) { z.classList.remove("over"); if (z.id === "slidedrop") uploadSlides(e.dataTransfer.files); else if (z.id === "teamdrop") uploadTeamPhoto(e.dataTransfer.files[0]); else uploadRegionPhoto(e.dataTransfer.files[0]); } });
   $app.addEventListener("submit", function (e) {
     e.preventDefault();
     var btn = e.target.querySelector('[type="submit"]'); btn.disabled = true;

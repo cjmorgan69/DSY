@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261119d">
+<link rel="stylesheet" href="../training/theme.css?v=20261119e">
 <style>
 /* Photo swipe row (owner, 18 Nov 2026). */
 .learnrow { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; margin: 0 -1rem; padding: .2rem 1rem .5rem; scroll-padding: 0 1rem; -webkit-overflow-scrolling: touch; }
@@ -32,7 +32,7 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261119d"></script>
+<script src="../training/config.js?v=20261119e"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -129,11 +129,12 @@
     }
     html += '<section class="hero' + (S.photoUrl ? "" : " plain") + '">' + (S.photoUrl ? '<img src="' + esc(S.photoUrl) + '" alt="' + esc(g.name) + '">' : "") +
       '<div class="cap"><h1>' + esc(g.name) + "</h1><p>" + (g.type === "course" ? "Course" : "Team") + "</p></div>" + heroCredit(g) + "</section>";
-    if (isLeader() && !hasContent(g)) html += '<div class="notice">This page is empty, so members of ' + esc(g.name) + ' go straight to the training schedule. Add a photo, gallery photos, information and links in Training, People, Team pages.</div>';
+    if (isLeader() && !hasContent(g)) html += '<div class="notice">This page is empty, so members of ' + esc(g.name) + ' go straight to the training schedule. Use Edit this page (below) to add a photo, slides, information and links.</div>';
     var ru = safeUrl(g.roster_url);
     html += '<div class="actions"><a class="big" href="../training/">Training schedule<span>Book a spot and see upcoming sessions</span></a>' +
       (ru ? '<a class="big alt" href="' + esc(ru) + '">Your roster<span>Open the roster for ' + esc(g.name) + "</span></a>" : "") +
-      '<a class="big alt" href="../hub/learn/">Learn on your own<span>Videos, walk-throughs, MDT and PCR practice</span></a></div>';
+      '<a class="big alt" href="../hub/learn/">Learn on your own<span>Videos, walk-throughs, MDT and PCR practice</span></a>' +
+      (isLeader() && g.type === "team" ? '<a class="big alt" href="../region/#edit=' + encodeURIComponent(g.id) + '">Edit this page<span>Team leaders: banner photo, photo slides, information and links</span></a>' : "") + "</div>";
     if (S.next) {
       var d = parseDate(S.next.session_date);
       html += '<section class="panel nextcard"><div class="when"><span class="dow">' + d.toLocaleDateString("en-AU", { weekday: "short" }) + '</span><span class="dom">' + d.getDate() + '</span><span class="mon">' + d.toLocaleDateString("en-AU", { month: "short" }) + '</span></div>' +
