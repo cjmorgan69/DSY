@@ -373,3 +373,18 @@ from Part 3 and drop the password, saved-roster, PDF-view and Google Sheet Chang
 Owner asked for a quick link to each team's roster without new buttons. On `/modules/rosters/operations/` the team
 names are now links (dotted underline): the column headings (CU, TB…), the "Needs attention" list and the team key.
 Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id); the page now loads that file.
+
+## Stage 6 (dashboards on the new roster): started 18 Nov 2026, NOT applied yet
+
+- Pages that read rosters: `dashboard/dash.js` and the car dash (coverage + getBookings), `dashboard/coverage/`
+  (getBookings), `modules/rosters/operations/` and the three `*/manager/dashboard/` pages (coverage),
+  `dashboard/contribution/` (`member_contribution`). The old `lowereyre/coverage-gaps*` pages are left on the
+  Apps Script (not linked; owner to say if they go).
+- The Apps Script "coverage" answer = people booked per team per hour for one 08:00-08:00 roster day (recruits
+  count); rebuilt from `roster_bookings` it matched the live Lower Eyre answer for Thu 19 Nov 2026.
+- Drafted `supabase/roster-stage6-readers.sql`: `roster_coverage(teams, date)` (counts only, anyone),
+  `roster_team_bookings(team, from, to)` (getBookings shape, signed in), `member_contribution(from, to,
+  supabase_teams)`. Which teams have moved stays in one place: `backend: "supabase"` in `teams.js`, passed by the
+  pages. A rolled-back rehearsal was sent on 18 Nov 2026 but Supabase stopped to ask the owner to confirm it
+  (it replaces `member_contribution`) and the question timed out: nothing applied. Waiting for the owner.
+- Still to do: rehearse and apply the SQL, a shared page helper, switch each page over, compare old and new.
