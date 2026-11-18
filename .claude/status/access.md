@@ -102,3 +102,11 @@ every 1-4 weeks, last date defaulting to the end of that school year, times, loc
 live preview with skipped dates and reasons, existing dates kept) and **Add one session**; delete stays on the session.
 Holiday data is in `training/sa-dates.js` (2026, 2027, 2028 Terms 1-3; the department's page refuses automated reads,
 2027 is from third-party calendars that agree): add each year when published. Leader guide section 9 updated.
+
+## Resetting a leader's password (18 Nov 2026, owner)
+
+- Owner could not find how to reset David Coombe's password (leader rows on `/access/` had no buttons). Claude reset it by
+  hand with a temporary password and flagged him to change it.
+- `/access/` now shows Reset password on leader rows (not your own row, not switched-off accounts). A relief leader is
+  refused by the database. `leader_set_password` now flags anyone reset by someone else to choose their own password,
+  leaders included (it used to skip leaders); applied in Supabase and in `supabase/relief-setup.sql`.

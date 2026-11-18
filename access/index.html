@@ -8,11 +8,11 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../shared/dsy-favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../shared/dsy-favicon-192.png">
 <link rel="apple-touch-icon" href="../shared/dsy-touch-180.png">
-<script src="/shared/gate.js?v=20261119g" data-level="leader"></script>
+<script src="/shared/gate.js?v=20261119h" data-level="leader"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261119g">
+<link rel="stylesheet" href="../training/theme.css?v=20261119h">
 <style>
 [hidden]{display:none!important}
 textarea{width:100%;min-height:7rem;font:inherit;padding:.6rem .75rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
@@ -58,10 +58,10 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
     <div class="scroll"><table><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
     <p class="small muted" id="empty" hidden>Nobody matches.</p>
   </section>
-  <p class="small muted">Removing someone switches their account off: they cannot sign in again, and a session already open ends within about an hour. Add them back to restore it. Leaders cannot be switched off here. Use Reset password to give someone a temporary one; they choose their own when they next sign in.</p>
+  <p class="small muted">Removing someone switches their account off: they cannot sign in again, and a session already open ends within about an hour. Add them back to restore it. Leaders cannot be switched off here, but their password can be reset. Use Reset password to give someone a temporary one; they choose their own when they next sign in.</p>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="../training/config.js?v=20261119g"></script>
+<script src="../training/config.js?v=20261119h"></script>
 <script>
 (function () {
   var C = window.TRAINING_APP, sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
@@ -76,9 +76,10 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
     return Promise.all([
       sb.from("allowed_ids").select("staff_id,note,role,added_at").order("added_at", { ascending: false }).then(must),
       sb.from("profiles").select("id,full_name,staff_id,role").then(must),
-      sb.rpc("leader_access_status").then(must)
+      sb.rpc("leader_access_status").then(must),
+      sb.auth.getSession()
     ]).then(function (r) {
-      S.allowed = r[0]; S.profiles = r[1]; S.off = {};
+      S.allowed = r[0]; S.profiles = r[1]; S.off = {}; S.me = r[3] && r[3].data && r[3].data.session ? r[3].data.session.user.id : null;
       r[2].forEach(function (a) { S.off[a.member_id] = a.switched_off; });
       draw();
     });
@@ -123,6 +124,9 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
           if (x.p) acts.appendChild(btn("Reset password", function () { resetForm(acts, x); }, true));
           acts.appendChild(btn("Remove", function () { remove(x); }, true, true));
         } else acts.appendChild(btn("Add back", function () { addBack(x); }, true));
+      } else if (x.p && x.p.id !== S.me && !x.off) {
+        /* leaders: only Reset password (a relief leader is refused by the database) */
+        acts.appendChild(btn("Reset password", function () { resetForm(acts, x); }, true));
       }
       a.appendChild(acts); tr.appendChild(a); tb.appendChild(tr);
     });
