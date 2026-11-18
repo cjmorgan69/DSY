@@ -163,7 +163,7 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 
 - User guide (17 Nov 2026): Team Leader section and roster guide Part 3 done; still to write: Getting started, Learning
   on your own, Running a session. Ask DSY on the dashboard: live, on Claude since 18 Nov 2026 (key `ANTHROPIC_API_KEY` in
-  Supabase secrets); owner to try it.
+  Supabase secrets); working (owner, 18 Nov 2026).
 - Crewing gaps for Team Leaders (`/dashboard/coverage/`, own rules per leader; see `rosters.md`): live (PR #252,
   merged 16 Nov 2026); owner to try it with a real sign-in. Reads each team from the Apps Script or, once the team has moved, Supabase (stage 6, 18 Nov 2026).
 
