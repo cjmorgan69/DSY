@@ -49,3 +49,20 @@ when it is made). Layout inside a topic: the same eight tiles every time (Presen
 Stations, Microlearning, Customise, Feedback QR) plus Student link and Feedback link; missing parts show "Not made
 yet" (PR #206). The full list of the 34 AO protocols, what is covered, the suggested build order and which CPPROs
 apply to AOs is in `.claude/references/ao-protocols.md`.
+
+## Team Page photos and learning (18 Nov 2026, owner)
+
+`/teams/` (Team Page in Training) now has: a "Learn on your own" button (to `/hub/learn/`); a swipe row of team photos
+(`groups.photos` jsonb `[{path, caption}]`, files in storage bucket `team-photos` under `<group id>/gallery/`;
+migration `groups_photo_gallery`); and a swipe row of learning topics from `hub/topics.js` (topics with a module or
+walk-through), each card showing the phone's Learn on your own ticks and opening `/hub/learn/#<topic id>` (the Learn
+page now gives each topic card an id and scrolls to it). Leaders add, caption, reorder (Move up) and remove gallery
+photos in Training, People, Team pages, below the main photo. A team with only gallery photos counts as having a page.
+Tested with stand-in data in a headless browser (phone width); not yet seen with a real sign-in.
+A gallery entry can also be `{url, caption, credit, source}` (a picture not in storage; credit shown under it).
+Town photos (owner, 18 Nov 2026: "one for each team"): one free-licence Wikimedia Commons photo per team (the lead
+photo of each town's Wikipedia article, licence and photographer in the credit line), loaded straight from
+upload.wikimedia.org (this cloud machine was rate-limited by Wikimedia, so they are not copied into the repo).
+Elliston's is the main-street shops, Cleve's the folk museum: swap for better ones if the owner has them. Every team
+now has page content, so members land on the Team Page instead of going straight to the schedule.
+Merged with PR #273 (owner: "merge every thing", 18 Nov 2026).
