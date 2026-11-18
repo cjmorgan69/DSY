@@ -1,7 +1,7 @@
 // Ask DSY (17 Nov 2026): the "how do I...?" helper on the Team Leader dashboard.
 // POST { question: string, history?: [{ role: "user" | "assistant", content: string }] } from a signed-in leader
 // (or a relief Team Leader while covering). verify_jwt on.
-// It answers ONLY from the live user guides (the Team Leader guide and the roster guide, read from dsytraining.com and
+// It answers ONLY from the live user guides (the Team Leader, roster and Getting started guides, read from dsytraining.com and
 // kept for 30 minutes), so the guides are the single source: update the guide and the answers follow.
 // Uses Claude (owner, 18 Nov 2026: "rather pay for reliable answers"; Gemini was overloaded or answered badly on
 // 17 Nov). The key is the Supabase Edge Function secret ANTHROPIC_API_KEY, never in this public repo.
@@ -14,6 +14,7 @@ const SITE = "https://dsytraining.com";
 const GUIDES = [
   { path: "/userguides/leaders/", title: "Team Leader Guide" },
   { path: "/userguides/rosters/", title: "Crew Shift Roster User Guide" },
+  { path: "/userguides/start/", title: "Getting Started Guide (for crews)" },
 ];
 const MODEL = "claude-opus-5-5";
 const DAILY_LIMIT = 40;
