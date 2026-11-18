@@ -89,3 +89,16 @@ dashboards' training tile and the car dash trip/service light follow the leader'
   needed" sentence is gone. An email typed in the box still signs in an old email account.
   On main and live (PR #260, merged 17 Nov 2026); checked on the live page: no temporary-password line in the box,
   ID box labelled "Ambulance ID number", no email wording.
+
+## Set up training nights (18 Nov 2026, owner)
+
+Owner set up the 2027 Central Eyre calendar by hand (SQL): fortnightly Team Leader visits (leader-led, Campbell Forsyth)
+Elliston Wed from 10 Feb, Lock Thu 11 Feb, Cleve Mon 15 Feb, Cowell Tue 16 Feb, and team-led training on the opposite
+weeks (no facilitator, Campbell to allocate), all leaving out SA school holidays to 10 Dec 2027; the team weeks also
+leave out public holidays. Cleve 29 Mar 2027 (Easter Monday) visit: owner to delete in the app (the SQL delete's
+approval prompt timed out twice). Then, for West Coast (no dates yet), the owner asked for a panel so leaders do this
+themselves: on `/training/` Calendar, **Set up training nights** (team, Team Leader visits or Team training, first night,
+every 1-4 weeks, last date defaulting to the end of that school year, times, location, skip school / public holidays,
+live preview with skipped dates and reasons, existing dates kept) and **Add one session**; delete stays on the session.
+Holiday data is in `training/sa-dates.js` (2026, 2027, 2028 Terms 1-3; the department's page refuses automated reads,
+2027 is from third-party calendars that agree): add each year when published. Leader guide section 9 updated.

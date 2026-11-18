@@ -9,13 +9,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261118c">
+<link rel="stylesheet" href="theme.css?v=20261119a">
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261118c"></script>
+<script src="config.js?v=20261119a"></script>
+<script src="sa-dates.js?v=20261119a"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -28,7 +29,7 @@
     user: null, profile: null, tab: location.hash === "#lessons" ? "lessons" : "calendar", view: null,
     reflections: {}, attFilter: null, attSession: null, groups: [], lessons: [], sessions: [], bookings: [], profiles: [], memberships: [],
     mySessions: [], myBookings: {}, filter: "all", typeFilter: "all", showPast: false, authMode: "in", detail: null, lessonEdit: null, personEdit: null,
-    shared: [], files: [], shares: [], roster: [], rosterSession: null, lessonView: null, memberTab: "sessions", delSession: null, cluster: null
+    shared: [], files: [], shares: [], roster: [], rosterSession: null, lessonView: null, memberTab: "sessions", delSession: null, cluster: null, plan: null
   };
 
   /* ---------- helpers ---------- */
@@ -273,13 +274,130 @@
   }
 
   /* ---------- leader: calendar ---------- */
+  /* ---------- leader: set up training nights (18 Nov 2026) ----------
+     A leader picks a team, who the nights are for (their own visits or team-led training), the first night, how
+     often and the last date; school and public holidays are left out and dates that already have a session are
+     kept. Single nights can then be added or deleted one by one. */
+  var SAD = window.SA_DATES || { schoolHolidays: [], publicHolidays: {}, yearEnd: {}, knownUntil: "" };
+  function ymd(dt) { return dt.getFullYear() + "-" + String(dt.getMonth() + 1).padStart(2, "0") + "-" + String(dt.getDate()).padStart(2, "0"); }
+  function schoolHoliday(d) { for (var i = 0; i < SAD.schoolHolidays.length; i++) { var h = SAD.schoolHolidays[i]; if (d >= h[0] && d <= h[1]) return h[2]; } return null; }
+  function editableTeams() { return S.groups.filter(function (g) { return g.type !== "course" && canEdit(g.id) && inView(g); }); }
+  function shortDate(d) { return parseDate(d).toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short", year: "numeric" }); }
+  function planDates(f) {
+    var first = f.get("first"), last = f.get("last"), every = +f.get("every") || 14, gid = f.get("group");
+    var skipSchool = f.get("skipschool") === "on", skipPublic = f.get("skippublic") === "on", out = [];
+    if (!first || !last || last < first) return out;
+    var have = {}; S.sessions.forEach(function (s) { if (s.group_id === gid) have[s.session_date] = true; });
+    for (var dt = parseDate(first), n = 0; ymd(dt) <= last && n < 120; dt.setDate(dt.getDate() + every), n++) {
+      var d = ymd(dt), why = null;
+      if (have[d]) why = "Already has a session";
+      else if (skipSchool && schoolHoliday(d)) why = schoolHoliday(d);
+      else if (skipPublic && SAD.publicHolidays[d]) why = SAD.publicHolidays[d] + " (public holiday)";
+      out.push({ d: d, skip: why, unknown: skipSchool && SAD.knownUntil && d > SAD.knownUntil });
+    }
+    return out;
+  }
+  function planPreview(form) {
+    var f = new FormData(form), rows = planDates(f), make = rows.filter(function (r) { return !r.skip; });
+    var unknown = rows.some(function (r) { return r.unknown; });
+    var btn = form.querySelector('[type="submit"]');
+    if (btn) { btn.textContent = "Create " + make.length + " session" + (make.length === 1 ? "" : "s"); btn.disabled = !make.length; }
+    if (!rows.length) return '<p class="small muted">Choose the first night and a last date after it.</p>';
+    var dow = parseDate(rows[0].d).toLocaleDateString("en-AU", { weekday: "long" }), every = +f.get("every");
+    return '<p><strong>' + make.length + " new session" + (make.length === 1 ? "" : "s") + "</strong>, " + (every === 7 ? "every " : every === 14 ? "every second " : "every " + every / 7 + " weeks on ") + dow + "." +
+      (rows.length > make.length ? " " + (rows.length - make.length) + " left out." : "") + "</p>" +
+      (unknown ? '<p class="small muted">School holidays after ' + esc(shortDate(SAD.knownUntil)) + " are not loaded yet, so dates after that are not checked for them.</p>" : "") +
+      '<ul class="stack">' + rows.map(function (r) {
+        return '<li class="row" style="justify-content:space-between"><span' + (r.skip ? ' class="muted" style="text-decoration:line-through"' : "") + ">" + esc(shortDate(r.d)) + "</span>" +
+          (r.skip ? '<span class="chip warn">' + esc(r.skip) + "</span>" : '<span class="chip good">New</span>') + "</li>";
+      }).join("") + "</ul>";
+  }
+  function redrawPlan(changed) {
+    var form = document.querySelector('form[data-form="plan"]'), box = document.getElementById("plan-preview");
+    if (!form || !box) return;
+    /* the last date follows the first night's school year until the leader sets it themselves */
+    var first = form.elements.first.value, last = form.elements.last;
+    if (changed === last) last.dataset.auto = "";
+    else if (first && (last.dataset.auto || !last.value || last.value < first)) {
+      var y = first.slice(0, 4), end = SAD.yearEnd[y] && SAD.yearEnd[y] >= first ? SAD.yearEnd[y] : y + "-12-31";
+      last.value = end; last.dataset.auto = "1";
+    }
+    box.innerHTML = planPreview(form);
+  }
+  function teamSelect(id) {
+    var teams = editableTeams(), pick = S.filter !== "all" && teams.some(function (g) { return g.id === S.filter; }) ? S.filter : "";
+    return '<label>Team<select id="' + id + '" name="group" required><option value="">Choose a team</option>' + teams.map(function (g) {
+      return '<option value="' + g.id + '"' + (g.id === pick ? " selected" : "") + ">" + esc(g.name) + (g.cluster ? " (" + esc(g.cluster) + ")" : "") + "</option>";
+    }).join("") + "</select></label>";
+  }
+  function whoChoice() {
+    return '<fieldset class="stack" style="border:0;padding:0;margin:0"><legend style="font-weight:600;margin-bottom:.3rem">Who are these nights for?</legend>' +
+      '<label class="check"><input type="radio" name="type" value="leader" checked> <span><strong>Team Leader visits</strong>: leader-led, with you as facilitator</span></label>' +
+      '<label class="check"><input type="radio" name="type" value="team"> <span><strong>Team training</strong>: team-led, choose the facilitator later</span></label></fieldset>';
+  }
+  function timeFields(p) {
+    return '<label>Start<input id="' + p + '-start" name="start" type="time" value="19:00" required></label><label>Finish<input id="' + p + '-end" name="end" type="time" value="21:00" required></label>';
+  }
+  function renderPlan() {
+    var t = todayStr();
+    if (!editableTeams().length) return '<button class="link back" data-act="plan" data-p="">Back to calendar</button><div class="panel empty">There are no teams you can change in this view. Pick your own cluster above.</div>';
+    if (S.plan === "one") {
+      return '<button class="link back" data-act="plan" data-p="">Back to calendar</button>' +
+        '<form class="panel pad stack" data-form="onesession"><h2>Add one session</h2><p class="small muted">For a single extra night. To remove a night, open it in the calendar and choose Delete session.</p>' +
+        teamSelect("o-group") + '<label>Date<input id="o-date" name="date" type="date" min="' + t + '" required></label>' + whoChoice() +
+        '<div class="grid2">' + timeFields("o") + "</div>" +
+        '<label>Location (optional)<input id="o-loc" name="location" autocomplete="off"></label>' +
+        '<button class="btn" type="submit">Add session</button></form>';
+    }
+    return '<button class="link back" data-act="plan" data-p="">Back to calendar</button>' +
+      '<form class="panel pad stack" data-form="plan"><h2>Set up training nights</h2><p class="small muted">Creates a repeating set of nights for one team. Nights that already have a session are kept as they are. Afterwards you can open any night to change it or delete it, or add a single extra night.</p>' +
+      teamSelect("p-group") + whoChoice() +
+      '<div class="grid2"><label>First night<input id="p-first" name="first" type="date" min="' + t + '" required></label>' +
+      '<label>Repeat<select id="p-every" name="every"><option value="7">Every week</option><option value="14" selected>Every second week (fortnightly)</option><option value="21">Every third week</option><option value="28">Every fourth week</option></select></label>' +
+      '<label>Last date<input id="p-last" name="last" type="date" data-auto="1" required></label><span></span>' + timeFields("p") + "</div>" +
+      '<label>Location (optional)<input id="p-loc" name="location" autocomplete="off"></label>' +
+      '<label class="check"><input type="checkbox" name="skipschool" checked> <span>Leave out SA school holidays</span></label>' +
+      '<label class="check"><input type="checkbox" name="skippublic" checked> <span>Leave out SA public holidays</span></label>' +
+      '<div id="plan-preview" class="stack"><p class="small muted">Choose the first night and a last date after it.</p></div>' +
+      '<button class="btn" type="submit" disabled>Create sessions</button></form>';
+  }
+  function sessionRow(f, d) {
+    var type = f.get("type") === "team" ? "team" : "leader";
+    return { group_id: f.get("group"), session_date: d, start_time: f.get("start"), end_time: f.get("end"), session_type: type,
+      facilitator_id: type === "leader" ? S.profile.id : null, facilitator_name: type === "leader" ? nameOf(S.profile) : null, location: (f.get("location") || "").trim() || null };
+  }
+  function createPlan(form) {
+    var f = new FormData(form);
+    if (!f.get("group")) return Promise.resolve(fail({ message: "Choose a team." }));
+    if (f.get("end") <= f.get("start")) return Promise.resolve(fail({ message: "The finish time must be after the start." }));
+    var rows = planDates(f).filter(function (r) { return !r.skip; }).map(function (r) { return sessionRow(f, r.d); });
+    if (!rows.length) return Promise.resolve(fail({ message: "There are no new nights to create." }));
+    var g = groupOf(f.get("group"));
+    return sb.from("sessions").insert(rows).then(function (r) {
+      if (r.error) throw r.error;
+      S.plan = null; S.filter = f.get("group"); toast(rows.length + " sessions created for " + (g ? g.name : "the team") + "."); return refresh();
+    }).catch(fail);
+  }
+  function createOne(form) {
+    var f = new FormData(form), gid = f.get("group"), d = f.get("date");
+    if (!gid || !d) return Promise.resolve(fail({ message: "Choose a team and a date." }));
+    if (f.get("end") <= f.get("start")) return Promise.resolve(fail({ message: "The finish time must be after the start." }));
+    if (S.sessions.some(function (s) { return s.group_id === gid && s.session_date === d; })) return Promise.resolve(fail({ message: "That team already has a session on that date." }));
+    return sb.from("sessions").insert(sessionRow(f, d)).then(function (r) {
+      if (r.error) throw r.error;
+      S.plan = null; S.filter = gid; toast("Session added."); return refresh();
+    }).catch(fail);
+  }
+
   function renderCalendar() {
     var t = todayStr();
+    if (S.plan) return clusterChips() + renderPlan();
+    var tools = '<div class="row"><button class="btn small" data-act="plan" data-p="repeat">Set up training nights</button><button class="btn ghost small" data-act="plan" data-p="one">Add one session</button></div>';
     if (S.filter !== "all" && !inView(groupOf(S.filter))) S.filter = "all";
     var list = S.sessions.filter(function (s) {
       return inView(groupOf(s.group_id)) && (S.filter === "all" || s.group_id === S.filter) && (S.typeFilter === "all" || s.session_type === S.typeFilter) && (S.showPast || s.session_date >= t);
     });
-    var html = clusterChips() + '<div class="filters" role="group" aria-label="Filter by team or course"><button aria-pressed="' + (S.filter === "all") + '" data-act="filter" data-g="all">All</button>' +
+    var html = clusterChips() + tools + '<div class="filters" role="group" aria-label="Filter by team or course"><button aria-pressed="' + (S.filter === "all") + '" data-act="filter" data-g="all">All</button>' +
       S.groups.filter(inView).map(function (g) { return '<button aria-pressed="' + (S.filter === g.id) + '" data-act="filter" data-g="' + g.id + '">' + esc(g.name) + "</button>"; }).join("") + "</div>" +
       '<div class="filters" role="group" aria-label="Filter by who leads">' + [["all", "Any session"], ["leader", "Leader-led"], ["team", "Team-led"]].map(function (x) {
         return '<button aria-pressed="' + (S.typeFilter === x[0]) + '" data-act="typefilter" data-t="' + x[0] + '">' + x[1] + "</button>";
@@ -617,9 +735,10 @@
     signout: function () { sb.auth.signOut(); },
     book: function (d) { return book(d.id); },
     cancel: function (d) { return cancelBooking(d.id); },
-    tab: function (d) { S.tab = d.tab; S.lessonEdit = null; S.personEdit = null; S.pageEdit = null; render(); },
+    tab: function (d) { S.tab = d.tab; S.plan = null; S.lessonEdit = null; S.personEdit = null; S.pageEdit = null; render(); },
     filter: function (d) { S.filter = d.g; render(); },
-    cluster: function (d) { S.cluster = d.c; render(); },
+    cluster: function (d) { S.cluster = d.c; render(); if (S.plan) redrawPlan(); },
+    plan: function (d) { S.plan = d.p || null; render(); window.scrollTo(0, 0); },
     typefilter: function (d) { S.typeFilter = d.t; render(); },
     mtab: function (d) { S.memberTab = d.tab; render(); },
     viewlesson: function (d) { S.lessonView = d.id; render(); window.scrollTo(0, 0); },
@@ -672,10 +791,13 @@
     var fn = actions[t.dataset.act]; if (fn) fn(t.dataset, t);
   });
   document.addEventListener("input", function (e) {
+    if (e.target && e.target.form && e.target.form.dataset.form === "plan") redrawPlan(e.target);
     if (e.target && e.target.id === "l-res") { var b = document.getElementById("l-links"); if (b) b.innerHTML = linkRow(e.target.value); }
   });
   document.addEventListener("change", function (e) {
-    var t = e.target; if (!t.dataset || !t.dataset.act) return;
+    var t = e.target;
+    if (t.form && t.form.dataset.form === "plan") { redrawPlan(t); return; }
+    if (!t.dataset || !t.dataset.act) return;
     if (t.dataset.act === "attend") setAttendance(t.dataset.sid, t.dataset.mid, t.checked);
     else if (t.dataset.act === "rattend") setRoster(t.dataset.sid, t.dataset.mid, t.checked);
     else if (t.dataset.act === "member") setMembership(t.dataset.mid, t.dataset.gid, t.checked);
@@ -726,6 +848,8 @@
     else if (kind === "session") job = saveSession(form);
     else if (kind === "lesson") job = saveLesson(form);
     else if (kind === "course") job = createCourse(form);
+    else if (kind === "plan") job = createPlan(form);
+    else if (kind === "onesession") job = createOne(form);
     else if (kind === "page") job = savePage(form);
     if (job) job.then(function () { if (btn && document.contains(btn)) btn.disabled = false; });
   });
