@@ -12,13 +12,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261119c">
+<link rel="stylesheet" href="theme.css?v=20261119d">
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261119c"></script>
+<script src="config.js?v=20261119d"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -551,9 +551,9 @@
       '<label>Roster link<input id="pg-roster" name="roster" value="' + esc(g.roster_url || "") + '" placeholder="/modules/rosters/lowereyre/tumbybay/"></label>' +
       '<label>Policies, procedures and links (one per line: name | address)<textarea id="pg-links" name="links" placeholder="SAMS intranet | https://...&#10;Policies and procedures | https://...">' + esc(linksToText(g.links)) + "</textarea></label>" +
       '<div class="row"><button class="btn" type="submit">Save page</button></div></form>' +
-      '<section class="panel pad stack"><h3>Photo</h3><p class="small muted">' + (g.photo_path ? "A photo is set. Drop a new one to replace it." : "No photo yet.") + '</p>' +
+      '<section class="panel pad stack"><h3>Photo</h3><p class="small muted">' + (g.photo_path ? "A photo is set. Drop a new one to replace it." : g.hero && g.hero.url ? "A town photo is showing" + (g.hero.credit ? " (" + esc(g.hero.credit) + ")" : "") + ". Drop your own photo to replace it." : "No photo yet.") + '</p>' +
       '<label class="drop" data-gid="' + g.id + '"><strong>Drag a photo here</strong><span class="small">or click to choose. JPG, PNG or WebP, up to 10 MB.</span><input id="pg-photo" type="file" accept="image/jpeg,image/png,image/webp" data-act="uploadphoto" data-gid="' + g.id + '"></label>' +
-      (g.photo_path ? '<div class="row"><button class="btn danger small" type="button" data-act="removephoto" data-id="' + g.id + '">Remove photo</button></div>' : "") + "</section>" +
+      (g.photo_path || (g.hero && g.hero.url) ? '<div class="row"><button class="btn danger small" type="button" data-act="removephoto" data-id="' + g.id + '">Remove photo</button></div>' : "") + "</section>" +
       renderGallery(g);
   }
   /* Photo gallery (owner, 18 Nov 2026): members swipe through these on the Team Page. groups.photos = [{path, caption}]. */
@@ -630,10 +630,10 @@
     }).catch(fail).then(function () { S.uploading = false; });
   }
   function removePhoto(gid) {
-    var g = by(gid, S.groups); if (!g || !g.photo_path) return;
-    return sb.from("groups").update({ photo_path: null }).eq("id", gid).then(function (r) {
+    var g = by(gid, S.groups); if (!g || !(g.photo_path || g.hero)) return;
+    return sb.from("groups").update({ photo_path: null, hero: null }).eq("id", gid).then(function (r) {
       if (r.error) throw r.error;
-      return sb.storage.from("team-photos").remove([g.photo_path]);
+      return g.photo_path ? sb.storage.from("team-photos").remove([g.photo_path]) : {};
     }).then(function () { toast("Photo removed."); return load().then(render); }).catch(fail);
   }
 
