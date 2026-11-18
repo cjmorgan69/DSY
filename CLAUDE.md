@@ -159,7 +159,7 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario
   (`/modules/hypo/`) is to be converted when asked.
 - Retire `/course/` (Google Sheet app) once the current AR group finishes; `/ar/course/` replaces it.
-- Planned: a request portal (`/request/`) with an inbox panel on the dashboard; the Supabase roster (see `rosters.md`; stages 1 (database), 3 (emails) and 4 (new roster page, send, schedule, reminders: on the Summer Bay test roster only) of 8 done 17 Nov 2026; real teams still on the Apps Scripts).
+- Planned: a request portal (`/request/`) with an inbox panel on the dashboard; the Supabase roster (see `rosters.md`; stages 1 to 6 done by 18 Nov 2026 (database, people, emails, new roster page on the Summer Bay test roster, import rehearsal, dashboards); Lower Eyre and Central Eyre switched to the new roster 18 Nov 2026 (stage 7); West Coast still on its Apps Script until Dave's list is loaded; then stage 8 tidy up).
 
 - User guide (17 Nov 2026): Team Leader section and roster guide Part 3 done; still to write: Getting started, Learning
   on your own, Running a session. Ask DSY (Gemini) on the dashboard: live (PR #254, merged 17 Nov 2026); owner to add
