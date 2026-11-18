@@ -69,3 +69,9 @@ Merged with PR #273 (owner: "merge every thing", 18 Nov 2026).
 
 Learning swipe row removed from the Team Page (owner, 18 Nov 2026: "just have photo tiles"); the photo row and the
 Learn on your own button stay. On a branch, not merged.
+
+Main page "Other groups and pages" (18 Nov 2026, owner): the row of links (All AO walk-throughs, Paramedic, Rural ED,
+GP clinic, Rural nursing microlearning, Classic hub, Ambulance Responder course) is hidden from everyone. Leaders
+(role `leader`: Chris Morgan, Campbell Forsyth, David Coombe) see an "Other groups and pages" link next to Dashboard
+and Grant access at the bottom, which shows and hides the row. Uses the same `dsy-gate-role` cache as the leader
+links, so it is a display choice only: the pages themselves are still open to anyone with the address.
