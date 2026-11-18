@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="/shared/gate.js?v=20261118i" data-level="student"></script>
+<script src="/shared/gate.js?v=20261118j" data-level="student"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Learn on your own - DSY Training</title>
@@ -11,8 +11,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../training/theme.css?v=20261118i">
-<link rel="stylesheet" href="../../hub/hub.css?v=20261118i">
+<link rel="stylesheet" href="../../training/theme.css?v=20261118j">
+<link rel="stylesheet" href="../../hub/hub.css?v=20261118j">
 </head>
 <body>
 <main class="wrap">
@@ -28,7 +28,7 @@
   <section class="stack" id="list"></section>
   <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
 </main>
-<script src="../topics.js?v=20261118i"></script>
+<script src="../topics.js?v=20261118j"></script>
 <script>
 (function () {
   var KEY = "dsy-hub-progress", done = {};
@@ -49,6 +49,7 @@
     var total = 0, got = 0, full = 0;
     window.DSY_TOPICS.forEach(function (t) {
       var card = el("article", "panel topic"), head = el("header");
+      card.id = t.id;
       head.appendChild(el("h3", null, t.title)); head.appendChild(el("span", "chip hi", t.protocol));
       card.appendChild(head);
       var grid = el("div", "steps"), mine = 0, avail = 0;
@@ -68,6 +69,9 @@
     document.getElementById("bar").style.width = (total ? 100 * got / total : 0) + "%";
   }
   render();
+  /* Opened from a topic card (e.g. the Team Page swipe row): bring that topic into view. */
+  var want = decodeURIComponent(location.hash.slice(1)), hit = want && document.getElementById(want);
+  if (hit) { hit.style.boxShadow = "inset 0 0 0 2px var(--brand)"; setTimeout(function () { hit.scrollIntoView({ block: "start" }); }, 50); }
 })();
 </script>
 </body>

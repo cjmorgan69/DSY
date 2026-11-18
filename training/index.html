@@ -12,13 +12,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261118i">
+<link rel="stylesheet" href="theme.css?v=20261118j">
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261118i"></script>
+<script src="config.js?v=20261118j"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -553,7 +553,58 @@
       '<div class="row"><button class="btn" type="submit">Save page</button></div></form>' +
       '<section class="panel pad stack"><h3>Photo</h3><p class="small muted">' + (g.photo_path ? "A photo is set. Drop a new one to replace it." : "No photo yet.") + '</p>' +
       '<label class="drop" data-gid="' + g.id + '"><strong>Drag a photo here</strong><span class="small">or click to choose. JPG, PNG or WebP, up to 10 MB.</span><input id="pg-photo" type="file" accept="image/jpeg,image/png,image/webp" data-act="uploadphoto" data-gid="' + g.id + '"></label>' +
-      (g.photo_path ? '<div class="row"><button class="btn danger small" type="button" data-act="removephoto" data-id="' + g.id + '">Remove photo</button></div>' : "") + "</section>";
+      (g.photo_path ? '<div class="row"><button class="btn danger small" type="button" data-act="removephoto" data-id="' + g.id + '">Remove photo</button></div>' : "") + "</section>" +
+      renderGallery(g);
+  }
+  /* Photo gallery (owner, 18 Nov 2026): members swipe through these on the Team Page. groups.photos = [{path, caption}]. */
+  function galleryOf(g) { return Array.isArray(g && g.photos) ? g.photos.filter(function (x) { return x && x.path; }) : []; }
+  function renderGallery(g) {
+    var list = galleryOf(g);
+    setTimeout(fillThumbs, 0);
+    return '<section class="panel pad stack"><h3>Photo gallery</h3><p class="small muted">Members swipe through these on the Team Page, above the learning topics. ' + (list.length ? list.length + (list.length === 1 ? " photo." : " photos.") : "No gallery photos yet.") + "</p>" +
+      (list.length ? '<ul class="gallery-edit">' + list.map(function (x, i) {
+        return '<li><img data-thumb="' + esc(x.path) + '" alt=""><div class="stack" style="flex:1;gap:6px"><input type="text" maxlength="120" placeholder="Caption (optional)" value="' + esc(x.caption || "") + '" data-act="gcaption" data-gid="' + g.id + '" data-i="' + i + '">' +
+          '<div class="row">' + (i ? '<button class="btn ghost small" type="button" data-act="gmove" data-gid="' + g.id + '" data-i="' + i + '" data-to="' + (i - 1) + '">Move up</button>' : "") +
+          '<button class="btn danger small" type="button" data-act="gremove" data-gid="' + g.id + '" data-i="' + i + '">Remove</button></div></div></li>';
+      }).join("") + "</ul>" : "") +
+      '<label class="drop" data-gallery="' + g.id + '"><strong>Add photos</strong><span class="small">Drag them here or click to choose. JPG, PNG or WebP, up to 10 MB each.</span><input id="pg-gallery" type="file" multiple accept="image/jpeg,image/png,image/webp" data-act="uploadgallery" data-gid="' + g.id + '"></label></section>';
+  }
+  function fillThumbs() {
+    var imgs = document.querySelectorAll("img[data-thumb]"); if (!imgs.length) return;
+    var paths = Array.prototype.map.call(imgs, function (i) { return i.dataset.thumb; });
+    sb.storage.from("team-photos").createSignedUrls(paths, 3600).then(function (r) {
+      (r.data || []).forEach(function (u, k) { if (u && u.signedUrl && imgs[k]) imgs[k].src = u.signedUrl; });
+    });
+  }
+  function saveGallery(gid, list, msg) {
+    return sb.from("groups").update({ photos: list }).eq("id", gid).then(function (r) {
+      if (r.error) throw r.error; if (msg) toast(msg); return load().then(render);
+    });
+  }
+  function uploadGallery(gid, fileList) {
+    var files = Array.prototype.slice.call(fileList || []); if (!files.length || S.uploading) return;
+    var bad = files.filter(function (f) { return !/^image\/(jpeg|png|webp)$/.test(f.type) || f.size > 10485760; });
+    if (bad.length) return fail({ message: "Photos must be JPG, PNG or WebP and up to 10 MB each." });
+    S.uploading = true; toast("Uploading " + files.length + (files.length === 1 ? " photo..." : " photos..."));
+    var added = [];
+    var chain = files.reduce(function (p, file, k) {
+      return p.then(function () {
+        var path = gid + "/gallery/" + Date.now() + "-" + k + "-" + file.name.replace(/[^A-Za-z0-9._-]+/g, "_");
+        return sb.storage.from("team-photos").upload(path, file, { contentType: file.type }).then(function (r) { if (r.error) throw r.error; added.push({ path: path, caption: "" }); });
+      });
+    }, Promise.resolve());
+    return chain.then(function () {
+      return sb.from("groups").select("photos").eq("id", gid).single();
+    }).then(function (r) {
+      if (r.error) throw r.error;
+      return saveGallery(gid, galleryOf(r.data).concat(added), "Gallery saved.");
+    }).catch(fail).then(function () { S.uploading = false; });
+  }
+  function galleryChange(gid, fn, msg) {
+    var g = by(gid, S.groups); if (!g) return;
+    var list = galleryOf(g).map(function (x) { return { path: x.path, caption: x.caption || "" }; });
+    var gone = fn(list);
+    return saveGallery(gid, list, msg).then(function () { if (gone) sb.storage.from("team-photos").remove([gone]); }).catch(fail);
   }
   function savePage(form) {
     var f = new FormData(form), id = form.dataset.id;
@@ -654,6 +705,8 @@
     editpage: function (d) { S.pageEdit = d.id; render(); window.scrollTo(0, 0); },
     pageback: function () { S.pageEdit = null; render(); },
     removephoto: function (d) { return removePhoto(d.id); },
+    gremove: function (d) { if (!window.confirm("Remove this photo from the gallery?")) return; return galleryChange(d.gid, function (l) { return l.splice(+d.i, 1)[0].path; }, "Photo removed."); },
+    gmove: function (d) { return galleryChange(d.gid, function (l) { var x = l.splice(+d.i, 1)[0]; l.splice(+d.to, 0, x); }); },
     askdelcourse: function (d) { S.delCourse = d.id; render(); },
     keepcourse: function () { S.delCourse = null; render(); },
     deletecourse: function (d) {
@@ -686,6 +739,8 @@
     else if (t.dataset.act === "pcluster") setCluster(t.dataset.mid, t.value);
     else if (t.dataset.act === "upload") uploadFiles(t.dataset.lid, t.files, t);
     else if (t.dataset.act === "uploadphoto") uploadPhoto(t.dataset.gid, t.files);
+    else if (t.dataset.act === "uploadgallery") uploadGallery(t.dataset.gid, t.files);
+    else if (t.dataset.act === "gcaption") galleryChange(t.dataset.gid, function (l) { l[+t.dataset.i].caption = t.value.trim(); }, "Caption saved.");
     else if (t.dataset.act === "addlesson" && t.value) { redrawPicker(pickedLessons().concat(t.value)); var a = document.getElementById("s-addlesson"); if (a) a.focus(); }
   });
   /* drag and drop: highlight the drop zone, and stop the browser opening a file dropped elsewhere */
@@ -705,7 +760,8 @@
     e.preventDefault();
     Array.prototype.forEach.call(document.querySelectorAll(".drop"), function (d) { d.classList.remove("over"); });
     var z = e.target.closest && e.target.closest(".drop");
-    if (z && z.dataset.gid) uploadPhoto(z.dataset.gid, e.dataTransfer.files);
+    if (z && z.dataset.gallery) uploadGallery(z.dataset.gallery, e.dataTransfer.files);
+    else if (z && z.dataset.gid) uploadPhoto(z.dataset.gid, e.dataTransfer.files);
     else if (z) uploadFiles(z.dataset.lid, e.dataTransfer.files);
   });
   document.addEventListener("submit", function (e) {
