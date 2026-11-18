@@ -411,3 +411,19 @@ Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id)
   operations page and all three manager dashboards load with no errors and ask only the Apps Scripts (no team has
   moved); Tumby Bay's roster page unchanged; the leader dashboard and contribution page ask for sign-in. Not yet
   seen signed in. Remaining: stage 7 (switch day) and stage 8 (tidy up).
+
+## Stage 7: SWITCH DAY for Lower Eyre and Central Eyre (18 Nov 2026, owner: "go live now")
+
+- Owner filled the addresses first: Lower Eyre has Country Rostering (sa.gov.au), CC, area manager and all four
+  managers; Central Eyre has its four managers (Lorna Lush Cleve, Julie Magnay Cowell, Tim Wilson Elliston, Graham
+  Spiers Lock) but NO Country Rostering address, the same as its Apps Script: managers get alerts, crews are told
+  to phone for changes before the cut-off. West Coast NOT switched (owner to load Dave's list).
+- Steps and SQL record: `supabase/roster-switch-day.sql`. `roster-sync` now also copies Lower Eyre (version 4).
+  Accounts made for all 42 Central Eyre people who had not signed up (claim on /signin/). 782 shifts copied
+  (755 linked to people, 27 placeholders; 7 test entries left out); per team copied + left out = old active count.
+  Lower Eyre sent cut-offs copied. Both clusters live from 2026-11-18.
+- "Prue Holly" (Cleve, AR, Sat 21 Nov) matched nobody: brought across as a placeholder; owner to say who it is.
+- Pages: 8 team pages switched (sign-in, roster-supabase.js, Home Screen tags); teams.js `backend: "supabase"`,
+  features without `savedRoster`. Checked locally against the real database with the test account (999123, switched
+  off afterwards): the team pages call only Supabase and refuse non-members; Summer Bay still loads.
+- Not carried over: team messages (they stay in the sheets) and the old Change Log tabs.

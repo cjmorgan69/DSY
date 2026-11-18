@@ -54,6 +54,16 @@ const STANDARD_FEATURES = [
     "sectionLayout"
 ];
 
+/*
+ * Teams on the new Supabase roster (backend: "supabase"; Lower Eyre and
+ * Central Eyre since 18 Nov 2026). Their pages need sign-in and load
+ * roster-supabase.js; the dashboards read them from Supabase
+ * (roster-data.js). apiUrl stays so a team can be switched back by
+ * removing backend. No "savedRoster": it was there because the Apps
+ * Script was slow (owner, 17 Nov 2026).
+ */
+const NEW_ROSTER_FEATURES = STANDARD_FEATURES.filter(name => name !== "savedRoster");
+
 const ROSTER_TEAM_LIST = {
     // Lower Eyre (plus the test roster)
     // Summer Bay runs on the new Supabase roster (sign-in needed); its
@@ -69,18 +79,18 @@ const ROSTER_TEAM_LIST = {
         testTeam: true,
         // No "savedRoster" (last roster shown from the device while it
         // updates): that was for the slow Apps Script (owner, 17 Nov 2026).
-        features: STANDARD_FEATURES.filter(name => name !== "savedRoster")
+        features: NEW_ROSTER_FEATURES
     },
-    tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
-    portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
-    cummins: { name: "Cummins", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
-    coffinbay: { name: "Coffin Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API },
+    tumbybay: { name: "Tumby Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API, backend: "supabase", features: NEW_ROSTER_FEATURES },
+    portneill: { name: "Port Neill", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API, backend: "supabase", features: NEW_ROSTER_FEATURES },
+    cummins: { name: "Cummins", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API, backend: "supabase", features: NEW_ROSTER_FEATURES },
+    coffinbay: { name: "Coffin Bay", cluster: "Lower Eyre", apiUrl: LOWEREYRE_API, backend: "supabase", features: NEW_ROSTER_FEATURES },
 
     // Central Eyre
-    cleve: { name: "Cleve", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API },
-    cowell: { name: "Cowell", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API },
-    elliston: { name: "Elliston", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API },
-    lock: { name: "Lock", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API },
+    cleve: { name: "Cleve", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API, backend: "supabase", features: NEW_ROSTER_FEATURES },
+    cowell: { name: "Cowell", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API, backend: "supabase", features: NEW_ROSTER_FEATURES },
+    elliston: { name: "Elliston", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API, backend: "supabase", features: NEW_ROSTER_FEATURES },
+    lock: { name: "Lock", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API, backend: "supabase", features: NEW_ROSTER_FEATURES },
 
     // West Coast
     kimba: { name: "Kimba", cluster: "West Coast", apiUrl: WESTCOAST_API },

@@ -1,6 +1,6 @@
-// Copies the Central Eyre and West Coast team rosters into public.roster_bookings (16 Nov 2026).
-// Lower Eyre (Tumby Bay, Port Neill, Cummins, Coffin Bay) is still copied by the owner's scheduled run on their PC,
-// so this function leaves those four teams alone. Run every 2 hours by pg_cron (job "roster-sync").
+// Copies the team rosters into public.roster_bookings (16 Nov 2026; Lower Eyre added 18 Nov 2026 for switch day, so
+// the move to the Supabase roster can take a fresh copy of all three clusters). Run every 2 hours by pg_cron
+// (job "roster-sync"). The owner's PC run may still copy Lower Eyre too: both write the same booking IDs.
 // For each team it asks the cluster's Apps Script for its bookings (the same "getBookings" request the roster page
 // makes), saves them as Active, and marks as Cancelled any Active booking that has disappeared from the roster,
 // but only inside the date range the roster still holds, so older history is never touched.
@@ -8,7 +8,9 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const CENTRAL = "https://script.google.com/macros/s/AKfycbwbeUGYW4VaBC8i0k228ASyRQt-B4_7pKKr5F3O5L-CrCmTH0hnx48pN7QTqkjXrfwRDA/exec";
 const WEST = "https://script.google.com/macros/s/AKfycbxrcfdjF7kUZQBkHuw2mqrYXhqz54VrK9Agv-zzOyBG8BbAbC-lrDkY6zGK91VAwB_z/exec";
+const LOWER = "https://script.google.com/macros/s/AKfycbxEboPS9reZI5OpUMdlriag0QeAJzIyXFZ2Jy0z_4qBJLEK054R5bDcJgyWAW2YSP6l/exec";
 const TEAMS: [string, string][] = [
+  ["Tumby Bay", LOWER], ["Cummins", LOWER], ["Coffin Bay", LOWER], ["Port Neill", LOWER],
   ["Cleve", CENTRAL], ["Cowell", CENTRAL], ["Elliston", CENTRAL], ["Lock", CENTRAL],
   ["Kimba", WEST], ["Port Kenny", WEST], ["Streaky Bay", WEST], ["Wudinna", WEST],
 ];
