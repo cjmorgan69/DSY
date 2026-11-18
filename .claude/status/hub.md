@@ -87,3 +87,6 @@ gallery code left in `training/index.html` from PR #273 is unreachable). The Reg
 Move up, Remove; files under `<group id>/slides/`). Team Page: leaders get an "Edit this page" button that opens
 `/region/#edit=<group id>`. Region tiles show the town photo when no photo is uploaded. Leader guide section 9 has a
 "Team pages: banner photo and photo slides" part. Tested with stand-in data; not yet seen signed in. Merged (PR #277, 18 Nov 2026), checked live with no errors.
+Banner position (owner, 18 Nov 2026: Kimba's galah lost its head): column `groups.banner_y` (0 top to 100 bottom, null
+centre) sets the banner photo's `object-position`; slider with a live preview in the Region page team form (saves on
+release; a new upload resets it). Kimba set to 10. On a branch, not merged.
