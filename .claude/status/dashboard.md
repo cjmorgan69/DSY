@@ -143,3 +143,12 @@ on the dashboard (an AI helper, NOT leader-to-leader messaging: "we already have
   tried with a real sign-in and the real Gemini key. Live (PR #254, merged 17 Nov 2026; guides and dashboard checked on
   the live site). The owner's Gemini key is in a different Supabase project: they are adding it to training-sessions as
   GEMINI_API_KEY.
+
+## Suggestions panel (18 Nov 2026)
+
+Owner asked for a place on the dashboard where the three Team Leaders suggest improvements. A "Suggestions" card on both
+dashboards (phone: after Weather; widescreen: middle column under Weather): text, which part (Dashboard, Rosters,
+Training app, Learning pages, Sessions and stations, Other), Send. Every leader (and anyone on relief cover) sees all
+suggestions with name, part, date and status; the lead instructor (a real leader with no cluster,
+`is_lead_instructor()`) sets the status (New, Planned, Done, Not now), replies and deletes; an author can withdraw
+their own while it is still New. Table `public.platform_suggestions`; SQL `supabase/suggestions-setup.sql`.
