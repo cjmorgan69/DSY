@@ -407,3 +407,7 @@ Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id)
 - Gap to know about: the manager dashboards and operations page are open pages (no sign-in); counts still work
   for moved teams, but nothing on them needs names. The leader pages (dashboard, crewing gaps, contribution) are
   signed in.
+- Stage 6 is on main and live (PR #262, merged 18 Nov 2026). Checked on the live site in a fresh browser: the
+  operations page and all three manager dashboards load with no errors and ask only the Apps Scripts (no team has
+  moved); Tumby Bay's roster page unchanged; the leader dashboard and contribution page ask for sign-in. Not yet
+  seen signed in. Remaining: stage 7 (switch day) and stage 8 (tidy up).
