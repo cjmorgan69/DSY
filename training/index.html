@@ -12,13 +12,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261118k">
+<link rel="stylesheet" href="theme.css?v=20261119a">
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261118k"></script>
+<script src="config.js?v=20261119a"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -561,7 +561,7 @@
   function renderGallery(g) {
     var list = galleryOf(g);
     setTimeout(fillThumbs, 0);
-    return '<section class="panel pad stack"><h3>Photo gallery</h3><p class="small muted">Members swipe through these on the Team Page, above the learning topics. ' + (list.length ? list.length + (list.length === 1 ? " photo." : " photos.") : "No gallery photos yet.") + "</p>" +
+    return '<section class="panel pad stack"><h3>Photo gallery</h3><p class="small muted">Members swipe through these on the Team Page. ' + (list.length ? list.length + (list.length === 1 ? " photo." : " photos.") : "No gallery photos yet.") + "</p>" +
       (list.length ? '<ul class="gallery-edit">' + list.map(function (x, i) {
         return '<li><img ' + (x.path ? 'data-thumb="' + esc(x.path) + '"' : 'src="' + esc(x.url) + '"') + ' alt=""><div class="stack" style="flex:1;gap:6px"><input type="text" maxlength="120" placeholder="Caption (optional)" value="' + esc(x.caption || "") + '" data-act="gcaption" data-gid="' + g.id + '" data-i="' + i + '">' +
           '<div class="row">' + (i ? '<button class="btn ghost small" type="button" data-act="gmove" data-gid="' + g.id + '" data-i="' + i + '" data-to="' + (i - 1) + '">Move up</button>' : "") +
