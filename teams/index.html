@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261119g">
+<link rel="stylesheet" href="../training/theme.css?v=20261119h">
 <style>
 /* Photo swipe row (owner, 18 Nov 2026). */
 .learnrow { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; margin: 0 -1rem; padding: .2rem 1rem .5rem; scroll-padding: 0 1rem; -webkit-overflow-scrolling: touch; }
@@ -32,7 +32,7 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261119g"></script>
+<script src="../training/config.js?v=20261119h"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -41,7 +41,7 @@
   var sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
   var $app = document.getElementById("app");
   var $toast = document.getElementById("toast");
-  var S = { user: null, profile: null, groups: [], current: null, authMode: "in", photoUrl: null, pics: [], next: null };
+  var S = { user: null, profile: null, groups: [], current: null, authMode: "in", photoUrl: null, pics: [], next: null, mine: [] };
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function fail(e) { $toast.textContent = e && e.message ? e.message : "Something went wrong. Try again."; $toast.hidden = false; clearTimeout(fail.t); fail.t = setTimeout(function () { $toast.hidden = true; }, 6000); }
@@ -73,14 +73,20 @@
   function chooseGroup(list) {
     var want = decodeURIComponent((location.hash || "").slice(1));
     var hit = list.filter(function (g) { return g.id === want; })[0];
-    return hit || list.filter(hasContent)[0] || list[0] || null;
+    /* then the person's own team (a leader can see every team), then any team with a page */
+    var own = list.filter(function (g) { return S.mine.indexOf(g.id) > -1; });
+    return hit || own.filter(hasContent)[0] || own[0] || list.filter(hasContent)[0] || list[0] || null;
   }
 
   function load() {
     return q(sb.from("profiles").select("*").eq("id", S.user.id)).then(function (rows) {
       S.profile = rows[0] || { role: "member", full_name: "" };
-      return q(sb.from("groups").select("*").order("type", { ascending: false }).order("name"));
-    }).then(function (groups) {
+      return Promise.all([
+        q(sb.from("groups").select("*").order("type", { ascending: false }).order("name")),
+        q(sb.from("memberships").select("group_id").eq("member_id", S.user.id))
+      ]);
+    }).then(function (res) {
+      var groups = res[0]; S.mine = res[1].map(function (m) { return m.group_id; });
       S.groups = groups;
       var pool = isLeader() ? groups : groups.filter(hasContent);
       if (!isLeader() && !pool.length) { location.replace("../training/"); return null; }

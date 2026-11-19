@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261119g">
+<link rel="stylesheet" href="../training/theme.css?v=20261119h">
 <style>[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -44,15 +44,17 @@
   </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="../training/config.js?v=20261119g"></script>
+<script src="../training/config.js?v=20261119h"></script>
 <script>
 (function () {
   var C = window.TRAINING_APP, sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
   var $ = function (id) { return document.getElementById(id); };
   var up = false, params = new URLSearchParams(location.search);
   /* only go to a page on this site */
-  var next = params.get("next") || "/hub/learn/";
-  if (next.charAt(0) !== "/" || next.charAt(1) === "/" || next.charAt(1) === "\\") next = "/hub/learn/";
+  /* With no page to go back to, people land on their Team Page (owner, 19 Nov 2026); it sends anyone without a team
+     page on to the training schedule. */
+  var next = params.get("next") || "/teams/";
+  if (next.charAt(0) !== "/" || next.charAt(1) === "/" || next.charAt(1) === "\\") next = "/teams/";
 
   function loginEmail(v) { v = String(v || "").trim(); if (v.indexOf("@") > -1) return v.toLowerCase(); return v.toLowerCase().replace(/[^a-z0-9]/g, "") + "@id.dsytraining.com"; }
   function say(t) { $("msg").textContent = t || ""; $("msg").hidden = !t; }
