@@ -183,3 +183,6 @@ Presenter view, Full screen, Guide, feedback QR slide), MDT and PCR tiles (point
 start, partner ticks, setup sheet, print pack), customiser (local details only), after the night (Feedback QR and link,
 Feedback review, Team list ticks / Attendance), ground rules. Linked from the guides home and a "How to run a session"
 panel at the bottom of Run a session. `ask-dsy` v13 reads it. Written by Claude from the pages: owner to review.
+
+- Grant access link (owner, 19 Nov 2026): `/access/` added to the footer links of `/dashboard/` and `/dashboard/wide/`,
+  after Roster emails; leader guide section 2 lists it. On a branch, not merged.
