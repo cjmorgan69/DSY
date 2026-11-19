@@ -470,3 +470,12 @@ user guide section updated to match.
 - Pages: the 4 West Coast pages switched like the others; teams.js `backend: "supabase"` on all 12 real teams, so
   the Apps Scripts are no longer read by any page. Checked locally against the real database with the test account
   (switched off again): the West Coast pages and manager dashboard call only Supabase.
+
+## Pager task after the switch (19 Nov 2026)
+
+- The scheduled task "DSY pager capture" (claude.ai cloud scheduled task, was "DSY pager and roster capture") now runs
+  at 5:35 am, 11:35 am and 5:35 pm Adelaide (owner asked for 6, 12 and 6). It only captures the paging list: the
+  Google Sheet roster copy step was removed, as every team books on the new roster.
+- `paging_jobs_by_member(_detail)` read `roster_shifts` (see dashboard.md).
+- Still copying from the old sheets: the edge function `roster-sync` (every 2 hours into `roster_bookings`). Stage 8:
+  stop it once nothing reads `roster_bookings` (`member_contribution_v2` still reads it for teams not passed as moved).
