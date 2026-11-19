@@ -5,7 +5,7 @@
 // saved under its own name straight after it loads. build.js then turns them into slide sections.
 window.DRIVE_SECTIONS = [];
 (function () {
-  var v = '?v=20261119k';
+  var v = '?v=20261119l';
   document.write('<script src="/microlearning/chest-pain/content.js' + v + '" charset="utf-8"><\/script>');
   document.write('<script>window.CP_ML = window.MODULE;<\/script>');
   document.write('<script src="/modules/chest-pain/content.js' + v + '" charset="utf-8"><\/script>');

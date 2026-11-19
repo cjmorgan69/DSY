@@ -122,3 +122,13 @@ the leader's cluster are disabled. Migration `grant_access_team`: leader insert/
 name is blank. Leader guide section 10 updated. Tested with stand-in data. Merged (PR #284, 19 Nov 2026), checked live. First live try failed "permission denied for table expected_members": the table had
 no write grant for `authenticated` (only SELECT), so migration `expected_members_write_grant` grants insert, update,
 delete (RLS still limits it to `can_edit_group`); rehearsed as a leader in a rolled-back transaction.
+
+## Sign-up asks only for ID and password (owner, 19 Nov 2026)
+
+The name comes from the leader's list. Migration `signup_name_from_access_list`: `handle_new_user` sets
+`full_name` from `expected_members.full_name` (if not blank), else `allowed_ids.note`, else the typed name (older
+forms), else blank. `/signin/` first-time mode has no name box and sends only `staff_id`; if the new profile's name is
+blank it shows "One more thing: your name" once and saves it to `profiles.full_name`. `/signin/?first=1` opens in
+first-time mode; the old "Create an account" links on `/teams/`, `/region/` and `/training/` now go to
+`/signin/?first=1&next=<page>` (their own sign-up forms are no longer reachable). Getting started and leader guides
+updated. Tested with stand-in data. On a branch, not merged.
