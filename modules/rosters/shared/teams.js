@@ -56,7 +56,7 @@ const STANDARD_FEATURES = [
 
 /*
  * Teams on the new Supabase roster (backend: "supabase"; Lower Eyre and
- * Central Eyre since 18 Nov 2026). Their pages need sign-in and load
+ * Central Eyre since 18 Nov 2026, West Coast since 19 Nov 2026). Their pages need sign-in and load
  * roster-supabase.js; the dashboards read them from Supabase
  * (roster-data.js). apiUrl stays so a team can be switched back by
  * removing backend. No "savedRoster": it was there because the Apps
@@ -93,10 +93,10 @@ const ROSTER_TEAM_LIST = {
     lock: { name: "Lock", cluster: "Central Eyre", apiUrl: CENTRALEYRE_API, backend: "supabase", features: NEW_ROSTER_FEATURES },
 
     // West Coast
-    kimba: { name: "Kimba", cluster: "West Coast", apiUrl: WESTCOAST_API },
-    port_kenny: { name: "Port Kenny", cluster: "West Coast", apiUrl: WESTCOAST_API },
-    streakybay: { name: "Streaky Bay", cluster: "West Coast", apiUrl: WESTCOAST_API },
-    wudinna: { name: "Wudinna", cluster: "West Coast", apiUrl: WESTCOAST_API }
+    kimba: { name: "Kimba", cluster: "West Coast", apiUrl: WESTCOAST_API, backend: "supabase", features: NEW_ROSTER_FEATURES },
+    port_kenny: { name: "Port Kenny", cluster: "West Coast", apiUrl: WESTCOAST_API, backend: "supabase", features: NEW_ROSTER_FEATURES },
+    streakybay: { name: "Streaky Bay", cluster: "West Coast", apiUrl: WESTCOAST_API, backend: "supabase", features: NEW_ROSTER_FEATURES },
+    wudinna: { name: "Wudinna", cluster: "West Coast", apiUrl: WESTCOAST_API, backend: "supabase", features: NEW_ROSTER_FEATURES }
 };
 
 window.DSY_ROSTER_TEAMS = Object.freeze(
