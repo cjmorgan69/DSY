@@ -450,3 +450,23 @@ user guide section updated to match.
   apple-touch-icon), in `roster.webmanifest` and as the reminder notification icon in `sw.js`. It replaces the
   calendar icon Claude drew (roster-icon-*.png, removed). New file names so phones don't keep the old picture; a
   tile already on a Home Screen must be deleted and added again to change.
+  On main and live (PR #268, merged 18 Nov 2026): all 13 team pages, the manifest and the service worker point at
+  the new tile; the four tile sizes are served.
+
+## Switch day for West Coast (19 Nov 2026)
+
+- The owner passed on Dave's list: 44 people (Kimba 12, Port Kenny 9, Streaky Bay 14, Wudinna 9), none with an
+  account. Loaded into `expected_members` and `allowed_ids` (not in this repo).
+- Owner's decisions (19 Nov 2026): "Dianne McKenna" = Di McKenna; "David Coombe" and "Dave" = David Coombe (1002517,
+  West Coast TL), who is now on all four West Coast team lists ("as a TL he should have access to all teams");
+  "Chris Morgan" (Kimba), "Christopher Morgan" (Port Kenny) and "Ben Dover" (Wudinna) were tests and were left out.
+  The "Ben Dover" account (100100) is a test account: not deleted, owner to say.
+- Done in the same way as 18 Nov: fresh copy (roster-sync), accounts made for all 44 (claim on /signin/), 79 shifts
+  copied, all linked to people (3 test entries left out; per team copied + left out = old active), sent cut-offs
+  copied for Kimba (9 Nov) and Port Kenny (16 Nov; both already past), West Coast live from 2026-11-19.
+- West Coast has no roster managers, manager emails or Country Rostering address yet: Dave will set them up (owner).
+  Until then change alerts reach nobody and crews are told to phone for changes before the cut-off (as with the old
+  West Coast script, which had no Country Rostering address). Dave, as Team Leader, has Manager controls on all four.
+- Pages: the 4 West Coast pages switched like the others; teams.js `backend: "supabase"` on all 12 real teams, so
+  the Apps Scripts are no longer read by any page. Checked locally against the real database with the test account
+  (switched off again): the West Coast pages and manager dashboard call only Supabase.
