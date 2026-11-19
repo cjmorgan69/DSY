@@ -119,4 +119,6 @@ group_id) and `handle_new_user` adds the membership at sign-up. Row picker: "Add
 (removal stays in Training, People), a team box for the not-signed-up (No team deletes the expected row). Teams outside
 the leader's cluster are disabled. Migration `grant_access_team`: leader insert/update/delete policies on
 `expected_members` using `can_edit_group`, and `handle_new_user` no longer overwrites the typed name when the expected
-name is blank. Leader guide section 10 updated. Tested with stand-in data. Merged (PR #284, 19 Nov 2026), checked live.
+name is blank. Leader guide section 10 updated. Tested with stand-in data. Merged (PR #284, 19 Nov 2026), checked live. First live try failed "permission denied for table expected_members": the table had
+no write grant for `authenticated` (only SELECT), so migration `expected_members_write_grant` grants insert, update,
+delete (RLS still limits it to `can_edit_group`); rehearsed as a leader in a rolled-back transaction.
