@@ -102,3 +102,11 @@ every 1-4 weeks, last date defaulting to the end of that school year, times, loc
 live preview with skipped dates and reasons, existing dates kept) and **Add one session**; delete stays on the session.
 Holiday data is in `training/sa-dates.js` (2026, 2027, 2028 Terms 1-3; the department's page refuses automated reads,
 2027 is from third-party calendars that agree): add each year when published. Leader guide section 9 updated.
+
+## Sign-in lands on the Team Page (owner, 19 Nov 2026)
+
+`/signin/` with no `next` now goes to `/teams/` (was `/hub/learn/`); a page that sent someone to sign in still gets
+them back. `/teams/` no longer sends anyone on to `/training/` (owner: the page always has the schedule, learning and roster
+buttons); someone in no team sees a note with the Training schedule and Learn on your own buttons. The Team Page now opens the person's
+own team first (from `memberships`), which matters for leaders, who can see every team. Getting started guide
+section 2 says so. On a branch, not merged.
