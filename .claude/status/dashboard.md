@@ -185,4 +185,4 @@ Feedback review, Team list ticks / Attendance), ground rules. Linked from the gu
 panel at the bottom of Run a session. `ask-dsy` v13 reads it. Written by Claude from the pages: owner to review.
 
 - Grant access link (owner, 19 Nov 2026): `/access/` added to the footer links of `/dashboard/` and `/dashboard/wide/`,
-  after Roster emails; leader guide section 2 lists it. On a branch, not merged.
+  after Roster emails; leader guide section 2 lists it. Merged (PR #283, 19 Nov 2026), checked live.
