@@ -106,6 +106,7 @@ Holiday data is in `training/sa-dates.js` (2026, 2027, 2028 Terms 1-3; the depar
 ## Sign-in lands on the Team Page (owner, 19 Nov 2026)
 
 `/signin/` with no `next` now goes to `/teams/` (was `/hub/learn/`); a page that sent someone to sign in still gets
-them back. `/teams/` sends a member whose teams have no page on to `/training/`. The Team Page now opens the person's
+them back. `/teams/` no longer sends anyone on to `/training/` (owner: the page always has the schedule, learning and roster
+buttons); someone in no team sees a note with the Training schedule and Learn on your own buttons. The Team Page now opens the person's
 own team first (from `memberships`), which matters for leaders, who can see every team. Getting started guide
 section 2 says so. On a branch, not merged.

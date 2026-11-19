@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261119h">
+<link rel="stylesheet" href="../training/theme.css?v=20261119i">
 <style>
 /* Photo swipe row (owner, 18 Nov 2026). */
 .learnrow { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; margin: 0 -1rem; padding: .2rem 1rem .5rem; scroll-padding: 0 1rem; -webkit-overflow-scrolling: touch; }
@@ -32,7 +32,7 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261119h"></script>
+<script src="../training/config.js?v=20261119i"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -88,10 +88,13 @@
     }).then(function (res) {
       var groups = res[0]; S.mine = res[1].map(function (m) { return m.group_id; });
       S.groups = groups;
-      var pool = isLeader() ? groups : groups.filter(hasContent);
-      if (!isLeader() && !pool.length) { location.replace("../training/"); return null; }
-      S.current = chooseGroup(pool);
-      if (!S.current) { $app.innerHTML = header() + '<div class="panel pad muted">You have not been added to a team yet. Ask your team leader to add you, then come back.</div>'; return null; }
+      /* Every Team Page has the schedule and learning buttons, so nobody is sent past it (owner, 19 Nov 2026). */
+      S.current = chooseGroup(groups);
+      if (!S.current) {
+        $app.innerHTML = header() + '<div class="panel pad muted">You have not been added to a team yet. Ask your team leader to add you. Until then you can still use these:</div>' +
+          '<div class="actions"><a class="big" href="../training/">Training schedule<span>See upcoming sessions</span></a><a class="big alt" href="../hub/learn/">Learn on your own<span>Videos, walk-throughs, MDT and PCR practice</span></a></div>';
+        return null;
+      }
       return loadGroup();
     });
   }
@@ -129,13 +132,13 @@
 
   function render() {
     var g = S.current, html = header();
-    var pool = isLeader() ? S.groups : S.groups.filter(hasContent);
+    var pool = S.groups;
     if (pool.length > 1) {
       html += '<div class="chips" role="group" aria-label="Choose a team">' + pool.map(function (x) { return '<button type="button" data-g="' + x.id + '" aria-pressed="' + (x.id === g.id) + '">' + esc(x.name) + "</button>"; }).join("") + "</div>";
     }
     html += '<section class="hero' + (S.photoUrl ? "" : " plain") + '">' + (S.photoUrl ? '<img src="' + esc(S.photoUrl) + '" alt="' + esc(g.name) + '"' + (g.banner_y != null ? ' style="object-position:50% ' + (+g.banner_y) + '%"' : "") + ">" : "") +
       '<div class="cap"><h1>' + esc(g.name) + "</h1><p>" + (g.type === "course" ? "Course" : "Team") + "</p></div>" + heroCredit(g) + "</section>";
-    if (isLeader() && !hasContent(g)) html += '<div class="notice">This page is empty, so members of ' + esc(g.name) + ' go straight to the training schedule. Use Edit this page (below) to add a photo, slides, information and links.</div>';
+    if (isLeader() && !hasContent(g)) html += '<div class="notice">This page has no photo or information yet. Use Edit this page (below) to add a photo, slides, information and links.</div>';
     var ru = safeUrl(g.roster_url);
     html += '<div class="actions"><a class="big" href="../training/">Training schedule<span>Book a spot and see upcoming sessions</span></a>' +
       (ru ? '<a class="big alt" href="' + esc(ru) + '">Your roster<span>Open the roster for ' + esc(g.name) + "</span></a>" : "") +
