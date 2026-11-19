@@ -131,4 +131,4 @@ forms), else blank. `/signin/` first-time mode has no name box and sends only `s
 blank it shows "One more thing: your name" once and saves it to `profiles.full_name`. `/signin/?first=1` opens in
 first-time mode; the old "Create an account" links on `/teams/`, `/region/` and `/training/` now go to
 `/signin/?first=1&next=<page>` (their own sign-up forms are no longer reachable). Getting started and leader guides
-updated. Tested with stand-in data. On a branch, not merged.
+updated. Tested with stand-in data. Merged (PR #285, 19 Nov 2026), checked live (no real sign-up tried).
