@@ -470,3 +470,8 @@ user guide section updated to match.
 - Pages: the 4 West Coast pages switched like the others; teams.js `backend: "supabase"` on all 12 real teams, so
   the Apps Scripts are no longer read by any page. Checked locally against the real database with the test account
   (switched off again): the West Coast pages and manager dashboard call only Supabase.
+- LIVE: PR #286 merged 19 Nov 2026; the 4 West Coast pages on the new roster from 07:10 UTC (5:40 pm Adelaide).
+  Catch-up straight after: nothing booked, changed or cancelled on the old West Coast pages. Checked on the live site
+  in a fresh browser: the West Coast pages ask for sign-in; the operations page and the West Coast manager dashboard
+  now read only Supabase (no page reads an Apps Script any more). "Ben Dover" (100100) left active (owner, 19 Nov
+  2026). All 12 teams are on the new roster; what remains is stage 8 (tidy up).
