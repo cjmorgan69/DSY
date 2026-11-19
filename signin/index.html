@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261119k">
+<link rel="stylesheet" href="../training/theme.css?v=20261119l">
 <style>[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -19,10 +19,9 @@
     <a class="brand" href="../" style="text-decoration:none;color:inherit"><div class="brand-icon"><img src="../microlearning/shared/dsy-logo.png" alt="" width="36" height="36"></div>
       <div><h1>DSY Training</h1><p id="sub">Sign in to open the training pages.</p></div></a>
     <form class="panel pad stack" id="form" autocomplete="on">
-      <label id="nameRow" hidden>Your name<input id="f-name" name="name" autocomplete="name"></label>
       <label><span id="idLabel">Ambulance ID number</span><input id="f-id" name="id" autocomplete="username" autocapitalize="none" spellcheck="false" inputmode="text" required></label>
       <label>Password<input id="f-pass" name="pass" type="password" minlength="8" autocomplete="current-password" required></label>
-      <p class="small muted" id="hint" hidden>Choose a password of at least 8 characters. Your ID number is only used to check you are approved and so your instructors know who you are.</p>
+      <p class="small muted" id="hint" hidden>Enter your ambulance ID and choose a password of at least 8 characters. Your name comes from your instructor's list. Your ID number is only used to check you are approved and so your instructors know who you are.</p>
       <p class="small" id="msg" role="alert" style="color:var(--danger)" hidden></p>
       <div class="small" id="starterNote" style="background:var(--brand-soft);border-radius:10px;padding:.7rem .85rem">
         <b>Never signed in before?</b><br>
@@ -31,6 +30,13 @@
       <button class="btn" type="submit" id="go">Sign in</button>
       <button class="btn ghost" type="button" id="swap">First time here? Set up your sign-in</button>
       <p class="small muted">Your ID has to be on the list your instructor keeps. Forgotten your password? Ask your instructor to reset it. They will give you a temporary one, and you will choose a new one when you sign in. <a href="/userguides/start/">Help with signing in</a></p>
+    </form>
+    <form class="panel pad stack" id="nameForm" hidden>
+      <h2>One more thing: your name</h2>
+      <p class="small muted">Your instructor didn't add your name with your ID. Type it the way your team knows you, so they can see who you are.</p>
+      <label>Your name<input id="n-name" autocomplete="name" maxlength="80" required></label>
+      <p class="small" id="nmsg" role="alert" style="color:var(--danger)" hidden></p>
+      <button class="btn" type="submit" id="ngo">Save and continue</button>
     </form>
     <form class="panel pad stack" id="changeForm" autocomplete="on" hidden>
       <h2>Step 2: choose your own password</h2>
@@ -44,7 +50,7 @@
   </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="../training/config.js?v=20261119k"></script>
+<script src="../training/config.js?v=20261119l"></script>
 <script>
 (function () {
   var C = window.TRAINING_APP, sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
@@ -60,7 +66,8 @@
   function say(t) { $("msg").textContent = t || ""; $("msg").hidden = !t; }
   function mode(createMode) {
     up = createMode;
-    $("nameRow").hidden = !up; $("f-name").required = up; $("hint").hidden = !up; $("starterNote").hidden = up;
+    /* sign-up asks only for ID and password (owner, 19 Nov 2026): the name comes from the Grant access list */
+    $("hint").hidden = !up; $("starterNote").hidden = up;
     $("f-pass").setAttribute("autocomplete", up ? "new-password" : "current-password");
     /* the label no longer mentions email (owner, 17 Nov 2026); an email typed here still works for an old email account */
     $("go").textContent = up ? "Set up my sign-in" : "Sign in";
@@ -70,6 +77,7 @@
   }
   $("swap").addEventListener("click", function () { mode(!up); });
 
+  if (params.get("first")) mode(true);
   if (params.get("out")) {
     sb.auth.signOut().then(function () {
       try { localStorage.removeItem("dsy-gate-role"); } catch (e) {}
@@ -96,6 +104,25 @@
       .catch(function (err) { $("cgo").disabled = false; bad((err && err.message) || "Something went wrong. Try again."); });
   });
 
+  /* An ID added without a name: ask once, straight after sign-up. */
+  function askNameIfMissing() {
+    return sb.auth.getUser().then(function (u) {
+      var id = u.data && u.data.user && u.data.user.id;
+      return id ? sb.from("profiles").select("full_name").eq("id", id).then(function (r) { return { id: id, name: r.data && r.data[0] && r.data[0].full_name }; }) : null;
+    }).then(function (me) {
+      if (!me || String(me.name || "").trim()) return location.replace(next);
+      $("form").hidden = true; $("nameForm").hidden = false; $("sub").textContent = "You're in. One more step.";
+      $("nameForm").onsubmit = function (e) {
+        e.preventDefault();
+        var v = $("n-name").value.trim(); if (v.length < 2) { $("nmsg").textContent = "Type your name."; $("nmsg").hidden = false; return; }
+        $("ngo").disabled = true;
+        sb.from("profiles").update({ full_name: v }).eq("id", me.id).then(function (r) { if (r.error) throw r.error; location.replace(next); })
+          .catch(function (err) { $("ngo").disabled = false; $("nmsg").textContent = (err && err.message) || "Could not save. Try again."; $("nmsg").hidden = false; });
+      };
+      $("n-name").focus();
+    });
+  }
+
   $("form").addEventListener("submit", function (e) {
     e.preventDefault(); say("");
     var raw = $("f-id").value.trim(), pass = $("f-pass").value, btn = $("go");
@@ -104,7 +131,7 @@
     btn.disabled = true;
     var email = loginEmail(raw), job;
     if (up) {
-      job = sb.auth.signUp({ email: email, password: pass, options: { data: { full_name: $("f-name").value.trim(), staff_id: raw } } }).then(function (r) {
+      job = sb.auth.signUp({ email: email, password: pass, options: { data: { staff_id: raw } } }).then(function (r) {
         /* An account was already made for this ID (17 Nov 2026): if nobody has set its password yet, this person
            claims it with the password they just chose (claim_account in supabase/claim-account.sql). One time only. */
         if (r.error && /already registered|already been registered/i.test(String(r.error.message || ""))) {
@@ -120,7 +147,7 @@
     } else {
       job = sb.auth.signInWithPassword({ email: email, password: pass }).then(function (r) { if (r.error) throw r.error; });
     }
-    job.then(function () { location.replace(next); }).catch(function (err) {
+    job.then(function () { return up ? askNameIfMissing() : location.replace(next); }).catch(function (err) {
       btn.disabled = false;
       var m = String((err && err.message) || "");
       if (up && /database error|not on the approved/i.test(m)) say("That ID is not on the approved list yet. Ask your instructor to add it, then try again.");
