@@ -91,4 +91,4 @@ Move up, Remove; files under `<group id>/slides/`). Team Page: leaders get an "E
 "Team pages: banner photo and photo slides" part. Tested with stand-in data; not yet seen signed in. Merged (PR #277, 18 Nov 2026), checked live with no errors.
 Banner position (owner, 18 Nov 2026: Kimba's galah lost its head): column `groups.banner_y` (0 top to 100 bottom, null
 centre) sets the banner photo's `object-position`; slider with a live preview in the Region page team form (saves on
-release; a new upload resets it). Kimba set to 10. On a branch, not merged.
+release; a new upload resets it). Kimba set to 10. Merged (PR #278, 18 Nov 2026), checked live.
