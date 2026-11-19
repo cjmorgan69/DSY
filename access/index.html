@@ -5,11 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Grant access - DSY Training</title>
-<script src="/shared/gate.js?v=20261118g" data-level="leader"></script>
+<link rel="icon" type="image/png" sizes="32x32" href="../shared/dsy-favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../shared/dsy-favicon-192.png">
+<link rel="apple-touch-icon" href="../shared/dsy-touch-180.png">
+<script src="/shared/gate.js?v=20261119l" data-level="leader"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261118g">
+<link rel="stylesheet" href="../training/theme.css?v=20261119l">
 <style>
 [hidden]{display:none!important}
 textarea{width:100%;min-height:7rem;font:inherit;padding:.6rem .75rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
@@ -26,6 +29,8 @@ th{font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mu
 .chip.wait{background:color-mix(in srgb,var(--accent) 22%,var(--surface));color:var(--ink)}
 input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
 .acts{display:flex;gap:.4rem;flex-wrap:wrap}
+#rows select{min-width:9rem;font-size:.85rem;padding:.3rem .45rem}
+#rows td div.small{margin-bottom:.25rem}
 </style>
 </head>
 <body>
@@ -37,10 +42,11 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
 
   <section class="panel pad stack">
     <h2>Add IDs</h2>
-    <p class="small muted">One per line, or separated by commas. Add a name after the ID if you like: <code>12345, Sam Taylor</code>. A CSV file works too: ID in the first column, name in the second.</p>
+    <p class="small muted">One per line, or separated by commas. Add a name after the ID if you like: <code>12345, Sam Taylor</code>. A CSV file works too: ID in the first column, name in the second. Choose a Team to put them in it: someone already signed up joins straight away, anyone else joins when they sign up.</p>
     <textarea id="ids" aria-label="Ambulance IDs" placeholder="12345, Sam Taylor&#10;67890"></textarea>
     <div class="row">
       <label class="small">Add as <select id="role"><option value="member">Student</option><option value="facilitator">Facilitator</option></select></label>
+      <label class="small">Team <select id="team"><option value="">No team</option></select></label>
       <button class="btn" id="add" type="button">Add to the list</button>
       <label class="btn ghost small" style="cursor:pointer">Choose a CSV file<input id="csv" type="file" accept=".csv,.txt,text/csv,text/plain" hidden></label>
     </div>
@@ -52,18 +58,18 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
     <div class="stats" id="stats"></div>
     <div class="row"><input id="q" type="search" placeholder="Search name or ID" aria-label="Search" style="flex:1;min-width:10rem">
       <select id="filter" aria-label="Show"><option value="all">Everyone</option><option value="wait">Not signed up yet</option><option value="facilitator">Facilitators</option><option value="off">Switched off</option></select></div>
-    <div class="scroll"><table><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div class="scroll"><table><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Team</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
     <p class="small muted" id="empty" hidden>Nobody matches.</p>
   </section>
   <p class="small muted">Removing someone switches their account off: they cannot sign in again, and a session already open ends within about an hour. Add them back to restore it. Leaders cannot be switched off here. Use Reset password to give someone a temporary one; they choose their own when they next sign in.</p>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="../training/config.js?v=20261118g"></script>
+<script src="../training/config.js?v=20261119l"></script>
 <script>
 (function () {
   var C = window.TRAINING_APP, sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
   var $ = function (id) { return document.getElementById(id); };
-  var S = { allowed: [], profiles: [], off: {} };
+  var S = { allowed: [], profiles: [], off: {}, groups: [], members: [], expected: {}, myCluster: null };
   function norm(t) { return String(t || "").toLowerCase().replace(/[^a-z0-9]/g, ""); }
   function say(t, bad) { $("msg").textContent = t; $("msg").style.color = bad ? "var(--danger)" : "var(--ink)"; }
   function must(r) { if (r.error) throw r.error; return r.data || []; }
@@ -72,11 +78,21 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
   function load() {
     return Promise.all([
       sb.from("allowed_ids").select("staff_id,note,role,added_at").order("added_at", { ascending: false }).then(must),
-      sb.from("profiles").select("id,full_name,staff_id,role").then(must),
-      sb.rpc("leader_access_status").then(must)
+      sb.from("profiles").select("id,full_name,staff_id,role,cluster").then(must),
+      sb.rpc("leader_access_status").then(must),
+      sb.from("groups").select("id,name,type,cluster").neq("type", "test").order("type", { ascending: false }).order("name").then(must),
+      sb.from("memberships").select("member_id,group_id").then(must),
+      sb.from("expected_members").select("staff_id,full_name,group_id").then(must),
+      sb.auth.getUser()
     ]).then(function (r) {
       S.allowed = r[0]; S.profiles = r[1]; S.off = {};
       r[2].forEach(function (a) { S.off[a.member_id] = a.switched_off; });
+      S.groups = r[3]; S.members = r[4]; S.expected = {};
+      r[5].forEach(function (e) { S.expected[e.staff_id] = e; });
+      var uid = r[6] && r[6].data && r[6].data.user && r[6].data.user.id;
+      var me = S.profiles.filter(function (p) { return p.id === uid; })[0];
+      S.myCluster = me && me.cluster || null;
+      fillTeamPicker();
       draw();
     });
   }
@@ -112,6 +128,7 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
       var tr = el("tr"), st = status(x);
       tr.appendChild(el("td", null, x.id)); tr.appendChild(el("td", null, x.note || ""));
       tr.appendChild(el("td", null, x.role === "member" ? "Student" : x.role === "leader" ? "Leader" : "Facilitator"));
+      tr.appendChild(teamCell(x));
       var s = el("td"); s.appendChild(el("span", "chip " + st[1], st[0])); tr.appendChild(s);
       var a = el("td"), acts = el("div", "acts");
       if (x.role !== "leader") {
@@ -125,6 +142,56 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
     });
     $("empty").hidden = rows.length > 0;
   }
+  /* Teams (owner, 19 Nov 2026): a signed-up person is put in the team straight away (memberships); someone not
+     signed up yet is remembered in expected_members and joins the team when they sign up (handle_new_user). A leader
+     can only place people in their own cluster's teams. */
+  function canEdit(g) { return !S.myCluster || g.cluster === S.myCluster; }
+  function groupName(id) { var g = S.groups.filter(function (x) { return x.id === id; })[0]; return g ? g.name : ""; }
+  function teamOptions(sel, first, current, skip) {
+    sel.textContent = "";
+    var o = el("option", null, first); o.value = ""; sel.appendChild(o);
+    S.groups.forEach(function (g) {
+      if (skip && skip.indexOf(g.id) > -1) return;
+      var op = el("option", null, g.name + (g.type === "course" ? " (course)" : "")); op.value = g.id;
+      if (!canEdit(g)) op.disabled = true;
+      if (g.id === current) op.selected = true;
+      sel.appendChild(op);
+    });
+  }
+  function fillTeamPicker() { var t = $("team"), keep = t.value; teamOptions(t, "No team", keep); }
+  function teamCell(x) {
+    var td = el("td");
+    if (x.p) {
+      var mine = S.members.filter(function (m) { return m.member_id === x.p.id; }).map(function (m) { return m.group_id; });
+      if (mine.length) td.appendChild(el("div", "small", mine.map(groupName).filter(Boolean).join(", ")));
+      var sel = el("select"); sel.setAttribute("aria-label", "Add " + (x.note || x.id) + " to a team");
+      teamOptions(sel, mine.length ? "Add another…" : "Add to a team…", "", mine);
+      sel.addEventListener("change", function () { if (sel.value) joinTeam(x, sel.value); });
+      td.appendChild(sel);
+    } else {
+      var e = S.expected[x.id], s2 = el("select"); s2.setAttribute("aria-label", "Team for " + (x.note || x.id));
+      teamOptions(s2, "No team", e && e.group_id);
+      if (e && !S.groups.some(function (g) { return g.id === e.group_id && canEdit(g); })) s2.disabled = true;
+      s2.addEventListener("change", function () { expectTeam(x.id, x.note, s2.value); });
+      td.appendChild(s2);
+    }
+    return td;
+  }
+  function expectRow(id, note, gid) {
+    if (!gid) return S.expected[id] ? sb.from("expected_members").delete().eq("staff_id", id).then(must) : Promise.resolve();
+    var name = note || (S.expected[id] && S.expected[id].full_name) || "";
+    return sb.from("expected_members").upsert({ staff_id: id, full_name: name, group_id: gid }, { onConflict: "staff_id" }).then(must);
+  }
+  var joinTeam = safe(function (x, gid) {
+    return sb.from("memberships").upsert({ member_id: x.p.id, group_id: gid }, { onConflict: "member_id,group_id", ignoreDuplicates: true }).then(must)
+      .then(function () { say((x.note || x.id) + " added to " + groupName(gid) + "."); return load(); });
+  });
+  var expectTeam = safe(function (id, note, gid) {
+    return expectRow(id, note, gid).then(function () {
+      say(gid ? (note || id) + " will join " + groupName(gid) + " when they sign up." : (note || id) + " has no team now."); return load();
+    });
+  });
+
   /* a leader's reset gives a starter password; the person must choose their own at the next sign-in */
   function resetForm(box, x) {
     box.textContent = "";
@@ -157,7 +224,7 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
   function safe(fn) { return function () { var a = arguments; return Promise.resolve().then(function () { return fn.apply(null, a); }).catch(function (e) { say((e && e.message) || "Something went wrong.", true); }); }; }
 
   var add = safe(function () {
-    var list = parse($("ids").value), role = $("role").value;
+    var list = parse($("ids").value), role = $("role").value, gid = $("team").value;
     if (!list.length) return say("Type or paste at least one ID first.", true);
     var rows = list.map(function (x) { return { staff_id: x.staff_id, note: x.note, role: role }; });
     /* keep an existing name when the new line has none */
@@ -171,8 +238,13 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
         if (S.off[p.id]) ops.push(sb.rpc("leader_set_access", { member: p.id, allowed: true }).then(must));
         if (p.role !== "leader" && p.role !== r.role) ops.push(sb.from("profiles").update({ role: r.role }).eq("id", p.id).then(must));
       });
+      if (gid) rows.forEach(function (r) {
+        var p = byId[r.staff_id];
+        ops.push(p ? sb.from("memberships").upsert({ member_id: p.id, group_id: gid }, { onConflict: "member_id,group_id", ignoreDuplicates: true }).then(must)
+                   : expectRow(r.staff_id, r.note, gid));
+      });
       return Promise.all(ops);
-    }).then(function () { $("ids").value = ""; say("Added " + rows.length + (rows.length === 1 ? " ID." : " IDs.")); return load(); });
+    }).then(function () { $("ids").value = ""; say("Added " + rows.length + (rows.length === 1 ? " ID" : " IDs") + (gid ? " to " + groupName(gid) + "." : ".")); return load(); });
   });
   var setRole = safe(function (x, role) {
     return sb.from("allowed_ids").update({ role: role }).eq("staff_id", x.id).then(must).then(function () {

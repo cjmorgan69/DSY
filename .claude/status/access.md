@@ -89,3 +89,46 @@ dashboards' training tile and the car dash trip/service light follow the leader'
   needed" sentence is gone. An email typed in the box still signs in an old email account.
   On main and live (PR #260, merged 17 Nov 2026); checked on the live page: no temporary-password line in the box,
   ID box labelled "Ambulance ID number", no email wording.
+
+## Set up training nights (18 Nov 2026, owner)
+
+Owner set up the 2027 Central Eyre calendar by hand (SQL): fortnightly Team Leader visits (leader-led, Campbell Forsyth)
+Elliston Wed from 10 Feb, Lock Thu 11 Feb, Cleve Mon 15 Feb, Cowell Tue 16 Feb, and team-led training on the opposite
+weeks (no facilitator, Campbell to allocate), all leaving out SA school holidays to 10 Dec 2027; the team weeks also
+leave out public holidays. Cleve 29 Mar 2027 (Easter Monday) visit: owner to delete in the app (the SQL delete's
+approval prompt timed out twice). Then, for West Coast (no dates yet), the owner asked for a panel so leaders do this
+themselves: on `/training/` Calendar, **Set up training nights** (team, Team Leader visits or Team training, first night,
+every 1-4 weeks, last date defaulting to the end of that school year, times, location, skip school / public holidays,
+live preview with skipped dates and reasons, existing dates kept) and **Add one session**; delete stays on the session.
+Holiday data is in `training/sa-dates.js` (2026, 2027, 2028 Terms 1-3; the department's page refuses automated reads,
+2027 is from third-party calendars that agree): add each year when published. Leader guide section 9 updated.
+
+## Sign-in lands on the Team Page (owner, 19 Nov 2026)
+
+`/signin/` with no `next` now goes to `/teams/` (was `/hub/learn/`); a page that sent someone to sign in still gets
+them back. `/teams/` no longer sends anyone on to `/training/` (owner: the page always has the schedule, learning and roster
+buttons); someone in no team sees a note with the Training schedule and Learn on your own buttons. The Team Page now opens the person's
+own team first (from `memberships`), which matters for leaders, who can see every team. Getting started guide
+section 2 says so. Merged (PR #282, 19 Nov 2026), checked live.
+
+## Team on Grant access (owner, 19 Nov 2026)
+
+`/access/`: a Team picker beside "Add as" and a Team column on the list. A signed-up person goes straight into
+`memberships`; an ID not signed up yet goes into `expected_members` (staff_id, full_name = the name typed or "",
+group_id) and `handle_new_user` adds the membership at sign-up. Row picker: "Add to a team…" for signed-up people
+(removal stays in Training, People), a team box for the not-signed-up (No team deletes the expected row). Teams outside
+the leader's cluster are disabled. Migration `grant_access_team`: leader insert/update/delete policies on
+`expected_members` using `can_edit_group`, and `handle_new_user` no longer overwrites the typed name when the expected
+name is blank. Leader guide section 10 updated. Tested with stand-in data. Merged (PR #284, 19 Nov 2026), checked live. First live try failed "permission denied for table expected_members": the table had
+no write grant for `authenticated` (only SELECT), so migration `expected_members_write_grant` grants insert, update,
+delete (RLS still limits it to `can_edit_group`); rehearsed as a leader in a rolled-back transaction.
+
+## Sign-up asks only for ID and password (owner, 19 Nov 2026)
+
+The name comes from the leader's list. Migration `signup_name_from_access_list`: `handle_new_user` sets
+`full_name` from `expected_members.full_name` (if not blank), else `allowed_ids.note`, else the typed name (older
+forms), else blank. `/signin/` first-time mode has no name box and sends only `staff_id`; if the new profile's name is
+blank it shows "One more thing: your name" once and saves it to `profiles.full_name`. `/signin/?first=1` opens in
+first-time mode; the old "Create an account" links on `/teams/`, `/region/` and `/training/` now go to
+`/signin/?first=1&next=<page>` (their own sign-up forms are no longer reachable). Getting started and leader guides
+updated. Tested with stand-in data. On a branch, not merged.

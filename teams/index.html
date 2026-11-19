@@ -5,17 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Team Page</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../shared/dsy-favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../shared/dsy-favicon-192.png">
+<link rel="apple-touch-icon" href="../shared/dsy-touch-180.png">
 <meta name="theme-color" content="#1f5b43">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261118g">
+<link rel="stylesheet" href="../training/theme.css?v=20261119l">
+<style>
+/* Photo swipe row (owner, 18 Nov 2026). */
+.learnrow { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; margin: 0 -1rem; padding: .2rem 1rem .5rem; scroll-padding: 0 1rem; -webkit-overflow-scrolling: touch; }
+.learnrow::-webkit-scrollbar { display: none; }
+.learnhead { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.pcard { flex: 0 0 86%; max-width: 30rem; margin: 0; scroll-snap-align: start; border-radius: 18px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); }
+.pcard img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--brand-soft); }
+.pcard figcaption { padding: .6rem .9rem; font-size: .88rem; }
+.pcard .credit { display: block; margin-top: 2px; font-size: .72rem; color: var(--muted); }
+.pcard .credit a { color: inherit; }
+.hero .herocredit { position: absolute; top: .6rem; right: .8rem; font-size: .66rem; color: rgba(255, 255, 255, .85); text-shadow: 0 1px 2px rgba(0, 0, 0, .6); }
+.hero .herocredit a { color: inherit; text-decoration: none; }
+@media (min-width: 700px) { .pcard { flex-basis: 24rem; } }
+</style>
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261118g"></script>
+<script src="../training/config.js?v=20261119l"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -24,7 +41,7 @@
   var sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
   var $app = document.getElementById("app");
   var $toast = document.getElementById("toast");
-  var S = { user: null, profile: null, groups: [], current: null, authMode: "in", photoUrl: null, next: null };
+  var S = { user: null, profile: null, groups: [], current: null, authMode: "in", photoUrl: null, pics: [], next: null, mine: [] };
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function fail(e) { $toast.textContent = e && e.message ? e.message : "Something went wrong. Try again."; $toast.hidden = false; clearTimeout(fail.t); fail.t = setTimeout(function () { $toast.hidden = true; }, 6000); }
@@ -33,7 +50,11 @@
   function hhmm(t) { var h = +String(t).slice(0, 2), m = String(t).slice(3, 5), ap = h >= 12 ? "pm" : "am"; h = h % 12 || 12; return h + (m === "00" ? "" : ":" + m) + ap; }
   function safeUrl(u) { u = String(u || "").trim(); return /^(https?:\/\/|\/)/i.test(u) && u.indexOf("//") !== 0 ? u : (/^https?:\/\//i.test(u) ? u : ""); }
   function links(g) { return Array.isArray(g.links) ? g.links.filter(function (l) { return l && l.label && safeUrl(l.url); }) : []; }
-  function hasContent(g) { return !!(g.blurb || g.photo_path || safeUrl(g.roster_url) || links(g).length); }
+  /* Gallery entry: {path} = file in storage bucket team-photos, or {url} = picture kept on the site (/teams/photos/),
+     with an optional credit {credit, source} for free-licence photos. */
+  function gallery(g) { return Array.isArray(g.photos) ? g.photos.filter(function (x) { return x && (x.path || safeUrl(x.url)); }) : []; }
+  function heroOf(g) { return !g.photo_path && g.hero && safeUrl(g.hero.url) ? g.hero : null; }
+  function hasContent(g) { return !!(g.blurb || g.photo_path || heroOf(g) || safeUrl(g.roster_url) || links(g).length || gallery(g).length); }
   function isLeader() { return S.profile && S.profile.role === "leader"; }
   function q(p) { return p.then(function (r) { if (r.error) throw r.error; return r.data || []; }); }
 
@@ -46,33 +67,50 @@
       '<label>' + (up ? "Ambulance ID number" : "Ambulance ID number (or email)") + '<input id="f-email" name="email" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>' +
       '<label>Password<input id="f-pass" name="pass" type="password" minlength="8" autocomplete="' + (up ? "new-password" : "current-password") + '" required></label>' +
       '<button class="btn" type="submit">' + (up ? "Create account" : "Sign in") + '</button>' +
-      '<button class="linkbtn" type="button" id="swap">' + (up ? "I already have an account" : "Create an account") + '</button></form></div>';
+      '<a class="linkbtn" href="/signin/?first=1&amp;next=' + encodeURIComponent(location.pathname) + '">First time here? Set up your sign-in</a></form></div>';
   }
 
   function chooseGroup(list) {
     var want = decodeURIComponent((location.hash || "").slice(1));
     var hit = list.filter(function (g) { return g.id === want; })[0];
-    return hit || list.filter(hasContent)[0] || list[0] || null;
+    /* then the person's own team (a leader can see every team), then any team with a page */
+    var own = list.filter(function (g) { return S.mine.indexOf(g.id) > -1; });
+    return hit || own.filter(hasContent)[0] || own[0] || list.filter(hasContent)[0] || list[0] || null;
   }
 
   function load() {
     return q(sb.from("profiles").select("*").eq("id", S.user.id)).then(function (rows) {
       S.profile = rows[0] || { role: "member", full_name: "" };
-      return q(sb.from("groups").select("*").order("type", { ascending: false }).order("name"));
-    }).then(function (groups) {
+      return Promise.all([
+        q(sb.from("groups").select("*").order("type", { ascending: false }).order("name")),
+        q(sb.from("memberships").select("group_id").eq("member_id", S.user.id))
+      ]);
+    }).then(function (res) {
+      var groups = res[0]; S.mine = res[1].map(function (m) { return m.group_id; });
       S.groups = groups;
-      var pool = isLeader() ? groups : groups.filter(hasContent);
-      if (!isLeader() && !pool.length) { location.replace("../training/"); return null; }
-      S.current = chooseGroup(pool);
-      if (!S.current) { $app.innerHTML = header() + '<div class="panel pad muted">You have not been added to a team yet. Ask your team leader to add you, then come back.</div>'; return null; }
+      /* Every Team Page has the schedule and learning buttons, so nobody is sent past it (owner, 19 Nov 2026). */
+      S.current = chooseGroup(groups);
+      if (!S.current) {
+        $app.innerHTML = header() + '<div class="panel pad muted">You have not been added to a team yet. Ask your team leader to add you. Until then you can still use these:</div>' +
+          '<div class="actions"><a class="big" href="../training/">Training schedule<span>See upcoming sessions</span></a><a class="big alt" href="../hub/learn/">Learn on your own<span>Videos, walk-throughs, MDT and PCR practice</span></a></div>';
+        return null;
+      }
       return loadGroup();
     });
   }
 
   function loadGroup() {
-    var g = S.current; S.photoUrl = null; S.next = null;
+    var g = S.current, h = heroOf(g); S.photoUrl = h ? safeUrl(h.url) : null; S.next = null; S.pics = [];
     var jobs = [];
     if (g.photo_path) jobs.push(sb.storage.from("team-photos").createSignedUrl(g.photo_path, 3600).then(function (r) { if (!r.error) S.photoUrl = r.data.signedUrl; }));
+    var gl = gallery(g).filter(function (x) { return !h || x.url !== h.url; }), stored = gl.filter(function (x) { return x.path; }), signed = {};
+    S.gallery = gl;
+    if (stored.length) jobs.push(sb.storage.from("team-photos").createSignedUrls(stored.map(function (x) { return x.path; }), 3600).then(function (r) {
+      (r.data || []).forEach(function (u, k) { if (u && u.signedUrl) signed[stored[k].path] = u.signedUrl; });
+    }));
+    jobs = [Promise.all(jobs).then(function () {
+      S.pics = gl.map(function (x) { return { url: x.path ? signed[x.path] : safeUrl(x.url), caption: x.caption || "", credit: x.credit || "", source: safeUrl(x.source) }; }).filter(function (x) { return x.url; });
+    })];
     jobs.push(sb.from("upcoming_sessions").select("*").eq("group_id", g.id).gte("session_date", todayStr()).order("session_date").order("start_time").limit(1).then(function (r) { if (!r.error && r.data && r.data[0]) S.next = r.data[0]; }));
     return Promise.all(jobs).then(render);
   }
@@ -86,24 +124,34 @@
     return String(text || "").split(/\n\s*\n/).map(function (p) { return p.trim(); }).filter(Boolean).map(function (p) { return "<p>" + esc(p).replace(/\n/g, "<br>") + "</p>"; }).join("");
   }
 
+  function heroCredit(g) {
+    var h = heroOf(g); if (!h || !h.credit || !S.photoUrl) return "";
+    var src = safeUrl(h.source);
+    return '<small class="herocredit">' + (src ? '<a href="' + esc(src) + '" rel="noopener">' + esc(h.credit) + "</a>" : esc(h.credit)) + "</small>";
+  }
+
   function render() {
     var g = S.current, html = header();
-    var pool = isLeader() ? S.groups : S.groups.filter(hasContent);
+    var pool = S.groups;
     if (pool.length > 1) {
       html += '<div class="chips" role="group" aria-label="Choose a team">' + pool.map(function (x) { return '<button type="button" data-g="' + x.id + '" aria-pressed="' + (x.id === g.id) + '">' + esc(x.name) + "</button>"; }).join("") + "</div>";
     }
-    html += '<section class="hero' + (S.photoUrl ? "" : " plain") + '">' + (S.photoUrl ? '<img src="' + esc(S.photoUrl) + '" alt="' + esc(g.name) + '">' : "") +
-      '<div class="cap"><h1>' + esc(g.name) + "</h1><p>" + (g.type === "course" ? "Course" : "Team") + "</p></div></section>";
-    if (isLeader() && !hasContent(g)) html += '<div class="notice">This page is empty, so members of ' + esc(g.name) + ' go straight to the training schedule. Add a photo, information and links in Training, People, Team pages.</div>';
+    html += '<section class="hero' + (S.photoUrl ? "" : " plain") + '">' + (S.photoUrl ? '<img src="' + esc(S.photoUrl) + '" alt="' + esc(g.name) + '"' + (g.banner_y != null ? ' style="object-position:50% ' + (+g.banner_y) + '%"' : "") + ">" : "") +
+      '<div class="cap"><h1>' + esc(g.name) + "</h1><p>" + (g.type === "course" ? "Course" : "Team") + "</p></div>" + heroCredit(g) + "</section>";
+    if (isLeader() && !hasContent(g)) html += '<div class="notice">This page has no photo or information yet. Use Edit this page (below) to add a photo, slides, information and links.</div>';
     var ru = safeUrl(g.roster_url);
     html += '<div class="actions"><a class="big" href="../training/">Training schedule<span>Book a spot and see upcoming sessions</span></a>' +
-      (ru ? '<a class="big alt" href="' + esc(ru) + '">Your roster<span>Open the roster for ' + esc(g.name) + "</span></a>" : "") + "</div>";
+      (ru ? '<a class="big alt" href="' + esc(ru) + '">Your roster<span>Open the roster for ' + esc(g.name) + "</span></a>" : "") +
+      '<a class="big alt" href="../hub/learn/">Learn on your own<span>Videos, walk-throughs, MDT and PCR practice</span></a>' +
+      (isLeader() && g.type === "team" ? '<a class="big alt" href="../region/#edit=' + encodeURIComponent(g.id) + '">Edit this page<span>Team leaders: banner photo, photo slides, information and links</span></a>' : "") + "</div>";
     if (S.next) {
       var d = parseDate(S.next.session_date);
       html += '<section class="panel nextcard"><div class="when"><span class="dow">' + d.toLocaleDateString("en-AU", { weekday: "short" }) + '</span><span class="dom">' + d.getDate() + '</span><span class="mon">' + d.toLocaleDateString("en-AU", { month: "short" }) + '</span></div>' +
         '<div class="what"><span class="eyebrow">Next training</span><span class="t">' + ((S.next.lesson_title || S.next.topic) ? esc(S.next.lesson_title || S.next.topic) : '<span class="muted">Topic to be confirmed</span>') + '</span><span class="small muted">' + hhmm(S.next.start_time) + " to " + hhmm(S.next.end_time) + (S.next.location ? " - " + esc(S.next.location) : "") + (S.next.facilitator_name ? " - Led by " + esc(S.next.facilitator_name) : "") + "</span></div>" +
         '<a class="link" href="../training/">Book</a></section>';
     }
+    if (S.pics.length) html += '<section class="stack"><div class="learnhead"><h2>Photos</h2>' + (S.pics.length > 1 ? '<span class="small muted">Swipe for more</span>' : "") + '</div><div class="learnrow">' +
+      S.pics.map(function (p) { return '<figure class="pcard"><img src="' + esc(p.url) + '" alt="' + esc(p.caption || "Team photo") + '" loading="lazy">' + (p.caption || p.credit ? "<figcaption>" + esc(p.caption) + (p.credit ? '<small class="credit">' + (p.source ? '<a href="' + esc(p.source) + '" rel="noopener">' + esc(p.credit) + "</a>" : esc(p.credit)) + "</small>" : "") + "</figcaption>" : "") + "</figure>"; }).join("") + "</div></section>";
     if (g.blurb) html += '<section class="panel pad stack"><h2>About ' + esc(g.name) + '</h2><div class="prose">' + paras(g.blurb) + "</div></section>";
     var ls = links(g);
     if (ls.length) html += '<section class="panel pad stack"><h2>Policies, procedures and links</h2><ul class="links">' + ls.map(function (l) { return '<li><a href="' + esc(safeUrl(l.url)) + '" rel="noopener">' + esc(l.label) + "</a></li>"; }).join("") + "</ul></section>";
