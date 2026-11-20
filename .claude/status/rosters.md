@@ -478,4 +478,5 @@ Tumby Bay's sent status to do it; the cut-off was Wed 25 Nov 08:00). `roster_boo
 `roster_placeholder_no_email`, `supabase/roster-placeholder-no-email.sql`, applied by Claude): honoured only for a
 placeholder booked by a manager or TL; the shift is logged with `no_email: true` and no email is queued. Page: a
 "Don't email Country Rostering" tick under the "Not on the list" name box (`roster-supabase.js`). Edits and cancels,
-and crew bookings, still follow the normal rules. Tested in a rolled-back run on Summer Bay.
+and crew bookings, still follow the normal rules. Tested in a rolled-back run on Summer Bay. Live (PR #287, merged 20 Nov
+2026). Tumby Bay cut-off restored to Wed 25 Nov 08:00 by Claude (owner asked), logged "Sent cut-off restored".
