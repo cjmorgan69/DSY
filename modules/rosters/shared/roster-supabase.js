@@ -290,7 +290,8 @@
                     p_flexibility: payload.restriction || "N",
                     p_member: acting.kind === "member" ? acting.id : null,
                     p_placeholder: acting.kind === "placeholder" ? acting.name : null,
-                    p_level: payload.clinicalLevel || null
+                    p_level: payload.clinicalLevel || null,
+                    p_no_email: acting.kind === "placeholder" && quietPlaceholder()
                 }, timeoutMs);
 
                 return {
@@ -415,6 +416,12 @@
         return button;
     }
 
+    function quietPlaceholder() {
+        const box = document.getElementById("placeholderNoEmail");
+
+        return Boolean(box && box.checked);
+    }
+
     function applyActing() {
         if (!hooks) return;
 
@@ -470,8 +477,27 @@
             guest.hidden = true;
             guest.setAttribute("aria-label", "Name or unit not on the list");
 
+            // Placeholder shifts Country Rostering already know about
+            // (LEP40 etc.): book them without a change email.
+            const quiet = document.createElement("label");
+            quiet.id = "placeholderNoEmailRow";
+            quiet.hidden = true;
+            quiet.style.cssText =
+                "display:flex;gap:.45rem;align-items:flex-start;font-size:.85rem;font-weight:normal";
+            const quietBox = document.createElement("input");
+            quietBox.type = "checkbox";
+            quietBox.id = "placeholderNoEmail";
+            quietBox.style.cssText = "width:auto;margin-top:.15rem";
+            quiet.append(
+                quietBox,
+                document.createTextNode(
+                    "Don't email Country Rostering (they already know about this shift)"
+                )
+            );
+
             select.addEventListener("change", () => {
                 guest.hidden = select.value !== NOT_LISTED;
+                quiet.hidden = select.value !== NOT_LISTED;
 
                 if (select.value === NOT_LISTED) {
                     acting = { kind: "placeholder", name: guest.value.trim() };
@@ -490,7 +516,7 @@
                 applyActing();
             });
 
-            box.append(select, guest);
+            box.append(select, guest, quiet);
         } else {
             const shown = document.createElement("strong");
 
