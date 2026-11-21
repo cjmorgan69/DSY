@@ -37,6 +37,12 @@ Conditions, DRiVE, Manual Tasks: Slides / Presenter / Guide each), the Day 6 ski
 Print), and the `/course/` workshop bookings app. Linked by a small button at the bottom of the home page; the Day 6
 panel was removed from Run a session. Add new AR course material here.
 
+By day (21 Nov 2026, owner): the page now lists Day 1 to 7 as collapsible panels, topics taken from the course
+completion checklist (the same Day/module list as `/ar/signoff/`), each with the skills, a Presentation row (Slides /
+Presenter / Guide) and a Skills stations row (Stations / Setup / Print). Built: Manual Tasks deck (Day 1, and Day 2 as
+"continued", same deck), DRiVE deck (Day 4), Medical Conditions deck and the Day 6 stations (Day 6). Everything else is
+a grey "Coming soon" placeholder: swap a placeholder for links when its material is built. On a branch, not merged (PR open).
+
 ## Course bookings (Supabase version)
 
 AR course bookings, Supabase version (`/ar/course/`, 13 Nov 2026, student gate; the owner keeps the Google Sheet app
