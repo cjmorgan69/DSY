@@ -221,3 +221,8 @@ and passwords, 5 relief cover, 6 team page photos (rosters and roster emails lef
 - Linked from the user guides (21 Nov 2026): a "Team Leader training" tile on /userguides/ beside Team Leaders, a box
   at the top of the Team Leader guide listing the 4 modules, and a "Prefer to watch?" box in guide sections 2, 9 (and
   its Team pages part) and 10. Add a link the same way when modules 2 and 5 are built.
+- `/microlearning/leaders-gaps/` (module 2, guide section 5) and `/microlearning/leaders-relief/` (module 5, section 8):
+  screenshots of /dashboard/coverage/ with eight days of invented rosters (two groups set up in the real page, so the
+  gaps are real results) and of /dashboard/relief/ plus /dashboard/ as the relief Team Leader (banner, labelled tasks).
+  Owner OK'd both scripts ("record both", 21 Nov 2026); intro videos 1:15 and 0:57. All six Team Leader modules now
+  exist, listed in the owner's numbering order in MODULE_LISTS.leaders, and linked from the Team Leader guide.
