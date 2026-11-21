@@ -60,9 +60,12 @@ Tumby Bay 44930, Cummins 44935, Coffin Bay 44926, Port Neill 44932, or all. "Fin
 standalone artifact. Linked from `/ar/` under "Skill sign-off". Live (PR #288, merged 21 Nov 2026).
 
 Student picker (21 Nov 2026): stations are multi-select (one Open button per station; "All stations" = no group).
-"Choose students" lists students from Supabase `public.signoff_students` (station, name, moodle_id; facilitator-only
-RLS; SQL in `supabase/signoff-students-setup.sql`, applied 21 Nov 2026); ticked students get one button per skill
-opening `report.php?id=<skill>&studentid=<moodle_id>` (their own record). "Edit list" adds a student from their
-saaslearn profile link (`user/view.php?id=`) or number, and removes (sets active false). Finished ticks are per
-current choice (students, else stations). The `studentid` link is from the mod_checklist source; the owner still to
-confirm it opens the student's record and lets them tick. On a branch, not merged (PR open).
+"Choose students" picks a course group (non-archived `course_cohorts`, newest first) and lists its active
+`course_students`; the owner wanted names to come from the course setup. Each student's station and saaslearn number
+(`course_students.station`, `moodle_id`, added 21 Nov 2026) are set on the Students tab of `/ar/course/` (paste the
+saaslearn profile link `user/view.php?id=` or the number). Students without a number show greyed out; without a
+station they list under "Station not set". Ticked students get one button per skill opening
+`report.php?id=<skill>&studentid=<moodle_id>`. The first version (PR #290) used a separate `signoff_students` table;
+it was empty and was dropped. Finished ticks are per current choice (students, else stations). The `studentid` link
+is from the mod_checklist source; the owner still to confirm it opens the student's record and lets them tick.
+On a branch, not merged (PR open).
