@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261121d" data-level="facilitator"></script>
+<script src="/shared/gate.js?v=20261121e" data-level="facilitator"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Skill sign-off navigator - DSY Training</title>
@@ -12,10 +12,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../training/theme.css?v=20261121d">
-<link rel="stylesheet" href="../../hub/hub.css?v=20261121d">
+<link rel="stylesheet" href="../../training/theme.css?v=20261121e">
+<link rel="stylesheet" href="../../hub/hub.css?v=20261121e">
 <style>
-/* AR course skill sign-off navigator: sticky controls (stations, students, mode, search) above a day-by-day list of
+/* AR course skill sign-off navigator: sticky controls (stations, mode, search) above a day-by-day list of
    skills, each opening its saaslearn checklist report filtered to the station's Moodle group. */
 .top a { color: inherit; text-decoration: none; }
 .wrap { gap: 0; }
@@ -49,19 +49,6 @@
 .empty { margin-top: 24px; color: var(--muted); }
 .note { margin-top: 36px; padding: 14px 16px; color: var(--muted); font-size: .92rem; display: grid; gap: 6px; }
 .foot { margin-top: 1.5rem; display: grid; gap: .5rem; }
-.mini { border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 4px 10px; border-radius: 999px; font-size: .85rem; }
-.mini[aria-pressed="true"] { border-color: var(--brand); color: var(--brand); font-weight: 700; }
-.picker { margin-top: 1rem; padding: 14px 16px; display: grid; gap: 12px; }
-.pick-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
-.pick-head h2 { font-size: 1.1rem; }
-.pst { margin: 6px 0 4px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); }
-.prow { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); }
-.prow label { flex: 1; flex-direction: row; align-items: center; gap: 10px; font-size: 1rem; font-weight: 400; color: var(--ink); cursor: pointer; }
-.prow input { width: 20px; height: 20px; accent-color: var(--brand); }
-.prow .num { color: var(--muted); font-size: .8rem; }
-.prow.off label { color: var(--muted); cursor: default; }
-.grp { gap: 6px; }
-.grp select { padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font-size: 1rem; font-weight: 400; }
 .opens { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
 .opens .open { padding: 5px 12px; font-size: .9rem; }
 @media (max-width: 600px) { .bar { position: static; } }
@@ -79,17 +66,12 @@
     <a class="brand" href="../../"><div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>
       <div><h1>DSY Training</h1><p>AR course: skill sign-off navigator</p></div></a>
   </header>
-  <p class="intro">FNWC Recruit to Ambulance Responder course. Pick one or more stations, or tick the exact students you are signing off, and each skill opens straight to their sign-off page in saaslearn.</p>
+  <p class="intro">FNWC Recruit to Ambulance Responder course. Pick one or more stations and each skill opens straight to that station's sign-off page in saaslearn.</p>
 
   <div class="bar">
     <div class="row" role="group" aria-label="Stations">
       <span class="label">Stations</span>
       <span id="stations" class="row"></span>
-    </div>
-    <div class="row" id="pickRow">
-      <span class="label">Students</span>
-      <button class="chip" id="pickBtn" type="button" aria-expanded="false" aria-controls="picker">Choose students</button>
-      <span class="small muted" id="pickSummary"></span>
     </div>
     <div class="row" role="group" aria-label="Open as" id="modeRow">
       <span class="label">Open as</span>
@@ -104,28 +86,13 @@
     </div>
   </div>
 
-  <section class="panel picker" id="picker" hidden aria-label="Choose students">
-    <div class="pick-head">
-      <h2>Students</h2>
-      <div class="row">
-        <button class="mini" type="button" id="pickAll">All shown</button>
-        <button class="mini" type="button" id="pickNone">None</button>
-      </div>
-    </div>
-    <label class="grp">Course group<select id="cohort"></select></label>
-    <div id="pickList"></div>
-    <p class="small muted">Names come from the course group in <a href="../course/#students">Workshop bookings, Students</a>. Give each student a station and their saaslearn number there.</p>
-    <p class="small muted" id="pickMsg"></p>
-  </section>
-
   <div id="days"></div>
   <p class="empty" id="empty" hidden>No skills match that search.</p>
 
   <section class="panel note" aria-label="About this page">
     <p>Sign in to saaslearn first. Sign-off is saved in Moodle only when you press Save changes there.</p>
-    <p>With students chosen, each skill shows one button per student and opens that student's own record for the skill. With only stations chosen, it opens the whole station's group (one button per station).</p>
-    <p>The finished ticks here are your own place-keeping for the current choice of stations or students. They live in this browser, are not sent to Moodle, and do not change any student's record.</p>
-    <p>Students come from the course group set up in Workshop bookings. Only facilitators can see them.</p>
+    <p>With several stations chosen, each skill shows one button per station.</p>
+    <p>The finished ticks here are your own place-keeping for the current choice of stations. They live in this browser, are not sent to Moodle, and do not change any student's record.</p>
   </section>
 
   <div class="foot">
@@ -134,7 +101,6 @@
   </div>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
   var BASE = "https://saaslearn.com.au/moodle/mod/checklist/report.php?id=";
@@ -201,13 +167,8 @@
     ]}
   ];
 
-  var SB_URL = "https://ekaodnbnpsuayvmxvxbm.supabase.co";
-  var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW9kbmJucHN1YXl2bXh2eGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzIxMzQsImV4cCI6MjEwNzM0ODEzNH0.q3lTeCQAQjYeMUNl6lwsrxUAsTijJikABW4Ua2N4bmI";
-  var sb = null;
-  try { sb = window.supabase.createClient(SB_URL, SB_KEY); } catch (e) {}
-
-  /* state.stations: chosen station keys ([] = all stations). state.picked: chosen student ids (Moodle numbers). */
-  var state = { stations: ["tumby"], picked: [], edit: true, q: "", hide: false, done: {}, students: [], cohorts: [], cohort: null };
+  /* state.stations: chosen station keys ([] = all stations). */
+  var state = { stations: ["tumby"], edit: true, q: "", hide: false, done: {} };
 
   function load() {
     try {
@@ -218,8 +179,6 @@
         if (Array.isArray(p.stations)) state.stations = p.stations.filter(function (k) { return keys.indexOf(k) > -1; });
         else if (p.station === "all") state.stations = [];
         else if (p.station && keys.indexOf(p.station) > -1) state.stations = [p.station];
-        if (typeof p.cohort === "string") state.cohort = p.cohort;
-        if (Array.isArray(p.picked)) state.picked = p.picked.filter(function (n) { return typeof n === "number"; });
         if (typeof p.edit === "boolean") state.edit = p.edit;
         if (p.done && typeof p.done === "object") state.done = p.done;
       }
@@ -227,43 +186,26 @@
   }
   function save() {
     try {
-      localStorage.setItem("fnwc-signoff-nav", JSON.stringify({ stations: state.stations, cohort: state.cohort, picked: state.picked, edit: state.edit, done: state.done }));
+      localStorage.setItem("fnwc-signoff-nav", JSON.stringify({ stations: state.stations, edit: state.edit, done: state.done }));
     } catch (e) {}
   }
 
   function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
   function stationBy(key) { return STATIONS.filter(function (s) { return s.key === key; })[0]; }
   function chosenStations() { return state.stations.length ? state.stations.map(stationBy) : []; }
-  function inStations(st) { return !state.stations.length || state.stations.indexOf(st.station) > -1; }
-  function pickedStudents() {
-    return state.students.filter(function (st) { return state.picked.indexOf(st.moodle_id) > -1; });
-  }
-  /* Finished ticks belong to the current choice: the picked students, else the stations ("all" when none). */
+  /* Finished ticks belong to the current choice of stations ("all" when none). */
   function scope() {
-    var p = pickedStudents().map(function (s) { return s.moodle_id; }).sort(function (a, b) { return a - b; });
-    if (p.length) return "s" + p.join(".");
     return state.stations.length ? state.stations.slice().sort().join("+") : "all";
   }
   function doneKey(id) { return scope() + ":" + id; }
-  function firstName(n) { return String(n).trim().split(/\s+/)[0]; }
 
   function groupHref(id, st) {
     return BASE + id + (st && st.group ? "&group=" + st.group : "") + (state.edit ? "&editchecks=on" : "");
   }
-  function studentHref(id, st) { return BASE + id + "&studentid=" + st.moodle_id; }
 
-  /* One button per picked student; else one per chosen station; else one for everyone. */
+  /* One button per chosen station; else one for everyone. */
   function opens(sk) {
     var name = esc(sk[1]);
-    var ps = pickedStudents();
-    if (ps.length) {
-      var dup = {};
-      ps.forEach(function (s) { var f = firstName(s.name); dup[f] = (dup[f] || 0) + 1; });
-      return ps.map(function (s) {
-        var label = dup[firstName(s.name)] > 1 ? s.name : firstName(s.name);
-        return '<a class="open" href="' + studentHref(sk[0], s) + '" target="_blank" rel="noopener" aria-label="Open ' + name + " for " + esc(s.name) + '">' + esc(label) + "</a>";
-      }).join("");
-    }
     var sts = chosenStations();
     if (sts.length > 1) {
       return sts.map(function (s) {
@@ -294,40 +236,8 @@
   }
 
   function renderModes() {
-    var ps = pickedStudents().length;
-    document.getElementById("modeRow").hidden = ps > 0;
     document.getElementById("mode-edit").setAttribute("aria-pressed", String(state.edit));
     document.getElementById("mode-view").setAttribute("aria-pressed", String(!state.edit));
-  }
-
-  /* Students with a saaslearn number can be picked; those without show greyed out until it is added in course setup. */
-  function pickable(s) { return !!s.moodle_id; }
-  function renderPicker() {
-    renderSummary();
-    var sel = document.getElementById("cohort");
-    sel.innerHTML = state.cohorts.map(function (c) {
-      return '<option value="' + esc(c.id) + '"' + (c.id === state.cohort ? " selected" : "") + ">" + esc(c.name) + "</option>";
-    }).join("");
-    sel.disabled = !state.cohorts.length;
-    var list = document.getElementById("pickList");
-    if (!sb) { list.innerHTML = '<p class="small muted">The student list could not load. Station buttons still work.</p>'; return; }
-    if (!state.cohorts.length) { list.innerHTML = '<p class="small muted">No course groups yet. Set one up in Workshop bookings.</p>'; return; }
-    var shown = state.students.filter(function (s) { return !s.station || inStations(s); });
-    if (!state.students.length) { list.innerHTML = '<p class="small muted">No students in this group yet.</p>'; return; }
-    if (!shown.length) { list.innerHTML = '<p class="small muted">No students in this group for the chosen stations.</p>'; return; }
-    var html = "";
-    STATIONS.concat([{ key: null, name: "Station not set" }]).forEach(function (stn) {
-      if (stn.key === "all") return;
-      var rows = shown.filter(function (s) { return (s.station || null) === stn.key; });
-      if (!rows.length) return;
-      html += '<p class="pst">' + esc(stn.name) + "</p>";
-      rows.forEach(function (s) {
-        var ok = pickable(s), on = ok && state.picked.indexOf(s.moodle_id) > -1;
-        html += '<div class="prow' + (ok ? "" : " off") + '"><label><input type="checkbox"' + (ok ? ' data-pick="' + s.moodle_id + '"' : " disabled") + (on ? " checked" : "") + "> " + esc(s.name) + "</label>" +
-          (ok ? "" : '<span class="num">No saaslearn number</span>') + "</div>";
-      });
-    });
-    list.innerHTML = html;
   }
 
   function renderDays() {
@@ -365,57 +275,8 @@
     document.getElementById("empty").hidden = shown > 0;
   }
 
-  function renderAll() { renderStations(); renderModes(); renderPicker(); renderDays(); }
+  function renderAll() { renderStations(); renderModes(); renderDays(); }
 
-  function msg(t) { document.getElementById("pickMsg").textContent = t || ""; }
-  function loadStudents() {
-    if (!sb) { renderAll(); return; }
-    sb.from("course_cohorts").select("id,name,created_at").eq("archived", false).order("created_at", { ascending: false }).then(function (r) {
-      if (r.error) { msg("Could not load the course groups: " + r.error.message); return; }
-      state.cohorts = r.data || [];
-      if (!state.cohorts.some(function (c) { return c.id === state.cohort; })) state.cohort = state.cohorts.length ? state.cohorts[0].id : null;
-      loadCohort();
-    });
-  }
-  function loadCohort() {
-    if (!state.cohort) { state.students = []; renderAll(); return; }
-    sb.from("course_students").select("id,first_name,last_name,station,moodle_id").eq("cohort_id", state.cohort).eq("active", true).order("first_name").then(function (r) {
-      if (r.error) { msg("Could not load the students: " + r.error.message); return; }
-      state.students = (r.data || []).map(function (s) {
-        return { id: s.id, name: (s.first_name + " " + s.last_name).trim() || "(no name)", station: s.station, moodle_id: s.moodle_id };
-      });
-      renderAll();
-    });
-  }
-  document.getElementById("cohort").addEventListener("change", function (e) {
-    state.cohort = e.target.value; state.picked = []; save(); loadCohort();
-  });
-
-  document.getElementById("pickBtn").addEventListener("click", function () {
-    var p = document.getElementById("picker");
-    p.hidden = !p.hidden;
-    this.setAttribute("aria-expanded", String(!p.hidden));
-    if (!p.hidden) p.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-  document.getElementById("pickList").addEventListener("change", function (e) {
-    var n = e.target.getAttribute && e.target.getAttribute("data-pick");
-    if (!n) return;
-    n = +n;
-    state.picked = state.picked.filter(function (x) { return x !== n; });
-    if (e.target.checked) state.picked.push(n);
-    save(); renderModes(); renderSummary(); renderDays();
-  });
-  function renderSummary() {
-    var ps = pickedStudents();
-    document.getElementById("pickSummary").textContent = ps.length
-      ? ps.length + (ps.length === 1 ? " student: " : " students: ") + ps.map(function (s) { return firstName(s.name); }).join(", ")
-      : "Whole station";
-  }
-  document.getElementById("pickAll").addEventListener("click", function () {
-    state.picked = state.students.filter(function (s) { return pickable(s) && (!s.station || inStations(s)); }).map(function (s) { return s.moodle_id; });
-    save(); renderAll();
-  });
-  document.getElementById("pickNone").addEventListener("click", function () { state.picked = []; save(); renderAll(); });
   document.getElementById("days").addEventListener("change", function (e) {
     var id = e.target && e.target.getAttribute("data-id");
     if (!id || e.target.type !== "checkbox") return;
@@ -437,7 +298,6 @@
 
   load();
   renderAll();
-  loadStudents();
 })();
 </script>
 </body>

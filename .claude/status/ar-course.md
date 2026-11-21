@@ -59,13 +59,11 @@ Tumby Bay 44930, Cummins 44935, Coffin Bay 44926, Port Neill 44932, or all. "Fin
 (localStorage `fnwc-signoff-nav`), not sent to Moodle; no student names on the page. Moved in from the owner's
 standalone artifact. Linked from `/ar/` under "Skill sign-off". Live (PR #288, merged 21 Nov 2026).
 
-Student picker (21 Nov 2026): stations are multi-select (one Open button per station; "All stations" = no group).
-"Choose students" picks a course group (non-archived `course_cohorts`, newest first) and lists its active
-`course_students`; the owner wanted names to come from the course setup. Each student's station and saaslearn number
-(`course_students.station`, `moodle_id`, added 21 Nov 2026) are set on the Students tab of `/ar/course/` (paste the
-saaslearn profile link `user/view.php?id=` or the number; from 21 Nov 2026 a checklist link `report.php?id=<skill>&studentid=<n>` also works, as studentid/userid/user win over id). Students without a number show greyed out; without a
-station they list under "Station not set". Ticked students get one button per skill opening
-`report.php?id=<skill>&studentid=<moodle_id>`. The first version (PR #290) used a separate `signoff_students` table;
-it was empty and was dropped. Finished ticks are per current choice (students, else stations). The `studentid` link
-is from the mod_checklist source; the owner still to confirm it opens the student's record and lets them tick.
-Live (PR #292, merged 21 Nov 2026).
+Stations (21 Nov 2026): multi-select; with several chosen each skill gets one Open button per station (its Moodle
+group, with Edit checks); "All stations" = no group. Finished ticks are per station choice.
+
+Student picker: built 21 Nov 2026 (PRs #290, #292, #294: pick students from the course group, open
+`report.php?id=<skill>&studentid=<moodle_id>`), then removed the same day at the owner's request because the group
+view gives Edit checks and individual sign-off does not. Left in place: `course_students.station` and `moodle_id`
+columns (no page uses them now) and the test group "TEST: AR course Tumby Bay (sign-off trial)" (9 students,
+placeholder staff IDs TEST-<n> so students do not see it). On a branch, not merged (PR open).
