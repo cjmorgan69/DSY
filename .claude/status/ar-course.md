@@ -100,8 +100,8 @@ Live (PR #298, merged 21 Nov 2026).
 
 `/training/` member view (not the leader view): `loadMember` also calls `course_home()`; if the person is enrolled
 in an active AR course group, a separate "Your course" card sits above the team sessions (the owner first had the
-dates mixed into the team list, then asked for a separate card as less crowded). The card shows "x of N days done"
-(only days up to `total_days` count), the student's upcoming booked and waiting-list dates (Cancel / Leave list;
+dates mixed into the team list, then asked for a separate card as less crowded). The card (no days-done count: owner
+asked to leave it out) shows the student's upcoming booked and waiting-list dates (Cancel / Leave list;
 inside the group's cut-off it says to tell the facilitator; the roll result once marked: Attended, late, left early,
 absent), a "Dates to book (n)" fold with the dates for days not booked or done (Book, or Join waiting list when full;
 consolidation days marked Extra; the fold stays open after booking), and a link to `/ar/course/`. Bookings and

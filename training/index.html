@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261121j">
+<link rel="stylesheet" href="theme.css?v=20261121k">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -30,8 +30,8 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261121j"></script>
-<script src="sa-dates.js?v=20261121j"></script>
+<script src="config.js?v=20261121k"></script>
+<script src="sa-dates.js?v=20261121k"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -218,8 +218,7 @@
     var done = Object.keys(nums).filter(function (n) { return +n <= total && arDayState(+n) === "done"; }).length;
     var mine = up.filter(function (w) { return w.my; });
     var open = up.filter(function (w) { return !w.my && !arDayState(w.day); });
-    var html = '<section class="panel pad stack ar-card"><div class="ar-head"><div><span class="eyebrow">Your course</span><h2>' + esc(a.cohort.course_name || "Ambulance Responder Course") + "</h2></div>" +
-      '<span class="chip ' + (done >= total && total ? "good" : "hi") + '">' + done + " of " + total + " days done</span></div>";
+    var html = '<section class="panel pad stack ar-card"><div class="ar-head"><div><span class="eyebrow">Your course</span><h2>' + esc(a.cohort.course_name || "Ambulance Responder Course") + "</h2></div></div>";
     html += mine.length ? '<ul class="ar-list">' + mine.map(function (w) { return arRow(w, title); }).join("") + "</ul>"
       : '<p class="small muted">' + (open.length ? "Nothing booked yet. Pick your dates below." : done >= total && total ? "All course days done. Well done." : "No dates to book yet. Your facilitator will add them.") + "</p>";
     if (open.length) {
