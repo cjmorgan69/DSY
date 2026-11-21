@@ -92,3 +92,10 @@ Move up, Remove; files under `<group id>/slides/`). Team Page: leaders get an "E
 Banner position (owner, 18 Nov 2026: Kimba's galah lost its head): column `groups.banner_y` (0 top to 100 bottom, null
 centre) sets the banner photo's `object-position`; slider with a live preview in the Region page team form (saves on
 release; a new upload resets it). Kimba set to 10. Merged (PR #278, 18 Nov 2026), checked live.
+
+## User guide links (21 Nov 2026)
+Owner asked where the user guides are linked. Added: a "User guides" tile in Tools on the main page (/userguides/), "How to
+use this" (Getting started) in the team page header, and in the training app header "How to use this" for members or
+"Leader guide" (/userguides/leaders/#training) for leaders. Already linked before: sign-in (Getting started), dashboard
+(Team Leader guide), /hub/run/ (Running a session), MDT (MDT guide), roster manager pages (roster guide). Crew roster
+pages and Learn on your own still have no guide link.
