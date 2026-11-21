@@ -107,4 +107,4 @@ absent), a "Dates to book (n)" fold with the dates for days not booked or done (
 consolidation days marked Extra; the fold stays open after booking), and a link to `/ar/course/`. Bookings and
 attendance stay in the `course_*` tables (`course_book`, `course_cancel`). Team sessions list unchanged. If
 `course_home()` fails the calendar still loads. Team Page "next session" does not include AR dates. Tested with
-stand-in data. On a branch, not merged (PR open).
+stand-in data. Live (PR #299, merged 21 Nov 2026).
