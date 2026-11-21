@@ -191,7 +191,7 @@ without and the form's four steps with six DSY firefighter cards, confidentialit
 post finish. Bushfire module, burnover and health check stations live 13 Nov 2026 (PR #231). Narrated intro video
 (Lee, two takes, 2:41) added 13 Nov 2026; cache tag 20261113b.
 
-## Team Leaders group (started 21 Nov 2026, on a branch, not merged)
+## Team Leaders group (started 21 Nov 2026; Your dashboard live, PR #305 merged 21 Nov 2026)
 
 Owner (21 Nov 2026): turn Team Leader guide topics into short modules with a Lee-narrated video and screenshots,
 starting with the dashboard. Planned set: 1 dashboard, 2 crewing gaps, 3 setting up training nights, 4 adding people
@@ -207,3 +207,8 @@ and passwords, 5 relief cover, 6 team page photos (rosters and roster emails lef
   jpg/png in video-src next to the scene so `scene.html` can show screenshots.
 - Owner OK'd the script ("record it", 21 Nov 2026). Lee narrated as two takes (see voice.json); intro.mp4 1:13,
   overrides set for every sentence. Quiz, quick checks and Try it written by Claude: owner to review.
+- `/microlearning/leaders-training-nights/` (module 3, guide section 9): screenshots of `/training/` (leader view) made
+  with a stand-in for supabase-js that keeps its data in the page, so the real "Set up training nights" flow was run
+  (Cummins, fortnightly visits from Tue 2 Feb 2027, then team training from 9 Feb). Owner OK'd the script ("record
+  it", 21 Nov 2026); Lee narrated as two takes, intro.mp4 1:27. On a branch, not merged. Quiz, quick checks and Try it
+  written by Claude: owner to review.
