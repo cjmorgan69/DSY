@@ -210,5 +210,5 @@ and passwords, 5 relief cover, 6 team page photos (rosters and roster emails lef
 - `/microlearning/leaders-training-nights/` (module 3, guide section 9): screenshots of `/training/` (leader view) made
   with a stand-in for supabase-js that keeps its data in the page, so the real "Set up training nights" flow was run
   (Cummins, fortnightly visits from Tue 2 Feb 2027, then team training from 9 Feb). Owner OK'd the script ("record
-  it", 21 Nov 2026); Lee narrated as two takes, intro.mp4 1:27. On a branch, not merged. Quiz, quick checks and Try it
+  it", 21 Nov 2026); Lee narrated as two takes, intro.mp4 1:27. Live (PR #306, merged 21 Nov 2026). Quiz, quick checks and Try it
   written by Claude: owner to review.
