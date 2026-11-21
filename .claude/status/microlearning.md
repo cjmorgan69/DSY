@@ -218,3 +218,6 @@ and passwords, 5 relief cover, 6 team page photos (rosters and roster emails lef
   were run). Module 6's photos are Wikimedia Commons town photos (Coffin Bay, Port Neill, Streaky Bay; credited in
   footerNotes and scene.html). Owner OK'd both scripts ("record both", 21 Nov 2026); intro videos 1:10 and 1:12.
   Owner said "merge it" (21 Nov 2026) before watching the videos.
+- Linked from the user guides (21 Nov 2026): a "Team Leader training" tile on /userguides/ beside Team Leaders, a box
+  at the top of the Team Leader guide listing the 4 modules, and a "Prefer to watch?" box in guide sections 2, 9 (and
+  its Team pages part) and 10. Add a link the same way when modules 2 and 5 are built.
