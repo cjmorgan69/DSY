@@ -68,4 +68,4 @@ station they list under "Station not set". Ticked students get one button per sk
 `report.php?id=<skill>&studentid=<moodle_id>`. The first version (PR #290) used a separate `signoff_students` table;
 it was empty and was dropped. Finished ticks are per current choice (students, else stations). The `studentid` link
 is from the mod_checklist source; the owner still to confirm it opens the student's record and lets them tick.
-On a branch, not merged (PR open).
+Live (PR #292, merged 21 Nov 2026).
