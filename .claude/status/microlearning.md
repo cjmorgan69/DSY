@@ -190,3 +190,19 @@ from CTL-070 (live chart, exported 31.08.2026). Flagged: SpO2 89 or less is PURP
 without and the form's four steps with six DSY firefighter cards, confidentiality and paperwork) and a health check
 post finish. Bushfire module, burnover and health check stations live 13 Nov 2026 (PR #231). Narrated intro video
 (Lee, two takes, 2:41) added 13 Nov 2026; cache tag 20261113b.
+
+## Team Leaders group (started 21 Nov 2026, on a branch, not merged)
+
+Owner (21 Nov 2026): turn Team Leader guide topics into short modules with a Lee-narrated video and screenshots,
+starting with the dashboard. Planned set: 1 dashboard, 2 crewing gaps, 3 setting up training nights, 4 adding people
+and passwords, 5 relief cover, 6 team page photos (rosters and roster emails left until the roster move settles).
+- `/microlearning/leaders/` group page and a Team Leaders tile on the hub (`MODULE_LISTS.leaders`); pages gated at
+  leader level. The game uses its own groups, so leader modules add no questions to it.
+- `/microlearning/leaders-dashboard/`: guide sections 1 to 4 and 7. Screenshots in `img/` (page) and `video-src/`
+  (video, 2x) are of `/dashboard/` filled with INVENTED people and jobs: a Playwright script stubs `gate.js`,
+  supabase-js and `roster-data.js` and fixes the clock to Tue 24 Nov 2026 09:20 (not in the repo; rebuild from
+  `dash.js` if needed; launch Chromium with LANG=en_AU so date boxes show dd/mm/yyyy).
+- New `{ image: { src, alt, caption } }` block in `shared/module.js` (+ `figure.shot` in module.css), and
+  `protocol.source` sets the footer's "Based on ..." (default SA Ambulance Service). `make.sh` now copies any
+  jpg/png in video-src next to the scene so `scene.html` can show screenshots.
+- Script drafted, waiting for the owner's OK before Lee records (planned as two takes, scenes 1-4 and 5-8).
