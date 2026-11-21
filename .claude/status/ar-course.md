@@ -57,4 +57,4 @@ checklist, grouped by day and module, each opening its saaslearn checklist repor
 (`saaslearn.com.au/moodle/mod/checklist/report.php?id=<id>&group=<group>[&editchecks=on]`). Stations and Moodle groups:
 Tumby Bay 44930, Cummins 44935, Coffin Bay 44926, Port Neill 44932, or all. "Finished" ticks are per browser
 (localStorage `fnwc-signoff-nav`), not sent to Moodle; no student names on the page. Moved in from the owner's
-standalone artifact. Linked from `/ar/` under "Skill sign-off". On a branch, not merged (PR open).
+standalone artifact. Linked from `/ar/` under "Skill sign-off". Live (PR #288, merged 21 Nov 2026).
