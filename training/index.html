@@ -12,14 +12,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261121h">
+<link rel="stylesheet" href="theme.css?v=20261121k">
+<style>
+/* AR course card (member view): the student's AR course dates, separate from team sessions. */
+.ar-card { border-left: 5px solid var(--brand); }
+.ar-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: .4rem .8rem; }
+.ar-head h2 { font-size: 1.15rem; }
+.ar-list { display: flex; flex-direction: column; }
+.ar-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .8rem; padding: .65rem 0; border-top: 1px solid var(--line); }
+.ar-row .what { flex: 1 1 9rem; min-width: 0; display: flex; flex-direction: column; gap: .1rem; }
+.ar-row .t { font-weight: 600; overflow-wrap: anywhere; }
+.ar-row .act { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+.ar-more > summary { cursor: pointer; font-weight: 600; color: var(--brand); padding: .3rem 0; }
+</style>
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261121h"></script>
-<script src="sa-dates.js?v=20261121h"></script>
+<script src="config.js?v=20261121k"></script>
+<script src="sa-dates.js?v=20261121k"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -107,8 +119,11 @@
       q(sb.from("upcoming_sessions").select("*").gte("session_date", todayStr()).order("session_date").order("start_time")),
       q(sb.from("bookings").select("session_id,status").eq("member_id", S.user.id)),
       q(sb.from("lessons").select("*").order("created_at", { ascending: false })),
-      q(sb.from("lesson_files").select("*").order("created_at"))
+      q(sb.from("lesson_files").select("*").order("created_at")),
+      /* AR course (21 Nov 2026): a student in an active AR course group sees its dates here too. Never blocks the calendar. */
+      sb.rpc("course_home").then(function (x) { return x.error ? null : x.data; }, function () { return null; })
     ]).then(function (r) {
+      S.ar = r[4] && r[4].enrolled ? r[4] : null;
       S.mySessions = r[0]; S.myBookings = {};
       r[1].forEach(function (b) { S.myBookings[b.session_id] = b.status; });
       S.shared = r[2]; S.files = r[3];
@@ -169,10 +184,58 @@
     $app.innerHTML = html + (S.memberTab === "shared" && S.shared.length ? renderSharedList() : renderMemberSessions());
   }
 
+  /* ---------- AR course card in the member calendar (bookings and roll live in the course_* tables) ---------- */
+  var AR_ATT = { present: "Attended", late: "Attended (late)", left_early: "Left early", absent: "Marked absent" };
+  function arDayState(day) {
+    var st = "";
+    (S.ar.workshops || []).forEach(function (w) {
+      if (w.day !== day) return;
+      if (w.attended === "present" || w.attended === "late") st = "done";
+      else if (st !== "done" && w.my && !w.cancelled && w.date >= todayStr()) st = w.my;
+    });
+    return st;
+  }
+  function arRow(w, title) {
+    var act, full = w.capacity != null && w.booked >= w.capacity;
+    var total = S.ar.cohort.total_days, cons = total && w.day > total;
+    if (w.attended) act = '<span class="chip' + (w.attended === "absent" ? "" : " good") + '">' + AR_ATT[w.attended] + "</span>";
+    else if (w.my === "confirmed") act = '<span class="chip good">Booked</span>' + (w.can_cancel ? '<button class="btn danger small" data-act="arcancel" data-id="' + w.id + '">Cancel</button>'
+      : '<span class="small muted">Too close to cancel here: tell your facilitator</span>');
+    else if (w.my === "waitlist") act = '<span class="chip warn">Waiting list #' + (w.my_place || 1) + '</span><button class="btn ghost small" data-act="arcancel" data-id="' + w.id + '">Leave list</button>';
+    else if (full) act = '<span class="chip warn">Full</span><button class="btn ghost small" data-act="arwait" data-id="' + w.id + '">Join waiting list</button>';
+    else act = '<button class="btn small" data-act="arbook" data-id="' + w.id + '">Book</button>';
+    var when = w.start ? hhmm(w.start) + (w.end ? " to " + hhmm(w.end) : "") : "Time to be confirmed";
+    return '<li class="ar-row">' + tile(w.date) + '<div class="what"><span class="t">Day ' + w.day + (title[w.day] ? " · " + esc(title[w.day]) : "") + (cons ? ' <span class="chip">Extra</span>' : "") + "</span>" +
+      '<span class="small muted">' + when + (w.location ? " - " + esc(w.location) : "") + "</span></div>" + '<div class="act">' + act + "</div></li>";
+  }
+  function renderArCard() {
+    if (!S.ar) return "";
+    var a = S.ar, today = todayStr(), title = {}, nums = {};
+    (a.days || []).forEach(function (d) { title[d.day] = d.title; nums[d.day] = 1; });
+    var up = (a.workshops || []).filter(function (w) { return w.date >= today && !w.cancelled; });
+    up.forEach(function (w) { nums[w.day] = 1; });
+    var total = a.cohort.total_days || Object.keys(nums).length;
+    var done = Object.keys(nums).filter(function (n) { return +n <= total && arDayState(+n) === "done"; }).length;
+    var mine = up.filter(function (w) { return w.my; });
+    var open = up.filter(function (w) { return !w.my && !arDayState(w.day); });
+    var html = '<section class="panel pad stack ar-card"><div class="ar-head"><div><span class="eyebrow">Your course</span><h2>' + esc(a.cohort.course_name || "Ambulance Responder Course") + "</h2></div></div>";
+    html += mine.length ? '<ul class="ar-list">' + mine.map(function (w) { return arRow(w, title); }).join("") + "</ul>"
+      : '<p class="small muted">' + (open.length ? "Nothing booked yet. Pick your dates below." : done >= total && total ? "All course days done. Well done." : "No dates to book yet. Your facilitator will add them.") + "</p>";
+    if (open.length) {
+      html += '<details class="ar-more"' + (S.arMore || !mine.length ? " open" : "") + '><summary>Dates to book (' + open.length + ")</summary>" +
+        '<ul class="ar-list">' + open.map(function (w) { return arRow(w, title); }).join("") + "</ul></details>";
+    }
+    return html + '<a class="link small" href="../ar/course/">All course days, attendance and progress</a></section>';
+  }
+
+  function arCall(fn, args, msg) {
+    return sb.rpc(fn, args).then(function (r) { if (r.error) throw r.error; toast(msg); return refresh(); }).catch(fail);
+  }
+
   function renderMemberSessions() {
-    var rows = S.mySessions;
-    if (!rows.length) return '<div class="panel empty">No upcoming sessions yet. If you expected to see some, ask your team leader to add you to your team.</div>';
-    return '<ul class="panel list">' + rows.map(function (s, i) {
+    var rows = S.mySessions, card = renderArCard();
+    if (!rows.length) return card + '<div class="panel empty">No upcoming ' + (card ? "team " : "") + 'sessions yet. If you expected to see some, ask your team leader to add you to your team.</div>';
+    return card + '<ul class="panel list">' + rows.map(function (s, i) {
       var booked = S.myBookings[s.id] === "booked", mine = s.is_facilitator && s.session_type === "team";
       var title = s.lesson_title || s.topic;
       return '<li><div class="item' + (i === 0 ? " next" : "") + '">' + tile(s.session_date) +
@@ -788,6 +851,9 @@
     authmode: function () { S.authMode = S.authMode === "in" ? "up" : "in"; renderAuth(); },
     signout: function () { sb.auth.signOut(); },
     book: function (d) { return book(d.id); },
+    arbook: function (d) { return arCall("course_book", { p_workshop: d.id, p_waitlist: false }, "Booked. See you there."); },
+    arwait: function (d) { return arCall("course_book", { p_workshop: d.id, p_waitlist: true }, "You are on the waiting list."); },
+    arcancel: function (d) { if (!confirm("Cancel this?")) return; return arCall("course_cancel", { p_workshop: d.id }, "Cancelled."); },
     cancel: function (d) { return cancelBooking(d.id); },
     tab: function (d) { S.tab = d.tab; S.plan = null; S.lessonEdit = null; S.personEdit = null; S.pageEdit = null; render(); },
     filter: function (d) { S.filter = d.g; render(); },
@@ -846,6 +912,7 @@
     var t = e.target.closest("[data-act]"); if (!t || t.tagName === "INPUT" || t.tagName === "SELECT") return;
     var fn = actions[t.dataset.act]; if (fn) fn(t.dataset, t);
   });
+  document.addEventListener("toggle", function (e) { if (e.target.classList && e.target.classList.contains("ar-more")) S.arMore = e.target.open; }, true);
   document.addEventListener("input", function (e) {
     if (e.target && e.target.form && e.target.form.dataset.form === "plan") redrawPlan(e.target);
     if (e.target && e.target.id === "l-res") { var b = document.getElementById("l-links"); if (b) b.innerHTML = linkRow(e.target.value); }

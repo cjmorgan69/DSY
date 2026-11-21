@@ -15,6 +15,6 @@ window.DRIVE_SECTIONS = [];
     // , 'lesson6-something.js'
   ];
   files.forEach(function (f) {
-    document.write('<script src="data/' + f + '?v=20261121h" charset="utf-8"><\/script>');
+    document.write('<script src="data/' + f + '?v=20261121k" charset="utf-8"><\/script>');
   });
 })();
