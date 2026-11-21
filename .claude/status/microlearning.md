@@ -191,7 +191,7 @@ without and the form's four steps with six DSY firefighter cards, confidentialit
 post finish. Bushfire module, burnover and health check stations live 13 Nov 2026 (PR #231). Narrated intro video
 (Lee, two takes, 2:41) added 13 Nov 2026; cache tag 20261113b.
 
-## Team Leaders group (started 21 Nov 2026, on a branch, not merged)
+## Team Leaders group (started 21 Nov 2026; Your dashboard live, PR #305 merged 21 Nov 2026)
 
 Owner (21 Nov 2026): turn Team Leader guide topics into short modules with a Lee-narrated video and screenshots,
 starting with the dashboard. Planned set: 1 dashboard, 2 crewing gaps, 3 setting up training nights, 4 adding people
