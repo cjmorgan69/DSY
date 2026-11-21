@@ -157,7 +157,7 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - Team Leader microlearning (`/microlearning/leaders/`, started 21 Nov 2026): module 1 Your dashboard live
   (PR #305, merged 21 Nov 2026). Module 3 Training nights live
   (PR #306, merged 21 Nov 2026). Modules 4 People and passwords and 6 Your team page live (21 Nov 2026).
-  Modules 2 Crewing gaps and 5 Relief cover built (on a branch, not merged). All six are linked from the user guides.
+  Modules 2 Crewing gaps and 5 Relief cover live (PR #310, merged 21 Nov 2026). All six are linked from the user guides.
 - Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario
