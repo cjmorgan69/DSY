@@ -73,3 +73,20 @@ Student picker: built 21 Nov 2026 (PRs #290, #292, #294: pick students from the 
 view gives Edit checks and individual sign-off does not. Left in place: `course_students.station` and `moodle_id`
 columns (no page uses them now) and the test group "TEST: AR course Tumby Bay (sign-off trial)" (9 students,
 placeholder staff IDs TEST-<n> so students do not see it). Live (PR #295, merged 21 Nov 2026).
+
+## Build the course and the people picker (21 Nov 2026, owner)
+
+`/ar/course/` facilitator view:
+- Dates tab, "Build the course": one row per course day (the group's days, or the 7 AR days from the completion
+  checklist when the group has none), each with a tick, date and start time (default 09:00; adding a date ticks the
+  day), plus finish, location and places for all ticked days. Saves one `course_workshops` row per ticked day; for a
+  group with no days yet it also saves the AR day titles to `course_days`. "+ Add a date" still adds single dates.
+- New group: "Start with the AR course days (Day 1 to 7)" (ticked by default; sets the titles and total days 7).
+  "Copy the course days from <group>" is now unticked by default and wins when both are ticked.
+- Students tab, "Add students from the people list": `course_people()` (security definer, facilitators only; SQL in
+  `supabase/course-people.sql`, applied 21 Nov 2026) returns ID, name (preferred name first), teams and signed up, from
+  profiles + memberships and from expected_members not yet signed up. Team filter, search, tick, "Add N students" calls
+  `course_add_students` (name split: first word = first name). People already in the group show ticked "In group".
+  The paste box stays below as "Or paste students".
+Tested with stand-in data; rehearsed `course_people()` as a facilitator (160 people, 13 teams) and as a member (0).
+On a branch, not merged (PR open).
