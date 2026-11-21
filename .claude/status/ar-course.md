@@ -115,4 +115,4 @@ Team Leader Guide section 14 "Setting up an AR course" (`/userguides/leaders/#ar
 working" is now 15): create the group, Build the course, add students from the people list, students book from the
 training calendar card, roll and Progress, skill sign-off navigator, archive. Ask DSY reads this page, so keep it true
 when `/ar/course/` changes. Dashboard footer (phone and wide) has an "AR course" link to `/ar/course/`.
-On a branch, not merged (PR open).
+Live (PR #301, merged 21 Nov 2026), checked on the live site.
