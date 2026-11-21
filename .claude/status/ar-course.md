@@ -63,7 +63,7 @@ Student picker (21 Nov 2026): stations are multi-select (one Open button per sta
 "Choose students" picks a course group (non-archived `course_cohorts`, newest first) and lists its active
 `course_students`; the owner wanted names to come from the course setup. Each student's station and saaslearn number
 (`course_students.station`, `moodle_id`, added 21 Nov 2026) are set on the Students tab of `/ar/course/` (paste the
-saaslearn profile link `user/view.php?id=` or the number). Students without a number show greyed out; without a
+saaslearn profile link `user/view.php?id=` or the number; from 21 Nov 2026 a checklist link `report.php?id=<skill>&studentid=<n>` also works, as studentid/userid/user win over id). Students without a number show greyed out; without a
 station they list under "Station not set". Ticked students get one button per skill opening
 `report.php?id=<skill>&studentid=<moodle_id>`. The first version (PR #290) used a separate `signoff_students` table;
 it was empty and was dropped. Finished ticks are per current choice (students, else stations). The `studentid` link

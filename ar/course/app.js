@@ -395,7 +395,7 @@
       '<p class="small muted">' + (lead ? "As a leader, adding someone also puts their ID on the DSY access list so they can create an account."
         : "IDs that are not on the DSY access list yet need a leader to add them (Grant access), or a leader can add the students here.") +
       " Students create their account at dsytraining.com/signin/ (Create account, with their ambulance ID), then open this page.</p>" +
-      '<p class="small muted">For skill sign-off, give each student their station and saaslearn number below (paste their saaslearn profile link, or the number after id=). The <a href="../signoff/">skill sign-off navigator</a> lists them from here.</p></section>';
+      '<p class="small muted">For skill sign-off, give each student their station and saaslearn number below (paste the link from their name in Participants or in a checklist report, or just the number). The <a href="../signoff/">skill sign-off navigator</a> lists them from here.</p></section>';
     if (!d.students.length) return html + '<p class="muted">No students yet.</p>';
     html += '<ul class="panel sessions">' + d.students.slice().sort(function (a, b) { return (b.active - a.active) || nameOf(a).localeCompare(nameOf(b)); }).map(function (s) {
       var a = d.accounts[s.id] || {}, chip = a.account ? '<span class="chip good">Signed up</span>' : a.allowed ? '<span class="chip warn">Can create account</span>' : '<span class="chip bad">Not on access list</span>';
@@ -411,7 +411,7 @@
   function signoffFields(s) {
     return '<div class="signoff-fields"><select class="s-station" aria-label="Station for ' + esc(nameOf(s)) + '"><option value="">Station…</option>' +
       STATIONS.map(function (o) { return '<option value="' + o[0] + '"' + (s.station === o[0] ? " selected" : "") + ">" + o[1] + "</option>"; }).join("") + "</select>" +
-      '<input class="s-moodle" type="text" inputmode="url" autocomplete="off" value="' + esc(s.moodle_id || "") + '" placeholder="saaslearn profile link or number" aria-label="saaslearn number for ' + esc(nameOf(s)) + '">' +
+      '<input class="s-moodle" type="text" inputmode="url" autocomplete="off" value="' + esc(s.moodle_id || "") + '" placeholder="saaslearn link or number" aria-label="saaslearn number for ' + esc(nameOf(s)) + '">' +
       '<button class="btn ghost" data-act="s-signoff" data-sid="' + s.id + '">Save</button></div>';
   }
 
@@ -587,8 +587,9 @@
     }
     if (a === "s-signoff") {
       var box = t.closest(".signoff-fields"), raw = box.querySelector(".s-moodle").value.trim();
-      var m = /[?&]id=(\d+)/.exec(raw) || /^(\d+)$/.exec(raw);
-      if (raw && !m) return toast("Paste their saaslearn profile link, or the number after id=", true);
+      // A checklist link (report.php?id=<skill>&studentid=<student>) holds two numbers: take the student's.
+      var m = /[?&](?:studentid|userid|user)=(\d+)/.exec(raw) || /[?&]id=(\d+)/.exec(raw) || /^\s*(\d+)\s*$/.exec(raw);
+      if (raw && !m) return toast("Paste the link from their name in saaslearn (Participants or a checklist report), or just the number", true);
       return act(q(sb.from("course_students").update({ station: box.querySelector(".s-station").value || null, moodle_id: m ? +m[1] : null }).eq("id", sid))
         .then(function () { return refresh("Saved"); }));
     }
