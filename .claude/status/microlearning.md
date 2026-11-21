@@ -205,4 +205,5 @@ and passwords, 5 relief cover, 6 team page photos (rosters and roster emails lef
 - New `{ image: { src, alt, caption } }` block in `shared/module.js` (+ `figure.shot` in module.css), and
   `protocol.source` sets the footer's "Based on ..." (default SA Ambulance Service). `make.sh` now copies any
   jpg/png in video-src next to the scene so `scene.html` can show screenshots.
-- Script drafted, waiting for the owner's OK before Lee records (planned as two takes, scenes 1-4 and 5-8).
+- Owner OK'd the script ("record it", 21 Nov 2026). Lee narrated as two takes (see voice.json); intro.mp4 1:13,
+  overrides set for every sentence. Quiz, quick checks and Try it written by Claude: owner to review.

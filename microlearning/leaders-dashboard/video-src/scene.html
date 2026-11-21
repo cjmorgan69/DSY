@@ -49,7 +49,7 @@ function shot(g,name,x,y,w,h,srcY,a){
   el("rect",{x,y,width:w,height:h,rx:20,fill:"#f4f6f1",filter:"url(#sh)"},gg);
   const ig=el("g",{"clip-path":`url(#${id})`},gg);
   el("image",{href:name+".jpg",x,y:y-srcY*s,width:w,height:SH[name]._h*s},ig);
-  return {g:gg,s,x,y,srcY,name}}
+  return {g:ig,s,x,y,srcY,name}}   // highlights go inside the clipped window
 /* a gold outline round part of a screenshot */
 function hi(P,key,a,col){if(!P||a<=0)return;const b=SH[P.name][key];if(!b)return;
   el("rect",{x:P.x+b[0]*P.s-6,y:P.y+(b[1]-P.srcY)*P.s-6,width:b[2]*P.s+12,height:b[3]*P.s+12,rx:14,fill:"none",stroke:col||C.gold,"stroke-width":5,opacity:a},P.g)}

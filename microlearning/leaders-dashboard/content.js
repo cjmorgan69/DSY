@@ -18,7 +18,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "intro.mp4", title: "Your Team Leader dashboard" } },
+      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Your Team Leader dashboard" } },
       { text: "The dashboard is at dsytraining.com/dashboard. It refreshes itself every 10 minutes, or tap ↻ Refresh to refresh now." },
       { text: "Every picture on this page uses invented people and jobs." }
     ] },

@@ -154,6 +154,8 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - PRs #155 (more than one lesson per session), #133 (sepsis skills stations) and #119 (NSW ECAT protocols in the
   rural ED asthma/COPD module) were folded into the health check PR #236 on 15 Nov 2026 (owner: merge them as long
   as nothing newer is overwritten). The rural ED module's intro video was narrated before the ECAT additions.
+- Team Leader microlearning (`/microlearning/leaders/`, started 21 Nov 2026): module 1 Your dashboard done (on a branch,
+  not merged). Planned next: crewing gaps, training nights, adding people and passwords, relief cover, team page photos.
 - Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario
