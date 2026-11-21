@@ -119,8 +119,8 @@ function scene(t,i){
   }
 
   if(i===5){
-    if(T<S[3].s-0.1){ const P=shot(g,"reset",...WIDE,500,rv(T,S[0].s-0.2,0.5)); hi(P,"row",rv(T,S[2].s,0.3));
-      if(T<S[2].s-0.1) chip(g,"No email on file: a leader resets it",640-290,470,rv(T,S[0].s,0.4),"rgba(18,61,44,.92)"); }
+    if(T<S[3].s-0.1){ const P=shot(g,"reset",...(T<S[2].s-0.1?LOW:WIDE),500,rv(T,S[0].s-0.2,0.5)); hi(P,"row",rv(T,S[2].s,0.3));
+      if(T<S[2].s-0.1) chip(g,"No email on file: a leader resets it",640-290,505,rv(T,S[0].s,0.4),"rgba(18,61,44,.92)"); }
     else { const P=shot(g,"reset-done",...W,560,1); hi(P,"msg",rv(T,S[3].s+0.2,0.3));
       row(g,680,170,530,110,"Temporary password","8 or more characters",1,C.gold);
       row(g,680,300,530,110,"They choose their own","at their next sign-in",rv(T,S[3].s,0.4),C.mint); }
