@@ -12,14 +12,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261121h">
+<link rel="stylesheet" href="theme.css?v=20261121i">
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261121h"></script>
-<script src="sa-dates.js?v=20261121h"></script>
+<script src="config.js?v=20261121i"></script>
+<script src="sa-dates.js?v=20261121i"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -107,8 +107,11 @@
       q(sb.from("upcoming_sessions").select("*").gte("session_date", todayStr()).order("session_date").order("start_time")),
       q(sb.from("bookings").select("session_id,status").eq("member_id", S.user.id)),
       q(sb.from("lessons").select("*").order("created_at", { ascending: false })),
-      q(sb.from("lesson_files").select("*").order("created_at"))
+      q(sb.from("lesson_files").select("*").order("created_at")),
+      /* AR course (21 Nov 2026): a student in an active AR course group sees its dates here too. Never blocks the calendar. */
+      sb.rpc("course_home").then(function (x) { return x.error ? null : x.data; }, function () { return null; })
     ]).then(function (r) {
+      S.ar = r[4] && r[4].enrolled ? r[4] : null;
       S.mySessions = r[0]; S.myBookings = {};
       r[1].forEach(function (b) { S.myBookings[b.session_id] = b.status; });
       S.shared = r[2]; S.files = r[3];
@@ -169,10 +172,57 @@
     $app.innerHTML = html + (S.memberTab === "shared" && S.shared.length ? renderSharedList() : renderMemberSessions());
   }
 
+  /* ---------- AR course dates in the member calendar (bookings and roll live in the course_* tables) ---------- */
+  var AR_ATT = { present: "Attended", late: "Attended (late)", left_early: "Left early", absent: "Marked absent" };
+  function arRows() {
+    if (!S.ar) return [];
+    var today = todayStr(), title = {};
+    (S.ar.days || []).forEach(function (d) { title[d.day] = d.title; });
+    return (S.ar.workshops || []).filter(function (w) { return w.date >= today && !w.cancelled; }).map(function (w) {
+      return { ar: true, w: w, session_date: w.date, start_time: w.start || "00:00", dayTitle: title[w.day] || "" };
+    });
+  }
+  function arDayState(day) {
+    var st = "";
+    (S.ar.workshops || []).forEach(function (w) {
+      if (w.day !== day) return;
+      if (w.attended === "present" || w.attended === "late") st = "done";
+      else if (!st && w.my && !w.cancelled && w.date >= todayStr()) st = w.my;
+    });
+    return st;
+  }
+  function arItem(r, i) {
+    var w = r.w, act = "", total = S.ar.cohort.total_days, cons = total && w.day > total;
+    var full = w.capacity != null && w.booked >= w.capacity, other = arDayState(w.day);
+    if (w.attended) act = '<span class="chip ' + (w.attended === "absent" ? "" : "good") + '">' + AR_ATT[w.attended] + "</span>";
+    else if (w.my === "confirmed") act = '<span class="chip good">Booked</span>' + (w.can_cancel ? '<button class="btn danger small" data-act="arcancel" data-id="' + w.id + '">Cancel</button>'
+      : '<span class="small muted">Too close to cancel here: tell your facilitator</span>');
+    else if (w.my === "waitlist") act = '<span class="chip warn">Waiting list #' + (w.my_place || 1) + '</span><button class="btn ghost small" data-act="arcancel" data-id="' + w.id + '">Leave list</button>';
+    else if (other === "done") act = '<span class="chip good">Day done</span>';
+    else if (other) act = '<span class="chip">Other date ' + (other === "waitlist" ? "on waiting list" : "booked") + "</span>";
+    else if (full) act = '<span class="chip warn">Full</span><button class="btn ghost small" data-act="arwait" data-id="' + w.id + '">Join waiting list</button>';
+    else act = '<button class="btn small" data-act="arbook" data-id="' + w.id + '">Book a spot</button>';
+    var when = w.start ? hhmm(w.start) + (w.end ? " to " + hhmm(w.end) : "") : "Time to be confirmed";
+    return '<li><div class="item' + (i === 0 ? " next" : "") + '">' + tile(w.date) +
+      '<div class="what"><span class="t">Day ' + w.day + (r.dayTitle ? " · " + esc(r.dayTitle) : "") + "</span>" +
+      '<span class="small muted">' + when + (w.location ? " - " + esc(w.location) : "") + "</span>" +
+      (w.notes ? '<span class="small muted">' + esc(w.notes) + "</span>" : "") +
+      '<span class="row"><span class="chip course">' + esc(S.ar.cohort.course_name || "AR course") + "</span>" + (cons ? '<span class="chip">Consolidation</span>' : "") +
+      (w.capacity != null && !w.my ? '<span class="small muted">' + Math.max(0, w.capacity - w.booked) + " of " + w.capacity + " places left</span>" : "") + "</span></div>" +
+      '<div class="act">' + act + "</div></div></li>";
+  }
+  function arCall(fn, args, msg) {
+    return sb.rpc(fn, args).then(function (r) { if (r.error) throw r.error; toast(msg); return refresh(); }).catch(fail);
+  }
+
   function renderMemberSessions() {
-    var rows = S.mySessions;
-    if (!rows.length) return '<div class="panel empty">No upcoming sessions yet. If you expected to see some, ask your team leader to add you to your team.</div>';
-    return '<ul class="panel list">' + rows.map(function (s, i) {
+    var rows = S.mySessions.concat(arRows()).sort(function (a, b) {
+      return (a.session_date + " " + String(a.start_time || "")).localeCompare(b.session_date + " " + String(b.start_time || ""));
+    });
+    var arLink = S.ar ? '<p class="small"><a class="link" href="../ar/course/">' + esc(S.ar.cohort.course_name || "AR course") + ": your progress, all dates and course days</a></p>" : "";
+    if (!rows.length) return arLink + '<div class="panel empty">No upcoming sessions yet. If you expected to see some, ask your team leader to add you to your team.</div>';
+    return arLink + '<ul class="panel list">' + rows.map(function (s, i) {
+      if (s.ar) return arItem(s, i);
       var booked = S.myBookings[s.id] === "booked", mine = s.is_facilitator && s.session_type === "team";
       var title = s.lesson_title || s.topic;
       return '<li><div class="item' + (i === 0 ? " next" : "") + '">' + tile(s.session_date) +
@@ -788,6 +838,9 @@
     authmode: function () { S.authMode = S.authMode === "in" ? "up" : "in"; renderAuth(); },
     signout: function () { sb.auth.signOut(); },
     book: function (d) { return book(d.id); },
+    arbook: function (d) { return arCall("course_book", { p_workshop: d.id, p_waitlist: false }, "Booked. See you there."); },
+    arwait: function (d) { return arCall("course_book", { p_workshop: d.id, p_waitlist: true }, "You are on the waiting list."); },
+    arcancel: function (d) { if (!confirm("Cancel this?")) return; return arCall("course_cancel", { p_workshop: d.id }, "Cancelled."); },
     cancel: function (d) { return cancelBooking(d.id); },
     tab: function (d) { S.tab = d.tab; S.plan = null; S.lessonEdit = null; S.personEdit = null; S.pageEdit = null; render(); },
     filter: function (d) { S.filter = d.g; render(); },

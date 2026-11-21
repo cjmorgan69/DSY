@@ -94,4 +94,16 @@ placeholder staff IDs TEST-<n> so students do not see it). Live (PR #295, merged
   `course_add_students` (name split: first word = first name). People already in the group show ticked "In group".
   The paste box stays below as "Or paste students".
 Tested with stand-in data; rehearsed `course_people()` as a facilitator (160 people, 13 teams) and as a member (0).
-On a branch, not merged (PR open).
+Live (PR #298, merged 21 Nov 2026).
+
+## AR dates in the training calendar (21 Nov 2026, owner)
+
+`/training/` member view (not the leader view): `loadMember` also calls `course_home()`; if the person is enrolled
+in an active AR course group, its upcoming, not-cancelled dates are merged into "your upcoming sessions" by date and
+time, marked with the course name (and "Consolidation" for days after `total_days`), with a link to `/ar/course/`.
+Buttons use the AR booking rules: Book a spot (`course_book`), Join waiting list when full, Cancel / Leave list
+(`course_cancel`; inside the group's cut-off it says to tell the facilitator), "Other date booked" or "Day done" when
+another date of the same day is booked or attended, and the roll result once marked in `/ar/course/` (Attended,
+Attended (late), Left early, Marked absent). Bookings and attendance stay in the `course_*` tables; team sessions
+are unchanged. If `course_home()` fails the calendar still loads. Team Page "next session" does not include AR
+dates. Tested with stand-in data. On a branch, not merged (PR open).

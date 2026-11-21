@@ -15,6 +15,6 @@ window.DRIVE_SECTIONS = [];
     'part10-close.js'
   ];
   files.forEach(function (f) {
-    document.write('<script src="data/' + f + '?v=20261121h" charset="utf-8"><\/script>');
+    document.write('<script src="data/' + f + '?v=20261121i" charset="utf-8"><\/script>');
   });
 })();
