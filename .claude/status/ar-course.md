@@ -116,3 +116,6 @@ working" is now 15): create the group, Build the course, add students from the p
 training calendar card, roll and Progress, skill sign-off navigator, archive. Ask DSY reads this page, so keep it true
 when `/ar/course/` changes. Dashboard footer (phone and wide) has an "AR course" link to `/ar/course/`.
 Live (PR #301, merged 21 Nov 2026), checked on the live site.
+
+Per-date locations (21 Nov 2026, owner): in Build the course every date line has its own Location box; the shared
+"Location (any date left blank)" fills the blanks. Guide section 14 says so. On a branch, not merged (PR open).
