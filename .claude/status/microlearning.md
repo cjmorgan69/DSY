@@ -210,5 +210,11 @@ and passwords, 5 relief cover, 6 team page photos (rosters and roster emails lef
 - `/microlearning/leaders-training-nights/` (module 3, guide section 9): screenshots of `/training/` (leader view) made
   with a stand-in for supabase-js that keeps its data in the page, so the real "Set up training nights" flow was run
   (Cummins, fortnightly visits from Tue 2 Feb 2027, then team training from 9 Feb). Owner OK'd the script ("record
-  it", 21 Nov 2026); Lee narrated as two takes, intro.mp4 1:27. On a branch, not merged. Quiz, quick checks and Try it
+  it", 21 Nov 2026); Lee narrated as two takes, intro.mp4 1:27. Live (PR #306, merged 21 Nov 2026). Quiz, quick checks and Try it
   written by Claude: owner to review.
+- `/microlearning/leaders-people/` (module 4, guide sections 9 and 10) and `/microlearning/leaders-team-page/` (module 6,
+  section 9 team pages): screenshots of /access/, the training app People tab, /teams/ and /region/ with invented
+  people (stand-ins for supabase-js keep the data in the page, so adding IDs, a reset, a removal and real photo uploads
+  were run). Module 6's photos are Wikimedia Commons town photos (Coffin Bay, Port Neill, Streaky Bay; credited in
+  footerNotes and scene.html). Owner OK'd both scripts ("record both", 21 Nov 2026); intro videos 1:10 and 1:12.
+  Owner said "merge it" (21 Nov 2026) before watching the videos.
