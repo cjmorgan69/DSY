@@ -65,4 +65,4 @@ RLS; SQL in `supabase/signoff-students-setup.sql`, applied 21 Nov 2026); ticked 
 opening `report.php?id=<skill>&studentid=<moodle_id>` (their own record). "Edit list" adds a student from their
 saaslearn profile link (`user/view.php?id=`) or number, and removes (sets active false). Finished ticks are per
 current choice (students, else stations). The `studentid` link is from the mod_checklist source; the owner still to
-confirm it opens the student's record and lets them tick. On a branch, not merged (PR open).
+confirm it opens the student's record and lets them tick. Live (PR #290, merged 21 Nov 2026); student list empty at merge.
