@@ -120,8 +120,10 @@
         (h.staff_id ? " (" + esc(h.staff_id) + ")" : "") + '. Once you are added, your course days and dates show here.</p></section></main>';
       return;
     }
-    var days = studentDays(h), done = days.filter(function (x) { return x.state === "done"; }).length;
-    var total = h.cohort.total_days || days.length, today = h.today, title = function (d) { return "Day " + d.day + (d.title ? " · " + d.title : ""); };
+    var days = studentDays(h), total = h.cohort.total_days || days.length;
+    // Only the course days count: consolidation days (after the days to complete) are extra.
+    var done = days.filter(function (x) { return x.state === "done" && x.day <= total; }).length;
+    var today = h.today, title = function (d) { return "Day " + d.day + (d.title ? " · " + d.title : ""); };
     var html = '<main class="wrap">' + header({ title: h.cohort.course_name, line: h.student.first_name + " " + h.student.last_name + " · " + h.cohort.name }, facLink);
 
     html += '<section class="panel pad stack"><div class="dayhead"><h2>Your progress</h2><span class="count">' + done + " of " + total + " days</span></div>" + tracker(days) +
@@ -318,6 +320,16 @@
     if (!d.dayList.length) for (i = 1; i <= AR_DAYS.length; i++) n[i] = 1;
     return Object.keys(n).map(Number).sort(function (a, b) { return a - b; });
   }
+  function whenLine(n, extra) {
+    return '<div class="b-when"><input type="date" class="b-date" aria-label="Date for Day ' + n + '"><input type="time" class="b-start" value="09:00" aria-label="Start time for Day ' + n + '">' +
+      (extra ? '<button class="b-x" type="button" data-act="b-rm" aria-label="Remove this date">×</button>' : "") + "</div>";
+  }
+  function consRow(n) {
+    return '<div class="b-row cons" data-day="' + n + '" data-title="Consolidation"><label class="check"><input type="checkbox" class="b-pick" checked> <span><b>Day ' + n +
+      '</b> <span class="b-title">· Consolidation (extra, not counted in the days to complete)</span></span></label>' +
+      '<button class="b-x" type="button" data-act="b-rm-row" aria-label="Remove this consolidation day">×</button>' +
+      '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for Day ' + n + "</button></div>";
+  }
   function buildPanel(d) {
     if (!S.building) return '<button class="btn wide" data-act="b-toggle">Build the course: pick days, dates and start times</button>';
     var rows = buildDays(d).map(function (n) {
@@ -325,10 +337,11 @@
       var have = d.workshops.filter(function (w) { return w.day_number === n && !w.cancelled; }).length;
       return '<div class="b-row" data-day="' + n + '"><label class="check"><input type="checkbox" class="b-pick"> <span><b>Day ' + n + "</b>" + (title ? ' <span class="b-title">· ' + esc(title) + "</span>" : "") +
         (have ? ' <span class="chip">' + have + (have === 1 ? " date" : " dates") + " already</span>" : "") + "</span></label>" +
-        '<div class="b-when"><input type="date" class="b-date" aria-label="Date for Day ' + n + '"><input type="time" class="b-start" value="09:00" aria-label="Start time for Day ' + n + '"></div></div>';
+        '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for Day ' + n + "</button></div>";
     }).join("");
-    return '<section class="panel pad stack"><h2>Build the course</h2><p class="small muted">Tick a day, then give it a date and start time. Adding a date ticks the day for you. Each ticked day becomes a date students can book.</p>' +
-      rows + '<div class="grid2">' +
+    return '<section class="panel pad stack"><h2>Build the course</h2><p class="small muted">Tick a day, then give it a date and start time. Adding a date ticks the day for you. ' +
+      'Use "Another date" to run the same day more than once: students book the one that suits them.</p>' +
+      '<div id="b-rows">' + rows + '</div><button class="btn ghost" type="button" data-act="b-cons">+ Add a consolidation day</button><div class="grid2">' +
       '<div class="field"><label for="b-end">Finish (optional, all days)</label><input id="b-end" type="time"></div>' +
       '<div class="field"><label for="b-loc">Location (all days)</label><input id="b-loc" placeholder="e.g. Cummins station"></div>' +
       '<div class="field"><label for="b-cap">Places (blank = no limit)</label><input id="b-cap" type="number" min="1" inputmode="numeric"></div></div>' +
@@ -480,8 +493,8 @@
     var html = '<div class="row no-print"><button class="btn ghost" onclick="window.print()">Print attendance record</button></div>' +
       '<div class="legend no-print"><span><i class="done"></i>Done</span><span><i class="booked"></i>Booked</span><span><i class="part"></i>Left early</span><span><i></i>Not done</span></div>';
     html += '<ul class="panel sessions no-print">' + d.active.map(function (s) {
-      var st = facStates(d, s), done = st.filter(function (x) { return x.state === "done"; }).length;
-      var todo = st.filter(function (x) { return x.state !== "done"; }).map(function (x) { return x.day; });
+      var st = facStates(d, s), done = st.filter(function (x) { return x.state === "done" && x.day <= total; }).length;
+      var todo = st.filter(function (x) { return x.state !== "done" && x.day <= total; }).map(function (x) { return x.day; });
       return '<li class="person"><div class="who"><b>' + esc(nameOf(s)) + "</b>" +
         '<ol class="days mini">' + st.map(function (x) { return '<li class="' + x.state + '" title="Day ' + x.day + '">' + x.day + "</li>"; }).join("") + "</ol>" +
         '<span class="small muted">' + (done >= total && total ? "" : "Still to do: Day " + todo.join(", ")) + "</span></div>" +
@@ -500,7 +513,7 @@
             if (a) cell += (cell ? "<br>" : "") + esc(shortDate(w.date)) + " " + esc(ATT[a.status]) + (a.note ? "<br><i>" + esc(a.note) + "</i>" : "");
           });
           return "<td>" + (cell || "–") + "</td>";
-        }).join("") + "<td>" + st.filter(function (x) { return x.state === "done"; }).length + " / " + total + "</td></tr>";
+        }).join("") + "<td>" + st.filter(function (x) { return x.state === "done" && x.day <= total; }).length + " / " + total + "</td></tr>";
       }).join("") + "</tbody></table></div>";
     return html;
   }
@@ -603,21 +616,42 @@
     // facilitator
     if (a === "w-add-toggle") { S.adding = !S.adding; return renderFac(); }
     if (a === "b-toggle") { S.building = !S.building; return renderFac(); }
+    if (a === "b-more") {
+      var row = t.closest(".b-row"), box = row.querySelector(".b-dates");
+      box.insertAdjacentHTML("beforeend", whenLine(+row.getAttribute("data-day"), true));
+      box.lastChild.querySelector(".b-date").focus(); return;
+    }
+    if (a === "b-rm") { t.closest(".b-when").remove(); return; }
+    if (a === "b-rm-row") { t.closest(".b-row").remove(); return; }
+    if (a === "b-cons") {
+      var nums = [].map.call(document.querySelectorAll(".b-row"), function (r) { return +r.getAttribute("data-day"); });
+      $("b-rows").insertAdjacentHTML("beforeend", consRow(Math.max.apply(null, nums.concat([0])) + 1));
+      return;
+    }
     if (a === "b-save") {
       var cap = $("b-cap").value.trim(), ws = [], titles = [], missing = [];
       [].forEach.call(document.querySelectorAll(".b-row"), function (r) {
         if (!r.querySelector(".b-pick").checked) return;
-        var n = +r.getAttribute("data-day"), date = r.querySelector(".b-date").value;
-        if (!date) { missing.push(n); return; }
-        ws.push({ cohort_id: S.cohortId, day_number: n, date: date, start_time: r.querySelector(".b-start").value || null, end_time: $("b-end").value || null,
-          location: $("b-loc").value.trim(), capacity: cap ? +cap : null, notes: "", updated_at: new Date().toISOString() });
-        if (!d.dayTitle[n] && !d.dayList.length && AR_DAYS[n - 1]) titles.push({ cohort_id: S.cohortId, day_number: n, title: AR_DAYS[n - 1], links: [] });
+        var n = +r.getAttribute("data-day"), cons = r.getAttribute("data-title"), dated = 0;
+        [].forEach.call(r.querySelectorAll(".b-when"), function (l) {
+          var date = l.querySelector(".b-date").value;
+          if (!date) return;
+          dated++;
+          ws.push({ cohort_id: S.cohortId, day_number: n, date: date, start_time: l.querySelector(".b-start").value || null, end_time: $("b-end").value || null,
+            location: $("b-loc").value.trim(), capacity: cap ? +cap : null, notes: "", updated_at: new Date().toISOString() });
+        });
+        if (!dated) { missing.push(n); return; }
+        if (cons) titles.push({ cohort_id: S.cohortId, day_number: n, title: cons, links: [] });
+        else if (!d.dayTitle[n] && !d.dayList.length && AR_DAYS[n - 1]) titles.push({ cohort_id: S.cohortId, day_number: n, title: AR_DAYS[n - 1], links: [] });
       });
+      // Consolidation days sit after the course days and do not count towards completion.
+      var hasCons = document.querySelector(".b-row.cons .b-pick:checked"), core = buildDays(d).length;
+      var setTotal = hasCons && !d.cohort.total_days ? q(sb.from("course_cohorts").update({ total_days: core }).eq("id", S.cohortId)) : null;
       if (missing.length) return toast("Give Day " + missing.join(", Day ") + " a date, or untick it", true);
       if (!ws.length) return toast("Tick at least one day and give it a date", true);
       return act(q(sb.from("course_workshops").insert(ws)).then(function () {
         if (titles.length) return q(sb.from("course_days").upsert(titles));
-      }).then(function () { S.building = false; return refresh(ws.length + (ws.length === 1 ? " date added" : " dates added")); }));
+      }).then(function () { return setTotal; }).then(function () { S.building = false; d.cohort.total_days = d.cohort.total_days || (hasCons ? core : null); return refresh(ws.length + (ws.length === 1 ? " date added" : " dates added")); }));
     }
     if (a === "p-toggle") {
       S.picking = !S.picking; S.pSel = {};

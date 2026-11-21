@@ -81,6 +81,11 @@ placeholder staff IDs TEST-<n> so students do not see it). Live (PR #295, merged
   checklist when the group has none), each with a tick, date and start time (default 09:00; adding a date ticks the
   day), plus finish, location and places for all ticked days. Saves one `course_workshops` row per ticked day; for a
   group with no days yet it also saves the AR day titles to `course_days`. "+ Add a date" still adds single dates.
+  "+ Another date for Day N" adds more date/time lines to a day (students book one of them). "+ Add a consolidation
+  day" adds the next day number titled "Consolidation" (saved to `course_days`); it is extra: if the group has no
+  days to complete set, saving sets it to the course days (excluding consolidation), and completion now counts only
+  days up to `total_days` (student progress, Progress tab, printed record), so a consolidation day can't replace a
+  missed course day.
 - New group: "Start with the AR course days (Day 1 to 7)" (ticked by default; sets the titles and total days 7).
   "Copy the course days from <group>" is now unticked by default and wins when both are ticked.
 - Students tab, "Add students from the people list": `course_people()` (security definer, facilitators only; SQL in
