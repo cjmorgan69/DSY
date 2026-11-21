@@ -118,4 +118,4 @@ when `/ar/course/` changes. Dashboard footer (phone and wide) has an "AR course"
 Live (PR #301, merged 21 Nov 2026), checked on the live site.
 
 Per-date locations (21 Nov 2026, owner): in Build the course every date line has its own Location box; the shared
-"Location (any date left blank)" fills the blanks. Guide section 14 says so. On a branch, not merged (PR open).
+"Location (any date left blank)" fills the blanks. Guide section 14 says so. Live (PR #303, merged 21 Nov 2026).
