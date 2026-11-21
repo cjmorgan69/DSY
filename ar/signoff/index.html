@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261120a" data-level="facilitator"></script>
+<script src="/shared/gate.js?v=20261121b" data-level="facilitator"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Skill sign-off navigator - DSY Training</title>
@@ -12,10 +12,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../training/theme.css?v=20261120a">
-<link rel="stylesheet" href="../../hub/hub.css?v=20261120a">
+<link rel="stylesheet" href="../../training/theme.css?v=20261121b">
+<link rel="stylesheet" href="../../hub/hub.css?v=20261121b">
 <style>
-/* AR course skill sign-off navigator: sticky controls (station, mode, search) above a day-by-day list of
+/* AR course skill sign-off navigator: sticky controls (stations, students, mode, search) above a day-by-day list of
    skills, each opening its saaslearn checklist report filtered to the station's Moodle group. */
 .top a { color: inherit; text-decoration: none; }
 .wrap { gap: 0; }
@@ -49,6 +49,24 @@
 .empty { margin-top: 24px; color: var(--muted); }
 .note { margin-top: 36px; padding: 14px 16px; color: var(--muted); font-size: .92rem; display: grid; gap: 6px; }
 .foot { margin-top: 1.5rem; display: grid; gap: .5rem; }
+.mini { border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 4px 10px; border-radius: 999px; font-size: .85rem; }
+.mini[aria-pressed="true"] { border-color: var(--brand); color: var(--brand); font-weight: 700; }
+.picker { margin-top: 1rem; padding: 14px 16px; display: grid; gap: 12px; }
+.pick-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.pick-head h2 { font-size: 1.1rem; }
+.pst { margin: 6px 0 4px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); }
+.prow { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); }
+.prow label { flex: 1; flex-direction: row; align-items: center; gap: 10px; font-size: 1rem; font-weight: 400; color: var(--ink); cursor: pointer; }
+.prow input { width: 20px; height: 20px; accent-color: var(--brand); }
+.prow .num { color: var(--muted); font-size: .8rem; }
+.prow .rm { border: 0; background: none; color: var(--danger); font-weight: 700; padding: 4px 6px; }
+.addform { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; border-top: 1px solid var(--line); padding-top: 12px; }
+.addform input, .addform select { padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font-size: 1rem; font-weight: 400; }
+.addbtn { justify-self: start; border: 0; cursor: pointer; padding: 8px 18px; border-radius: 999px; background: var(--brand); color: var(--brand-ink); font-weight: 700; }
+.opens { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.opens .open { padding: 5px 12px; font-size: .9rem; }
+@media (max-width: 600px) { .bar { position: static; } }
+@media (max-width: 480px) { .opens { grid-column: 2; justify-content: flex-start; } }
 @media (max-width: 480px) {
   .skill { grid-template-columns: auto 1fr; }
   .open { grid-column: 2; justify-self: start; }
@@ -62,14 +80,19 @@
     <a class="brand" href="../../"><div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>
       <div><h1>DSY Training</h1><p>AR course: skill sign-off navigator</p></div></a>
   </header>
-  <p class="intro">FNWC Recruit to Ambulance Responder course. Each button opens that skill's sign-off page in saaslearn, already filtered to your station.</p>
+  <p class="intro">FNWC Recruit to Ambulance Responder course. Pick one or more stations, or tick the exact students you are signing off, and each skill opens straight to their sign-off page in saaslearn.</p>
 
   <div class="bar">
-    <div class="row" role="group" aria-label="Station">
-      <span class="label">Station</span>
+    <div class="row" role="group" aria-label="Stations">
+      <span class="label">Stations</span>
       <span id="stations" class="row"></span>
     </div>
-    <div class="row" role="group" aria-label="Open as">
+    <div class="row" id="pickRow">
+      <span class="label">Students</span>
+      <button class="chip" id="pickBtn" type="button" aria-expanded="false" aria-controls="picker">Choose students</button>
+      <span class="small muted" id="pickSummary"></span>
+    </div>
+    <div class="row" role="group" aria-label="Open as" id="modeRow">
       <span class="label">Open as</span>
       <button class="chip" id="mode-edit" type="button" aria-pressed="true">Edit checks</button>
       <button class="chip" id="mode-view" type="button" aria-pressed="false">View only</button>
@@ -82,13 +105,36 @@
     </div>
   </div>
 
+  <section class="panel picker" id="picker" hidden aria-label="Choose students">
+    <div class="pick-head">
+      <h2>Students</h2>
+      <div class="row">
+        <button class="mini" type="button" id="pickAll">All shown</button>
+        <button class="mini" type="button" id="pickNone">None</button>
+        <button class="mini" type="button" id="manageBtn" aria-pressed="false">Edit list</button>
+      </div>
+    </div>
+    <div id="pickList"></div>
+    <form id="addForm" class="addform" hidden>
+      <h3>Add a student</h3>
+      <label>Name<input id="addName" type="text" autocomplete="off" required></label>
+      <label>Station<select id="addStation"></select></label>
+      <label>saaslearn profile link or user number
+        <input id="addMoodle" type="text" inputmode="url" autocomplete="off" placeholder="saaslearn.com.au/moodle/user/view.php?id=12345" required></label>
+      <p class="small muted">In saaslearn, open the student's profile and copy the address. The number after <b>id=</b> is what this page needs.</p>
+      <button class="addbtn" type="submit">Add student</button>
+    </form>
+    <p class="small muted" id="pickMsg"></p>
+  </section>
+
   <div id="days"></div>
   <p class="empty" id="empty" hidden>No skills match that search.</p>
 
   <section class="panel note" aria-label="About this page">
     <p>Sign in to saaslearn first. Sign-off is saved in Moodle only when you press Save changes there.</p>
-    <p>The finished ticks here are your own place-keeping for the selected station. They live in this browser, are not sent to Moodle, and do not change any student's record.</p>
-    <p>This page holds no student names. Station filters use Moodle's own groups, so it shows whoever is enrolled in each group.</p>
+    <p>With students chosen, each skill shows one button per student and opens that student's own record for the skill. With only stations chosen, it opens the whole station's group (one button per station).</p>
+    <p>The finished ticks here are your own place-keeping for the current choice of stations or students. They live in this browser, are not sent to Moodle, and do not change any student's record.</p>
+    <p>The student list (name, station, saaslearn number) is kept in DSY and only facilitators can see it.</p>
   </section>
 
   <div class="foot">
@@ -97,6 +143,7 @@
   </div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
   var BASE = "https://saaslearn.com.au/moodle/mod/checklist/report.php?id=";
@@ -163,14 +210,24 @@
     ]}
   ];
 
-  var state = { station: "tumby", edit: true, q: "", hide: false, done: {} };
+  var SB_URL = "https://ekaodnbnpsuayvmxvxbm.supabase.co";
+  var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW9kbmJucHN1YXl2bXh2eGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzIxMzQsImV4cCI6MjEwNzM0ODEzNH0.q3lTeCQAQjYeMUNl6lwsrxUAsTijJikABW4Ua2N4bmI";
+  var sb = null;
+  try { sb = window.supabase.createClient(SB_URL, SB_KEY); } catch (e) {}
+
+  /* state.stations: chosen station keys ([] = all stations). state.picked: chosen student ids (Moodle numbers). */
+  var state = { stations: ["tumby"], picked: [], edit: true, q: "", hide: false, done: {}, students: [], manage: false };
 
   function load() {
     try {
       var raw = localStorage.getItem("fnwc-signoff-nav");
       if (raw) {
         var p = JSON.parse(raw);
-        if (p.station && STATIONS.some(function (s) { return s.key === p.station; })) state.station = p.station;
+        var keys = STATIONS.map(function (s) { return s.key; });
+        if (Array.isArray(p.stations)) state.stations = p.stations.filter(function (k) { return keys.indexOf(k) > -1; });
+        else if (p.station === "all") state.stations = [];
+        else if (p.station && keys.indexOf(p.station) > -1) state.stations = [p.station];
+        if (Array.isArray(p.picked)) state.picked = p.picked.filter(function (n) { return typeof n === "number"; });
         if (typeof p.edit === "boolean") state.edit = p.edit;
         if (p.done && typeof p.done === "object") state.done = p.done;
       }
@@ -178,17 +235,51 @@
   }
   function save() {
     try {
-      localStorage.setItem("fnwc-signoff-nav", JSON.stringify({ station: state.station, edit: state.edit, done: state.done }));
+      localStorage.setItem("fnwc-signoff-nav", JSON.stringify({ stations: state.stations, picked: state.picked, edit: state.edit, done: state.done }));
     } catch (e) {}
   }
 
-  function station() { return STATIONS.filter(function (s) { return s.key === state.station; })[0]; }
-  function doneKey(id) { return state.station + ":" + id; }
-  function href(id) {
-    var g = station().group;
-    return BASE + id + (g ? "&group=" + g : "") + (state.edit ? "&editchecks=on" : "");
+  function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function stationBy(key) { return STATIONS.filter(function (s) { return s.key === key; })[0]; }
+  function chosenStations() { return state.stations.length ? state.stations.map(stationBy) : []; }
+  function inStations(st) { return !state.stations.length || state.stations.indexOf(st.station) > -1; }
+  function pickedStudents() {
+    return state.students.filter(function (st) { return state.picked.indexOf(st.moodle_id) > -1; });
   }
-  function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  /* Finished ticks belong to the current choice: the picked students, else the stations ("all" when none). */
+  function scope() {
+    var p = pickedStudents().map(function (s) { return s.moodle_id; }).sort(function (a, b) { return a - b; });
+    if (p.length) return "s" + p.join(".");
+    return state.stations.length ? state.stations.slice().sort().join("+") : "all";
+  }
+  function doneKey(id) { return scope() + ":" + id; }
+  function firstName(n) { return String(n).trim().split(/\s+/)[0]; }
+
+  function groupHref(id, st) {
+    return BASE + id + (st && st.group ? "&group=" + st.group : "") + (state.edit ? "&editchecks=on" : "");
+  }
+  function studentHref(id, st) { return BASE + id + "&studentid=" + st.moodle_id; }
+
+  /* One button per picked student; else one per chosen station; else one for everyone. */
+  function opens(sk) {
+    var name = esc(sk[1]);
+    var ps = pickedStudents();
+    if (ps.length) {
+      var dup = {};
+      ps.forEach(function (s) { var f = firstName(s.name); dup[f] = (dup[f] || 0) + 1; });
+      return ps.map(function (s) {
+        var label = dup[firstName(s.name)] > 1 ? s.name : firstName(s.name);
+        return '<a class="open" href="' + studentHref(sk[0], s) + '" target="_blank" rel="noopener" aria-label="Open ' + name + " for " + esc(s.name) + '">' + esc(label) + "</a>";
+      }).join("");
+    }
+    var sts = chosenStations();
+    if (sts.length > 1) {
+      return sts.map(function (s) {
+        return '<a class="open" href="' + groupHref(sk[0], s) + '" target="_blank" rel="noopener" aria-label="Open ' + name + " for " + esc(s.name) + '">' + esc(s.name) + "</a>";
+      }).join("");
+    }
+    return '<a class="open" href="' + groupHref(sk[0], sts[0]) + '" target="_blank" rel="noopener" aria-label="Open ' + name + ' in saaslearn">Open</a>';
+  }
 
   function renderStations() {
     var box = document.getElementById("stations");
@@ -198,15 +289,51 @@
       b.type = "button";
       b.className = "chip";
       b.textContent = s.name;
-      b.setAttribute("aria-pressed", String(s.key === state.station));
-      b.addEventListener("click", function () { state.station = s.key; save(); renderStations(); renderDays(); });
+      var on = s.key === "all" ? !state.stations.length : state.stations.indexOf(s.key) > -1;
+      b.setAttribute("aria-pressed", String(on));
+      b.addEventListener("click", function () {
+        if (s.key === "all") state.stations = [];
+        else if (state.stations.indexOf(s.key) > -1) state.stations = state.stations.filter(function (k) { return k !== s.key; });
+        else state.stations = state.stations.concat(s.key);
+        save(); renderAll();
+      });
       box.appendChild(b);
     });
   }
 
   function renderModes() {
+    var ps = pickedStudents().length;
+    document.getElementById("modeRow").hidden = ps > 0;
     document.getElementById("mode-edit").setAttribute("aria-pressed", String(state.edit));
     document.getElementById("mode-view").setAttribute("aria-pressed", String(!state.edit));
+  }
+
+  function renderPicker() {
+    renderSummary();
+    var list = document.getElementById("pickList");
+    var shown = state.students.filter(inStations);
+    if (!sb) { list.innerHTML = '<p class="small muted">The student list could not load. Station buttons still work.</p>'; return; }
+    if (!state.students.length) {
+      list.innerHTML = '<p class="small muted">No students on the list yet. Press Edit list to add them.</p>';
+    } else if (!shown.length) {
+      list.innerHTML = '<p class="small muted">No students listed for the chosen stations.</p>';
+    } else {
+      var html = "";
+      STATIONS.forEach(function (stn) {
+        var rows = shown.filter(function (s) { return s.station === stn.key; });
+        if (!rows.length) return;
+        html += '<p class="pst">' + esc(stn.name) + "</p>";
+        rows.forEach(function (s) {
+          var on = state.picked.indexOf(s.moodle_id) > -1;
+          html += '<div class="prow"><label><input type="checkbox" data-pick="' + s.moodle_id + '"' + (on ? " checked" : "") + "> " + esc(s.name) + "</label>" +
+            (state.manage ? '<span class="num">#' + s.moodle_id + '</span><button class="rm" type="button" data-rm="' + esc(s.id) + '" aria-label="Remove ' + esc(s.name) + '">Remove</button>' : "") +
+            "</div>";
+        });
+      });
+      list.innerHTML = html;
+    }
+    document.getElementById("addForm").hidden = !state.manage;
+    document.getElementById("manageBtn").setAttribute("aria-pressed", String(state.manage));
   }
 
   function renderDays() {
@@ -231,18 +358,87 @@
           rows += '<li class="' + cls + '" data-id="' + sk[0] + '">' +
             '<input type="checkbox" id="c' + sk[0] + '" data-id="' + sk[0] + '"' + (isDone ? " checked" : "") + ' aria-label="Finished: ' + esc(sk[1]) + '">' +
             '<label class="name" for="c' + sk[0] + '">' + esc(sk[1]) + '<span class="kind">' + sk[2] + '</span></label>' +
-            '<a class="open" href="' + href(sk[0]) + '" target="_blank" rel="noopener" aria-label="Open ' + esc(sk[1]) + ' in saaslearn">Open</a>' +
-            '</li>';
+            '<div class="opens">' + opens(sk) + "</div>" +
+            "</li>";
         });
-        if (rows) html += '<h3 class="mod">' + esc(m.m) + '</h3><ul class="skills">' + rows + '</ul>';
+        if (rows) html += '<h3 class="mod">' + esc(m.m) + '</h3><ul class="skills">' + rows + "</ul>";
       });
       if (html) {
-        out += '<section class="day"><div class="day-head"><h2>' + d.day + '</h2><span class="count">' + finished + ' of ' + total + ' finished</span></div>' + html + '</section>';
+        out += '<section class="day"><div class="day-head"><h2>' + d.day + '</h2><span class="count">' + finished + " of " + total + " finished</span></div>" + html + "</section>";
       }
     });
     document.getElementById("days").innerHTML = out;
     document.getElementById("empty").hidden = shown > 0;
   }
+
+  function renderAll() { renderStations(); renderModes(); renderPicker(); renderDays(); }
+
+  function msg(t) { document.getElementById("pickMsg").textContent = t || ""; }
+  function loadStudents() {
+    if (!sb) { renderAll(); return; }
+    sb.from("signoff_students").select("id,station,name,moodle_id").eq("active", true).order("name").then(function (r) {
+      if (r.error) { msg("Could not load the student list: " + r.error.message); return; }
+      state.students = r.data || [];
+      renderAll();
+    });
+  }
+
+  document.getElementById("pickBtn").addEventListener("click", function () {
+    var p = document.getElementById("picker");
+    p.hidden = !p.hidden;
+    this.setAttribute("aria-expanded", String(!p.hidden));
+    if (!p.hidden) p.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  document.getElementById("pickList").addEventListener("change", function (e) {
+    var n = e.target.getAttribute && e.target.getAttribute("data-pick");
+    if (!n) return;
+    n = +n;
+    state.picked = state.picked.filter(function (x) { return x !== n; });
+    if (e.target.checked) state.picked.push(n);
+    save(); renderModes(); renderSummary(); renderDays();
+  });
+  function renderSummary() {
+    var ps = pickedStudents();
+    document.getElementById("pickSummary").textContent = ps.length
+      ? ps.length + (ps.length === 1 ? " student: " : " students: ") + ps.map(function (s) { return firstName(s.name); }).join(", ")
+      : "Whole station";
+  }
+  document.getElementById("pickList").addEventListener("click", function (e) {
+    var id = e.target.getAttribute && e.target.getAttribute("data-rm");
+    if (!id) return;
+    var st = state.students.filter(function (s) { return s.id === id; })[0];
+    if (!st || !confirm("Remove " + st.name + " from the sign-off list?")) return;
+    sb.from("signoff_students").update({ active: false }).eq("id", id).then(function (r) {
+      if (r.error) { msg("Could not remove: " + r.error.message); return; }
+      state.picked = state.picked.filter(function (x) { return x !== st.moodle_id; });
+      save(); msg(st.name + " removed."); loadStudents();
+    });
+  });
+  document.getElementById("pickAll").addEventListener("click", function () {
+    state.picked = state.students.filter(inStations).map(function (s) { return s.moodle_id; });
+    save(); renderAll();
+  });
+  document.getElementById("pickNone").addEventListener("click", function () { state.picked = []; save(); renderAll(); });
+  document.getElementById("manageBtn").addEventListener("click", function () { state.manage = !state.manage; renderPicker(); });
+
+  var addSt = document.getElementById("addStation");
+  STATIONS.forEach(function (s) { if (s.group) addSt.insertAdjacentHTML("beforeend", '<option value="' + s.key + '">' + esc(s.name) + "</option>"); });
+  document.getElementById("addForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = document.getElementById("addName").value.trim();
+    var raw = document.getElementById("addMoodle").value.trim();
+    var m = /[?&]id=(\d+)/.exec(raw) || /^(\d+)$/.exec(raw);
+    if (!name) { msg("Type the student's name."); return; }
+    if (!m) { msg("That doesn't look like a saaslearn profile link or user number."); return; }
+    var row = { name: name, station: addSt.value, moodle_id: +m[1], active: true };
+    sb.from("signoff_students").upsert(row, { onConflict: "moodle_id" }).then(function (r) {
+      if (r.error) { msg("Could not add: " + r.error.message); return; }
+      document.getElementById("addName").value = "";
+      document.getElementById("addMoodle").value = "";
+      msg(name + " added.");
+      loadStudents();
+    });
+  });
 
   document.getElementById("days").addEventListener("change", function (e) {
     var id = e.target && e.target.getAttribute("data-id");
@@ -264,9 +460,8 @@
   });
 
   load();
-  renderStations();
-  renderModes();
-  renderDays();
+  renderAll();
+  loadStudents();
 })();
 </script>
 </body>

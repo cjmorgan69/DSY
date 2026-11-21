@@ -58,3 +58,11 @@ checklist, grouped by day and module, each opening its saaslearn checklist repor
 Tumby Bay 44930, Cummins 44935, Coffin Bay 44926, Port Neill 44932, or all. "Finished" ticks are per browser
 (localStorage `fnwc-signoff-nav`), not sent to Moodle; no student names on the page. Moved in from the owner's
 standalone artifact. Linked from `/ar/` under "Skill sign-off". Live (PR #288, merged 21 Nov 2026).
+
+Student picker (21 Nov 2026): stations are multi-select (one Open button per station; "All stations" = no group).
+"Choose students" lists students from Supabase `public.signoff_students` (station, name, moodle_id; facilitator-only
+RLS; SQL in `supabase/signoff-students-setup.sql`, applied 21 Nov 2026); ticked students get one button per skill
+opening `report.php?id=<skill>&studentid=<moodle_id>` (their own record). "Edit list" adds a student from their
+saaslearn profile link (`user/view.php?id=`) or number, and removes (sets active false). Finished ticks are per
+current choice (students, else stations). The `studentid` link is from the mod_checklist source; the owner still to
+confirm it opens the student's record and lets them tick. On a branch, not merged (PR open).
