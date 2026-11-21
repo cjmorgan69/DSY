@@ -322,7 +322,8 @@
   }
   function whenLine(n, extra) {
     return '<div class="b-when"><input type="date" class="b-date" aria-label="Date for Day ' + n + '"><input type="time" class="b-start" value="09:00" aria-label="Start time for Day ' + n + '">' +
-      (extra ? '<button class="b-x" type="button" data-act="b-rm" aria-label="Remove this date">×</button>' : "") + "</div>";
+      (extra ? '<button class="b-x" type="button" data-act="b-rm" aria-label="Remove this date">×</button>' : "") +
+      '<input class="b-loc" placeholder="Location (blank = the one below)" aria-label="Location for this Day ' + n + ' date"></div>';
   }
   function consRow(n) {
     return '<div class="b-row cons" data-day="' + n + '" data-title="Consolidation"><label class="check"><input type="checkbox" class="b-pick" checked> <span><b>Day ' + n +
@@ -340,10 +341,10 @@
         '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for Day ' + n + "</button></div>";
     }).join("");
     return '<section class="panel pad stack"><h2>Build the course</h2><p class="small muted">Tick a day, then give it a date and start time. Adding a date ticks the day for you. ' +
-      'Use "Another date" to run the same day more than once: students book the one that suits them.</p>' +
+      'Use "Another date" to run the same day more than once: students book the one that suits them. Each date can have its own location.</p>' +
       '<div id="b-rows">' + rows + '</div><button class="btn ghost" type="button" data-act="b-cons">+ Add a consolidation day</button><div class="grid2">' +
       '<div class="field"><label for="b-end">Finish (optional, all days)</label><input id="b-end" type="time"></div>' +
-      '<div class="field"><label for="b-loc">Location (all days)</label><input id="b-loc" placeholder="e.g. Cummins station"></div>' +
+      '<div class="field"><label for="b-loc">Location (any date left blank)</label><input id="b-loc" placeholder="e.g. Cummins station"></div>' +
       '<div class="field"><label for="b-cap">Places (blank = no limit)</label><input id="b-cap" type="number" min="1" inputmode="numeric"></div></div>' +
       '<div class="row"><button class="btn" data-act="b-save">Add the ticked days</button><button class="btn ghost" data-act="b-toggle">Close</button></div></section>';
   }
@@ -638,7 +639,7 @@
           if (!date) return;
           dated++;
           ws.push({ cohort_id: S.cohortId, day_number: n, date: date, start_time: l.querySelector(".b-start").value || null, end_time: $("b-end").value || null,
-            location: $("b-loc").value.trim(), capacity: cap ? +cap : null, notes: "", updated_at: new Date().toISOString() });
+            location: l.querySelector(".b-loc").value.trim() || $("b-loc").value.trim(), capacity: cap ? +cap : null, notes: "", updated_at: new Date().toISOString() });
         });
         if (!dated) { missing.push(n); return; }
         if (cons) titles.push({ cohort_id: S.cohortId, day_number: n, title: cons, links: [] });
