@@ -9,7 +9,7 @@
   var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW9kbmJucHN1YXl2bXh2eGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzIxMzQsImV4cCI6MjEwNzM0ODEzNH0.q3lTeCQAQjYeMUNl6lwsrxUAsTijJikABW4Ua2N4bmI";
   var sb = window.supabase.createClient(SB_URL, SB_KEY);
   var app = document.getElementById("app");
-  var S = { me: null, home: null, cohorts: [], cohortId: null, d: null, draft: {}, adding: false, naOpen: {} };
+  var S = { me: null, home: null, cohorts: [], cohortId: null, d: null, draft: {}, adding: false, naOpen: {}, building: false, picking: false, people: null, pTeam: "", pQ: "", pSel: {} };
   var ATT = { present: "Present", late: "Late", left_early: "Left early", absent: "Absent" };
   var DONE = { present: 1, late: 1 };
 
@@ -120,8 +120,10 @@
         (h.staff_id ? " (" + esc(h.staff_id) + ")" : "") + '. Once you are added, your course days and dates show here.</p></section></main>';
       return;
     }
-    var days = studentDays(h), done = days.filter(function (x) { return x.state === "done"; }).length;
-    var total = h.cohort.total_days || days.length, today = h.today, title = function (d) { return "Day " + d.day + (d.title ? " · " + d.title : ""); };
+    var days = studentDays(h), total = h.cohort.total_days || days.length;
+    // Only the course days count: consolidation days (after the days to complete) are extra.
+    var done = days.filter(function (x) { return x.state === "done" && x.day <= total; }).length;
+    var today = h.today, title = function (d) { return "Day " + d.day + (d.title ? " · " + d.title : ""); };
     var html = '<main class="wrap">' + header({ title: h.cohort.course_name, line: h.student.first_name + " " + h.student.last_name + " · " + h.cohort.name }, facLink);
 
     html += '<section class="panel pad stack"><div class="dayhead"><h2>Your progress</h2><span class="count">' + done + " of " + total + " days</span></div>" + tracker(days) +
@@ -300,6 +302,86 @@
     if (h === "changes" && d.events.length) store(seenKey(), d.events[0].at);
   }
 
+  /* The AR course days, from the course completion checklist (same topics as /ar/ and /ar/signoff/). */
+  var AR_DAYS = [
+    "Infection control, first aid (adult CPR), manual tasks",
+    "Manual tasks (continued)",
+    "Operational preparedness (GRN radio and MDT)",
+    "DRiVE practical assessments",
+    "Foundations of care, first aid, cardiac arrest, resuscitation",
+    "Medical conditions, first aid",
+    "First aid, traumatic injuries"
+  ];
+
+  /* ---- Build the course: tick days, give each a date and start time ---- */
+  function buildDays(d) {
+    var n = {}, i;
+    d.dayList.forEach(function (x) { n[x] = 1; });
+    if (!d.dayList.length) for (i = 1; i <= AR_DAYS.length; i++) n[i] = 1;
+    return Object.keys(n).map(Number).sort(function (a, b) { return a - b; });
+  }
+  function whenLine(n, extra) {
+    return '<div class="b-when"><input type="date" class="b-date" aria-label="Date for Day ' + n + '"><input type="time" class="b-start" value="09:00" aria-label="Start time for Day ' + n + '">' +
+      (extra ? '<button class="b-x" type="button" data-act="b-rm" aria-label="Remove this date">×</button>' : "") + "</div>";
+  }
+  function consRow(n) {
+    return '<div class="b-row cons" data-day="' + n + '" data-title="Consolidation"><label class="check"><input type="checkbox" class="b-pick" checked> <span><b>Day ' + n +
+      '</b> <span class="b-title">· Consolidation (extra, not counted in the days to complete)</span></span></label>' +
+      '<button class="b-x" type="button" data-act="b-rm-row" aria-label="Remove this consolidation day">×</button>' +
+      '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for Day ' + n + "</button></div>";
+  }
+  function buildPanel(d) {
+    if (!S.building) return '<button class="btn wide" data-act="b-toggle">Build the course: pick days, dates and start times</button>';
+    var rows = buildDays(d).map(function (n) {
+      var title = d.dayTitle[n] || (!d.dayList.length ? AR_DAYS[n - 1] : "") || "";
+      var have = d.workshops.filter(function (w) { return w.day_number === n && !w.cancelled; }).length;
+      return '<div class="b-row" data-day="' + n + '"><label class="check"><input type="checkbox" class="b-pick"> <span><b>Day ' + n + "</b>" + (title ? ' <span class="b-title">· ' + esc(title) + "</span>" : "") +
+        (have ? ' <span class="chip">' + have + (have === 1 ? " date" : " dates") + " already</span>" : "") + "</span></label>" +
+        '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for Day ' + n + "</button></div>";
+    }).join("");
+    return '<section class="panel pad stack"><h2>Build the course</h2><p class="small muted">Tick a day, then give it a date and start time. Adding a date ticks the day for you. ' +
+      'Use "Another date" to run the same day more than once: students book the one that suits them.</p>' +
+      '<div id="b-rows">' + rows + '</div><button class="btn ghost" type="button" data-act="b-cons">+ Add a consolidation day</button><div class="grid2">' +
+      '<div class="field"><label for="b-end">Finish (optional, all days)</label><input id="b-end" type="time"></div>' +
+      '<div class="field"><label for="b-loc">Location (all days)</label><input id="b-loc" placeholder="e.g. Cummins station"></div>' +
+      '<div class="field"><label for="b-cap">Places (blank = no limit)</label><input id="b-cap" type="number" min="1" inputmode="numeric"></div></div>' +
+      '<div class="row"><button class="btn" data-act="b-save">Add the ticked days</button><button class="btn ghost" data-act="b-toggle">Close</button></div></section>';
+  }
+
+  /* ---- Students from the people list (course_people(): ID, name, teams, signed up) ---- */
+  function peoplePanel(d) {
+    if (!S.picking) return '<button class="btn wide" data-act="p-toggle">Add students from the people list</button>';
+    if (!S.people) return '<section class="panel pad"><p class="muted">Loading the people list…</p></section>';
+    var teams = {};
+    S.people.forEach(function (p) { (p.teams || []).forEach(function (x) { teams[x] = 1; }); });
+    return '<section class="panel pad stack"><h2>Add from the people list</h2><div class="grid2">' +
+      '<div class="field"><label for="p-team">Team</label><select id="p-team"><option value="">All teams</option>' +
+      Object.keys(teams).sort().map(function (x) { return '<option' + (S.pTeam === x ? " selected" : "") + ">" + esc(x) + "</option>"; }).join("") + "</select></div>" +
+      '<div class="field"><label for="p-q">Search</label><input id="p-q" type="search" autocomplete="off" placeholder="Name or ID" value="' + esc(S.pQ || "") + '"></div></div>' +
+      '<ul class="p-list" id="p-list">' + peopleRows(d) + "</ul>" +
+      '<div class="row"><button class="btn" data-act="p-add" id="p-add">' + addLabel() + '</button><button class="btn ghost" data-act="p-toggle">Close</button></div></section>';
+  }
+  function inGroup(d, id) { return d.students.some(function (s) { return s.active && norm(s.staff_id) === norm(id); }); }
+  function norm(v) { return String(v || "").replace(/\D/g, "").replace(/^0+/, ""); }
+  function peopleRows(d) {
+    var q = (S.pQ || "").trim().toLowerCase();
+    var list = S.people.filter(function (p) {
+      if (S.pTeam && (p.teams || []).indexOf(S.pTeam) === -1) return false;
+      return !q || (p.full_name + " " + p.staff_id).toLowerCase().indexOf(q) > -1;
+    }).sort(function (a, b) { return a.full_name.localeCompare(b.full_name); });
+    if (!list.length) return '<li class="muted small">No one matches.</li>';
+    return list.map(function (p) {
+      var inG = inGroup(d, p.staff_id), on = !!S.pSel[p.staff_id];
+      return '<li><label class="check"><input type="checkbox" class="p-pick" data-id="' + esc(p.staff_id) + '"' + (inG ? " checked disabled" : on ? " checked" : "") + "> <span>" +
+        esc(p.full_name || "(no name)") + ' <span class="small muted">' + esc(p.staff_id) + ((p.teams || []).length ? " · " + esc(p.teams.join(", ")) : "") + "</span>" +
+        (inG ? ' <span class="chip good">In group</span>' : "") + (p.signed_up ? "" : ' <span class="chip warn">Not signed up</span>') + "</span></label></li>";
+    }).join("");
+  }
+  function addLabel() {
+    var n = Object.keys(S.pSel).length;
+    return n ? "Add " + n + (n === 1 ? " student" : " students") : "Tick people to add";
+  }
+
   /* ---- Dates ---- */
   function workshopForm(d, w) {
     w = w || {};
@@ -331,6 +413,7 @@
             (u.note ? '<span class="small">"' + esc(u.note) + '"</span>' : "") + '</div><button class="btn ghost" data-act="na-clear" data-sid="' + u.student_id + '" data-day="' + u.day_number + '">Clear</button></li>';
         }).join("") + '</ul><p class="small muted">Add another date for that day: they drop off this list when they book it.</p></section>';
     }
+    html += buildPanel(d);
     if (S.adding) {
       html += '<section class="panel pad stack"><h2>Add a date</h2>' + workshopForm(d) + '<div class="row"><button class="btn" data-act="w-add">Save date</button><button class="btn ghost" data-act="w-add-toggle">Close</button></div></section>';
     } else html += '<button class="btn wide" data-act="w-add-toggle">+ Add a date</button>';
@@ -390,7 +473,7 @@
   /* ---- Students ---- */
   function studentsTab(d) {
     var lead = S.me.role === "leader";
-    var html = '<section class="panel pad stack"><h2>Add students</h2><div class="field"><label for="f-people">One per line: ambulance ID, first name, last name</label>' +
+    var html = peoplePanel(d) + '<section class="panel pad stack"><h2>Or paste students</h2><div class="field"><label for="f-people">One per line: ambulance ID, first name, last name</label>' +
       '<textarea id="f-people" placeholder="1234567, Sam, Smith&#10;7654321, Alex, Jones"></textarea></div><button class="btn" data-act="add-students">Add to ' + esc(d.cohort.name) + "</button>" +
       '<p class="small muted">' + (lead ? "As a leader, adding someone also puts their ID on the DSY access list so they can create an account."
         : "IDs that are not on the DSY access list yet need a leader to add them (Grant access), or a leader can add the students here.") +
@@ -410,8 +493,8 @@
     var html = '<div class="row no-print"><button class="btn ghost" onclick="window.print()">Print attendance record</button></div>' +
       '<div class="legend no-print"><span><i class="done"></i>Done</span><span><i class="booked"></i>Booked</span><span><i class="part"></i>Left early</span><span><i></i>Not done</span></div>';
     html += '<ul class="panel sessions no-print">' + d.active.map(function (s) {
-      var st = facStates(d, s), done = st.filter(function (x) { return x.state === "done"; }).length;
-      var todo = st.filter(function (x) { return x.state !== "done"; }).map(function (x) { return x.day; });
+      var st = facStates(d, s), done = st.filter(function (x) { return x.state === "done" && x.day <= total; }).length;
+      var todo = st.filter(function (x) { return x.state !== "done" && x.day <= total; }).map(function (x) { return x.day; });
       return '<li class="person"><div class="who"><b>' + esc(nameOf(s)) + "</b>" +
         '<ol class="days mini">' + st.map(function (x) { return '<li class="' + x.state + '" title="Day ' + x.day + '">' + x.day + "</li>"; }).join("") + "</ol>" +
         '<span class="small muted">' + (done >= total && total ? "" : "Still to do: Day " + todo.join(", ")) + "</span></div>" +
@@ -430,7 +513,7 @@
             if (a) cell += (cell ? "<br>" : "") + esc(shortDate(w.date)) + " " + esc(ATT[a.status]) + (a.note ? "<br><i>" + esc(a.note) + "</i>" : "");
           });
           return "<td>" + (cell || "–") + "</td>";
-        }).join("") + "<td>" + st.filter(function (x) { return x.state === "done"; }).length + " / " + total + "</td></tr>";
+        }).join("") + "<td>" + st.filter(function (x) { return x.state === "done" && x.day <= total; }).length + " / " + total + "</td></tr>";
       }).join("") + "</tbody></table></div>";
     return html;
   }
@@ -477,7 +560,8 @@
     return html;
   }
   function newGroupForm(first) {
-    var copy = S.cohortId ? '<label class="check"><input type="checkbox" id="n-copy" checked> Copy the course days, titles and links from ' + esc((S.d.cohort || {}).name || "the current group") + "</label>" : "";
+    var copy = (S.cohortId ? '<label class="check"><input type="checkbox" id="n-copy"> Copy the course days, titles and links from ' + esc((S.d.cohort || {}).name || "the current group") + "</label>" : "") +
+      '<label class="check"><input type="checkbox" id="n-ar" checked> Start with the AR course days (Day 1 to 7, from the completion checklist)</label>';
     return '<section class="panel pad stack"><h2>' + (first ? "Set up your first group" : "New group") + '</h2><div class="grid2">' +
       '<div class="field"><label for="n-name">Group name</label><input id="n-name" placeholder="e.g. AR course 2027 group 1"></div>' +
       '<div class="field"><label for="n-total">Days to complete</label><input id="n-total" type="number" min="1" inputmode="numeric" value="' + esc(S.d && S.d.cohort && S.d.cohort.total_days || "") + '"></div>' +
@@ -492,7 +576,18 @@
   app.addEventListener("change", function (e) {
     if (e.target.id === "cohort") { S.cohortId = e.target.value; S.draft = {}; act(loadCohort()); }
   });
+  app.addEventListener("change", function (e) {
+    var t = e.target;
+    if (t.id === "p-team") { S.pTeam = t.value; $("p-list").innerHTML = peopleRows(S.d); }
+    if (t.classList.contains("p-pick")) {
+      var id = t.getAttribute("data-id");
+      if (t.checked) S.pSel[id] = 1; else delete S.pSel[id];
+      $("p-add").textContent = addLabel();
+    }
+    if (t.classList.contains("b-date") && t.value) t.closest(".b-row").querySelector(".b-pick").checked = true;
+  });
   app.addEventListener("input", function (e) {
+    if (e.target.id === "p-q") { S.pQ = e.target.value; $("p-list").innerHTML = peopleRows(S.d); return; }
     if (e.target.classList.contains("note")) {
       var sid = e.target.getAttribute("data-sid"), cur = S.draft[sid] || currentMark(sid);
       S.draft[sid] = { status: cur.status, note: e.target.value };
@@ -520,6 +615,63 @@
 
     // facilitator
     if (a === "w-add-toggle") { S.adding = !S.adding; return renderFac(); }
+    if (a === "b-toggle") { S.building = !S.building; return renderFac(); }
+    if (a === "b-more") {
+      var row = t.closest(".b-row"), box = row.querySelector(".b-dates");
+      box.insertAdjacentHTML("beforeend", whenLine(+row.getAttribute("data-day"), true));
+      box.lastChild.querySelector(".b-date").focus(); return;
+    }
+    if (a === "b-rm") { t.closest(".b-when").remove(); return; }
+    if (a === "b-rm-row") { t.closest(".b-row").remove(); return; }
+    if (a === "b-cons") {
+      var nums = [].map.call(document.querySelectorAll(".b-row"), function (r) { return +r.getAttribute("data-day"); });
+      $("b-rows").insertAdjacentHTML("beforeend", consRow(Math.max.apply(null, nums.concat([0])) + 1));
+      return;
+    }
+    if (a === "b-save") {
+      var cap = $("b-cap").value.trim(), ws = [], titles = [], missing = [];
+      [].forEach.call(document.querySelectorAll(".b-row"), function (r) {
+        if (!r.querySelector(".b-pick").checked) return;
+        var n = +r.getAttribute("data-day"), cons = r.getAttribute("data-title"), dated = 0;
+        [].forEach.call(r.querySelectorAll(".b-when"), function (l) {
+          var date = l.querySelector(".b-date").value;
+          if (!date) return;
+          dated++;
+          ws.push({ cohort_id: S.cohortId, day_number: n, date: date, start_time: l.querySelector(".b-start").value || null, end_time: $("b-end").value || null,
+            location: $("b-loc").value.trim(), capacity: cap ? +cap : null, notes: "", updated_at: new Date().toISOString() });
+        });
+        if (!dated) { missing.push(n); return; }
+        if (cons) titles.push({ cohort_id: S.cohortId, day_number: n, title: cons, links: [] });
+        else if (!d.dayTitle[n] && !d.dayList.length && AR_DAYS[n - 1]) titles.push({ cohort_id: S.cohortId, day_number: n, title: AR_DAYS[n - 1], links: [] });
+      });
+      // Consolidation days sit after the course days and do not count towards completion.
+      var hasCons = document.querySelector(".b-row.cons .b-pick:checked"), core = buildDays(d).length;
+      var setTotal = hasCons && !d.cohort.total_days ? q(sb.from("course_cohorts").update({ total_days: core }).eq("id", S.cohortId)) : null;
+      if (missing.length) return toast("Give Day " + missing.join(", Day ") + " a date, or untick it", true);
+      if (!ws.length) return toast("Tick at least one day and give it a date", true);
+      return act(q(sb.from("course_workshops").insert(ws)).then(function () {
+        if (titles.length) return q(sb.from("course_days").upsert(titles));
+      }).then(function () { return setTotal; }).then(function () { S.building = false; d.cohort.total_days = d.cohort.total_days || (hasCons ? core : null); return refresh(ws.length + (ws.length === 1 ? " date added" : " dates added")); }));
+    }
+    if (a === "p-toggle") {
+      S.picking = !S.picking; S.pSel = {};
+      if (S.picking && !S.people) {
+        renderFac();
+        return act(q(sb.rpc("course_people")).then(function (rows) { S.people = rows || []; renderFac(); }));
+      }
+      return renderFac();
+    }
+    if (a === "p-add") {
+      var ids = Object.keys(S.pSel);
+      if (!ids.length) return toast("Tick at least one person", true);
+      var people = ids.map(function (id) {
+        var p = S.people.filter(function (x) { return x.staff_id === id; })[0] || {}, parts = String(p.full_name || "").trim().split(/\s+/);
+        return { staff_id: id, first_name: parts[0] || "", last_name: parts.slice(1).join(" ") };
+      });
+      return act(q(sb.rpc("course_add_students", { p_cohort: S.cohortId, p_people: people })).then(function () {
+        S.pSel = {}; return refresh(people.length + (people.length === 1 ? " student added" : " students added"));
+      }));
+    }
     if (a === "w-add") {
       return act(Promise.resolve().then(function () {
         var w = readWorkshopForm(); w.cohort_id = S.cohortId;
@@ -596,7 +748,8 @@
       var name = $("n-name").value.trim();
       if (!name) return toast("Give the group a name", true);
       var copyFrom = $("n-copy") && $("n-copy").checked ? S.cohortId : null, oldDays = copyFrom && S.d.days ? S.d.days : [];
-      return act(q(sb.from("course_cohorts").insert({ name: name, total_days: +$("n-total").value || null, cancel_cutoff_hours: +$("n-cut").value || 0 }).select().single()).then(function (c) {
+      if (!oldDays.length && $("n-ar") && $("n-ar").checked) oldDays = AR_DAYS.map(function (title, i) { return { day_number: i + 1, title: title, links: [] }; });
+      return act(q(sb.from("course_cohorts").insert({ name: name, total_days: +$("n-total").value || ($("n-ar") && $("n-ar").checked && !copyFrom ? AR_DAYS.length : null), cancel_cutoff_hours: +$("n-cut").value || 0 }).select().single()).then(function (c) {
         S.cohortId = c.id;
         if (oldDays.length) return q(sb.from("course_days").insert(oldDays.map(function (x) { return { cohort_id: c.id, day_number: x.day_number, title: x.title, links: x.links }; })));
       }).then(function () { location.hash = "setup"; return loadFacilitator(); }).then(function () { toast("Group created"); }));
