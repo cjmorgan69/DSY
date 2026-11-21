@@ -108,3 +108,11 @@ consolidation days marked Extra; the fold stays open after booking), and a link 
 attendance stay in the `course_*` tables (`course_book`, `course_cancel`). Team sessions list unchanged. If
 `course_home()` fails the calendar still loads. Team Page "next session" does not include AR dates. Tested with
 stand-in data. Live (PR #299, merged 21 Nov 2026).
+
+## User guide and dashboard link (21 Nov 2026, owner)
+
+Team Leader Guide section 14 "Setting up an AR course" (`/userguides/leaders/#ar-course`; "If something isn't
+working" is now 15): create the group, Build the course, add students from the people list, students book from the
+training calendar card, roll and Progress, skill sign-off navigator, archive. Ask DSY reads this page, so keep it true
+when `/ar/course/` changes. Dashboard footer (phone and wide) has an "AR course" link to `/ar/course/`.
+On a branch, not merged (PR open).
