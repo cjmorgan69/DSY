@@ -49,3 +49,12 @@ norm_id(profiles.staff_id)); tables `course_cohorts`, `course_days` (title + mat
 automatic move-up, cancel cut-off per group, default 48 h; can't-make notes). Leaders adding students also put the
 IDs on `allowed_ids`. SQL in `supabase/course-setup.sql`: the approval prompt for apply_migration timed out (13 Nov
 2026), so the owner ran it in the SQL Editor (the tables exist; no groups set up yet, checked 15 Nov 2026). On main.
+
+## Skill sign-off navigator
+
+`/ar/signoff/` (21 Nov 2026, owner; facilitator gate): every Day 1 to 7 skill of the FNWC Recruit to AR course
+checklist, grouped by day and module, each opening its saaslearn checklist report
+(`saaslearn.com.au/moodle/mod/checklist/report.php?id=<id>&group=<group>[&editchecks=on]`). Stations and Moodle groups:
+Tumby Bay 44930, Cummins 44935, Coffin Bay 44926, Port Neill 44932, or all. "Finished" ticks are per browser
+(localStorage `fnwc-signoff-nav`), not sent to Moodle; no student names on the page. Moved in from the owner's
+standalone artifact. Linked from `/ar/` under "Skill sign-off". On a branch, not merged (PR open).
