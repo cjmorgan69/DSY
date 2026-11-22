@@ -125,7 +125,7 @@ only one matches (rebuilds the options; hidden options don't hide on iPhone Safa
 Training app and relief (owner, 22 Nov 2026): `/training/` loads the leader's own open covers; new leader-led nights
 (one session or Set up training nights) whose start falls inside a cover get the reliever as facilitator (preview shows
 "Led by"), and the session's Facilitator list adds current and coming relievers as "(relief team leader)". Existing
-sessions are not changed. On a branch, not merged.
+sessions are not changed. Live (PR #312, merged 22 Nov 2026).
 
 ## User guides and Ask DSY (17 Nov 2026, owner)
 
@@ -192,3 +192,13 @@ panel at the bottom of Run a session. `ask-dsy` v13 reads it. Written by Claude 
 
 - Grant access link (owner, 19 Nov 2026): `/access/` added to the footer links of `/dashboard/` and `/dashboard/wide/`,
   after Roster emails; leader guide section 2 lists it. Merged (PR #283, 19 Nov 2026), checked live.
+
+## Training month view (22 Nov 2026, owner)
+
+`/training/` Calendar: on screens 900px or wider a Month / List switch (Month by default, choice kept on the device);
+the month grid (Mon to Sun, Prev / This month / Next) uses the same cluster, team and leader/team filters. Click a session
+to open it; drag it to a day to COPY it there (owner: a copy, not a move): a box asks which team the copy is for
+(only teams you can change with no session that day; the original team is preselected when free). The copy keeps times,
+lessons, topic, location and who leads; no bookings, attendance or reflection; a team-led copy for another team has no
+facilitator. The session page has a Team field (teams you can change, not courses); bookings
+and attendance stay with the session. Phones keep the list. On a branch, not merged.
