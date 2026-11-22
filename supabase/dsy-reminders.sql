@@ -55,3 +55,15 @@ revoke all on function public.roster_push_subscribe(text, text, text, text, text
   public.roster_push_targets(uuid), public.session_push_targets(uuid) from public, anon, authenticated;
 grant execute on function public.roster_push_subscribe(text, text, text, text, text), public.roster_push_mine() to authenticated;
 grant execute on function public.roster_push_targets(uuid), public.session_push_targets(uuid) to service_role;
+
+-- Every 10 minutes: wake the sender when a training session starts within 12 hours and has not been reminded
+-- (created by Claude on merge, 22 Nov 2026). The bearer is the public anon key, as for roster-remind.
+select cron.unschedule('session-remind') where exists (select 1 from cron.job where jobname = 'session-remind');
+select cron.schedule('session-remind', '*/10 * * * *', $job$
+  select net.http_post(
+    url := 'https://ekaodnbnpsuayvmxvxbm.supabase.co/functions/v1/roster-remind',
+    headers := jsonb_build_object('Content-Type', 'application/json', 'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW9kbmJucHN1YXl2bXh2eGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzIxMzQsImV4cCI6MjEwNzM0ODEzNH0.q3lTeCQAQjYeMUNl6lwsrxUAsTijJikABW4Ua2N4bmI'),
+    body := '{"mode":"sessions"}'::jsonb, timeout_milliseconds := 120000)
+  where exists (select 1 from public.sessions s where s.reminded_at is null
+                and public.session_starts_at(s) > now() and public.session_starts_at(s) <= now() + interval '12 hours')
+$job$);
