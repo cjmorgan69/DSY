@@ -1,18 +1,19 @@
 /* Item information for the vehicle check (FRM-384 Mercedes VS30): what each item is for, the AO protocols (CPP) and
    procedures (CPPRO) that name it, and AO scope for medicines.
    Sources, read 22 Nov 2026 from clinical.saambulance.sa.gov.au: the 34 AO protocol PDFs (exported 31.08.2026), the
-   CPPRO PDFs, and the SAAS app dose table in main.10d22172e56532ee.js (scope per level).
+   CPPRO PDFs, the Cardiac Arrest protocols (CPP-002-AO v4.2, CPP-043-AO v2.1) as pasted from the site by the lead
+   instructor on 22 Nov 2026 (their PDFs export blank), and the SAAS app dose table in main.10d22172e56532ee.js (scope per level).
    A document is listed only where its text names the item (or the job the item does). "what" is DSY's plain-English
    summary of those documents, for the lead instructor to review. "flag" marks a disagreement or a doubt.
    Rules are tried in order against "item name | description"; the first match wins. sec limits a rule to sections. */
 window.VEHICLE_ITEM_INFO = (function () {
   var DOCS = {
-    "CPP-001-AO": "Acute Cardiogenic Pulmonary Oedema", "CPP-003-AO": "Anaphylaxis", "CPP-004-AO": "Basic Care and Life Support",
+    "CPP-001-AO": "Acute Cardiogenic Pulmonary Oedema", "CPP-002-AO": "Cardiac Arrest (Adult)", "CPP-003-AO": "Anaphylaxis", "CPP-004-AO": "Basic Care and Life Support",
     "CPP-006-AO": "Burns", "CPP-007-AO": "Chest Pain", "CPP-008-AO": "Envenomation", "CPP-009-AO": "Hypoglycaemia",
     "CPP-011-AO": "Narcotic Overdose", "CPP-012-AO": "Newborn Care and Resuscitation", "CPP-013-AO": "Pain Management",
     "CPP-014-AO": "Seizures", "CPP-016-AO": "Stroke", "CPP-017-AO": "Acute Behavioural Disturbance", "CPP-018-AO": "Spinal Injury",
     "CPP-019-AO": "Hypothermia (Severe and Unresponsive)", "CPP-021-AO": "Extended Practice for Credentialed Health Professionals",
-    "CPP-042-AO": "Amputation and Haemorrhage", "CPP-045-AO": "Falls", "CPP-047-AO": "Nausea and Vomiting", "CPP-050-AO": "Asthma",
+    "CPP-042-AO": "Amputation and Haemorrhage", "CPP-043-AO": "Cardiac Arrest (Paediatric)", "CPP-045-AO": "Falls", "CPP-047-AO": "Nausea and Vomiting", "CPP-050-AO": "Asthma",
     "CPP-053-AO": "Primary Postpartum Haemorrhage", "CPP-055-AO": "Treat and Refer", "CPP-056-AO": "Refusal Against Advice",
     "CPP-059-AO": "Pregnancy and Birth", "CPP-062-AO": "Sepsis", "CPP-063-AO": "Prolonged Care", "CPP-158-AO": "Chest Trauma",
     "CPPRO-001": "Patient Mobility Assessment", "CPPRO-003": "Pressure Injury Prevention", "CPPRO-004": "Arterial Tourniquet Application",
@@ -29,6 +30,8 @@ window.VEHICLE_ITEM_INFO = (function () {
     "CPPRO-020": "Apr 2023", "CPPRO-021": "Mar 2023", "CPPRO-022": "Nov 2024", "CPPRO-025": "2022", "CPPRO-028": "Apr 2026",
     "CPPRO-037": "Apr 2026", "CPPRO-046": "Nov 2028"
   };
+  /* PDF file names on clinical.saambulance.sa.gov.au/assets/files/ */
+  var FILES = { "CPPRO-001": "CPPRO-001 Patient Mobility Assessment.pdf", "CPPRO-003": "CPPRO-003 Pressure Injury Prevention.pdf", "CPPRO-004": "CPPRO-004 Arterial Tourniquet Application.pdf", "CPPRO-007": "CPPRO-007 Intravenous Access and Administration.pdf", "CPPRO-008": "CPPRO-008 Medication Checks.pdf", "CPPRO-009": "CPPRO-009 Oral Medication Administration.pdf", "CPPRO-010": "CPPRO-010 Drawing Up and Labelling Medications.pdf", "CPPRO-011": "CPPRO-011 Intramuscular Injection.pdf", "CPPRO-012": "CPPRO-012 Inhaled Medication Administration.pdf", "CPPRO-013": "CPPRO-013 Intranasal Medication Administration.pdf", "CPPRO-020": "CPPRO-020 i-gel Supraglottic Airway.pdf", "CPPRO-021": "CPPRO-021 Cervical Spine Immobilisation.pdf", "CPPRO-022": "CPPRO-022 Pressure Bandaging and Immobilisation.pdf", "CPPRO-025": "CPPRO-025 Nasopharyngeal Airway (NPA).pdf", "CPPRO-028": "CPPRO-028 CT-6 Femoral Traction Splint.pdf", "CPPRO-037": "CPPRO-037 Vented Chest Seal.pdf", "CPPRO-046": "CPPRO-046 Newborn Temperature Management .pdf" };
   /* scope words used in the table and the app */
   var S = {
     ao: "AO", consult: "AO on EOC consult", ext: "AO with Extended Practice only", auth: "Authorised AO only",
@@ -42,8 +45,8 @@ window.VEHICLE_ITEM_INFO = (function () {
   var INJ = ["CPPRO-010", "CPPRO-011"];
   var R = [
     /* ---------- medicines (scope from the SAAS app dose table) ---------- */
-    { m: /^Nitrostat/, what: "GTN (glyceryl trinitrate) sublingual tablets for chest pain, within the blood pressure and heart rate limits in the protocol. Also on consult for ACPO.", docs: ["CPP-007-AO", "CPP-001-AO", "CPPRO-009"], scope: "AO (see note)",
-      flag: "The app lists GTN as Consult for AOs. CPP-007-AO lets the crew give it without a consult if the patient's own GTN is prescribed; the lead instructor's rule (8 Nov 2026) is that the first dose may be given within the limits, then consult. ACPO GTN stays consult-first." },
+    { m: /^Nitrostat/, what: "GTN (glyceryl trinitrate) sublingual tablets for chest pain, within the blood pressure and heart rate limits in the protocol. Also on consult for ACPO.", docs: ["CPP-007-AO", "CPP-001-AO", "CPPRO-009"], scope: "AO if prescribed, else consult",
+      note: "If the patient has their own GTN prescribed: the crew may give the first dose within the limits, then consult. Not prescribed: consult the EOC Clinician first. ACPO: consult first. (Lead instructor, 8 and 22 Nov 2026; the app lists GTN as Consult.)" },
     { m: /^Aspirin/, what: "Oral aspirin 300 mg for chest pain, unless allergic.", docs: ["CPP-007-AO", "CPPRO-009"], scope: S.ao },
     { m: /^Water for Injection/, what: "Diluent for drawing up medicines (CPPRO-010: diluents are drawn up first).", docs: ["CPPRO-010"], scope: S.kit,
       flag: "No AO protocol names water for injection. Ceftriaxone in CPP-062-AO is diluted with sodium chloride 0.9%, not water." },
@@ -55,33 +58,33 @@ window.VEHICLE_ITEM_INFO = (function () {
     { m: /^Paracetamol Tablet/, what: "Oral paracetamol 1000 mg for adults' pain, if none in the past 4 hours.", docs: ["CPP-013-AO", "CPPRO-009"], scope: S.ao },
     { m: /^Liquid Paracetamol|^Syringe Purple/, what: "Paracetamol suspension for children's pain, measured with the purple oral syringe.", docs: ["CPP-013-AO", "CPPRO-009"], scope: S.consult, note: "Under 16: consult the EOC Clinician for the dose." },
     { m: /^Midazolam/, what: "IM midazolam for prolonged or harmful seizures (half dose if 65 or older).", docs: ["CPP-014-AO", "CPPRO-011"], scope: S.consult },
-    { m: /^Benzylpenicillin/, what: "IM antibiotic for suspected meningococcal septicaemia. CPP-062-AO says to use it only if ceftriaxone is not available or the ceftriaxone training is not done.", docs: ["CPP-062-AO", "CPPRO-011"], scope: S.consult,
-      flag: "The app links benzylpenicillin to CPP-010-AO, which is no longer in the AO protocol list; CPP-062-AO refers to it as 'the old meningococcal CPP'." },
+    { m: /^Benzylpenicillin/, what: "Older IM antibiotic for suspected meningococcal septicaemia. Follow the Sepsis protocol: ceftriaxone is the antibiotic now; benzylpenicillin is only for crews without ceftriaxone or its training.", docs: ["CPP-062-AO", "CPPRO-011"], scope: S.consult,
+      note: "To be changed over for ceftriaxone (lead instructor, 22 Nov 2026)." },
     { m: /^Ceftriaxone/, what: "IM ceftriaxone for suspected meningococcal septicaemia (50 mg/kg, max 2 g; each 1 g vial diluted with 3.5 mL sodium chloride 0.9%).", docs: ["CPP-062-AO", "CPPRO-010", "CPPRO-011"], scope: S.consult, note: "Needs the ceftriaxone training (CPP-062-AO)." },
     { m: /^Salbutamol/, what: "Salbutamol nebules for more severe asthma, nebulised with ipratropium.", docs: ["CPP-050-AO", "CPPRO-012"], scope: S.consult },
     { m: /^Ipratropium MDI/, what: "Ipratropium inhaler.", docs: ["CPP-050-AO"], scope: S.notao,
       flag: "AO documents mention ipratropium by MDI only under paramedic-level treatment; the app gives AOs ipratropium by nebuliser only." },
     { m: /^Ipratropium/, what: "Ipratropium nebules, given with salbutamol for more severe asthma and anaphylaxis with bronchospasm.", docs: ["CPP-050-AO", "CPPRO-012"], scope: S.consult },
-    { m: /^Ventolin MDI/, what: "Salbutamol inhaler (100 microg a puff) with a spacer for asthma: 12 puffs if 6 or older, 6 puffs if under 6.", docs: ["CPP-050-AO", "CPPRO-012"], scope: "AO (see note)",
-      flag: "CPP-050-AO says 'administer salbutamol via MDI and spacer' without a consult; the app lists salbutamol MDI as Consult for AOs." },
+    { m: /^Ventolin MDI/, what: "Salbutamol inhaler (100 microg a puff) with a spacer for asthma: 12 puffs if 6 or older, 6 puffs if under 6.", docs: ["CPP-050-AO", "CPPRO-012"], scope: S.ao,
+      note: "Give without a consult, as CPP-050-AO says (lead instructor, 22 Nov 2026; the app lists it as Consult)." },
     { m: /^Ondansetron/, what: "Ondansetron 4 mg wafer (ODT) placed on the tongue for nausea and vomiting. Consult for a further dose or if a precaution applies.", docs: ["CPP-047-AO", "CPPRO-009"], scope: S.ao },
     { m: /^Oral Glucose/, what: "Oral glucose (up to 15 g) for hypoglycaemia (BGL below 3.5) when the patient can swallow.", docs: ["CPP-009-AO", "CPPRO-009"], scope: S.ao },
     { m: /^Carbetocin/, what: "Medicine for postpartum haemorrhage, carried for paramedics.", docs: [], scope: S.notao, note: "App: paramedic and above. CPP-053-AO does not name it." },
     { m: /^Olanzapine/, what: "Oral olanzapine 5 to 10 mg for acute behavioural disturbance when de-escalation has not worked.", docs: ["CPP-017-AO", "CPPRO-009"], scope: S.consult },
     { m: /^Co-Phenylcaine/, what: "Nasal spray used before inserting a nasopharyngeal airway.", docs: ["CPPRO-025"], scope: S.notao,
-      flag: "CPPRO-025 (NPA, which applies to AOs) includes 3 to 5 sprays in its steps, but the app gives Co-Phenylcaine to paramedics and above only." },
+      flag: "The NPA itself is AO scope (CPPRO-025). Its steps include 3 to 5 sprays of Co-Phenylcaine, but the app gives Co-Phenylcaine to paramedics and above only." },
     { m: /^S8 Drugs/, what: "Schedule 8 medicines, kept locked and recorded in the controlled substance register. For AOs, IN fentanyl is only for those authorised by SAAS, on EOC consult.", docs: ["CPPRO-008", "CPP-013-AO"], scope: S.auth, note: "Contents vary by station." },
     { m: /^Controlled Substance Register/, what: "Register for Schedule 8 medicines.", docs: ["CPPRO-008"], scope: S.none },
     /* ---------- airway and breathing ---------- */
-    { m: /^Oropharyngeal/, what: "Oropharyngeal airway to keep the airway open in an unconscious patient.", docs: ["CPP-004-AO"], scope: S.kit },
+    { m: /^Oropharyngeal/, what: "Oropharyngeal airway to keep the airway open in an unconscious patient; part of basic care in paediatric cardiac arrest.", docs: ["CPP-004-AO", "CPP-043-AO"], scope: S.kit },
     { m: /^Nasopharyngeal/, what: "Nasopharyngeal airway; the Seizures protocol suggests it if the jaw is clenched (trismus).", docs: ["CPPRO-025", "CPP-004-AO", "CPP-014-AO"], scope: S.kit },
-    { m: /^i-gel/, what: "i-gel supraglottic airway. The newborn protocol says to consider it early.", docs: ["CPPRO-020", "CPP-004-AO", "CPP-012-AO"], scope: S.kit },
+    { m: /^i-gel/, what: "i-gel supraglottic airway (SGA): insert when possible in cardiac arrest; consider early in newborn resuscitation. Adults: no need to pause compressions once it is in; children: still pause to ventilate.", docs: ["CPPRO-020", "CPP-002-AO", "CPP-043-AO", "CPP-004-AO", "CPP-012-AO"], scope: S.kit },
     { m: /^Cotton Ties/, what: "Ties to secure an i-gel (the alternative to tape).", docs: ["CPPRO-020"], scope: S.kit },
     { m: /^Surgical Tape/, what: "Tape: CPPRO-020 secures the i-gel with 2.5 cm tape.", docs: ["CPPRO-020"], scope: S.kit },
     { m: /^Lubricant/, what: "Water-based lubricant for inserting an i-gel or NPA.", docs: ["CPPRO-020", "CPPRO-025"], scope: S.kit },
     { m: /^Filter/, what: "Filter fitted between the bag-valve-mask and the mask or i-gel.", docs: ["CPPRO-020"], scope: S.kit },
     { m: /^Bite Block/, what: "Bite block.", docs: [], scope: S.kit, note: "Not named in an AO document (the i-gel has its own bite block)." },
-    { m: /Bag Valve Mask|^Adult Mask|^Paediatric Mask/, what: "Bag-valve-mask and masks for IPPV (assisted breathing), including newborn resuscitation and opioid overdose.", docs: ["CPP-004-AO", "CPP-012-AO", "CPP-011-AO"], scope: S.kit },
+    { m: /Bag Valve Mask|^Adult Mask|^Paediatric Mask/, what: "Bag-valve-mask and masks for IPPV (assisted breathing): 30 compressions to 2 breaths in cardiac arrest, newborn resuscitation and opioid overdose.", docs: ["CPP-004-AO", "CPP-002-AO", "CPP-043-AO", "CPP-012-AO", "CPP-011-AO"], scope: S.kit },
     { m: /Masks - (Neonate|Resus Neonatal)/, what: "Newborn masks for IPPV in newborn resuscitation.", docs: ["CPP-012-AO"], scope: S.kit },
     { m: /suction|Suction/, what: "Suction to clear the airway. In newborns: mouth then nose, only if the airway is compromised.", docs: ["CPP-004-AO", "CPP-012-AO", "CPPRO-020"], scope: S.kit },
     { m: /Syringe Luer Lo[ck]k? 50ml/, what: "50 mL syringe.", docs: [], scope: S.kit, note: "Not named in an AO protocol." },
@@ -92,9 +95,8 @@ window.VEHICLE_ITEM_INFO = (function () {
     { m: /Oxygen Cylinders|^Oxygen Sock/, what: "Oxygen: supplemental oxygen in basic care, high flow in ACPO, chest trauma and sepsis (if SpO2 below 94%).", docs: O2, scope: S.kit },
     { m: /^MDI Spacer/, what: "Spacer for giving salbutamol by inhaler; add a mask for small children.", docs: ["CPP-050-AO", "CPPRO-012"], scope: S.kit },
     /* ---------- circulation, monitoring ---------- */
-    { m: /^Corpuls Monitor/, what: "Monitor and defibrillator: ECG, observations and defibrillation.", docs: ["CPP-004-AO", "CPP-007-AO", "CPP-019-AO"], scope: S.kit },
-    { m: /^Defib Pads/, what: "Defibrillation pads. In severe hypothermia, a maximum of one shock.", docs: ["CPP-004-AO", "CPP-019-AO"], scope: S.kit,
-      note: "The Cardiac Arrest protocols (CPP-002-AO, CPP-043-AO) export as blank pages, so they could not be checked." },
+    { m: /^Corpuls Monitor/, what: "Monitor and defibrillator: ECG, observations, and AED shocks in cardiac arrest.", docs: ["CPP-004-AO", "CPP-002-AO", "CPP-043-AO", "CPP-007-AO", "CPP-019-AO"], scope: S.kit },
+    { m: /^Defib Pads/, what: "AED pads. Adult pads are fine for children over 8, and still reasonable under 8 if there are no paediatric pads; use front-and-back placement on small children. In severe hypothermia, a maximum of one shock.", docs: ["CPP-002-AO", "CPP-043-AO", "CPP-004-AO", "CPP-019-AO"], scope: S.kit },
     { m: /^Paper Rolls|^ECG Spare Dots/, what: "ECG paper and electrodes. The Chest Pain protocol includes an ECG in basic care.", docs: ["CPP-007-AO"], scope: S.kit },
     { m: /^Tympanic/, what: "Covers for the tympanic thermometer. Newborn temperature is taken under the armpit with a digital thermometer instead.", docs: ["CPP-004-AO", "CPP-062-AO", "CPP-063-AO", "CPP-012-AO"], scope: S.kit },
     { m: /Thermometer Digital/, what: "Digital thermometer for the newborn's armpit temperature, every 15 minutes.", docs: ["CPP-012-AO", "CPPRO-046"], scope: S.kit },
@@ -150,7 +152,7 @@ window.VEHICLE_ITEM_INFO = (function () {
     /* ---------- forms ---------- */
     { m: /^Against Medical Advi[cs]e/, what: "Acknowledgement of Medical Advice (AMA) form, completed when a patient refuses against advice.", docs: ["CPP-056-AO"], scope: S.none },
     { m: /^MH Clients statement/, what: "Statement of rights under the Mental Health Act 2009, given to a patient in 'care and control'.", docs: ["CPP-017-AO"], scope: S.none },
-    { m: /^TNT Envelopes/, what: "Envelopes for treat-not-transport paperwork.", docs: ["CPP-055-AO"], scope: S.none, flag: "Assumed to belong to Treat and Refer; please confirm." },
+    { m: /^TNT Envelopes/, what: "Envelopes for treat-not-transport paperwork.", docs: ["CPP-055-AO"], scope: S.none },
     /* ---------- PPE and hygiene ---------- */
     { m: /Gloves|N95|P2 Masks|3M Masks|Surgical Masks|Overspecs|Safety Glasses|^PPE/, what: PPE, docs: [], scope: S.kit },
     { m: /Hand Gel|^Aquium/, what: "Hand hygiene before and after patient contact.", docs: [], scope: S.kit },
@@ -167,5 +169,12 @@ window.VEHICLE_ITEM_INFO = (function () {
     }
     return R[R.length - 1];
   }
-  return { docs: DOCS, review: REVIEW, scopes: S, lookup: lookup, rules: R };
+  /* link to the document's PDF; the two Cardiac Arrest PDFs export blank, so they have no link */
+  function url(code) {
+    var base = "https://clinical.saambulance.sa.gov.au/assets/";
+    if (FILES[code]) return base + "files/" + encodeURIComponent(FILES[code]);
+    if (code === "CPP-002-AO" || code === "CPP-043-AO" || !DOCS[code]) return null;
+    return base + "pdf/home/" + encodeURIComponent(DOCS[code] + " - AO") + ".pdf";
+  }
+  return { docs: DOCS, review: REVIEW, scopes: S, lookup: lookup, rules: R, url: url };
 })();

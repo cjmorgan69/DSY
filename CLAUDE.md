@@ -84,6 +84,10 @@ Travel Diary page, URL in the README), read `.claude/vehicle-log/README.md`, run
   "Y" or "Consult") and the linked guideline per level (`cpg`). Use it for doses the protocol PDFs leave out.
 - GTN for AO chest pain: the app lists it as "Consult", but the owner confirmed (8 Nov 2026) that the AO crew may still
   give the FIRST dose without a consult if SBP and HR are within the protocol limits, then consult for further doses.
+  Only when the patient's own GTN is prescribed; not prescribed = consult first (owner, 22 Nov 2026).
+- Salbutamol MDI for AO asthma: give without a consult, as CPP-050-AO says (owner, 22 Nov 2026; the app lists Consult).
+- Benzylpenicillin: follow CPP-062-AO Sepsis (ceftriaxone); benzylpenicillin is to be changed over for ceftriaxone
+  (owner, 22 Nov 2026).
   ACPO GTN stays consult-first.
 - Eyre Peninsula call signs (owner, 11 Nov 2026): XX81 for jobs between 0800 and 1800, XX181 between 1800 and 0800
   (Tumby Bay TB81 / TB181, Cleve CL81 / CL181, Port Neill PT181 at night). Use them in MDT screenshots and jobs.

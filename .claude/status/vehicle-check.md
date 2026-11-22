@@ -43,17 +43,20 @@ recorded, a stock-to-order list, and a prompt to check a section that has not be
 - No expiry-date checks, no vehicle (fuel, lights, tyres) checks: the form has none.
 - No leader view across all vehicles, no email of the order list (copy as text only).
 
-## Item cross-reference (22 Nov 2026, on a branch, not merged; draft for the owner's review)
+## Item cross-reference and item info (22 Nov 2026, on a branch, not merged)
 
 Owner's plan: a lesson where the crew do a complete real check of the vehicle (that comes first), then, if time
-allows, each person talks about one item: what it is for and which protocol it belongs to. Owner wants item info in
-the app for that session, after reviewing the table.
+allows, each person talks about one item: what it is for and which protocol it belongs to.
 
 - `vehicle-check/item-info.js`: rules (first match on "item | description") giving what the item is for (DSY
-  wording, for review), the AO protocols and CPPROs whose text names it, and AO scope. Medicine scope from the SAAS
-  app dose table (main.10d22172e56532ee.js). Not yet loaded by the app.
-- Sent to the owner as a PDF table (23 pages, landscape), grouped by section, with a "to check" list:
-  Cardiac Arrest CPP-002-AO and CPP-043-AO export as blank pages; app vs protocol on salbutamol MDI (protocol: no
-  consult, app: Consult) and GTN; benzylpenicillin linked by the app to CPP-010-AO (gone); ipratropium MDI and nasal
-  cannula only at paramedic level in AO documents; Co-Phenylcaine in CPPRO-025 steps but app scope paramedic and up;
-  water for injection not in AO protocols; TNT envelopes assumed Treat and Refer; 16 CPPROs past review date.
+  wording), the AO protocols and CPPROs whose text names it (with PDF links and CPPRO review dates), and AO scope.
+  Medicine scope from the SAAS app dose table (main.10d22172e56532ee.js). The Cardiac Arrest PDFs (CPP-002-AO v4.2,
+  CPP-043-AO v2.1) export blank: their text was pasted by the owner on 22 Nov 2026; they have no PDF link.
+- App: an "i" button on each item in a section opens the info; `#guide` Kit guide lists every item with its info and
+  a search box (for preparing the talk).
+- Owner's answers to the first draft (22 Nov 2026): salbutamol MDI without consult (app says Consult); GTN without
+  consult only if the patient's own GTN is prescribed; benzylpenicillin: follow the Sepsis protocol, to be changed
+  over for ceftriaxone; carbetocin not AO; TNT envelopes = Treat and Refer; overdue CPPRO review dates noted only.
+- Still open: ipratropium MDI and nasal cannula appear only under paramedic-level treatment in AO documents;
+  Co-Phenylcaine is in the NPA procedure steps but app scope is paramedic and up (owner: NPA is AO scope; the spray
+  itself not yet answered).

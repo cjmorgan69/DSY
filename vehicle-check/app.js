@@ -3,6 +3,7 @@
      #s=<id>      check one section (a locker, drawer, door ...)
      #stock       the stock-to-order list
      #history     the last 100 section checks
+     #guide       kit guide: every item with what it is for, its protocols and procedures, and AO scope (item-info.js)
    Data: checklist.js (the form), Supabase tables vehicles, vehicle_checks, vehicle_stock_needs and the view
    vehicle_section_status (supabase/vehicle-check-setup.sql). Sign-in comes from /shared/gate.js. */
 (function () {
@@ -31,6 +32,35 @@
   function daysAgo(iso) { return Math.floor((Date.now() - new Date(iso).getTime()) / 86400000); }
   function first(name) { return String(name || "Someone").split(" ")[0]; }
   function itemLabel(it) { return it.desc ? it.name + ": " + it.desc : it.name; }
+
+  /* ---------- item information (item-info.js) ---------- */
+  var INFO = window.VEHICLE_ITEM_INFO || null;
+  function infoFor(it, sectionId) {
+    if (!INFO) return null;
+    var f = INFO.lookup(it, sectionId);
+    return f && (f.what || f.docs.length || f.note || f.flag) ? f : null;
+  }
+  function scopeClass(sc) { return /^Not/.test(sc) ? "bad" : /consult|only/i.test(sc) ? "warn" : /^AO/.test(sc) ? "good" : ""; }
+  function infoPanel(f) {
+    var box = el("div", "info");
+    var top = el("div", "row"); top.appendChild(el("span", "chip " + scopeClass(f.scope), f.scope)); box.appendChild(top);
+    if (f.what) box.appendChild(el("p", null, f.what));
+    if (f.docs.length) {
+      var ul = el("ul", "docs");
+      f.docs.forEach(function (c) {
+        var li = el("li"), u = INFO.url(c), a = el(u ? "a" : "span", null);
+        a.appendChild(el("b", null, c + " ")); a.appendChild(document.createTextNode(INFO.docs[c] || ""));
+        if (u) { a.href = u; a.target = "_blank"; a.rel = "noopener"; }
+        li.appendChild(a);
+        if (INFO.review[c]) li.appendChild(el("span", "small muted", " review " + INFO.review[c]));
+        ul.appendChild(li);
+      });
+      box.appendChild(ul);
+    } else if (!/Non-clinical/.test(f.scope)) box.appendChild(el("p", "small muted", "Not named in an AO protocol or procedure."));
+    if (f.note) box.appendChild(el("p", "small", f.note));
+    if (f.flag) box.appendChild(el("p", "small", f.flag));
+    return box;
+  }
 
   /* ---------- Supabase REST with the site's sign-in ---------- */
   function session() { try { return JSON.parse(localStorage.getItem(STORE) || "null"); } catch (e) { return null; } }
@@ -164,6 +194,7 @@
     var links = el("div", "row");
     var a1 = el("a", "btn" + (needCount ? "" : " ghost"), "Stock to order" + (needCount ? " (" + needCount + ")" : "")); a1.href = "#stock"; links.appendChild(a1);
     var a2 = el("a", "btn ghost", "History"); a2.href = "#history"; links.appendChild(a2);
+    if (INFO) { var a3 = el("a", "btn ghost", "Kit guide"); a3.href = "#guide"; links.appendChild(a3); }
     prog.appendChild(links); app.appendChild(prog);
 
     var card = el("section", "panel nextcard");
@@ -206,7 +237,7 @@
     return api("DELETE", "vehicle_checks?id=eq." + id + "&completed_at=is.null").catch(function () {});
   }
   function drawSection(s) {
-    var marks = {}, note = "";
+    var marks = {}, note = "", shown = {};
     try { var d = JSON.parse(localStorage.getItem(draftKey(s)) || "null"); if (d) { marks = d.marks || {}; note = d.note || ""; } } catch (e) {}
     function keep() { try { localStorage.setItem(draftKey(s), JSON.stringify({ marks: marks, note: note })); } catch (e) {} }
 
@@ -233,6 +264,12 @@
         if (it.desc) w.appendChild(el("span", "small muted", it.desc));
         if (it.qty) { var q = el("span", "small"); q.appendChild(document.createTextNode("Quantity: ")); q.appendChild(el("span", "qty", it.qty)); w.appendChild(q); }
         li.appendChild(w);
+        var f = infoFor(it, s.id);
+        if (f) {
+          var ib = btn("about", "i", function () { shown[it.id] = !shown[it.id]; paint(); });
+          ib.setAttribute("aria-label", "About " + itemLabel(it)); ib.setAttribute("aria-expanded", shown[it.id] ? "true" : "false");
+          li.appendChild(ib);
+        }
         var mk = el("div", "mark");
         var ok = btn("ok", "OK", function () { marks[it.id] = { s: "ok" }; keep(); paint(); });
         var sh = btn("short", "Short", function () { if (!m || m.s !== "short") marks[it.id] = { s: "short", n: 1, note: "" }; keep(); paint(); });
@@ -251,6 +288,7 @@
           nt.addEventListener("input", function () { m.note = nt.value; keep(); });
           sb.appendChild(nt); li.appendChild(sb);
         }
+        if (f && shown[it.id]) li.appendChild(infoPanel(f));
         ul.appendChild(li);
       });
       var left = s.list.filter(function (it) { return !marks[it.id]; }).length;
@@ -395,6 +433,45 @@
   }
 
   /* ---------- screen: history ---------- */
+  /* ---------- screen: kit guide ---------- */
+  function drawGuide() {
+    app.textContent = "";
+    var back = el("a", "linkbtn back", "\u2190 All sections"); back.href = "#"; app.appendChild(back);
+    var head = el("section", "panel pad stack");
+    head.appendChild(el("span", "eyebrow", list.title)); head.appendChild(el("h2", null, "Kit guide"));
+    head.appendChild(el("p", "small muted", "What each item is for, the AO protocols (CPP) and procedures (CPPRO) that name it, and AO scope. Tap a document to open it. Summaries are DSY's plain-English reading of the SAAS documents (Nov 2026): the protocol always wins."));
+    var lab = el("label", null, "Find an item"), q = el("input"); q.type = "search"; q.placeholder = "For example tourniquet, i-gel, glucagon";
+    lab.appendChild(q); head.appendChild(lab); app.appendChild(head);
+    var hold = el("div", "stack"); app.appendChild(hold);
+    function draw() {
+      var term = q.value.trim().toLowerCase(); hold.textContent = "";
+      list.areas.forEach(function (a) {
+        a.sections.forEach(function (s) {
+          var groups = [];
+          s.list.forEach(function (it) {
+            var f = infoFor(it, s.id); if (!f || !f.what) return;
+            var hay = (itemLabel(it) + " " + f.what + " " + f.docs.join(" ") + " " + s.name).toLowerCase();
+            if (term && hay.indexOf(term) < 0) return;
+            var g = groups.filter(function (x) { return x.f === f; })[0];
+            if (g) g.items.push(it); else groups.push({ f: f, items: [it] });
+          });
+          if (!groups.length) return;
+          var box = el("section", "panel area"), hd = el("div", "head"); hd.appendChild(el("h2", null, s.name)); hd.appendChild(el("span", "small muted", a.name)); box.appendChild(hd);
+          var ul = el("ul", "items");
+          groups.forEach(function (g) {
+            var li = el("li"), w = el("div", "what");
+            g.items.forEach(function (it) { w.appendChild(el("span", "t", itemLabel(it) + (it.qty ? " (" + it.qty + ")" : ""))); });
+            li.appendChild(w); li.appendChild(infoPanel(g.f)); ul.appendChild(li);
+          });
+          box.appendChild(ul); hold.appendChild(box);
+        });
+      });
+      if (!hold.childNodes.length) hold.appendChild(el("p", "notice", "Nothing matches that."));
+    }
+    var t = null; q.addEventListener("input", function () { clearTimeout(t); t = setTimeout(draw, 150); });
+    draw(); window.scrollTo(0, 0);
+  }
+
   function drawHistory() {
     app.textContent = "";
     var back = el("a", "linkbtn back", "← All sections"); back.href = "#"; app.appendChild(back);
@@ -431,6 +508,7 @@
     if (!vehicle) { drawHome(); return; }
     if (h === "stock") return drawStock();
     if (h === "history") return drawHistory();
+    if (h === "guide" && INFO) return drawGuide();
     loadStatus().then(function () {
       if (s) return drawSection(s);
       drawHome();
