@@ -49,5 +49,5 @@ hospital also with the drive to hospital). Obs, treatment and doses are unchange
 never treated as times. Checked with a script against every customiser template (page time, drive out, drive to
 hospital, all three): each time the walk-through and the card share moves the same way (four times needed an
 override, listed in `times`). The job shows in the list as "<name>, <age>: ... (customised)", links to the customised
-student walk-through, and keeps its own saved work per customisation. On a branch, not merged.
+student walk-through, and keeps its own saved work per customisation. Live (PR #318, merged 22 Nov 2026).
 
