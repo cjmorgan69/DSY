@@ -63,3 +63,14 @@ allows, each person talks about one item: what it is for and which protocol it b
 - PPE, hand hygiene, cleaning, sharps and waste items link to CTL-014 Infection Control Precautions and Cleaning
   (chart V3, 17 May 2018; on the SAAS site as a clinical tool since 4 Jun 2025), sent by the owner on 22 Nov 2026.
 - The Locker 4 top drawer tourniquet is the venous tourniquet for IV access (owner, 22 Nov 2026), not the arterial one.
+
+## Grab & Go kits (22 Nov 2026, PR #314, not merged)
+
+New area "Grab & Go kits" (id `kits`, placed after the Grab & Go lockers) with four sections, from the owner's forms:
+- `red-trauma-kit`: FRM-397 Red Trauma Kit - Volunteer v4.1 (2025), written contents list.
+- `yellow-drug-kit`: the yellow drug kit inside it (FRM-397 contents list). The FRM-397 photos also show IV cannulas
+  (14G to 24G) and an Atrovent (ipratropium) inhaler that the written list leaves out: the list was followed.
+- `blue-airway-kit`: FRM-365 Blue Airway Kit - Volunteer (Aug 2025), written list (6 resus masks incl. red adult; the
+  photo page shows 5 masks and an Aquim gel 60 mL that the list leaves out).
+- `oxygen-sock`: owner's contents (22 Nov 2026): Halo C cylinder; adult and paediatric each of nasal specs, 8 L/min
+  mask, 15 L/min NRM, nebuliser mask.
