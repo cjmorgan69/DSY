@@ -112,4 +112,5 @@ Peninsula") when All clusters is chosen, otherwise the cluster's name with "Clus
 Session name first for members (owner, 22 Nov 2026): members see the session's name (`sessions.topic`, "Session name"
 in the session form) and only the lesson title when no name is set: training app member list, Team Page "Next training",
 Region tile, and the push reminder title (`session_reminder_claim()` in `supabase/session-reminders.sql`, applied on
-merge). Leaders' views still lead with the lessons. PR #333.
+merge). With several lessons, members see the summaries only (facilitators also see
+each title). Leaders' views still lead with the lessons. Merged (PR #333, 22 Nov 2026); SQL applied.
