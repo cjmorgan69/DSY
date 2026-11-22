@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261123e">
+<link rel="stylesheet" href="../training/theme.css?v=20261123g">
 <style>
 /* Photo swipe row (owner, 18 Nov 2026). */
 .learnrow { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; margin: 0 -1rem; padding: .2rem 1rem .5rem; scroll-padding: 0 1rem; -webkit-overflow-scrolling: touch; }
@@ -35,9 +35,9 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261123e"></script>
-<script src="../training/pwreveal.js?v=20261123e" defer></script>
-<script src="/shared/reminders.js?v=20261123e" defer></script>
+<script src="../training/config.js?v=20261123g"></script>
+<script src="../training/pwreveal.js?v=20261123g" defer></script>
+<script src="/shared/reminders.js?v=20261123g" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -155,7 +155,7 @@
     if (S.next) {
       var d = parseDate(S.next.session_date);
       html += '<section class="panel nextcard"><div class="when"><span class="dow">' + d.toLocaleDateString("en-AU", { weekday: "short" }) + '</span><span class="dom">' + d.getDate() + '</span><span class="mon">' + d.toLocaleDateString("en-AU", { month: "short" }) + '</span></div>' +
-        '<div class="what"><span class="eyebrow">Next training</span><span class="t">' + ((S.next.lesson_title || S.next.topic) ? esc(S.next.lesson_title || S.next.topic) : '<span class="muted">Topic to be confirmed</span>') + '</span><span class="small muted">' + hhmm(S.next.start_time) + " to " + hhmm(S.next.end_time) + (S.next.location ? " - " + esc(S.next.location) : "") + (S.next.facilitator_name ? " - Led by " + esc(S.next.facilitator_name) : "") + "</span></div>" +
+        '<div class="what"><span class="eyebrow">Next training</span><span class="t">' + ((S.next.topic || S.next.lesson_title) ? esc(S.next.topic || S.next.lesson_title) : '<span class="muted">Topic to be confirmed</span>') + '</span><span class="small muted">' + hhmm(S.next.start_time) + " to " + hhmm(S.next.end_time) + (S.next.location ? " - " + esc(S.next.location) : "") + (S.next.facilitator_name ? " - Led by " + esc(S.next.facilitator_name) : "") + "</span></div>" +
         '<a class="link" href="../training/">Attending?</a></section>';
     }
     if (S.pics.length) html += '<section class="stack"><div class="learnhead"><h2>Photos</h2>' + (S.pics.length > 1 ? '<span class="small muted">Swipe for more</span>' : "") + '</div><div class="learnrow">' +

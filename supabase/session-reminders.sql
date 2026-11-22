@@ -40,8 +40,10 @@ begin
     where s.reminded_at is null and public.session_starts_at(s) > now() and public.session_starts_at(s) <= now() + interval '12 hours'
     returning s.*)
   select d.id, d.group_id, g.name,
-         coalesce((select string_agg(l.title, ' + ' order by u.ord) from unnest(d.lesson_ids) with ordinality u(id, ord) join public.lessons l on l.id = u.id),
-                  nullif(btrim(d.topic), ''), 'Team training'),
+         -- the session name first, else the lesson titles (owner, 22 Nov 2026)
+         coalesce(nullif(btrim(d.topic), ''),
+                  (select string_agg(l.title, ' + ' order by u.ord) from unnest(d.lesson_ids) with ordinality u(id, ord) join public.lessons l on l.id = u.id),
+                  'Team training'),
          coalesce((select p.full_name from public.profiles p where p.id = d.facilitator_id), nullif(btrim(d.facilitator_name), '')),
          d.session_date, d.start_time, d.end_time, nullif(btrim(d.location), '')
   from due d join public.groups g on g.id = d.group_id;
