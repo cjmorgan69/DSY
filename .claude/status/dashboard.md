@@ -9,7 +9,9 @@ and say plainly whether a thing is on main or still on a branch.
 
 Lead instructor dashboard (`/dashboard/`, 13 Nov 2026, leader gate; link in the home page leader links): live clock
 and date (Adelaide), roster today (all three clusters' Apps Script `coverage`, same as
-`/modules/rosters/operations/`, hourly heat grid with this hour outlined), training sessions (Supabase `sessions` +
+`/modules/rosters/operations/`, hourly heat grid with this hour outlined; since 22 Nov 2026 a rolling 24 hours, 3 hours
+back to 21 ahead, joining the two 8am-to-8am operational days it touches and sliding on the hour; owner's request,
+PR #330. Same on `/dashboard/team/`; the car dash fuel gauge covers now to 21 hours ahead), training sessions (Supabase `sessions` +
 `groups`, next session banner, count of sessions in the next 4 weeks with no lesson (`lesson_id` and `lesson_ids`
 empty) linking to `/training/`, 4-week calendar), dispatch last 7 days (`paging_jobs`, mini roads like
 `/dispatch/`), 7-day weather (Open-Meteo, town chips, hot-and-windy flag pointing to CFS), DSY home and Google
