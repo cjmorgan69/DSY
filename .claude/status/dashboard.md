@@ -120,6 +120,8 @@ Role or Cluster settings), `dash.js` (banner, covered leader's tasks labelled wi
 `supabase/relief-setup.sql`, applied by Claude 16 Nov 2026; rehearsed in a rolled-back transaction (Chris -> Dave
 Chapman): Dave got leader access and Chris's 3 tasks, was blocked from resetting Chris's password, making himself a
 leader and handing cover on, could not read calendar links, and lost everything when the cover ended.
+Search box above the relief Team Leader list (owner, 22 Nov 2026): filters by name or staff ID, picks the person when
+only one matches (rebuilds the options; hidden options don't hide on iPhone Safari). On a branch, not merged.
 
 ## User guides and Ask DSY (17 Nov 2026, owner)
 
