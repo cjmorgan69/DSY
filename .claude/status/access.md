@@ -153,5 +153,6 @@ team dashboard (roster, dispatches, volunteer contribution and training for thei
 - Migration `vtl_wide_view` (owner, 22 Nov 2026): the team dashboard's roster and dispatch show every team, so
   `is_vtl()`, a `vtl_read` select policy on `paging_jobs`, and `roster_can_view()` lets a VTL see any team's roster names
   (not staff IDs; roster pages are open anyway). `team_dispatch` is no longer used by the page.
-- Not covered: VTLs do not get roster change emails (that is `roster_managers.notify_email`); the training app
-  (`/training/`) still treats them by `profiles.role`. No VTLs set yet: owner to name them. Live (PR #320, merged 22 Nov 2026; checked on the live site with stand-in sign-in data, and signed-out visits go to sign-in).
+- Not covered: VTLs do not get roster change emails (that is `roster_managers.notify_email`); in the training app
+  (`/training/`) they are treated as facilitators already: the app has only a leader view and a member view, and
+  facilitators use the member view too (checked 22 Nov 2026); database rules that use `is_facilitator()` include VTLs. No VTLs set yet: owner to name them. Live (PR #320, merged 22 Nov 2026; checked on the live site with stand-in sign-in data, and signed-out visits go to sign-in).
