@@ -89,8 +89,9 @@ Travel Diary page, URL in the README), read `.claude/vehicle-log/README.md`, run
 - Benzylpenicillin: follow CPP-062-AO Sepsis (ceftriaxone); benzylpenicillin is to be changed over for ceftriaxone
   (owner, 22 Nov 2026).
 - Co-Phenylcaine Forte: AOs may use it to insert an NPA (owner, 22 Nov 2026; the app lists paramedic and above).
-- Ipratropium MDI and nasal cannula oxygen for AO asthma: on EOC Clinician consult, doses as per the paramedic
-  guideline (owner, 22 Nov 2026).
+- Ipratropium MDI for AO asthma: on EOC Clinician consult, doses as per the paramedic guideline (owner, 22 Nov 2026).
+- Nasal cannula: AOs may use it, up to 4 L/min, whenever a protocol says oxygen may be needed (owner, 22 Nov 2026).
+  CPP-004-AO lists face mask, NRB or IPPV; where a protocol says high-flow oxygen, the mask it names is used.
   ACPO GTN stays consult-first.
 - Eyre Peninsula call signs (owner, 11 Nov 2026): XX81 for jobs between 0800 and 1800, XX181 between 1800 and 0800
   (Tumby Bay TB81 / TB181, Cleve CL81 / CL181, Port Neill PT181 at night). Use them in MDT screenshots and jobs.

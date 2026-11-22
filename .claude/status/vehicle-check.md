@@ -57,6 +57,6 @@ allows, each person talks about one item: what it is for and which protocol it b
 - Owner's answers to the first draft (22 Nov 2026): salbutamol MDI without consult (app says Consult); GTN without
   consult only if the patient's own GTN is prescribed; benzylpenicillin: follow the Sepsis protocol, to be changed
   over for ceftriaxone; carbetocin not AO; TNT envelopes = Treat and Refer; overdue CPPRO review dates noted only.
-- Also (22 Nov 2026): Co-Phenylcaine is AO for NPA insertion; ipratropium MDI and nasal cannula oxygen are AO on EOC
-  consult, doses as per the paramedic guideline (app: ipratropium MDI 8 puffs if 6 or older, 4 puffs under 6, CPG-114-P).
+- Also (22 Nov 2026): Co-Phenylcaine is AO for NPA insertion; ipratropium MDI is AO on EOC consult, doses as per the
+  paramedic guideline; nasal cannula up to 4 L/min whenever a protocol says oxygen may be needed (app: ipratropium MDI 8 puffs if 6 or older, 4 puffs under 6, CPG-114-P).
   Only open point left on the table: water for injection is not named in an AO protocol.
