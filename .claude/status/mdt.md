@@ -41,3 +41,18 @@ centre) and to the chosen hospital after Mobile. Customiser link: the chest pain
 simulator" (`/mdt/#s=chest-pain-ao&...`), which fills the library job from the customised fields
 (`customSlug`/`custom()` in `mdt/jobs.js`; list of linked slugs in `scenarios/index.html`). Add a mapping when
 making another scenario customisable. Town box is free text; Closest uses the town, else the station, else A to Z.
+
+## Crew and location review (22 Nov 2026)
+
+Each library job now sets its own call sign from its station and dispatch time (`MDT_CALLSIGN` in `mdt/jobs.js`:
+team letters + 81 from 0800 to 1800, + 181 from 1800 to 0800); a station with no team letters keeps the setup
+screen's call sign, and a saved job keeps its own. Customised jobs use the customised station and time. Owner's
+decisions: chest pain is dispatched from Cleve (CL181; Arno Bay was a DSY-invented town with no station); the snake
+bite crew is from Cummins, not Port Lincoln (response 25 min and Port Lincoln Hospital 30 min unchanged; walk-through
+text and the `envenomation-ao` template's station default changed to match). Customiser fixes: asthma, anaphylaxis
+and ACPO now dispatch from the customised town's station when the station is left blank; the MVA street keeps the
+chosen direction (north/south/east/west).. Checked against the PCR trainer the same day: library
+surnames now match the walk-throughs' handovers (Mitchell, Collins, Thompson, Patterson, Henley); stroke paged at 1100
+to fit the PCR card's onset 1015 and "45 minutes ago"; "Cummins Hospital" used for Helen everywhere (walk-through,
+PCR card, `nausea-ao` template default). On a branch, not merged.
+
