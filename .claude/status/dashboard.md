@@ -266,4 +266,4 @@ members of the session's team who turned reminders on, except those who answered
 Sessions open in the planner (owner, 22 Nov 2026): on `/dashboard/` and `/dashboard/wide/` the next-session banner, each
 calendar day with one session (several: each bar) and each row of the upcoming list link to `/training/#session=<id>`,
 which opens that session's page in the training app (leaders; the hash is then cleared). Tested with stand-in data.
-In PR #331 (with the Region page work), not merged.
+Merged (PR #331, 22 Nov 2026).
