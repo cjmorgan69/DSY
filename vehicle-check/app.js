@@ -15,6 +15,7 @@
   var app = document.getElementById("app");
   var me = { name: "", uid: "", facilitator: false };
   var vehicles = [], vehicle = null, list = null, sections = {}, order = [];
+  var openAreas = {};                  /* lesson plan: which areas are opened to show their sections */
   var status = {}, busy = {}, needCount = 0, timer = null, openCheck = null;
 
   /* ---------- small helpers ---------- */
@@ -466,13 +467,26 @@
     list.areas.forEach(function (a) {
       var items = 0, left = 0, who = {};
       a.sections.forEach(function (s) { items += s.list.length; if (isDue(s)) left++; var b = busy[s.id]; if (b) who[first(b.checked_by_name)] = 1; });
-      var li = el("li"), row = el("div", "item"), w = el("div", "what");
-      w.appendChild(el("span", "t", a.name));
+      var li = el("li"), row = el("button", "item"), w = el("div", "what");
+      row.type = "button"; row.setAttribute("aria-expanded", openAreas[a.id] ? "true" : "false");
+      row.addEventListener("click", function () { openAreas[a.id] = !openAreas[a.id]; var y = window.scrollY; drawLesson(); window.scrollTo(0, y); });
+      w.appendChild(el("span", "t", (openAreas[a.id] ? "\u25BE " : "\u25B8 ") + a.name));
       w.appendChild(el("span", "small muted", a.sections.length + " sections, " + items + " items"));
       var names = Object.keys(who); if (names.length) w.appendChild(el("span", "small", "Checking now: " + names.join(", ")));
       row.appendChild(w);
       row.appendChild(el("span", "chip " + (left ? "warn" : "good"), left ? left + " to check" : "Done"));
-      li.appendChild(row); ul.appendChild(li);
+      li.appendChild(row);
+      if (openAreas[a.id]) {
+        var sl = el("ul", "list subsecs");
+        a.sections.forEach(function (s) {
+          var sli = el("li"), link = el("a", "item sec" + (isDue(s) ? " due" : "")); link.href = "#s=" + s.id;
+          var sw = el("div", "what"); sw.appendChild(el("span", "t", s.name)); sw.appendChild(el("span", "small muted", s.list.length + (s.list.length === 1 ? " item" : " items")));
+          link.appendChild(sw); var act = el("div", "act"); act.appendChild(chipFor(s)); link.appendChild(act);
+          sli.appendChild(link); sl.appendChild(sli);
+        });
+        li.appendChild(sl);
+      }
+      ul.appendChild(li);
     });
     box.appendChild(ul); app.appendChild(box);
 
