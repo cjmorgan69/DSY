@@ -74,3 +74,11 @@ New area "Grab & Go kits" (id `kits`, placed after the Grab & Go lockers) with f
   photo page shows 5 masks and an Aquim gel 60 mL that the list leaves out; owner: keep all 6 masks and add the gel).
 - `oxygen-sock`: owner's contents (22 Nov 2026): Halo C cylinder; adult and paediatric each of nasal specs, 8 L/min
   mask, 15 L/min NRM, nebuliser mask.
+
+## Lesson: Know your vehicle (22 Nov 2026, on a branch, not merged)
+
+Owner chose the earlier idea: a complete check of the real vehicle first (pairs take one area each), then if time a
+2 to 3 minute talk per person on one item they checked. `#lesson` (button "Lesson plan" for facilitators on the
+vehicle screen; the address works for anyone): DSY-written plan with timings, the areas with section and item counts
+and live progress (who is checking now), talk prompts, links to the Kit guide, Stock to order and the general
+feedback form. Areas are uneven: Grab & Go kits has 120 items. To add as a lesson in `public.lessons` once live.
