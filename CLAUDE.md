@@ -159,10 +159,7 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 
 ## Open work
 
-- **Next up (owner, 22 Nov 2026): the Region page (`/region/`).** (1) It needs to filter by cluster (Lower Eyre,
-  Central Eyre, West Coast). (2) Edit this page: moving the banner photo with the slider does not keep the change
-  (the position, `groups.banner_y`, is not saved or not reloaded). Raise this with the owner at the start of the next
-  conversation.
+- Region page (`/region/`): cluster filter and banner position fix built 22 Nov 2026 (on a branch, not merged); see `hub.md`.
 - PRs #155 (more than one lesson per session), #133 (sepsis skills stations) and #119 (NSW ECAT protocols in the
   rural ED asthma/COPD module) were folded into the health check PR #236 on 15 Nov 2026 (owner: merge them as long
   as nothing newer is overwritten). The rural ED module's intro video was narrated before the ECAT additions.
