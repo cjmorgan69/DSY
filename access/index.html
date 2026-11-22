@@ -8,11 +8,11 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../shared/dsy-favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../shared/dsy-favicon-192.png">
 <link rel="apple-touch-icon" href="../shared/dsy-touch-180.png">
-<script src="/shared/gate.js?v=20261122n" data-level="leader"></script>
+<script src="/shared/gate.js?v=20261122r" data-level="leader"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261122n">
+<link rel="stylesheet" href="../training/theme.css?v=20261122r">
 <style>
 [hidden]{display:none!important}
 textarea{width:100%;min-height:7rem;font:inherit;padding:.6rem .75rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
@@ -61,15 +61,20 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
     <div class="scroll"><table><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Team</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
     <p class="small muted" id="empty" hidden>Nobody matches.</p>
   </section>
+  <section class="panel pad stack">
+    <h2>Volunteer Team Leaders</h2>
+    <p class="small muted">One per team. A Volunteer Team Leader (VTL) gets facilitator access, can manage their own team's roster, and has a team dashboard (roster, dispatches, volunteer contribution, training and weather for their team). They are not a Team Leader: no Grant access and no other teams. Pick from the people signed up in that team.</p>
+    <div class="scroll"><table><thead><tr><th>Team</th><th>Volunteer Team Leader</th></tr></thead><tbody id="vtlRows"></tbody></table></div>
+  </section>
   <p class="small muted">Removing someone switches their account off: they cannot sign in again, and a session already open ends within about an hour. Add them back to restore it. Leaders cannot be switched off here. Use Reset password to give someone a temporary one; they choose their own when they next sign in.</p>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="../training/config.js?v=20261122n"></script>
+<script src="../training/config.js?v=20261122r"></script>
 <script>
 (function () {
   var C = window.TRAINING_APP, sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
   var $ = function (id) { return document.getElementById(id); };
-  var S = { allowed: [], profiles: [], off: {}, groups: [], members: [], expected: {}, myCluster: null };
+  var S = { allowed: [], profiles: [], off: {}, groups: [], members: [], expected: {}, myCluster: null, vtls: [] };
   function norm(t) { return String(t || "").toLowerCase().replace(/[^a-z0-9]/g, ""); }
   function say(t, bad) { $("msg").textContent = t; $("msg").style.color = bad ? "var(--danger)" : "var(--ink)"; }
   function must(r) { if (r.error) throw r.error; return r.data || []; }
@@ -83,7 +88,8 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
       sb.from("groups").select("id,name,type,cluster").neq("type", "test").order("type", { ascending: false }).order("name").then(must),
       sb.from("memberships").select("member_id,group_id").then(must),
       sb.from("expected_members").select("staff_id,full_name,group_id").then(must),
-      sb.auth.getUser()
+      sb.auth.getUser(),
+      sb.from("team_vtls").select("group_id,member_id").then(must)
     ]).then(function (r) {
       S.allowed = r[0]; S.profiles = r[1]; S.off = {};
       r[2].forEach(function (a) { S.off[a.member_id] = a.switched_off; });
@@ -92,8 +98,9 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
       var uid = r[6] && r[6].data && r[6].data.user && r[6].data.user.id;
       var me = S.profiles.filter(function (p) { return p.id === uid; })[0];
       S.myCluster = me && me.cluster || null;
+      S.vtls = r[7] || [];
       fillTeamPicker();
-      draw();
+      draw(); drawVtl();
     });
   }
   /* one line per approved ID, plus accounts that exist but are no longer on the list */
@@ -127,7 +134,8 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
     rows.forEach(function (x) {
       var tr = el("tr"), st = status(x);
       tr.appendChild(el("td", null, x.id)); tr.appendChild(el("td", null, x.note || ""));
-      tr.appendChild(el("td", null, x.role === "member" ? "Student" : x.role === "leader" ? "Leader" : "Facilitator"));
+      var vt = x.p && S.vtls.filter(function (v) { return v.member_id === x.p.id; })[0];
+      tr.appendChild(el("td", null, (x.role === "member" ? "Student" : x.role === "leader" ? "Leader" : "Facilitator") + (vt ? " · VTL " + groupName(vt.group_id) : "")));
       tr.appendChild(teamCell(x));
       var s = el("td"); s.appendChild(el("span", "chip " + st[1], st[0])); tr.appendChild(s);
       var a = el("td"), acts = el("div", "acts");
@@ -189,6 +197,38 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
   var expectTeam = safe(function (id, note, gid) {
     return expectRow(id, note, gid).then(function () {
       say(gid ? (note || id) + " will join " + groupName(gid) + " when they sign up." : (note || id) + " has no team now."); return load();
+    });
+  });
+
+  /* Volunteer Team Leaders (owner, 22 Nov 2026): one per team, table team_vtls (supabase/vtl-setup.sql). Choosing
+     someone gives them facilitator access, roster manager rights for that team and /dashboard/team/; No VTL takes it away. */
+  function drawVtl() {
+    var tb = $("vtlRows"); tb.textContent = "";
+    var pn = {}; S.profiles.forEach(function (p) { pn[p.id] = p; });
+    S.groups.filter(function (g) { return g.type === "team"; }).forEach(function (g) {
+      var tr = el("tr"), cur = S.vtls.filter(function (v) { return v.group_id === g.id; })[0];
+      tr.appendChild(el("td", null, g.name + (g.cluster ? " · " + g.cluster : "")));
+      var td = el("td"), sel = el("select"); sel.setAttribute("aria-label", "Volunteer Team Leader for " + g.name);
+      var o = el("option", null, "No VTL"); o.value = ""; sel.appendChild(o);
+      var ids = S.members.filter(function (m) { return m.group_id === g.id && pn[m.member_id] && !S.off[m.member_id]; }).map(function (m) { return m.member_id; });
+      if (cur && ids.indexOf(cur.member_id) < 0 && pn[cur.member_id]) ids.push(cur.member_id);
+      ids.sort(function (a, b) { return String(pn[a].full_name || "").localeCompare(String(pn[b].full_name || "")); }).forEach(function (id) {
+        var op = el("option", null, (pn[id].full_name || "No name") + (pn[id].staff_id ? " (" + pn[id].staff_id + ")" : "")); op.value = id;
+        if (cur && cur.member_id === id) op.selected = true; sel.appendChild(op);
+      });
+      if (!canEdit(g)) sel.disabled = true;
+      sel.addEventListener("change", function () { setVtl(g, sel.value); });
+      td.appendChild(sel); tr.appendChild(td); tb.appendChild(tr);
+    });
+  }
+  var setVtl = safe(function (g, mid) {
+    var other = mid && S.vtls.filter(function (v) { return v.member_id === mid && v.group_id !== g.id; })[0];
+    if (other) { say("That person is already the VTL for " + groupName(other.group_id) + ". Set that team to No VTL first.", true); drawVtl(); return; }
+    var op = mid ? sb.from("team_vtls").upsert({ group_id: g.id, member_id: mid, set_at: new Date().toISOString() }, { onConflict: "group_id" })
+                 : sb.from("team_vtls").delete().eq("group_id", g.id);
+    return op.then(must).then(function () {
+      var p = S.profiles.filter(function (x) { return x.id === mid; })[0];
+      say(mid ? (p && p.full_name || "They") + " is now the Volunteer Team Leader for " + g.name + "." : g.name + " has no Volunteer Team Leader now."); return load();
     });
   });
 
