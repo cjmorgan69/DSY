@@ -114,3 +114,7 @@ in the session form) and only the lesson title when no name is set: training app
 Region tile, and the push reminder title (`session_reminder_claim()` in `supabase/session-reminders.sql`, applied on
 merge). With several lessons, members see the summaries only (facilitators also see
 each title). Leaders' views still lead with the lessons. Merged (PR #333, 22 Nov 2026); SQL applied.
+
+Lesson search (owner, 22 Nov 2026), training app: a search box above "Add a lesson" in the session form narrows the
+list (title and summary, every word must match; Enter adds the only match and does not save the form), and a search box
+on the Lessons tab hides lessons that do not match (kept while the tab is open). Tested with stand-in data. Merged (PR #334, 22 Nov 2026).
