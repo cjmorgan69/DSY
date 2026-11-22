@@ -154,4 +154,4 @@ team dashboard (roster, dispatches, volunteer contribution and training for thei
   `is_vtl()`, a `vtl_read` select policy on `paging_jobs`, and `roster_can_view()` lets a VTL see any team's roster names
   (not staff IDs; roster pages are open anyway). `team_dispatch` is no longer used by the page.
 - Not covered: VTLs do not get roster change emails (that is `roster_managers.notify_email`); the training app
-  (`/training/`) still treats them by `profiles.role`. No VTLs set yet: owner to name them. On a branch, not merged.
+  (`/training/`) still treats them by `profiles.role`. No VTLs set yet: owner to name them. Live (PR #320, merged 22 Nov 2026; checked on the live site with stand-in sign-in data, and signed-out visits go to sign-in).
