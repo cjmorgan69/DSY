@@ -11,6 +11,6 @@ window.DRIVE_SECTIONS = [];
     'section7-emergency.js'
   ];
   files.forEach(function (f) {
-    document.write('<script src="data/' + f + '?v=20261122x" charset="utf-8"><\/script>');
+    document.write('<script src="data/' + f + '?v=20261122y" charset="utf-8"><\/script>');
   });
 })();
