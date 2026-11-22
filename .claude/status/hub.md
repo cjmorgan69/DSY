@@ -118,3 +118,5 @@ each title). Leaders' views still lead with the lessons. Merged (PR #333, 22 Nov
 Lesson search (owner, 22 Nov 2026), training app: a search box above "Add a lesson" in the session form narrows the
 list (title and summary, every word must match; Enter adds the only match and does not save the form), and a search box
 on the Lessons tab hides lessons that do not match (kept while the tab is open). Tested with stand-in data. Merged (PR #334, 22 Nov 2026).
+Region page tile (owner, 22 Nov 2026): "Manager dashboard" (old Lower Eyre roster manager dashboard) is now "Team Leader
+Dashboard" and opens `/dashboard/`.

@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261123h">
+<link rel="stylesheet" href="../training/theme.css?v=20261123i">
 <style>
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: .9rem; }
 .tile { display: flex; flex-direction: column; overflow: hidden; border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(20, 40, 30, .05); }
@@ -41,8 +41,8 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261123h"></script>
-<script src="../training/pwreveal.js?v=20261123h" defer></script>
+<script src="../training/config.js?v=20261123i"></script>
+<script src="../training/pwreveal.js?v=20261123i" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -54,7 +54,7 @@
   var CF = "dsy-region-cluster", CLUSTERS = ["Lower Eyre", "Central Eyre", "West Coast"];
   function cstore(v) { try { if (v === undefined) return localStorage.getItem(CF); localStorage.setItem(CF, v); } catch (e) { return null; } }
   var S = { cluster: null, editTeam: null, user: null, profile: null, region: null, groups: [], next: {}, photos: {}, regionPhoto: null, authMode: "in", edit: false, uploading: false };
-  var MANAGER = "../modules/rosters/lowereyre/manager/", DASH = "../modules/rosters/lowereyre/manager/dashboard/";
+  var MANAGER = "../modules/rosters/lowereyre/manager/", DASH = "/dashboard/";
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function fail(e) { $toast.textContent = e && e.message ? e.message : "Something went wrong. Try again."; $toast.hidden = false; clearTimeout(fail.t); fail.t = setTimeout(function () { $toast.hidden = true; }, 6000); }
@@ -136,7 +136,7 @@
     html += '<section class="hero' + (S.regionPhoto ? "" : " plain") + '">' + (S.regionPhoto ? '<img src="' + esc(S.regionPhoto) + '" alt="' + esc(title) + '">' : "") +
       '<div class="cap"><h1>' + esc(title) + '</h1><p>' + (S.cluster ? "Cluster overview" : "Region overview") + '</p></div></section>';
     html += '<div class="actions"><a class="big" href="../training/">Team Training<span>Sessions, lessons, attendance and people</span></a>' +
-      '<a class="big alt" href="' + DASH + '">Manager dashboard<span>Rosters and cover across the region</span></a>' +
+      '<a class="big alt" href="' + DASH + '">Team Leader Dashboard<span>Rosters, training sessions, dispatch and tasks</span></a>' +
       '<a class="big alt" href="' + MANAGER + '">Roster manager<span>Open the manager roster page</span></a></div>';
     var shown = S.groups.filter(function (g) { return !S.cluster || g.cluster === S.cluster; });
     html += '<section class="stack"><div class="sec-h"><h2>Teams</h2></div><div class="chips" role="group" aria-label="Cluster">' +
