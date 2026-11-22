@@ -9,10 +9,13 @@
 <link rel="icon" type="image/png" sizes="192x192" href="../shared/dsy-favicon-192.png">
 <link rel="apple-touch-icon" href="../shared/dsy-touch-180.png">
 <meta name="theme-color" content="#1f5b43">
+<link rel="manifest" href="/dsy.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DSY Training">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261122y">
+<link rel="stylesheet" href="../training/theme.css?v=20261122zb">
 <style>
 /* Photo swipe row (owner, 18 Nov 2026). */
 .learnrow { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; margin: 0 -1rem; padding: .2rem 1rem .5rem; scroll-padding: 0 1rem; -webkit-overflow-scrolling: touch; }
@@ -32,8 +35,9 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261122y"></script>
-<script src="../training/pwreveal.js?v=20261122y" defer></script>
+<script src="../training/config.js?v=20261122zb"></script>
+<script src="../training/pwreveal.js?v=20261122zb" defer></script>
+<script src="/shared/reminders.js?v=20261122zb" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -120,7 +124,7 @@
 
   function header() {
     return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName || "Team Training") + '</h1><p>' + esc((S.profile && S.profile.full_name) || "") + '</p></div></div>' +
-      '<div class="row"><a class="link" href="../training/">Training</a><a class="link" href="../userguides/start/">How to use this</a><button class="link" type="button" id="signout">Sign out</button></div></header>';
+      '<div class="row"><a class="link" href="../training/">Training</a><a class="link" href="../userguides/start/">How to use this</a><button class="link" type="button" id="signout">Sign out</button></div></header><div class="dsy-reminders" style="margin:-.2rem 0 .8rem"></div>';
   }
 
   function paras(text) {
@@ -143,7 +147,7 @@
       '<div class="cap"><h1>' + esc(g.name) + "</h1><p>" + (g.type === "course" ? "Course" : "Team") + "</p></div>" + heroCredit(g) + "</section>";
     if (isLeader() && !hasContent(g)) html += '<div class="notice">This page has no photo or information yet. Use Edit this page (below) to add a photo, slides, information and links.</div>';
     var ru = safeUrl(g.roster_url);
-    html += '<div class="actions"><a class="big" href="../training/">Training schedule<span>Book a spot and see upcoming sessions</span></a>' +
+    html += '<div class="actions"><a class="big" href="../training/">Training schedule<span>See upcoming sessions and say if you\'re coming</span></a>' +
       (ru ? '<a class="big alt" href="' + esc(ru) + '">Your roster<span>Open the roster for ' + esc(g.name) + "</span></a>" : "") +
       '<a class="big alt" href="../hub/learn/">Learn on your own<span>Videos, walk-throughs, MDT and PCR practice</span></a>' +
       (S.vtl && S.vtl.group_id === g.id ? '<a class="big alt" href="../dashboard/team/">Team dashboard<span>Volunteer Team Leader: roster, dispatches, contribution, training and weather for ' + esc(g.name) + "</span></a>" : "") +
@@ -152,7 +156,7 @@
       var d = parseDate(S.next.session_date);
       html += '<section class="panel nextcard"><div class="when"><span class="dow">' + d.toLocaleDateString("en-AU", { weekday: "short" }) + '</span><span class="dom">' + d.getDate() + '</span><span class="mon">' + d.toLocaleDateString("en-AU", { month: "short" }) + '</span></div>' +
         '<div class="what"><span class="eyebrow">Next training</span><span class="t">' + ((S.next.lesson_title || S.next.topic) ? esc(S.next.lesson_title || S.next.topic) : '<span class="muted">Topic to be confirmed</span>') + '</span><span class="small muted">' + hhmm(S.next.start_time) + " to " + hhmm(S.next.end_time) + (S.next.location ? " - " + esc(S.next.location) : "") + (S.next.facilitator_name ? " - Led by " + esc(S.next.facilitator_name) : "") + "</span></div>" +
-        '<a class="link" href="../training/">Book</a></section>';
+        '<a class="link" href="../training/">Attending?</a></section>';
     }
     if (S.pics.length) html += '<section class="stack"><div class="learnhead"><h2>Photos</h2>' + (S.pics.length > 1 ? '<span class="small muted">Swipe for more</span>' : "") + '</div><div class="learnrow">' +
       S.pics.map(function (p) { return '<figure class="pcard"><img src="' + esc(p.url) + '" alt="' + esc(p.caption || "Team photo") + '" loading="lazy">' + (p.caption || p.credit ? "<figcaption>" + esc(p.caption) + (p.credit ? '<small class="credit">' + (p.source ? '<a href="' + esc(p.source) + '" rel="noopener">' + esc(p.credit) + "</a>" : esc(p.credit)) + "</small>" : "") + "</figcaption>" : "") + "</figure>"; }).join("") + "</div></section>";

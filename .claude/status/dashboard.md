@@ -226,4 +226,28 @@ list. Members can still just turn up. User guides (Getting started, Running a se
 Session screen in the leader / VTL calendar: each chosen lesson has an **Open lesson** link (first web link in the lesson's
 Resources and links). Member list: on sessions you are facilitating, an Open lesson link under the chips (one per lesson,
 named, when there are several). `upcoming_sessions` view now adds `url` to each item in `lessons` (same regex). All 66
-lessons had a link on 22 Nov 2026. PR open, not merged.
+lessons had a link on 22 Nov 2026. Live (PR #325, merged 22 Nov 2026).
+
+## Reminders: one switch for the whole site, and training session reminders (22 Nov 2026)
+
+Owner: one reminder switch for the whole DSY platform. App notification 12 hours before each training session to the
+members of the session's team who turned reminders on, except those who answered "Sorry, not this time". Title
+"<Team> training today, 7:00 pm"; body "<lesson titles or topic>. Led by <facilitator>. 7:00 pm to 9:00 pm at
+<location>. Tap to say if you're coming." (wording is Claude's draft). The roster reminder is unchanged.
+- One switch: `/shared/reminders.js` draws "🔔 Turn on reminders" (Send a test / Turn off) into any
+  `<div class="dsy-reminders">`: on the main page (signed in only), Team Training (under the header) and every roster
+  page (under the name, replacing the roster-only controls), and the Team page. Service worker `/sw.js` (scope "/").
+- Home Screen (owner, 22 Nov 2026): the one **DSY Training** icon is the Team page (`/dsy.webmanifest`, start_url and
+  id `/teams/`, scope "/", linked from `/teams/` only). From the Team page people can save their own shortcuts to
+  Training schedule, Your roster or Learn on your own (roster pages keep `roster.webmanifest`; training and home have
+  none). On iPhone each icon is its own app, so reminders are turned on in the DSY Training icon.
+- Devices: `roster_push_subs.sw_scope` ('/' whole site, '/modules/rosters/' older roster-only). `push_devices()`
+  sends to a person's whole-site devices if they have any, else their roster ones (no doubles). A roster-only device
+  counts as on, is moved to the whole-site worker quietly on the next page load when the phone allows, and Turn off
+  removes both. Roster reminders on a whole-site device open the team's `groups.roster_url`.
+- Edge function `roster-remind` (v6, 22 Nov 2026): modes `sessions` and `test` + `kind: "dsy"`.
+- SQL: `supabase/session-reminders.sql` (migration `session_reminders`: `sessions.reminded_at`, cleared when the date
+  or start time changes; `session_reminder_claim()`) and `supabase/dsy-reminders.sql` (migration
+  `dsy_reminders_one_switch`). Both applied.
+- pg_cron job `session-remind` every 10 minutes: created on merge.
+- Not yet tried on a real phone (headless Chrome has no push service): owner to turn it on and Send a test.

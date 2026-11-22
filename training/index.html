@@ -9,10 +9,12 @@
 <link rel="icon" type="image/png" sizes="192x192" href="../shared/dsy-favicon-192.png">
 <link rel="apple-touch-icon" href="../shared/dsy-touch-180.png">
 <meta name="theme-color" content="#1f5b43">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Training">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261122y">
+<link rel="stylesheet" href="theme.css?v=20261122zb">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -22,6 +24,7 @@
 .ar-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .8rem; padding: .65rem 0; border-top: 1px solid var(--line); }
 .ar-row .what { flex: 1 1 9rem; min-width: 0; display: flex; flex-direction: column; gap: .1rem; }
 .ar-row .t { font-weight: 600; overflow-wrap: anywhere; }
+.remind-row { margin: -.2rem 0 .8rem; }
 .attending { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .4rem; }
 .attending > span { flex-basis: 100%; text-align: right; }
 .attending .btn { white-space: nowrap; }
@@ -58,9 +61,10 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261122y"></script>
-<script src="pwreveal.js?v=20261122y" defer></script>
-<script src="sa-dates.js?v=20261122y"></script>
+<script src="config.js?v=20261122zb"></script>
+<script src="pwreveal.js?v=20261122zb" defer></script>
+<script src="/shared/reminders.js?v=20261122zb" defer></script>
+<script src="sa-dates.js?v=20261122zb"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -204,7 +208,7 @@ li[hidden]{display:none!important}
 
   /* ---------- member view ---------- */
   function header(sub) {
-    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row"><a class="link" href="../">DSY home</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../region/">Region</a>' : "") + '<a class="link" href="../teams/">Team page</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../userguides/leaders/#training">Leader guide</a>' : '<a class="link" href="../userguides/start/">How to use this</a>') + '<button class="link" data-act="signout">Sign out</button></div></header>';
+    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row"><a class="link" href="../">DSY home</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../region/">Region</a>' : "") + '<a class="link" href="../teams/">Team page</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../userguides/leaders/#training">Leader guide</a>' : '<a class="link" href="../userguides/start/">How to use this</a>') + '<button class="link" data-act="signout">Sign out</button></div></header><div class="dsy-reminders remind-row"></div>';
   }
 
   function renderMember() {
@@ -1023,6 +1027,7 @@ li[hidden]{display:none!important}
     if (isLeader()) return renderLeader();
     return renderMember();
   }
+
 
   var actions = {
     authmode: function () { S.authMode = S.authMode === "in" ? "up" : "in"; renderAuth(); },
