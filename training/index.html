@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261123c">
+<link rel="stylesheet" href="theme.css?v=20261123d">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -61,10 +61,10 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261123c"></script>
-<script src="pwreveal.js?v=20261123c" defer></script>
-<script src="/shared/reminders.js?v=20261123c" defer></script>
-<script src="sa-dates.js?v=20261123c"></script>
+<script src="config.js?v=20261123d"></script>
+<script src="pwreveal.js?v=20261123d" defer></script>
+<script src="/shared/reminders.js?v=20261123d" defer></script>
+<script src="sa-dates.js?v=20261123d"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -1201,7 +1201,13 @@ li[hidden]{display:none!important}
   function onSession(session) {
     S.user = session ? session.user : null;
     if (!S.user) { S.profile = null; S.detail = null; S.tab = location.hash === "#lessons" ? "lessons" : "calendar"; return renderAuth(); }
-    load().then(render).catch(function (e) { fail(e); renderAuth(); });
+    load().then(openFromHash).then(render).catch(function (e) { fail(e); renderAuth(); });
+  }
+  /* /training/#session=<id> opens that session (links from the Team Leader dashboard, owner 22 Nov 2026). */
+  function openFromHash() {
+    var m = /^#session=([\w-]+)$/.exec(location.hash || ""); if (!m) return;
+    history.replaceState(null, "", location.pathname + location.search);
+    if (isLeader() && by(m[1], S.sessions || [])) { S.tab = "calendar"; S.detail = m[1]; S.attFilter = null; }
   }
   sb.auth.onAuthStateChange(function (event, session) {
     if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "SIGNED_OUT") setTimeout(function () { onSession(session); }, 0);
