@@ -236,8 +236,11 @@ members of the session's team who turned reminders on, except those who answered
 <location>. Tap to say if you're coming." (wording is Claude's draft). The roster reminder is unchanged.
 - One switch: `/shared/reminders.js` draws "🔔 Turn on reminders" (Send a test / Turn off) into any
   `<div class="dsy-reminders">`: on the main page (signed in only), Team Training (under the header) and every roster
-  page (under the name, replacing the roster-only controls). Service worker `/sw.js` (scope "/"), manifest
-  `/dsy.webmanifest` (scope "/", no start_url, so the icon opens the page it was added from) on those pages.
+  page (under the name, replacing the roster-only controls), and the Team page. Service worker `/sw.js` (scope "/").
+- Home Screen (owner, 22 Nov 2026): the one **DSY Training** icon is the Team page (`/dsy.webmanifest`, start_url and
+  id `/teams/`, scope "/", linked from `/teams/` only). From the Team page people can save their own shortcuts to
+  Training schedule, Your roster or Learn on your own (roster pages keep `roster.webmanifest`; training and home have
+  none). On iPhone each icon is its own app, so reminders are turned on in the DSY Training icon.
 - Devices: `roster_push_subs.sw_scope` ('/' whole site, '/modules/rosters/' older roster-only). `push_devices()`
   sends to a person's whole-site devices if they have any, else their roster ones (no doubles). A roster-only device
   counts as on, is moved to the whole-site worker quietly on the next page load when the phone allows, and Turn off

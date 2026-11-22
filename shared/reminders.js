@@ -84,7 +84,7 @@
   function turnOn() {
     if (!supported()) {
       alert(/iPhone|iPad|iPod/.test(navigator.userAgent)
-        ? "On an iPhone, add DSY Training to your Home Screen first:\n\n1. Tap the Share button in Safari.\n2. Tap \"Add to Home Screen\".\n3. Open DSY Training from the new icon, sign in, and tap \"Turn on reminders\" again.\n\n(Needs iOS 16.4 or later.)"
+        ? "On an iPhone, add DSY Training to your Home Screen first:\n\n1. Open your Team page in Safari (dsytraining.com/teams).\n2. Tap the Share button, then \"Add to Home Screen\".\n3. Open DSY Training from the new icon, sign in, and tap \"Turn on reminders\".\n\n(Needs iOS 16.4 or later.)"
         : "This browser can't show notifications. Try Chrome or Safari.");
       return Promise.resolve("");
     }
