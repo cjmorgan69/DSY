@@ -256,4 +256,4 @@ members of the session's team who turned reminders on, except those who answered
   thin green and white check band with a green line, fluoro yellow lower line, red and yellow rear chevrons, blue
   Star of Life, red and blue light bar) on a green background, drawn by Claude; no SAAS logo or name. Source
   `shared/dsy-app-icon.svg`, PNGs `shared/dsy-app-180/192/512.png` (Team page apple-touch-icon, `/dsy.webmanifest`,
-  notification icon in `/sw.js`).
+  notification icon in `/sw.js`). Live (PR #327, merged 22 Nov 2026).
