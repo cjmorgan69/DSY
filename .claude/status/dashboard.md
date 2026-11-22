@@ -254,7 +254,7 @@ members of the session's team who turned reminders on, except those who answered
 - Not yet tried on a real phone (headless Chrome has no push service): owner to turn it on and Send a test.
 - Icon name (owner, 22 Nov 2026): "Ambulance Team" (manifest name and apple-mobile-web-app-title on the Team page): an
   iPhone puts the icon name on top of every notification and the owner did not want "DSY Training" there. Test title
-  "Reminders are on" (roster-remind v7); the service worker fallback title is "Reminder".
+  "Reminders are on" (roster-remind v7); the service worker fallback title is "Reminder". Live (PR #328, merged 22 Nov 2026).
 - Icon picture (owner, 22 Nov 2026): a side-on ambulance in the SAAS livery from the owner's photo (white,
   thin green and white check band with a green line, fluoro yellow lower line, red and yellow rear chevrons, blue
   Star of Life, red and blue light bar) on a green background, drawn by Claude; no SAAS logo or name. Source
