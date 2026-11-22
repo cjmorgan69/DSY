@@ -4,6 +4,7 @@
      #stock       the stock-to-order list
      #history     the last 100 section checks
      #guide       kit guide: every item with what it is for, its protocols and procedures, and AO scope (item-info.js)
+     #lesson      lesson plan for a crew night: complete check by area, then a short talk on one item
    Data: checklist.js (the form), Supabase tables vehicles, vehicle_checks, vehicle_stock_needs and the view
    vehicle_section_status (supabase/vehicle-check-setup.sql). Sign-in comes from /shared/gate.js. */
 (function () {
@@ -195,6 +196,7 @@
     var a1 = el("a", "btn" + (needCount ? "" : " ghost"), "Stock to order" + (needCount ? " (" + needCount + ")" : "")); a1.href = "#stock"; links.appendChild(a1);
     var a2 = el("a", "btn ghost", "History"); a2.href = "#history"; links.appendChild(a2);
     if (INFO) { var a3 = el("a", "btn ghost", "Kit guide"); a3.href = "#guide"; links.appendChild(a3); }
+    if (me.facilitator) { var a4 = el("a", "btn ghost", "Lesson plan"); a4.href = "#lesson"; links.appendChild(a4); }
     prog.appendChild(links); app.appendChild(prog);
 
     var card = el("section", "panel nextcard");
@@ -434,6 +436,61 @@
 
   /* ---------- screen: history ---------- */
   /* ---------- screen: kit guide ---------- */
+  /* ---------- screen: lesson plan (DSY-written plan; the item facts come from item-info.js) ---------- */
+  function drawLesson() {
+    app.textContent = "";
+    var back = el("a", "linkbtn back", "← All sections"); back.href = "#"; app.appendChild(back);
+    var head = el("section", "panel pad stack");
+    head.appendChild(el("span", "eyebrow", "Lesson · " + vehicle.name));
+    head.appendChild(el("h2", null, "Know your vehicle"));
+    head.appendChild(el("p", null, "The crew do a complete check of the real vehicle together, each pair taking one area. If there is time, each person then gives a short talk on one item they checked."));
+    head.appendChild(el("p", "small muted", "About 60 to 75 minutes. The plan and talk prompts are DSY-written; the item information comes from the SAAS documents (Kit guide)."));
+    app.appendChild(head);
+
+    var plan = el("section", "panel pad stack"); plan.appendChild(el("h3", null, "Plan"));
+    var ol = el("ol", "plan");
+    [["Before", "Make sure this vehicle is listed here. Everyone signs in on their phone and opens the vehicle check."],
+     ["Brief, 5 min", "Pairs take one area each from the table below. Two people can share a big area: the app shows who is in each section."],
+     ["Check, 30 to 40 min", "Check every section in your area: OK, or Short with how many to order. When your area is done, take the “Check this next” section."],
+     ["Stock, 5 min", "Open Stock to order together, agree who orders it, and copy the list."],
+     ["Talks, if time: 2 to 3 min each", "Each person picks one item they checked, taps the i, and talks using the prompts below."],
+     ["Close, 5 min", "Feedback form, and anything to fix on the vehicle goes in the defect book."]
+    ].forEach(function (x) { var li = el("li"); li.appendChild(el("b", null, x[0] + ": ")); li.appendChild(document.createTextNode(x[1])); ol.appendChild(li); });
+    plan.appendChild(ol); app.appendChild(plan);
+
+    var box = el("section", "panel area"), hd = el("div", "head");
+    var done = order.filter(function (s) { return !isDue(s); }).length;
+    hd.appendChild(el("h2", null, "Areas")); hd.appendChild(el("span", "chip" + (done === order.length ? " good" : " warn"), done + " of " + order.length + " sections checked"));
+    box.appendChild(hd);
+    var ul = el("ul", "list");
+    list.areas.forEach(function (a) {
+      var items = 0, left = 0, who = {};
+      a.sections.forEach(function (s) { items += s.list.length; if (isDue(s)) left++; var b = busy[s.id]; if (b) who[first(b.checked_by_name)] = 1; });
+      var li = el("li"), row = el("div", "item"), w = el("div", "what");
+      w.appendChild(el("span", "t", a.name));
+      w.appendChild(el("span", "small muted", a.sections.length + " sections, " + items + " items"));
+      var names = Object.keys(who); if (names.length) w.appendChild(el("span", "small", "Checking now: " + names.join(", ")));
+      row.appendChild(w);
+      row.appendChild(el("span", "chip " + (left ? "warn" : "good"), left ? left + " to check" : "Done"));
+      li.appendChild(row); ul.appendChild(li);
+    });
+    box.appendChild(ul); app.appendChild(box);
+
+    var talk = el("section", "panel pad stack"); talk.appendChild(el("h3", null, "Talk prompts"));
+    var tl = el("ul", "plan");
+    ["What is it, and where does it live in the vehicle?",
+     "What is it for? Which protocol or procedure names it?",
+     "Can an AO use it on their own, only on EOC Clinician consult, or not at all?",
+     "One tip: how to check it, what goes wrong with it, or what to watch for."
+    ].forEach(function (t) { tl.appendChild(el("li", null, t)); });
+    talk.appendChild(tl);
+    var row2 = el("div", "row");
+    var g = el("a", "btn ghost", "Kit guide"); g.href = "#guide"; row2.appendChild(g);
+    var st = el("a", "btn ghost", "Stock to order" + (needCount ? " (" + needCount + ")" : "")); st.href = "#stock"; row2.appendChild(st);
+    var fb = el("a", "btn ghost", "Feedback form"); fb.href = "/feedback/?t=general&from=link"; row2.appendChild(fb);
+    talk.appendChild(row2); app.appendChild(talk);
+  }
+
   function drawGuide() {
     app.textContent = "";
     var back = el("a", "linkbtn back", "\u2190 All sections"); back.href = "#"; app.appendChild(back);
@@ -511,6 +568,11 @@
     if (h === "guide" && INFO) return drawGuide();
     loadStatus().then(function () {
       if (s) return drawSection(s);
+      if (h === "lesson") {
+        drawLesson();
+        timer = setInterval(function () { if (!document.hidden) loadStatus().then(function () { var y = window.scrollY; drawLesson(); window.scrollTo(0, y); }).catch(function () {}); }, 20000);
+        return;
+      }
       drawHome();
       timer = setInterval(function () { if (!document.hidden) loadStatus().then(drawHomeKeepScroll).catch(function () {}); }, 20000);
     }).catch(function (e) { app.textContent = ""; app.appendChild(vehiclePanel()); app.appendChild(el("p", "err", e.message)); });
