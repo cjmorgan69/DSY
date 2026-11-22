@@ -21,7 +21,8 @@ window.VEHICLE_ITEM_INFO = (function () {
     "CPPRO-010": "Drawing Up and Labelling Medications", "CPPRO-011": "Intramuscular Injection", "CPPRO-012": "Inhaled Medication Administration",
     "CPPRO-013": "Intranasal Medication Administration", "CPPRO-020": "i-gel Supraglottic Airway", "CPPRO-021": "Cervical Spine Immobilisation",
     "CPPRO-022": "Pressure Bandaging and Immobilisation", "CPPRO-025": "Nasopharyngeal Airway (NPA)", "CPPRO-028": "Femoral Traction Splint (CT-6)",
-    "CPPRO-037": "Vented Chest Seal", "CPPRO-046": "Newborn Temperature Management"
+    "CPPRO-037": "Vented Chest Seal", "CPPRO-046": "Newborn Temperature Management",
+    "CTL-014": "Infection Control Precautions and Cleaning"
   };
   /* review dates printed on the procedures; a past date is shown as overdue */
   var REVIEW = {
@@ -42,6 +43,7 @@ window.VEHICLE_ITEM_INFO = (function () {
   var BGL = ["CPP-009-AO", "CPP-016-AO", "CPP-014-AO", "CPP-012-AO", "CPP-004-AO"];
   var BP = ["CPP-004-AO", "CPP-007-AO", "CPP-013-AO", "CPP-059-AO"];
   var IV = ["CPP-021-AO", "CPPRO-007"];
+  var IC = ["CTL-014"];
   var INJ = ["CPPRO-010", "CPPRO-011"];
   var R = [
     /* ---------- medicines (scope from the SAAS app dose table) ---------- */
@@ -106,6 +108,8 @@ window.VEHICLE_ITEM_INFO = (function () {
     { m: /^Glucometer|^Lancets/, what: "Blood glucose (BGL): hypoglycaemia is below 3.5; newborn 2.5 or less (heel sample). Check it in stroke and seizures too.", docs: BGL, scope: S.kit },
     { m: /^Penlight/, what: "Penlight for pupil size and reaction.", docs: ["CPP-063-AO", "CPP-020-AO"], scope: S.kit },
     /* ---------- bleeding, wounds, burns ---------- */
+    { m: /^Tourniquet/, sec: ["locker-4-top"], what: "Venous tourniquet, applied above the cannulation site to stop venous return while an IV cannula is inserted, then released.", docs: IV, scope: S.ext,
+      note: "This is the IV tourniquet, not the arterial (SOF) tourniquet for bleeding (lead instructor, 22 Nov 2026)." },
     { m: /^Tourniquet/, what: "Arterial tourniquet (SOF) for life-threatening limb bleeding that direct pressure cannot stop: close to the wound, not over a joint, write down the time. Never for snake bite.", docs: ["CPP-042-AO", "CPPRO-004", "CPP-008-AO"], scope: S.kit },
     { m: /^Hyfin/, what: "Vented chest seal for an open chest wound.", docs: ["CPP-158-AO", "CPPRO-037"], scope: S.consult },
     { m: /^Razors/, what: "Razor, used to clear hair before applying a vented chest seal.", docs: ["CPPRO-037"], scope: S.kit },
@@ -121,7 +125,7 @@ window.VEHICLE_ITEM_INFO = (function () {
     { m: /^Saline 10ml/, what: "Saline: tops up nebulised salbutamol to 5 mL, and dilutes ceftriaxone (3.5 mL per 1 g vial).", docs: ["CPP-050-AO", "CPP-062-AO"], scope: S.kit },
     { m: /^MAD Nasal/, what: "Atomiser for intranasal medicine (IN fentanyl, for AOs authorised by SAAS, on EOC consult).", docs: ["CPPRO-013", "CPP-013-AO"], scope: S.auth },
     { m: /^Universal Shears/, what: "Shears for cutting clothing; listed in the snake bite and traction splint procedures.", docs: ["CPPRO-022", "CPPRO-028"], scope: S.kit },
-    { m: /^Sharps Container/, what: "Sharps disposal after injections.", docs: ["CPPRO-011"], scope: S.kit },
+    { m: /^Sharps Container/, what: "Safe disposal of sharps (a standard precaution for every patient).", docs: ["CTL-014", "CPPRO-011"], scope: S.kit },
     /* ---------- spinal, splinting, moving ---------- */
     { m: /^Spinal Board \| $/, what: "Long board for extrication. The Spinal Injury protocol says do not transport patients on it and do not secure the head to it.", docs: ["CPP-018-AO"], scope: S.kit },
     { m: /^Collar Bag/, what: "Semi-rigid collars. Remove them for transport where possible and use another technique (modified towel roll, vacuum mattress).", docs: ["CPP-018-AO", "CPPRO-021", "CPP-063-AO"], scope: S.kit },
@@ -143,7 +147,7 @@ window.VEHICLE_ITEM_INFO = (function () {
     { m: /^Sheets/, what: "Sheets for the stretcher (kept taut to protect skin) and to line a TransWarmer.", docs: ["CPPRO-003", "CPP-012-AO"], scope: S.kit },
     { m: /^Bedpan|^Urinal/, what: "Toileting for non-ambulant patients during prolonged care.", docs: ["CPP-063-AO"], scope: S.kit },
     { m: /^Water \|/, what: "Drinking water: encourage oral fluids in prolonged care.", docs: ["CPP-063-AO"], scope: S.kit },
-    { m: /^Bio-Hazard/, what: "Clinical waste. After a birth, the placenta goes to hospital in a separate biohazard bag.", docs: ["CPP-053-AO"], scope: S.kit },
+    { m: /^Bio-Hazard/, what: "Clinical waste: safe disposal of waste is a standard precaution. After a birth, the placenta goes to hospital in a separate biohazard bag.", docs: ["CTL-014", "CPP-053-AO"], scope: S.kit },
     { m: /^Spinal Board Straps/, what: "Straps for the long board. The Spinal Injury protocol says do not secure the head to it.", docs: ["CPP-018-AO"], scope: S.kit },
     { m: /^Trauma Kit|^Airway Kit/, what: "Grab-and-go kit. Its contents are not listed on FRM-384.", docs: [], scope: S.kit },
     { m: /^Eye Dressings|^Adhesive Band Aid|^Elastoplast|^30ml Saline|^Combi-Stoppers|^Emesis Bags|^Blue Incontinence|^Plastic Sheets|^Body Bag/, what: "", docs: [], scope: S.kit },
@@ -155,9 +159,15 @@ window.VEHICLE_ITEM_INFO = (function () {
     { m: /^MH Clients statement/, what: "Statement of rights under the Mental Health Act 2009, given to a patient in 'care and control'.", docs: ["CPP-017-AO"], scope: S.none },
     { m: /^TNT Envelopes/, what: "Envelopes for treat-not-transport paperwork.", docs: ["CPP-055-AO"], scope: S.none },
     /* ---------- PPE and hygiene ---------- */
-    { m: /Gloves|N95|P2 Masks|3M Masks|Surgical Masks|Overspecs|Safety Glasses|^PPE/, what: PPE, docs: [], scope: S.kit },
-    { m: /Hand Gel|^Aquium/, what: "Hand hygiene before and after patient contact.", docs: [], scope: S.kit },
-    { m: /Clinell|ISO Wipes|Iso Wipes|^Actichlor|^Cleaning/, what: "Cleaning and disinfecting equipment after each patient.", docs: [], scope: S.kit },
+    { m: /^Gloves/, what: "Gloves: standard precautions when there is a risk of blood or body fluid exposure, and contact precautions (gloves and gown; change them before entering the destination).", docs: IC, scope: S.kit },
+    { m: /Surgical Masks/, what: "Surgical mask for droplet precautions (for example influenza, meningococcal, whooping cough). Put on a new mask before entering the destination.", docs: IC, scope: S.kit },
+    { m: /N95|P2 Masks/, what: "N95/P2 mask for airborne precautions (for example measles, chickenpox, pulmonary TB, or a suspected highly infectious agent). Do a fit check every time.", docs: IC, scope: S.kit },
+    { m: /3M Masks|Overspecs|Safety Glasses|^PPE/, what: "PPE: standard precautions say use PPE whenever there is a risk of blood or body fluid exposure.", docs: IC, scope: S.kit },
+    { m: /Hand Gel|^Aquium|^Hand Towel/, what: "Hand hygiene before, during and after patient contact, and before putting on and after taking off PPE.", docs: IC, scope: S.kit },
+    { m: /Clinell|ISO Wipes|Iso Wipes/, what: "Level 1 clean, every patient: detergent and disinfectant wipes for the equipment used and high-touch surfaces.", docs: IC, scope: S.kit },
+    { m: /^Actichlor|^Cleaning Bucket|^Cleaning Cloths/, what: "Level 2 decontaminate: bleach and water for larger areas that are visibly soiled or exposed to body fluids or secretions (for example after gastroenteritis or influenza).", docs: IC, scope: S.kit,
+      note: "Actichlor Plus is a chlorine (bleach) product: DSY reading, please confirm." },
+    { m: /^Rubbish Bin|^Bin Liners/, what: "Safe disposal of waste (a standard precaution).", docs: IC, scope: S.kit },
     { m: /./, what: "", docs: [], scope: S.none }
   ];
   function key(it) { return it.name + " | " + (it.desc || ""); }
@@ -174,6 +184,7 @@ window.VEHICLE_ITEM_INFO = (function () {
   function url(code) {
     var base = "https://clinical.saambulance.sa.gov.au/assets/";
     if (FILES[code]) return base + "files/" + encodeURIComponent(FILES[code]);
+    if (code === "CTL-014") return base + "pdf/checklists/" + encodeURIComponent(DOCS[code]) + ".pdf";
     if (code === "CPP-002-AO" || code === "CPP-043-AO" || !DOCS[code]) return null;
     return base + "pdf/home/" + encodeURIComponent(DOCS[code] + " - AO") + ".pdf";
   }

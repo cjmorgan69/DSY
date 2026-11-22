@@ -60,3 +60,6 @@ allows, each person talks about one item: what it is for and which protocol it b
 - Also (22 Nov 2026): Co-Phenylcaine is AO for NPA insertion; ipratropium MDI is AO on EOC consult, doses as per the
   paramedic guideline; nasal cannula up to 4 L/min whenever a protocol says oxygen may be needed (app: ipratropium MDI 8 puffs if 6 or older, 4 puffs under 6, CPG-114-P).
   Only open point left on the table: water for injection is not named in an AO protocol.
+- PPE, hand hygiene, cleaning, sharps and waste items link to CTL-014 Infection Control Precautions and Cleaning
+  (chart V3, 17 May 2018; on the SAAS site as a clinical tool since 4 Jun 2025), sent by the owner on 22 Nov 2026.
+- The Locker 4 top drawer tourniquet is the venous tourniquet for IV access (owner, 22 Nov 2026), not the arterial one.
