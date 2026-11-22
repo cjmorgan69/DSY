@@ -150,5 +150,8 @@ team dashboard (roster, dispatches, volunteer contribution and training for thei
 - `shared/gate.js`: new `data-level="vtl"` (VTL or leader); a VTL counts as facilitator on facilitator pages.
 - `/access/`: "Volunteer Team Leaders" section, one row per team, picker of the team's signed-up members; the Role column
   shows "· VTL <team>". `/teams/`: a Team dashboard button for the VTL on their team.
+- Migration `vtl_wide_view` (owner, 22 Nov 2026): the team dashboard's roster and dispatch show every team, so
+  `is_vtl()`, a `vtl_read` select policy on `paging_jobs`, and `roster_can_view()` lets a VTL see any team's roster names
+  (not staff IDs; roster pages are open anyway). `team_dispatch` is no longer used by the page.
 - Not covered: VTLs do not get roster change emails (that is `roster_managers.notify_email`); the training app
   (`/training/`) still treats them by `profiles.role`. No VTLs set yet: owner to name them. On a branch, not merged.

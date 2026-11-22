@@ -1,6 +1,6 @@
 /* Team dashboard for a team's Volunteer Team Leader (VTL), /dashboard/team/ (owner, 22 Nov 2026).
-   One team only: roster (next 7 operational days and who is on), dispatches, volunteer contribution and training for
-   that team, plus the weather. A VTL sees their own team (Supabase team_vtls, my_access().vtl); a leader can pick any
+   Roster today and dispatch show every team, the same as the Team Leader dashboard (owner, 22 Nov 2026); volunteer
+   contribution and training are for the VTL's own team; plus the weather. A VTL sees their own team (Supabase team_vtls, my_access().vtl); a leader can pick any
    team to see what its VTL sees. Data: roster = DSY_ROSTER_DATA (roster_coverage / roster_team_bookings), dispatch =
    rpc team_dispatch, contribution = rpc team_contribution, training = sessions (RLS lets a VTL read their team's),
    weather = Open-Meteo. SQL in supabase/vtl-setup.sql. Run node .claude/tools/stamp.js when this changes. */
@@ -66,7 +66,7 @@
         sel.addEventListener("change", function () {
           var g = groups.filter(function (x) { return x.id === sel.value; })[0]; if (!g) return;
           team = { id: g.id, name: g.name, cluster: g.cluster }; store("dsy-teamdash-team", g.id);
-          town = null; selHour = null; loadAll();
+          town = null; loadAll();
         });
         $("leadNote").hidden = false;
       } else { $("tName").textContent = "Your account is not a Volunteer Team Leader"; return; }
@@ -74,114 +74,180 @@
     }).catch(function (e) { $("tName").textContent = "Could not load your team: " + ((e && e.message) || e); });
   }
 
-  /* ---------- roster: next 7 operational days (8am to 8am) and who is on ---------- */
-  var week = null, bookings = null, selHour = null;   // selHour = [dayIndex, hourIndex]
+  /* Roster and dispatch: every team, copied from dashboard/dash.js so a VTL has the same picture as the Team Leaders
+     (owner, 22 Nov 2026). Keep these two sections in step with dash.js when it changes. */
+  /* ---------- roster coverage ---------- */
+  var CLUSTERS = [
+    { key: "lowereyre", name: "Lower Eyre", url: "https://script.google.com/macros/s/AKfycbxEboPS9reZI5OpUMdlriag0QeAJzIyXFZ2Jy0z_4qBJLEK054R5bDcJgyWAW2YSP6l/exec" },
+    { key: "centraleyre", name: "Central Eyre", url: "https://script.google.com/macros/s/AKfycbwbeUGYW4VaBC8i0k228ASyRQt-B4_7pKKr5F3O5L-CrCmTH0hnx48pN7QTqkjXrfwRDA/exec" },
+    { key: "westcoast", name: "West Coast", url: "https://script.google.com/macros/s/AKfycbxrcfdjF7kUZQBkHuw2mqrYXhqz54VrK9Agv-zzOyBG8BbAbC-lrDkY6zGK91VAwB_z/exec" }
+  ];
+  var EXCLUDED = ["summer bay"];
+  var RF = "dsy-dash-cluster", rFilter = store(RF) || "all", rData = null, selHour = null, crew = null, crewErr = [];
   function opDate() { var p = parts(); var d = p.year + "-" + p.month + "-" + p.day; return +p.hour < 8 ? addDays(d, -1) : d; }
   function loadRoster() {
-    var rt = rosterTeam(team.name), url = CL_URL[team.cluster], d0 = opDate(), myTeam = team.id;
-    week = null; bookings = null;
-    $("rHeat").innerHTML = '<div class="skel"></div>'; $("cBody").innerHTML = '<p class="note">Loading names from the roster…</p>';
-    $("rLink").href = rt && CL_DIR[rt.cluster] ? "/modules/rosters/" + CL_DIR[rt.cluster] + "/" + rt.id + "/" : "/";
-    if (!rt || !url) { $("rHeat").innerHTML = '<p class="err">This team has no roster set up.</p>'; $("cBody").innerHTML = ""; return; }
-    var dates = []; for (var i = 0; i < 7; i++) dates.push(addDays(d0, i));
-    Promise.all(dates.map(function (date) {
-      return window.DSY_ROSTER_DATA.coverage(url, date).then(function (d) {
-        if (!d.ok || !Array.isArray(d.teams) || !Array.isArray(d.hours)) throw new Error(d.error || "unexpected reply");
-        var ti = -1; d.teams.forEach(function (t, k) { if (String(t.name).toLowerCase() === rt.name.toLowerCase()) ti = k; });
-        return { date: date, hours: d.hours.map(function (h) { return { label: h.label, start: h.start, end: h.end, date: h.calendarDate, c: ti > -1 && h.counts ? h.counts[ti] : null }; }) };
-      }).catch(function (e) { return { date: date, err: e.message || String(e) }; });
-    })).then(function (w) { if (team.id !== myTeam) return; week = w; drawRoster(); drawCrew(); });
-    window.DSY_ROSTER_DATA.bookings(rt.name, rt.api).then(function (d) {
-      if (team.id !== myTeam) return;
-      if (!Array.isArray(d.bookings)) throw new Error(d.error || "unexpected reply");
-      bookings = d.bookings; drawCrew();
-    }).catch(function (e) { if (team.id === myTeam) $("cBody").innerHTML = '<p class="err">Could not load the names: ' + errMsg(e) + "</p>"; });
+    var date = opDate();
+    return Promise.all(CLUSTERS.map(function (c) {
+      var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 30000);
+      /* Apps Script, or Supabase for teams that have moved (modules/rosters/shared/roster-data.js) */
+      return window.DSY_ROSTER_DATA.coverage(c.url, date, { signal: ctl.signal })
+        .then(function (d) { if (!d.ok || !Array.isArray(d.teams) || !Array.isArray(d.hours)) throw new Error(d.error || "unexpected reply"); return { c: c, d: d }; })
+        .catch(function (e) { return { c: c, err: e.name === "AbortError" ? "timed out" : e.message }; })
+        .finally(function () { clearTimeout(to); });
+    })).then(function (res) {
+      var ok = res.filter(function (r) { return r.d; });
+      if (!ok.length) { $("rHeat").innerHTML = '<p class="err">Could not load the rosters: ' + esc(res.map(function (r) { return r.c.name + " " + r.err; }).join("; ")) + "</p>"; $("rStats").innerHTML = ""; return; }
+      var hours = ok[0].d.hours, teams = [];
+      ok.forEach(function (r) {
+        var by = {}; r.d.hours.forEach(function (h) { by[h.label + "|" + h.calendarDate] = h.counts; });
+        r.d.teams.forEach(function (t, i) {
+          if (EXCLUDED.indexOf(String(t.name || "").trim().toLowerCase()) > -1) return;
+          teams.push({ cluster: r.c, name: t.name, counts: hours.map(function (h) { var c = by[h.label + "|" + h.calendarDate]; return c ? c[i] : null; }) });
+        });
+      });
+      rData = { hours: hours, teams: teams, problems: res.filter(function (r) { return r.err; }), date: date };
+      if (selHour != null && selHour >= hours.length) selHour = null;
+      drawRoster(); drawCrew();
+    });
   }
   function drawRoster() {
-    if (!week) return;
-    var now = Date.now(), okDays = week.filter(function (d) { return d.hours; });
-    if (!okDays.length) { $("rHeat").innerHTML = '<p class="err">Could not load the roster: ' + esc(week[0].err) + "</p>"; $("rStats").innerHTML = ""; return; }
-    var today = week[0].hours || [], ni = -1, gaps = 0, full = 0, one = 0;
-    today.forEach(function (h, i) { if (Date.parse(h.start) <= now && now < Date.parse(h.end)) ni = i; });
-    today.forEach(function (h, i) { if (i < Math.max(ni, 0)) return; if (h.c === 0) gaps++; else if (h.c === 1) one++; else if (h.c >= 2) full++; });
-    var nowC = ni > -1 ? today[ni].c : null;
-    var wkGaps = 0; okDays.forEach(function (d) { d.hours.forEach(function (h) { if (h.c === 0 && Date.parse(h.end) > now) wkGaps++; }); });
-    $("rStats").innerHTML = '<div class="stat' + (nowC === 0 ? " red" : nowC === 1 ? " yel" : "") + '"><b>' + (nowC == null ? "–" : nowC) + '</b><span>crew on now</span></div>' +
-      '<div class="stat red"><b>' + gaps + '</b><span>hours with no crew left today</span></div>' +
-      '<div class="stat yel"><b>' + one + '</b><span>hours with one crew left today</span></div>' +
-      '<div class="stat"><b>' + wkGaps + '</b><span>uncovered hours in 7 days</span></div>';
-    var hours = okDays[0].hours;
-    var html = "<table><thead><tr><th></th>" + hours.map(function (h, i) { return '<th class="' + (i === ni ? "now" : "") + '">' + (i % 2 === 0 || i === ni ? esc(String(+String(h.label).slice(0, 2))) : "") + "</th>"; }).join("") + "</tr></thead><tbody>";
-    week.forEach(function (d, di) {
-      html += "<tr><th>" + (di === 0 ? "Today" : esc(nice(d.date))) + "</th>";
-      if (!d.hours) { html += '<td class="gap" colspan="' + hours.length + '"><span class="note">not loaded</span></td></tr>'; return; }
-      d.hours.forEach(function (h, i) {
-        var c = h.c, cls = c == null ? "n" : c >= 2 ? "g" : c === 1 ? "y" : "r", sel = selHour && selHour[0] === di && selHour[1] === i;
-        html += '<td data-d="' + di + '" data-i="' + i + '" class="' + cls + (di === 0 && i === ni ? " now" : "") + (sel ? " sel" : "") + '" title="' + esc(nice(h.date) + " " + h.label + ": " + (c == null ? "no data" : c + " crew")) + '">' + (c ? c : "") + "</td>";
+    if (!rData) return;
+    var now = Date.now(), ni = -1;
+    rData.hours.forEach(function (h, i) { if (Date.parse(h.start) <= now && now < Date.parse(h.end)) ni = i; });
+    var fb = $("rFilter"); fb.innerHTML = "";
+    [{ key: "all", name: "All clusters" }].concat(CLUSTERS).forEach(function (c) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "chip2"; b.textContent = c.name;
+      b.setAttribute("aria-pressed", rFilter === c.key ? "true" : "false");
+      b.addEventListener("click", function () { rFilter = c.key; store(RF, c.key); drawRoster(); drawCrew(); }); fb.appendChild(b);
+    });
+    var teams = rData.teams.filter(function (t) { return rFilter === "all" || t.cluster.key === rFilter; });
+    var g = 0, y = 0, r = 0, gapH = 0;
+    teams.forEach(function (t) {
+      var c = ni > -1 ? t.counts[ni] : null; if (c != null) { if (c >= 2) g++; else if (c === 1) y++; else r++; }
+      t.counts.forEach(function (v, i) { if (v === 0 && i >= Math.max(ni, 0)) gapH++; });
+    });
+    $("rStats").innerHTML = ni > -1
+      ? '<div class="stat"><b>' + g + '</b><span>teams fully crewed now</span></div><div class="stat yel"><b>' + y + '</b><span>one crew now</span></div><div class="stat red"><b>' + r + '</b><span>no crew now</span></div><div class="stat"><b>' + gapH + '</b><span>uncovered team-hours left today</span></div>'
+      : "";
+    var html = "<table><thead><tr><th></th>";
+    rData.hours.forEach(function (h, i) { html += '<th class="' + (i === ni ? "now" : "") + '">' + (i % 2 === 0 || i === ni ? esc(String(+h.label.slice(0, 2))) : "") + "</th>"; });
+    html += "</tr></thead><tbody>";
+    var last = null;
+    teams.forEach(function (t) {
+      if (rFilter === "all" && t.cluster.key !== last) { html += '<tr><th class="cl">' + esc(t.cluster.name) + '</th><td class="gap" colspan="' + rData.hours.length + '"></td></tr>'; last = t.cluster.key; }
+      var rl = rosterLink(t.name);
+      html += "<tr><th>" + (rl ? '<a href="' + rl + '">' + esc(t.name) + "</a>" : esc(t.name)) + "</th>";
+      t.counts.forEach(function (c, i) {
+        var cls = c == null ? "n" : c >= 2 ? "g" : c === 1 ? "y" : "r";
+        html += '<td data-i="' + i + '" class="' + cls + (i === ni ? " now" : "") + (i === selHour ? " sel" : "") + '" title="' + esc(t.name + " " + rData.hours[i].label + ": " + (c == null ? "no data" : c + " crew")) + '">' + (c ? c : "") + "</td>";
       });
       html += "</tr>";
     });
     $("rHeat").innerHTML = html + "</tbody></table>";
-    var bad = week.filter(function (d) { return d.err; });
-    $("rNote").textContent = "Each row is an operational day, 8am to 8am. Numbers are crew booked each hour." + (bad.length ? " Not loaded: " + bad.map(function (d) { return nice(d.date); }).join(", ") + "." : "");
+    var note = "Operational day " + nice(rData.date) + ", 8am to 8am. Numbers are crew booked each hour.";
+    if (rData.problems.length) note += " Not loaded: " + rData.problems.map(function (p) { return p.c.name + " (" + p.err + ")"; }).join(", ") + ".";
+    $("rNote").textContent = note;
+  }
+
+  /* ---------- who is on shift (each team's own roster, getBookings) ---------- */
+  function rosterTeams() {
+    var T = window.DSY_ROSTER_TEAMS || {}, out = [];
+    Object.keys(T).forEach(function (id) { if (id !== "test" && EXCLUDED.indexOf(T[id].name.toLowerCase()) < 0) out.push({ id: id, name: T[id].name, cluster: T[id].cluster, api: T[id].apiUrl }); });
+    return out;
+  }
+  function rosterLink(name) {
+    var t = rosterTeams().filter(function (x) { return x.name.toLowerCase() === String(name).toLowerCase(); })[0];
+    return t && CL_DIR[t.cluster] ? "/modules/rosters/" + CL_DIR[t.cluster] + "/" + t.id + "/" : "";
+  }
+  function loadCrew() {
+    var teams = rosterTeams();
+    if (!teams.length) { $("cBody").innerHTML = '<p class="err">Team list did not load.</p>'; return Promise.resolve(); }
+    return Promise.all(teams.map(function (t) {
+      var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 60000);
+      return window.DSY_ROSTER_DATA.bookings(t.name, t.api, { signal: ctl.signal })
+        .then(function (d) { if (!Array.isArray(d.bookings)) throw new Error(d.error || "unexpected reply"); return { t: t, b: d.bookings }; })
+        .catch(function (e) { return { t: t, err: e.name === "AbortError" ? "timed out" : e.message }; })
+        .finally(function () { clearTimeout(to); });
+    })).then(function (res) {
+      crew = {}; crewErr = [];
+      res.forEach(function (r) { if (r.err) crewErr.push(r.t.name + " (" + r.err + ")"); else crew[r.t.name.toLowerCase()] = r.b; });
+      drawCrew();
+    });
   }
   function drawCrew() {
     var at = Date.now(), title = "On shift now";
-    if (selHour && week && week[selHour[0]] && week[selHour[0]].hours) { var h = week[selHour[0]].hours[selHour[1]]; at = Date.parse(h.start) + 1000; title = "On shift " + nice(h.date) + " at " + h.label; }
-    $("cTitle").textContent = title; $("cNow").hidden = !selHour;
-    if (!bookings) return;
-    var on = bookings.filter(function (x) { return Date.parse(x.start) <= at && at < Date.parse(x.end); }).sort(function (a, c) { return String(a.user).localeCompare(String(c.user)); });
-    var html = on.length ? '<div class="ct"><ul>' + on.map(function (x) {
-      return "<li><b>" + esc(x.user) + "</b>" + (x.clinicalLevel ? "<em>" + esc(x.clinicalLevel) + "</em>" : "") + (x.restriction && x.restriction !== "N" ? "<em>" + esc(x.restriction) + "</em>" : "") + "<small>to " + hm(Date.parse(x.end)) + "</small></li>";
-    }).join("") + "</ul></div>" : '<div class="ct none"><span class="nc">No crew booked</span></div>';
-    var now = Date.now(), until = now + 7 * 864e5;
-    var next = bookings.filter(function (x) { return Date.parse(x.start) > now && Date.parse(x.start) < until; }).sort(function (a, c) { return Date.parse(a.start) - Date.parse(c.start); });
-    html += '<h3 style="font-size:1rem;margin-top:.4rem">Coming shifts · next 7 days</h3>';
-    html += next.length ? '<ul class="ulist">' + next.slice(0, 25).map(function (x) {
-      var s = Date.parse(x.start), e = Date.parse(x.end);
-      return '<li><span class="w">' + esc(nice(isoOf(s))) + "</span><span class=\"x\"><b>" + esc(x.user) + "</b>" + (x.clinicalLevel ? "<em>" + esc(x.clinicalLevel) + "</em>" : "") + "<br><span class=\"note\">" + hm(s) + " to " + hm(e) + (isoOf(e) !== isoOf(s) ? " " + esc(nice(isoOf(e))) : "") + "</span></span></li>";
-    }).join("") + "</ul>" + (next.length > 25 ? '<p class="note">+ ' + (next.length - 25) + " more on the roster.</p>" : "") : '<p class="note">No shifts booked in the next 7 days.</p>';
+    if (selHour != null && rData) { var h = rData.hours[selHour]; at = Date.parse(h.start) + 1000; title = "On shift at " + h.label + " (" + nice(h.calendarDate) + ")"; }
+    $("cTitle").textContent = title; $("cNow").hidden = selHour == null;
+    if (!crew) return;
+    var teams = rosterTeams().filter(function (t) { return rFilter === "all" || CL_DIR[t.cluster] === rFilter; });
+    var empty = [];
+    var html = '<div class="crew">' + teams.map(function (t) {
+      var b = crew[t.name.toLowerCase()];
+      if (!b) return '<div class="ct"><h3>' + esc(t.name) + '</h3><span class="note">Not loaded</span></div>';
+      var on = b.filter(function (x) { return Date.parse(x.start) <= at && at < Date.parse(x.end); })
+        .sort(function (a, c) { return String(a.user).localeCompare(String(c.user)); });
+      var link = rosterLink(t.name);
+      if (!on.length) { empty.push(link ? '<a href="' + link + '">' + esc(t.name) + "</a>" : esc(t.name)); return ""; }
+      return '<div class="ct"><h3>' + (link ? '<a href="' + link + '">' + esc(t.name) + "</a>" : esc(t.name)) + "<span>" + esc(t.cluster) + "</span></h3>" +
+        (on.length ? "<ul>" + on.map(function (x) {
+          return "<li><b>" + esc(x.user) + "</b>" + (x.clinicalLevel ? "<em>" + esc(x.clinicalLevel) + "</em>" : "") + (x.restriction && x.restriction !== "N" ? "<em>" + esc(x.restriction) + "</em>" : "") +
+            "<small>to " + hm(Date.parse(x.end)) + "</small></li>";
+        }).join("") + "</ul>" : '<span class="nc">No crew booked</span>') + "</div>";
+    }).join("") + "</div>";
+    if (html === '<div class="crew"></div>') html = "";
+    if (empty.length) html += '<div class="ct none"><span class="nc">No crew booked</span><span class="small">' + empty.join(", ") + "</span></div>";
+    if (crewErr.length) html += '<p class="note">Not loaded: ' + esc(crewErr.join(", ")) + ".</p>";
+    html += '<p class="note">From each team\'s roster when the dashboard opened. Tap a team name to open its roster.</p>';
     $("cBody").innerHTML = html;
   }
   $("rHeat").addEventListener("click", function (e) {
     var td = e.target.closest("td[data-i]"); if (!td) return;
-    var k = [+td.dataset.d, +td.dataset.i]; selHour = selHour && selHour[0] === k[0] && selHour[1] === k[1] ? null : k; drawRoster(); drawCrew();
+    var i = +td.dataset.i; selHour = selHour === i ? null : i; drawRoster(); drawCrew();
   });
   $("cNow").addEventListener("click", function () { selHour = null; drawRoster(); drawCrew(); });
 
-  /* ---------- dispatch: this team's jobs, last 7 days ---------- */
+  /* ---------- dispatch (paging feed) ---------- */
+  var TEAMS = {"CU":["Cummins","#0e9f8e"],"TB":["Tumby Bay","#15803d"],"PT":["Port Neill","#0369a1"],"CF":["Coffin Bay","#b45309"],"CL":["Cleve","#be123c"],"CW":["Cowell","#8a5cf6"],"CO":["Team leader","#475569"],"KI":["Kimba","#4d7c0f"],"LK":["Lock","#a16207"],"EL":["Elliston","#e0752b"],"SB":["Streaky Bay","#2f7fe0"],"PK":["Port Kenny","#d6457f"],"WU":["Wudinna","#0e7490"],"CD":["Ceduna","#94a3b8"],"PL":["Port Lincoln","#64748b"]};
+  var EXTRA = ["#b45309", "#15803d", "#be123c", "#0369a1", "#7c3aed", "#4d7c0f"];
+  function codeOf(j) { return String(j.unit || "").replace(/\d+$/, ""); }
+  // Port Lincoln (PL) and Ceduna (CD) crews are hidden when the page loads; the button in the tile shows them.
+  var HIDE_CREWS = { PL: "Port Lincoln", CD: "Ceduna" }, showHidden = false, dCache = null;
   function loadDispatch() {
-    var t = todayIso(), from = addDays(t, -6), myTeam = team.id;
-    $("dBody").innerHTML = '<div class="skel"></div>';
-    sb.rpc("team_dispatch", { p_group: team.id, p_from: from, p_to: t }).then(function (r) {
-      if (team.id !== myTeam) return; if (r.error) throw r.error; drawDispatch(r.data || [], from, t);
-    }).catch(function (e) { $("dBody").innerHTML = '<p class="err">Could not load the dispatch feed: ' + errMsg(e) + "</p>"; });
+    var t = todayIso(), from = addDays(t, -6);
+    return sb.from("paging_jobs").select("job_key,job_date,job_time,locality,job_type,priority,unit").gte("job_date", from).lte("job_date", t).order("job_time")
+      .then(function (r) { if (r.error) throw r.error; dCache = [r.data || [], from, t]; drawDispatch(dCache[0], from, t); })
+      .catch(function (e) { $("dBody").innerHTML = '<p class="err">Could not load the dispatch feed: ' + esc(e.message || e) + "</p>"; });
   }
-  function drawDispatch(jobs, from, t) {
-    var towns = {}, p1 = 0;
-    jobs.forEach(function (j) { towns[j.locality || "No town"] = (towns[j.locality || "No town"] || 0) + 1; if (+j.priority === 1) p1++; });
+  function drawDispatch(all, from, t) {
+    var jobs = showHidden ? all : all.filter(function (j) { return !HIDE_CREWS[codeOf(j)]; }), hidden = all.length - jobs.length;
+    var colour = {}, ei = 0;
+    function team(c) { if (TEAMS[c]) return TEAMS[c]; if (!colour[c]) colour[c] = [c || "?", EXTRA[ei++ % EXTRA.length]]; return colour[c]; }
+    var towns = {}, used = {}, p1 = 0;
+    jobs.forEach(function (j) { towns[j.locality || "No town"] = (towns[j.locality || "No town"] || 0) + 1; used[codeOf(j)] = 1; if (+j.priority === 1) p1++; });
     var top = Object.keys(towns).sort(function (a, b) { return towns[b] - towns[a]; })[0];
-    var html = '<div class="stats"><div class="stat"><b>' + jobs.length + '</b><span>jobs in 7 days</span></div><div class="stat"><b>' + jobs.filter(function (j) { return j.job_date === t; }).length +
-      '</b><span>today so far</span></div><div class="stat red"><b>' + p1 + '</b><span>priority 1</span></div>' +
+    var todayN = jobs.filter(function (j) { return j.job_date === t; }).length;
+    var html = '<div class="stats"><div class="stat"><b>' + jobs.length + '</b><span>jobs in 7 days</span></div><div class="stat"><b>' + todayN + '</b><span>today so far</span></div><div class="stat red"><b>' + p1 + '</b><span>priority 1</span></div>' +
       (top ? '<div class="stat"><b style="font-size:1.1rem">' + esc(top) + '</b><span>busiest town (' + towns[top] + ")</span></div>" : "") + "</div>";
     html += '<div class="raxis"><div></div><div><span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>12am</span></div></div><div class="roads">';
     var p = parts(), nowM = +p.hour * 60 + +p.minute;
     for (var i = 0; i < 7; i++) {
       var iso = addDays(from, i), dd = dOf(iso), js = jobs.filter(function (j) { return j.job_date === iso; });
       html += '<div class="rrow"><div class="lab"><b>' + (iso === t ? "Today" : DAYS[dd.getUTCDay()]) + "</b><span>" + dd.getUTCDate() + " " + MON[dd.getUTCMonth()] + " · " + js.length + '</span></div><div class="road">' +
-        '<div class="nt" style="left:0;width:25%"></div><div class="nt" style="left:75%;width:25%"></div>' + (js.length ? "" : '<div class="q">quiet day</div>') +
-        js.map(function (j) { return '<span class="ab" style="left:' + (mins(j.job_time) / 14.4).toFixed(2) + '%;--tc:#15803d" title="' + esc(String(j.job_time).slice(0, 5) + " " + j.job_type + " · " + (j.locality || "") + " · P" + j.priority + " · " + j.unit) + '">🚑</span>'; }).join("") +
+        '<div class="nt" style="left:0;width:25%"></div><div class="nt" style="left:75%;width:25%"></div>' +
+        (js.length ? "" : '<div class="q">quiet day</div>') +
+        js.map(function (j) { var tm = team(codeOf(j)); return '<span class="ab" style="left:' + (mins(j.job_time) / 14.4).toFixed(2) + "%;--tc:" + tm[1] + '" title="' + esc(String(j.job_time).slice(0, 5) + " " + j.job_type + " · " + (j.locality || "") + " · P" + j.priority + " · " + j.unit) + '">🚑</span>'; }).join("") +
         (iso === t ? '<div class="nowl" style="left:' + (nowM / 14.4).toFixed(2) + '%"></div>' : "") + "</div></div>";
     }
-    html += "</div>";
-    var recent = jobs.slice().reverse().slice(0, 8);
-    if (recent.length) html += '<ul class="ulist">' + recent.map(function (j) {
-      return '<li><span class="w">' + esc(nice(j.job_date)) + " " + esc(String(j.job_time).slice(0, 5)) + '</span><span class="x">' + (j.priority ? '<span class="' + (+j.priority === 1 ? "p1" : "") + '">P' + j.priority + "</span> · " : "") +
-        esc(j.job_type || "") + (j.locality ? " · " + esc(j.locality) : "") + ' <span class="note">' + esc(j.unit) + "</span></span></li>";
-    }).join("") + "</ul>";
-    html += '<p class="note">From the SAAS paging feed, captured by a scheduled run, so today may be incomplete. Shaded = before 6am / after 6pm.</p>';
+    html += '</div><div class="tl">' + Object.keys(used).map(function (c) { var tm = team(c); return '<span style="--tc:' + tm[1] + '"><i></i>' + esc(tm[0]) + "</span>"; }).join("") + "<span>Shaded = before 6am / after 6pm</span></div>";
+    if (showHidden || hidden) html += '<div class="chips"><button type="button" class="chip2" id="dToggle" aria-pressed="' + showHidden + '">' +
+      (showHidden ? "Hide Port Lincoln and Ceduna crews" : "Show Port Lincoln and Ceduna crews (" + hidden + (hidden === 1 ? " job)" : " jobs)")) + "</button></div>";
+    html += '<p class="note">From the SAAS paging feed for the Eyre Peninsula, captured by a scheduled run, so today may be incomplete.</p>';
     $("dBody").innerHTML = html;
   }
+  $("dBody").addEventListener("click", function (e) {
+    if (!e.target.closest("#dToggle") || !dCache) return;
+    showHidden = !showHidden; drawDispatch(dCache[0], dCache[1], dCache[2]);
+  });
 
   /* ---------- volunteer contribution: this team only ---------- */
   var PERIODS = [{ id: "month", label: "This month" }, { id: "last", label: "Last month" }, { id: "d30", label: "30 days" }, { id: "all", label: "All" }];
@@ -307,7 +373,9 @@
   function loadAll() {
     $("tName").textContent = team.name + " · " + team.cluster;
     document.title = team.name + " team dashboard";
-    loadRoster(); loadDispatch(); loadContrib(); loadSessions(); loadWeather();
+    var rt = rosterTeam(team.name);
+    $("rLink").href = rt && CL_DIR[rt.cluster] ? "/modules/rosters/" + CL_DIR[rt.cluster] + "/" + rt.id + "/" : "/";
+    loadRoster(); loadCrew(); loadDispatch(); loadContrib(); loadSessions(); loadWeather();
     $("updated").textContent = "Updated " + hm(Date.now());
   }
   $("refresh").addEventListener("click", function () { if (team) loadAll(); });

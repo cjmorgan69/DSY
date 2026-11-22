@@ -205,10 +205,10 @@ and attendance stay with the session. Phones keep the list. On a branch, not mer
 
 ## Team dashboard for Volunteer Team Leaders (owner, 22 Nov 2026)
 
-`/dashboard/team/` (gate `vtl`; own script `dashboard/team/team.js`, styles copied from `/dashboard/`): one team only.
-Roster (next 7 operational days as an hourly grid, crew on now / tapped hour, coming shifts for 7 days, via
-`DSY_ROSTER_DATA`), Dispatches (last 7 days, `team_dispatch`, mini roads and the latest 8 jobs), Volunteer contribution
-(`team_contribution`, This month / Last month / 30 days / All, PARA hidden unless ticked), Training (the team's sessions
-for 2 months), Weather (starts on the team's town). No footer links, tasks, Ask DSY or suggestions. A leader sees a team
-picker to preview any team. Linked from the VTL's Team Page. Access details in `access.md`. Tested in a headless browser
+`/dashboard/team/` (gate `vtl`; own script `dashboard/team/team.js`, styles copied from `/dashboard/`). Roster today
+and Dispatch show EVERY team, the same as the Team Leader dashboard (owner, 22 Nov 2026: "broader situational awareness";
+those two sections are copied from `dash.js`: keep them in step), except the dispatch note does not point to `/dispatch/`
+(leaders only). Volunteer contribution (`team_contribution`, This month / Last month / 30 days / All, PARA hidden unless
+ticked) and Training (the team's sessions for 2 months) are the VTL's own team only. Weather starts on the team's town.
+No footer links, tasks, Ask DSY or suggestions. A leader sees a team picker to preview any team. Linked from the VTL's Team Page. Access details in `access.md`. Tested in a headless browser
 with stand-in sign-in data (phone and wide). On a branch, not merged.

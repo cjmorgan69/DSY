@@ -126,3 +126,18 @@ end $$;
 
 revoke execute on function public.team_dash_group(uuid), public.team_dispatch(uuid, date, date), public.team_contribution(uuid, timestamptz, timestamptz) from public, anon;
 grant execute on function public.team_dash_group(uuid), public.team_dispatch(uuid, date, date), public.team_contribution(uuid, timestamptz, timestamptz) to authenticated;
+
+-- Migration vtl_wide_view (owner, 22 Nov 2026): roster and dispatch on the team dashboard show every team, the same as
+-- the Team Leader dashboard, so a VTL may read paging_jobs and see any team's roster names.
+create or replace function public.is_vtl() returns boolean
+language sql stable security definer set search_path to 'public' as $$
+  select exists (select 1 from public.team_vtls where member_id = (select auth.uid()))
+$$;
+revoke execute on function public.is_vtl() from public, anon;
+grant execute on function public.is_vtl() to authenticated;
+drop policy if exists vtl_read on public.paging_jobs;
+create policy vtl_read on public.paging_jobs for select to authenticated using ((select public.is_vtl()));
+create or replace function public.roster_can_view(g uuid) returns boolean
+language sql stable security definer set search_path to 'public' as $$
+  select public.roster_is_member(g) or public.roster_can_manage(g) or public.is_leader() or public.is_vtl()
+$$;
