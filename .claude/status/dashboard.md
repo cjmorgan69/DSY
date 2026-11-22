@@ -201,4 +201,4 @@ to open it; drag it to a day to COPY it there (owner: a copy, not a move): a box
 (only teams you can change with no session that day; the original team is preselected when free). The copy keeps times,
 lessons, topic, location and who leads; no bookings, attendance or reflection; a team-led copy for another team has no
 facilitator. The session page has a Team field (teams you can change, not courses); bookings
-and attendance stay with the session. Phones keep the list. On a branch, not merged.
+and attendance stay with the session. Phones keep the list. Live (PR #313, merged 22 Nov 2026).
