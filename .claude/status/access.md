@@ -164,3 +164,9 @@ team dashboard (roster, dispatches, volunteer contribution and training for thei
 - Not covered: VTLs do not get roster change emails (that is `roster_managers.notify_email`); in the training app
   (`/training/`) they are treated as facilitators already: the app has only a leader view and a member view, and
   facilitators use the member view too (checked 22 Nov 2026); database rules that use `is_facilitator()` include VTLs. No VTLs set yet: owner to name them. Live (PR #320, merged 22 Nov 2026; checked on the live site with stand-in sign-in data, and signed-out visits go to sign-in).
+
+## Test accounts removed (22 Nov 2026)
+
+On the owner's say-so, deleted from Supabase (sign-in, profile, memberships, bookings): "Test" (1003464, Tumby Bay),
+"Test Member" (Summer Bay, owner's sa.gov.au email) and "Claude Testaccount" (999123, Summer Bay, also its expected_members
+row). No test member accounts remain; make a new one if a signed-in check is needed.
