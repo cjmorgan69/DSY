@@ -122,6 +122,10 @@ Chapman): Dave got leader access and Chris's 3 tasks, was blocked from resetting
 leader and handing cover on, could not read calendar links, and lost everything when the cover ended.
 Search box above the relief Team Leader list (owner, 22 Nov 2026): filters by name or staff ID, picks the person when
 only one matches (rebuilds the options; hidden options don't hide on iPhone Safari). Live (PR #311, merged 22 Nov 2026).
+Training app and relief (owner, 22 Nov 2026): `/training/` loads the leader's own open covers; new leader-led nights
+(one session or Set up training nights) whose start falls inside a cover get the reliever as facilitator (preview shows
+"Led by"), and the session's Facilitator list adds current and coming relievers as "(relief team leader)". Existing
+sessions are not changed. On a branch, not merged.
 
 ## User guides and Ask DSY (17 Nov 2026, owner)
 

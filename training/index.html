@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261122a">
+<link rel="stylesheet" href="theme.css?v=20261122b">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -30,8 +30,8 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261122a"></script>
-<script src="sa-dates.js?v=20261122a"></script>
+<script src="config.js?v=20261122b"></script>
+<script src="sa-dates.js?v=20261122b"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -141,8 +141,11 @@
       q(sb.from("attendance").select("*")),
       q(sb.from("lesson_files").select("*").order("created_at")),
       q(sb.from("lesson_shares").select("*")),
-      q(sb.from("session_reflections").select("*"))
+      q(sb.from("session_reflections").select("*")),
+      /* relief cover (owner, 22 Nov 2026): this leader's own covers, so leader-led nights in a cover default to the reliever */
+      sb.from("leader_relief").select("*").eq("leader_id", S.user.id).is("ended_at", null).then(function (x) { return x.error ? [] : x.data || []; })
     ]).then(function (r) {
+      S.covers = r[10];
       S.reflections = {}; r[9].forEach(function (x) { S.reflections[x.session_id] = x.notes; });
       S.groups = r[0]; S.lessons = r[1]; S.sessions = r[2]; S.bookings = r[3];
       S.profiles = r[4]; S.memberships = r[5]; S.attendance = r[6]; S.files = r[7]; S.shares = r[8];
@@ -375,7 +378,7 @@
       (unknown ? '<p class="small muted">School holidays after ' + esc(shortDate(SAD.knownUntil)) + " are not loaded yet, so dates after that are not checked for them.</p>" : "") +
       '<ul class="stack">' + rows.map(function (r) {
         return '<li class="row" style="justify-content:space-between"><span' + (r.skip ? ' class="muted" style="text-decoration:line-through"' : "") + ">" + esc(shortDate(r.d)) + "</span>" +
-          (r.skip ? '<span class="chip warn">' + esc(r.skip) + "</span>" : '<span class="chip good">New</span>') + "</li>";
+          (r.skip ? '<span class="chip warn">' + esc(r.skip) + "</span>" : (f.get("type") !== "team" && reliefOn(r.d, f.get("start")) ? '<span class="chip">Led by ' + esc(nameOf(reliefOn(r.d, f.get("start")))) + "</span> " : "") + '<span class="chip good">New</span>') + "</li>";
       }).join("") + "</ul>";
   }
   function redrawPlan(changed) {
@@ -398,7 +401,7 @@
   }
   function whoChoice() {
     return '<fieldset class="stack" style="border:0;padding:0;margin:0"><legend style="font-weight:600;margin-bottom:.3rem">Who are these nights for?</legend>' +
-      '<label class="check"><input type="radio" name="type" value="leader" checked> <span><strong>Team Leader visits</strong>: leader-led, with you as facilitator</span></label>' +
+      '<label class="check"><input type="radio" name="type" value="leader" checked> <span><strong>Team Leader visits</strong>: leader-led, with you as facilitator' + ((S.covers || []).some(function (c) { return Date.parse(c.ends_at) > Date.now(); }) ? " (your relief Team Leader on nights during your relief cover)" : "") + '</span></label>' +
       '<label class="check"><input type="radio" name="type" value="team"> <span><strong>Team training</strong>: team-led, choose the facilitator later</span></label></fieldset>';
   }
   function timeFields(p) {
@@ -427,10 +430,16 @@
       '<div id="plan-preview" class="stack"><p class="small muted">Choose the first night and a last date after it.</p></div>' +
       '<button class="btn" type="submit" disabled>Create sessions</button></form>';
   }
+  /* The relief Team Leader covering this leader when a night starts (device time, Adelaide for our leaders), or null. */
+  function reliefOn(d, start) {
+    var t = new Date(d + "T" + (start || "19:00")).getTime(), c = (S.covers || []).filter(function (x) { return Date.parse(x.starts_at) <= t && t < Date.parse(x.ends_at); })[0];
+    return c ? by(c.reliever_id, S.profiles) || { id: c.reliever_id, full_name: "Relief Team Leader" } : null;
+  }
+  function leaderFor(d, start) { return reliefOn(d, start) || S.profile; }
   function sessionRow(f, d) {
-    var type = f.get("type") === "team" ? "team" : "leader";
+    var type = f.get("type") === "team" ? "team" : "leader", who = type === "leader" ? leaderFor(d, f.get("start")) : null;
     return { group_id: f.get("group"), session_date: d, start_time: f.get("start"), end_time: f.get("end"), session_type: type,
-      facilitator_id: type === "leader" ? S.profile.id : null, facilitator_name: type === "leader" ? nameOf(S.profile) : null, location: (f.get("location") || "").trim() || null };
+      facilitator_id: who ? who.id : null, facilitator_name: who ? nameOf(who) : null, location: (f.get("location") || "").trim() || null };
   }
   function createPlan(form) {
     var f = new FormData(form);
@@ -488,6 +497,12 @@
     var nb = Object.keys(bookedIds).length;
     var facOpts = '<option value="">To be confirmed</option><option value="' + S.profile.id + '"' + (s.facilitator_id === S.profile.id ? " selected" : "") + ">" + esc(nameOf(S.profile)) + " (regional team leader)</option>" +
       members.filter(function (p) { return p.id !== S.profile.id; }).map(function (p) { return '<option value="' + p.id + '"' + (s.facilitator_id === p.id ? " selected" : "") + ">" + esc(nameOf(p)) + "</option>"; }).join("");
+    /* relief Team Leaders from this leader's current and coming covers (owner, 22 Nov 2026) */
+    var seen = {}; seen[S.profile.id] = 1; members.forEach(function (p) { seen[p.id] = 1; });
+    (S.covers || []).filter(function (c) { return Date.parse(c.ends_at) > Date.now() && !seen[c.reliever_id]; }).forEach(function (c) {
+      seen[c.reliever_id] = 1; var p = by(c.reliever_id, S.profiles);
+      facOpts += '<option value="' + c.reliever_id + '"' + (s.facilitator_id === c.reliever_id ? " selected" : "") + ">" + esc(nameOf(p)) + " (relief team leader)</option>";
+    });
     var visitor = !s.facilitator_id && s.facilitator_name ? s.facilitator_name : "";
     return '<button class="link back" data-act="back">Back to calendar</button>' +
       '<section class="panel pad stack"><div class="row">' + groupChip(g) + typeChip(s.session_type) + '<span class="chip">' + nb + " booked</span></div><h2>" + esc(longDate(s.session_date)) + '</h2><p class="muted">' + timeRange(s) + "</p>" +
@@ -538,7 +553,7 @@
     var type = f.get("type"), fid = f.get("fac") || null, ftext = f.get("facname").trim(), fname = null;
     if (ftext) { fid = null; fname = ftext; }
     else if (fid) { fname = nameOf(by(fid, S.profiles)); }
-    else if (type === "leader") { fid = S.profile.id; fname = nameOf(S.profile); }
+    else if (type === "leader") { var sx = by(id, S.sessions), lw = sx ? leaderFor(sx.session_date, sx.start_time && sx.start_time.slice(0, 5)) : S.profile; fid = lw.id; fname = nameOf(lw); }
     return sb.from("sessions").update({
       lesson_ids: f.getAll("lesson"), location: f.get("location") || null, notes: f.get("notes") || null,
       session_type: type, facilitator_id: fid, facilitator_name: fname, topic: f.get("topic").trim() || null
