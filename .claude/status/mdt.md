@@ -54,5 +54,5 @@ and ACPO now dispatch from the customised town's station when the station is lef
 chosen direction (north/south/east/west).. Checked against the PCR trainer the same day: library
 surnames now match the walk-throughs' handovers (Mitchell, Collins, Thompson, Patterson, Henley); stroke paged at 1100
 to fit the PCR card's onset 1015 and "45 minutes ago"; "Cummins Hospital" used for Helen everywhere (walk-through,
-PCR card, `nausea-ao` template default). On a branch, not merged.
+PCR card, `nausea-ao` template default). Live (PR #317, merged 22 Nov 2026).
 
