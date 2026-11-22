@@ -43,7 +43,7 @@ recorded, a stock-to-order list, and a prompt to check a section that has not be
 - No expiry-date checks, no vehicle (fuel, lights, tyres) checks: the form has none.
 - No leader view across all vehicles, no email of the order list (copy as text only).
 
-## Item cross-reference and item info (22 Nov 2026, PR #314, not merged)
+## Item cross-reference and item info (22 Nov 2026, live, PR #314 merged)
 
 Owner's plan: a lesson where the crew do a complete real check of the vehicle (that comes first), then, if time
 allows, each person talks about one item: what it is for and which protocol it belongs to.
@@ -64,7 +64,7 @@ allows, each person talks about one item: what it is for and which protocol it b
   (chart V3, 17 May 2018; on the SAAS site as a clinical tool since 4 Jun 2025), sent by the owner on 22 Nov 2026.
 - The Locker 4 top drawer tourniquet is the venous tourniquet for IV access (owner, 22 Nov 2026), not the arterial one.
 
-## Grab & Go kits (22 Nov 2026, PR #314, not merged)
+## Grab & Go kits (22 Nov 2026, live, PR #314 merged)
 
 New area "Grab & Go kits" (id `kits`, placed after the Grab & Go lockers) with four sections, from the owner's forms:
 - `red-trauma-kit`: FRM-397 Red Trauma Kit - Volunteer v4.1 (2025), written contents list.
