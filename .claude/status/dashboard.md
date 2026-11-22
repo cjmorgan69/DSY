@@ -252,7 +252,8 @@ members of the session's team who turned reminders on, except those who answered
 - pg_cron job `session-remind` every 10 minutes: created 22 Nov 2026 on merge. Live (PR #326, merged 22 Nov 2026);
   first reminders due Mon 23 Nov 7:00 am (Tumby Bay, Port Neill).
 - Not yet tried on a real phone (headless Chrome has no push service): owner to turn it on and Send a test.
-- DSY Training icon (owner, 22 Nov 2026): a side-on ambulance in the SAAS look (white, yellow and green check band,
-  red and blue roof lights) on a green background, drawn by Claude; no SAAS logo or name. Source
+- DSY Training icon (owner, 22 Nov 2026): a side-on ambulance in the SAAS livery from the owner's photo (white,
+  thin green and white check band with a green line, fluoro yellow lower line, red and yellow rear chevrons, blue
+  Star of Life, red and blue light bar) on a green background, drawn by Claude; no SAAS logo or name. Source
   `shared/dsy-app-icon.svg`, PNGs `shared/dsy-app-180/192/512.png` (Team page apple-touch-icon, `/dsy.webmanifest`,
   notification icon in `/sw.js`).
