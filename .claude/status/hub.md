@@ -107,4 +107,4 @@ were reaching `groups.banner_y` (Kimba 27); the Region page tiles ignored the po
 Cluster chips (All, Lower Eyre, Central Eyre, West Coast) filter the Teams tiles from `groups.cluster`; the choice is kept
 on the device (`dsy-region-cluster`), starting on the leader's own `profiles.cluster`. Tested with stand-in data. Merged (PR #331, 22 Nov 2026).
 Banner title (owner, 22 Nov 2026): "Eyre Peninsula" (the region name, `region_info.name`, changed from "Lower Eyre
-Peninsula") when All clusters is chosen, otherwise the cluster's name with "Cluster overview". PR #332.
+Peninsula") when All clusters is chosen, otherwise the cluster's name with "Cluster overview". Merged (PR #332, 22 Nov 2026).
