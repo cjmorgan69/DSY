@@ -212,3 +212,11 @@ those two sections are copied from `dash.js`: keep them in step), except the dis
 ticked) and Training (the team's sessions for 2 months) are the VTL's own team only. Weather starts on the team's town.
 Only the VTL's own team name links to its roster (owner, 22 Nov 2026); other team names are plain text. No footer links, tasks, Ask DSY or suggestions. A leader sees a team picker to preview any team. Linked from the VTL's Team Page. Access details in `access.md`. Tested in a headless browser
 with stand-in sign-in data (phone and wide). Live (PR #320, merged 22 Nov 2026), checked on the live site.
+
+## Training app: Attending? (22 Nov 2026)
+
+Members' session rows no longer say Book a spot / Cancel. Each shows **Attending?** with two buttons, "Yes, absolutely! 😀" and
+"Sorry, not this time 😢" (owner's wording); tap the other to change. Both stay pale until answered. Stored in `bookings.status`
+(`booked` = yes, `cancelled` = not this time; no schema change to the table). Leaders see "n coming" and "n not coming" chips and a
+Coming / Not this time chip per person in Attendance; `session_roster()` now also returns `not_coming` for the facilitator's Team
+list. Members can still just turn up. User guides (Getting started, Running a session) updated. PR open, not merged.
