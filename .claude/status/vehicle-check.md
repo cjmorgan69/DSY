@@ -42,3 +42,35 @@ recorded, a stock-to-order list, and a prompt to check a section that has not be
 
 - No expiry-date checks, no vehicle (fuel, lights, tyres) checks: the form has none.
 - No leader view across all vehicles, no email of the order list (copy as text only).
+
+## Item cross-reference and item info (22 Nov 2026, live, PR #314 merged)
+
+Owner's plan: a lesson where the crew do a complete real check of the vehicle (that comes first), then, if time
+allows, each person talks about one item: what it is for and which protocol it belongs to.
+
+- `vehicle-check/item-info.js`: rules (first match on "item | description") giving what the item is for (DSY
+  wording), the AO protocols and CPPROs whose text names it (with PDF links and CPPRO review dates), and AO scope.
+  Medicine scope from the SAAS app dose table (main.10d22172e56532ee.js). The Cardiac Arrest PDFs (CPP-002-AO v4.2,
+  CPP-043-AO v2.1) export blank: their text was pasted by the owner on 22 Nov 2026; they have no PDF link.
+- App: an "i" button on each item in a section opens the info; `#guide` Kit guide lists every item with its info and
+  a search box (for preparing the talk).
+- Owner's answers to the first draft (22 Nov 2026): salbutamol MDI without consult (app says Consult); GTN without
+  consult only if the patient's own GTN is prescribed; benzylpenicillin: follow the Sepsis protocol, to be changed
+  over for ceftriaxone; carbetocin not AO; TNT envelopes = Treat and Refer; overdue CPPRO review dates noted only.
+- Also (22 Nov 2026): Co-Phenylcaine is AO for NPA insertion; ipratropium MDI is AO on EOC consult, doses as per the
+  paramedic guideline; nasal cannula up to 4 L/min whenever a protocol says oxygen may be needed (app: ipratropium MDI 8 puffs if 6 or older, 4 puffs under 6, CPG-114-P).
+  Only open point left on the table: water for injection is not named in an AO protocol.
+- PPE, hand hygiene, cleaning, sharps and waste items link to CTL-014 Infection Control Precautions and Cleaning
+  (chart V3, 17 May 2018; on the SAAS site as a clinical tool since 4 Jun 2025), sent by the owner on 22 Nov 2026.
+- The Locker 4 top drawer tourniquet is the venous tourniquet for IV access (owner, 22 Nov 2026), not the arterial one.
+
+## Grab & Go kits (22 Nov 2026, live, PR #314 merged)
+
+New area "Grab & Go kits" (id `kits`, placed after the Grab & Go lockers) with four sections, from the owner's forms:
+- `red-trauma-kit`: FRM-397 Red Trauma Kit - Volunteer v4.1 (2025), written contents list.
+- `yellow-drug-kit`: the yellow drug kit inside it (FRM-397 contents list). The FRM-397 photos also show IV cannulas
+  (14G to 24G) and an Atrovent (ipratropium) inhaler that the written list leaves out: owner (22 Nov 2026) added both: cannulas 14G to 24G, 2 of each, and the inhaler.
+- `blue-airway-kit`: FRM-365 Blue Airway Kit - Volunteer (Aug 2025), written list (6 resus masks incl. red adult; the
+  photo page shows 5 masks and an Aquim gel 60 mL that the list leaves out; owner: keep all 6 masks and add the gel).
+- `oxygen-sock`: owner's contents (22 Nov 2026): Halo C cylinder; adult and paediatric each of nasal specs, 8 L/min
+  mask, 15 L/min NRM, nebuliser mask.

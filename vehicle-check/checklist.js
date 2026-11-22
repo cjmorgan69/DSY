@@ -8,7 +8,7 @@
 window.VEHICLE_CHECKLISTS = {
   vs30: {
     title: "Mercedes VS30",
-    source: "FRM-384 Volunteer Vehicle Checklist - Mercedes VS 30, version 2.2, 30.10.2025",
+    source: "FRM-384 Volunteer Vehicle Checklist - Mercedes VS 30, version 2.2, 30.10.2025; kits: FRM-397 Red Trauma Kit v4.1 (2025), FRM-365 Blue Airway Kit (Aug 2025)",
     areas: [
       { id: "cab", name: "Cab", hint: "Visors, doors, dash and consoles", sections: [
         { id: "sun-visor", name: "Sun visor", items: [
@@ -64,6 +64,48 @@ window.VEHICLE_CHECKLISTS = {
         { id: "locker-3", name: "Locker 3", items: [
           ["Gloves Nitrile", "Small", "1"], ["Gloves Nitrile", "Medium", "1"], ["Gloves Nitrile", "Large", "1"],
           ["Gloves Nitrile", "X-Large", "1"]] }
+      ] },
+      { id: "kits", name: "Grab & Go kits", hint: "Red trauma kit, yellow drug kit, blue airway kit and oxygen sock", sections: [
+        { id: "red-trauma-kit", name: "Red trauma kit", note: "From FRM-397 Red Trauma Kit - Volunteer, version 4.1 (2025). The yellow drug kit inside it is its own section.", items: [
+          ["Universal Shears", "", "1"], ["Gloves", "Small", "1 pair"], ["Gloves", "Medium", "1 pair"], ["Gloves", "Large", "1 pair"],
+          ["Gloves", "X-Large", "1 pair"], ["Tactical Tourniquets", "", "2"], ["Triangular Bandage", "", "1"], ["Eye Pads", "", "3"],
+          ["Emergency Blankets", "", "2"], ["Band Aids", "", "1"], ["30ml Saline", "", "2"], ["Dymadon and Syringe", "Paracetamol suspension", "1"],
+          ["Aquium Gel", "60ml", "1"], ["Glucometer Kit and Lancets", "", "1"], ["Tympanic Thermometer", "", "1"], ["Saline 500ml Bag", "", "1"],
+          ["IV Giving Set", "", "1"], ["Defib Pads", "Child", "1"], ["Consult Pad", "", "1"], ["Spacer", "E Chamber", "1"], ["Embags", "", "3"],
+          ["Combine Dressings", "10cm x 10cm", "3"], ["Combine Dressings", "20cm x 20cm", "2"], ["Combine Dressings", "20cm x 75cm", "1"],
+          ["BP Cuff", "Side pocket", "1"], ["Stethoscope", "Side pocket", "1"], ["Penlight", "", "1"], ["Surgical Tape 25mm", "", "1"],
+          ["Roller Bandages", "10cm x 1.6m", "1"], ["Roller Bandages", "15cm x 1.6m", "1"], ["ECG Electrodes", "Pack", "1"],
+          ["Defib Pads", "Adult (spare)", "2"], ["Monitor Paper", "Spare", "1"], ["BP Cuff", "XL (Burgundy)", "1"],
+          ["BP Cuff", "Upper Arm (Blue)", "1"], ["BP Cuff", "Child (Green)", "1"], ["Hyfin Chest Seal twin pack", "", "1"]] },
+        { id: "yellow-drug-kit", name: "Yellow drug kit (in the trauma kit)", note: "From FRM-397 Red Trauma Kit - Volunteer, version 4.1 (2025), yellow drug kit contents list, plus the IV cannulas and Atrovent inhaler shown in its photos (lead instructor, 22 Nov 2026).", items: [
+          ["Aspirin (Disprin)", "Tray", "1"], ["Paracetamol Tablets 500mg", "Tray of 10", "1"], ["Salbutamol nebules", "5mg/2.5ml, pack of 5", "1"],
+          ["Ipratropium Bromide nebules", "Pack of 5", "1"], ["Ondansetron Wafers 4mg", "Tray of 10", "1"], ["Ventolin MDI", "Salbutamol", "1"], ["Ipratropium MDI", "Atrovent", "1"],
+          ["Midazolam", "", "2"], ["Glucagon", "", "1"], ["Benzylpenicillin 1.2g", "", "2"], ["Water for Injection", "", "2"],
+          ["Methoxyflurane (Penthrox)", "", "1"], ["Naloxone", "400 microg/ml", "2"], ["Nitrostat", "300 microg tablets", "1"],
+          ["Adrenaline", "1mg/1ml (1:1000)", "4"], ["Oral Glucose Gel", "15ml", "2"], ["Saline 10ml Ampoules", "", "4"],
+          ["Tourniquets", "For IV access", "2"], ["Alcohol Swabs", "", "4"], ["Combi-Stoppers", "", "2"], ["Drawing Up Needles 18g", "", "4"],
+          ["Giving Needles 23g", "", "4"], ["Tegaderm", "10cm x 12cm", "3"], ["Tegaderm", "7cm x 8.5cm", "3"], ["Surgical Tape 25mm", "", "1"],
+          ["Razors", "Disposable", "1"], ["Syringe Luer-Lok", "1ml", "3"], ["Syringe Luer-Lok", "3ml", "2"], ["Syringe Luer-Lok", "5ml", "3"],
+          ["Syringe Luer-Lok", "10ml", "2"], ["IV Bungs", "", "2"],
+          ["Protect IV Cannula", "14g", "2"], ["Protect IV Cannula", "16g", "2"], ["Protect IV Cannula", "18g", "2"],
+          ["Protect IV Cannula", "20g", "2"], ["Protect IV Cannula", "22g", "2"], ["Protect IV Cannula", "24g", "2"]] },
+        { id: "blue-airway-kit", name: "Blue airway kit", note: "From FRM-365 Blue Airway Kit - Volunteer (August 2025) contents list, plus the 60 mL Aquium gel shown in its photo (lead instructor, 22 Nov 2026).", items: [
+          ["Cotton Ties", "Tie off tape (herringbone) 1m", "2"], ["Lubricant - KY Jelly", "", "4"],
+          ["i-gel Supraglottic Airway", "Size 2", "1"], ["i-gel Supraglottic Airway", "Size 3", "1"], ["i-gel Supraglottic Airway", "Size 4", "1"],
+          ["i-gel Supraglottic Airway", "Size 5", "1"], ["Resus Masks", "White - Neonatal", "1"], ["Resus Masks", "Pink - Infant", "1"],
+          ["Resus Masks", "Yellow - Child", "1"], ["Resus Masks", "Green - Small Adult", "1"], ["Resus Masks", "Red - Adult", "1"],
+          ["Resus Masks", "Blue - Large Adult", "1"], ["Co-Phenylcaine Forte", "Spray", "1"], ["Co-Phenylcaine Forte", "Nozzles, pack of 3", "1"],
+          ["Nasopharyngeal Airways", "6mm", "1"], ["Nasopharyngeal Airways", "7mm", "1"], ["Nasopharyngeal Airways", "8mm", "1"],
+          ["Y Suction Catheters", "6g", "1"], ["Y Suction Catheters", "10g", "1"], ["Y Suction Catheters", "16g", "1"],
+          ["Oropharyngeal Airways", "Size 00 - Blue", "1"], ["Oropharyngeal Airways", "Size 1 - Brown", "1"], ["Oropharyngeal Airways", "Size 2 - Green", "1"],
+          ["Oropharyngeal Airways", "Size 3 - Yellow", "1"], ["Oropharyngeal Airways", "Size 4 - Red", "1"], ["Bag Valve Mask Adult", "", "1"],
+          ["Filter - HME", "Adult", "1"], ["Filter - HME", "Paediatric", "1"], ["Universal Shears", "", "1"], ["Syringe Luer Lock 50ml", "", "1"],
+          ["N95/P2 Masks", "", "2"], ["3M Masks", "", "2"], ["Bio-Hazard bags", "", "1"], ["Surgical Masks", "Level 3", "2"],
+          ["Oxygen Tubing", "For the BVM", "1"], ["Safety Glasses", "", "2"], ["Aquium Gel", "60ml", "1"]] },
+        { id: "oxygen-sock", name: "Oxygen sock", note: "Contents as set by the lead instructor (22 Nov 2026).", items: [
+          ["Oxygen Cylinder \"C\" Size", "Halo", "1"], ["Nasal Cannula", "Adult (specs)", "1"], ["Standard Face Mask", "Adult - 8 L/min", "1"],
+          ["Non-rebreather Mask", "Adult - 15 L/min", "1"], ["Nebuliser Mask", "Adult", "1"], ["Nasal Cannula", "Paediatric (specs)", "1"],
+          ["Standard Face Mask", "Paediatric - 8 L/min", "1"], ["Non-rebreather Mask", "Paediatric - 15 L/min", "1"], ["Nebuliser Mask", "Paediatric", "1"]] }
       ] },
       { id: "workstation", name: "Locker 4 workstation and drug drawer", hint: "Top, middle and bottom drawers, drug drawer insert", sections: [
         { id: "locker-4-top", name: "Locker 4 workstation top drawer", items: [
