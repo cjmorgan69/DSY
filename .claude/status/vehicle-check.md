@@ -43,7 +43,7 @@ recorded, a stock-to-order list, and a prompt to check a section that has not be
 - No expiry-date checks, no vehicle (fuel, lights, tyres) checks: the form has none.
 - No leader view across all vehicles, no email of the order list (copy as text only).
 
-## Item cross-reference and item info (22 Nov 2026, on a branch, not merged)
+## Item cross-reference and item info (22 Nov 2026, PR #314, not merged)
 
 Owner's plan: a lesson where the crew do a complete real check of the vehicle (that comes first), then, if time
 allows, each person talks about one item: what it is for and which protocol it belongs to.
