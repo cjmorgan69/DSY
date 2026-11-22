@@ -219,4 +219,4 @@ Members' session rows no longer say Book a spot / Cancel. Each shows **Attending
 "Sorry, not this time 😢" (owner's wording); tap the other to change. Both stay pale until answered. Stored in `bookings.status`
 (`booked` = yes, `cancelled` = not this time; no schema change to the table). Leaders see "n coming" and "n not coming" chips and a
 Coming / Not this time chip per person in Attendance; `session_roster()` now also returns `not_coming` for the facilitator's Team
-list. Members can still just turn up. User guides (Getting started, Running a session) updated. PR open, not merged.
+list. Members can still just turn up. User guides (Getting started, Running a session) updated. Live (PR #323, merged 22 Nov 2026).
