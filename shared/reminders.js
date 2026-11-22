@@ -84,12 +84,12 @@
   function turnOn() {
     if (!supported()) {
       alert(/iPhone|iPad|iPod/.test(navigator.userAgent)
-        ? "On an iPhone, add DSY Training to your Home Screen first:\n\n1. Open your Team page in Safari (dsytraining.com/teams).\n2. Tap the Share button, then \"Add to Home Screen\".\n3. Open DSY Training from the new icon, sign in, and tap \"Turn on reminders\".\n\n(Needs iOS 16.4 or later.)"
+        ? "On an iPhone, add Ambulance Team to your Home Screen first:\n\n1. Open your Team page in Safari (dsytraining.com/teams).\n2. Tap the Share button, then \"Add to Home Screen\".\n3. Open Ambulance Team from the new icon, sign in, and tap \"Turn on reminders\".\n\n(Needs iOS 16.4 or later.)"
         : "This browser can't show notifications. Try Chrome or Safari.");
       return Promise.resolve("");
     }
     return Notification.requestPermission().then(function (perm) {
-      if (perm !== "granted") return "Notifications are blocked for DSY Training. Allow them in your phone's settings, then try again.";
+      if (perm !== "granted") return "Notifications are blocked for this site. Allow them in your phone's settings, then try again.";
       return subscribeRoot().catch(function (e) { throw new Error("This device couldn't turn on reminders (" + ((e && e.message) || "unknown reason") + ")."); }).then(dropOld).then(function () {
         return test().catch(function () {}).then(function () { return "Reminders are on: your team's roster reminder, and one 12 hours before each training session. A test is on its way." + FOCUS; });
       });
