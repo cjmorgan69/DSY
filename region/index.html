@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Lower Eyre Peninsula</title>
+<title>Eyre Peninsula</title>
 <link rel="icon" type="image/png" sizes="32x32" href="../shared/dsy-favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../shared/dsy-favicon-192.png">
 <link rel="apple-touch-icon" href="../shared/dsy-touch-180.png">
@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261123d">
+<link rel="stylesheet" href="../training/theme.css?v=20261123e">
 <style>
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: .9rem; }
 .tile { display: flex; flex-direction: column; overflow: hidden; border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(20, 40, 30, .05); }
@@ -41,8 +41,8 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261123d"></script>
-<script src="../training/pwreveal.js?v=20261123d" defer></script>
+<script src="../training/config.js?v=20261123e"></script>
+<script src="../training/pwreveal.js?v=20261123e" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -91,7 +91,7 @@
       ]);
     }).then(function (r) {
       if (!r) return;
-      S.region = r[0][0] || { name: "Lower Eyre Peninsula", links: [] };
+      S.region = r[0][0] || { name: "Eyre Peninsula", links: [] };
       S.groups = r[1]; S.next = {};
       r[2].forEach(function (s) { if (!S.next[s.group_id]) S.next[s.group_id] = s; });
       var jobs = [];
@@ -129,13 +129,15 @@
 
   function render() {
     var r = S.region, html = header();
-    html += '<section class="hero' + (S.regionPhoto ? "" : " plain") + '">' + (S.regionPhoto ? '<img src="' + esc(S.regionPhoto) + '" alt="' + esc(r.name) + '">' : "") +
-      '<div class="cap"><h1>' + esc(r.name) + '</h1><p>Region overview</p></div></section>';
+    /* Cluster filter (owner, 22 Nov 2026): remembered on this device; starts on the leader's own cluster. */
+    if (S.cluster == null) { var c0 = cstore(); S.cluster = c0 != null ? c0 : (S.profile && CLUSTERS.indexOf(S.profile.cluster) > -1 ? S.profile.cluster : ""); }
+    /* banner: the region name for All clusters, else the cluster's name (owner, 22 Nov 2026) */
+    var title = S.cluster || r.name || "Eyre Peninsula";
+    html += '<section class="hero' + (S.regionPhoto ? "" : " plain") + '">' + (S.regionPhoto ? '<img src="' + esc(S.regionPhoto) + '" alt="' + esc(title) + '">' : "") +
+      '<div class="cap"><h1>' + esc(title) + '</h1><p>' + (S.cluster ? "Cluster overview" : "Region overview") + '</p></div></section>';
     html += '<div class="actions"><a class="big" href="../training/">Team Training<span>Sessions, lessons, attendance and people</span></a>' +
       '<a class="big alt" href="' + DASH + '">Manager dashboard<span>Rosters and cover across the region</span></a>' +
       '<a class="big alt" href="' + MANAGER + '">Roster manager<span>Open the manager roster page</span></a></div>';
-    /* Cluster filter (owner, 22 Nov 2026): remembered on this device; starts on the leader's own cluster. */
-    if (S.cluster == null) { var c0 = cstore(); S.cluster = c0 != null ? c0 : (S.profile && CLUSTERS.indexOf(S.profile.cluster) > -1 ? S.profile.cluster : ""); }
     var shown = S.groups.filter(function (g) { return !S.cluster || g.cluster === S.cluster; });
     html += '<section class="stack"><div class="sec-h"><h2>Teams</h2></div><div class="chips" role="group" aria-label="Cluster">' +
       [""].concat(CLUSTERS).map(function (c) { return '<button type="button" data-cluster="' + esc(c) + '" aria-pressed="' + (S.cluster === c) + '">' + esc(c || "All clusters") + "</button>"; }).join("") + "</div>" +
@@ -242,7 +244,7 @@
 
   function saveRegion(form) {
     var f = new FormData(form);
-    var row = { name: f.get("name").trim() || "Lower Eyre Peninsula", blurb: f.get("blurb").trim() || null, links: parseLinks(f.get("links")), updated_at: new Date().toISOString() };
+    var row = { name: f.get("name").trim() || "Eyre Peninsula", blurb: f.get("blurb").trim() || null, links: parseLinks(f.get("links")), updated_at: new Date().toISOString() };
     return sb.from("region_info").update(row).eq("id", S.region.id || "main").then(function (r) { if (r.error) throw r.error; S.edit = false; return load(); });
   }
   function uploadRegionPhoto(file) {
