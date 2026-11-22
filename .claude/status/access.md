@@ -153,5 +153,12 @@ team dashboard (roster, dispatches, volunteer contribution and training for thei
 - Migration `vtl_wide_view` (owner, 22 Nov 2026): the team dashboard's roster and dispatch show every team, so
   `is_vtl()`, a `vtl_read` select policy on `paging_jobs`, and `roster_can_view()` lets a VTL see any team's roster names
   (not staff IDs; roster pages are open anyway). `team_dispatch` is no longer used by the page.
-- Not covered: VTLs do not get roster change emails (that is `roster_managers.notify_email`); the training app
-  (`/training/`) still treats them by `profiles.role`. No VTLs set yet: owner to name them. On a branch, not merged.
+- Training app People page (owner, 22 Nov 2026): the Role box on a person's page now offers Member, Facilitator,
+  Volunteer Team Leader, <team> (each of the person's own teams in the leader's cluster; "replaces <name>" when the team
+  has one) and Leader. Choosing VTL writes `team_vtls` and leaves the person's role alone (a leader made VTL goes back to
+  member); choosing any other role removes their VTL row. The People list shows a VTL chip. Real leaders only (relief
+  Team Leaders see the role as text). Facilitator was added because the box used to show facilitators as Member.
+  Tested with stand-in data. On a branch, not merged.
+- Not covered: VTLs do not get roster change emails (that is `roster_managers.notify_email`); in the training app
+  (`/training/`) they are treated as facilitators already: the app has only a leader view and a member view, and
+  facilitators use the member view too (checked 22 Nov 2026); database rules that use `is_facilitator()` include VTLs. No VTLs set yet: owner to name them. Live (PR #320, merged 22 Nov 2026; checked on the live site with stand-in sign-in data, and signed-out visits go to sign-in).

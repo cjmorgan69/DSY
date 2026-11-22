@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261122r">
+<link rel="stylesheet" href="theme.css?v=20261122t">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -52,8 +52,8 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261122r"></script>
-<script src="sa-dates.js?v=20261122r"></script>
+<script src="config.js?v=20261122t"></script>
+<script src="sa-dates.js?v=20261122t"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -166,9 +166,11 @@
       q(sb.from("lesson_shares").select("*")),
       q(sb.from("session_reflections").select("*")),
       /* relief cover (owner, 22 Nov 2026): this leader's own covers, so leader-led nights in a cover default to the reliever */
-      sb.from("leader_relief").select("*").eq("leader_id", S.user.id).is("ended_at", null).then(function (x) { return x.error ? [] : x.data || []; })
+      sb.from("leader_relief").select("*").eq("leader_id", S.user.id).is("ended_at", null).then(function (x) { return x.error ? [] : x.data || []; }),
+      /* Volunteer Team Leaders, one per team (owner, 22 Nov 2026) */
+      sb.from("team_vtls").select("group_id,member_id").then(function (x) { return x.error ? [] : x.data || []; })
     ]).then(function (r) {
-      S.covers = r[10];
+      S.covers = r[10]; S.vtls = r[11];
       S.reflections = {}; r[9].forEach(function (x) { S.reflections[x.session_id] = x.notes; });
       S.groups = r[0]; S.lessons = r[1]; S.sessions = r[2]; S.bookings = r[3];
       S.profiles = r[4]; S.memberships = r[5]; S.attendance = r[6]; S.files = r[7]; S.shares = r[8];
@@ -789,7 +791,7 @@
     var html = clusterChips() + '<ul class="panel list">' + (shownPeople.length ? shownPeople.map(function (p) {
       var gs = S.memberships.filter(function (m) { return m.member_id === p.id; }).map(function (m) { return groupChip(groupOf(m.group_id)); }).join(" ");
       return '<li><button class="item" data-act="editperson" data-id="' + p.id + '"><div class="what"><span class="t">' + esc(nameOf(p)) + '</span>' + (p.staff_id ? '<span class="small muted">ID ' + esc(p.staff_id) + "</span>" : "") + '<span class="row">' + (gs || '<span class="small muted">Not in any group</span>') + "</span></div>" +
-        '<div class="act">' + (p.role === "leader" ? '<span class="chip warn">Leader' + (p.cluster ? " · " + esc(p.cluster) : "") + '</span>' : "") + "</div></button></li>";
+        '<div class="act">' + (p.role === "leader" ? '<span class="chip warn">Leader' + (p.cluster ? " · " + esc(p.cluster) : "") + '</span>' : vtlOf(p.id) ? '<span class="chip good">VTL</span>' : "") + "</div></button></li>";
     }).join("") : '<li class="empty">No one has signed up yet. Share the app link and ask your teams to create an account.</li>') + "</ul>";
     html += '<section class="panel pad stack"><h3>Team and region pages</h3><p class="small muted">Photos, information, roster links and policy links are now edited from the Region page.</p><div class="row"><a class="link" href="../region/">Open the Region page</a></div></section>';
     var courses = S.groups.filter(function (g) { return g.type === "course"; });
@@ -819,10 +821,34 @@
       '<section class="panel pad stack"><h2>' + esc(nameOf(p)) + "</h2><h3>Teams and courses</h3><ul>" +
       S.groups.map(function (g) { return '<li><label class="check"><input type="checkbox" data-act="member" data-mid="' + p.id + '" data-gid="' + g.id + '"' + (inG[g.id] ? " checked" : "") + (canEdit(g.id) ? "" : " disabled") + "> <span>" + esc(g.name) + "</span> " + (g.type === "course" ? '<span class="chip course">Course</span>' : g.cluster ? '<span class="small muted">' + esc(g.cluster) + "</span>" : "") + "</label></li>"; }).join("") + "</ul>" +
       (p.id !== S.profile.id ? '<form class="stack" data-form="resetpw" data-id="' + p.id + '"><h3>Reset password</h3><p class="small muted">Set a temporary password and tell them. They can sign in with it straight away.</p><label>New password (8 or more characters)<input name="pw" type="text" minlength="8" autocomplete="off" required></label><button class="btn small" type="submit">Set password</button></form>' : "") +
-      (S.realLeader ? '<label>Role<select id="p-role" data-act="role" data-mid="' + p.id + '"><option value="member"' + (p.role === "member" ? " selected" : "") + '>Member</option><option value="leader"' + (p.role === "leader" ? " selected" : "") + ">Leader</option></select></label>" : '<p class="small muted">Role: ' + (p.role === "leader" ? "Leader" : "Member") + " (a relief team leader can't change roles).</p>") +
+      (S.realLeader ? roleSelect(p, inG) : '<p class="small muted">Role: ' + roleText(p) + " (a relief team leader can't change roles).</p>") +
       (p.role === "leader" ? (myCluster() || !S.realLeader ? '<p class="small muted">Cluster: ' + esc(p.cluster || "All clusters") + ". Only the lead instructor can change a leader's cluster.</p>" :
         '<label>Cluster (this leader can change sessions and team lists only in their own cluster)<select data-act="pcluster" data-mid="' + p.id + '"><option value="">All clusters</option>' +
         CLUSTERS.map(function (c) { return '<option value="' + c + '"' + (p.cluster === c ? " selected" : "") + ">" + c + "</option>"; }).join("") + "</select></label>") : "") + "</section>";
+  }
+
+  /* Role box on a person's page. Volunteer Team Leader (owner, 22 Nov 2026): one per team, saved in team_vtls (the
+     person's own role is not changed); a VTL counts as a facilitator and manages their team's roster. Only the person's
+     own teams in this leader's cluster are offered. */
+  function vtlOf(mid) { return (S.vtls || []).filter(function (v) { return v.member_id === mid; })[0] || null; }
+  function vtlOwner(gid) { return (S.vtls || []).filter(function (v) { return v.group_id === gid; })[0] || null; }
+  function roleText(p) {
+    var v = vtlOf(p.id), g = v && groupOf(v.group_id);
+    return p.role === "leader" ? "Leader" : v ? "Volunteer Team Leader" + (g ? ", " + esc(g.name) : "") : p.role === "facilitator" ? "Facilitator" : "Member";
+  }
+  function roleSelect(p, inG) {
+    var v = vtlOf(p.id), cur = p.role === "leader" ? "leader" : v ? "vtl:" + v.group_id : p.role === "facilitator" ? "facilitator" : "member";
+    var opt = function (val, label) { return '<option value="' + val + '"' + (val === cur ? " selected" : "") + ">" + label + "</option>"; };
+    var teams = S.groups.filter(function (g) { return g.type === "team" && (inG[g.id] || (v && v.group_id === g.id)); });
+    var html = opt("member", "Member") + opt("facilitator", "Facilitator");
+    teams.forEach(function (g) {
+      var o = vtlOwner(g.id), taken = o && o.member_id !== p.id ? by(o.member_id, S.profiles) : null;
+      if (!canEdit(g.id) && !(v && v.group_id === g.id)) return;
+      html += opt("vtl:" + g.id, "Volunteer Team Leader, " + esc(g.name) + (taken ? " (replaces " + esc(nameOf(taken)) + ")" : ""));
+    });
+    html += opt("leader", "Leader");
+    return '<label>Role<select id="p-role" data-act="role" data-mid="' + p.id + '">' + html + "</select></label>" +
+      '<p class="small muted">A Volunteer Team Leader (one per team) gets facilitator access, manages their team\'s roster and has a team dashboard. To offer it for a team, tick the team above first.</p>';
   }
 
   function linksToText(a) { return (Array.isArray(a) ? a : []).map(function (l) { return (l.label || "") + " | " + (l.url || ""); }).join("\n"); }
@@ -936,7 +962,18 @@
     }).catch(function (e) { fail(e); refresh(); });
   }
   function setRole(mid, role) {
-    return sb.from("profiles").update({ role: role }).eq("id", mid).then(function (r) { if (r.error) throw r.error; toast("Role updated."); return refresh(); }).catch(fail);
+    var p = by(mid, S.profiles), v = vtlOf(mid);
+    if (role.indexOf("vtl:") === 0) {
+      var gid = role.slice(4);
+      /* a VTL keeps their own role (member or facilitator); a leader made VTL goes back to member */
+      var step = v && v.group_id !== gid ? sb.from("team_vtls").delete().eq("group_id", v.group_id) : Promise.resolve({});
+      return step.then(function (r) { if (r.error) throw r.error; return sb.from("team_vtls").upsert({ group_id: gid, member_id: mid, set_at: new Date().toISOString() }, { onConflict: "group_id" }); })
+        .then(function (r) { if (r.error) throw r.error; return p && p.role === "leader" ? sb.from("profiles").update({ role: "member" }).eq("id", mid) : {}; })
+        .then(function (r) { if (r && r.error) throw r.error; toast("Now the Volunteer Team Leader for " + ((groupOf(gid) || {}).name || "the team") + "."); return refresh(); }).catch(fail);
+    }
+    var off = v ? sb.from("team_vtls").delete().eq("group_id", v.group_id) : Promise.resolve({});
+    return off.then(function (r) { if (r.error) throw r.error; return sb.from("profiles").update({ role: role }).eq("id", mid); })
+      .then(function (r) { if (r.error) throw r.error; toast("Role updated."); return refresh(); }).catch(fail);
   }
   function setCluster(mid, c) {
     return sb.from("profiles").update({ cluster: c || null }).eq("id", mid).then(function (r) { if (r.error) throw r.error; toast("Cluster updated."); return refresh(); }).catch(fail);
