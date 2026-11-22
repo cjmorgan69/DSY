@@ -7,7 +7,7 @@
 window.MDT_JOBS = [
   { id:'asthma', label:'Asthma: Karen, 45 (rural homestead, 0215)', scenario:'/modules/asthma-ao/',
     priority:'2', startTime:'02:15', typeName:'Breathing problems', town:'Cummins', street:'HOMESTEAD 20 KM NORTH',
-    note:'45F DIFFICULTY BREATHING', patient:'MERCER, KAREN', age:'45Y', weight:'', caller:'HUSBAND (ON SCENE)',
+    note:'45F DIFFICULTY BREATHING', patient:'MITCHELL, KAREN', age:'45Y', weight:'', caller:'HUSBAND (ON SCENE)',
     remarks:'DIFFICULTY BREATHING - "CANT GET HER BREATH"\nKNOWN ASTHMATIC - USING VENTOLIN WITHOUT RELIEF\nPATIENT AWAKE AND SITTING UP\nRURAL HOMESTEAD - SEALED ROAD ACCESS\n+3 HUSBAND: SHE IS USING HER PUFFER AGAIN - NO BETTER\n+8 HUSBAND WILL MEET CREW AT THE DOOR - PORCH LIGHT ON',
     expected:'CUMMINS HOSPITAL, about 30 minutes (scenario)' },
   { id:'chest-pain', label:'Chest pain: Graham, 62 (rural property, 2115)', scenario:'/modules/chest-pain/',
@@ -40,7 +40,7 @@ window.MDT_JOBS = [
     } },
   { id:'envenomation', label:'Snake bite: Greg, 52 (Wangary, 1432)', scenario:'/modules/envenomation/',
     priority:'2', startTime:'14:32', typeName:'Snake bite', town:'Wangary', street:'RURAL PROPERTY',
-    note:'52M SNAKE BITE', patient:'TREMAYNE, GREG', age:'52Y', weight:'', caller:'WIFE (DENISE)',
+    note:'52M SNAKE BITE', patient:'THOMPSON, GREG', age:'52Y', weight:'', caller:'WIFE (DENISE)',
     unitLoc:'CUMMINS AMBULANCE STATION',
     remarks:'BITTEN RIGHT LOWER LEG ABOUT 15 MIN AGO - BROWN SNAKE ABOUT 1.5 M\nCONSCIOUS - BREATHING - AMBULANT\nNOW SITTING ON BACK VERANDAH\nGRAVEL DRIVEWAY 200 M TO HOMESTEAD\nDOGS WILL BE SECURED\n+6 PT REMAINS CONSCIOUS - SITTING ON BACK VERANDAH\n+15 DOG NOW PENNED - SNAKE NOT SIGHTED SINCE',
     expected:'PORT LINCOLN HOSPITAL (scenario)',
@@ -53,7 +53,7 @@ window.MDT_JOBS = [
       const early = Math.max(1, Math.round(drive*0.25)), late = Math.max(early+1, Math.round(drive*0.6));
       const town = String(v.town||'').trim(), station = String(v.station||'').trim() || 'Cummins';
       return {
-        patient:'TREMAYNE, ' + (U(v.patient) || 'GREG'), age:(+v.age || 52) + 'Y', caller:P + ' (' + (U(v.partner_name) || 'DENISE') + ')',
+        patient:'THOMPSON, ' + (U(v.patient) || 'GREG'), age:(+v.age || 52) + 'Y', caller:P + ' (' + (U(v.partner_name) || 'DENISE') + ')',
         town: town || 'Wangary', street:'RURAL PROPERTY', station, unitLoc:U(station) + ' AMBULANCE STATION', startTime:v.dispatch || '14:32',
         note:(+v.age || 52) + 'M SNAKE BITE',
         remarks:['BITTEN RIGHT LOWER LEG ABOUT 15 MIN AGO - BROWN SNAKE ABOUT 1.5 M','CONSCIOUS - BREATHING - AMBULANT','NOW SITTING ON BACK VERANDAH',
@@ -64,7 +64,7 @@ window.MDT_JOBS = [
     } },
   { id:'anaphylaxis', label:'Anaphylaxis: David, 54 (bee sting, 1430)', scenario:'/modules/anaphylaxis/',
     priority:'1', startTime:'14:30', typeName:'Allergic reaction', town:'Cowell', street:'RURAL PROPERTY 10 KM SOUTH',
-    note:'54M ALLERGIC REACTION - DIFF BREATHING', patient:'ROWLEY, DAVID', age:'54Y', weight:'', caller:'WIFE (ON SCENE)',
+    note:'54M ALLERGIC REACTION - DIFF BREATHING', patient:'COLLINS, DAVID', age:'54Y', weight:'', caller:'WIFE (ON SCENE)',
     remarks:'STUNG BY A BEE - KNOWN BEE ALLERGY\nINCREASING DIFFICULTY BREATHING\nHAS AN EPIPEN - NOT USED\n+2 WIFE: SWELLING TO LIPS AND AROUND EYES\n+5 EPIPEN EXPIRED LAST YEAR - HAS TAKEN AN ANTIHISTAMINE TABLET\n+8 WIFE REPORTS BREATHING WORSE - AUDIBLE WHEEZE',
     expected:'Nearest hospital, about 25 minutes (scenario)',
     // Link from the scenario customiser (Supabase public.scenarios, slug anaphylaxis-ao). Remark timing is DSY-written.
@@ -74,7 +74,7 @@ window.MDT_JOBS = [
       const U = x => String(x||'').trim().toUpperCase(), P = U(v.partner) || 'WIFE', drive = Math.max(5, +v.response || 12);
       const a = Math.max(1, Math.round(drive*0.17)), b = Math.max(a+1, Math.round(drive*0.42)), c = Math.max(b+1, Math.round(drive*0.67));
       const station = String(v.station||'').trim(), out = {
-        patient:'ROWLEY, ' + (U(v.patient) || 'DAVID'), age:(+v.age || 54) + 'Y', caller:P + ' (ON SCENE)',
+        patient:'COLLINS, ' + (U(v.patient) || 'DAVID'), age:(+v.age || 54) + 'Y', caller:P + ' (ON SCENE)',
         town:String(v.town||'').trim() || 'Cowell', station, startTime:v.dispatch || '14:30',
         note:(+v.age || 54) + 'M ALLERGIC REACTION - DIFF BREATHING',
         remarks:['STUNG BY A BEE - KNOWN BEE ALLERGY','INCREASING DIFFICULTY BREATHING','HAS AN EPIPEN - NOT USED',
@@ -86,7 +86,7 @@ window.MDT_JOBS = [
       return out;
     } },
   { id:'stroke', label:'Stroke: Frank, 78 (Coffin Bay, mid-morning)', scenario:'/modules/stroke-AO/',
-    priority:'2', startTime:'10:20', typeName:'Possible stroke', town:'Coffin Bay', street:'HOUSE, ESPLANADE',
+    priority:'2', startTime:'11:00', typeName:'Possible stroke', town:'Coffin Bay', street:'HOUSE, ESPLANADE',
     note:'78M POSSIBLE STROKE', patient:'ABERNETHY, FRANK', age:'78Y', weight:'', caller:'WIFE (MARGARET, DISTRESSED)',
     remarks:'DROPPED HIS CUP - FACE DROOPY ON ONE SIDE - CANT SPEAK PROPERLY\nSTARTED ABOUT 45 MIN AGO AT MORNING TEA\nCONSCIOUS AND BREATHING - NO FALL - NO SEIZURE\nHX PER CALLER: HIGH BP, HEART TABLETS, DIABETES\nSINGLE STOREY HOUSE - FRONT DOOR UNLOCKED - NO DOGS\n+3 WIFE: RIGHT ARM WEAK - SPEECH STILL SLURRED\n+6 PT REMAINS CONSCIOUS - SITTING AT KITCHEN TABLE',
     expected:'PORT LINCOLN HOSPITAL (STS), about 35 minutes (scenario)' },
@@ -97,7 +97,7 @@ window.MDT_JOBS = [
     expected:'CUMMINS HOSPITAL, about 10 minutes (scenario)' },
   { id:'sepsis', label:'Sepsis: Robert, 71 (near Tumby Bay, 2115)', scenario:'/modules/sepsis/',
     priority:'1', startTime:'21:15', typeName:'Fever, altered conscious state', town:'Tumby Bay', street:'FARM 12 KM NE',
-    note:'71M FEVER - CONFUSION', patient:'DALGLEISH, ROBERT', age:'71Y', weight:'', caller:'WIFE (JEAN)',
+    note:'71M FEVER - CONFUSION', patient:'PATTERSON, ROBERT', age:'71Y', weight:'', caller:'WIFE (JEAN)',
     remarks:'FEVER - CONFUSION - DIFFICULT TO ROUSE\nUNWELL 2 DAYS: FEVER, RIGORS, REDUCED URINE OUTPUT\nWIFE: "BURNING HOT AND NOT MAKING SENSE"\nHX: T2DM, CKD, ENLARGED PROSTATE, 3 UTIS IN 12 MONTHS - NKA\n8 KM SEALED THEN 4 KM DIRT - GATE OPEN\n+3 WIFE (JEAN): NOW HARDER TO ROUSE - GROANS ONLY\n+6 PORCH LIGHT ON - GATE OPEN',
     expected:'TUMBY BAY HOSPITAL, about 15 minutes (scenario)' },
   { id:'pain', label:'Pain: Gary, 58 (fall from shed roof, 1845)', scenario:'/modules/pain-management/',
@@ -117,7 +117,7 @@ window.MDT_JOBS = [
     expected:'PORT LINCOLN HOSPITAL, about 35 to 40 minutes (scenario)' },
   { id:'nausea', label:'Nausea and vomiting: Helen, 62 (farm near Cummins, 2035)', scenario:'/modules/nausea-vomiting/',
     priority:'2', startTime:'20:35', typeName:'Nausea and vomiting', town:'Cummins', street:'FARM 5 KM WEST',
-    note:'62F PERSISTENT N&V', patient:'BRADSHAW, HELEN', age:'62Y', weight:'', caller:'HUSBAND (DAVID)',
+    note:'62F PERSISTENT N&V', patient:'HENLEY, HELEN', age:'62Y', weight:'', caller:'HUSBAND (DAVID)',
     remarks:'VOMITING FOR 8 HOURS - CANT KEEP FLUIDS DOWN\nNEARLY FAINTED WALKING FROM THE BATHROOM\nSEALED ROAD THEN 200 M GRAVEL DRIVEWAY\nGATE OPEN - LIGHTS ON\n+2 HUSBAND: STILL VOMITING - NOW ON BATHROOM FLOOR\n+5 SYMPTOMS STARTED AROUND LUNCHTIME AFTER LEFTOVER CHICKEN',
     expected:'CUMMINS HOSPITAL, about 7 minutes (scenario)' },
   { id:'mva', label:'MVA rollover: Jason, 34 (Tod Highway near Cummins, 1730)', scenario:'/modules/mva-ao/',
@@ -205,7 +205,7 @@ window.MDT_JOBS = [
   link('headache', 'headache-ao', { patient:'Ian', age:'62', partner:'wife', partner_name:'Sandra', town:'Coffin Bay', station:'Coffin Bay', hospital_town:'Port Lincoln', response:'8', transport:'35', dispatch:'14:23' },
     town('hospital_town', 'Port Lincoln'));
   link('nausea', 'nausea-ao', { patient:'Helen', age:'62', partner:'husband', partner_name:'David', town:'Cummins', station:'Cummins', response:'8', transport:'7', dispatch:'20:35' },
-    v => U(v.hospital || 'Cummins District Hospital'));
+    v => U(v.hospital || 'Cummins Hospital'));
   link('falls', 'falls-ao', { patient:'Mavis', age:'81', town:'Cummins', station:'Cummins', hospital_town:'Cummins', response:'8', transport:'5', dispatch:'06:30' },
     town('hospital_town', 'Cummins'));
   link('dementia', 'dementia-ao', { patient:'Jo-Anne', age:'84', partner:'husband', partner_name:'Ray', town:'Cummins', station:'Cummins', hospital_town:'Cummins', response:'12', transport:'15', dispatch:'18:40' },

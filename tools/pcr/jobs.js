@@ -676,7 +676,7 @@ window.PCR_JOBS = {
       allergies: 'Penicillin (rash)',
       communicable: 'Nil known',
       provisional: '?Food poisoning / gastroenteritis with dehydration.',
-      recommendation: 'Transported to Cummins District Hospital, notified. Ondansetron 4 mg ODT 2047 (AF precaution noted) + 4 mg 2105 (EOC Clinician). Vomiting stopped, nausea 8 to 2/10. BGL drifting 4.8 to 4.5, not eating, on metformin: needs fluids + BGL monitoring. On apixaban.',
+      recommendation: 'Transported to Cummins Hospital, notified. Ondansetron 4 mg ODT 2047 (AF precaution noted) + 4 mg 2105 (EOC Clinician). Vomiting stopped, nausea 8 to 2/10. BGL drifting 4.8 to 4.5, not eating, on metformin: needs fluids + BGL monitoring. On apixaban.',
       ecg: 'AF (known), rate 104 then 92. Nil acute changes on 4-lead.'
     },
     sections: {

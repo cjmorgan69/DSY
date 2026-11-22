@@ -51,5 +51,8 @@ decisions: chest pain is dispatched from Cleve (CL181; Arno Bay was a DSY-invent
 bite crew is from Cummins, not Port Lincoln (response 25 min and Port Lincoln Hospital 30 min unchanged; walk-through
 text and the `envenomation-ao` template's station default changed to match). Customiser fixes: asthma, anaphylaxis
 and ACPO now dispatch from the customised town's station when the station is left blank; the MVA street keeps the
-chosen direction (north/south/east/west). On a branch, not merged.
+chosen direction (north/south/east/west).. Checked against the PCR trainer the same day: library
+surnames now match the walk-throughs' handovers (Mitchell, Collins, Thompson, Patterson, Henley); stroke paged at 1100
+to fit the PCR card's onset 1015 and "45 minutes ago"; "Cummins Hospital" used for Helen everywhere (walk-through,
+PCR card, `nausea-ao` template default). On a branch, not merged.
 
