@@ -82,4 +82,4 @@ Owner chose the earlier idea: a complete check of the real vehicle first (pairs 
 vehicle screen; the address works for anyone): DSY-written plan with timings, the areas with section and item counts
 and live progress (who is checking now), talk prompts, links to the Kit guide, Stock to order and the general
 feedback form. Tapping an area opens its sections, each a link to start that check (fix after the owner found the
-areas did not open on their phone, 22 Nov 2026, PR #316). Areas are uneven: Grab & Go kits has 120 items. Added to `public.lessons` on 22 Nov 2026 ("Know your vehicle - crew vehicle check", resources `/vehicle-check/#lesson`).
+areas did not open on their phone, 22 Nov 2026, PR #316). Areas are uneven: Grab & Go kits has 120 items. Added to `public.lessons` on 22 Nov 2026 ("Know your vehicle - crew vehicle check"; resources changed to `/vehicle-check/` at the owner's request, 22 Nov 2026).
