@@ -42,3 +42,18 @@ recorded, a stock-to-order list, and a prompt to check a section that has not be
 
 - No expiry-date checks, no vehicle (fuel, lights, tyres) checks: the form has none.
 - No leader view across all vehicles, no email of the order list (copy as text only).
+
+## Item cross-reference (22 Nov 2026, on a branch, not merged; draft for the owner's review)
+
+Owner's plan: a lesson where the crew do a complete real check of the vehicle (that comes first), then, if time
+allows, each person talks about one item: what it is for and which protocol it belongs to. Owner wants item info in
+the app for that session, after reviewing the table.
+
+- `vehicle-check/item-info.js`: rules (first match on "item | description") giving what the item is for (DSY
+  wording, for review), the AO protocols and CPPROs whose text names it, and AO scope. Medicine scope from the SAAS
+  app dose table (main.10d22172e56532ee.js). Not yet loaded by the app.
+- Sent to the owner as a PDF table (23 pages, landscape), grouped by section, with a "to check" list:
+  Cardiac Arrest CPP-002-AO and CPP-043-AO export as blank pages; app vs protocol on salbutamol MDI (protocol: no
+  consult, app: Consult) and GTN; benzylpenicillin linked by the app to CPP-010-AO (gone); ipratropium MDI and nasal
+  cannula only at paramedic level in AO documents; Co-Phenylcaine in CPPRO-025 steps but app scope paramedic and up;
+  water for injection not in AO protocols; TNT envelopes assumed Treat and Refer; 16 CPPROs past review date.
