@@ -156,6 +156,8 @@
     return out;
   }
   function rosterLink(name) {
+    /* team dashboard (owner, 22 Nov 2026): only the VTL's own team name links to its roster; the others are plain text */
+    if (!team || String(name).toLowerCase() !== String(team.name).toLowerCase()) return "";
     var t = rosterTeams().filter(function (x) { return x.name.toLowerCase() === String(name).toLowerCase(); })[0];
     return t && CL_DIR[t.cluster] ? "/modules/rosters/" + CL_DIR[t.cluster] + "/" + t.id + "/" : "";
   }
@@ -197,7 +199,7 @@
     if (html === '<div class="crew"></div>') html = "";
     if (empty.length) html += '<div class="ct none"><span class="nc">No crew booked</span><span class="small">' + empty.join(", ") + "</span></div>";
     if (crewErr.length) html += '<p class="note">Not loaded: ' + esc(crewErr.join(", ")) + ".</p>";
-    html += '<p class="note">From each team\'s roster when the dashboard opened. Tap a team name to open its roster.</p>';
+    html += '<p class="note">From each team\'s roster when the dashboard opened. Tap your team\'s name to open its roster.</p>';
     $("cBody").innerHTML = html;
   }
   $("rHeat").addEventListener("click", function (e) {

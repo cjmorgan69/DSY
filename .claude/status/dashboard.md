@@ -210,5 +210,5 @@ and Dispatch show EVERY team, the same as the Team Leader dashboard (owner, 22 N
 those two sections are copied from `dash.js`: keep them in step), except the dispatch note does not point to `/dispatch/`
 (leaders only). Volunteer contribution (`team_contribution`, This month / Last month / 30 days / All, PARA hidden unless
 ticked) and Training (the team's sessions for 2 months) are the VTL's own team only. Weather starts on the team's town.
-No footer links, tasks, Ask DSY or suggestions. A leader sees a team picker to preview any team. Linked from the VTL's Team Page. Access details in `access.md`. Tested in a headless browser
+Only the VTL's own team name links to its roster (owner, 22 Nov 2026); other team names are plain text. No footer links, tasks, Ask DSY or suggestions. A leader sees a team picker to preview any team. Linked from the VTL's Team Page. Access details in `access.md`. Tested in a headless browser
 with stand-in sign-in data (phone and wide). On a branch, not merged.
