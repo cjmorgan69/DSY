@@ -121,7 +121,7 @@ Role or Cluster settings), `dash.js` (banner, covered leader's tasks labelled wi
 Chapman): Dave got leader access and Chris's 3 tasks, was blocked from resetting Chris's password, making himself a
 leader and handing cover on, could not read calendar links, and lost everything when the cover ended.
 Search box above the relief Team Leader list (owner, 22 Nov 2026): filters by name or staff ID, picks the person when
-only one matches (rebuilds the options; hidden options don't hide on iPhone Safari). On a branch, not merged.
+only one matches (rebuilds the options; hidden options don't hide on iPhone Safari). Live (PR #311, merged 22 Nov 2026).
 
 ## User guides and Ask DSY (17 Nov 2026, owner)
 
