@@ -8,7 +8,7 @@ self.addEventListener("activate", event => event.waitUntil(self.clients.claim())
 self.addEventListener("push", event => {
   let data = {};
   try { data = event.data ? event.data.json() : {}; } catch (error) { data = { body: event.data ? event.data.text() : "" }; }
-  event.waitUntil(self.registration.showNotification(data.title || "DSY Training", {
+  event.waitUntil(self.registration.showNotification(data.title || "Reminder", {
     body: data.body || "",
     icon: "/shared/dsy-app-192.png",
     // No "tag": on iPhone a notification that replaces an earlier one with the same tag arrives silently.

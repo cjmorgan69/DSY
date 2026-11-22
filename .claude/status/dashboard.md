@@ -237,10 +237,10 @@ members of the session's team who turned reminders on, except those who answered
 - One switch: `/shared/reminders.js` draws "🔔 Turn on reminders" (Send a test / Turn off) into any
   `<div class="dsy-reminders">`: on the main page (signed in only), Team Training (under the header) and every roster
   page (under the name, replacing the roster-only controls), and the Team page. Service worker `/sw.js` (scope "/").
-- Home Screen (owner, 22 Nov 2026): the one **DSY Training** icon is the Team page (`/dsy.webmanifest`, start_url and
+- Home Screen (owner, 22 Nov 2026): the one **Ambulance Team** icon (first called DSY Training) is the Team page (`/dsy.webmanifest`, start_url and
   id `/teams/`, scope "/", linked from `/teams/` only). From the Team page people can save their own shortcuts to
   Training schedule, Your roster or Learn on your own (roster pages keep `roster.webmanifest`; training and home have
-  none). On iPhone each icon is its own app, so reminders are turned on in the DSY Training icon.
+  none). On iPhone each icon is its own app, so reminders are turned on in the Ambulance Team icon.
 - Devices: `roster_push_subs.sw_scope` ('/' whole site, '/modules/rosters/' older roster-only). `push_devices()`
   sends to a person's whole-site devices if they have any, else their roster ones (no doubles). A roster-only device
   counts as on, is moved to the whole-site worker quietly on the next page load when the phone allows, and Turn off
@@ -252,7 +252,10 @@ members of the session's team who turned reminders on, except those who answered
 - pg_cron job `session-remind` every 10 minutes: created 22 Nov 2026 on merge. Live (PR #326, merged 22 Nov 2026);
   first reminders due Mon 23 Nov 7:00 am (Tumby Bay, Port Neill).
 - Not yet tried on a real phone (headless Chrome has no push service): owner to turn it on and Send a test.
-- DSY Training icon (owner, 22 Nov 2026): a side-on ambulance in the SAAS livery from the owner's photo (white,
+- Icon name (owner, 22 Nov 2026): "Ambulance Team" (manifest name and apple-mobile-web-app-title on the Team page): an
+  iPhone puts the icon name on top of every notification and the owner did not want "DSY Training" there. Test title
+  "Reminders are on" (roster-remind v7); the service worker fallback title is "Reminder".
+- Icon picture (owner, 22 Nov 2026): a side-on ambulance in the SAAS livery from the owner's photo (white,
   thin green and white check band with a green line, fluoro yellow lower line, red and yellow rear chevrons, blue
   Star of Life, red and blue light bar) on a green background, drawn by Claude; no SAAS logo or name. Source
   `shared/dsy-app-icon.svg`, PNGs `shared/dsy-app-180/192/512.png` (Team page apple-touch-icon, `/dsy.webmanifest`,

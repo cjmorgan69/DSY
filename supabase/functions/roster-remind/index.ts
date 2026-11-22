@@ -114,7 +114,7 @@ Deno.serve(async (req) => {
       const mine = (all || []).filter((s: any) => !dsy || s.sw_scope === "/");
       if (!mine.length) return json({ error: "Reminders are not turned on for this device yet." }, 400);
       if (dsy) {
-        return json(await push(sb, mine, () => ({ title: "DSY reminders are on", body: "This is a test. You'll get your team's roster reminder, and a reminder 12 hours before each training session.", url: "/" })));
+        return json(await push(sb, mine, () => ({ title: "Reminders are on", body: "This is a test. You'll get your team's roster reminder, and a reminder 12 hours before each training session.", url: "/" })));
       }
       const r = await push(sb, mine, (s) => ({ title: "Roster reminders are on", body: "This is a test. You'll get a reminder the day before your team's roster is sent.", url: s.page_url || "/modules/rosters/" }));
       return json(r);
