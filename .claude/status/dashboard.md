@@ -227,3 +227,17 @@ Session screen in the leader / VTL calendar: each chosen lesson has an **Open le
 Resources and links). Member list: on sessions you are facilitating, an Open lesson link under the chips (one per lesson,
 named, when there are several). `upcoming_sessions` view now adds `url` to each item in `lessons` (same regex). All 66
 lessons had a link on 22 Nov 2026. Live (PR #325, merged 22 Nov 2026).
+
+## Training app: session reminders (22 Nov 2026)
+
+App notification 12 hours before each session to the members of the session's team who turned reminders on, except
+those who answered "Sorry, not this time". Title "<Team> training today, 7:00 pm"; body "<lesson titles or topic>.
+Led by <facilitator>. 7:00 pm to 9:00 pm at <location>. Tap to say if you're coming." (wording is Claude's draft).
+- Page: "🔔 Turn on session reminders" under the header (Send a test / Turn off), `training/sw.js` (scope /training/),
+  `training/training.webmanifest`, Home Screen tags. iPhone: Home Screen app first (iOS 16.4+).
+- Reuses the roster push set-up: devices in `roster_push_subs` (page_url `/training/`), same keys, edge function
+  `roster-remind` modes `sessions` and `test` + `kind: "training"` (deployed v5, 22 Nov 2026). A person's training-app
+  devices are used if they have any, else their roster devices (so people with roster reminders on get these too).
+- SQL `supabase/session-reminders.sql` (migration `session_reminders`, applied): `sessions.reminded_at` (cleared when
+  the date or start time changes), `session_reminder_claim()`, `session_push_targets()`.
+- pg_cron job `session-remind` every 10 minutes: created on merge (see below).
