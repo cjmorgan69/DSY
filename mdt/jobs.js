@@ -14,6 +14,7 @@ window.MDT_JOBS = [
     priority:'2', startTime:'21:15', typeName:'Chest pain', town:'Arno Bay', street:'FARM 9 KM WEST',
     note:'62M CHEST PAIN - CARDIAC HX', patient:'HOLLOWAY, GRAHAM', age:'62Y', weight:'', caller:'WIFE (ON SCENE)',
     remarks:'CHEST PAIN FOR 30 MINUTES\nKNOWN ANGINA - HAS OWN GTN - PAIN NOT RESOLVING WITH OWN GTN\nWIFE ON SCENE\nSEALED ROAD THEN 2 KM DIRT - GATE OPEN - LIGHTS ON\nNEAREST PARAMEDIC CREW 55 MINUTES - MEDSTAR TBC\n+4 WIFE ADVISES PAIN UNCHANGED - PT PALE AND SWEATY\n+10 GATE OPEN - LIGHTS ON - WIFE WILL WAIT AT FRONT DOOR',
+    unitLoc:'CLEVE AMBULANCE STATION',
     expected:'CLEVE HOSPITAL, about 20 minutes (scenario)',
     // Link from the scenario customiser (Supabase public.scenarios, slug chest-pain-ao).
     // Town-house wording and the remark timing below are DSY-written.
@@ -27,7 +28,7 @@ window.MDT_JOBS = [
       return {
         patient:'HOLLOWAY, ' + (U(v.patient) || 'GRAHAM'), age:(+v.age || 62) + 'Y', caller:P + ' (ON SCENE)',
         town, street: farm ? 'FARM 9 KM WEST' : 'HOUSE IN TOWN', station:String(v.station||'').trim(),
-        unitLoc: U(v.station || town) + ' AMBULANCE STATION', startTime:v.dispatch || '21:15',
+        unitLoc: U(v.station || v.town || 'Cleve') + ' AMBULANCE STATION', startTime:v.dispatch || '21:15',
         note:(+v.age || 62) + 'M CHEST PAIN - CARDIAC HX',
         remarks:['CHEST PAIN FOR 30 MINUTES','KNOWN ANGINA - HAS OWN GTN - PAIN NOT RESOLVING WITH OWN GTN', P + ' ON SCENE',
           farm ? 'SEALED ROAD THEN 2 KM DIRT - GATE OPEN - LIGHTS ON' : 'HOUSE IN TOWN - LIGHTS ON',
@@ -40,17 +41,17 @@ window.MDT_JOBS = [
   { id:'envenomation', label:'Snake bite: Greg, 52 (Wangary, 1432)', scenario:'/modules/envenomation/',
     priority:'2', startTime:'14:32', typeName:'Snake bite', town:'Wangary', street:'RURAL PROPERTY',
     note:'52M SNAKE BITE', patient:'TREMAYNE, GREG', age:'52Y', weight:'', caller:'WIFE (DENISE)',
-    unitLoc:'PORT LINCOLN AMBULANCE STATION',
+    unitLoc:'CUMMINS AMBULANCE STATION',
     remarks:'BITTEN RIGHT LOWER LEG ABOUT 15 MIN AGO - BROWN SNAKE ABOUT 1.5 M\nCONSCIOUS - BREATHING - AMBULANT\nNOW SITTING ON BACK VERANDAH\nGRAVEL DRIVEWAY 200 M TO HOMESTEAD\nDOGS WILL BE SECURED\n+6 PT REMAINS CONSCIOUS - SITTING ON BACK VERANDAH\n+15 DOG NOW PENNED - SNAKE NOT SIGHTED SINCE',
     expected:'PORT LINCOLN HOSPITAL (scenario)',
     // Link from the scenario customiser (Supabase public.scenarios, slug envenomation-ao). Remark timing is DSY-written.
     customSlug:'envenomation-ao',
-    customDefaults:{ patient:'Greg', age:'52', partner:'wife', partner_name:'Denise', town:'Wangary', station:'Port Lincoln',
+    customDefaults:{ patient:'Greg', age:'52', partner:'wife', partner_name:'Denise', town:'Wangary', station:'Cummins',
       hospital_town:'Port Lincoln', transport:'30', dispatch:'14:32', response:'25' },
     custom(v){
       const U = x => String(x||'').trim().toUpperCase(), P = U(v.partner) || 'WIFE', drive = Math.max(5, +v.response || 25);
       const early = Math.max(1, Math.round(drive*0.25)), late = Math.max(early+1, Math.round(drive*0.6));
-      const town = String(v.town||'').trim(), station = String(v.station||'').trim() || 'Port Lincoln';
+      const town = String(v.town||'').trim(), station = String(v.station||'').trim() || 'Cummins';
       return {
         patient:'TREMAYNE, ' + (U(v.patient) || 'GREG'), age:(+v.age || 52) + 'Y', caller:P + ' (' + (U(v.partner_name) || 'DENISE') + ')',
         town: town || 'Wangary', street:'RURAL PROPERTY', station, unitLoc:U(station) + ' AMBULANCE STATION', startTime:v.dispatch || '14:32',
@@ -81,7 +82,7 @@ window.MDT_JOBS = [
           '+' + c + ' ' + P + ' REPORTS BREATHING WORSE - AUDIBLE WHEEZE'].join('\n'),
         expected:(String(v.hospital||'').trim() || 'Nearest hospital') + ', about ' + (+v.transport || 25) + ' minutes (customised scenario)'
       };
-      if (station) out.unitLoc = U(station) + ' AMBULANCE STATION';
+      if (station || v.town) out.unitLoc = U(station || v.town) + ' AMBULANCE STATION';
       return out;
     } },
   { id:'stroke', label:'Stroke: Frank, 78 (Coffin Bay, mid-morning)', scenario:'/modules/stroke-AO/',
@@ -128,7 +129,7 @@ window.MDT_JOBS = [
     // Link from the scenario customiser (Supabase public.scenarios, slug mva-ao). Remark timing is DSY-written.
     customSlug:'mva-ao',
     customDefaults:{ patient:'Jason', age:'34', road:'Tod Highway', town:'Cummins', km:'9', station:'Cummins',
-      backup_town:'Port Lincoln', backup_mins:'40', hospital_town:'Port Lincoln', transport:'50', dispatch:'17:30', response:'12' },
+      dir:'south', backup_town:'Port Lincoln', backup_mins:'40', hospital_town:'Port Lincoln', transport:'50', dispatch:'17:30', response:'12' },
     custom(v){
       const U = x => String(x||'').trim().toUpperCase(), drive = Math.max(5, +v.response || 12);
       const early = Math.max(1, Math.round(drive*0.33)), late = Math.max(early+1, Math.round(drive*0.75));
@@ -136,7 +137,7 @@ window.MDT_JOBS = [
       const road = U(v.road || 'Tod Highway').replace(/\bHIGHWAY\b/, 'HWY'), km = +v.km || 9;
       return {
         patient:'FIELDING, ' + (U(v.patient) || 'JASON'), age:(+v.age || 34) + 'Y', town, station,
-        street:road + ' ' + km + ' KM FROM ' + U(town), unitLoc:U(station) + ' AMBULANCE STATION', startTime:v.dispatch || '17:30',
+        street:road + ' ' + km + ' KM ' + (U(v.dir) || 'SOUTH') + ' OF ' + U(town), unitLoc:U(station) + ' AMBULANCE STATION', startTime:v.dispatch || '17:30',
         note:(+v.age || 34) + 'M MVA - SINGLE VEHICLE ROLLOVER',
         remarks:['SINGLE VEHICLE ROLLOVER - UTE ON ROOF IN TABLE DRAIN','ONE OCCUPANT - OUT OF VEHICLE AND WALKING','HOLDING LEFT SIDE','POLICE AND CFS NOTIFIED',
           'NEAREST PARAMEDIC CREW ' + U(v.backup_town || 'Port Lincoln') + ' ' + (+v.backup_mins || 40) + ' MINUTES IF REQUESTED',
@@ -184,6 +185,7 @@ window.MDT_JOBS = [
         expected: hospital(v) + ', about ' + (+v.transport || +d.transport) + ' minutes (customised scenario)' };
       if (v.dispatch) out.startTime = v.dispatch;
       if (station) { out.station = station; out.unitLoc = U(station) + ' AMBULANCE STATION'; }
+      else if (String(v.town || '').trim()) out.unitLoc = U(v.town) + ' AMBULANCE STATION';
       return out;
     };
   };
@@ -209,3 +211,15 @@ window.MDT_JOBS = [
   link('dementia', 'dementia-ao', { patient:'Jo-Anne', age:'84', partner:'husband', partner_name:'Ray', town:'Cummins', station:'Cummins', hospital_town:'Cummins', response:'12', transport:'15', dispatch:'18:40' },
     town('hospital_town', 'Cummins'));
 })();
+
+/* Eyre Peninsula call signs (owner, 11 and 16 Nov 2026): team letters + 81 for jobs between 0800 and 1800, + 181
+   between 1800 and 0800. The MDT uses this for library and customised jobs; a station not listed here keeps the
+   call sign already on the setup screen. */
+window.MDT_TEAMS = { 'TUMBY BAY':'TB', 'CUMMINS':'CU', 'PORT NEILL':'PT', 'COFFIN BAY':'CF', 'CLEVE':'CL', 'COWELL':'CW',
+  'KIMBA':'KI', 'LOCK':'LK', 'STREAKY BAY':'SB', 'PORT KENNY':'PK', 'WUDINNA':'WU', 'ELLISTON':'EL' };
+window.MDT_CALLSIGN = function (unitLoc, time) {
+  const place = String(unitLoc || '').toUpperCase().replace(/\s*AMBULANCE STATION\s*$/, '').trim();
+  const t = window.MDT_TEAMS[place]; if (!t) return '';
+  const m = String(time || '').match(/^(\d{1,2}):?(\d{2})/), mins = m ? +m[1] * 60 + +m[2] : 12 * 60;
+  return t + (mins >= 8 * 60 && mins < 18 * 60 ? '81' : '181');
+};
