@@ -166,6 +166,8 @@ Development" cards. Raised with the owner and NOT yet decided or done:
   (PR #305, merged 21 Nov 2026). Module 3 Training nights live
   (PR #306, merged 21 Nov 2026). Modules 4 People and passwords and 6 Your team page live (21 Nov 2026).
   Modules 2 Crewing gaps and 5 Relief cover built (on a branch, not merged). All six are linked from the user guides.
+- Volunteer Team Leader level (22 Nov 2026): one per team, facilitator + roster manager for their team, team dashboard
+  `/dashboard/team/`, set on Grant access (see `access.md`). Database applied; pages on a branch, not merged. Owner to name the VTLs.
 - Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario

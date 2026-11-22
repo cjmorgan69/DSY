@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261122n">
+<link rel="stylesheet" href="../training/theme.css?v=20261122p">
 <style>
 /* Photo swipe row (owner, 18 Nov 2026). */
 .learnrow { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; margin: 0 -1rem; padding: .2rem 1rem .5rem; scroll-padding: 0 1rem; -webkit-overflow-scrolling: touch; }
@@ -32,7 +32,7 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261122n"></script>
+<script src="../training/config.js?v=20261122p"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -83,10 +83,12 @@
       S.profile = rows[0] || { role: "member", full_name: "" };
       return Promise.all([
         q(sb.from("groups").select("*").order("type", { ascending: false }).order("name")),
-        q(sb.from("memberships").select("group_id").eq("member_id", S.user.id))
+        q(sb.from("memberships").select("group_id").eq("member_id", S.user.id)),
+        sb.rpc("my_access").then(function (r) { return r.data || {}; }, function () { return {}; })
       ]);
     }).then(function (res) {
       var groups = res[0]; S.mine = res[1].map(function (m) { return m.group_id; });
+      S.vtl = res[2] && res[2].vtl || null;   /* Volunteer Team Leader (22 Nov 2026): Team dashboard button */
       S.groups = groups;
       /* Every Team Page has the schedule and learning buttons, so nobody is sent past it (owner, 19 Nov 2026). */
       S.current = chooseGroup(groups);
@@ -143,6 +145,7 @@
     html += '<div class="actions"><a class="big" href="../training/">Training schedule<span>Book a spot and see upcoming sessions</span></a>' +
       (ru ? '<a class="big alt" href="' + esc(ru) + '">Your roster<span>Open the roster for ' + esc(g.name) + "</span></a>" : "") +
       '<a class="big alt" href="../hub/learn/">Learn on your own<span>Videos, walk-throughs, MDT and PCR practice</span></a>' +
+      (S.vtl && S.vtl.group_id === g.id ? '<a class="big alt" href="../dashboard/team/">Team dashboard<span>Volunteer Team Leader: roster, dispatches, contribution, training and weather for ' + esc(g.name) + "</span></a>" : "") +
       (isLeader() && g.type === "team" ? '<a class="big alt" href="../region/#edit=' + encodeURIComponent(g.id) + '">Edit this page<span>Team leaders: banner photo, photo slides, information and links</span></a>' : "") + "</div>";
     if (S.next) {
       var d = parseDate(S.next.session_date);

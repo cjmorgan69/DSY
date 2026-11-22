@@ -132,3 +132,23 @@ blank it shows "One more thing: your name" once and saves it to `profiles.full_n
 first-time mode; the old "Create an account" links on `/teams/`, `/region/` and `/training/` now go to
 `/signin/?first=1&next=<page>` (their own sign-up forms are no longer reachable). Getting started and leader guides
 updated. Tested with stand-in data. On a branch, not merged.
+
+## Volunteer Team Leader (VTL) (owner, 22 Nov 2026)
+
+Owner asked for a VTL level: the same as roster manager plus facilitator, NOT Team Leader, one per team, with their own
+team dashboard (roster, dispatches, volunteer contribution and training for their team only, and weather; no footer links).
+- Table `public.team_vtls` (group_id primary key = one per team, member_id unique = one team per person); write policy
+  `can_edit_group(group_id)` (cluster leaders), read by leaders, the VTL and the team's members. `profiles.role` is NOT
+  changed: deleting the row takes the access away.
+- `is_facilitator()` and `roster_can_manage(g)` include the VTL (`is_vtl_of(g)`); `sessions_read` and `groups_read` let a
+  VTL read their team; `my_access()` returns `role` = facilitator for a VTL who is a member, plus `vtl` {group_id, team,
+  cluster}. Team-only data through security definer functions `team_dash_group`, `team_dispatch(p_group, p_from, p_to)`,
+  `team_contribution(p_group, p_from, p_to)` (a VTL their own team, a leader any team).
+- SQL `supabase/vtl-setup.sql`, migration `vtl_access`, applied by Claude 22 Nov 2026 after a rolled-back rehearsal with
+  a stand-in Cummins VTL (facilitator yes, leader no, manage Cummins roster yes, Tumby Bay no, sees only the Cummins
+  group and sessions, no direct `paging_jobs` read, team dispatch and contribution work).
+- `shared/gate.js`: new `data-level="vtl"` (VTL or leader); a VTL counts as facilitator on facilitator pages.
+- `/access/`: "Volunteer Team Leaders" section, one row per team, picker of the team's signed-up members; the Role column
+  shows "· VTL <team>". `/teams/`: a Team dashboard button for the VTL on their team.
+- Not covered: VTLs do not get roster change emails (that is `roster_managers.notify_email`); the training app
+  (`/training/`) still treats them by `profiles.role`. No VTLs set yet: owner to name them. On a branch, not merged.
