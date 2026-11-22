@@ -3,7 +3,8 @@
 //        Rostering within 24 hours (roster_reminder_claim, once per send), notify the team members who turned
 //        reminders on, listing the hours that still have no crew. Takes no other input.
 // body { mode: "test" }       from a signed-in person on the roster page: a test notification to their own devices.
-// body { mode: "test", kind: "training" } the same from the training app (to that person's training-app devices).
+// body { mode: "test", kind: "dsy" } the same from the shared DSY switch (/shared/reminders.js), to the person's
+//        whole-site devices (scope "/"), which get every reminder: roster and training sessions (owner, 22 Nov 2026).
 // body { mode: "sessions" }   from the pg_cron job session-remind (owner, 22 Nov 2026): for each training session that
 //        starts within 12 hours (session_reminder_claim, once per session), notify its team's members who turned
 //        reminders on (not those who said "Sorry, not this time"): session name, who leads it, time and place.
@@ -109,11 +110,11 @@ Deno.serve(async (req) => {
       const user = createClient(URL_, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: req.headers.get("Authorization") || "" } } });
       const { data: all, error } = await user.rpc("roster_push_mine");
       if (error) return json({ error: error.message }, 400);
-      const training = body.kind === "training";
-      const mine = (all || []).filter((s: any) => !training || String(s.page_url || "").startsWith("/training/"));
+      const dsy = body.kind === "dsy";
+      const mine = (all || []).filter((s: any) => !dsy || s.sw_scope === "/");
       if (!mine.length) return json({ error: "Reminders are not turned on for this device yet." }, 400);
-      if (training) {
-        return json(await push(sb, mine, () => ({ title: "Session reminders are on", body: "This is a test. You'll get a reminder 12 hours before each of your team's training sessions.", url: "/training/" })));
+      if (dsy) {
+        return json(await push(sb, mine, () => ({ title: "DSY reminders are on", body: "This is a test. You'll get your team's roster reminder, and a reminder 12 hours before each training session.", url: "/" })));
       }
       const r = await push(sb, mine, (s) => ({ title: "Roster reminders are on", body: "This is a test. You'll get a reminder the day before your team's roster is sent.", url: s.page_url || "/modules/rosters/" }));
       return json(r);
