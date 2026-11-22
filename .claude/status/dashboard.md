@@ -192,3 +192,11 @@ panel at the bottom of Run a session. `ask-dsy` v13 reads it. Written by Claude 
 
 - Grant access link (owner, 19 Nov 2026): `/access/` added to the footer links of `/dashboard/` and `/dashboard/wide/`,
   after Roster emails; leader guide section 2 lists it. Merged (PR #283, 19 Nov 2026), checked live.
+
+## Training month view (22 Nov 2026, owner)
+
+`/training/` Calendar: on screens 900px or wider a Month / List switch (Month by default, choice kept on the device);
+the month grid (Mon to Sun, Prev / This month / Next) uses the same cluster, team and leader/team filters. Click a session
+to open it; drag it to another day to move it (confirm; refused if that team already has a session that day; teams
+outside your cluster can't be dragged). The session page has a Team field (teams you can change, not courses); bookings
+and attendance stay with the session. Phones keep the list. On a branch, not merged.

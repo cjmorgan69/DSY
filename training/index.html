@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261122b">
+<link rel="stylesheet" href="theme.css?v=20261122c">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -24,14 +24,35 @@
 .ar-row .t { font-weight: 600; overflow-wrap: anywhere; }
 .ar-row .act { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
 .ar-more > summary { cursor: pointer; font-weight: 600; color: var(--brand); padding: .3rem 0; }
+/* Month view (owner, 22 Nov 2026): desktop only; drag a session to another day to move it. */
+.wrap.wide { width: min(1240px, 100%); }
+.mhead { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.mhead h2 { font-size: 1.25rem; margin-right: auto; }
+.month { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+.month .dh { padding: .45rem .5rem; font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--line); background: var(--bg); }
+.month .day { min-height: 7.2rem; padding: .3rem; border-top: 1px solid var(--line); border-left: 1px solid var(--line); display: flex; flex-direction: column; gap: .25rem; min-width: 0; }
+.month .day:nth-child(7n+1) { border-left: 0; }
+.month .day.out { background: color-mix(in srgb, var(--bg) 70%, var(--surface)); }
+.month .day.out .dn { color: var(--muted); opacity: .6; }
+.month .day.today .dn { background: var(--brand); color: var(--brand-ink); }
+.month .day.over { background: var(--brand-soft); outline: 2px dashed var(--brand); outline-offset: -3px; }
+.month .dn { align-self: flex-start; font-size: .82rem; font-weight: 700; min-width: 1.6rem; text-align: center; padding: .05rem .35rem; border-radius: 999px; }
+.ms { display: block; width: 100%; text-align: left; border: 1px solid color-mix(in srgb, var(--brand) 30%, var(--line)); border-left: 4px solid var(--brand); border-radius: 8px; padding: .25rem .4rem; background: var(--brand-soft); color: var(--ink); font: inherit; font-size: .78rem; line-height: 1.25; cursor: pointer; }
+.ms.team { border-left-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.ms.past { opacity: .6; }
+.ms[draggable="true"] { cursor: grab; }
+.ms.dragging { opacity: .35; }
+.ms b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms span { display: block; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms .need { color: var(--danger); }
 </style>
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261122b"></script>
-<script src="sa-dates.js?v=20261122b"></script>
+<script src="config.js?v=20261122c"></script>
+<script src="sa-dates.js?v=20261122c"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -44,7 +65,8 @@
     user: null, profile: null, tab: location.hash === "#lessons" ? "lessons" : "calendar", view: null,
     reflections: {}, attFilter: null, attSession: null, groups: [], lessons: [], sessions: [], bookings: [], profiles: [], memberships: [],
     mySessions: [], myBookings: {}, filter: "all", typeFilter: "all", showPast: false, authMode: "in", detail: null, lessonEdit: null, personEdit: null,
-    shared: [], files: [], shares: [], roster: [], rosterSession: null, lessonView: null, memberTab: "sessions", delSession: null, cluster: null, plan: null
+    shared: [], files: [], shares: [], roster: [], rosterSession: null, lessonView: null, memberTab: "sessions", delSession: null, cluster: null, plan: null,
+    calView: null, month: null
   };
 
   /* ---------- helpers ---------- */
@@ -464,10 +486,50 @@
     }).catch(fail);
   }
 
+  /* Month view (owner, 22 Nov 2026): on a desktop-width screen the calendar can show one month; sessions can be dragged
+     to another day (same team can't have two sessions on one day: the database refuses that too). Phones keep the list. */
+  var DESK = window.matchMedia ? window.matchMedia("(min-width: 900px)") : { matches: false };
+  function monthOn() { return S.tab === "calendar" && !S.plan && !S.detail && DESK.matches && (S.calView || "month") === "month"; }
+  function ymd(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function renderMonth(list, t) {
+    var m = S.month || t.slice(0, 7), first = parseDate(m + "-01"), start = new Date(first), cells = [];
+    start.setDate(1 - ((first.getDay() + 6) % 7));
+    var end = new Date(first.getFullYear(), first.getMonth() + 1, 0); end.setDate(end.getDate() + (7 - ((end.getDay() + 6) % 7) - 1));
+    var byDay = {}; list.forEach(function (s) { (byDay[s.session_date] = byDay[s.session_date] || []).push(s); });
+    for (var d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      var k = ymd(d), items = (byDay[k] || []).sort(function (a, b) { return String(a.start_time).localeCompare(String(b.start_time)); });
+      cells.push('<div class="day' + (k.slice(0, 7) !== m ? " out" : "") + (k === t ? " today" : "") + '" data-day="' + k + '"><span class="dn">' + d.getDate() + "</span>" + items.map(function (s) {
+        var g = groupOf(s.group_id), ls = lessonsOf(s), team = s.session_type === "team", move = canEdit(s.group_id);
+        var what = ls.length ? ls.map(function (l) { return l.title; }).join(" + ") : s.topic || "";
+        return '<button class="ms' + (team ? " team" : "") + (s.session_date < t ? " past" : "") + '" data-act="open" data-id="' + s.id + '"' + (move ? ' draggable="true" data-move="' + s.id + '"' : "") +
+          ' title="' + esc((g ? g.name : "") + " - " + timeRange(s) + (what ? " - " + what : "") + (ledBy(s) ? " - " + ledBy(s) : "") + (move ? " (drag to move)" : "")) + '"><b>' + esc(g ? g.name : "Session") + "</b>" +
+          "<span>" + esc(hhmm(s.start_time)) + (team ? " · Team-led" : " · Leader-led") + "</span>" +
+          (what ? "<span>" + esc(what) + "</span>" : '<span class="need">' + (team ? "No topic yet" : "No lesson yet") + "</span>") + "</button>";
+      }).join("") + "</div>");
+    }
+    var title = first.toLocaleDateString("en-AU", { month: "long", year: "numeric" });
+    return '<div class="mhead"><h2>' + esc(title) + '</h2><button class="btn ghost small" data-act="month" data-step="-1" aria-label="Previous month">‹ Prev</button><button class="btn ghost small" data-act="month" data-step="0">This month</button><button class="btn ghost small" data-act="month" data-step="1" aria-label="Next month">Next ›</button></div>' +
+      '<p class="small muted">Click a session to open it. Drag a session to another day to move it.</p>' +
+      '<div class="month"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div>' + cells.join("") + "</div>";
+  }
+  function moveSession(id, day) {
+    var s = by(id, S.sessions); if (!s || s.session_date === day) return;
+    var g = groupOf(s.group_id);
+    if (!canEdit(s.group_id)) return fail({ message: "That team is not in your cluster, so you can't move its sessions." });
+    if (S.sessions.some(function (x) { return x.id !== id && x.group_id === s.group_id && x.session_date === day; })) return fail({ message: (g ? g.name : "That team") + " already has a session on " + shortDate(day) + "." });
+    var nb = bookedCount(id);
+    if (!confirm("Move the " + (g ? g.name + " " : "") + "session from " + shortDate(s.session_date) + " to " + shortDate(day) + "?" + (nb ? "\n\n" + nb + " people have booked. Their bookings move with it, so let them know." : ""))) return;
+    var old = s.session_date; s.session_date = day; render();
+    sb.from("sessions").update({ session_date: day }).eq("id", id).then(function (r) {
+      if (r.error) throw r.error; toast("Session moved to " + shortDate(day) + "."); return load().then(render);
+    }).catch(function (e) { s.session_date = old; render(); fail(e); });
+  }
   function renderCalendar() {
     var t = todayStr();
     if (S.plan) return clusterChips() + renderPlan();
-    var tools = '<div class="row"><button class="btn small" data-act="plan" data-p="repeat">Set up training nights</button><button class="btn ghost small" data-act="plan" data-p="one">Add one session</button></div>';
+    var month = monthOn();
+    var tools = '<div class="row"><button class="btn small" data-act="plan" data-p="repeat">Set up training nights</button><button class="btn ghost small" data-act="plan" data-p="one">Add one session</button>' +
+      (DESK.matches ? '<span style="margin-left:auto" class="filters" role="group" aria-label="Calendar view"><button aria-pressed="' + month + '" data-act="calview" data-v="month">Month</button><button aria-pressed="' + !month + '" data-act="calview" data-v="list">List</button></span>' : "") + "</div>";
     if (S.filter !== "all" && !inView(groupOf(S.filter))) S.filter = "all";
     var list = S.sessions.filter(function (s) {
       return inView(groupOf(s.group_id)) && (S.filter === "all" || s.group_id === S.filter) && (S.typeFilter === "all" || s.session_type === S.typeFilter) && (S.showPast || s.session_date >= t);
@@ -476,7 +538,10 @@
       S.groups.filter(inView).map(function (g) { return '<button aria-pressed="' + (S.filter === g.id) + '" data-act="filter" data-g="' + g.id + '">' + esc(g.name) + "</button>"; }).join("") + "</div>" +
       '<div class="filters" role="group" aria-label="Filter by who leads">' + [["all", "Any session"], ["leader", "Leader-led"], ["team", "Team-led"]].map(function (x) {
         return '<button aria-pressed="' + (S.typeFilter === x[0]) + '" data-act="typefilter" data-t="' + x[0] + '">' + x[1] + "</button>";
-      }).join("") + '<button aria-pressed="' + S.showPast + '" data-act="past">Show past</button></div>';
+      }).join("") + (month ? "" : '<button aria-pressed="' + S.showPast + '" data-act="past">Show past</button>') + "</div>";
+    if (month) return html + renderMonth(S.sessions.filter(function (s) {
+      return inView(groupOf(s.group_id)) && (S.filter === "all" || s.group_id === S.filter) && (S.typeFilter === "all" || s.session_type === S.typeFilter);
+    }), t);
     if (!list.length) return html + '<div class="panel empty">No sessions to show.</div>';
     return html + '<ul class="panel list">' + list.map(function (s) {
       var ls = lessonsOf(s), n = bookedCount(s.id), team = s.session_type === "team";
@@ -506,7 +571,7 @@
     var visitor = !s.facilitator_id && s.facilitator_name ? s.facilitator_name : "";
     return '<button class="link back" data-act="back">Back to calendar</button>' +
       '<section class="panel pad stack"><div class="row">' + groupChip(g) + typeChip(s.session_type) + '<span class="chip">' + nb + " booked</span></div><h2>" + esc(longDate(s.session_date)) + '</h2><p class="muted">' + timeRange(s) + "</p>" +
-      '<form class="stack" data-form="session" data-id="' + s.id + '"><div class="grid2">' +
+      '<form class="stack" data-form="session" data-id="' + s.id + '">' + sessionTeam(s) + '<div class="grid2">' +
       '<label>Who leads<select id="s-type" name="type"><option value="leader"' + (s.session_type === "leader" ? " selected" : "") + '>Leader-led</option><option value="team"' + (s.session_type === "team" ? " selected" : "") + ">Team-led</option></select></label>" +
       '<label>Facilitator<select id="s-fac" name="fac">' + facOpts + "</select></label></div>" +
       '<label>Visitor or other name (leave blank when choosing from the list)<input id="s-facname" name="facname" value="' + esc(visitor) + '" autocomplete="off"></label>' +
@@ -519,6 +584,15 @@
       renderAttendance(s, members, att, bookedIds) + renderReflection(s);
   }
 
+  /* Team for a session (owner, 22 Nov 2026): move a session to another team you can change (not courses). */
+  function sessionTeam(s) {
+    var g = groupOf(s.group_id); if (g && g.type === "course") return "";
+    var teams = S.groups.filter(function (x) { return x.type !== "course" && canEdit(x.id); });
+    if (g && !teams.some(function (x) { return x.id === g.id; })) teams.unshift(g);
+    return '<label>Team<select id="s-group" name="group">' + teams.map(function (x) {
+      return '<option value="' + x.id + '"' + (x.id === s.group_id ? " selected" : "") + ">" + esc(x.name) + (x.cluster ? " (" + esc(x.cluster) + ")" : "") + "</option>";
+    }).join("") + '</select><span class="small muted">Bookings and attendance stay with the session if you change the team.</span></label>';
+  }
   function renderAttendance(s, members, att, bookedIds) {
     if (!members.length) return '<section class="panel pad stack"><h3>Attendance</h3><p class="muted">No one is in this group yet. Add people in the People tab.</p></section>';
     var came = members.filter(function (p) { return att[p.id]; }), nots = members.filter(function (p) { return !att[p.id]; });
@@ -553,9 +627,13 @@
     var type = f.get("type"), fid = f.get("fac") || null, ftext = f.get("facname").trim(), fname = null;
     if (ftext) { fid = null; fname = ftext; }
     else if (fid) { fname = nameOf(by(fid, S.profiles)); }
-    else if (type === "leader") { var sx = by(id, S.sessions), lw = sx ? leaderFor(sx.session_date, sx.start_time && sx.start_time.slice(0, 5)) : S.profile; fid = lw.id; fname = nameOf(lw); }
+    var sx = by(id, S.sessions);
+    if (!ftext && !fid && type === "leader") { var lw = sx ? leaderFor(sx.session_date, sx.start_time && sx.start_time.slice(0, 5)) : S.profile; fid = lw.id; fname = nameOf(lw); }
+    var gid = f.get("group") || (sx && sx.group_id);
+    if (sx && gid !== sx.group_id && S.sessions.some(function (x) { return x.id !== id && x.group_id === gid && x.session_date === sx.session_date; }))
+      return Promise.resolve(fail({ message: (groupOf(gid) ? groupOf(gid).name : "That team") + " already has a session on that date." }));
     return sb.from("sessions").update({
-      lesson_ids: f.getAll("lesson"), location: f.get("location") || null, notes: f.get("notes") || null,
+      group_id: gid, lesson_ids: f.getAll("lesson"), location: f.get("location") || null, notes: f.get("notes") || null,
       session_type: type, facilitator_id: fid, facilitator_name: fname, topic: f.get("topic").trim() || null
     }).eq("id", id)
       .then(function (r) { if (r.error) throw r.error; toast("Session saved."); return load().then(render); }).catch(fail);
@@ -857,6 +935,7 @@
 
   /* ---------- render and events ---------- */
   function render() {
+    $app.classList.toggle("wide", !!(S.user && isLeader() && monthOn()));
     if (!S.user) return renderAuth();
     if (isLeader()) return renderLeader();
     return renderMember();
@@ -920,8 +999,27 @@
     removefile: function (d) { return removeFile(d.id); },
     droplesson: function (d) { redrawPicker(pickedLessons().filter(function (x) { return x !== d.id; })); },
     editperson: function (d) { S.personEdit = d.id; render(); window.scrollTo(0, 0); },
-    personback: function () { S.personEdit = null; render(); }
+    personback: function () { S.personEdit = null; render(); },
+    calview: function (d) { S.calView = d.v; try { localStorage.setItem("dsy-training-calview", d.v); } catch (e) {} render(); },
+    month: function (d) {
+      var step = +d.step, base = parseDate((S.month || todayStr().slice(0, 7)) + "-01");
+      if (!step) S.month = todayStr().slice(0, 7); else { base.setMonth(base.getMonth() + step); S.month = ymd(base).slice(0, 7); }
+      render();
+    }
   };
+  try { S.calView = localStorage.getItem("dsy-training-calview"); } catch (e) {}
+  if (DESK.addEventListener) DESK.addEventListener("change", function () { if (S.user && isLeader()) render(); });
+  /* month view: drag a session to another day */
+  var dragId = null;
+  document.addEventListener("dragstart", function (e) {
+    var b = e.target.closest && e.target.closest("[data-move]"); if (!b) return;
+    dragId = b.dataset.move; b.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", dragId); } catch (x) {}
+  });
+  document.addEventListener("dragend", function () {
+    dragId = null;
+    Array.prototype.forEach.call(document.querySelectorAll(".ms.dragging, .day.over"), function (d) { d.classList.remove("dragging", "over"); });
+  });
 
   document.addEventListener("click", function (e) {
     var t = e.target.closest("[data-act]"); if (!t || t.tagName === "INPUT" || t.tagName === "SELECT") return;
@@ -950,6 +1048,12 @@
   /* drag and drop: highlight the drop zone, and stop the browser opening a file dropped elsewhere */
   function hasFiles(e) { return e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], "Files") >= 0; }
   document.addEventListener("dragover", function (e) {
+    if (dragId) {
+      var day = e.target.closest && e.target.closest("[data-day]");
+      Array.prototype.forEach.call(document.querySelectorAll(".day.over"), function (d) { if (d !== day) d.classList.remove("over"); });
+      if (day) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; day.classList.add("over"); }
+      return;
+    }
     if (!hasFiles(e)) return;
     e.preventDefault();
     var z = e.target.closest && e.target.closest(".drop");
@@ -960,6 +1064,13 @@
     if (!e.relatedTarget) Array.prototype.forEach.call(document.querySelectorAll(".drop"), function (d) { d.classList.remove("over"); });
   });
   document.addEventListener("drop", function (e) {
+    if (dragId) {
+      e.preventDefault();
+      var day = e.target.closest && e.target.closest("[data-day]"), id = dragId; dragId = null;
+      Array.prototype.forEach.call(document.querySelectorAll(".day.over, .ms.dragging"), function (d) { d.classList.remove("over", "dragging"); });
+      if (day) moveSession(id, day.dataset.day);
+      return;
+    }
     if (!hasFiles(e)) return;
     e.preventDefault();
     Array.prototype.forEach.call(document.querySelectorAll(".drop"), function (d) { d.classList.remove("over"); });
