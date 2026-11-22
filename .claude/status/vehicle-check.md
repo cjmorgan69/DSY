@@ -81,4 +81,6 @@ Owner chose the earlier idea: a complete check of the real vehicle first (pairs 
 2 to 3 minute talk per person on one item they checked. `#lesson` (button "Lesson plan" for facilitators on the
 vehicle screen; the address works for anyone): DSY-written plan with timings, the areas with section and item counts
 and live progress (who is checking now), talk prompts, links to the Kit guide, Stock to order and the general
-feedback form. Areas are uneven: Grab & Go kits has 120 items. To add as a lesson in `public.lessons` once live.
+feedback form. Areas are uneven: Grab & Go kits has 120 items. Added to `public.lessons` on 22 Nov 2026 ("Know your vehicle - crew vehicle check"); its link is the vehicle check
+itself, `/vehicle-check/` (owner, 22 Nov 2026), not `#lesson`. The areas on the lesson plan are a plain list, not
+buttons; a fix to make them open (PR #316) was closed at the owner's request.
