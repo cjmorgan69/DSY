@@ -226,4 +226,4 @@ list. Members can still just turn up. User guides (Getting started, Running a se
 Session screen in the leader / VTL calendar: each chosen lesson has an **Open lesson** link (first web link in the lesson's
 Resources and links). Member list: on sessions you are facilitating, an Open lesson link under the chips (one per lesson,
 named, when there are several). `upcoming_sessions` view now adds `url` to each item in `lessons` (same regex). All 66
-lessons had a link on 22 Nov 2026. PR open, not merged.
+lessons had a link on 22 Nov 2026. Live (PR #325, merged 22 Nov 2026).
