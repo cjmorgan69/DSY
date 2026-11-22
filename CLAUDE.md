@@ -88,6 +88,9 @@ Travel Diary page, URL in the README), read `.claude/vehicle-log/README.md`, run
 - Salbutamol MDI for AO asthma: give without a consult, as CPP-050-AO says (owner, 22 Nov 2026; the app lists Consult).
 - Benzylpenicillin: follow CPP-062-AO Sepsis (ceftriaxone); benzylpenicillin is to be changed over for ceftriaxone
   (owner, 22 Nov 2026).
+- Co-Phenylcaine Forte: AOs may use it to insert an NPA (owner, 22 Nov 2026; the app lists paramedic and above).
+- Ipratropium MDI and nasal cannula oxygen for AO asthma: on EOC Clinician consult, doses as per the paramedic
+  guideline (owner, 22 Nov 2026).
   ACPO GTN stays consult-first.
 - Eyre Peninsula call signs (owner, 11 Nov 2026): XX81 for jobs between 0800 and 1800, XX181 between 1800 and 0800
   (Tumby Bay TB81 / TB181, Cleve CL81 / CL181, Port Neill PT181 at night). Use them in MDT screenshots and jobs.
