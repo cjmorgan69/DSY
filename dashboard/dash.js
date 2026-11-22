@@ -410,9 +410,9 @@
     var n = rows[0], days = Math.round((dOf(n.session_date) - dOf(t)) / 864e5);
     var when = days === 0 ? "Tonight" : days === 1 ? "Tomorrow" : "In " + days + " days";
     if (days === 0 && mins(n.start_time) < 17 * 60) when = "Today";
-    html += '<div class="banner"><span class="eyebrow">Next session · ' + when + '</span><b>' + esc(gn[n.group_id] || "Team") + (n.topic ? " · " + esc(n.topic) : "") + "</b>" +
+    html += '<a class="banner golink" href="/training/#session=' + encodeURIComponent(n.id) + '"><span class="eyebrow">Next session · ' + when + '</span><b>' + esc(gn[n.group_id] || "Team") + (n.topic ? " · " + esc(n.topic) : "") + "</b>" +
       '<span class="small">' + nice(n.session_date) + ", " + t12(n.start_time) + (n.end_time ? " to " + t12(n.end_time) : "") + (n.location ? " · " + esc(n.location) : "") + " · " + (n.session_type === "team" ? "Team-led" : "Leader-led") +
-      (n.facilitator_name ? " · " + esc(n.facilitator_name) : "") + "</span>" + (hasLesson(n) ? "" : '<span class="small"><b style="font-size:inherit;font-family:inherit">No lesson yet</b>: pick one in the training app.</span>') + "</div>";
+      (n.facilitator_name ? " · " + esc(n.facilitator_name) : "") + "</span>" + (hasLesson(n) ? "" : '<span class="small"><b style="font-size:inherit;font-family:inherit">No lesson yet</b>: pick one in the training app.</span>') + '<span class="small go">Open in the planner →</span></a>';
     var soon = rows.filter(function (s) { return s.session_date <= addDays(t, 27); }), need = soon.filter(function (s) { return !hasLesson(s); });
     if (need.length) html += '<div class="banner warn"><span><b style="font-size:1rem">' + need.length + " of " + soon.length + "</b> sessions in the next 4 weeks have no lesson. " +
       '<a href="/training/">Allocate lessons →</a></span></div>';
@@ -422,15 +422,17 @@
     html += '<div class="cal">' + ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(function (x) { return '<div class="dn">' + x + "</div>"; }).join("");
     for (var i = 0; i < 28; i++) {
       var iso = addDays(mon, i), dd = dOf(iso), on = rows.filter(function (s) { return s.session_date === iso; });
-      html += '<div class="d' + (iso < t ? " past" : "") + (iso === t ? " today" : "") + '" title="' + esc(on.map(function (s) { return (gn[s.group_id] || "") + " " + t12(s.start_time) + (hasLesson(s) ? "" : " (no lesson)"); }).join("\n")) + '"><em>' +
-        dd.getUTCDate() + (dd.getUTCDate() === 1 || i === 0 ? " " + MON[dd.getUTCMonth()] : "") + "</em>" + on.map(function (s) { return '<i class="' + (hasLesson(s) ? "" : "nl") + '"></i>'; }).join("") + "</div>";
+      /* one session: the whole day opens it; several: each bar opens its own (22 Nov 2026) */
+      var one = on.length === 1, tag = one ? "a" : "div";
+      html += "<" + tag + (one ? ' href="/training/#session=' + encodeURIComponent(on[0].id) + '"' : "") + ' class="d' + (iso < t ? " past" : "") + (iso === t ? " today" : "") + (on.length ? " has" : "") + '" title="' + esc(on.map(function (s) { return (gn[s.group_id] || "") + " " + t12(s.start_time) + (hasLesson(s) ? "" : " (no lesson)"); }).join("\n")) + '"><em>' +
+        dd.getUTCDate() + (dd.getUTCDate() === 1 || i === 0 ? " " + MON[dd.getUTCMonth()] : "") + "</em>" + on.map(function (s) { return one ? '<i class="' + (hasLesson(s) ? "" : "nl") + '"></i>' : '<a class="bar' + (hasLesson(s) ? "" : " nl") + '" href="/training/#session=' + encodeURIComponent(s.id) + '" title="' + esc((gn[s.group_id] || "") + " " + t12(s.start_time)) + '"></a>'; }).join("") + "</" + tag + ">";
     }
     html += '</div><div class="legend"><span><i style="background:var(--brand)"></i>lesson set</span><span><i style="background:var(--y)"></i>needs a lesson</span></div>';
     html += '<ul class="slist">' + rows.slice(0, 6).map(function (s) {
       var dd = dOf(s.session_date);
-      return '<li><div class="dt"><span>' + DAYS[dd.getUTCDay()] + "</span><b>" + dd.getUTCDate() + "</b><span>" + MON[dd.getUTCMonth()] + '</span></div><div class="t"><b>' + esc(gn[s.group_id] || "Team") + (s.topic ? " · " + esc(s.topic) : "") +
+      return '<li><a class="srow" href="/training/#session=' + encodeURIComponent(s.id) + '"><div class="dt"><span>' + DAYS[dd.getUTCDay()] + "</span><b>" + dd.getUTCDate() + "</b><span>" + MON[dd.getUTCMonth()] + '</span></div><div class="t"><b>' + esc(gn[s.group_id] || "Team") + (s.topic ? " · " + esc(s.topic) : "") +
         "</b><span>" + t12(s.start_time) + " · " + (s.session_type === "team" ? "Team-led" : "Leader-led") + (s.location ? " · " + esc(s.location) : "") + "</span></div>" +
-        (hasLesson(s) ? '<span class="tag ok">Lesson set</span>' : '<span class="tag need">Needs lesson</span>') + "</li>";
+        (hasLesson(s) ? '<span class="tag ok">Lesson set</span>' : '<span class="tag need">Needs lesson</span>') + "</a></li>";
     }).join("") + "</ul>";
     if (rows.length > 6) html += '<p class="note">+ ' + (rows.length - 6) + ' more in the next 2 months.</p>';
     $("tBody").innerHTML = html;

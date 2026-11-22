@@ -262,3 +262,8 @@ members of the session's team who turned reminders on, except those who answered
   Star of Life, red and blue light bar) on a green background, drawn by Claude; no SAAS logo or name. Source
   `shared/dsy-app-icon.svg`, PNGs `shared/dsy-app-180/192/512.png` (Team page apple-touch-icon, `/dsy.webmanifest`,
   notification icon in `/sw.js`). Live (PR #327, merged 22 Nov 2026).
+
+Sessions open in the planner (owner, 22 Nov 2026): on `/dashboard/` and `/dashboard/wide/` the next-session banner, each
+calendar day with one session (several: each bar) and each row of the upcoming list link to `/training/#session=<id>`,
+which opens that session's page in the training app (leaders; the hash is then cleared). Tested with stand-in data.
+Merged (PR #331, 22 Nov 2026).

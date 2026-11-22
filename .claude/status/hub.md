@@ -99,3 +99,10 @@ use this" (Getting started) in the team page header, and in the training app hea
 "Leader guide" (/userguides/leaders/#training) for leaders. Already linked before: sign-in (Getting started), dashboard
 (Team Leader guide), /hub/run/ (Running a session), MDT (MDT guide), roster manager pages (roster guide). Crew roster
 pages and Learn on your own still have no guide link.
+
+## Region page: cluster filter and banner position (22 Nov 2026)
+Owner: filter the Region page by cluster, and moving the banner photo did not keep. Supabase logs showed the slider saves
+were reaching `groups.banner_y` (Kimba 27); the Region page tiles ignored the position, so it looked lost. Now: tiles use
+`banner_y`; the slider also saves 0.8 s after the last move, checks a row came back (no silent RLS miss) and says "Saved".
+Cluster chips (All, Lower Eyre, Central Eyre, West Coast) filter the Teams tiles from `groups.cluster`; the choice is kept
+on the device (`dsy-region-cluster`), starting on the leader's own `profiles.cluster`. Tested with stand-in data. Merged (PR #331, 22 Nov 2026).
