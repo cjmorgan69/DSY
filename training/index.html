@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261122c">
+<link rel="stylesheet" href="theme.css?v=20261122d">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -24,7 +24,7 @@
 .ar-row .t { font-weight: 600; overflow-wrap: anywhere; }
 .ar-row .act { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
 .ar-more > summary { cursor: pointer; font-weight: 600; color: var(--brand); padding: .3rem 0; }
-/* Month view (owner, 22 Nov 2026): desktop only; drag a session to another day to move it. */
+/* Month view (owner, 22 Nov 2026): desktop only; drag a session to another day to copy it (no bookings) for a team. */
 .wrap.wide { width: min(1240px, 100%); }
 .mhead { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
 .mhead h2 { font-size: 1.25rem; margin-right: auto; }
@@ -45,14 +45,15 @@
 .ms b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ms span { display: block; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ms .need { color: var(--danger); }
+.copybox { border: 2px solid var(--brand); }
 </style>
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261122c"></script>
-<script src="sa-dates.js?v=20261122c"></script>
+<script src="config.js?v=20261122d"></script>
+<script src="sa-dates.js?v=20261122d"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -486,8 +487,9 @@
     }).catch(fail);
   }
 
-  /* Month view (owner, 22 Nov 2026): on a desktop-width screen the calendar can show one month; sessions can be dragged
-     to another day (same team can't have two sessions on one day: the database refuses that too). Phones keep the list. */
+  /* Month view (owner, 22 Nov 2026): on a desktop-width screen the calendar can show one month. Dragging a session to a
+     day copies it (owner: a copy, not a move; bookings, attendance and reflections are not copied) and asks which team the
+     copy is for (a team can't have two sessions on one day: the database refuses that too). Phones keep the list. */
   var DESK = window.matchMedia ? window.matchMedia("(min-width: 900px)") : { matches: false };
   function monthOn() { return S.tab === "calendar" && !S.plan && !S.detail && DESK.matches && (S.calView || "month") === "month"; }
   function ymd(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
@@ -499,30 +501,44 @@
     for (var d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       var k = ymd(d), items = (byDay[k] || []).sort(function (a, b) { return String(a.start_time).localeCompare(String(b.start_time)); });
       cells.push('<div class="day' + (k.slice(0, 7) !== m ? " out" : "") + (k === t ? " today" : "") + '" data-day="' + k + '"><span class="dn">' + d.getDate() + "</span>" + items.map(function (s) {
-        var g = groupOf(s.group_id), ls = lessonsOf(s), team = s.session_type === "team", move = canEdit(s.group_id);
+        var g = groupOf(s.group_id), ls = lessonsOf(s), team = s.session_type === "team", move = editableTeams().length > 0;
         var what = ls.length ? ls.map(function (l) { return l.title; }).join(" + ") : s.topic || "";
         return '<button class="ms' + (team ? " team" : "") + (s.session_date < t ? " past" : "") + '" data-act="open" data-id="' + s.id + '"' + (move ? ' draggable="true" data-move="' + s.id + '"' : "") +
-          ' title="' + esc((g ? g.name : "") + " - " + timeRange(s) + (what ? " - " + what : "") + (ledBy(s) ? " - " + ledBy(s) : "") + (move ? " (drag to move)" : "")) + '"><b>' + esc(g ? g.name : "Session") + "</b>" +
+          ' title="' + esc((g ? g.name : "") + " - " + timeRange(s) + (what ? " - " + what : "") + (ledBy(s) ? " - " + ledBy(s) : "") + (move ? " (drag to another day to copy)" : "")) + '"><b>' + esc(g ? g.name : "Session") + "</b>" +
           "<span>" + esc(hhmm(s.start_time)) + (team ? " · Team-led" : " · Leader-led") + "</span>" +
           (what ? "<span>" + esc(what) + "</span>" : '<span class="need">' + (team ? "No topic yet" : "No lesson yet") + "</span>") + "</button>";
       }).join("") + "</div>");
     }
     var title = first.toLocaleDateString("en-AU", { month: "long", year: "numeric" });
     return '<div class="mhead"><h2>' + esc(title) + '</h2><button class="btn ghost small" data-act="month" data-step="-1" aria-label="Previous month">‹ Prev</button><button class="btn ghost small" data-act="month" data-step="0">This month</button><button class="btn ghost small" data-act="month" data-step="1" aria-label="Next month">Next ›</button></div>' +
-      '<p class="small muted">Click a session to open it. Drag a session to another day to move it.</p>' +
+      '<p class="small muted">Click a session to open it. Drag a session to a day to copy it there, then choose the team. Bookings are not copied.</p>' + copyBox() +
       '<div class="month"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div>' + cells.join("") + "</div>";
   }
-  function moveSession(id, day) {
-    var s = by(id, S.sessions); if (!s || s.session_date === day) return;
-    var g = groupOf(s.group_id);
-    if (!canEdit(s.group_id)) return fail({ message: "That team is not in your cluster, so you can't move its sessions." });
-    if (S.sessions.some(function (x) { return x.id !== id && x.group_id === s.group_id && x.session_date === day; })) return fail({ message: (g ? g.name : "That team") + " already has a session on " + shortDate(day) + "." });
-    var nb = bookedCount(id);
-    if (!confirm("Move the " + (g ? g.name + " " : "") + "session from " + shortDate(s.session_date) + " to " + shortDate(day) + "?" + (nb ? "\n\n" + nb + " people have booked. Their bookings move with it, so let them know." : ""))) return;
-    var old = s.session_date; s.session_date = day; render();
-    sb.from("sessions").update({ session_date: day }).eq("id", id).then(function (r) {
-      if (r.error) throw r.error; toast("Session moved to " + shortDate(day) + "."); return load().then(render);
-    }).catch(function (e) { s.session_date = old; render(); fail(e); });
+  function copyBox() {
+    var c = S.copy, src = c && by(c.id, S.sessions); if (!src) return "";
+    var taken = {}; S.sessions.forEach(function (x) { if (x.session_date === c.day) taken[x.group_id] = 1; });
+    var teams = editableTeams().filter(function (g) { return !taken[g.id]; });
+    var g0 = groupOf(src.group_id), ls = lessonsOf(src), what = ls.length ? ls.map(function (l) { return l.title; }).join(" + ") : src.topic || "";
+    var pick = teams.some(function (g) { return g.id === src.group_id; }) ? src.group_id : "";
+    return '<form class="panel pad stack copybox" data-form="copy"><h3>Copy to ' + esc(longDate(c.day)) + "</h3>" +
+      '<p class="small muted">From ' + esc(g0 ? g0.name : "a session") + ", " + esc(shortDate(src.session_date)) + " (" + esc(timeRange(src)) + (what ? ", " + esc(what) : "") + "). The copy has the same times, lessons, location and who leads; no bookings or attendance.</p>" +
+      (teams.length ? '<label>Team for the copy<select name="group" required><option value="">Choose a team</option>' + teams.map(function (g) {
+        return '<option value="' + g.id + '"' + (g.id === pick ? " selected" : "") + ">" + esc(g.name) + (g.cluster ? " (" + esc(g.cluster) + ")" : "") + "</option>";
+      }).join("") + '</select></label><div class="row"><button class="btn" type="submit">Copy session</button><button class="btn ghost" type="button" data-act="copycancel">Cancel</button></div>'
+        : '<p class="muted">Every team you can change already has a session that day.</p><div class="row"><button class="btn ghost" type="button" data-act="copycancel">Close</button></div>') + "</form>";
+  }
+  function copySession(form) {
+    var c = S.copy, src = c && by(c.id, S.sessions), gid = new FormData(form).get("group");
+    if (!src || !gid) return Promise.resolve(fail({ message: "Choose a team." }));
+    if (S.sessions.some(function (x) { return x.group_id === gid && x.session_date === c.day; })) return Promise.resolve(fail({ message: groupOf(gid).name + " already has a session that day." }));
+    var fid = src.facilitator_id, fname = src.facilitator_name;
+    if (src.session_type === "leader" && (!fid || fid === S.profile.id || (S.covers || []).some(function (x) { return x.reliever_id === fid; }))) { var w = leaderFor(c.day, String(src.start_time).slice(0, 5)); fid = w.id; fname = nameOf(w); }
+    else if (src.session_type === "team" && gid !== src.group_id) { fid = null; fname = null; }
+    var row = { group_id: gid, session_date: c.day, start_time: src.start_time, end_time: src.end_time, session_type: src.session_type,
+      facilitator_id: fid, facilitator_name: fname, location: src.location || null, topic: src.topic || null, lesson_ids: lessonIds(src) };
+    return sb.from("sessions").insert(row).then(function (r) {
+      if (r.error) throw r.error; S.copy = null; toast("Copied to " + groupOf(gid).name + ", " + shortDate(c.day) + "."); return refresh();
+    }).catch(fail);
   }
   function renderCalendar() {
     var t = todayStr();
@@ -1000,6 +1016,7 @@
     droplesson: function (d) { redrawPicker(pickedLessons().filter(function (x) { return x !== d.id; })); },
     editperson: function (d) { S.personEdit = d.id; render(); window.scrollTo(0, 0); },
     personback: function () { S.personEdit = null; render(); },
+    copycancel: function () { S.copy = null; render(); },
     calview: function (d) { S.calView = d.v; try { localStorage.setItem("dsy-training-calview", d.v); } catch (e) {} render(); },
     month: function (d) {
       var step = +d.step, base = parseDate((S.month || todayStr().slice(0, 7)) + "-01");
@@ -1014,7 +1031,7 @@
   document.addEventListener("dragstart", function (e) {
     var b = e.target.closest && e.target.closest("[data-move]"); if (!b) return;
     dragId = b.dataset.move; b.classList.add("dragging");
-    e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", dragId); } catch (x) {}
+    e.dataTransfer.effectAllowed = "copy"; try { e.dataTransfer.setData("text/plain", dragId); } catch (x) {}
   });
   document.addEventListener("dragend", function () {
     dragId = null;
@@ -1051,7 +1068,7 @@
     if (dragId) {
       var day = e.target.closest && e.target.closest("[data-day]");
       Array.prototype.forEach.call(document.querySelectorAll(".day.over"), function (d) { if (d !== day) d.classList.remove("over"); });
-      if (day) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; day.classList.add("over"); }
+      if (day) { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; day.classList.add("over"); }
       return;
     }
     if (!hasFiles(e)) return;
@@ -1068,7 +1085,7 @@
       e.preventDefault();
       var day = e.target.closest && e.target.closest("[data-day]"), id = dragId; dragId = null;
       Array.prototype.forEach.call(document.querySelectorAll(".day.over, .ms.dragging"), function (d) { d.classList.remove("over", "dragging"); });
-      if (day) moveSession(id, day.dataset.day);
+      if (day) { S.copy = { id: id, day: day.dataset.day }; render(); var box = document.querySelector(".copybox"); if (box) { box.scrollIntoView({ block: "nearest", behavior: "smooth" }); var sel = box.querySelector("select"); if (sel) sel.focus(); } }
       return;
     }
     if (!hasFiles(e)) return;
@@ -1102,6 +1119,7 @@
     else if (kind === "course") job = createCourse(form);
     else if (kind === "plan") job = createPlan(form);
     else if (kind === "onesession") job = createOne(form);
+    else if (kind === "copy") job = copySession(form);
     else if (kind === "page") job = savePage(form);
     if (job) job.then(function () { if (btn && document.contains(btn)) btn.disabled = false; });
   });

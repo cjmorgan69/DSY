@@ -197,6 +197,8 @@ panel at the bottom of Run a session. `ask-dsy` v13 reads it. Written by Claude 
 
 `/training/` Calendar: on screens 900px or wider a Month / List switch (Month by default, choice kept on the device);
 the month grid (Mon to Sun, Prev / This month / Next) uses the same cluster, team and leader/team filters. Click a session
-to open it; drag it to another day to move it (confirm; refused if that team already has a session that day; teams
-outside your cluster can't be dragged). The session page has a Team field (teams you can change, not courses); bookings
+to open it; drag it to a day to COPY it there (owner: a copy, not a move): a box asks which team the copy is for
+(only teams you can change with no session that day; the original team is preselected when free). The copy keeps times,
+lessons, topic, location and who leads; no bookings, attendance or reflection; a team-led copy for another team has no
+facilitator. The session page has a Team field (teams you can change, not courses); bookings
 and attendance stay with the session. Phones keep the list. On a branch, not merged.
