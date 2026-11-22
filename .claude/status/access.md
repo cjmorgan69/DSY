@@ -159,6 +159,8 @@ team dashboard (roster, dispatches, volunteer contribution and training for thei
   member); choosing any other role removes their VTL row. The People list shows a VTL chip. Real leaders only (relief
   Team Leaders see the role as text). Facilitator was added because the box used to show facilitators as Member.
   Tested with stand-in data. Live (PR #321, merged 22 Nov 2026), checked on the live site.
+- People search (owner, 22 Nov 2026): a search box at the top of the training app's People list filters in place by name,
+  ambulance ID, team, "VTL" or "leader" (every word must match; kept while the app re-draws). On a branch, not merged.
 - Not covered: VTLs do not get roster change emails (that is `roster_managers.notify_email`); in the training app
   (`/training/`) they are treated as facilitators already: the app has only a leader view and a member view, and
   facilitators use the member view too (checked 22 Nov 2026); database rules that use `is_facilitator()` include VTLs. No VTLs set yet: owner to name them. Live (PR #320, merged 22 Nov 2026; checked on the live site with stand-in sign-in data, and signed-out visits go to sign-in).
