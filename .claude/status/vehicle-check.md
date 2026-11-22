@@ -69,8 +69,8 @@ allows, each person talks about one item: what it is for and which protocol it b
 New area "Grab & Go kits" (id `kits`, placed after the Grab & Go lockers) with four sections, from the owner's forms:
 - `red-trauma-kit`: FRM-397 Red Trauma Kit - Volunteer v4.1 (2025), written contents list.
 - `yellow-drug-kit`: the yellow drug kit inside it (FRM-397 contents list). The FRM-397 photos also show IV cannulas
-  (14G to 24G) and an Atrovent (ipratropium) inhaler that the written list leaves out: the list was followed.
+  (14G to 24G) and an Atrovent (ipratropium) inhaler that the written list leaves out: owner (22 Nov 2026) added both: cannulas 14G to 24G, 2 of each, and the inhaler.
 - `blue-airway-kit`: FRM-365 Blue Airway Kit - Volunteer (Aug 2025), written list (6 resus masks incl. red adult; the
-  photo page shows 5 masks and an Aquim gel 60 mL that the list leaves out).
+  photo page shows 5 masks and an Aquim gel 60 mL that the list leaves out; owner: keep all 6 masks and add the gel).
 - `oxygen-sock`: owner's contents (22 Nov 2026): Halo C cylinder; adult and paediatric each of nasal specs, 8 L/min
   mask, 15 L/min NRM, nebuliser mask.
