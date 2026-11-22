@@ -44,10 +44,13 @@ if (checkOnly) {
 let tag = args.find(a => !a.startsWith("--"));
 if (!tag) {
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Australia/Adelaide" }).format(new Date()).replace(/-/g, "");
-  const todays = tags.filter(t => new RegExp("^" + today + "[a-z]$").test(t)).sort();
-  const last = todays.length ? todays[todays.length - 1].slice(-1) : null;
-  if (last === "z") { console.error("Out of letters for today: give a tag by hand."); process.exit(1); }
-  tag = today + (last ? String.fromCharCode(last.charCodeAt(0) + 1) : "a");
+  /* a, b ... z, then za, zb ... zz (two letters sort after one, so a later tag is never an earlier one) */
+  const suf = tags.filter(t => new RegExp("^" + today + "[a-z]{1,2}$").test(t)).map(t => t.slice(today.length))
+    .sort((x, y) => x.length - y.length || (x < y ? -1 : 1));
+  const last = suf.length ? suf[suf.length - 1] : null;
+  if (last === "zz") { console.error("Out of letters for today: give a tag by hand."); process.exit(1); }
+  const next = !last ? "a" : last === "z" ? "za" : last.slice(0, -1) + String.fromCharCode(last.slice(-1).charCodeAt(0) + 1);
+  tag = today + next;
 }
 if (!/^[\w.-]+$/.test(tag)) { console.error("Tag may only hold letters, numbers, dot, dash."); process.exit(1); }
 
