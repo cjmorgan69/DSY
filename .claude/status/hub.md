@@ -119,4 +119,4 @@ Lesson search (owner, 22 Nov 2026), training app: a search box above "Add a less
 list (title and summary, every word must match; Enter adds the only match and does not save the form), and a search box
 on the Lessons tab hides lessons that do not match (kept while the tab is open). Tested with stand-in data. Merged (PR #334, 22 Nov 2026).
 Region page tile (owner, 22 Nov 2026): "Manager dashboard" (old Lower Eyre roster manager dashboard) is now "Team Leader
-Dashboard" and opens `/dashboard/`.
+Dashboard" and opens `/dashboard/`. Merged (PR #335, 22 Nov 2026).
