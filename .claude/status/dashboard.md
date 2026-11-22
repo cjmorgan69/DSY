@@ -220,3 +220,10 @@ Members' session rows no longer say Book a spot / Cancel. Each shows **Attending
 (`booked` = yes, `cancelled` = not this time; no schema change to the table). Leaders see "n coming" and "n not coming" chips and a
 Coming / Not this time chip per person in Attendance; `session_roster()` now also returns `not_coming` for the facilitator's Team
 list. Members can still just turn up. User guides (Getting started, Running a session) updated. Live (PR #323, merged 22 Nov 2026).
+
+## Training app: Open lesson links (22 Nov 2026)
+
+Session screen in the leader / VTL calendar: each chosen lesson has an **Open lesson** link (first web link in the lesson's
+Resources and links). Member list: on sessions you are facilitating, an Open lesson link under the chips (one per lesson,
+named, when there are several). `upcoming_sessions` view now adds `url` to each item in `lessons` (same regex). All 66
+lessons had a link on 22 Nov 2026. PR open, not merged.

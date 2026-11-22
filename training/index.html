@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261122x">
+<link rel="stylesheet" href="theme.css?v=20261122y">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -58,9 +58,9 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261122x"></script>
-<script src="pwreveal.js?v=20261122x" defer></script>
-<script src="sa-dates.js?v=20261122x"></script>
+<script src="config.js?v=20261122y"></script>
+<script src="pwreveal.js?v=20261122y" defer></script>
+<script src="sa-dates.js?v=20261122y"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -278,6 +278,8 @@ li[hidden]{display:none!important}
         '<span class="small muted">' + timeRange(s) + (s.location ? " - " + esc(s.location) : "") + "</span>" +
         (ledBy(s) ? '<span class="small muted">' + esc(ledBy(s)) + "</span>" : "") +
         '<span class="row">' + groupChip({ name: s.group_name, type: s.group_type }) + typeChip(s.session_type) + (mine ? '<span class="chip good">You are facilitating</span>' : "") + "</span>" +
+        (s.is_facilitator && s.lessons && s.lessons.some(function (l) { return l.url; }) ? '<span class="row">' + s.lessons.filter(function (l) { return l.url; }).map(function (l) {
+          return '<a class="link small" href="' + esc(l.url) + '" target="_blank" rel="noopener">Open ' + (s.lessons.length > 1 ? esc(l.title) : "lesson") + "</a>"; }).join("") + "</span>" : "") +
         (s.lessons && s.lessons.length > 1 ? s.lessons.map(function (l) { return '<span class="small muted"><strong>' + esc(l.title) + "</strong>" + (l.summary ? " - " + esc(l.summary) : "") + "</span>"; }).join("")
           : s.lesson_summary ? '<span class="small muted">' + esc(s.lesson_summary) + "</span>" : "") + "</div>" +
         '<div class="act">' + (mine ? '<button class="btn ghost small" type="button" data-act="roster" data-id="' + s.id + '">Team list</button>' : "") +
@@ -347,13 +349,16 @@ li[hidden]{display:none!important}
   function bookedCount(sid) { return S.bookings.filter(function (b) { return b.session_id === sid && b.status === "booked"; }).length; }
   function notComingCount(sid) { return S.bookings.filter(function (b) { return b.session_id === sid && b.status === "cancelled"; }).length; }
   function lessonIds(s) { return s.lesson_ids && s.lesson_ids.length ? s.lesson_ids : s.lesson_id ? [s.lesson_id] : []; }
+  /* Open lesson (owner, 22 Nov 2026): the first web link in a lesson's Resources and links */
+  function lessonUrl(text) { var m = String(text || "").match(/https?:\/\/[^\s<>"]+[^\s<>".,;:!?)\]]/); return m ? m[0] : ""; }
+  function openLesson(url) { return url ? '<a class="link small" href="' + esc(url) + '" target="_blank" rel="noopener">Open lesson</a>' : ""; }
   function lessonsOf(s) { return lessonIds(s).map(function (id) { return by(id, S.lessons); }).filter(Boolean); }
   function lessonPicker(ids) {
     var chosen = ids.map(function (id) { return by(id, S.lessons); }).filter(Boolean);
     var rest = S.lessons.filter(function (l) { return ids.indexOf(l.id) < 0; }).sort(function (a, b) { return a.title.localeCompare(b.title); });
     return '<span style="font-size:.85rem;font-weight:600;color:var(--muted)">Lessons</span>' +
       (chosen.length ? '<ul class="stack">' + chosen.map(function (l, i) {
-        return '<li class="row" style="justify-content:space-between"><input type="hidden" name="lesson" value="' + l.id + '"><span>' + (i + 1) + ". " + esc(l.title) + '</span><button class="link" type="button" data-act="droplesson" data-id="' + l.id + '">Remove</button></li>';
+        return '<li class="row" style="justify-content:space-between"><input type="hidden" name="lesson" value="' + l.id + '"><span>' + (i + 1) + ". " + esc(l.title) + '</span><span class="row">' + openLesson(lessonUrl(l.resources)) + '<button class="link" type="button" data-act="droplesson" data-id="' + l.id + '">Remove</button></span></li>';
       }).join("") + "</ul>" : '<p class="small muted">No lesson yet.</p>') +
       (rest.length ? '<label>Add a lesson<select id="s-addlesson" data-act="addlesson"><option value="">Choose a lesson to add</option>' + rest.map(function (l) { return '<option value="' + l.id + '">' + esc(l.title) + "</option>"; }).join("") + "</select></label>" : "");
   }
