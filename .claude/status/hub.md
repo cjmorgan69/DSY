@@ -108,3 +108,8 @@ Cluster chips (All, Lower Eyre, Central Eyre, West Coast) filter the Teams tiles
 on the device (`dsy-region-cluster`), starting on the leader's own `profiles.cluster`. Tested with stand-in data. Merged (PR #331, 22 Nov 2026).
 Banner title (owner, 22 Nov 2026): "Eyre Peninsula" (the region name, `region_info.name`, changed from "Lower Eyre
 Peninsula") when All clusters is chosen, otherwise the cluster's name with "Cluster overview". Merged (PR #332, 22 Nov 2026).
+
+Session name first for members (owner, 22 Nov 2026): members see the session's name (`sessions.topic`, "Session name"
+in the session form) and only the lesson title when no name is set: training app member list, Team Page "Next training",
+Region tile, and the push reminder title (`session_reminder_claim()` in `supabase/session-reminders.sql`, applied on
+merge). Leaders' views still lead with the lessons. PR #333.
