@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261122u">
+<link rel="stylesheet" href="theme.css?v=20261122w">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -22,6 +22,10 @@
 .ar-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .8rem; padding: .65rem 0; border-top: 1px solid var(--line); }
 .ar-row .what { flex: 1 1 9rem; min-width: 0; display: flex; flex-direction: column; gap: .1rem; }
 .ar-row .t { font-weight: 600; overflow-wrap: anywhere; }
+.attending { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .4rem; }
+.attending > span { flex-basis: 100%; text-align: right; }
+.attending .btn { white-space: nowrap; }
+@media (max-width: 480px) { .attending { width: 100%; } .attending > span { text-align: left; } .attending .btn { flex: 1 1 auto; padding-inline: .7rem; } }
 .ar-row .act { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
 .ar-more > summary { cursor: pointer; font-weight: 600; color: var(--brand); padding: .3rem 0; }
 /* Month view (owner, 22 Nov 2026): desktop only; drag a session to another day to copy it (no bookings) for a team. */
@@ -54,8 +58,8 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261122u"></script>
-<script src="sa-dates.js?v=20261122u"></script>
+<script src="config.js?v=20261122w"></script>
+<script src="sa-dates.js?v=20261122w"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -126,7 +130,7 @@ li[hidden]{display:none!important}
   function renderAuth() {
     var up = S.authMode === "up";
     $app.innerHTML =
-      '<div class="auth stack"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>Sign in to see your sessions and book a spot.</p></div></div>" +
+      '<div class="auth stack"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>Sign in to see your sessions and let us know if you're coming.</p></div></div>" +
       '<form class="panel pad stack" data-form="auth" autocomplete="on">' +
       (up ? '<label>Your name<input id="f-name" name="name" autocomplete="name" required></label>' : "") +
       '<label>' + (up ? "Ambulance ID number" : "Ambulance ID number (or email)") + '<input id="f-email" name="email" autocomplete="username" autocapitalize="none" spellcheck="false" inputmode="' + (up ? "numeric" : "text") + '" required></label>' +
@@ -266,7 +270,7 @@ li[hidden]{display:none!important}
     var rows = S.mySessions, card = renderArCard();
     if (!rows.length) return card + '<div class="panel empty">No upcoming ' + (card ? "team " : "") + 'sessions yet. If you expected to see some, ask your team leader to add you to your team.</div>';
     return card + '<ul class="panel list">' + rows.map(function (s, i) {
-      var booked = S.myBookings[s.id] === "booked", mine = s.is_facilitator && s.session_type === "team";
+      var reply = S.myBookings[s.id], mine = s.is_facilitator && s.session_type === "team";
       var title = s.lesson_title || s.topic;
       return '<li><div class="item' + (i === 0 ? " next" : "") + '">' + tile(s.session_date) +
         '<div class="what"><span class="t">' + (title ? esc(title) : '<span class="muted">Topic to be confirmed</span>') + "</span>" +
@@ -276,8 +280,7 @@ li[hidden]{display:none!important}
         (s.lessons && s.lessons.length > 1 ? s.lessons.map(function (l) { return '<span class="small muted"><strong>' + esc(l.title) + "</strong>" + (l.summary ? " - " + esc(l.summary) : "") + "</span>"; }).join("")
           : s.lesson_summary ? '<span class="small muted">' + esc(s.lesson_summary) + "</span>" : "") + "</div>" +
         '<div class="act">' + (mine ? '<button class="btn ghost small" type="button" data-act="roster" data-id="' + s.id + '">Team list</button>' : "") +
-        (booked ? '<span class="chip good">Booked</span><button class="btn danger small" data-act="cancel" data-id="' + s.id + '">Cancel</button>'
-          : '<button class="btn small" data-act="book" data-id="' + s.id + '">Book a spot</button>') + "</div></div></li>";
+        attendingButtons(s.id, reply) + "</div></div></li>";
     }).join("") + "</ul>";
   }
 
@@ -298,13 +301,14 @@ li[hidden]{display:none!important}
       (fs.length ? '<section class="panel pad stack"><h3>Files</h3>' + filesList(l.id, true) + "</section>" : "");
   }
 
+  function replyChip(yes, no) { return yes ? ' <span class="chip good">Coming \u{1F600}</span>' : no ? ' <span class="chip">Not this time</span>' : ""; }
   function renderRoster() {
     var s = by(S.rosterSession, S.mySessions) || {}, here = S.roster.filter(function (r) { return r.attended; }).length;
     return '<button class="link back" type="button" data-act="rback">Back</button>' +
       '<section class="panel pad stack"><div class="row">' + groupChip({ name: s.group_name, type: s.group_type }) + typeChip(s.session_type) + "</div><h2>" + esc(s.session_date ? longDate(s.session_date) : "Team list") + "</h2>" +
       '<p class="muted">You are facilitating this session. Tick each person who is here. <strong id="rcount">' + here + " of " + S.roster.length + " here</strong></p>" +
       (S.roster.length ? "<ul>" + S.roster.map(function (r) {
-        return '<li><label class="check"><input type="checkbox" data-act="rattend" data-sid="' + S.rosterSession + '" data-mid="' + r.member_id + '"' + (r.attended ? " checked" : "") + "> <span>" + esc(r.full_name || "Unnamed member") + "</span>" + (r.booked ? ' <span class="chip good">Booked</span>' : "") + "</label></li>";
+        return '<li><label class="check"><input type="checkbox" data-act="rattend" data-sid="' + S.rosterSession + '" data-mid="' + r.member_id + '"' + (r.attended ? " checked" : "") + "> <span>" + esc(r.full_name || "Unnamed member") + "</span>" + replyChip(r.booked, r.not_coming) + "</label></li>";
       }).join("") + "</ul>" : '<p class="muted">No one is in this team yet.</p>') + "</section>";
   }
   function openRoster(id) {
@@ -322,17 +326,25 @@ li[hidden]{display:none!important}
     }).catch(function (e) { fail(e); openRoster(sid); });
   }
 
-  function book(id) {
-    return sb.from("bookings").upsert({ session_id: id, member_id: S.user.id, status: "booked" }, { onConflict: "session_id,member_id" })
-      .then(function (r) { if (r.error) throw r.error; toast("Booked. See you there."); return refresh(); }).catch(fail);
+  /* Attending? (owner, 22 Nov 2026): two friendly answers instead of Book / Cancel. Members can still just turn up.
+     Stored in bookings.status: "booked" = Yes, "cancelled" = Sorry, not this time. Tap the other answer to change it. */
+  function attendingButtons(id, reply) {
+    var yes = reply === "booked", no = reply === "cancelled";
+    return '<div class="attending" role="group" aria-label="Attending?"><span class="small"><strong>Attending?</strong></span>' +
+      '<button class="btn small' + (yes ? " picked" : " ghost") + '" type="button" data-act="book" data-id="' + id + '" aria-pressed="' + yes + '">Yes, absolutely! \u{1F600}</button>' +
+      '<button class="btn small' + (no ? " picked" : " ghost") + '" type="button" data-act="cancel" data-id="' + id + '" aria-pressed="' + no + '">Sorry, not this time \u{1F622}</button></div>';
   }
-  function cancelBooking(id) {
-    return sb.from("bookings").update({ status: "cancelled" }).eq("session_id", id).eq("member_id", S.user.id)
-      .then(function (r) { if (r.error) throw r.error; toast("Booking cancelled."); return refresh(); }).catch(fail);
+  function reply(id, status, msg) {
+    if (S.myBookings[id] === status) return Promise.resolve();
+    return sb.from("bookings").upsert({ session_id: id, member_id: S.user.id, status: status }, { onConflict: "session_id,member_id" })
+      .then(function (r) { if (r.error) throw r.error; toast(msg); return refresh(); }).catch(fail);
   }
+  function book(id) { return reply(id, "booked", "Great, see you there!"); }
+  function cancelBooking(id) { return reply(id, "cancelled", "Thanks for letting us know."); }
 
   /* ---------- leader: shared pieces ---------- */
   function bookedCount(sid) { return S.bookings.filter(function (b) { return b.session_id === sid && b.status === "booked"; }).length; }
+  function notComingCount(sid) { return S.bookings.filter(function (b) { return b.session_id === sid && b.status === "cancelled"; }).length; }
   function lessonIds(s) { return s.lesson_ids && s.lesson_ids.length ? s.lesson_ids : s.lesson_id ? [s.lesson_id] : []; }
   function lessonsOf(s) { return lessonIds(s).map(function (id) { return by(id, S.lessons); }).filter(Boolean); }
   function lessonPicker(ids) {
@@ -569,7 +581,7 @@ li[hidden]{display:none!important}
       return '<li><button class="item" data-act="open" data-id="' + s.id + '">' + tile(s.session_date) +
         '<div class="what"><span class="t">' + (ls.length ? esc(ls.map(function (l) { return l.title; }).join(" + ")) : s.topic ? esc(s.topic) : '<span class="muted">' + (team ? "No topic yet" : "No lesson yet") + "</span>") + "</span>" +
         '<span class="small muted">' + timeRange(s) + (s.location ? " - " + esc(s.location) : "") + (ledBy(s) ? " - " + esc(ledBy(s)) : "") + '</span><span class="row">' + groupChip(groupOf(s.group_id)) + typeChip(s.session_type) + "</span></div>" +
-        '<div class="act">' + set + (team && !s.facilitator_name ? '<span class="chip warn">Needs facilitator</span>' : "") + '<span class="chip">' + n + " booked</span>" + (S.reflections[s.id] ? '<span class="chip good">Reflection</span>' : s.session_date < t ? '<span class="chip warn">Needs reflection</span>' : "") + "</div></button></li>";
+        '<div class="act">' + set + (team && !s.facilitator_name ? '<span class="chip warn">Needs facilitator</span>' : "") + '<span class="chip">' + n + " coming</span>" + (notComingCount(s.id) ? '<span class="chip">' + notComingCount(s.id) + " not coming</span>" : "") + (S.reflections[s.id] ? '<span class="chip good">Reflection</span>' : s.session_date < t ? '<span class="chip warn">Needs reflection</span>' : "") + "</div></button></li>";
     }).join("") + "</ul>";
   }
 
@@ -577,7 +589,7 @@ li[hidden]{display:none!important}
     var s = by(S.detail, S.sessions); if (!s) { S.detail = null; return ""; }
     var g = groupOf(s.group_id);
     var members = S.memberships.filter(function (m) { return m.group_id === s.group_id; }).map(function (m) { return by(m.member_id, S.profiles); }).filter(Boolean);
-    var bookedIds = {}; S.bookings.forEach(function (b) { if (b.session_id === s.id && b.status === "booked") bookedIds[b.member_id] = true; });
+    var bookedIds = {}, noIds = {}; S.bookings.forEach(function (b) { if (b.session_id === s.id) { if (b.status === "booked") bookedIds[b.member_id] = true; else if (b.status === "cancelled") noIds[b.member_id] = true; } });
     var att = {}; S.attendance.forEach(function (a) { if (a.session_id === s.id) att[a.member_id] = a.attended; });
     var nb = Object.keys(bookedIds).length;
     var facOpts = '<option value="">To be confirmed</option><option value="' + S.profile.id + '"' + (s.facilitator_id === S.profile.id ? " selected" : "") + ">" + esc(nameOf(S.profile)) + " (regional team leader)</option>" +
@@ -590,7 +602,7 @@ li[hidden]{display:none!important}
     });
     var visitor = !s.facilitator_id && s.facilitator_name ? s.facilitator_name : "";
     return '<button class="link back" data-act="back">Back to calendar</button>' +
-      '<section class="panel pad stack"><div class="row">' + groupChip(g) + typeChip(s.session_type) + '<span class="chip">' + nb + " booked</span></div><h2>" + esc(longDate(s.session_date)) + '</h2><p class="muted">' + timeRange(s) + "</p>" +
+      '<section class="panel pad stack"><div class="row">' + groupChip(g) + typeChip(s.session_type) + '<span class="chip">' + nb + " coming</span>" + (Object.keys(noIds).length ? '<span class="chip">' + Object.keys(noIds).length + " not coming</span>" : "") + "</div><h2>" + esc(longDate(s.session_date)) + '</h2><p class="muted">' + timeRange(s) + "</p>" +
       '<form class="stack" data-form="session" data-id="' + s.id + '">' + sessionTeam(s) + '<div class="grid2">' +
       '<label>Who leads<select id="s-type" name="type"><option value="leader"' + (s.session_type === "leader" ? " selected" : "") + '>Leader-led</option><option value="team"' + (s.session_type === "team" ? " selected" : "") + ">Team-led</option></select></label>" +
       '<label>Facilitator<select id="s-fac" name="fac">' + facOpts + "</select></label></div>" +
@@ -601,7 +613,7 @@ li[hidden]{display:none!important}
       '<label>Notes for you<input id="s-notes" name="notes" value="' + esc(s.notes || "") + '"></label>' +
       '<div class="row"><button class="btn" type="submit">Save session</button>' + (S.delSession === s.id ? "" : '<button class="btn danger" type="button" data-act="asksession" data-id="' + s.id + '">Delete session</button>') + "</div></form>" +
       (S.delSession === s.id ? '<div class="notice stack"><p><strong>Delete this session?</strong> Its bookings and attendance are removed too. This cannot be undone.</p><div class="row"><button class="btn danger small" type="button" data-act="deletesession" data-id="' + s.id + '">Yes, delete session</button><button class="btn ghost small" type="button" data-act="keepsession">Keep it</button></div></div>' : "") + "</section>" +
-      renderAttendance(s, members, att, bookedIds) + renderReflection(s);
+      renderAttendance(s, members, att, bookedIds, noIds) + renderReflection(s);
   }
 
   /* Team for a session (owner, 22 Nov 2026): move a session to another team you can change (not courses). */
@@ -613,7 +625,7 @@ li[hidden]{display:none!important}
       return '<option value="' + x.id + '"' + (x.id === s.group_id ? " selected" : "") + ">" + esc(x.name) + (x.cluster ? " (" + esc(x.cluster) + ")" : "") + "</option>";
     }).join("") + '</select><span class="small muted">Bookings and attendance stay with the session if you change the team.</span></label>';
   }
-  function renderAttendance(s, members, att, bookedIds) {
+  function renderAttendance(s, members, att, bookedIds, noIds) {
     if (!members.length) return '<section class="panel pad stack"><h3>Attendance</h3><p class="muted">No one is in this group yet. Add people in the People tab.</p></section>';
     var came = members.filter(function (p) { return att[p.id]; }), nots = members.filter(function (p) { return !att[p.id]; });
     var f = S.attFilter && S.attSession === s.id ? S.attFilter : (S.reflections[s.id] && came.length ? "came" : "all");
@@ -622,9 +634,9 @@ li[hidden]{display:none!important}
       return '<button type="button" aria-pressed="' + (f === x[0]) + '" data-act="attfilter" data-f="' + x[0] + '" data-sid="' + s.id + '">' + x[1] + "</button>";
     }).join("");
     return '<section class="panel pad stack"><h3>Attendance</h3><div class="filters" role="group" aria-label="Filter attendance">' + chips + "</div>" +
-      '<p class="small muted">Tick each person who came. Those who booked are marked. Nobody is removed when you tick them, so you can still add or fix people; use the filters to see just who attended.' + (s.session_type === "team" && s.facilitator_id && s.facilitator_id !== S.profile.id ? " The facilitator can also tick people on the night." : "") + "</p>" +
+      '<p class="small muted">Tick each person who came. Those who said if they are coming are marked. Nobody is removed when you tick them, so you can still add or fix people; use the filters to see just who attended.' + (s.session_type === "team" && s.facilitator_id && s.facilitator_id !== S.profile.id ? " The facilitator can also tick people on the night." : "") + "</p>" +
       (shown.length ? "<ul>" + shown.map(function (p) {
-        return '<li><label class="check"><input type="checkbox" data-act="attend" data-sid="' + s.id + '" data-mid="' + p.id + '"' + (att[p.id] ? " checked" : "") + "> <span>" + esc(nameOf(p)) + "</span>" + (bookedIds[p.id] ? ' <span class="chip good">Booked</span>' : "") + "</label></li>";
+        return '<li><label class="check"><input type="checkbox" data-act="attend" data-sid="' + s.id + '" data-mid="' + p.id + '"' + (att[p.id] ? " checked" : "") + "> <span>" + esc(nameOf(p)) + "</span>" + replyChip(bookedIds[p.id], noIds[p.id]) + "</label></li>";
       }).join("") + "</ul>" : '<p class="muted">' + (f === "came" ? "No one is marked as attended yet." : "Everyone is marked as attended.") + "</p>") + "</section>";
   }
 
