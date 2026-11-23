@@ -490,4 +490,4 @@ booking for others (no password, Not on the list, Don't email Country Rostering)
 backup), weekly schedule, after it's sent and the change log, correcting the cut-off, removing messages, team hours,
 trial rosters and Summer Bay. Dropped: typed name, saved roster on the device, manager password, the PDF view and Mark
 as sent, the Google Sheet Change Log. Anchors kept where the topic stayed; `#new-roster`, `#new-managers`, `#opening`,
-`#print`, `#mark-sent` are gone. On a branch, not merged (PR #339).
+`#print`, `#mark-sent` are gone. Live (PR #339, merged 23 Nov 2026).
