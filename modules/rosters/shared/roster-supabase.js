@@ -922,6 +922,14 @@
             if (help) help.style.display = "none";
         }
 
+        // Owner, 23 Nov 2026: the buttons under the folds (Edit sent
+        // cut-off, Team hours, Booking list, Reset sent status) the same
+        // size, with more room below the Schedule set-up toggle.
+        const editButton = document.getElementById("editRosterSentUntilButton");
+        const buttonBar = editButton && editButton.closest(".action-bar");
+
+        if (buttonBar) buttonBar.classList.add("manager-buttons");
+
         ["rosterSendPanel", "rosterSchedulePanel"].forEach(id => {
             const panel = document.getElementById(id);
 

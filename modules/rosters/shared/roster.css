@@ -526,6 +526,23 @@
 
     .manager-section { margin-top: 1.5rem; }
 
+    /* Manager controls buttons on signed-in rosters: even sizes, set
+       apart from the Schedule set-up toggle above (owner, 23 Nov 2026). */
+    .action-bar.manager-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+        margin-top: 1.5rem;
+    }
+
+    .action-bar.manager-buttons > button {
+        width: 100%;
+        min-height: 48px;
+        margin: 0;
+    }
+
+    .action-bar.manager-buttons > button[hidden] { display: none; }
+
     .manager-booking-list { margin-top: 1rem; }
 
     .section-layout .sent-notice {
