@@ -43,6 +43,7 @@ the `build-microlearning-module` skill holds the rules and steps (including the 
 | `quiz` | Questions with `options`, `answer` (index) and a `why` line shown after answering |
 | `practical` | Optional hands-on activity: equipment, steps, what good looks like |
 | `furtherVideo`, `podcast`, `furtherLinks` | Optional further learning: an extra video (`{src, title, note}`), an audio file or episode link, and links |
+| `next` | Optional card at the end pointing to the next module in a set: `{ href, title, eyebrow, text }` (used by the Team Leader modules) |
 
 **Panels and blocks** (envenomation): set `panels` to your own ordered list. Each panel is
 `{ title, open?, optional?, chip?, blocks: [...] }`, and a block is one of:

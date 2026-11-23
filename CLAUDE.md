@@ -165,7 +165,9 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - Team Leader microlearning (`/microlearning/leaders/`, started 21 Nov 2026): module 1 Your dashboard live
   (PR #305, merged 21 Nov 2026). Module 3 Training nights live
   (PR #306, merged 21 Nov 2026). Modules 4 People and passwords and 6 Your team page live (21 Nov 2026).
-  Modules 2 Crewing gaps and 5 Relief cover built (on a branch, not merged). All six are linked from the user guides.
+  Modules 2 Crewing gaps and 5 Relief cover live (on main). All six are linked from the user guides.
+  Learning order for a new Team Leader (23 Nov 2026): dashboard, people, gaps, training nights, relief, team page,
+  with Next links, a Start here card on `/userguides/` and the guide in the same order (on a branch, not merged).
 - Volunteer Team Leader level (22 Nov 2026): one per team, facilitator + roster manager for their team, team dashboard
   `/dashboard/team/`, set on Grant access (see `access.md`). Live (PR #320, merged 22 Nov 2026). Owner to name the VTLs.
 - Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.

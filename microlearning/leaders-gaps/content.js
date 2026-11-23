@@ -5,6 +5,7 @@
 var M = window.MODULE = {
   flow: true,
   draft: false,
+  next: { href: "../leaders-training-nights/", title: "Training nights", eyebrow: "Next: Team Leader module 4 of 6" },
   title: "Crewing gaps",
   subtitle: "Team Leader microlearning",
   headline: "Where your rosters fall below your own minimum",

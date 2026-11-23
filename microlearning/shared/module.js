@@ -525,6 +525,15 @@
     }
   }
 
+  /* M.next: a card at the end pointing to the next module in a set ({ href, title, eyebrow, text }) */
+  if (M.next) {
+    var nb = el("div", "related next-up"), na = el("a", "rel-card");
+    nb.appendChild(el("span", "eyebrow", M.next.eyebrow || "Next module"));
+    na.href = M.next.href; na.appendChild(el("strong", null, M.next.title + " →"));
+    if (M.next.text) na.appendChild(el("span", "small muted", M.next.text));
+    nb.appendChild(na); app.appendChild(nb);
+  }
+
   /* ---------- footer ---------- */
   function sourceLine(p) { return (p.code || "") + (p.name ? " " + p.name : "") + (p.version ? ", " + p.version : ""); }
   var foot = el("footer", "foot small muted");

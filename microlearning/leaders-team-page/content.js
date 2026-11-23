@@ -6,6 +6,7 @@
 var M = window.MODULE = {
   flow: true,
   draft: false,
+  next: { href: "/userguides/leaders/", title: "Team Leader guide", eyebrow: "All 6 modules done", text: "The full detail on every page, plus the ones used now and then: contribution, dispatch, AR course." },
   title: "Your team page",
   subtitle: "Team Leader microlearning",
   headline: "What your crew sees when they sign in",
@@ -98,7 +99,7 @@ var M = window.MODULE = {
 
     { title: "Further reading", optional: true, collapsed: true, blocks: [
       { links: [
-        { label: "Team Leader guide: team pages", href: "/userguides/leaders/#training" },
+        { label: "Team Leader guide: your team page", href: "/userguides/leaders/#team-pages" },
         { label: "Open your team page", href: "/teams/" },
         { label: "Region page", href: "/region/" }
       ] }
