@@ -503,3 +503,10 @@ as sent, the Google Sheet Change Log. Anchors kept where the topic stayed; `#new
 - 23 Nov 2026: Wudinna (5652) was not in the task's postcode list, so WU jobs stopped after 13 Nov (earlier ones came
   in through neighbouring postcodes). Added a Part C: 5651 Kyancutta, 5652 Wudinna, 5653 Yaninee, 5654 Minnipa,
   5671 Port Kenny. A test load found a WU181 Minnipa job (21 Nov) not yet in `paging_jobs`.
+
+## Edit sent cut-off back in Manager controls (23 Nov 2026, owner asked)
+
+The new layout hid "Edit sent cut-off" (left over from the PDF view's Mark as sent). On signed-in (Supabase) rosters
+it is shown again, as the roster guide section 13 says, and it also works when there is no cut-off (it then sets a
+new one, `roster_set_sent` with `p_editing` false). Forward only, as before; Reset first to go back. Apps Script
+pages unchanged. On a branch, not merged.
