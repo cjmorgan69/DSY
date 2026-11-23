@@ -512,4 +512,5 @@ new one, `roster_set_sent` with `p_editing` false). Forward only, as before; Res
 pages unchanged. Live (PR #343, merged 23 Nov 2026).
 - Follow-up (owner, 23 Nov 2026): the four buttons below the folds (Edit sent cut-off, Team hours, Booking list,
   Reset sent status) are an even 2-by-2 grid with more room under Schedule set-up (`.manager-buttons` in
-  `roster.css`, class added in `tidyManagerControls`). Signed-in rosters only. On a branch, not merged.
+  `roster.css`, class added in `tidyManagerControls`). Order: Booking list, Team hours, Edit sent cut-off, Reset
+  sent status (CSS `order`). Signed-in rosters only. On a branch, not merged.
