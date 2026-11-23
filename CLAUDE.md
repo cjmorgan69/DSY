@@ -138,9 +138,8 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 
 - 44 active accounts (38 students, 6 facilitators) are still on the shared starter password; "must change password" is
   enforced by the pages only.
-- Pager and roster copies in Supabase (`paging_jobs`, `roster_bookings`): fed by a scheduled run in the owner's Claude
-  desktop app on their PC, every day at 9 am (owner, 15 Nov 2026); it is not in this repo. On 15 Nov 2026 the owner
-  said it ran at 9:30, but the newest rows were still from 14 Nov 11:26 Adelaide time: the owner is checking the run.
+- Pager copy in Supabase (`paging_jobs`): fed by the claude.ai scheduled task "DSY pager capture" at 5:35 am, 11:35 am
+  and 5:35 pm Adelaide (19 Nov 2026); not in this repo. It no longer copies rosters (see `rosters.md`).
 - Supabase advisor tidy-up: leaked-password protection off; `protect_profile_fields()` and `require_allowed_id()`
   callable by anon (trigger functions, harmless); `norm_id`, `course_today`, `course_starts_at` have no fixed search
   path; anon holds full grants on most tables, so RLS is the only barrier. The `upcoming_sessions` view is security

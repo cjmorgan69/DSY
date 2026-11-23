@@ -55,6 +55,8 @@ bookings (paramedic cover, placeholders like "LEP40") hidden unless ticked. Supa
 only through table RLS); SQL in `supabase/contribution-setup.sql`, applied by Claude 13 Nov 2026. `paging_jobs.team`
 is blank for most jobs before 7 Nov 2026, so matching falls back to `paging_team(unit)` (TB, CU, PT, CF). Roster
 history in Supabase starts 3 Nov 2026 (the sync keeps past bookings).
+  19 Nov 2026: both views now read the new roster `roster_shifts` (people by account, placeholders as typed) instead
+  of the old copy; jobs before 18 Nov gave the same 131 rows and 157 jobs both ways. SQL `supabase/paging-views-roster-shifts.sql`.
 
 ## Retro car dash
 

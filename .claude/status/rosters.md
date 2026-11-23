@@ -491,3 +491,15 @@ backup), weekly schedule, after it's sent and the change log, correcting the cut
 trial rosters and Summer Bay. Dropped: typed name, saved roster on the device, manager password, the PDF view and Mark
 as sent, the Google Sheet Change Log. Anchors kept where the topic stayed; `#new-roster`, `#new-managers`, `#opening`,
 `#print`, `#mark-sent` are gone. On a branch, not merged (PR #339).
+
+## Pager task after the switch (19 Nov 2026)
+
+- The scheduled task "DSY pager capture" (claude.ai cloud scheduled task, was "DSY pager and roster capture") now runs
+  at 5:35 am, 11:35 am and 5:35 pm Adelaide (owner asked for 6, 12 and 6). It only captures the paging list: the
+  Google Sheet roster copy step was removed, as every team books on the new roster.
+- `paging_jobs_by_member(_detail)` read `roster_shifts` (see dashboard.md).
+- Still copying from the old sheets: the edge function `roster-sync` (every 2 hours into `roster_bookings`). Stage 8:
+  stop it once nothing reads `roster_bookings` (`member_contribution_v2` still reads it for teams not passed as moved).
+- 23 Nov 2026: Wudinna (5652) was not in the task's postcode list, so WU jobs stopped after 13 Nov (earlier ones came
+  in through neighbouring postcodes). Added a Part C: 5651 Kyancutta, 5652 Wudinna, 5653 Yaninee, 5654 Minnipa,
+  5671 Port Kenny. A test load found a WU181 Minnipa job (21 Nov) not yet in `paging_jobs`.
