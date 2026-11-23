@@ -267,3 +267,12 @@ Sessions open in the planner (owner, 22 Nov 2026): on `/dashboard/` and `/dashbo
 calendar day with one session (several: each bar) and each row of the upcoming list link to `/training/#session=<id>`,
 which opens that session's page in the training app (leaders; the hash is then cleared). Tested with stand-in data.
 Merged (PR #331, 22 Nov 2026).
+
+## Training app: members see the session name only (23 Nov 2026)
+
+Owner: team members were still seeing the lesson content. Now members see only the session name (`sessions.topic`;
+"Topic to be confirmed" when blank) in Team Training, on the Team page's Next training card and in the reminder
+notification; no lesson titles or summaries. The session's facilitator still sees lessons, summaries and Open lesson
+links; leaders see everything. Enforced in the database too: `upcoming_sessions` returns `lesson_title`,
+`lesson_summary` and `lessons` only to leaders and the session's facilitator. On 23 Nov 2026 every upcoming session
+with lessons had a session name. First real reminders: 23 Nov 7:00 am, 2 Tumby Bay phones (no one else had them on).

@@ -62,3 +62,8 @@ language sql stable security definer set search_path to 'public' as $$
 
 revoke all on function public.session_reminder_claim(), public.session_push_targets(uuid), public.session_starts_at(public.sessions) from public, anon, authenticated;
 grant execute on function public.session_reminder_claim(), public.session_push_targets(uuid) to service_role;
+
+-- 23 Nov 2026 (owner): members see the session name only. The reminder (sent to every member) now uses the session
+-- name, not the lesson titles (migration session_reminder_uses_session_name), and upcoming_sessions gives lesson
+-- titles, summaries and links only to leaders and the session's facilitator (migration
+-- upcoming_sessions_lessons_for_facilitator_only).
