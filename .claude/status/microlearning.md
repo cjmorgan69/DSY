@@ -226,3 +226,15 @@ and passwords, 5 relief cover, 6 team page photos (rosters and roster emails lef
   gaps are real results) and of /dashboard/relief/ plus /dashboard/ as the relief Team Leader (banner, labelled tasks).
   Owner OK'd both scripts ("record both", 21 Nov 2026); intro videos 1:15 and 0:57. All six Team Leader modules now
   exist, listed in the owner's numbering order in MODULE_LISTS.leaders, and linked from the Team Leader guide.
+
+## Team Leader learning order (owner, 23 Nov 2026)
+
+Owner asked for a logical order for a new Team Leader, with Relief cover after Training nights. Order: 1 Your
+dashboard, 2 People and passwords, 3 Crewing gaps, 4 Training nights, 5 Relief cover, 6 Your team page
+(`MODULE_LISTS.leaders`). Each leader module has a `next` card at the end ("Next: Team Leader module N of 6"; the last
+points to the Team Leader guide), a new optional content key in `shared/module.js`. The videos never say a module
+number, so nothing was re-narrated. The Team Leader guide was reordered to the same path (16 sections: People moved
+from Training into Grant access, people and passwords; Your team page is its own section `#team-pages`).
+`/userguides/` has a "New Team Leader? Start here" card (leaders only) and a short VTL path (VTLs only), shown through
+`DSY_GATE.ready`. Dashboard footers (both) list leader pages in the same order with Team Leader training first; the
+home page leader links add Team Leader training. On a branch, not merged.

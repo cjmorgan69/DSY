@@ -5,6 +5,6 @@ window.MODULE_LISTS = {
   ao: ["stroke", "envenomation", "hypoglycaemia", "chest-pain", "anaphylaxis", "asthma", "sepsis", "falls", "pain", "acpo", "headache", "nausea", "burns", "mva-baseline", "spinal", "dementia", "bushfire"],
   paramedic: ["tbi", "crush", "faint-or-fit", "asthma-copd"],
   rn: ["sepsis-nursing", "asthma-copd-ed"],
-  leaders: ["leaders-dashboard", "leaders-gaps", "leaders-training-nights", "leaders-people", "leaders-relief", "leaders-team-page"]
+  leaders: ["leaders-dashboard", "leaders-people", "leaders-gaps", "leaders-training-nights", "leaders-relief", "leaders-team-page"]
 };
 window.MODULE_LIST = window.MODULE_LISTS.ao;

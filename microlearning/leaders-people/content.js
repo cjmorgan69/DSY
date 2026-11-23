@@ -6,6 +6,7 @@
 var M = window.MODULE = {
   flow: true,
   draft: false,
+  next: { href: "../leaders-gaps/", title: "Crewing gaps", eyebrow: "Next: Team Leader module 3 of 6" },
   title: "People and passwords",
   subtitle: "Team Leader microlearning",
   headline: "Who can sign in, and which team they're in",
@@ -102,8 +103,7 @@ var M = window.MODULE = {
 
     { title: "Further reading", optional: true, collapsed: true, blocks: [
       { links: [
-        { label: "Team Leader guide: Grant access and passwords", href: "/userguides/leaders/#access" },
-        { label: "Team Leader guide: training sessions and People", href: "/userguides/leaders/#training" },
+        { label: "Team Leader guide: Grant access, people and passwords", href: "/userguides/leaders/#access" },
         { label: "Open Grant access", href: "/access/" }
       ] }
     ] }
