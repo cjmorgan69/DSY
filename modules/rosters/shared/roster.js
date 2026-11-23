@@ -1845,8 +1845,10 @@ function askManagerPassword(question) {
             const hasSavedCutOff =
                 submissionStatusLoaded && Boolean(rosterSentUntil);
 
+            // Signed-in rosters can also set a cut-off when there is none
+            // (for example a roster sent to Country Rostering another way).
             document.getElementById("editRosterSentUntilButton").disabled =
-                isLoading || !hasSavedCutOff;
+                isLoading || (!hasSavedCutOff && !ROSTER_BACKEND);
 
             document.getElementById("resetRosterSentButton").disabled =
                 isLoading || !hasSavedCutOff;
@@ -1973,6 +1975,11 @@ function askManagerPassword(question) {
 
             try {
                 await loadRosterSubmissionStatus();
+
+                // Signed-in rosters with no cut-off: set a new one.
+                if (editing && !rosterSentUntil && ROSTER_BACKEND) {
+                    editing = false;
+                }
 
                 if (editing && !rosterSentUntil) {
                     throw new Error(
@@ -5311,8 +5318,12 @@ function askManagerPassword(question) {
             bookPanel.prepend(sentBox);
 
             // The PDF view's Mark as sent sets the cut-off, so only Reset
-            // is kept here, for a cut-off marked by mistake.
-            document.getElementById("editRosterSentUntilButton").hidden = true;
+            // is kept here, for a cut-off marked by mistake. Signed-in
+            // (Supabase) rosters have no Mark as sent, so they keep
+            // Edit sent cut-off (owner, 23 Nov 2026; roster guide 13).
+            if (!ROSTER_BACKEND) {
+                document.getElementById("editRosterSentUntilButton").hidden = true;
+            }
 
             const managerHelp = managerPanel.querySelector(
                 ".manager-controls-content > .field-help"
