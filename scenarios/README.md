@@ -55,5 +55,8 @@ All text reaches the page through `textContent`, so typed values cannot add HTML
 
 5. If the scenario has a job in the MDT simulator, add `customSlug`, `customDefaults` and `custom()` to it in
    `mdt/jobs.js` and add the slug to the `Open in MDT simulator` list in `index.html`.
+6. If the walk-through has a PCR trainer job, add the slug to `MAP` in `tools/pcr/custom.js` (template defaults, the
+   hospital as the card writes it) and to the `Open in PCR trainer` list in `index.html`. Then check the card's times
+   move the same way as the walk-through's (see `.claude/status/pcr.md`).
 
 The original `/modules/<name>/` page stays as it is. If it is changed, regenerate and reload the template.

@@ -1,10 +1,11 @@
 /* DSY site gate. Put as the first script in a page's <head>:
      <script src="/shared/gate.js" data-level="student"></script>
-   data-level: student (any signed-in, approved person), facilitator (facilitators and leaders), leader,
+   data-level: student (any signed-in, approved person), facilitator (facilitators, VTLs and leaders), leader,
+   vtl (a team's Volunteer Team Leader, or a leader),
    mdt (student when the link has self=1, else facilitator), stations (facilitator for #setup and #print, else student).
    It uses the same Supabase sign-in as /training/ (shared on this site), so people sign in once per browser.
    This is a front door, not a vault: the page files are still public on GitHub. Real protection for facilitator
-   answers means serving them from the database. window.DSY_GATE.ready resolves with { role, name, facilitator }. */
+   answers means serving them from the database. window.DSY_GATE.ready resolves with { role, name, facilitator, vtl }. */
 (function () {
   "use strict";
   var URL_ = "https://ekaodnbnpsuayvmxvxbm.supabase.co";
@@ -20,6 +21,7 @@
   function levelNow() {
     if (rule === "mdt") return /(^|[#&])self=1(&|$)/.test(firstHash + "&" + location.hash) ? "student" : "facilitator";
     if (rule === "stations") return /^#(setup|print)$/.test(location.hash) ? "facilitator" : "student";
+    if (rule === "vtl") return "vtl";
     return NEED[rule] ? rule : "student";
   }
 
@@ -77,11 +79,16 @@
       })
       .then(function (rows) { return Array.isArray(rows) ? (rows[0] || { full_name: "", role: "member" }) : rows; })
       .then(function (p) {
-        /* relief cover (16 Nov 2026): someone covering for a leader counts as a leader until the cover ends */
+        /* relief cover (16 Nov 2026): someone covering for a leader counts as a leader until the cover ends.
+           Volunteer Team Leader (22 Nov 2026): a VTL counts as a facilitator and may open the team dashboard. */
         if (p.role === "leader") return p;
         return fetch(URL_ + "/rest/v1/rpc/my_access", { method: "POST", headers: { apikey: KEY, Authorization: "Bearer " + s.access_token, "Content-Type": "application/json" }, body: "{}" })
           .then(function (r) { return r.ok ? r.json() : null; })
-          .then(function (a) { if (a && a.role === "leader") p.role = "leader"; return p; })
+          .then(function (a) {
+            if (a && RANK[a.role] > (RANK[p.role] || 0)) p.role = a.role;
+            if (a && a.vtl) p.vtl = a.vtl.team || true;
+            return p;
+          })
           .catch(function () { return p; });
       });
   }
@@ -93,6 +100,13 @@
   function decide() {
     if (!me) return;
     var need = levelNow();
+    if (need === "vtl") {
+      if (me.role === "leader" || me.vtl) { show(); return; }
+      document.documentElement.classList.add("dsy-gate");
+      box("Volunteer Team Leaders only", "This page is for each team's Volunteer Team Leader. Ask your Team Leader if you should have this access.",
+        [{ text: "Your team page", href: "/teams/" }, { text: "Sign out", href: "/signin/?out=1", alt: true }]);
+      return;
+    }
     if (RANK[me.role] >= NEED[need]) { show(); return; }
     document.documentElement.classList.add("dsy-gate");
     box(need === "leader" ? "Leaders only" : "Facilitators only",
@@ -106,17 +120,17 @@
     var step = (s.expires_at || 0) * 1000 < Date.now() + 60000 ? refresh(s) : Promise.resolve(s);
     step.then(function (s2) {
       return fetchProfile(s2).then(function (p) {
-        try { localStorage.setItem(CACHE, JSON.stringify({ uid: s2.user.id, role: p.role, name: p.full_name, t: Date.now() })); } catch (e) {}
+        try { localStorage.setItem(CACHE, JSON.stringify({ uid: s2.user.id, role: p.role, name: p.full_name, vtl: p.vtl || null, t: Date.now() })); } catch (e) {}
         return p;
       });
     }).then(function (p) {
       if (p.must_change_password) return location.replace("/signin/?change=1&next=" + encodeURIComponent(location.pathname + location.search + location.hash));
-      me = { role: p.role, name: p.full_name };
-      decide(); resolveReady({ role: me.role, name: me.name, facilitator: RANK[me.role] >= 2 });
+      me = { role: p.role, name: p.full_name, vtl: p.vtl || null };
+      decide(); resolveReady({ role: me.role, name: me.name, facilitator: RANK[me.role] >= 2, vtl: me.vtl });
     }).catch(function (e) {
       if (e && (e.status === 400 || e.status === 401 || e.status === 403)) return toSignin();
       var c = cached(s.user.id);      /* offline or Supabase unreachable: trust the last answer for a while */
-      if (c) { me = { role: c.role, name: c.name }; decide(); resolveReady({ role: me.role, name: me.name, facilitator: RANK[me.role] >= 2 }); }
+      if (c) { me = { role: c.role, name: c.name, vtl: c.vtl || null }; decide(); resolveReady({ role: me.role, name: me.name, facilitator: RANK[me.role] >= 2, vtl: me.vtl }); }
       else retryBox("The sign-in service did not answer. Check your connection and try again.");
     });
   }

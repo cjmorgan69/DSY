@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261119m" data-level="student"></script>
+<script src="/shared/gate.js?v=20261123m" data-level="student"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/userguides/guide.css?v=20261119m">
+<link rel="stylesheet" href="/userguides/guide.css?v=20261123m">
 <!-- Home of the DSY user guide (17 Nov 2026). One guide per kind of user; built one at a time, Team Leaders first (owner). -->
 </head>
 <body>
@@ -26,10 +26,48 @@
   <a class="badge" href="/">DSY home</a>
 </header>
 
+<section class="card path-card" id="new-leader" hidden>
+  <h2>🧭 New Team Leader? Start here</h2>
+  <p>Learn it in this order. Each step has a short training module (🎬) and the matching part of the <a href="/userguides/leaders/">Team Leader guide</a>, which follows the same order.</p>
+  <ol>
+    <li><strong>See what your volunteers see.</strong> <a href="/userguides/start/">Getting started</a> (signing in, the home page, booking a training night) and <a href="/userguides/rosters/#getting-started">Part 1 of the roster guide</a> (booking a shift).</li>
+    <li><strong>Your dashboard.</strong> 🎬 <a href="/microlearning/leaders-dashboard/">Module 1</a> · guide sections 1 to 4 (signing in, the dashboard, tasks, Ask DSY).</li>
+    <li><strong>People and passwords.</strong> 🎬 <a href="/microlearning/leaders-people/">Module 2</a> · <a href="/userguides/leaders/#access">guide section 5</a> (Grant access, teams, VTLs, password resets).</li>
+    <li><strong>Rosters.</strong> <a href="/userguides/rosters/#manager-controls">Part 2 of the roster guide</a> (manager controls) · guide sections <a href="/userguides/leaders/#rosters">6</a> and <a href="/userguides/leaders/#roster-emails">7</a> (rosters and roster emails).</li>
+    <li><strong>Crewing gaps.</strong> 🎬 <a href="/microlearning/leaders-gaps/">Module 3</a> · <a href="/userguides/leaders/#gaps">guide section 8</a>.</li>
+    <li><strong>Training nights.</strong> 🎬 <a href="/microlearning/leaders-training-nights/">Module 4</a> · <a href="/userguides/leaders/#training">guide section 9</a>, then <a href="/userguides/run/">Running a session</a> and the <a href="/userguides/mdt/">MDT simulator</a> guide.</li>
+    <li><strong>Relief cover.</strong> 🎬 <a href="/microlearning/leaders-relief/">Module 5</a> · <a href="/userguides/leaders/#relief">guide section 10</a>.</li>
+    <li><strong>Your team page.</strong> 🎬 <a href="/microlearning/leaders-team-page/">Module 6</a> · <a href="/userguides/leaders/#team-pages">guide section 11</a>.</li>
+    <li><strong>When you need them.</strong> Guide sections 12 to 15: <a href="/userguides/leaders/#contribution">volunteer contribution</a>, <a href="/userguides/leaders/#dispatch">dispatch</a>, <a href="/userguides/leaders/#ar-course">setting up an AR course</a> and <a href="/userguides/leaders/#car">the retro car dash</a>.</li>
+  </ol>
+</section>
+
+<section class="card path-card" id="new-vtl" hidden>
+  <h2>🧭 New Volunteer Team Leader? Start here</h2>
+  <p>As a VTL you run your team's training and manage its roster. Learn it in this order:</p>
+  <ol>
+    <li><strong>See what your crew sees.</strong> <a href="/userguides/start/">Getting started</a> and <a href="/userguides/rosters/#getting-started">Part 1 of the roster guide</a>.</li>
+    <li><strong>Your team dashboard.</strong> Open your <a href="/teams/">Team Page</a> and tap <strong>Team dashboard</strong>: today's roster, recent dispatches, your team's contribution and training.</li>
+    <li><strong>Managing the roster.</strong> <a href="/userguides/rosters/#manager-controls">Part 2 of the roster guide</a> (manager controls).</li>
+    <li><strong>Running training.</strong> <a href="/userguides/run/">Running a session</a>, then the <a href="/userguides/mdt/">MDT simulator</a> guide.</li>
+  </ol>
+</section>
+<script>
+// Show the Start here path to Team Leaders, and the short one to Volunteer Team Leaders.
+(window.DSY_GATE && window.DSY_GATE.ready ? window.DSY_GATE.ready : Promise.resolve(null)).then(function (me) {
+  if (!me) return;
+  var id = me.role === "leader" ? "new-leader" : (me.vtl ? "new-vtl" : null);
+  if (!id) return;
+  var s = document.getElementById(id); s.hidden = false;
+  if (location.hash === "#" + id || location.hash === "#new-leader") s.scrollIntoView();
+});
+</script>
+
 <h2 class="part-heading">Ready now</h2>
 <div class="tiles">
   <a class="tile" href="/userguides/start/"><b>👋 Getting started</b><span>Signing in, passwords, the home page, booking a training night</span></a>
-  <a class="tile" href="/userguides/leaders/"><b>🧭 Team Leaders</b><span>Dashboard, tasks, crewing gaps, relief cover, training, Grant access, roster settings</span></a>
+  <a class="tile" href="/microlearning/leaders/"><b>🎬 Team Leader training</b><span>Six short videos and quizzes, in order: your dashboard, people and passwords, crewing gaps, training nights, relief cover, your team page</span></a>
+  <a class="tile" href="/userguides/leaders/"><b>🧭 Team Leaders</b><span>Dashboard, people and passwords, rosters, crewing gaps, training, relief cover, team page</span></a>
   <a class="tile" href="/userguides/rosters/"><b>🗓 Crew Shift Roster</b><span>Booking shifts, team messages, and the roster manager controls</span></a>
   <a class="tile" href="/userguides/run/"><b>🎓 Running a session</b><span>Run a session, walk-throughs, case-night slides, stations, customiser, feedback (facilitators)</span></a>
   <a class="tile" href="/userguides/mdt/"><b>📟 MDT simulator</b><span>Running MDT drills (facilitators)</span></a>

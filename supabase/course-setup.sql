@@ -360,3 +360,10 @@ grant execute on function public.course_cant_make(int, text, boolean) to authent
 grant execute on function public.course_promote(uuid) to authenticated;
 grant execute on function public.course_add_students(uuid, jsonb) to authenticated;
 grant execute on function public.course_account_status(uuid) to authenticated;
+
+-- Skill sign-off navigator (/ar/signoff/, 21 Nov 2026): each student's station and saaslearn (Moodle) user number,
+-- set on the Students tab. Replaces the short-lived signoff_students table (empty when dropped).
+alter table public.course_students
+  add column if not exists station text check (station in ('tumby', 'cummins', 'coffin', 'portneill')),
+  add column if not exists moodle_id integer check (moodle_id > 0);
+drop table if exists public.signoff_students;

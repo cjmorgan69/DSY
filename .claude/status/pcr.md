@@ -38,3 +38,16 @@ AO or Paramedic, a protocol or guideline (or "Generally unwell": basic or univer
 Prolonged Care, no drugs unless named) and the RDR zone counts; Claude (the artifact's sample capability) writes the
 case card and model PCR from the walk-through card or the P guideline text plus the app dose table, checks the
 zones, and gives a `/tools/pcr/#c=` link.
+
+## Customised walk-throughs in the PCR trainer (22 Nov 2026)
+
+The customiser has an "Open in PCR trainer" button for all 15 templates (`/tools/pcr/#s=<slug>&...`, same link as
+the MDT). `tools/pcr/custom.js` rewrites the walk-through's job: first name and age, the person with the patient and
+their name, scene town, road (MVA), hospital, backup town and minutes, and every clock time (an hour or more before
+the page stays put; up to arrival moves with the page time; on scene also with the drive out; after leaving for
+hospital also with the drive to hospital). Obs, treatment and doses are unchanged; dose cells in the drug table are
+never treated as times. Checked with a script against every customiser template (page time, drive out, drive to
+hospital, all three): each time the walk-through and the card share moves the same way (four times needed an
+override, listed in `times`). The job shows in the list as "<name>, <age>: ... (customised)", links to the customised
+student walk-through, and keeps its own saved work per customisation. Live (PR #318, merged 22 Nov 2026).
+

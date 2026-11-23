@@ -132,3 +132,47 @@ blank it shows "One more thing: your name" once and saves it to `profiles.full_n
 first-time mode; the old "Create an account" links on `/teams/`, `/region/` and `/training/` now go to
 `/signin/?first=1&next=<page>` (their own sign-up forms are no longer reachable). Getting started and leader guides
 updated. Tested with stand-in data. On a branch, not merged.
+
+## Volunteer Team Leader (VTL) (owner, 22 Nov 2026)
+
+Owner asked for a VTL level: the same as roster manager plus facilitator, NOT Team Leader, one per team, with their own
+team dashboard (roster, dispatches, volunteer contribution and training for their team only, and weather; no footer links).
+- Table `public.team_vtls` (group_id primary key = one per team, member_id unique = one team per person); write policy
+  `can_edit_group(group_id)` (cluster leaders), read by leaders, the VTL and the team's members. `profiles.role` is NOT
+  changed: deleting the row takes the access away.
+- `is_facilitator()` and `roster_can_manage(g)` include the VTL (`is_vtl_of(g)`); `sessions_read` and `groups_read` let a
+  VTL read their team; `my_access()` returns `role` = facilitator for a VTL who is a member, plus `vtl` {group_id, team,
+  cluster}. Team-only data through security definer functions `team_dash_group`, `team_dispatch(p_group, p_from, p_to)`,
+  `team_contribution(p_group, p_from, p_to)` (a VTL their own team, a leader any team).
+- SQL `supabase/vtl-setup.sql`, migration `vtl_access`, applied by Claude 22 Nov 2026 after a rolled-back rehearsal with
+  a stand-in Cummins VTL (facilitator yes, leader no, manage Cummins roster yes, Tumby Bay no, sees only the Cummins
+  group and sessions, no direct `paging_jobs` read, team dispatch and contribution work).
+- `shared/gate.js`: new `data-level="vtl"` (VTL or leader); a VTL counts as facilitator on facilitator pages.
+- `/access/`: "Volunteer Team Leaders" section, one row per team, picker of the team's signed-up members; the Role column
+  shows "· VTL <team>". `/teams/`: a Team dashboard button for the VTL on their team.
+- Migration `vtl_wide_view` (owner, 22 Nov 2026): the team dashboard's roster and dispatch show every team, so
+  `is_vtl()`, a `vtl_read` select policy on `paging_jobs`, and `roster_can_view()` lets a VTL see any team's roster names
+  (not staff IDs; roster pages are open anyway). `team_dispatch` is no longer used by the page.
+- Training app People page (owner, 22 Nov 2026): the Role box on a person's page now offers Member, Facilitator,
+  Volunteer Team Leader, <team> (each of the person's own teams in the leader's cluster; "replaces <name>" when the team
+  has one) and Leader. Choosing VTL writes `team_vtls` and leaves the person's role alone (a leader made VTL goes back to
+  member); choosing any other role removes their VTL row. The People list shows a VTL chip. Real leaders only (relief
+  Team Leaders see the role as text). Facilitator was added because the box used to show facilitators as Member.
+  Tested with stand-in data. Live (PR #321, merged 22 Nov 2026), checked on the live site.
+- People search (owner, 22 Nov 2026): a search box at the top of the training app's People list filters in place by name,
+  ambulance ID, team, "VTL" or "leader" (every word must match; kept while the app re-draws). On a branch, not merged.
+- Not covered: VTLs do not get roster change emails (that is `roster_managers.notify_email`); in the training app
+  (`/training/`) they are treated as facilitators already: the app has only a leader view and a member view, and
+  facilitators use the member view too (checked 22 Nov 2026); database rules that use `is_facilitator()` include VTLs. No VTLs set yet: owner to name them. Live (PR #320, merged 22 Nov 2026; checked on the live site with stand-in sign-in data, and signed-out visits go to sign-in).
+
+## Test accounts removed (22 Nov 2026)
+
+On the owner's say-so, deleted from Supabase (sign-in, profile, memberships, bookings): "Test" (1003464, Tumby Bay),
+"Test Member" (Summer Bay, owner's sa.gov.au email) and "Claude Testaccount" (999123, Summer Bay, also its expected_members
+row). No test member accounts remain; make a new one if a signed-in check is needed.
+
+## Show / hide password (22 Nov 2026)
+
+`training/pwreveal.js` puts an eye button at the right of every password box (also boxes drawn later). Loaded on `/signin/`,
+`/training/`, `/teams/`, `/region/`. The box goes back to hidden when the form is sent. Old roster manager password prompts
+and the CP-* / presenter gates are not included.

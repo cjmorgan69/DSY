@@ -364,6 +364,10 @@
     if (b.paragraphs) b.paragraphs.forEach(function (t) { body.appendChild(para(t)); });
     if (b.video !== undefined) { n = slot("video", b.video, b.title || M.title); if (n) body.appendChild(n); }
     if (b.audio !== undefined) { n = slot("audio", b.audio, b.title || "further learning"); if (n) body.appendChild(n); }
+    if (b.image) {   // a screenshot or picture: { src, alt, caption }
+      var fg = el("figure", "shot"), im = el("img"); im.src = b.image.src; im.alt = b.image.alt || ""; im.loading = "lazy"; fg.appendChild(im);
+      if (b.image.caption) fg.appendChild(el("figcaption", null, b.image.caption)); body.appendChild(fg);
+    }
     if (b.box) boxOrTiles(b.box, body);
     if (b.boxes) b.boxes.forEach(function (k) { boxOrTiles(k, body); });
     if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (s) { o.appendChild(titled(s.t, s.text)); }); body.appendChild(o); }
@@ -521,11 +525,20 @@
     }
   }
 
+  /* M.next: a card at the end pointing to the next module in a set ({ href, title, eyebrow, text }) */
+  if (M.next) {
+    var nb = el("div", "related next-up"), na = el("a", "rel-card");
+    nb.appendChild(el("span", "eyebrow", M.next.eyebrow || "Next module"));
+    na.href = M.next.href; na.appendChild(el("strong", null, M.next.title + " →"));
+    if (M.next.text) na.appendChild(el("span", "small muted", M.next.text));
+    nb.appendChild(na); app.appendChild(nb);
+  }
+
   /* ---------- footer ---------- */
   function sourceLine(p) { return (p.code || "") + (p.name ? " " + p.name : "") + (p.version ? ", " + p.version : ""); }
   var foot = el("footer", "foot small muted");
   foot.appendChild(el("strong", null, M.title));
-  foot.appendChild(el("span", null, "Based on SA Ambulance Service " + [P].concat(P.also || []).map(sourceLine).join(" and ")));
+  foot.appendChild(el("span", null, "Based on " + (P.source || "SA Ambulance Service") + " " + [P].concat(P.also || []).map(sourceLine).join(" and ")));   // P.source: who wrote it (default SAAS)
   if (P.exported) foot.appendChild(el("span", null, "Protocol text as exported " + P.exported + ". Always check the current version at clinical.saambulance.sa.gov.au"));
   (M.footerNotes || []).forEach(function (t) { foot.appendChild(el("span", null, t)); });
   foot.appendChild(el("span", null, M.disclaimer || "Training resource only. It does not replace the protocol or advice from the EOC Clinician."));

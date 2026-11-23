@@ -237,3 +237,23 @@ table.record th, table.record td { border: 1px solid var(--border); padding: .35
   .wrap { width: 100%; padding: 0; }
 }
 a.btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+
+/* Build the course (Dates tab) and the people picker (Students tab) */
+.b-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem .8rem; padding: .6rem 0; border-top: 1px solid var(--border); }
+.b-row .check { flex: 1 1 14rem; min-width: 0; }
+.b-row .check b { white-space: nowrap; }
+.b-title { font-weight: 400; }
+.b-when { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: .4rem .5rem; }
+.b-when input { flex: 1 1 0; min-width: 0; min-height: 40px; padding: 0 .6rem; border: 1px solid var(--border); border-radius: 10px; background: var(--background); font: inherit; color: var(--text); }
+.p-list { max-height: 26rem; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; padding: 0 .8rem; }
+.p-list li { padding: .55rem 0; border-top: 1px solid var(--border); }
+.p-list li:first-child { border-top: 0; }
+.p-list .check { align-items: flex-start; }
+.b-dates { flex: 1 1 100%; display: flex; flex-direction: column; gap: .4rem; }
+.b-row .link { padding: 2px 0; }
+.b-x { flex: none; width: 36px; min-height: 36px; border: 1px solid var(--border); border-radius: 10px; background: transparent; color: var(--muted); font-size: 1.2rem; line-height: 1; }
+.b-row.cons { background: color-mix(in srgb, var(--primary) 5%, transparent); margin: 0 -.6rem; padding-inline: .6rem; border-radius: 8px; }
+.b-dates .b-when { flex: none; width: 100%; }
+.b-dates .b-when input { width: 0; }
+.b-dates .b-when .b-loc { flex: 1 1 100%; width: auto; }
+.b-dates .b-when + .b-when { padding-top: .5rem; border-top: 1px dashed var(--border); }

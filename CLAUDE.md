@@ -84,6 +84,14 @@ Travel Diary page, URL in the README), read `.claude/vehicle-log/README.md`, run
   "Y" or "Consult") and the linked guideline per level (`cpg`). Use it for doses the protocol PDFs leave out.
 - GTN for AO chest pain: the app lists it as "Consult", but the owner confirmed (8 Nov 2026) that the AO crew may still
   give the FIRST dose without a consult if SBP and HR are within the protocol limits, then consult for further doses.
+  Only when the patient's own GTN is prescribed; not prescribed = consult first (owner, 22 Nov 2026).
+- Salbutamol MDI for AO asthma: give without a consult, as CPP-050-AO says (owner, 22 Nov 2026; the app lists Consult).
+- Benzylpenicillin: follow CPP-062-AO Sepsis (ceftriaxone); benzylpenicillin is to be changed over for ceftriaxone
+  (owner, 22 Nov 2026).
+- Co-Phenylcaine Forte: AOs may use it to insert an NPA (owner, 22 Nov 2026; the app lists paramedic and above).
+- Ipratropium MDI for AO asthma: on EOC Clinician consult, doses as per the paramedic guideline (owner, 22 Nov 2026).
+- Nasal cannula: AOs may use it, up to 4 L/min, whenever a protocol says oxygen may be needed (owner, 22 Nov 2026).
+  CPP-004-AO lists face mask, NRB or IPPV; where a protocol says high-flow oxygen, the mask it names is used.
   ACPO GTN stays consult-first.
 - Eyre Peninsula call signs (owner, 11 Nov 2026): XX81 for jobs between 0800 and 1800, XX181 between 1800 and 0800
   (Tumby Bay TB81 / TB181, Cleve CL81 / CL181, Port Neill PT181 at night). Use them in MDT screenshots and jobs.
@@ -153,6 +161,14 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - PRs #155 (more than one lesson per session), #133 (sepsis skills stations) and #119 (NSW ECAT protocols in the
   rural ED asthma/COPD module) were folded into the health check PR #236 on 15 Nov 2026 (owner: merge them as long
   as nothing newer is overwritten). The rural ED module's intro video was narrated before the ECAT additions.
+- Team Leader microlearning (`/microlearning/leaders/`, started 21 Nov 2026): module 1 Your dashboard live
+  (PR #305, merged 21 Nov 2026). Module 3 Training nights live
+  (PR #306, merged 21 Nov 2026). Modules 4 People and passwords and 6 Your team page live (21 Nov 2026).
+  Modules 2 Crewing gaps and 5 Relief cover live (on main). All six are linked from the user guides.
+  Learning order for a new Team Leader (23 Nov 2026): dashboard, people, gaps, training nights, relief, team page,
+  with Next links, a Start here card on `/userguides/` and the guide in the same order (on a branch, not merged).
+- Volunteer Team Leader level (22 Nov 2026): one per team, facilitator + roster manager for their team, team dashboard
+  `/dashboard/team/`, set on Grant access (see `access.md`). Live (PR #320, merged 22 Nov 2026). Owner to name the VTLs.
 - Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario

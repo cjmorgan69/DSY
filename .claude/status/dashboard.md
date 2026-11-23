@@ -9,7 +9,9 @@ and say plainly whether a thing is on main or still on a branch.
 
 Lead instructor dashboard (`/dashboard/`, 13 Nov 2026, leader gate; link in the home page leader links): live clock
 and date (Adelaide), roster today (all three clusters' Apps Script `coverage`, same as
-`/modules/rosters/operations/`, hourly heat grid with this hour outlined), training sessions (Supabase `sessions` +
+`/modules/rosters/operations/`, hourly heat grid with this hour outlined; since 22 Nov 2026 a rolling 24 hours, 3 hours
+back to 21 ahead, joining the two 8am-to-8am operational days it touches and sliding on the hour; owner's request,
+PR #330. Same on `/dashboard/team/`; the car dash fuel gauge covers now to 21 hours ahead), training sessions (Supabase `sessions` +
 `groups`, next session banner, count of sessions in the next 4 weeks with no lesson (`lesson_id` and `lesson_ids`
 empty) linking to `/training/`, 4-week calendar), dispatch last 7 days (`paging_jobs`, mini roads like
 `/dispatch/`), 7-day weather (Open-Meteo, town chips, hot-and-windy flag pointing to CFS), DSY home and Google
@@ -122,6 +124,12 @@ Role or Cluster settings), `dash.js` (banner, covered leader's tasks labelled wi
 `supabase/relief-setup.sql`, applied by Claude 16 Nov 2026; rehearsed in a rolled-back transaction (Chris -> Dave
 Chapman): Dave got leader access and Chris's 3 tasks, was blocked from resetting Chris's password, making himself a
 leader and handing cover on, could not read calendar links, and lost everything when the cover ended.
+Search box above the relief Team Leader list (owner, 22 Nov 2026): filters by name or staff ID, picks the person when
+only one matches (rebuilds the options; hidden options don't hide on iPhone Safari). Live (PR #311, merged 22 Nov 2026).
+Training app and relief (owner, 22 Nov 2026): `/training/` loads the leader's own open covers; new leader-led nights
+(one session or Set up training nights) whose start falls inside a cover get the reliever as facilitator (preview shows
+"Led by"), and the session's Facilitator list adds current and coming relievers as "(relief team leader)". Existing
+sessions are not changed. Live (PR #312, merged 22 Nov 2026).
 
 ## User guides and Ask DSY (17 Nov 2026, owner)
 
@@ -188,3 +196,85 @@ panel at the bottom of Run a session. `ask-dsy` v13 reads it. Written by Claude 
 
 - Grant access link (owner, 19 Nov 2026): `/access/` added to the footer links of `/dashboard/` and `/dashboard/wide/`,
   after Roster emails; leader guide section 2 lists it. Merged (PR #283, 19 Nov 2026), checked live.
+
+## Training month view (22 Nov 2026, owner)
+
+`/training/` Calendar: on screens 900px or wider a Month / List switch (Month by default, choice kept on the device);
+the month grid (Mon to Sun, Prev / This month / Next) uses the same cluster, team and leader/team filters. Click a session
+to open it; drag it to a day to COPY it there (owner: a copy, not a move): a box asks which team the copy is for
+(only teams you can change with no session that day; the original team is preselected when free). The copy keeps times,
+lessons, topic, location and who leads; no bookings, attendance or reflection; a team-led copy for another team has no
+facilitator. The session page has a Team field (teams you can change, not courses); bookings
+and attendance stay with the session. Phones keep the list. On a branch, not merged.
+
+## Team dashboard for Volunteer Team Leaders (owner, 22 Nov 2026)
+
+`/dashboard/team/` (gate `vtl`; own script `dashboard/team/team.js`, styles copied from `/dashboard/`). Roster today
+and Dispatch show EVERY team, the same as the Team Leader dashboard (owner, 22 Nov 2026: "broader situational awareness";
+those two sections are copied from `dash.js`: keep them in step), except the dispatch note does not point to `/dispatch/`
+(leaders only). Volunteer contribution (`team_contribution`, This month / Last month / 30 days / All, PARA hidden unless
+ticked) and Training (the team's sessions for 2 months) are the VTL's own team only. Weather starts on the team's town.
+Every team name links to its roster, as on the Team Leader dashboard (owner, 23 Nov 2026; until then only the VTL's own team linked). No footer links, tasks, Ask DSY or suggestions. A leader sees a team picker to preview any team. Linked from the VTL's Team Page. Access details in `access.md`. Tested in a headless browser
+with stand-in sign-in data (phone and wide). Live (PR #320, merged 22 Nov 2026), checked on the live site.
+
+## Training app: Attending? (22 Nov 2026)
+
+Members' session rows no longer say Book a spot / Cancel. Each shows **Attending?** with two buttons, "Yes, absolutely! 😀" and
+"Sorry, not this time 😢" (owner's wording); tap the other to change. Both stay pale until answered. Stored in `bookings.status`
+(`booked` = yes, `cancelled` = not this time; no schema change to the table). Leaders see "n coming" and "n not coming" chips and a
+Coming / Not this time chip per person in Attendance; `session_roster()` now also returns `not_coming` for the facilitator's Team
+list. Members can still just turn up. User guides (Getting started, Running a session) updated. Live (PR #323, merged 22 Nov 2026).
+
+## Training app: Open lesson links (22 Nov 2026)
+
+Session screen in the leader / VTL calendar: each chosen lesson has an **Open lesson** link (first web link in the lesson's
+Resources and links). Member list: on sessions you are facilitating, an Open lesson link under the chips (one per lesson,
+named, when there are several). `upcoming_sessions` view now adds `url` to each item in `lessons` (same regex). All 66
+lessons had a link on 22 Nov 2026. Live (PR #325, merged 22 Nov 2026).
+
+## Reminders: one switch for the whole site, and training session reminders (22 Nov 2026)
+
+Owner: one reminder switch for the whole DSY platform. App notification 12 hours before each training session to the
+members of the session's team who turned reminders on, except those who answered "Sorry, not this time". Title
+"<Team> training today, 7:00 pm"; body "<lesson titles or topic>. Led by <facilitator>. 7:00 pm to 9:00 pm at
+<location>. Tap to say if you're coming." (wording is Claude's draft). The roster reminder is unchanged.
+- One switch: `/shared/reminders.js` draws "🔔 Turn on reminders" (Send a test / Turn off) into any
+  `<div class="dsy-reminders">`: on the main page (signed in only), Team Training (under the header) and every roster
+  page (under the name, replacing the roster-only controls), and the Team page. Service worker `/sw.js` (scope "/").
+- Home Screen (owner, 22 Nov 2026): the one **Ambulance Team** icon (first called DSY Training) is the Team page (`/dsy.webmanifest`, start_url and
+  id `/teams/`, scope "/", linked from `/teams/` only). From the Team page people can save their own shortcuts to
+  Training schedule, Your roster or Learn on your own (roster pages keep `roster.webmanifest`; training and home have
+  none). On iPhone each icon is its own app, so reminders are turned on in the Ambulance Team icon.
+- Devices: `roster_push_subs.sw_scope` ('/' whole site, '/modules/rosters/' older roster-only). `push_devices()`
+  sends to a person's whole-site devices if they have any, else their roster ones (no doubles). A roster-only device
+  counts as on, is moved to the whole-site worker quietly on the next page load when the phone allows, and Turn off
+  removes both. Roster reminders on a whole-site device open the team's `groups.roster_url`.
+- Edge function `roster-remind` (v6, 22 Nov 2026): modes `sessions` and `test` + `kind: "dsy"`.
+- SQL: `supabase/session-reminders.sql` (migration `session_reminders`: `sessions.reminded_at`, cleared when the date
+  or start time changes; `session_reminder_claim()`) and `supabase/dsy-reminders.sql` (migration
+  `dsy_reminders_one_switch`). Both applied.
+- pg_cron job `session-remind` every 10 minutes: created 22 Nov 2026 on merge. Live (PR #326, merged 22 Nov 2026);
+  first reminders due Mon 23 Nov 7:00 am (Tumby Bay, Port Neill).
+- Not yet tried on a real phone (headless Chrome has no push service): owner to turn it on and Send a test.
+- Icon name (owner, 22 Nov 2026): "Ambulance Team" (manifest name and apple-mobile-web-app-title on the Team page): an
+  iPhone puts the icon name on top of every notification and the owner did not want "DSY Training" there. Test title
+  "Reminders are on" (roster-remind v7); the service worker fallback title is "Reminder". Live (PR #328, merged 22 Nov 2026).
+- Icon picture (owner, 22 Nov 2026): a side-on ambulance in the SAAS livery from the owner's photo (white,
+  thin green and white check band with a green line, fluoro yellow lower line, red and yellow rear chevrons, blue
+  Star of Life, red and blue light bar) on a green background, drawn by Claude; no SAAS logo or name. Source
+  `shared/dsy-app-icon.svg`, PNGs `shared/dsy-app-180/192/512.png` (Team page apple-touch-icon, `/dsy.webmanifest`,
+  notification icon in `/sw.js`). Live (PR #327, merged 22 Nov 2026).
+
+Sessions open in the planner (owner, 22 Nov 2026): on `/dashboard/` and `/dashboard/wide/` the next-session banner, each
+calendar day with one session (several: each bar) and each row of the upcoming list link to `/training/#session=<id>`,
+which opens that session's page in the training app (leaders; the hash is then cleared). Tested with stand-in data.
+Merged (PR #331, 22 Nov 2026).
+
+## Training app: members see the session name only (23 Nov 2026)
+
+Owner: team members were still seeing the lesson content. Now members see only the session name (`sessions.topic`;
+"Topic to be confirmed" when blank) in Team Training, on the Team page's Next training card and in the reminder
+notification; no lesson titles or summaries. The session's facilitator still sees lessons, summaries and Open lesson
+links; leaders see everything. Enforced in the database too: `upcoming_sessions` returns `lesson_title`,
+`lesson_summary` and `lessons` only to leaders and the session's facilitator. On 23 Nov 2026 every upcoming session
+with lessons had a session name. First real reminders: 23 Nov 7:00 am, 2 Tumby Bay phones (no one else had them on).

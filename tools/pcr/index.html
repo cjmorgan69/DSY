@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261119m" data-level="student"></script>
+<script src="/shared/gate.js?v=20261123m" data-level="student"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
@@ -216,8 +216,9 @@ body.model [contenteditable] { pointer-events: none; }
 </div></div>
 <div id="help" role="dialog" aria-live="polite"><button class="x" type="button" aria-label="Close">&times;</button><div id="helpBody"></div></div>
 
-<script src="help.js?v=20261119m"></script>
-<script src="jobs.js?v=20261119m"></script>
+<script src="help.js?v=20261123m"></script>
+<script src="jobs.js?v=20261123m"></script>
+<script src="custom.js?v=20261123m"></script>
 <script>
 (function () {
   // ---- Obs chart rows: [group, band, colour (p purple, r brown, y yellow, '' white), key for filling] ----
@@ -335,7 +336,7 @@ body.model [contenteditable] { pointer-events: none; }
     });
     (st.ticks || []).forEach(function (k) { var el = document.querySelector('.chk[data-k="' + k + '"]'); if (el) el.classList.add('on'); });
   }
-  function key() { return 'dsy-pcr:' + (pick.value || 'blank'); }
+  function key() { return 'dsy-pcr:' + (pick.value === 'custom' ? 'custom:' + customHash : (pick.value || 'blank')); }
   function save() { if (document.body.classList.contains('model')) return; try { localStorage.setItem(key(), JSON.stringify(getState())); } catch (e) {} }
   function load() { var st = null; try { st = JSON.parse(localStorage.getItem(key()) || 'null'); } catch (e) {} setState(st); }
   var t; document.getElementById('sheet').addEventListener('input', function () { clearTimeout(t); t = setTimeout(save, 400); });
@@ -387,11 +388,12 @@ body.model [contenteditable] { pointer-events: none; }
     if (document.body.classList.contains('model')) setModel(false);
     job = JOBS[id] || null; pick.value = job ? id : '';
     modelBtn.hidden = !job; helpEl.classList.remove('open');
-    intro.innerHTML = job ? '<b>' + esc(job.label) + '.</b> ' + (job.walk ? 'First work through the <a href="' + job.walk + '?mode=student" target="_blank" rel="noopener">student walk-through</a>, then write the card as if you were the crew. '
+    intro.innerHTML = job ? '<b>' + esc(job.label) + '.</b> ' + (job.walk ? 'First work through the <a href="' + (job.walkStudent || job.walk + '?mode=student') + '" target="_blank" rel="noopener">student walk-through</a>, then write the card as if you were the crew. '
           : 'Read the <a href="#" id="caseBtn">case card</a> (it stays one tap away), then write the card as if you were the crew. ')
         + 'Tap an underlined heading to see what goes there and a possible entry, or <b>Show model card</b> to compare the whole card. ' + (job.note ? esc(job.note) : '')
       : '<b>Blank card.</b> Write any job on it, or choose a walk-through job from the list. Tap an underlined heading to see what goes there.';
-    if (id !== 'shared') history.replaceState(null, '', job ? '#job=' + id : location.pathname);
+    if (id === 'custom') history.replaceState(null, '', customHash);
+    else if (id !== 'shared') history.replaceState(null, '', job ? '#job=' + id : location.pathname);
     load();
   }
   // custom jobs from the job builder (/tools/pcr/build/): saved on this device, or shared in the link (#c=...)
@@ -403,7 +405,15 @@ body.model [contenteditable] { pointer-events: none; }
     keys.forEach(function (k) { if (src !== JOBS) JOBS[k] = src[k]; var o = document.createElement('option'); o.value = k; o.textContent = JOBS[k].label; g.appendChild(o); });
     pick.appendChild(g);
   }
-  group('Walk-through jobs', Object.keys(JOBS).filter(function (k) { return k !== 'shared'; }), JOBS);
+  // A customised walk-through from the scenario customiser (/scenarios/): "#s=<slug>&field=value..." (custom.js)
+  var customHash = '', customSlug = '';
+  if (/^#s=/.test(location.hash) && window.PCR_CUSTOM) {
+    var cq = {}; location.hash.slice(1).split('&').forEach(function (p) { var i = p.indexOf('='); if (i > 0) { try { cq[p.slice(0, i)] = decodeURIComponent(p.slice(i + 1).replace(/\+/g, ' ')); } catch (e) {} } });
+    var cj = window.PCR_CUSTOM.build(cq.s, cq);
+    if (cj) { customHash = location.hash; customSlug = cq.s; cj.walkStudent = '/scenarios/view/?mode=student' + customHash; JOBS.custom = cj; }
+  }
+  group('Walk-through jobs', Object.keys(JOBS).filter(function (k) { return k !== 'shared' && k !== 'custom'; }), JOBS);
+  group('Your customised scenario', JOBS.custom ? ['custom'] : [], JOBS);
   group('Shared with me', shared ? ['shared'] : [], JOBS);
   group('My jobs (this device)', Object.keys(MINE), MINE);
   function caseCard(j) {
@@ -422,7 +432,7 @@ body.model [contenteditable] { pointer-events: none; }
     clear(); try { localStorage.removeItem(key()); } catch (e) {}
   });
   if (window.DSY_GATE) window.DSY_GATE.ready.then(function (g) { if (g && g.facilitator) document.getElementById('buildLink').hidden = false; });
-  var m = location.hash.match(/(?:job|ex)=([\w-]+)/); choose(shared ? 'shared' : (m ? m[1] : ''));
+  var m = location.hash.match(/(?:job|ex)=([\w-]+)/); choose(shared ? 'shared' : JOBS.custom ? 'custom' : (m ? m[1] : ''));
 
   // ---- Scale the A4 sheet to the screen ----
   var sheet = document.getElementById('sheet'), fit = document.getElementById('fit');

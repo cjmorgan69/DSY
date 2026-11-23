@@ -61,7 +61,7 @@ for (const f of pages) {
   if (gated) {
     const first = (s.match(/<script\b[^>]*>/) || [""])[0];
     if (!/\/shared\/gate\.js/.test(first)) bad("gate", f + ": gate.js is not the first script on the page");
-    if (!/data-level="(student|facilitator|leader|mdt|stations)"/.test(first)) bad("gate", f + ": gate.js has no valid data-level");
+    if (!/data-level="(student|facilitator|leader|vtl|mdt|stations)"/.test(first)) bad("gate", f + ": gate.js has no valid data-level");
   }
 }
 

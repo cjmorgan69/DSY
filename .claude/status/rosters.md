@@ -434,12 +434,6 @@ Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id)
   its Apps Script; operations page reads Lower Eyre and Central Eyre from Supabase and West Coast from its sheet; the
   Lower Eyre and Central Eyre manager dashboards read Supabase only (numbers match the old sheet; the team column
   order now follows teams.js). A second catch-up is scheduled for 07:26 UTC.
-
-## 7-day roster table (18 Nov 2026)
-
-Owner asked for the 14-day roster table to show 7 days. `shared/roster.js`: the table opens on today plus 6 days, the
-tab and launch button say "7 days", and the top buttons are "Previous 7 days" / "Next 7 days" (step 7 days). Roster
-user guide section updated to match.
 - Second catch-up (18 Nov 2026, 08:07 UTC, by the scheduled task): nothing new or cancelled on the old pages. One
   difference (Lou Rossi, Elliston, Fri 20 Nov) was an edit Lou made on the NEW roster at 6:23 pm, so the new roster was
   kept. Already in use: Jay Forsyth (Elliston) and Lauren Foster (Tumby Bay) booked 2 shifts each on the new roster;
@@ -470,6 +464,33 @@ user guide section updated to match.
 - Pages: the 4 West Coast pages switched like the others; teams.js `backend: "supabase"` on all 12 real teams, so
   the Apps Scripts are no longer read by any page. Checked locally against the real database with the test account
   (switched off again): the West Coast pages and manager dashboard call only Supabase.
+
+## 7-day roster table (18 Nov 2026)
+
+Owner asked for the 14-day roster table to show 7 days. `shared/roster.js`: the table opens on today plus 6 days, the
+tab and launch button say "7 days", and the top buttons are "Previous 7 days" / "Next 7 days" (step 7 days). Roster
+user guide section updated to match. Live (PR #266, merged 18 Nov 2026).
+
+## Placeholder shifts without a change email (20 Nov 2026)
+
+Owner asked to add LEP40 placeholder shifts before the cut-off without emailing Country Rostering (they had reset
+Tumby Bay's sent status to do it; the cut-off was Wed 25 Nov 08:00). `roster_book` gets `p_no_email` (migration
+`roster_placeholder_no_email`, `supabase/roster-placeholder-no-email.sql`, applied by Claude): honoured only for a
+placeholder booked by a manager or TL; the shift is logged with `no_email: true` and no email is queued. Page: a
+"Don't email Country Rostering" tick under the "Not on the list" name box (`roster-supabase.js`). Edits and cancels,
+and crew bookings, still follow the normal rules. Tested in a rolled-back run on Summer Bay.
+
+## Roster user guide rewritten for sign-in (23 Nov 2026, owner asked)
+
+All 12 teams are on the Supabase roster, so `/userguides/rosters/` is now two parts, 16 sections. Part 1 Crew members:
+getting started (sign-in, name shown, Switch person, level saved to the account, Home screen), reminders, booking,
+reading the roster, changing or cancelling, changes to a sent roster (phone when no Country Rostering address), team
+messages (old sheet messages not carried over), help. Part 2 Roster managers and Team Leaders: manager controls and
+booking for others (no password, Not on the list, Don't email Country Rostering), sending (print settings kept as a
+backup), weekly schedule, after it's sent and the change log, correcting the cut-off, removing messages, team hours,
+trial rosters and Summer Bay. Dropped: typed name, saved roster on the device, manager password, the PDF view and Mark
+as sent, the Google Sheet Change Log. Anchors kept where the topic stayed; `#new-roster`, `#new-managers`, `#opening`,
+`#print`, `#mark-sent` are gone. On a branch, not merged (PR #339).
 
 ## Pager task after the switch (19 Nov 2026)
 

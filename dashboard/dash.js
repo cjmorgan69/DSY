@@ -69,28 +69,51 @@
   ];
   var EXCLUDED = ["summer bay"];
   var RF = "dsy-dash-cluster", rFilter = store(RF) || "all", rData = null, selHour = null, crew = null, crewErr = [];
-  function opDate() { var p = parts(); var d = p.year + "-" + p.month + "-" + p.day; return +p.hour < 8 ? addDays(d, -1) : d; }
+  /* Rolling window (owner, 22 Nov 2026): 3 hours back to 21 hours ahead of the current hour. The rosters answer one
+     operational day (8am to 8am) at a time, so the two days the window touches are loaded and joined. */
+  var HOUR = 3600000, rHourKey = null;
+  function opDateAt(ms) { var p = parts(new Date(ms)); var d = p.year + "-" + p.month + "-" + p.day; return +p.hour < 8 ? addDays(d, -1) : d; }
+  function dayAt(ms) { var p = parts(new Date(ms)); return nice(p.year + "-" + p.month + "-" + p.day); }
+  function hourKey() { var p = parts(); return p.year + p.month + p.day + p.hour; }
   function loadRoster() {
-    var date = opDate();
+    var now = Date.now(), days = [opDateAt(now - 3 * HOUR)], d2 = opDateAt(now + 21 * HOUR);
+    if (d2 !== days[0]) days.push(d2);
+    rHourKey = hourKey();
     return Promise.all(CLUSTERS.map(function (c) {
       var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 30000);
       /* Apps Script, or Supabase for teams that have moved (modules/rosters/shared/roster-data.js) */
-      return window.DSY_ROSTER_DATA.coverage(c.url, date, { signal: ctl.signal })
-        .then(function (d) { if (!d.ok || !Array.isArray(d.teams) || !Array.isArray(d.hours)) throw new Error(d.error || "unexpected reply"); return { c: c, d: d }; })
+      return Promise.all(days.map(function (date) {
+        return window.DSY_ROSTER_DATA.coverage(c.url, date, { signal: ctl.signal })
+          .then(function (d) { if (!d.ok || !Array.isArray(d.teams) || !Array.isArray(d.hours)) throw new Error(d.error || "unexpected reply"); return d; });
+      }))
+        .then(function (ds) { return { c: c, d: ds }; })
         .catch(function (e) { return { c: c, err: e.name === "AbortError" ? "timed out" : e.message }; })
         .finally(function () { clearTimeout(to); });
     })).then(function (res) {
       var ok = res.filter(function (r) { return r.d; });
       if (!ok.length) { $("rHeat").innerHTML = '<p class="err">Could not load the rosters: ' + esc(res.map(function (r) { return r.c.name + " " + r.err; }).join("; ")) + "</p>"; $("rStats").innerHTML = ""; return; }
-      var hours = ok[0].d.hours, teams = [];
+      /* the hours in the window, in order, from every day loaded */
+      var seen = {}, hours = [];
+      ok.forEach(function (r) { r.d.forEach(function (d) { d.hours.forEach(function (h) {
+        var t = Date.parse(h.start); if (seen[t]) return; seen[t] = 1; hours.push(h);
+      }); }); });
+      hours.sort(function (a, b) { return Date.parse(a.start) - Date.parse(b.start); });
+      var ni = -1; hours.forEach(function (h, i) { if (Date.parse(h.start) <= now && now < Date.parse(h.end)) ni = i; });
+      var first = Math.max(0, (ni < 0 ? 0 : ni) - 3); hours = hours.slice(first, first + 24);
+      var teams = [];
       ok.forEach(function (r) {
-        var by = {}; r.d.hours.forEach(function (h) { by[h.label + "|" + h.calendarDate] = h.counts; });
-        r.d.teams.forEach(function (t, i) {
-          if (EXCLUDED.indexOf(String(t.name || "").trim().toLowerCase()) > -1) return;
-          teams.push({ cluster: r.c, name: t.name, counts: hours.map(function (h) { var c = by[h.label + "|" + h.calendarDate]; return c ? c[i] : null; }) });
+        var by = {}, names = [];
+        r.d.forEach(function (d) {
+          var col = {}; d.teams.forEach(function (t, i) { var k = String(t.name || "").trim().toLowerCase(); col[k] = i; if (names.indexOf(t.name) < 0) names.push(t.name); });
+          d.hours.forEach(function (h) { var t = Date.parse(h.start); by[t] = by[t] || {}; Object.keys(col).forEach(function (k) { by[t][k] = h.counts[col[k]]; }); });
+        });
+        names.forEach(function (name) {
+          var k = String(name || "").trim().toLowerCase();
+          if (EXCLUDED.indexOf(k) > -1) return;
+          teams.push({ cluster: r.c, name: name, counts: hours.map(function (h) { var row = by[Date.parse(h.start)]; return row && row[k] != null ? row[k] : null; }) });
         });
       });
-      rData = { hours: hours, teams: teams, problems: res.filter(function (r) { return r.err; }), date: date };
+      rData = { hours: hours, teams: teams, problems: res.filter(function (r) { return r.err; }), date: days[0] };
       if (selHour != null && selHour >= hours.length) selHour = null;
       drawRoster(); drawCrew();
     });
@@ -112,7 +135,7 @@
       t.counts.forEach(function (v, i) { if (v === 0 && i >= Math.max(ni, 0)) gapH++; });
     });
     $("rStats").innerHTML = ni > -1
-      ? '<div class="stat"><b>' + g + '</b><span>teams fully crewed now</span></div><div class="stat yel"><b>' + y + '</b><span>one crew now</span></div><div class="stat red"><b>' + r + '</b><span>no crew now</span></div><div class="stat"><b>' + gapH + '</b><span>uncovered team-hours left today</span></div>'
+      ? '<div class="stat"><b>' + g + '</b><span>teams fully crewed now</span></div><div class="stat yel"><b>' + y + '</b><span>one crew now</span></div><div class="stat red"><b>' + r + '</b><span>no crew now</span></div><div class="stat"><b>' + gapH + '</b><span>uncovered team-hours ahead</span></div>'
       : "";
     var html = "<table><thead><tr><th></th>";
     rData.hours.forEach(function (h, i) { html += '<th class="' + (i === ni ? "now" : "") + '">' + (i % 2 === 0 || i === ni ? esc(String(+h.label.slice(0, 2))) : "") + "</th>"; });
@@ -129,7 +152,7 @@
       html += "</tr>";
     });
     $("rHeat").innerHTML = html + "</tbody></table>";
-    var note = "Operational day " + nice(rData.date) + ", 8am to 8am. Numbers are crew booked each hour.";
+    var note = rData.hours.length ? "Rolling 24 hours, " + hm(Date.parse(rData.hours[0].start)) + " " + dayAt(Date.parse(rData.hours[0].start)) + " to " + hm(Date.parse(rData.hours[rData.hours.length - 1].end)) + " " + dayAt(Date.parse(rData.hours[rData.hours.length - 1].end)) + " (3 hours back, 21 ahead). Numbers are crew booked each hour." : "No hours in the roster window.";
     if (rData.problems.length) note += " Not loaded: " + rData.problems.map(function (p) { return p.c.name + " (" + p.err + ")"; }).join(", ") + ".";
     $("rNote").textContent = note;
   }
@@ -387,9 +410,9 @@
     var n = rows[0], days = Math.round((dOf(n.session_date) - dOf(t)) / 864e5);
     var when = days === 0 ? "Tonight" : days === 1 ? "Tomorrow" : "In " + days + " days";
     if (days === 0 && mins(n.start_time) < 17 * 60) when = "Today";
-    html += '<div class="banner"><span class="eyebrow">Next session · ' + when + '</span><b>' + esc(gn[n.group_id] || "Team") + (n.topic ? " · " + esc(n.topic) : "") + "</b>" +
+    html += '<a class="banner golink" href="/training/#session=' + encodeURIComponent(n.id) + '"><span class="eyebrow">Next session · ' + when + '</span><b>' + esc(gn[n.group_id] || "Team") + (n.topic ? " · " + esc(n.topic) : "") + "</b>" +
       '<span class="small">' + nice(n.session_date) + ", " + t12(n.start_time) + (n.end_time ? " to " + t12(n.end_time) : "") + (n.location ? " · " + esc(n.location) : "") + " · " + (n.session_type === "team" ? "Team-led" : "Leader-led") +
-      (n.facilitator_name ? " · " + esc(n.facilitator_name) : "") + "</span>" + (hasLesson(n) ? "" : '<span class="small"><b style="font-size:inherit;font-family:inherit">No lesson yet</b>: pick one in the training app.</span>') + "</div>";
+      (n.facilitator_name ? " · " + esc(n.facilitator_name) : "") + "</span>" + (hasLesson(n) ? "" : '<span class="small"><b style="font-size:inherit;font-family:inherit">No lesson yet</b>: pick one in the training app.</span>') + '<span class="small go">Open in the planner →</span></a>';
     var soon = rows.filter(function (s) { return s.session_date <= addDays(t, 27); }), need = soon.filter(function (s) { return !hasLesson(s); });
     if (need.length) html += '<div class="banner warn"><span><b style="font-size:1rem">' + need.length + " of " + soon.length + "</b> sessions in the next 4 weeks have no lesson. " +
       '<a href="/training/">Allocate lessons →</a></span></div>';
@@ -399,15 +422,17 @@
     html += '<div class="cal">' + ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(function (x) { return '<div class="dn">' + x + "</div>"; }).join("");
     for (var i = 0; i < 28; i++) {
       var iso = addDays(mon, i), dd = dOf(iso), on = rows.filter(function (s) { return s.session_date === iso; });
-      html += '<div class="d' + (iso < t ? " past" : "") + (iso === t ? " today" : "") + '" title="' + esc(on.map(function (s) { return (gn[s.group_id] || "") + " " + t12(s.start_time) + (hasLesson(s) ? "" : " (no lesson)"); }).join("\n")) + '"><em>' +
-        dd.getUTCDate() + (dd.getUTCDate() === 1 || i === 0 ? " " + MON[dd.getUTCMonth()] : "") + "</em>" + on.map(function (s) { return '<i class="' + (hasLesson(s) ? "" : "nl") + '"></i>'; }).join("") + "</div>";
+      /* one session: the whole day opens it; several: each bar opens its own (22 Nov 2026) */
+      var one = on.length === 1, tag = one ? "a" : "div";
+      html += "<" + tag + (one ? ' href="/training/#session=' + encodeURIComponent(on[0].id) + '"' : "") + ' class="d' + (iso < t ? " past" : "") + (iso === t ? " today" : "") + (on.length ? " has" : "") + '" title="' + esc(on.map(function (s) { return (gn[s.group_id] || "") + " " + t12(s.start_time) + (hasLesson(s) ? "" : " (no lesson)"); }).join("\n")) + '"><em>' +
+        dd.getUTCDate() + (dd.getUTCDate() === 1 || i === 0 ? " " + MON[dd.getUTCMonth()] : "") + "</em>" + on.map(function (s) { return one ? '<i class="' + (hasLesson(s) ? "" : "nl") + '"></i>' : '<a class="bar' + (hasLesson(s) ? "" : " nl") + '" href="/training/#session=' + encodeURIComponent(s.id) + '" title="' + esc((gn[s.group_id] || "") + " " + t12(s.start_time)) + '"></a>'; }).join("") + "</" + tag + ">";
     }
     html += '</div><div class="legend"><span><i style="background:var(--brand)"></i>lesson set</span><span><i style="background:var(--y)"></i>needs a lesson</span></div>';
     html += '<ul class="slist">' + rows.slice(0, 6).map(function (s) {
       var dd = dOf(s.session_date);
-      return '<li><div class="dt"><span>' + DAYS[dd.getUTCDay()] + "</span><b>" + dd.getUTCDate() + "</b><span>" + MON[dd.getUTCMonth()] + '</span></div><div class="t"><b>' + esc(gn[s.group_id] || "Team") + (s.topic ? " · " + esc(s.topic) : "") +
+      return '<li><a class="srow" href="/training/#session=' + encodeURIComponent(s.id) + '"><div class="dt"><span>' + DAYS[dd.getUTCDay()] + "</span><b>" + dd.getUTCDate() + "</b><span>" + MON[dd.getUTCMonth()] + '</span></div><div class="t"><b>' + esc(gn[s.group_id] || "Team") + (s.topic ? " · " + esc(s.topic) : "") +
         "</b><span>" + t12(s.start_time) + " · " + (s.session_type === "team" ? "Team-led" : "Leader-led") + (s.location ? " · " + esc(s.location) : "") + "</span></div>" +
-        (hasLesson(s) ? '<span class="tag ok">Lesson set</span>' : '<span class="tag need">Needs lesson</span>') + "</li>";
+        (hasLesson(s) ? '<span class="tag ok">Lesson set</span>' : '<span class="tag need">Needs lesson</span>') + "</a></li>";
     }).join("") + "</ul>";
     if (rows.length > 6) html += '<p class="note">+ ' + (rows.length - 6) + ' more in the next 2 months.</p>';
     $("tBody").innerHTML = html;
@@ -557,7 +582,7 @@
   (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve({})).then(function (me) {
     if (me && me.name) { window.__name = String(me.name).split(" ")[0]; tick(); }
     loadAll();
-    setInterval(function () { drawRoster(); drawCrew(); }, 60000);   // move the "now" outline
+    setInterval(function () { if (hourKey() !== rHourKey) { selHour = null; loadRoster(); } else { drawRoster(); drawCrew(); } }, 60000);   // move the "now" outline; slide the window on the hour
     setInterval(function () { stamp(); loadRoster(); loadCrew(); loadSessions(); loadDispatch(); if (!document.querySelector("#tList [contenteditable=true]") && document.activeElement !== $("tTitle")) loadTasks(); }, 10 * 60000);
     setInterval(loadWeather, 60 * 60000);
   });

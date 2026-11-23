@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261119m" data-level="facilitator"></script>
+<script src="/shared/gate.js?v=20261123m" data-level="facilitator"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ambulance Responder course - DSY Training</title>
@@ -12,10 +12,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261119m">
-<link rel="stylesheet" href="../hub/hub.css?v=20261119m">
+<link rel="stylesheet" href="../training/theme.css?v=20261123m">
+<link rel="stylesheet" href="../hub/hub.css?v=20261123m">
 <style>
-/* Ambulance Responder (AR) course material for facilitators: classroom slide shows and skills stations. */
+/* Ambulance Responder (AR) course material for facilitators, by course day (from the completion checklist): each topic has
+   presentation and skills-station tiles; grey tiles are placeholders. Then skill sign-off and course admin. */
 .top a { color: inherit; text-decoration: none; }
 .item { padding: 1rem 1.1rem; display: flex; flex-direction: column; align-items: stretch; gap: .6rem; text-align: left; }
 .item h3 { font-size: 1.1rem; color: var(--brand); }
@@ -27,6 +28,16 @@
 .act small { color: var(--muted); font-size: .75rem; line-height: 1.25; }
 .act:hover { border-color: var(--brand); }
 .act.alt { border-left-color: var(--line); background: var(--brand-soft); }
+.day > summary { position: relative; display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .7rem; padding-right: 2.6rem; }
+.day > summary::after { position: absolute; right: 1.2rem; top: 1rem; float: none; }
+.day > summary .dn { font-family: var(--font-head); font-weight: 700; font-size: 1.1rem; color: var(--brand); }
+.day > summary .dt { font-weight: 400; font-size: .9rem; color: var(--muted); }
+.topics { display: flex; flex-direction: column; }
+.topics .item { border-top: 1px solid var(--line); }
+.kind { margin: .2rem 0 -.2rem; font-size: .72rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.skills b { color: var(--ink); }
+.act.todo { border-left-style: dashed; border-left-color: var(--line); background: transparent; opacity: .6; }
+.act.todo b { color: var(--muted); }
 @media (max-width: 420px) { .act small { display: none; } .act { min-height: 48px; } }
 </style>
 </head>
@@ -38,50 +49,139 @@
   </header>
 
   <section class="stack">
-    <span class="eyebrow">Presentations</span>
-
-    <article class="panel item">
-      <h3>Day 6: Medical Conditions</h3>
-      <p class="small muted">The SAAS Medical Conditions (AR) workshop: asthma, anaphylaxis, chest pain, diabetes, stroke and seizures, mental health, other emergencies and IV therapy, pregnancy and birth, with QR codes to the Day 6 stations.</p>
-      <div class="acts">
-        <a class="act" href="../classroom/medical-conditions/" target="_blank" rel="noopener"><b>Slides</b><small>Show on the big screen</small></a>
-        <a class="act alt" href="../classroom/medical-conditions/presenter.html" target="_blank" rel="noopener"><b>Presenter</b><small>Notes and timer</small></a>
-        <a class="act alt" href="../classroom/medical-conditions/guide.html" target="_blank" rel="noopener"><b>Guide</b><small>Printable facilitator guide</small></a>
+    <span class="eyebrow">Course days</span>
+    <p class="small muted">Each day follows the course completion checklist. Material that exists opens from here; grey tiles are placeholders for material still to build.</p>
+    <details class="panel day" id="day-1">
+      <summary><span class="dn">Day 1</span><span class="dt">Infection Prevention and Control · First Aid and AA Protocols · Manual Tasks</span></summary>
+      <div class="topics">
+        <article class="item">
+          <h3>Infection Prevention and Control</h3>
+          <p class="small skills"><b>Skills:</b> Alcohol based hand rub; Hand washing; Donning and doffing PPE; Respond to an infection control breach (simulation)</p>
+          <p class="kind">Presentation</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Slides</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Presenter</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Guide</b><small>Coming soon</small></span></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
+        <article class="item">
+          <h3>First Aid and AA Protocols</h3>
+          <p class="small skills"><b>Skills:</b> Adult CPR (simulation)</p>
+          <p class="kind">Presentation</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Slides</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Presenter</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Guide</b><small>Coming soon</small></span></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
+        <article class="item">
+          <h3>Manual Tasks</h3>
+          <p class="small muted">The human body, postures, ambulant patients, the Stryker stretcher and equipment, bariatric patients, hazardous manual tasks.</p>
+          <p class="small skills"><b>Skills:</b> Postures; Loading and unloading the Power-PRO stretcher; Compact carry chair</p>
+          <p class="kind">Presentation</p><div class="acts"><a class="act" href="../classroom/manual-tasks/" target="_blank" rel="noopener"><b>Slides</b><small>Show on the big screen</small></a><a class="act alt" href="../classroom/manual-tasks/presenter.html" target="_blank" rel="noopener"><b>Presenter</b><small>Notes and timer</small></a><a class="act alt" href="../classroom/manual-tasks/guide.html" target="_blank" rel="noopener"><b>Guide</b><small>Printable facilitator guide</small></a></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
       </div>
-    </article>
-
-    <article class="panel item">
-      <h3>DRiVE</h3>
-      <p class="small muted">Driving: mindset, the vehicles, practical driving, manoeuvring, policies and the law, emergency driving.</p>
-      <div class="acts">
-        <a class="act" href="../classroom/drive-mindset/" target="_blank" rel="noopener"><b>Slides</b><small>Show on the big screen</small></a>
-        <a class="act alt" href="../classroom/drive-mindset/presenter.html" target="_blank" rel="noopener"><b>Presenter</b><small>Notes and timer</small></a>
-        <a class="act alt" href="../classroom/drive-mindset/guide.html" target="_blank" rel="noopener"><b>Guide</b><small>Printable facilitator guide</small></a>
+    </details>
+    <details class="panel day" id="day-2">
+      <summary><span class="dn">Day 2</span><span class="dt">Manual Tasks</span></summary>
+      <div class="topics">
+        <article class="item">
+          <h3>Manual Tasks (continued)</h3>
+          <p class="small muted">Same deck as Day 1.</p>
+          <p class="small skills"><b>Skills:</b> Lateral transfer of patient; Transfer using the spinal board bridge</p>
+          <p class="kind">Presentation</p><div class="acts"><a class="act" href="../classroom/manual-tasks/" target="_blank" rel="noopener"><b>Slides</b><small>Show on the big screen</small></a><a class="act alt" href="../classroom/manual-tasks/presenter.html" target="_blank" rel="noopener"><b>Presenter</b><small>Notes and timer</small></a><a class="act alt" href="../classroom/manual-tasks/guide.html" target="_blank" rel="noopener"><b>Guide</b><small>Printable facilitator guide</small></a></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
       </div>
-    </article>
-
-    <article class="panel item">
-      <h3>Manual Tasks</h3>
-      <p class="small muted">The human body, postures, ambulant patients, the Stryker stretcher and equipment, bariatric patients, hazardous manual tasks.</p>
-      <div class="acts">
-        <a class="act" href="../classroom/manual-tasks/" target="_blank" rel="noopener"><b>Slides</b><small>Show on the big screen</small></a>
-        <a class="act alt" href="../classroom/manual-tasks/presenter.html" target="_blank" rel="noopener"><b>Presenter</b><small>Notes and timer</small></a>
-        <a class="act alt" href="../classroom/manual-tasks/guide.html" target="_blank" rel="noopener"><b>Guide</b><small>Printable facilitator guide</small></a>
+    </details>
+    <details class="panel day" id="day-3">
+      <summary><span class="dn">Day 3</span><span class="dt">Operational Preparedness</span></summary>
+      <div class="topics">
+        <article class="item">
+          <h3>Operational Preparedness</h3>
+          <p class="small skills"><b>Skills:</b> GRN (portable and vehicle), radio procedures and MDT</p>
+          <p class="kind">Presentation</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Slides</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Presenter</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Guide</b><small>Coming soon</small></span></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
       </div>
-    </article>
+    </details>
+    <details class="panel day" id="day-4">
+      <summary><span class="dn">Day 4</span><span class="dt">DRiVE Volunteer Practical Assessments</span></summary>
+      <div class="topics">
+        <article class="item">
+          <h3>DRiVE Volunteer Practical Assessments</h3>
+          <p class="small muted">Driving: mindset, the vehicles, practical driving, manoeuvring, policies and the law, emergency driving.</p>
+          <p class="small skills"><b>Skills:</b> Practical assessment completion (declaration)</p>
+          <p class="kind">Presentation</p><div class="acts"><a class="act" href="../classroom/drive-mindset/" target="_blank" rel="noopener"><b>Slides</b><small>Show on the big screen</small></a><a class="act alt" href="../classroom/drive-mindset/presenter.html" target="_blank" rel="noopener"><b>Presenter</b><small>Notes and timer</small></a><a class="act alt" href="../classroom/drive-mindset/guide.html" target="_blank" rel="noopener"><b>Guide</b><small>Printable facilitator guide</small></a></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
+      </div>
+    </details>
+    <details class="panel day" id="day-5">
+      <summary><span class="dn">Day 5</span><span class="dt">Foundations of Care · First Aid and AA Protocols · Cardiac Arrest Management · SAAS Resuscitation and AA Protocols</span></summary>
+      <div class="topics">
+        <article class="item">
+          <h3>Foundations of Care</h3>
+          <p class="small skills"><b>Skills:</b> Palpatory and auscultatory BP; Blood glucose level; Pulse oximetry; Limb lead ECG; Methoxyflurane; Paracetamol tablet and elixir</p>
+          <p class="kind">Presentation</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Slides</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Presenter</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Guide</b><small>Coming soon</small></span></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
+        <article class="item">
+          <h3>First Aid and AA Protocols</h3>
+          <p class="small skills"><b>Skills:</b> Choking; Infant CPR (simulation)</p>
+          <p class="kind">Presentation</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Slides</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Presenter</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Guide</b><small>Coming soon</small></span></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
+        <article class="item">
+          <h3>Cardiac Arrest Management</h3>
+          <p class="small skills"><b>Skills:</b> i-gel</p>
+          <p class="kind">Presentation</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Slides</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Presenter</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Guide</b><small>Coming soon</small></span></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
+        <article class="item">
+          <h3>SAAS Resuscitation and AA Protocols</h3>
+          <p class="small skills"><b>Skills:</b> BVM ventilations; OPA; Patient observations; Spinal immobilisation; Suction; Use of oxygen; Cardiac arrest (adult and paediatric)</p>
+          <p class="kind">Presentation</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Slides</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Presenter</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Guide</b><small>Coming soon</small></span></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
+      </div>
+    </details>
+    <details class="panel day" id="day-6">
+      <summary><span class="dn">Day 6</span><span class="dt">Medical Conditions · First Aid and AA Protocols</span></summary>
+      <div class="topics">
+        <article class="item">
+          <h3>Medical Conditions</h3>
+          <p class="small muted">Asthma, anaphylaxis, chest pain, diabetes, stroke and seizures, mental health, other emergencies and IV therapy, pregnancy and birth, with QR codes to the Day 6 stations. Stations: asthma and the MDI, nebs, anaphylaxis and IM adrenaline, aspirin and GTN, BGL and oral glucose, preparing the IV line, assisting a normal birth, the newborn.</p>
+          <p class="small skills"><b>Skills:</b> Nebulised medication (under 6 and 6+); IM adrenaline; GTN sublingual; Assist delivery of a newborn; Newborn assessment (APGAR); IV therapy (set up line, change empty bag)</p>
+          <p class="kind">Presentation</p><div class="acts"><a class="act" href="../classroom/medical-conditions/" target="_blank" rel="noopener"><b>Slides</b><small>Show on the big screen</small></a><a class="act alt" href="../classroom/medical-conditions/presenter.html" target="_blank" rel="noopener"><b>Presenter</b><small>Notes and timer</small></a><a class="act alt" href="../classroom/medical-conditions/guide.html" target="_blank" rel="noopener"><b>Guide</b><small>Printable facilitator guide</small></a></div>
+          <p class="kind">Skills stations</p><div class="acts"><a class="act" href="../stations/ar-day6/" target="_blank" rel="noopener"><b>Stations</b><small>The team runs them</small></a><a class="act alt" href="../stations/ar-day6/#setup" target="_blank" rel="noopener"><b>Setup</b><small>Instructor sheet</small></a><a class="act alt" href="../stations/ar-day6/#print" target="_blank" rel="noopener"><b>Print</b><small>A4 pack with QR codes</small></a></div>
+        </article>
+        <article class="item">
+          <h3>First Aid and AA Protocols</h3>
+          <p class="small skills"><b>Skills:</b> Asthma; Anaphylaxis; Chest pain; Diabetic emergencies</p>
+          <p class="kind">Presentation</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Slides</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Presenter</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Guide</b><small>Coming soon</small></span></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
+      </div>
+    </details>
+    <details class="panel day" id="day-7">
+      <summary><span class="dn">Day 7</span><span class="dt">First Aid and AA Protocols · Traumatic Injuries</span></summary>
+      <div class="topics">
+        <article class="item">
+          <h3>First Aid and AA Protocols</h3>
+          <p class="small skills"><b>Skills:</b> Bleeding, minor wound care and shock; Nosebleeds; Sprains and strains; Fractures and dislocations; Pressure immobilisation (PIT); Haemorrhage control and amputations; Burns</p>
+          <p class="kind">Presentation</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Slides</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Presenter</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Guide</b><small>Coming soon</small></span></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
+        <article class="item">
+          <h3>Traumatic Injuries</h3>
+          <p class="small skills"><b>Skills:</b> Femoral traction splint (STS Gen 2); Cervical collar; Modified towel roll; Pelvic binder; Vacuum mattress</p>
+          <p class="kind">Presentation</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Slides</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Presenter</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Guide</b><small>Coming soon</small></span></div>
+          <p class="kind">Skills stations</p><div class="acts"><span class="act todo" aria-disabled="true"><b>Stations</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Setup</b><small>Coming soon</small></span><span class="act todo" aria-disabled="true"><b>Print</b><small>Coming soon</small></span></div>
+        </article>
+      </div>
+    </details>
   </section>
 
   <section class="stack">
-    <span class="eyebrow">Skills stations</span>
-    <article class="panel item">
-      <h3>Day 6 skills stations</h3>
-      <p class="small muted">Eight stations on the AR protocols and scope: asthma and the MDI, nebs, anaphylaxis and IM adrenaline, aspirin and GTN, BGL and oral glucose, preparing the IV line for the paramedic, assisting a normal birth, the newborn.</p>
-      <div class="acts">
-        <a class="act" href="../stations/ar-day6/" target="_blank" rel="noopener"><b>Stations</b><small>The team runs them</small></a>
-        <a class="act alt" href="../stations/ar-day6/#setup" target="_blank" rel="noopener"><b>Setup</b><small>Instructor sheet</small></a>
-        <a class="act alt" href="../stations/ar-day6/#print" target="_blank" rel="noopener"><b>Print</b><small>A4 pack with QR codes</small></a>
-      </div>
-    </article>
+    <span class="eyebrow">Skill sign-off</span>
+    <a class="panel pad" href="signoff/" style="text-decoration:none;color:inherit;display:block">
+      <b>Skill sign-off navigator</b><br>
+      <span class="small muted">Every Day 1 to 7 skill in order. Pick your station and open each skill's sign-off page in saaslearn, already filtered to that station.</span>
+    </a>
   </section>
 
   <section class="stack">

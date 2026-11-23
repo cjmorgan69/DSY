@@ -22,7 +22,8 @@ it above 94%; no CPR detail in scenarios.
 
 Envenomation (`/modules/envenomation/`, Greg 52, brown snake) rebuilt and linked with the envenomation module (live,
 lesson added); owner: longboard or carry chair both fine, chosen by helpers and distance, as long as movement is
-minimal and timely.
+minimal and timely. Owner (22 Nov 2026): the crew is paged from Cummins, not Port Lincoln (25 minutes to
+scene and Port Lincoln Hospital 30 minutes unchanged); live (PR #317, merged 22 Nov 2026).
 
 ## Anaphylaxis (David)
 

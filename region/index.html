@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Lower Eyre Peninsula</title>
+<title>Eyre Peninsula</title>
 <link rel="icon" type="image/png" sizes="32x32" href="../shared/dsy-favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../shared/dsy-favicon-192.png">
 <link rel="apple-touch-icon" href="../shared/dsy-touch-180.png">
@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261119m">
+<link rel="stylesheet" href="../training/theme.css?v=20261123m">
 <style>
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: .9rem; }
 .tile { display: flex; flex-direction: column; overflow: hidden; border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(20, 40, 30, .05); }
@@ -27,6 +27,10 @@
 .tile .btns a:hover { filter: brightness(1.08); box-shadow: inset 0 0 0 1px var(--brand); }
 .tile .btns a.pri:hover { box-shadow: none; }
 .tile .btns .editbtn { flex: 1 1 100%; padding: .45rem .8rem; border: 0; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-size: .82rem; font-weight: 600; cursor: pointer; }
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.chips button { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: .35rem .85rem; font: inherit; font-size: .86rem; cursor: pointer; }
+.chips button[aria-pressed="true"] { background: var(--brand); color: #fff; border-color: var(--brand); }
+.saved { font-size: .82rem; color: var(--muted); min-height: 1.2em; }
 .sec-h { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
 .bannerprev { position: relative; overflow: hidden; border-radius: 16px; background: var(--brand-soft); }
 .bannerprev img { display: block; width: 100%; aspect-ratio: 16 / 8; object-fit: cover; }
@@ -37,7 +41,8 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261119m"></script>
+<script src="../training/config.js?v=20261123m"></script>
+<script src="../training/pwreveal.js?v=20261123m" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -46,8 +51,10 @@
   var sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
   var $app = document.getElementById("app");
   var $toast = document.getElementById("toast");
-  var S = { editTeam: null, user: null, profile: null, region: null, groups: [], next: {}, photos: {}, regionPhoto: null, authMode: "in", edit: false, uploading: false };
-  var MANAGER = "../modules/rosters/lowereyre/manager/", DASH = "../modules/rosters/lowereyre/manager/dashboard/";
+  var CF = "dsy-region-cluster", CLUSTERS = ["Lower Eyre", "Central Eyre", "West Coast"];
+  function cstore(v) { try { if (v === undefined) return localStorage.getItem(CF); localStorage.setItem(CF, v); } catch (e) { return null; } }
+  var S = { cluster: null, editTeam: null, user: null, profile: null, region: null, groups: [], next: {}, photos: {}, regionPhoto: null, authMode: "in", edit: false, uploading: false };
+  var MANAGER = "../modules/rosters/lowereyre/manager/", DASH = "/dashboard/";
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function fail(e) { $toast.textContent = e && e.message ? e.message : "Something went wrong. Try again."; $toast.hidden = false; clearTimeout(fail.t); fail.t = setTimeout(function () { $toast.hidden = true; }, 6000); }
@@ -84,7 +91,7 @@
       ]);
     }).then(function (r) {
       if (!r) return;
-      S.region = r[0][0] || { name: "Lower Eyre Peninsula", links: [] };
+      S.region = r[0][0] || { name: "Eyre Peninsula", links: [] };
       S.groups = r[1]; S.next = {};
       r[2].forEach(function (s) { if (!S.next[s.group_id]) S.next[s.group_id] = s; });
       var jobs = [];
@@ -109,25 +116,32 @@
 
   function nextLine(g) {
     var s = S.next[g.id]; if (!s) return "No upcoming session";
-    var d = parseDate(s.session_date), t = s.lesson_title || s.topic;
+    var d = parseDate(s.session_date), t = s.topic || s.lesson_title;
     return "Next: " + d.toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short" }) + (t ? " - " + esc(t) : "");
   }
 
   function tile(g) {
     var ru = safeUrl(g.roster_url);
-    return '<article class="tile"><div class="ph">' + (S.photos[g.id] ? '<img src="' + esc(S.photos[g.id]) + '" alt="' + esc(g.name) + '">' : esc(initials(g.name))) + '</div>' +
+    return '<article class="tile"><div class="ph">' + (S.photos[g.id] ? '<img src="' + esc(S.photos[g.id]) + '" alt="' + esc(g.name) + '"' + (g.banner_y != null ? ' style="object-position:50% ' + (+g.banner_y) + '%"' : "") + ">" : esc(initials(g.name))) + '</div>' +
       '<div class="body"><h3>' + esc(g.name) + '</h3><div class="next">' + nextLine(g) + '</div>' +
       '<div class="btns"><a class="pri" href="../teams/#' + esc(g.id) + '">Team page</a>' + (ru ? '<a href="' + esc(ru) + '">Roster</a>' : "") + '<a href="../training/">Training</a><button class="editbtn" type="button" data-edit="' + esc(g.id) + '">Edit page</button></div></div></article>';
   }
 
   function render() {
     var r = S.region, html = header();
-    html += '<section class="hero' + (S.regionPhoto ? "" : " plain") + '">' + (S.regionPhoto ? '<img src="' + esc(S.regionPhoto) + '" alt="' + esc(r.name) + '">' : "") +
-      '<div class="cap"><h1>' + esc(r.name) + '</h1><p>Region overview</p></div></section>';
+    /* Cluster filter (owner, 22 Nov 2026): remembered on this device; starts on the leader's own cluster. */
+    if (S.cluster == null) { var c0 = cstore(); S.cluster = c0 != null ? c0 : (S.profile && CLUSTERS.indexOf(S.profile.cluster) > -1 ? S.profile.cluster : ""); }
+    /* banner: the region name for All clusters, else the cluster's name (owner, 22 Nov 2026) */
+    var title = S.cluster || r.name || "Eyre Peninsula";
+    html += '<section class="hero' + (S.regionPhoto ? "" : " plain") + '">' + (S.regionPhoto ? '<img src="' + esc(S.regionPhoto) + '" alt="' + esc(title) + '">' : "") +
+      '<div class="cap"><h1>' + esc(title) + '</h1><p>' + (S.cluster ? "Cluster overview" : "Region overview") + '</p></div></section>';
     html += '<div class="actions"><a class="big" href="../training/">Team Training<span>Sessions, lessons, attendance and people</span></a>' +
-      '<a class="big alt" href="' + DASH + '">Manager dashboard<span>Rosters and cover across the region</span></a>' +
+      '<a class="big alt" href="' + DASH + '">Team Leader Dashboard<span>Rosters, training sessions, dispatch and tasks</span></a>' +
       '<a class="big alt" href="' + MANAGER + '">Roster manager<span>Open the manager roster page</span></a></div>';
-    html += '<section class="stack"><div class="sec-h"><h2>Teams</h2></div><div class="tiles">' + S.groups.map(tile).join("") + "</div></section>";
+    var shown = S.groups.filter(function (g) { return !S.cluster || g.cluster === S.cluster; });
+    html += '<section class="stack"><div class="sec-h"><h2>Teams</h2></div><div class="chips" role="group" aria-label="Cluster">' +
+      [""].concat(CLUSTERS).map(function (c) { return '<button type="button" data-cluster="' + esc(c) + '" aria-pressed="' + (S.cluster === c) + '">' + esc(c || "All clusters") + "</button>"; }).join("") + "</div>" +
+      '<div class="tiles">' + (shown.length ? shown.map(tile).join("") : '<p class="muted">No teams in this cluster.</p>') + "</div></section>";
     if (S.editTeam) html += teamForm();
     if (S.edit) { html += editForm(); }
     else {
@@ -162,7 +176,7 @@
       (g.photo_path ? "Your photo is showing. Add a new one to replace it." : g.hero && g.hero.url ? "A town photo is showing (" + esc(g.hero.caption || "Wikimedia Commons") + "). Add your own photo to replace it." : "No photo yet.") + "</p>" +
       '<label class="drop" id="teamdrop"><strong>Choose a banner photo</strong><span class="small">or drag one here. JPG, PNG or WebP, up to 10 MB.</span><input id="teamphoto" type="file" accept="image/jpeg,image/png,image/webp"></label>' +
       (S.photos[g.id] ? '<div class="bannerprev"><img id="bannerimg" src="' + esc(S.photos[g.id]) + '" alt="" style="object-position:50% ' + (g.banner_y != null ? +g.banner_y : 50) + '%"><span>' + esc(g.name) + "</span></div>" +
-        '<label>Move the photo to show the right part (top to bottom)<input id="bannery" type="range" min="0" max="100" step="1" value="' + (g.banner_y != null ? +g.banner_y : 50) + '"></label>' : "") +
+        '<label>Move the photo to show the right part (top to bottom)<input id="bannery" type="range" min="0" max="100" step="1" value="' + (g.banner_y != null ? +g.banner_y : 50) + '"></label><p class="saved" id="bannersaved" aria-live="polite"></p>' : "") +
       (g.photo_path || (g.hero && g.hero.url) ? '<div class="row"><button class="btn danger small" type="button" id="teamrm">Remove banner photo</button></div>' : "") +
       slidesForm(g) + "</form>";
   }
@@ -230,7 +244,7 @@
 
   function saveRegion(form) {
     var f = new FormData(form);
-    var row = { name: f.get("name").trim() || "Lower Eyre Peninsula", blurb: f.get("blurb").trim() || null, links: parseLinks(f.get("links")), updated_at: new Date().toISOString() };
+    var row = { name: f.get("name").trim() || "Eyre Peninsula", blurb: f.get("blurb").trim() || null, links: parseLinks(f.get("links")), updated_at: new Date().toISOString() };
     return sb.from("region_info").update(row).eq("id", S.region.id || "main").then(function (r) { if (r.error) throw r.error; S.edit = false; return load(); });
   }
   function uploadRegionPhoto(file) {
@@ -247,6 +261,7 @@
 
   $app.addEventListener("click", function (e) {
     var t = e.target.closest("button"); if (!t) return;
+    if (t.dataset.cluster != null) { S.cluster = t.dataset.cluster; cstore(S.cluster); render(); fillThumbs(); return; }
     if (t.dataset.edit) { S.editTeam = t.dataset.edit; render(); var f = document.getElementById("teamform"); if (f) f.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
     if (t.id === "teamcancel") { S.editTeam = null; render(); return; }
     if (t.id === "teamrm") { var g = linkTeam(S.editTeam), old = g.photo_path; if (!window.confirm("Remove the banner photo?")) return; sb.from("groups").update({ photo_path: null, hero: null }).eq("id", g.id).then(function (r) { if (r.error) throw r.error; if (old) sb.storage.from("team-photos").remove([old]); return load(); }).catch(fail); return; }
@@ -259,9 +274,23 @@
     else if (t.id === "rmphoto") { var old = S.region.photo_path; sb.from("region_info").update({ photo_path: null }).eq("id", S.region.id || "main").then(function (r) { if (r.error) throw r.error; if (old) sb.storage.from("team-photos").remove([old]); return load(); }).catch(fail); }
   });
   /* Banner position slider: preview moves while dragging, saves when let go. */
-  $app.addEventListener("input", function (e) { if (e.target.id === "bannery") { var im = document.getElementById("bannerimg"); if (im) im.style.objectPosition = "50% " + e.target.value + "%"; } });
+  /* 22 Nov 2026: also saves a moment after the last move (in case a phone sends no "change"), checks a row was
+     written, says "Saved", and moves the team's tile photo too. */
+  var bTimer = null;
+  function saveBanner(y) {
+    clearTimeout(bTimer); var bg = linkTeam(S.editTeam), msg = document.getElementById("bannersaved"); if (!bg) return;
+    if (bg.banner_y === y) { if (msg) msg.textContent = "Saved."; return; }
+    if (msg) msg.textContent = "Saving…";
+    return sb.from("groups").update({ banner_y: y }).eq("id", bg.id).select("id").then(function (r) {
+      if (r.error) throw r.error;
+      if (!r.data || !r.data.length) throw new Error("The position was not saved: you may not have edit rights for this team.");
+      bg.banner_y = y; if (msg) msg.textContent = "Saved. The Team Page and the tile above use this position.";
+      var tim = document.querySelector('[data-edit="' + bg.id + '"]'); tim = tim && tim.closest(".tile").querySelector(".ph img"); if (tim) tim.style.objectPosition = "50% " + y + "%";
+    }).catch(function (e) { if (msg) msg.textContent = ""; fail(e); });
+  }
+  $app.addEventListener("input", function (e) { if (e.target.id === "bannery") { var im = document.getElementById("bannerimg"), y = +e.target.value; if (im) im.style.objectPosition = "50% " + y + "%"; clearTimeout(bTimer); bTimer = setTimeout(function () { saveBanner(y); }, 800); } });
   $app.addEventListener("change", function (e) {
-    if (e.target.id === "bannery") { var bg = linkTeam(S.editTeam), y = +e.target.value; if (!bg) return; return sb.from("groups").update({ banner_y: y }).eq("id", bg.id).then(function (r) { if (r.error) throw r.error; bg.banner_y = y; }).catch(fail); }
+    if (e.target.id === "bannery") return saveBanner(+e.target.value);
     if (e.target.id === "slidephotos") return uploadSlides(e.target.files);
     if (e.target.dataset && e.target.dataset.cap != null) { var i = +e.target.dataset.cap, v = e.target.value.trim(); return changeSlides(function (l) { l[i].caption = v; }); }
     if (e.target.id === "regionphoto") uploadRegionPhoto(e.target.files[0]); else if (e.target.id === "teamphoto") uploadTeamPhoto(e.target.files[0]);

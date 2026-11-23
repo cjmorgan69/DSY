@@ -90,7 +90,7 @@ window.MODULE = {
     ] },
 
     { title: "Dispatch and en route", blocks: [
-      { text: "Saturday in January, 1432. Hot and dry, 36 degrees. You and your crew partner are paged from Port Lincoln to a rural property at Wangary: about 25 minutes." },
+      { text: "Saturday in January, 1432. Hot and dry, 36 degrees. You and your crew partner are paged from Cummins to a rural property at Wangary: about 25 minutes." },
       { box: { title: "MDT display", items: [
         "Priority 2, snake bite, 52 year old male",
         "Bitten on the right lower leg about 15 minutes ago. Brown snake about 1.5 m",

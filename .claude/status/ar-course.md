@@ -37,6 +37,12 @@ Conditions, DRiVE, Manual Tasks: Slides / Presenter / Guide each), the Day 6 ski
 Print), and the `/course/` workshop bookings app. Linked by a small button at the bottom of the home page; the Day 6
 panel was removed from Run a session. Add new AR course material here.
 
+By day (21 Nov 2026, owner): the page now lists Day 1 to 7 as collapsible panels, topics taken from the course
+completion checklist (the same Day/module list as `/ar/signoff/`), each with the skills, a Presentation row (Slides /
+Presenter / Guide) and a Skills stations row (Stations / Setup / Print). Built: Manual Tasks deck (Day 1, and Day 2 as
+"continued", same deck), DRiVE deck (Day 4), Medical Conditions deck and the Day 6 stations (Day 6). Everything else is
+a grey "Coming soon" placeholder: swap a placeholder for links when its material is built. On a branch, not merged (PR open).
+
 ## Course bookings (Supabase version)
 
 AR course bookings, Supabase version (`/ar/course/`, 13 Nov 2026, student gate; the owner keeps the Google Sheet app
@@ -49,3 +55,67 @@ norm_id(profiles.staff_id)); tables `course_cohorts`, `course_days` (title + mat
 automatic move-up, cancel cut-off per group, default 48 h; can't-make notes). Leaders adding students also put the
 IDs on `allowed_ids`. SQL in `supabase/course-setup.sql`: the approval prompt for apply_migration timed out (13 Nov
 2026), so the owner ran it in the SQL Editor (the tables exist; no groups set up yet, checked 15 Nov 2026). On main.
+
+## Skill sign-off navigator
+
+`/ar/signoff/` (21 Nov 2026, owner; facilitator gate): every Day 1 to 7 skill of the FNWC Recruit to AR course
+checklist, grouped by day and module, each opening its saaslearn checklist report
+(`saaslearn.com.au/moodle/mod/checklist/report.php?id=<id>&group=<group>[&editchecks=on]`). Stations and Moodle groups:
+Tumby Bay 44930, Cummins 44935, Coffin Bay 44926, Port Neill 44932, or all. "Finished" ticks are per browser
+(localStorage `fnwc-signoff-nav`), not sent to Moodle; no student names on the page. Moved in from the owner's
+standalone artifact. Linked from `/ar/` under "Skill sign-off". Live (PR #288, merged 21 Nov 2026).
+
+Stations (21 Nov 2026): multi-select; with several chosen each skill gets one Open button per station (its Moodle
+group, with Edit checks); "All stations" = no group. Finished ticks are per station choice.
+
+Student picker: built 21 Nov 2026 (PRs #290, #292, #294: pick students from the course group, open
+`report.php?id=<skill>&studentid=<moodle_id>`), then removed the same day at the owner's request because the group
+view gives Edit checks and individual sign-off does not. Left in place: `course_students.station` and `moodle_id`
+columns (no page uses them now) and the test group "TEST: AR course Tumby Bay (sign-off trial)" (9 students,
+placeholder staff IDs TEST-<n> so students do not see it). Live (PR #295, merged 21 Nov 2026).
+
+## Build the course and the people picker (21 Nov 2026, owner)
+
+`/ar/course/` facilitator view:
+- Dates tab, "Build the course": one row per course day (the group's days, or the 7 AR days from the completion
+  checklist when the group has none), each with a tick, date and start time (default 09:00; adding a date ticks the
+  day), plus finish, location and places for all ticked days. Saves one `course_workshops` row per ticked day; for a
+  group with no days yet it also saves the AR day titles to `course_days`. "+ Add a date" still adds single dates.
+  "+ Another date for Day N" adds more date/time lines to a day (students book one of them). "+ Add a consolidation
+  day" adds the next day number titled "Consolidation" (saved to `course_days`); it is extra: if the group has no
+  days to complete set, saving sets it to the course days (excluding consolidation), and completion now counts only
+  days up to `total_days` (student progress, Progress tab, printed record), so a consolidation day can't replace a
+  missed course day.
+- New group: "Start with the AR course days (Day 1 to 7)" (ticked by default; sets the titles and total days 7).
+  "Copy the course days from <group>" is now unticked by default and wins when both are ticked.
+- Students tab, "Add students from the people list": `course_people()` (security definer, facilitators only; SQL in
+  `supabase/course-people.sql`, applied 21 Nov 2026) returns ID, name (preferred name first), teams and signed up, from
+  profiles + memberships and from expected_members not yet signed up. Team filter, search, tick, "Add N students" calls
+  `course_add_students` (name split: first word = first name). People already in the group show ticked "In group".
+  The paste box stays below as "Or paste students".
+Tested with stand-in data; rehearsed `course_people()` as a facilitator (160 people, 13 teams) and as a member (0).
+Live (PR #298, merged 21 Nov 2026).
+
+## AR course card in the training calendar (21 Nov 2026, owner)
+
+`/training/` member view (not the leader view): `loadMember` also calls `course_home()`; if the person is enrolled
+in an active AR course group, a separate "Your course" card sits above the team sessions (the owner first had the
+dates mixed into the team list, then asked for a separate card as less crowded). The card (no days-done count: owner
+asked to leave it out) shows the student's upcoming booked and waiting-list dates (Cancel / Leave list;
+inside the group's cut-off it says to tell the facilitator; the roll result once marked: Attended, late, left early,
+absent), a "Dates to book (n)" fold with the dates for days not booked or done (Book, or Join waiting list when full;
+consolidation days marked Extra; the fold stays open after booking), and a link to `/ar/course/`. Bookings and
+attendance stay in the `course_*` tables (`course_book`, `course_cancel`). Team sessions list unchanged. If
+`course_home()` fails the calendar still loads. Team Page "next session" does not include AR dates. Tested with
+stand-in data. Live (PR #299, merged 21 Nov 2026).
+
+## User guide and dashboard link (21 Nov 2026, owner)
+
+Team Leader Guide section 14 "Setting up an AR course" (`/userguides/leaders/#ar-course`; "If something isn't
+working" is now 15): create the group, Build the course, add students from the people list, students book from the
+training calendar card, roll and Progress, skill sign-off navigator, archive. Ask DSY reads this page, so keep it true
+when `/ar/course/` changes. Dashboard footer (phone and wide) has an "AR course" link to `/ar/course/`.
+Live (PR #301, merged 21 Nov 2026), checked on the live site.
+
+Per-date locations (21 Nov 2026, owner): in Build the course every date line has its own Location box; the shared
+"Location (any date left blank)" fills the blanks. Guide section 14 says so. On a branch, not merged (PR open).

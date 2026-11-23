@@ -12,6 +12,7 @@ OV=(); [ -f "$SRC/overrides.json" ] && OV=(--overrides "$SRC/overrides.json")
 python3 - "$SRC/scene.html" "$WORK" <<'PY'
 import sys; s=open(sys.argv[1]).read(); open(sys.argv[2]+"/scene_final.html","w").write(s.replace("TIMELINE",open(sys.argv[2]+"/timeline.json").read()))
 PY
+cp "$SRC"/*.jpg "$SRC"/*.png "$WORK"/ 2>/dev/null || true   # screenshots used by scene.html
 node "$HERE/render.js" "$WORK" "$FPS"
 TAIL=$(python3 -c "import json;d=json.load(open('$WORK/timeline.json'));print(round(d['total']-d['audio'],2))")
 ffmpeg -y -loglevel error -framerate "$FPS" -i "$WORK/frames/f%05d.jpg" -i "$AUDIO" -c:v libx264 -pix_fmt yuv420p -crf 22 -preset medium \
