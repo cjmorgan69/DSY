@@ -479,3 +479,15 @@ Tumby Bay's sent status to do it; the cut-off was Wed 25 Nov 08:00). `roster_boo
 placeholder booked by a manager or TL; the shift is logged with `no_email: true` and no email is queued. Page: a
 "Don't email Country Rostering" tick under the "Not on the list" name box (`roster-supabase.js`). Edits and cancels,
 and crew bookings, still follow the normal rules. Tested in a rolled-back run on Summer Bay.
+
+## Roster user guide rewritten for sign-in (23 Nov 2026, owner asked)
+
+All 12 teams are on the Supabase roster, so `/userguides/rosters/` is now two parts, 16 sections. Part 1 Crew members:
+getting started (sign-in, name shown, Switch person, level saved to the account, Home screen), reminders, booking,
+reading the roster, changing or cancelling, changes to a sent roster (phone when no Country Rostering address), team
+messages (old sheet messages not carried over), help. Part 2 Roster managers and Team Leaders: manager controls and
+booking for others (no password, Not on the list, Don't email Country Rostering), sending (print settings kept as a
+backup), weekly schedule, after it's sent and the change log, correcting the cut-off, removing messages, team hours,
+trial rosters and Summer Bay. Dropped: typed name, saved roster on the device, manager password, the PDF view and Mark
+as sent, the Google Sheet Change Log. Anchors kept where the topic stayed; `#new-roster`, `#new-managers`, `#opening`,
+`#print`, `#mark-sent` are gone. On a branch, not merged (PR #339).
