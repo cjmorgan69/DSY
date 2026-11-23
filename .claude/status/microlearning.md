@@ -237,4 +237,4 @@ number, so nothing was re-narrated. The Team Leader guide was reordered to the s
 from Training into Grant access, people and passwords; Your team page is its own section `#team-pages`).
 `/userguides/` has a "New Team Leader? Start here" card (leaders only) and a short VTL path (VTLs only), shown through
 `DSY_GATE.ready`. Dashboard footers (both) list leader pages in the same order with Team Leader training first; the
-home page leader links add Team Leader training. On a branch, not merged.
+home page leader links add Team Leader training. Live (PR #339, merged 23 Nov 2026).
