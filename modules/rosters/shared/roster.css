@@ -150,6 +150,16 @@
     .user-section input { width: 145px; }
     .user-section select { min-height: 32px; }
 
+    /* A long name in "Booking for" (name · full name) must not widen
+       the header past a phone screen (Wudinna, 23 Nov 2026). */
+    .user-section { min-width: 0; max-width: 100%; }
+    #rosterSignedIn select,
+    #rosterSignedIn input[type="text"] {
+        width: 100%;
+        max-width: 100%;
+        text-overflow: ellipsis;
+    }
+
     .user-section input:focus-visible,
     .user-section select:focus-visible {
         outline: 2px solid var(--primary);
