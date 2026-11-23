@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261123i">
+<link rel="stylesheet" href="theme.css?v=20261123j">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -61,10 +61,10 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261123i"></script>
-<script src="pwreveal.js?v=20261123i" defer></script>
-<script src="/shared/reminders.js?v=20261123i" defer></script>
-<script src="sa-dates.js?v=20261123i"></script>
+<script src="config.js?v=20261123j"></script>
+<script src="pwreveal.js?v=20261123j" defer></script>
+<script src="/shared/reminders.js?v=20261123j" defer></script>
+<script src="sa-dates.js?v=20261123j"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -276,7 +276,8 @@ li[hidden]{display:none!important}
     if (!rows.length) return card + '<div class="panel empty">No upcoming ' + (card ? "team " : "") + 'sessions yet. If you expected to see some, ask your team leader to add you to your team.</div>';
     return card + '<ul class="panel list">' + rows.map(function (s, i) {
       var reply = S.myBookings[s.id], mine = s.is_facilitator && s.session_type === "team";
-      var title = s.topic || s.lesson_title;   // members see the session name first, else the lesson (owner, 22 Nov 2026)
+      /* members see the session name only; the facilitator also sees the lessons (owner, 23 Nov 2026) */
+      var title = s.is_facilitator ? (s.topic || s.lesson_title) : s.topic;
       return '<li><div class="item' + (i === 0 ? " next" : "") + '">' + tile(s.session_date) +
         '<div class="what"><span class="t">' + (title ? esc(title) : '<span class="muted">Topic to be confirmed</span>') + "</span>" +
         '<span class="small muted">' + timeRange(s) + (s.location ? " - " + esc(s.location) : "") + "</span>" +
@@ -284,8 +285,7 @@ li[hidden]{display:none!important}
         '<span class="row">' + groupChip({ name: s.group_name, type: s.group_type }) + typeChip(s.session_type) + (mine ? '<span class="chip good">You are facilitating</span>' : "") + "</span>" +
         (s.is_facilitator && s.lessons && s.lessons.some(function (l) { return l.url; }) ? '<span class="row">' + s.lessons.filter(function (l) { return l.url; }).map(function (l) {
           return '<a class="link small" href="' + esc(l.url) + '" target="_blank" rel="noopener">Open ' + (s.lessons.length > 1 ? esc(l.title) : "lesson") + "</a>"; }).join("") + "</span>" : "") +
-        /* several lessons: facilitators see each title and summary, members the summaries only (owner, 22 Nov 2026) */
-        (s.lessons && s.lessons.length > 1 ? s.lessons.map(function (l) { return s.is_facilitator ? '<span class="small muted"><strong>' + esc(l.title) + "</strong>" + (l.summary ? " - " + esc(l.summary) : "") + "</span>" : l.summary ? '<span class="small muted">' + esc(l.summary) + "</span>" : ""; }).join("")
+        (!s.is_facilitator ? "" : s.lessons && s.lessons.length > 1 ? s.lessons.map(function (l) { return '<span class="small muted"><strong>' + esc(l.title) + "</strong>" + (l.summary ? " - " + esc(l.summary) : "") + "</span>"; }).join("")
           : s.lesson_summary ? '<span class="small muted">' + esc(s.lesson_summary) + "</span>" : "") + "</div>" +
         '<div class="act">' + (mine ? '<button class="btn ghost small" type="button" data-act="roster" data-id="' + s.id + '">Team list</button>' : "") +
         attendingButtons(s.id, reply) + "</div></div></li>";
