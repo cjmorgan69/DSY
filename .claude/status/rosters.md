@@ -509,4 +509,8 @@ as sent, the Google Sheet Change Log. Anchors kept where the topic stayed; `#new
 The new layout hid "Edit sent cut-off" (left over from the PDF view's Mark as sent). On signed-in (Supabase) rosters
 it is shown again, as the roster guide section 13 says, and it also works when there is no cut-off (it then sets a
 new one, `roster_set_sent` with `p_editing` false). Forward only, as before; Reset first to go back. Apps Script
-pages unchanged. On a branch, not merged.
+pages unchanged. Live (PR #343, merged 23 Nov 2026).
+- Follow-up (owner, 23 Nov 2026): the four buttons below the folds (Edit sent cut-off, Team hours, Booking list,
+  Reset sent status) are an even 2-by-2 grid with more room under Schedule set-up (`.manager-buttons` in
+  `roster.css`, class added in `tidyManagerControls`). Order: Booking list, Team hours, Edit sent cut-off, Reset
+  sent status (CSS `order`). Signed-in rosters only. On a branch, not merged.
