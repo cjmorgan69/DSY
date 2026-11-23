@@ -479,3 +479,6 @@ user guide section updated to match.
 - `paging_jobs_by_member(_detail)` read `roster_shifts` (see dashboard.md).
 - Still copying from the old sheets: the edge function `roster-sync` (every 2 hours into `roster_bookings`). Stage 8:
   stop it once nothing reads `roster_bookings` (`member_contribution_v2` still reads it for teams not passed as moved).
+- 23 Nov 2026: Wudinna (5652) was not in the task's postcode list, so WU jobs stopped after 13 Nov (earlier ones came
+  in through neighbouring postcodes). Added a Part C: 5651 Kyancutta, 5652 Wudinna, 5653 Yaninee, 5654 Minnipa,
+  5671 Port Kenny. A test load found a WU181 Minnipa job (21 Nov) not yet in `paging_jobs`.
