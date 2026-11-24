@@ -524,8 +524,8 @@
       ["elearn", "SAAS eLearning login and password working", SL + "login/?lang=en", "SAAS eLearning"]
     ] },
     { title: "Practical", items: [
-      ["infection", "Infection control prac: hand washing, alcohol-based hand rub, donning and doffing PPE (sign off in saaslearn)", "../signoff/", "Skill sign-off navigator"],
-      ["cpr", "Adult CPR simulation (the Day 1 sign-off)", SL + "mod/checklist/report.php?id=26191&editchecks=on", "Open in saaslearn"]
+      ["infection", "Infection control prac: hand washing, alcohol-based hand rub, donning and doffing PPE (sign off in saaslearn)", "skills:32338|Hand washing,32337|Hand rub,32339|PPE"],
+      ["cpr", "Adult CPR simulation (the Day 1 sign-off)", "skills:26191|Open in saaslearn"]
     ] },
     { title: "Induction declaration", note: "The student submits this on SAAS eLearning. Go through each statement with them and tick it when they can answer yes.", items: [
       ["d1", "I have ordered a SAAS recruit uniform, photo ID card and bi-lock key."],
@@ -546,6 +546,23 @@
       ["decl", "Declaration submitted on SAAS eLearning", SL + "mod/questionnaire/view.php?id=15344", "Induction declaration"]
     ] }
   ];
+  /* saaslearn (Moodle) station groups, keyed by DSY team name: the same groups as the skill sign-off navigator. */
+  var SAASLEARN_GROUP = { "Tumby Bay": 44930, "Cummins": 44935, "Coffin Bay": 44926, "Port Neill": 44932 };
+  function studentTeams(s) {
+    var p = (S.people || []).filter(function (x) { return norm(x.staff_id) === norm(s.staff_id); })[0];
+    return p ? p.teams || [] : null;
+  }
+  function stationOf(s) {
+    var teams = studentTeams(s) || [];
+    for (var i = 0; i < teams.length; i++) if (SAASLEARN_GROUP[teams[i]]) return { name: teams[i], group: SAASLEARN_GROUP[teams[i]] };
+    return null;
+  }
+  function skillLinks(spec, st) {
+    return spec.slice(7).split(",").map(function (x) {
+      var p = x.split("|");
+      return '<a class="small" href="' + SL + "mod/checklist/report.php?id=" + p[0] + (st ? "&group=" + st.group : "") + '&editchecks=on" target="_blank" rel="noopener">' + esc(p[1]) + "</a>";
+    }).join(" · ");
+  }
   var IND_ITEMS = []; INDUCTION.forEach(function (s) { s.items.forEach(function (i) { IND_ITEMS.push(i[0]); }); });
   function indDone(d, sid) { return IND_ITEMS.filter(function (k) { return d.ind[sid + "|" + k]; }).length; }
   function inductionTab(d) {
@@ -562,16 +579,25 @@
   function inductionScreen(d, sid) {
     var s = d.byStudent[sid];
     if (!s) return '<p class="muted">That student is not in this group. <a href="#induction">Back to Induction</a></p>';
-    var n = indDone(d, sid);
+    if (!S.people) {
+      if (!S.peopleLoading) { S.peopleLoading = true; q(sb.rpc("course_people")).then(function (rows) { S.people = rows || []; }).catch(function () { S.people = []; }).then(function () { S.peopleLoading = false; renderFac(); }); }
+      return '<p class="muted">Loading…</p>';
+    }
+    var n = indDone(d, sid), st = stationOf(s), teams = studentTeams(s);
+    var stLine = st ? "Station: <b>" + esc(st.name) + "</b> (their DSY team). saaslearn links open that station's group with Edit checks."
+      : teams && teams.length ? "Their DSY team (" + esc(teams.join(", ")) + ") has no saaslearn station group, so saaslearn links show all students."
+      : "They're not in a DSY team yet, so saaslearn links show all students. Add them to their team in Grant access.";
     var html = '<div class="stack"><a class="link" href="#induction">‹ Induction</a><div><p class="eyebrow">Induction</p><h2>' + esc(nameOf(s)) + "</h2></div>" +
       '<p class="small muted"><span id="ind-count">' + n + " of " + IND_ITEMS.length + "</span> done. Ticks save as you go." +
-      ' <button class="link small no-print" type="button" onclick="window.print()">Print</button></p></div>';
+      ' <button class="link small no-print" type="button" onclick="window.print()">Print</button></p>' +
+      '<p class="small muted">' + stLine + "</p></div>";
     INDUCTION.forEach(function (sec) {
       html += '<section class="panel pad stack ind-sec"><h3>' + esc(sec.title) + "</h3>" + (sec.note ? '<p class="small muted">' + esc(sec.note) + "</p>" : "") + '<ul class="ind-list">' +
         sec.items.map(function (i) {
           var x = d.ind[sid + "|" + i[0]];
           return '<li><label class="check"><input type="checkbox" class="ind-tick" data-sid="' + sid + '" data-item="' + i[0] + '"' + (x ? " checked" : "") + "> <span>" + esc(i[1]) +
-            (i[2] && /^form:/.test(i[2]) ? ' <button class="link small" type="button" data-act="form" data-id="' + i[2].slice(5) + '">' + esc(i[3]) + "</button>"
+            (i[2] && /^skills:/.test(i[2]) ? " " + skillLinks(i[2], st)
+              : i[2] && /^form:/.test(i[2]) ? ' <button class="link small" type="button" data-act="form" data-id="' + i[2].slice(5) + '">' + esc(i[3]) + "</button>"
               : i[2] ? ' <a class="small" href="' + esc(i[2]) + '"' + (/^http/.test(i[2]) ? ' target="_blank" rel="noopener"' : "") + ">" + esc(i[3]) + "</a>" : "") +
             '<span class="small muted ind-when">' + (x ? " Ticked " + esc(shortDate(String(x.done_at).slice(0, 10))) : "") + "</span></span></label></li>";
         }).join("") + "</ul></section>";

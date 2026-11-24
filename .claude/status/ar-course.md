@@ -157,3 +157,9 @@ in Supabase `public.course_forms` (not in this public repo: the vendor form name
 downloadable by any signed-in user through `course_form(key)` (keys `vendor`, `cover`; SQL and checksums in
 `supabase/course-forms.sql`). Download buttons: the training calendar AR card ("Forms from your welcome email") and the
 vendor and cover items on the induction checklist. Live (PR #345, merged 24 Nov 2026).
+
+Induction station links (24 Nov 2026, owner): the student's station comes from their DSY team (`course_people()`
+teams, matched on ambulance ID); teams Tumby Bay, Cummins, Coffin Bay and Port Neill map to the saaslearn groups
+44930, 44935, 44926, 44932 (same as `/ar/signoff/`). Practical links go straight to saaslearn with that group and Edit
+checks: infection control prac = Hand washing 32338, Hand rub 32337, PPE 32339; Adult CPR 26191. No team, or a team with
+no saaslearn group: the links show all students and the page says why. On a branch, not merged (PR open).
