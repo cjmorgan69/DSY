@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261124d">
+<link rel="stylesheet" href="theme.css?v=20261124e">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -61,10 +61,10 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261124d"></script>
-<script src="pwreveal.js?v=20261124d" defer></script>
-<script src="/shared/reminders.js?v=20261124d" defer></script>
-<script src="sa-dates.js?v=20261124d"></script>
+<script src="config.js?v=20261124e"></script>
+<script src="pwreveal.js?v=20261124e" defer></script>
+<script src="/shared/reminders.js?v=20261124e" defer></script>
+<script src="sa-dates.js?v=20261124e"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -236,7 +236,7 @@ li[hidden]{display:none!important}
   }
   function arRow(w, title) {
     var act, full = w.capacity != null && w.booked >= w.capacity;
-    var total = S.ar.cohort.total_days, cons = total && w.day > total;
+    var cons = !!S.arExtra[w.day];
     if (w.attended) act = '<span class="chip' + (w.attended === "absent" ? "" : " good") + '">' + AR_ATT[w.attended] + "</span>";
     else if (w.my === "confirmed") act = '<span class="chip good">Booked</span>' + (w.can_cancel ? '<button class="btn danger small" data-act="arcancel" data-id="' + w.id + '">Cancel</button>'
       : '<span class="small muted">Too close to cancel here: tell your facilitator</span>');
@@ -250,11 +250,14 @@ li[hidden]{display:none!important}
   function renderArCard() {
     if (!S.ar) return "";
     var a = S.ar, today = todayStr(), title = {}, nums = {};
-    (a.days || []).forEach(function (d) { title[d.day] = d.title; nums[d.day] = 1; });
+    S.arExtra = {};
+    (a.days || []).forEach(function (d) { title[d.day] = d.title; nums[d.day] = 1; if (d.extra) S.arExtra[d.day] = true; });
     var up = (a.workshops || []).filter(function (w) { return w.date >= today && !w.cancelled; });
     up.forEach(function (w) { nums[w.day] = 1; });
-    var total = a.cohort.total_days || Object.keys(nums).length;
-    var done = Object.keys(nums).filter(function (n) { return +n <= total && arDayState(+n) === "done"; }).length;
+    // Consolidation days (extra) don't count towards finishing the course.
+    var core = Object.keys(nums).filter(function (n) { return !S.arExtra[n]; });
+    var total = a.cohort.total_days || core.length;
+    var done = core.filter(function (n) { return arDayState(+n) === "done"; }).length;
     var mine = up.filter(function (w) { return w.my; });
     var open = up.filter(function (w) { return !w.my && !arDayState(w.day); });
     var html = '<section class="panel pad stack ar-card"><div class="ar-head"><div><span class="eyebrow">Your course</span><h2>' + esc(a.cohort.course_name || "Ambulance Responder Course") + "</h2></div></div>";

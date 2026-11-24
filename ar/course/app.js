@@ -120,9 +120,10 @@
         (h.staff_id ? " (" + esc(h.staff_id) + ")" : "") + '. Once you are added, your course days and dates show here.</p></section></main>';
       return;
     }
-    var days = studentDays(h), total = h.cohort.total_days || days.length;
-    // Only the course days count: consolidation days (after the days to complete) are extra.
-    var done = days.filter(function (x) { return x.state === "done" && x.day <= total; }).length;
+    // Only the course days count: consolidation days (course_days.extra) are extra.
+    var xtra = {}; (h.days || []).forEach(function (x) { if (x.extra) xtra[x.day] = true; });
+    var days = studentDays(h), total = h.cohort.total_days || days.filter(function (x) { return !xtra[x.day]; }).length;
+    var done = days.filter(function (x) { return x.state === "done" && !xtra[x.day]; }).length;
     var today = h.today, title = function (d) { return "Day " + d.day + (d.title ? " · " + d.title : ""); };
     var html = '<main class="wrap">' + header({ title: h.cohort.course_name, line: h.student.first_name + " " + h.student.last_name + " · " + h.cohort.name }, facLink);
 
@@ -246,7 +247,7 @@
     var nums = {}; d.days.forEach(function (x) { nums[x.day_number] = 1; }); d.workshops.forEach(function (w) { nums[w.day_number] = 1; });
     for (var i = 1; i <= (d.cohort.total_days || 0); i++) nums[i] = 1;
     d.dayList = Object.keys(nums).map(Number).sort(function (a, b) { return a - b; });
-    d.dayTitle = {}; d.days.forEach(function (x) { d.dayTitle[x.day_number] = x.title; });
+    d.dayTitle = {}; d.extra = {}; d.days.forEach(function (x) { d.dayTitle[x.day_number] = x.title; if (x.extra) d.extra[x.day_number] = true; });
   }
   function nameOf(s) { return s ? (s.first_name + " " + s.last_name).trim() || s.staff_id : "Someone"; }
   function dayLabel(d, n) { return "Day " + n + (d.dayTitle[n] ? " · " + d.dayTitle[n] : ""); }
@@ -302,22 +303,32 @@
     if (h === "changes" && d.events.length) store(seenKey(), d.events[0].at);
   }
 
-  /* The AR course days, from the course completion checklist (same topics as /ar/ and /ar/signoff/). */
+  /* The AR course days (owner, 24 Nov 2026), from the course completion checklist plus Operational Safety (Day 1),
+     DRiVE principles and knowledge (Day 3) and the Stress Management webinar (Day 10). Days 8 and 9 are consolidation
+     (extra: course_days.extra, not counted towards completing the course). */
   var AR_DAYS = [
-    "Infection control, first aid (adult CPR), manual tasks",
-    "Manual tasks (continued)",
-    "Operational preparedness (GRN radio and MDT)",
-    "DRiVE practical assessments",
-    "Foundations of care, first aid, cardiac arrest, resuscitation",
-    "Medical conditions, first aid",
-    "First aid, traumatic injuries"
+    { n: 1, title: "Infection control, operational safety, manual tasks" },
+    { n: 2, title: "Manual tasks (continued)" },
+    { n: 3, title: "Operational preparedness (GRN radio and MDT), DRiVE principles and knowledge" },
+    { n: 4, title: "DRiVE practical assessments" },
+    { n: 5, title: "Foundations of care, cardiac arrest, resuscitation" },
+    { n: 6, title: "Medical conditions" },
+    { n: 7, title: "Traumatic injuries" },
+    { n: 8, title: "Consolidation", extra: true },
+    { n: 9, title: "Consolidation", extra: true },
+    { n: 10, title: "Stress management (online webinar)" }
   ];
+  function arDay(n) { return AR_DAYS.filter(function (x) { return x.n === n; })[0]; }
+  var AR_CORE = AR_DAYS.filter(function (x) { return !x.extra; }).length;
+  /* Days that count towards completing the course: every day except consolidation days. */
+  function isExtra(d, n) { return !!d.extra[n]; }
+  function totalDays(d) { return d.cohort.total_days || d.dayList.filter(function (n) { return !isExtra(d, n); }).length; }
 
   /* ---- Build the course: tick days, give each a date and start time ---- */
   function buildDays(d) {
-    var n = {}, i;
+    var n = {};
     d.dayList.forEach(function (x) { n[x] = 1; });
-    if (!d.dayList.length) for (i = 1; i <= AR_DAYS.length; i++) n[i] = 1;
+    if (!d.dayList.length) AR_DAYS.forEach(function (x) { n[x.n] = 1; });
     return Object.keys(n).map(Number).sort(function (a, b) { return a - b; });
   }
   function whenLine(n, extra) {
@@ -325,8 +336,8 @@
       (extra ? '<button class="b-x" type="button" data-act="b-rm" aria-label="Remove this date">×</button>' : "") +
       '<input class="b-loc" placeholder="Location (blank = the one below)" aria-label="Location for this Day ' + n + ' date"></div>';
   }
-  function consRow(n) {
-    return '<div class="b-row cons" data-day="' + n + '" data-title="Consolidation"><label class="check"><input type="checkbox" class="b-pick" checked> <span><b>Day ' + n +
+  function consRow(n, unticked) {
+    return '<div class="b-row cons" data-day="' + n + '" data-title="Consolidation" data-extra="1"><label class="check"><input type="checkbox" class="b-pick"' + (unticked ? "" : " checked") + '> <span><b>Day ' + n +
       '</b> <span class="b-title">· Consolidation (extra, not counted in the days to complete)</span></span></label>' +
       '<button class="b-x" type="button" data-act="b-rm-row" aria-label="Remove this consolidation day">×</button>' +
       '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for Day ' + n + "</button></div>";
@@ -334,9 +345,11 @@
   function buildPanel(d) {
     if (!S.building) return '<button class="btn wide" data-act="b-toggle">Build the course: pick days, dates and start times</button>';
     var rows = buildDays(d).map(function (n) {
-      var title = d.dayTitle[n] || (!d.dayList.length ? AR_DAYS[n - 1] : "") || "";
+      var tpl = !d.dayList.length ? arDay(n) : null;
+      if (tpl && tpl.extra) return consRow(n, true);
+      var title = d.dayTitle[n] || (tpl ? tpl.title : "") || "";
       var have = d.workshops.filter(function (w) { return w.day_number === n && !w.cancelled; }).length;
-      return '<div class="b-row" data-day="' + n + '"><label class="check"><input type="checkbox" class="b-pick"> <span><b>Day ' + n + "</b>" + (title ? ' <span class="b-title">· ' + esc(title) + "</span>" : "") +
+      return '<div class="b-row' + (isExtra(d, n) ? " cons" : "") + '" data-day="' + n + '"' + (tpl ? ' data-title="' + esc(tpl.title) + '"' : "") + '><label class="check"><input type="checkbox" class="b-pick"> <span><b>Day ' + n + "</b>" + (title ? ' <span class="b-title">· ' + esc(title) + (isExtra(d, n) ? " (extra)" : "") + "</span>" : "") +
         (have ? ' <span class="chip">' + have + (have === 1 ? " date" : " dates") + " already</span>" : "") + "</span></label>" +
         '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for Day ' + n + "</button></div>";
     }).join("");
@@ -490,12 +503,12 @@
 
   /* ---- Progress ---- */
   function progressTab(d) {
-    var total = d.cohort.total_days || d.dayList.length;
+    var total = totalDays(d);
     var html = '<div class="row no-print"><button class="btn ghost" onclick="window.print()">Print attendance record</button></div>' +
       '<div class="legend no-print"><span><i class="done"></i>Done</span><span><i class="booked"></i>Booked</span><span><i class="part"></i>Left early</span><span><i></i>Not done</span></div>';
     html += '<ul class="panel sessions no-print">' + d.active.map(function (s) {
-      var st = facStates(d, s), done = st.filter(function (x) { return x.state === "done" && x.day <= total; }).length;
-      var todo = st.filter(function (x) { return x.state !== "done" && x.day <= total; }).map(function (x) { return x.day; });
+      var st = facStates(d, s), done = st.filter(function (x) { return x.state === "done" && !isExtra(d, x.day); }).length;
+      var todo = st.filter(function (x) { return x.state !== "done" && !isExtra(d, x.day); }).map(function (x) { return x.day; });
       return '<li class="person"><div class="who"><b>' + esc(nameOf(s)) + "</b>" +
         '<ol class="days mini">' + st.map(function (x) { return '<li class="' + x.state + '" title="Day ' + x.day + '">' + x.day + "</li>"; }).join("") + "</ol>" +
         '<span class="small muted">' + (done >= total && total ? "" : "Still to do: Day " + todo.join(", ")) + "</span></div>" +
@@ -514,7 +527,7 @@
             if (a) cell += (cell ? "<br>" : "") + esc(shortDate(w.date)) + " " + esc(ATT[a.status]) + (a.note ? "<br><i>" + esc(a.note) + "</i>" : "");
           });
           return "<td>" + (cell || "–") + "</td>";
-        }).join("") + "<td>" + st.filter(function (x) { return x.state === "done" && x.day <= total; }).length + " / " + total + "</td></tr>";
+        }).join("") + "<td>" + st.filter(function (x) { return x.state === "done" && !isExtra(d, x.day); }).length + " / " + total + "</td></tr>";
       }).join("") + "</tbody></table></div>";
     return html;
   }
@@ -562,7 +575,7 @@
   }
   function newGroupForm(first) {
     var copy = (S.cohortId ? '<label class="check"><input type="checkbox" id="n-copy"> Copy the course days, titles and links from ' + esc((S.d.cohort || {}).name || "the current group") + "</label>" : "") +
-      '<label class="check"><input type="checkbox" id="n-ar" checked> Start with the AR course days (Day 1 to 7, from the completion checklist)</label>';
+      '<label class="check"><input type="checkbox" id="n-ar" checked> Start with the AR course days (Day 1 to 10: Days 8 and 9 are consolidation)</label>';
     return '<section class="panel pad stack"><h2>' + (first ? "Set up your first group" : "New group") + '</h2><div class="grid2">' +
       '<div class="field"><label for="n-name">Group name</label><input id="n-name" placeholder="e.g. AR course 2027 group 1"></div>' +
       '<div class="field"><label for="n-total">Days to complete</label><input id="n-total" type="number" min="1" inputmode="numeric" value="' + esc(S.d && S.d.cohort && S.d.cohort.total_days || "") + '"></div>' +
@@ -633,7 +646,7 @@
       var cap = $("b-cap").value.trim(), ws = [], titles = [], missing = [];
       [].forEach.call(document.querySelectorAll(".b-row"), function (r) {
         if (!r.querySelector(".b-pick").checked) return;
-        var n = +r.getAttribute("data-day"), cons = r.getAttribute("data-title"), dated = 0;
+        var n = +r.getAttribute("data-day"), newTitle = r.getAttribute("data-title"), extra = r.getAttribute("data-extra") === "1", dated = 0;
         [].forEach.call(r.querySelectorAll(".b-when"), function (l) {
           var date = l.querySelector(".b-date").value;
           if (!date) return;
@@ -642,17 +655,15 @@
             location: l.querySelector(".b-loc").value.trim() || $("b-loc").value.trim(), capacity: cap ? +cap : null, notes: "", updated_at: new Date().toISOString() });
         });
         if (!dated) { missing.push(n); return; }
-        if (cons) titles.push({ cohort_id: S.cohortId, day_number: n, title: cons, links: [] });
-        else if (!d.dayTitle[n] && !d.dayList.length && AR_DAYS[n - 1]) titles.push({ cohort_id: S.cohortId, day_number: n, title: AR_DAYS[n - 1], links: [] });
+        if (newTitle && !d.dayTitle[n]) titles.push({ cohort_id: S.cohortId, day_number: n, title: newTitle, links: [], extra: extra });
       });
-      // Consolidation days sit after the course days and do not count towards completion.
-      var hasCons = document.querySelector(".b-row.cons .b-pick:checked"), core = buildDays(d).length;
-      var setTotal = hasCons && !d.cohort.total_days ? q(sb.from("course_cohorts").update({ total_days: core }).eq("id", S.cohortId)) : null;
+      // A group built from the AR days (none saved yet) gets its days to complete: every AR day except consolidation.
+      var setTotal = !d.dayList.length && !d.cohort.total_days ? q(sb.from("course_cohorts").update({ total_days: AR_CORE }).eq("id", S.cohortId)) : null;
       if (missing.length) return toast("Give Day " + missing.join(", Day ") + " a date, or untick it", true);
       if (!ws.length) return toast("Tick at least one day and give it a date", true);
       return act(q(sb.from("course_workshops").insert(ws)).then(function () {
         if (titles.length) return q(sb.from("course_days").upsert(titles));
-      }).then(function () { return setTotal; }).then(function () { S.building = false; d.cohort.total_days = d.cohort.total_days || (hasCons ? core : null); return refresh(ws.length + (ws.length === 1 ? " date added" : " dates added")); }));
+      }).then(function () { return setTotal; }).then(function () { S.building = false; if (setTotal) d.cohort.total_days = AR_CORE; return refresh(ws.length + (ws.length === 1 ? " date added" : " dates added")); }));
     }
     if (a === "p-toggle") {
       S.picking = !S.picking; S.pSel = {};
@@ -749,10 +760,10 @@
       var name = $("n-name").value.trim();
       if (!name) return toast("Give the group a name", true);
       var copyFrom = $("n-copy") && $("n-copy").checked ? S.cohortId : null, oldDays = copyFrom && S.d.days ? S.d.days : [];
-      if (!oldDays.length && $("n-ar") && $("n-ar").checked) oldDays = AR_DAYS.map(function (title, i) { return { day_number: i + 1, title: title, links: [] }; });
-      return act(q(sb.from("course_cohorts").insert({ name: name, total_days: +$("n-total").value || ($("n-ar") && $("n-ar").checked && !copyFrom ? AR_DAYS.length : null), cancel_cutoff_hours: +$("n-cut").value || 0 }).select().single()).then(function (c) {
+      if (!oldDays.length && $("n-ar") && $("n-ar").checked) oldDays = AR_DAYS.map(function (x) { return { day_number: x.n, title: x.title, links: [], extra: !!x.extra }; });
+      return act(q(sb.from("course_cohorts").insert({ name: name, total_days: +$("n-total").value || ($("n-ar") && $("n-ar").checked && !copyFrom ? AR_CORE : null), cancel_cutoff_hours: +$("n-cut").value || 0 }).select().single()).then(function (c) {
         S.cohortId = c.id;
-        if (oldDays.length) return q(sb.from("course_days").insert(oldDays.map(function (x) { return { cohort_id: c.id, day_number: x.day_number, title: x.title, links: x.links }; })));
+        if (oldDays.length) return q(sb.from("course_days").insert(oldDays.map(function (x) { return { cohort_id: c.id, day_number: x.day_number, title: x.title, links: x.links, extra: !!x.extra }; })));
       }).then(function () { location.hash = "setup"; return loadFacilitator(); }).then(function () { toast("Group created"); }));
     }
   });

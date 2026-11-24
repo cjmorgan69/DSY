@@ -119,3 +119,19 @@ Live (PR #301, merged 21 Nov 2026), checked on the live site.
 
 Per-date locations (21 Nov 2026, owner): in Build the course every date line has its own Location box; the shared
 "Location (any date left blank)" fills the blanks. Guide section 14 says so. Live (PR #303, merged 21 Nov 2026).
+
+## AR days update (24 Nov 2026, owner)
+
+Course builder days (`AR_DAYS` in `ar/course/app.js`): 1 Infection control, operational safety, manual tasks;
+2 Manual tasks (continued); 3 Operational preparedness (GRN radio and MDT), DRiVE principles and knowledge; 4 DRiVE
+practical assessments; 5 Foundations of care, cardiac arrest, resuscitation; 6 Medical conditions; 7 Traumatic
+injuries; 8 and 9 Consolidation (extra); 10 Stress management (online webinar). "First aid" left out of the day
+titles (owner). Days to complete for a new AR group = 8 (every day except consolidation).
+Consolidation is now an explicit flag, `course_days.extra` (migration `course_days_extra`, 24 Nov 2026; `course_home()`
+returns it), instead of "day number after total_days": completion everywhere (student view, Progress tab, printed
+record, training calendar card) counts done days that are not extra; total = `total_days`, else the number of
+non-extra days. "+ Add a consolidation day" saves extra = true.
+`/ar/` page: Day 1 adds Operational Safety, Day 3 adds DRiVE Principles and Knowledge (the DRiVE deck moved there from
+Day 4, which keeps placeholders), Days 8 and 9 Consolidation panels, Day 10 Stress Management (online webinar, presentation
+placeholders only). The `/ar/` topics keep the checklist module names (First Aid and AA Protocols) because they list
+the sign-off skills. Guide section 14 updated. On a branch, not merged (PR open).
