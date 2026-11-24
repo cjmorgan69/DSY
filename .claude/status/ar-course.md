@@ -164,3 +164,12 @@ teams, matched on ambulance ID); teams Tumby Bay, Cummins, Coffin Bay and Port N
 44930, 44935, 44926, 44932 (same as `/ar/signoff/`). Practical links go straight to saaslearn with that group and Edit
 checks: infection control prac = Hand washing 32338, Hand rub 32337, PPE 32339; Adult CPR 26191. No team, or a team with
 no saaslearn group: the links show all students and the page says why. Live (PR #350, merged 24 Nov 2026).
+
+saaslearn groups are numbered per course (24 Nov 2026): the "First Aid and AA Protocols" skills (26xxx, e.g. Adult CPR
+26191) are in a different saaslearn course from the infection control ones, so their station groups are Tumby Bay
+29693, Cummins 29750, Coffin Bay 29747, Port Neill 29759 (owner, read from the Adult CPR sign-off page). The navigator
+(`fa` on each station, used for that module) and the induction checklist (Adult CPR link) use them; every other skill
+keeps 44930 / 44935 / 44926 / 44932. Only infection control (44930) and Adult CPR (29693) are confirmed by the owner;
+the other modules (Manual Tasks, Operational Preparedness, DRiVE, Foundations of Care, Cardiac Arrest, SAAS
+Resuscitation, Medical Conditions, Traumatic Injuries) may be in other courses with their own numbers: owner to
+spot-check one of each. On a branch, not merged (PR open).
