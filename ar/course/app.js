@@ -516,7 +516,7 @@
       ["photo", "Photo taken and emailed to request a photo ID card and bi-lock key", "mailto:HealthSAASSecurity-Access@sa.gov.au?subject=" + encodeURIComponent("Photo ID card and bi-lock key request"), "Email the request (HealthSAASSecurity-Access)"],
       ["pager", "Pager assigned and instructions given"],
       ["uniform", "Recruit uniform ordered on the uniform portal", "https://www.wwgonline.com.au/login", "Uniform portal"],
-      ["enrol", "Registered for the AR course", "https://enrol.vetenrol.com.au/(S(2ivsywzl4fywob401g0ct11v))/Enrol?1711928207", "AR course enrolment"],
+      ["enrol", "Registered for the AR course", "https://enrol.vetenrol.com.au/(S(cdb0zp5dkxo5csxu1x2tph1r))/Enrol?632689812", "AR course enrolment"],
       ["vendor", "Vendor form completed, so they can claim reimbursements (in the welcome email)", "form:vendor", "Download the form"],
       ["cover", "Ambulance Cover application completed (in the welcome email)", "form:cover", "Download the form"],
       ["mfa", "Multi-factor authentication set up"],
