@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261124p" data-level="facilitator"></script>
+<script src="/shared/gate.js?v=20261124q" data-level="facilitator"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ambulance Responder course - DSY Training</title>
@@ -12,8 +12,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261124p">
-<link rel="stylesheet" href="../hub/hub.css?v=20261124p">
+<link rel="stylesheet" href="../training/theme.css?v=20261124q">
+<link rel="stylesheet" href="../hub/hub.css?v=20261124q">
 <style>
 /* Ambulance Responder (AR) course material for facilitators, by course day (from the completion checklist): each topic has
    presentation and skills-station tiles; grey tiles are placeholders. Then skill sign-off and course admin. */
@@ -38,6 +38,10 @@
 .skills b { color: var(--ink); }
 .act.todo { border-left-style: dashed; border-left-color: var(--line); background: transparent; opacity: .6; }
 .act.todo b { color: var(--muted); }
+.run-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: .7rem; }
+.run { display: flex; flex-direction: column; gap: .3rem; padding: .9rem 1rem; text-decoration: none; color: var(--ink); border-left: 5px solid var(--brand); }
+.run b { color: var(--brand); font-size: 1.02rem; }
+.run:hover { border-color: var(--brand); }
 @media (max-width: 420px) { .act small { display: none; } .act { min-height: 48px; } }
 </style>
 </head>
@@ -45,11 +49,24 @@
 <main class="wrap">
   <header class="top">
     <a class="brand" href="../"><div class="brand-icon"><img src="../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>
-      <div><h1>DSY Training</h1><p>Ambulance Responder course</p></div></a>
+      <div><h1>DSY Training</h1><p>Ambulance Responder course: everything for facilitators</p></div></a>
   </header>
 
+  <section class="stack" aria-labelledby="runTitle">
+    <span class="eyebrow" id="runTitle">Run the course</span>
+    <div class="run-grid">
+      <a class="panel run" href="course/#dates"><b>1. Build the course</b><span class="small muted">Create the course group, then pick the days, dates, start times and locations (Build the course).</span></a>
+      <a class="panel run" href="course/#students"><b>2. Students</b><span class="small muted">Add students from the people list. They book their dates from their training calendar.</span></a>
+      <a class="panel run" href="course/#induction"><b>3. Induction</b><span class="small muted">Tick off each student's pre-course induction and declaration. Vendor and Ambulance Cover forms.</span></a>
+      <a class="panel run" href="course/#dates"><b>4. Dates and roll</b><span class="small muted">Open a date to see who's booked and mark the roll.</span></a>
+      <a class="panel run" href="signoff/"><b>5. Skill sign-off</b><span class="small muted">Pick the course (or stations) and open each skill's sign-off in saaslearn, filtered to the station.</span></a>
+      <a class="panel run" href="course/#progress"><b>6. Progress</b><span class="small muted">Who has done which days, and a printable attendance record.</span></a>
+    </div>
+    <p class="small muted">All of these are in <a href="course/">Workshop bookings</a> except skill sign-off. Step-by-step help: <a href="../userguides/leaders/#ar-course">Setting up an AR course</a> in the Team Leader Guide.</p>
+  </section>
+
   <section class="stack">
-    <span class="eyebrow">Course days</span>
+    <span class="eyebrow">Course days and material</span>
     <p class="small muted">Each day follows the course completion checklist, plus Operational Safety (Day 1), DRiVE Principles and Knowledge (Day 3), consolidation (Days 8 and 9) and the Stress Management webinar (Day 10). Material that exists opens from here; grey tiles are placeholders for material still to build.</p>
     <details class="panel day" id="induction">
       <summary><span class="dn">Induction</span><span class="dt">Before the course, as soon as the student has a SAAS ID</span></summary>
@@ -228,23 +245,8 @@
   </section>
 
   <section class="stack">
-    <span class="eyebrow">Skill sign-off</span>
-    <a class="panel pad" href="signoff/" style="text-decoration:none;color:inherit;display:block">
-      <b>Skill sign-off navigator</b><br>
-      <span class="small muted">Every Day 1 to 7 skill in order. Pick your station and open each skill's sign-off page in saaslearn, already filtered to that station.</span>
-    </a>
-  </section>
-
-  <section class="stack">
-    <span class="eyebrow">Course admin</span>
-    <a class="panel pad" href="course/" style="text-decoration:none;color:inherit;display:block">
-      <b>Workshop bookings (new groups)</b><br>
-      <span class="small muted">DSY sign-in. Add dates, students and the roll from your phone; waiting lists, progress and printable records.</span>
-    </a>
-    <a class="panel pad" href="../course/" style="text-decoration:none;color:inherit;display:block">
-      <b>Workshop bookings (current group)</b><br>
-      <span class="small muted">The original app on the Google Sheet. Students sign in with their access code.</span>
-    </a>
+    <span class="eyebrow">Other tools</span>
+    <p class="small muted"><a href="signoff/groups/">saaslearn group finder</a> (station group numbers) · <a href="../course/">Old bookings app</a> (the Google Sheet group, students sign in with an access code)</p>
   </section>
 
   <p class="small muted"><a href="../">Back to DSY Training</a></p>

@@ -285,7 +285,7 @@
     var picker = S.cohorts.length ? '<select id="cohort" aria-label="Group">' + S.cohorts.map(function (c) {
       return '<option value="' + c.id + '"' + (c.id === S.cohortId ? " selected" : "") + ">" + esc(c.name) + (c.archived ? " (archived)" : "") + "</option>";
     }).join("") + "</select>" : "";
-    var html = '<main class="wrap">' + header({ title: "AR course bookings", line: "Facilitator · " + (S.me.name || "") }, '<a class="link" href="#student">Student view</a>');
+    var html = '<main class="wrap">' + header({ title: "AR course bookings", line: "Facilitator · " + (S.me.name || "") }, '<a class="link" href="/ar/">AR course page</a><a class="link" href="#student">Student view</a>');
     if (d.none || h === "new") {
       html += newGroupForm(d.none);
       app.innerHTML = html + "</main>"; return;
