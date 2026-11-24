@@ -119,3 +119,41 @@ Live (PR #301, merged 21 Nov 2026), checked on the live site.
 
 Per-date locations (21 Nov 2026, owner): in Build the course every date line has its own Location box; the shared
 "Location (any date left blank)" fills the blanks. Guide section 14 says so. Live (PR #303, merged 21 Nov 2026).
+
+## AR days update (24 Nov 2026, owner)
+
+Course builder days (`AR_DAYS` in `ar/course/app.js`): 1 Infection control, operational safety, manual tasks;
+2 Manual tasks (continued); 3 Operational preparedness (GRN radio and MDT), DRiVE principles and knowledge; 4 DRiVE
+practical assessments; 5 Foundations of care, cardiac arrest, resuscitation; 6 Medical conditions; 7 Traumatic
+injuries; 8 and 9 Consolidation (extra); 10 Stress management (online webinar). "First aid" left out of the day
+titles (owner). Days to complete for a new AR group = 8 (every day except consolidation).
+Consolidation is now an explicit flag, `course_days.extra` (migration `course_days_extra`, 24 Nov 2026; `course_home()`
+returns it), instead of "day number after total_days": completion everywhere (student view, Progress tab, printed
+record, training calendar card) counts done days that are not extra; total = `total_days`, else the number of
+non-extra days. "+ Add a consolidation day" saves extra = true.
+`/ar/` page: Day 1 adds Operational Safety, Day 3 adds DRiVE Principles and Knowledge (the DRiVE deck moved there from
+Day 4, which keeps placeholders), Days 8 and 9 Consolidation panels, Day 10 Stress Management (online webinar, presentation
+placeholders only). The `/ar/` topics keep the checklist module names (First Aid and AA Protocols) because they list
+the sign-off skills. Guide section 14 updated. On a branch, not merged (PR open).
+
+## Induction (24 Nov 2026, owner)
+
+Pre-course induction, done as soon as a student has a SAAS ID. `/ar/course/` Induction tab: students with
+"n / 26" (Not started / n of 26 done / Induction complete); tap one for the checklist (`#ind=<student id>`): Paperwork
+and accounts (photo emailed to HealthSAASSecurity-Access@sa.gov.au for photo ID card and bi-lock key, pager, uniform on
+wwgonline.com.au, AR course enrolment on VETenrol (owner's link), vendor form and Ambulance Cover (welcome email), MFA,
+SAAS login, eLearning login), Practical (infection control prac, link to the sign-off navigator), Induction declaration
+(15 statements in the owner's wording, Fatigue Management link `course/view.php?id=28`, and "Declaration submitted"
+with the questionnaire link `mod/questionnaire/view.php?id=15344`). Items are `INDUCTION` in `ar/course/app.js`; ticks
+in `public.course_induction` (student_id, item, done, note, done_at, done_by; facilitator-only RLS; migration
+`course_induction`, SQL in `supabase/course-induction.sql`). Ticks save on change; Print. Scheduling: Day 0 "Induction
+(pre-course)" is the first AR day in Build the course and new groups (extra = true, so not counted in the 8 days);
+Day 0 shows as "Induction" everywhere (trackers show "I"). `/ar/` has an Induction panel linking to the checklist;
+guide section 14 explains it. The welcome email itself is not built (vendor form and Ambulance Cover are ticks only).
+On a branch, not merged (PR open).
+
+Forms (24 Nov 2026, owner): the blank Vendor Creation Form and Ambulance Cover Application (Volunteers) PDFs are stored
+in Supabase `public.course_forms` (not in this public repo: the vendor form names a SAAS manager with contact details),
+downloadable by any signed-in user through `course_form(key)` (keys `vendor`, `cover`; SQL and checksums in
+`supabase/course-forms.sql`). Download buttons: the training calendar AR card ("Forms from your welcome email") and the
+vendor and cover items on the induction checklist. On a branch, not merged (PR open).
