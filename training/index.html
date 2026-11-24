@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261124f">
+<link rel="stylesheet" href="theme.css?v=20261124g">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -61,10 +61,10 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261124f"></script>
-<script src="pwreveal.js?v=20261124f" defer></script>
-<script src="/shared/reminders.js?v=20261124f" defer></script>
-<script src="sa-dates.js?v=20261124f"></script>
+<script src="config.js?v=20261124g"></script>
+<script src="pwreveal.js?v=20261124g" defer></script>
+<script src="/shared/reminders.js?v=20261124g" defer></script>
+<script src="sa-dates.js?v=20261124g"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -267,9 +267,23 @@ li[hidden]{display:none!important}
       html += '<details class="ar-more"' + (S.arMore || !mine.length ? " open" : "") + '><summary>Dates to book (' + open.length + ")</summary>" +
         '<ul class="ar-list">' + open.map(function (w) { return arRow(w, title); }).join("") + "</ul></details>";
     }
+    html += '<p class="small muted ar-forms">Forms from your welcome email: <button class="link small" type="button" data-act="arform" data-k="vendor">Vendor form</button> · ' +
+      '<button class="link small" type="button" data-act="arform" data-k="cover">Ambulance Cover application</button></p>';
     return html + '<a class="link small" href="../ar/course/">All course days, attendance and progress</a></section>';
   }
 
+  /* Blank course forms stored in the database (course_form(): any signed-in user). Downloads as a PDF file. */
+  function downloadForm(key) {
+    return sb.rpc("course_form", { p_key: key }).then(function (r) {
+      if (r.error) throw r.error;
+      if (!r.data) throw new Error("That form isn't available yet. Ask your facilitator.");
+      var bin = atob(r.data.b64), bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      var url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" })), a = document.createElement("a");
+      a.href = url; a.download = r.data.filename; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+    });
+  }
   function arCall(fn, args, msg) {
     return sb.rpc(fn, args).then(function (r) { if (r.error) throw r.error; toast(msg); return refresh(); }).catch(fail);
   }
@@ -1052,6 +1066,7 @@ li[hidden]{display:none!important}
     book: function (d) { return book(d.id); },
     arbook: function (d) { return arCall("course_book", { p_workshop: d.id, p_waitlist: false }, "Booked. See you there."); },
     arwait: function (d) { return arCall("course_book", { p_workshop: d.id, p_waitlist: true }, "You are on the waiting list."); },
+    arform: function (d) { return downloadForm(d.k).catch(fail); },
     arcancel: function (d) { if (!confirm("Cancel this?")) return; return arCall("course_cancel", { p_workshop: d.id }, "Cancelled."); },
     cancel: function (d) { return cancelBooking(d.id); },
     tab: function (d) { S.tab = d.tab; S.plan = null; S.lessonEdit = null; S.personEdit = null; S.pageEdit = null; render(); },

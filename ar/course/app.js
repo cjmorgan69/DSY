@@ -517,8 +517,8 @@
       ["pager", "Pager assigned and instructions given"],
       ["uniform", "Recruit uniform ordered on the uniform portal", "https://www.wwgonline.com.au/login", "Uniform portal"],
       ["enrol", "Registered for the AR course", "https://enrol.vetenrol.com.au/(S(2ivsywzl4fywob401g0ct11v))/Enrol?1711928207", "AR course enrolment"],
-      ["vendor", "Vendor form completed, so they can claim reimbursements (in the welcome email)"],
-      ["cover", "Ambulance Cover application completed (in the welcome email)"],
+      ["vendor", "Vendor form completed, so they can claim reimbursements (in the welcome email)", "form:vendor", "Download the form"],
+      ["cover", "Ambulance Cover application completed (in the welcome email)", "form:cover", "Download the form"],
       ["mfa", "Multi-factor authentication set up"],
       ["login", "SAAS login and password working"],
       ["elearn", "SAAS eLearning login and password working", SL + "login/?lang=en", "SAAS eLearning"]
@@ -570,11 +570,25 @@
         sec.items.map(function (i) {
           var x = d.ind[sid + "|" + i[0]];
           return '<li><label class="check"><input type="checkbox" class="ind-tick" data-sid="' + sid + '" data-item="' + i[0] + '"' + (x ? " checked" : "") + "> <span>" + esc(i[1]) +
-            (i[2] ? ' <a class="small" href="' + esc(i[2]) + '"' + (/^http/.test(i[2]) ? ' target="_blank" rel="noopener"' : "") + ">" + esc(i[3]) + "</a>" : "") +
+            (i[2] && /^form:/.test(i[2]) ? ' <button class="link small" type="button" data-act="form" data-id="' + i[2].slice(5) + '">' + esc(i[3]) + "</button>"
+              : i[2] ? ' <a class="small" href="' + esc(i[2]) + '"' + (/^http/.test(i[2]) ? ' target="_blank" rel="noopener"' : "") + ">" + esc(i[3]) + "</a>" : "") +
             '<span class="small muted ind-when">' + (x ? " Ticked " + esc(shortDate(String(x.done_at).slice(0, 10))) : "") + "</span></span></label></li>";
         }).join("") + "</ul></section>";
     });
     return html;
+  }
+
+  /* Blank course forms stored in the database (course_form(): any signed-in user). Downloads as a PDF file. */
+  function downloadForm(key) {
+    return sb.rpc("course_form", { p_key: key }).then(function (r) {
+      if (r.error) throw r.error;
+      if (!r.data) throw new Error("That form isn't available yet. Ask your facilitator.");
+      var bin = atob(r.data.b64), bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      var url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" })), a = document.createElement("a");
+      a.href = url; a.download = r.data.filename; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+    });
   }
 
   /* ---- Progress ---- */
@@ -715,6 +729,7 @@
 
     // facilitator
     if (a === "w-add-toggle") { S.adding = !S.adding; return renderFac(); }
+    if (a === "form") { e.preventDefault(); return downloadForm(id).catch(fail); }
     if (a === "b-toggle") { S.building = !S.building; return renderFac(); }
     if (a === "b-more") {
       var row = t.closest(".b-row"), box = row.querySelector(".b-dates");

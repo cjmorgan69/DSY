@@ -151,3 +151,9 @@ in `public.course_induction` (student_id, item, done, note, done_at, done_by; fa
 Day 0 shows as "Induction" everywhere (trackers show "I"). `/ar/` has an Induction panel linking to the checklist;
 guide section 14 explains it. The welcome email itself is not built (vendor form and Ambulance Cover are ticks only).
 On a branch, not merged (PR open).
+
+Forms (24 Nov 2026, owner): the blank Vendor Creation Form and Ambulance Cover Application (Volunteers) PDFs are stored
+in Supabase `public.course_forms` (not in this public repo: the vendor form names a SAAS manager with contact details),
+downloadable by any signed-in user through `course_form(key)` (keys `vendor`, `cover`; SQL and checksums in
+`supabase/course-forms.sql`). Download buttons: the training calendar AR card ("Forms from your welcome email") and the
+vendor and cover items on the induction checklist. On a branch, not merged (PR open).
