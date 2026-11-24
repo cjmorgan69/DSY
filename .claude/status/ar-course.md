@@ -72,7 +72,8 @@ Student picker: built 21 Nov 2026 (PRs #290, #292, #294: pick students from the 
 `report.php?id=<skill>&studentid=<moodle_id>`), then removed the same day at the owner's request because the group
 view gives Edit checks and individual sign-off does not. Left in place: `course_students.station` and `moodle_id`
 columns (no page uses them now) and the test group "TEST: AR course Tumby Bay (sign-off trial)" (9 students,
-placeholder staff IDs TEST-<n> so students do not see it). Live (PR #295, merged 21 Nov 2026).
+placeholder staff IDs TEST-<n> so students do not see it). Live (PR #295, merged 21 Nov 2026). The test group was
+deleted at the owner's request on 24 Nov 2026 (with its 9 students and 2 induction ticks); no course groups exist now.
 
 ## Build the course and the people picker (21 Nov 2026, owner)
 
