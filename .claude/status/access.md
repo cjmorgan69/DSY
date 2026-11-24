@@ -184,4 +184,4 @@ relief Team Leaders saw nothing there or in the main dashboard's Dispatch panel,
 The page now uses `my_access()` (role leader, which includes relievers on active cover, or `vtl` set). Migration
 `paging_jobs_relief_read` (`supabase/paging-jobs-relief-read.sql`): `leaders_read` uses `is_leader()`. Rehearsed in a
 rolled-back transaction with a stand-in cover: reliever 1556 jobs on cover, 0 after it ended, leader 1556. Database
-change applied 24 Nov 2026; page change on a branch, not merged.
+change applied 24 Nov 2026; page live (PR #361, merged 24 Nov 2026), checked on the live site signed out.
