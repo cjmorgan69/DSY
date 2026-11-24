@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261124o" data-level="facilitator"></script>
+<script src="/shared/gate.js?v=20261124p" data-level="facilitator"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Skill sign-off navigator - DSY Training</title>
@@ -12,8 +12,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../training/theme.css?v=20261124o">
-<link rel="stylesheet" href="../../hub/hub.css?v=20261124o">
+<link rel="stylesheet" href="../../training/theme.css?v=20261124p">
+<link rel="stylesheet" href="../../hub/hub.css?v=20261124p">
 <style>
 /* AR course skill sign-off navigator: sticky controls (stations, mode, search) above a day-by-day list of
    skills, each opening its saaslearn checklist report filtered to the station's Moodle group. */
@@ -27,6 +27,8 @@
 .chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); font-weight: 700; }
 .chip:hover { border-color: var(--brand); }
 .st-pick { flex: 1 1 14rem; min-width: 0; }
+.course-note { flex: 1 1 100%; margin: 0; }
+.course-note button { background: none; border: 0; padding: 0; color: var(--brand); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
 .st-pick > summary { cursor: pointer; font-weight: 700; color: var(--brand); padding: 6px 0; }
 .st-pick[open] > summary { margin-bottom: 6px; }
 .search { flex: 1 1 200px; min-width: 0; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); }
@@ -69,9 +71,14 @@
     <a class="brand" href="../../"><div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>
       <div><h1>DSY Training</h1><p>AR course: skill sign-off navigator</p></div></a>
   </header>
-  <p class="intro">FNWC Recruit to Ambulance Responder course. Pick one or more stations and each skill opens straight to that station's sign-off page in saaslearn.</p>
+  <p class="intro">FNWC Recruit to Ambulance Responder course. Pick your course to use its students' stations, or pick stations yourself. Each skill opens straight to that station's sign-off page in saaslearn.</p>
 
   <div class="bar">
+    <div class="row" id="courseRow" hidden>
+      <label class="label" for="course">Course</label>
+      <select id="course" class="search"></select>
+      <p class="small muted course-note" id="courseNote"></p>
+    </div>
     <div class="row" role="group" aria-label="Stations">
       <span class="label">Stations</span>
       <details class="st-pick" id="stPick"><summary id="stSummary">Choose</summary><span id="stations" class="row"></span></details>
@@ -105,7 +112,8 @@
   </div>
 </main>
 
-<script src="../saaslearn-groups.js?v=20261124o"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="../saaslearn-groups.js?v=20261124p"></script>
 <script>
 (function () {
   var BASE = "https://saaslearn.com.au/moodle/mod/checklist/report.php?id=";
@@ -184,13 +192,14 @@
         else if (p.station === "all") state.stations = [];
         else if (p.station && keys.indexOf(p.station) > -1) state.stations = [p.station];
         if (typeof p.edit === "boolean") state.edit = p.edit;
+        if (typeof p.course === "string") state.course = p.course;
         if (p.done && typeof p.done === "object") state.done = p.done;
       }
     } catch (e) {}
   }
   function save() {
     try {
-      localStorage.setItem("fnwc-signoff-nav", JSON.stringify({ stations: state.stations, edit: state.edit, done: state.done }));
+      localStorage.setItem("fnwc-signoff-nav", JSON.stringify({ stations: state.stations, course: state.course || "", edit: state.edit, done: state.done }));
     } catch (e) {}
   }
 
@@ -236,7 +245,7 @@
         if (s.key === "all") state.stations = [];
         else if (state.stations.indexOf(s.key) > -1) state.stations = state.stations.filter(function (k) { return k !== s.key; });
         else state.stations = state.stations.concat(s.key);
-        save(); renderAll();
+        save(); renderAll(); if (state.course) renderCourseNote();
       });
       box.appendChild(b);
     });
@@ -303,8 +312,74 @@
     if (a) a.focus({ preventScroll: true });
   });
 
+  /* Course (21 Nov / 24 Nov 2026, owner): pick a Workshop bookings course group and the stations are set from the DSY
+     teams of its students (course_people(), matched on ambulance ID). Other stations can still be added in the fold. */
+  var SB_URL = "https://ekaodnbnpsuayvmxvxbm.supabase.co";
+  var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW9kbmJucHN1YXl2bXh2eGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzIxMzQsImV4cCI6MjEwNzM0ODEzNH0.q3lTeCQAQjYeMUNl6lwsrxUAsTijJikABW4Ua2N4bmI";
+  var sb = null, people = null, courseInfo = null;
+  try { sb = window.supabase.createClient(SB_URL, SB_KEY); } catch (e) {}
+  function digits(v) { return String(v || "").replace(/\D/g, "").replace(/^0+/, ""); }
+  function keyOf(name) { var s = STATIONS.filter(function (x) { return x.name === name; })[0]; return s ? s.key : null; }
+  function courseStations(cohortId) {
+    return Promise.all([
+      sb.from("course_students").select("staff_id,first_name,last_name").eq("cohort_id", cohortId).eq("active", true),
+      people ? { data: people } : sb.rpc("course_people")
+    ]).then(function (r) {
+      if (r[0].error) throw r[0].error;
+      if (r[1].error) throw r[1].error;
+      people = r[1].data || [];
+      var byId = {}; people.forEach(function (p) { byId[digits(p.staff_id)] = p.teams || []; });
+      var count = {}, other = 0;
+      (r[0].data || []).forEach(function (s) {
+        var st = (byId[digits(s.staff_id)] || []).filter(function (t) { return keyOf(t); })[0];
+        if (st) count[st] = (count[st] || 0) + 1; else other++;
+      });
+      return { count: count, other: other, total: (r[0].data || []).length };
+    });
+  }
+  function renderCourseNote() {
+    var n = document.getElementById("courseNote");
+    if (!state.course || !courseInfo) { n.textContent = state.course ? "Loading the course…" : "Or choose stations yourself below."; return; }
+    var names = Object.keys(courseInfo.count).sort();
+    var html = courseInfo.total ? "Students' teams: " + (names.length ? names.map(function (k) { return esc(k) + " (" + courseInfo.count[k] + ")"; }).join(", ") : "none matched a station") +
+      (courseInfo.other ? ". " + courseInfo.other + (courseInfo.other === 1 ? " student is" : " students are") + " in no team or a team without a saaslearn station: add their station below if needed." : ".")
+      : "No students in this course yet.";
+    var keys = names.map(keyOf).sort().join("+"), now = state.stations.slice().sort().join("+");
+    if (names.length && keys !== now) html += ' <button type="button" id="courseReset">Use the course stations</button>';
+    n.innerHTML = html;
+  }
+  function applyCourse(setStations) {
+    courseInfo = null; renderCourseNote();
+    if (!state.course) return;
+    courseStations(state.course).then(function (info) {
+      courseInfo = info;
+      var keys = Object.keys(info.count).map(keyOf);
+      if (setStations && keys.length) { state.stations = keys; save(); }
+      renderAll(); renderCourseNote();
+    }).catch(function (e) { document.getElementById("courseNote").textContent = "Could not load the course: " + (e.message || e); });
+  }
+  function loadCourses() {
+    if (!sb) return;
+    sb.from("course_cohorts").select("id,name,created_at").eq("archived", false).order("created_at", { ascending: false }).then(function (r) {
+      if (r.error || !r.data || !r.data.length) return;
+      var sel = document.getElementById("course");
+      if (!r.data.some(function (c) { return c.id === state.course; })) state.course = "";
+      sel.innerHTML = '<option value="">No course: choose stations</option>' + r.data.map(function (c) {
+        return '<option value="' + esc(c.id) + '"' + (c.id === state.course ? " selected" : "") + ">" + esc(c.name) + "</option>";
+      }).join("");
+      document.getElementById("courseRow").hidden = false;
+      applyCourse(false);
+    });
+  }
+  document.getElementById("course").addEventListener("change", function (e) { state.course = e.target.value; save(); applyCourse(true); });
+  document.getElementById("courseNote").addEventListener("click", function (e) {
+    if (e.target.id !== "courseReset" || !courseInfo) return;
+    state.stations = Object.keys(courseInfo.count).map(keyOf); save(); renderAll(); renderCourseNote();
+  });
+
   load();
   renderAll();
+  loadCourses();
 })();
 </script>
 </body>
