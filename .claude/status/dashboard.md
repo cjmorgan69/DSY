@@ -283,4 +283,4 @@ Roster look-ahead (owner, 24 Nov 2026): on `/dashboard/`, `/dashboard/wide/` and
 Back / Now / Next day buttons. Now is the rolling 24 hours; the first step snaps to the operational day starting at the
 next 8am, then one 8am-to-8am day per step, up to 7 days ahead. Each step is one `roster_coverage` call per cluster
 (all teams are on Supabase, so it is quick); crew names come from the bookings already loaded (180 days ahead). A future
-day shows uncovered team-hours and teams with a gap instead of the "now" counts. Tested against the real roster data.
+day shows uncovered team-hours and teams with a gap instead of the "now" counts. Tested against the real roster data. Merged (PR #360, 24 Nov 2026).
