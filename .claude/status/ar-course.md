@@ -172,7 +172,7 @@ saaslearn groups are numbered per course (24 Nov 2026): the "First Aid and AA Pr
 keeps 44930 / 44935 / 44926 / 44932. Only infection control (44930) and Adult CPR (29693) are confirmed by the owner;
 the other modules (Manual Tasks, Operational Preparedness, DRiVE, Foundations of Care, Cardiac Arrest, SAAS
 Resuscitation, Medical Conditions, Traumatic Injuries) may be in other courses with their own numbers: owner to
-spot-check one of each. On a branch, not merged (PR open).
+spot-check one of each. Live (PR #353, merged 24 Nov 2026).
 
 saaslearn group finder (24 Nov 2026, owner): `/ar/signoff/groups/` (facilitator gate), linked from the navigator's
 note. A bookmarklet (code embedded in the page; Copy button; iPhone Safari steps; drag link on a computer) that, run on
@@ -180,4 +180,4 @@ a saaslearn checklist page, lists the course (first breadcrumb), the page, the s
 "Name = number" (from the group select options, group links or data-group-id), with Copy. Read-only, sends nothing.
 The page links one skill from each of the 10 checklist modules. Purpose: get every Eyre Peninsula team's group number
 per saaslearn course, then add the other teams as stations in the navigator and checklist. Tested on mock pages
-(select, links, none); not yet tried on saaslearn itself. On a branch, not merged (PR open, with the First Aid groups).
+(select, links, none); not yet tried on saaslearn itself. Live (PR #353, merged 24 Nov 2026).
