@@ -41,7 +41,7 @@ By day (21 Nov 2026, owner): the page now lists Day 1 to 7 as collapsible panels
 completion checklist (the same Day/module list as `/ar/signoff/`), each with the skills, a Presentation row (Slides /
 Presenter / Guide) and a Skills stations row (Stations / Setup / Print). Built: Manual Tasks deck (Day 1, and Day 2 as
 "continued", same deck), DRiVE deck (Day 4), Medical Conditions deck and the Day 6 stations (Day 6). Everything else is
-a grey "Coming soon" placeholder: swap a placeholder for links when its material is built. On a branch, not merged (PR open).
+a grey "Coming soon" placeholder: swap a placeholder for links when its material is built. Live (PR #297, merged 21 Nov 2026).
 
 ## Course bookings (Supabase version)
 
@@ -134,7 +134,7 @@ non-extra days. "+ Add a consolidation day" saves extra = true.
 `/ar/` page: Day 1 adds Operational Safety, Day 3 adds DRiVE Principles and Knowledge (the DRiVE deck moved there from
 Day 4, which keeps placeholders), Days 8 and 9 Consolidation panels, Day 10 Stress Management (online webinar, presentation
 placeholders only). The `/ar/` topics keep the checklist module names (First Aid and AA Protocols) because they list
-the sign-off skills. Guide section 14 updated. On a branch, not merged (PR open).
+the sign-off skills. Guide section 14 updated. Live (PR #345, merged 24 Nov 2026).
 
 ## Induction (24 Nov 2026, owner)
 
@@ -150,10 +150,10 @@ in `public.course_induction` (student_id, item, done, note, done_at, done_by; fa
 (pre-course)" is the first AR day in Build the course and new groups (extra = true, so not counted in the 8 days);
 Day 0 shows as "Induction" everywhere (trackers show "I"). `/ar/` has an Induction panel linking to the checklist;
 guide section 14 explains it. The welcome email itself is not built (vendor form and Ambulance Cover are ticks only).
-On a branch, not merged (PR open).
+Live (PR #345, merged 24 Nov 2026).
 
 Forms (24 Nov 2026, owner): the blank Vendor Creation Form and Ambulance Cover Application (Volunteers) PDFs are stored
 in Supabase `public.course_forms` (not in this public repo: the vendor form names a SAAS manager with contact details),
 downloadable by any signed-in user through `course_form(key)` (keys `vendor`, `cover`; SQL and checksums in
 `supabase/course-forms.sql`). Download buttons: the training calendar AR card ("Forms from your welcome email") and the
-vendor and cover items on the induction checklist. On a branch, not merged (PR open).
+vendor and cover items on the induction checklist. Live (PR #345, merged 24 Nov 2026).
