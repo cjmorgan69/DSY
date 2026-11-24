@@ -524,7 +524,8 @@
       ["elearn", "SAAS eLearning login and password working", SL + "login/?lang=en", "SAAS eLearning"]
     ] },
     { title: "Practical", items: [
-      ["infection", "Infection control prac: hand washing, alcohol-based hand rub, donning and doffing PPE (sign off in saaslearn)", "../signoff/", "Skill sign-off navigator"]
+      ["infection", "Infection control prac: hand washing, alcohol-based hand rub, donning and doffing PPE (sign off in saaslearn)", "../signoff/", "Skill sign-off navigator"],
+      ["cpr", "Adult CPR simulation (the Day 1 sign-off)", SL + "mod/checklist/report.php?id=26191&editchecks=on", "Open in saaslearn"]
     ] },
     { title: "Induction declaration", note: "The student submits this on SAAS eLearning. Go through each statement with them and tick it when they can answer yes.", items: [
       ["d1", "I have ordered a SAAS recruit uniform, photo ID card and bi-lock key."],
