@@ -201,3 +201,11 @@ its active students (`course_people()` teams matched on ambulance ID, kept only 
 with a note "Students' teams: Tumby Bay (3), …" and how many students have no team or a team without a saaslearn
 station. Stations can still be added in the fold; "Use the course stations" puts them back. The course is remembered in
 the browser with the stations. Guide section 14 updated. Tested with stand-in data. Live (PR #356, merged 24 Nov 2026).
+
+AR course landing (24 Nov 2026, owner): `/ar/` is the one place facilitators start. New top section "Run the course"
+with six cards (1 Build the course `course/#dates`, 2 Students `#students`, 3 Induction `#induction`, 4 Dates and roll
+`#dates`, 5 Skill sign-off `signoff/`, 6 Progress `#progress`) and a link to guide section 14; then "Course days and
+material"; the old Skill sign-off and Course admin sections became an "Other tools" line (group finder, old Google
+Sheet bookings app `/course/`). Dashboard footer "AR course" (phone and wide) and the home page's leader-only Other
+pages button ("AR course") both go to `/ar/`; Workshop bookings' facilitator header links back ("AR course page").
+Guide section 14 opens with the AR course page. On a branch, not merged (PR open).
