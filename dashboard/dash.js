@@ -72,13 +72,17 @@
   /* Rolling window (owner, 22 Nov 2026): 3 hours back to 21 hours ahead of the current hour. The rosters answer one
      operational day (8am to 8am) at a time, so the two days the window touches are loaded and joined. */
   var HOUR = 3600000, rHourKey = null;
+  /* Look ahead (owner, 24 Nov 2026): rOffset 0 is the rolling 24 hours; 1 to 7 are whole operational days (8am to 8am),
+     1 being the one that starts at the next 8am. One small request per cluster per day. */
+  var rOffset = 0, RMAX = 7, rSeq = 0;
   function opDateAt(ms) { var p = parts(new Date(ms)); var d = p.year + "-" + p.month + "-" + p.day; return +p.hour < 8 ? addDays(d, -1) : d; }
   function dayAt(ms) { var p = parts(new Date(ms)); return nice(p.year + "-" + p.month + "-" + p.day); }
   function hourKey() { var p = parts(); return p.year + p.month + p.day + p.hour; }
   function loadRoster() {
-    var now = Date.now(), days = [opDateAt(now - 3 * HOUR)], d2 = opDateAt(now + 21 * HOUR);
-    if (d2 !== days[0]) days.push(d2);
-    rHourKey = hourKey();
+    var now = Date.now(), days = [opDateAt(now - 3 * HOUR)], d2 = opDateAt(now + 21 * HOUR), off = rOffset, seq = ++rSeq;
+    if (off > 0) days = [addDays(opDateAt(now), off)];
+    else if (d2 !== days[0]) days.push(d2);
+    rHourKey = hourKey(); drawNav();
     return Promise.all(CLUSTERS.map(function (c) {
       var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 30000);
       /* Apps Script, or Supabase for teams that have moved (modules/rosters/shared/roster-data.js) */
@@ -90,6 +94,7 @@
         .catch(function (e) { return { c: c, err: e.name === "AbortError" ? "timed out" : e.message }; })
         .finally(function () { clearTimeout(to); });
     })).then(function (res) {
+      if (seq !== rSeq) return;   // a newer day was asked for while this one loaded
       var ok = res.filter(function (r) { return r.d; });
       if (!ok.length) { $("rHeat").innerHTML = '<p class="err">Could not load the rosters: ' + esc(res.map(function (r) { return r.c.name + " " + r.err; }).join("; ")) + "</p>"; $("rStats").innerHTML = ""; return; }
       /* the hours in the window, in order, from every day loaded */
@@ -99,7 +104,7 @@
       }); }); });
       hours.sort(function (a, b) { return Date.parse(a.start) - Date.parse(b.start); });
       var ni = -1; hours.forEach(function (h, i) { if (Date.parse(h.start) <= now && now < Date.parse(h.end)) ni = i; });
-      var first = Math.max(0, (ni < 0 ? 0 : ni) - 3); hours = hours.slice(first, first + 24);
+      if (off === 0) { var first = Math.max(0, (ni < 0 ? 0 : ni) - 3); hours = hours.slice(first, first + 24); }
       var teams = [];
       ok.forEach(function (r) {
         var by = {}, names = [];
@@ -113,11 +118,25 @@
           teams.push({ cluster: r.c, name: name, counts: hours.map(function (h) { var row = by[Date.parse(h.start)]; return row && row[k] != null ? row[k] : null; }) });
         });
       });
-      rData = { hours: hours, teams: teams, problems: res.filter(function (r) { return r.err; }), date: days[0] };
+      rData = { hours: hours, teams: teams, problems: res.filter(function (r) { return r.err; }), date: days[0], off: off };
       if (selHour != null && selHour >= hours.length) selHour = null;
       drawRoster(); drawCrew();
     });
   }
+  function drawNav() {
+    var nav = $("rNav"); if (!nav) return;
+    var day = rOffset ? nice(addDays(opDateAt(Date.now()), rOffset)) : "";
+    $("hRoster").textContent = rOffset ? "Roster · " + day + ", 8am to 8am" : "Roster · next 24 hours";
+    nav.innerHTML = '<button type="button" class="chip2" data-roff="' + (rOffset - 1) + '"' + (rOffset ? "" : " disabled") + '>‹ Back</button>' +
+      '<button type="button" class="chip2" data-roff="0" aria-pressed="' + (rOffset === 0) + '">Now</button>' +
+      '<span class="rday">' + (rOffset ? esc(day) + " (day " + rOffset + " of " + RMAX + ")" : "Rolling 24 hours") + "</span>" +
+      '<button type="button" class="chip2" data-roff="' + (rOffset + 1) + '"' + (rOffset < RMAX ? "" : " disabled") + ">" + (rOffset ? "Next day ›" : "From 8am ›") + "</button>";
+  }
+  if ($("rNav")) $("rNav").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-roff]"); if (!b || b.disabled) return;
+    var o = Math.max(0, Math.min(RMAX, +b.getAttribute("data-roff"))); if (o === rOffset) return;
+    rOffset = o; selHour = null; $("rHeat").innerHTML = '<div class="skel"></div>'; $("rStats").innerHTML = ""; loadRoster(); drawCrew();
+  });
   function drawRoster() {
     if (!rData) return;
     var now = Date.now(), ni = -1;
@@ -136,7 +155,8 @@
     });
     $("rStats").innerHTML = ni > -1
       ? '<div class="stat"><b>' + g + '</b><span>teams fully crewed now</span></div><div class="stat yel"><b>' + y + '</b><span>one crew now</span></div><div class="stat red"><b>' + r + '</b><span>no crew now</span></div><div class="stat"><b>' + gapH + '</b><span>uncovered team-hours ahead</span></div>'
-      : "";
+      : rData.off ? '<div class="stat red"><b>' + gapH + '</b><span>uncovered team-hours this day</span></div><div class="stat"><b>' +
+        teams.filter(function (t) { return t.counts.some(function (v) { return v === 0; }); }).length + " of " + teams.length + '</b><span>teams with a gap</span></div>' : "";
     var html = "<table><thead><tr><th></th>";
     rData.hours.forEach(function (h, i) { html += '<th class="' + (i === ni ? "now" : "") + '">' + (i % 2 === 0 || i === ni ? esc(String(+h.label.slice(0, 2))) : "") + "</th>"; });
     html += "</tr></thead><tbody>";
@@ -152,7 +172,7 @@
       html += "</tr>";
     });
     $("rHeat").innerHTML = html + "</tbody></table>";
-    var note = rData.hours.length ? "Rolling 24 hours, " + hm(Date.parse(rData.hours[0].start)) + " " + dayAt(Date.parse(rData.hours[0].start)) + " to " + hm(Date.parse(rData.hours[rData.hours.length - 1].end)) + " " + dayAt(Date.parse(rData.hours[rData.hours.length - 1].end)) + " (3 hours back, 21 ahead). Numbers are crew booked each hour." : "No hours in the roster window.";
+    var note = rData.off ? "Operational day " + nice(rData.date) + ", 8am to 8am. Numbers are crew booked each hour. Bookings can still change." : rData.hours.length ? "Rolling 24 hours, " + hm(Date.parse(rData.hours[0].start)) + " " + dayAt(Date.parse(rData.hours[0].start)) + " to " + hm(Date.parse(rData.hours[rData.hours.length - 1].end)) + " " + dayAt(Date.parse(rData.hours[rData.hours.length - 1].end)) + " (3 hours back, 21 ahead). Numbers are crew booked each hour." : "No hours in the roster window.";
     if (rData.problems.length) note += " Not loaded: " + rData.problems.map(function (p) { return p.c.name + " (" + p.err + ")"; }).join(", ") + ".";
     $("rNote").textContent = note;
   }
@@ -187,6 +207,7 @@
   function drawCrew() {
     var at = Date.now(), title = "On shift now";
     if (selHour != null && rData) { var h = rData.hours[selHour]; at = Date.parse(h.start) + 1000; title = "On shift at " + h.label + " (" + nice(h.calendarDate) + ")"; }
+    else if (rOffset && rData && rData.off === rOffset && rData.hours.length) { var h0 = rData.hours[0]; at = Date.parse(h0.start) + 1000; title = "On shift at " + h0.label + " (" + nice(h0.calendarDate) + "). Tap an hour to change"; }
     $("cTitle").textContent = title; $("cNow").hidden = selHour == null;
     if (!crew) return;
     var teams = rosterTeams().filter(function (t) { return rFilter === "all" || CL_DIR[t.cluster] === rFilter; });
@@ -582,7 +603,7 @@
   (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve({})).then(function (me) {
     if (me && me.name) { window.__name = String(me.name).split(" ")[0]; tick(); }
     loadAll();
-    setInterval(function () { if (hourKey() !== rHourKey) { selHour = null; loadRoster(); } else { drawRoster(); drawCrew(); } }, 60000);   // move the "now" outline; slide the window on the hour
+    setInterval(function () { if (!rOffset && hourKey() !== rHourKey) { selHour = null; loadRoster(); } else { drawRoster(); drawCrew(); } }, 60000);   // move the "now" outline; slide the window on the hour
     setInterval(function () { stamp(); loadRoster(); loadCrew(); loadSessions(); loadDispatch(); if (!document.querySelector("#tList [contenteditable=true]") && document.activeElement !== $("tTitle")) loadTasks(); }, 10 * 60000);
     setInterval(loadWeather, 60 * 60000);
   });
