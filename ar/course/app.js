@@ -524,8 +524,8 @@
       ["elearn", "SAAS eLearning login and password working", SL + "login/?lang=en", "SAAS eLearning"]
     ] },
     { title: "Practical", items: [
-      ["infection", "Infection control prac: hand washing, alcohol-based hand rub, donning and doffing PPE (sign off in saaslearn)", "skills:32338|Hand washing,32337|Hand rub,32339|PPE"],
-      ["cpr", "Adult CPR simulation (the Day 1 sign-off)", "skills:26191|Open in saaslearn"]
+      ["infection", "Infection control prac: hand washing, alcohol-based hand rub, donning and doffing PPE (sign off in saaslearn)", "skills:fnwc:32338|Hand washing,32337|Hand rub,32339|PPE"],
+      ["cpr", "Adult CPR simulation (the Day 1 sign-off)", "skills:fa:26191|Open in saaslearn"]
     ] },
     { title: "Induction declaration", note: "The student submits this on SAAS eLearning. Go through each statement with them and tick it when they can answer yes.", items: [
       ["d1", "I have ordered a SAAS recruit uniform, photo ID card and bi-lock key."],
@@ -547,23 +547,21 @@
     ] }
   ];
   /* saaslearn (Moodle) station groups, keyed by DSY team name: the same groups as the skill sign-off navigator. */
-  var SAASLEARN_GROUP = { "Tumby Bay": 44930, "Cummins": 44935, "Coffin Bay": 44926, "Port Neill": 44932 };
-  /* Groups are numbered per saaslearn course: the First Aid and AA Protocols skills (Adult CPR 26191 here) use these. */
-  var SAASLEARN_FA_GROUP = { "Tumby Bay": 29693, "Cummins": 29750, "Coffin Bay": 29747, "Port Neill": 29759 };
-  var FIRST_AID_SKILLS = { 26191: 1 };
+  /* Station groups per saaslearn course come from ../saaslearn-groups.js (SAASLEARN); the station is the student's DSY team. */
   function studentTeams(s) {
     var p = (S.people || []).filter(function (x) { return norm(x.staff_id) === norm(s.staff_id); })[0];
     return p ? p.teams || [] : null;
   }
   function stationOf(s) {
     var teams = studentTeams(s) || [];
-    for (var i = 0; i < teams.length; i++) if (SAASLEARN_GROUP[teams[i]]) return { name: teams[i], group: SAASLEARN_GROUP[teams[i]], fa: SAASLEARN_FA_GROUP[teams[i]] };
+    for (var i = 0; i < teams.length; i++) if (window.SAASLEARN.stations.indexOf(teams[i]) > -1) return { name: teams[i] };
     return null;
   }
   function skillLinks(spec, st) {
-    return spec.slice(7).split(",").map(function (x) {
-      var p = x.split("|");
-      return '<a class="small" href="' + SL + "mod/checklist/report.php?id=" + p[0] + (st ? "&group=" + (FIRST_AID_SKILLS[p[0]] ? st.fa : st.group) : "") + '&editchecks=on" target="_blank" rel="noopener">' + esc(p[1]) + "</a>";
+    var parts = spec.split(":"), course = parts[1];
+    return parts[2].split(",").map(function (x) {
+      var p = x.split("|"), g = st ? window.SAASLEARN.group(course, st.name) : null;
+      return '<a class="small" href="' + SL + "mod/checklist/report.php?id=" + p[0] + (g ? "&group=" + g : "") + '&editchecks=on" target="_blank" rel="noopener">' + esc(p[1]) + "</a>";
     }).join(" · ");
   }
   var IND_ITEMS = []; INDUCTION.forEach(function (s) { s.items.forEach(function (i) { IND_ITEMS.push(i[0]); }); });

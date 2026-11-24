@@ -181,3 +181,16 @@ a saaslearn checklist page, lists the course (first breadcrumb), the page, the s
 The page links one skill from each of the 10 checklist modules. Purpose: get every Eyre Peninsula team's group number
 per saaslearn course, then add the other teams as stations in the navigator and checklist. Tested on mock pages
 (select, links, none); not yet tried on saaslearn itself. Live (PR #353, merged 24 Nov 2026).
+
+All stations and courses (24 Nov 2026, owner): station group numbers for every saaslearn course are in
+`ar/saaslearn-groups.js` (`window.SAASLEARN`: stations, courses with their Moodle course id and one number per station,
+modules -> course), loaded by `/ar/signoff/` and `/ar/course/`. Collected by the owner with the group finder from each
+course's grader report (FNWC Recruit to AR 743, First Aid 642, Manual Tasks - Volunteer 39, Operational Preparedness 59,
+Operational Safety 63, Foundations of Care (AR) 550, Cardiac Arrest Management (AR) 88, SAAS Resuscitation 61, Medical
+Conditions (AR) 89, Stress Management 62). Stations: the 15 volunteer stations in the FNWC course (Cleve, Coffin Bay,
+Cowell, Cummins, Elliston, Hawker, Kimba, Leigh Creek, Lock, Port Kenny, Port Neill, Quorn, Roxby Downs, Streaky Bay,
+Tumby Bay) plus Wudinna (no FNWC group, so FNWC-course links open unfiltered for Wudinna). The owner also sent every
+other SA station's numbers for these courses (not stored; re-run the finder to add a region). DRiVE and Traumatic
+Injuries were not in the lists and use the FNWC course until confirmed. Navigator: stations in a "Stations" fold
+(multi-select, old keys kept for the first four); induction checklist: any of these teams. On a branch, not merged (PR open).
+(select, links, none); not yet tried on saaslearn itself. Live (PR #353, merged 24 Nov 2026).
