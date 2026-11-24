@@ -208,4 +208,4 @@ with six cards (1 Build the course `course/#dates`, 2 Students `#students`, 3 In
 material"; the old Skill sign-off and Course admin sections became an "Other tools" line (group finder, old Google
 Sheet bookings app `/course/`). Dashboard footer "AR course" (phone and wide) and the home page's leader-only Other
 pages button ("AR course") both go to `/ar/`; Workshop bookings' facilitator header links back ("AR course page").
-Guide section 14 opens with the AR course page. On a branch, not merged (PR open).
+Guide section 14 opens with the AR course page. Live (PR #358, merged 24 Nov 2026).
