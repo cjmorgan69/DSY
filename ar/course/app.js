@@ -548,19 +548,22 @@
   ];
   /* saaslearn (Moodle) station groups, keyed by DSY team name: the same groups as the skill sign-off navigator. */
   var SAASLEARN_GROUP = { "Tumby Bay": 44930, "Cummins": 44935, "Coffin Bay": 44926, "Port Neill": 44932 };
+  /* Groups are numbered per saaslearn course: the First Aid and AA Protocols skills (Adult CPR 26191 here) use these. */
+  var SAASLEARN_FA_GROUP = { "Tumby Bay": 29693, "Cummins": 29750, "Coffin Bay": 29747, "Port Neill": 29759 };
+  var FIRST_AID_SKILLS = { 26191: 1 };
   function studentTeams(s) {
     var p = (S.people || []).filter(function (x) { return norm(x.staff_id) === norm(s.staff_id); })[0];
     return p ? p.teams || [] : null;
   }
   function stationOf(s) {
     var teams = studentTeams(s) || [];
-    for (var i = 0; i < teams.length; i++) if (SAASLEARN_GROUP[teams[i]]) return { name: teams[i], group: SAASLEARN_GROUP[teams[i]] };
+    for (var i = 0; i < teams.length; i++) if (SAASLEARN_GROUP[teams[i]]) return { name: teams[i], group: SAASLEARN_GROUP[teams[i]], fa: SAASLEARN_FA_GROUP[teams[i]] };
     return null;
   }
   function skillLinks(spec, st) {
     return spec.slice(7).split(",").map(function (x) {
       var p = x.split("|");
-      return '<a class="small" href="' + SL + "mod/checklist/report.php?id=" + p[0] + (st ? "&group=" + st.group : "") + '&editchecks=on" target="_blank" rel="noopener">' + esc(p[1]) + "</a>";
+      return '<a class="small" href="' + SL + "mod/checklist/report.php?id=" + p[0] + (st ? "&group=" + (FIRST_AID_SKILLS[p[0]] ? st.fa : st.group) : "") + '&editchecks=on" target="_blank" rel="noopener">' + esc(p[1]) + "</a>";
     }).join(" · ");
   }
   var IND_ITEMS = []; INDUCTION.forEach(function (s) { s.items.forEach(function (i) { IND_ITEMS.push(i[0]); }); });

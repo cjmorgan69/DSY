@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261124k" data-level="facilitator"></script>
+<script src="/shared/gate.js?v=20261124m" data-level="facilitator"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Skill sign-off navigator - DSY Training</title>
@@ -12,8 +12,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../training/theme.css?v=20261124k">
-<link rel="stylesheet" href="../../hub/hub.css?v=20261124k">
+<link rel="stylesheet" href="../../training/theme.css?v=20261124m">
+<link rel="stylesheet" href="../../hub/hub.css?v=20261124m">
 <style>
 /* AR course skill sign-off navigator: sticky controls (stations, mode, search) above a day-by-day list of
    skills, each opening its saaslearn checklist report filtered to the station's Moodle group. */
@@ -91,6 +91,7 @@
 
   <section class="panel note" aria-label="About this page">
     <p>Sign in to saaslearn first. Sign-off is saved in Moodle only when you press Save changes there.</p>
+    <p>A station link showing everyone? saaslearn numbers its groups per course: use the <a href="groups/">saaslearn group finder</a> and send the result to Claude.</p>
     <p>With several stations chosen, each skill shows one button per station.</p>
     <p>The finished ticks here are your own place-keeping for the current choice of stations. They live in this browser, are not sent to Moodle, and do not change any student's record.</p>
   </section>
@@ -105,10 +106,12 @@
 (function () {
   var BASE = "https://saaslearn.com.au/moodle/mod/checklist/report.php?id=";
   var STATIONS = [
-    { key: "tumby", name: "Tumby Bay", group: 44930 },
-    { key: "cummins", name: "Cummins", group: 44935 },
-    { key: "coffin", name: "Coffin Bay", group: 44926 },
-    { key: "portneill", name: "Port Neill", group: 44932 },
+    /* saaslearn numbers its groups per course: "First Aid and AA Protocols" skills are in a different course, so they use
+       the fa group numbers (owner, 24 Nov 2026, read from the Adult CPR sign-off page). */
+    { key: "tumby", name: "Tumby Bay", group: 44930, fa: 29693 },
+    { key: "cummins", name: "Cummins", group: 44935, fa: 29750 },
+    { key: "coffin", name: "Coffin Bay", group: 44926, fa: 29747 },
+    { key: "portneill", name: "Port Neill", group: 44932, fa: 29759 },
     { key: "all", name: "All stations", group: null }
   ];
   var S = "Skill", SIM = "Simulation", DEC = "Declaration";
@@ -199,20 +202,22 @@
   }
   function doneKey(id) { return scope() + ":" + id; }
 
-  function groupHref(id, st) {
-    return BASE + id + (st && st.group ? "&group=" + st.group : "") + (state.edit ? "&editchecks=on" : "");
+  var FIRST_AID = "First Aid and AA Protocols";
+  function groupHref(id, st, mod) {
+    var g = st ? (mod === FIRST_AID ? st.fa : st.group) : null;
+    return BASE + id + (g ? "&group=" + g : "") + (state.edit ? "&editchecks=on" : "");
   }
 
   /* One button per chosen station; else one for everyone. */
-  function opens(sk) {
+  function opens(sk, mod) {
     var name = esc(sk[1]);
     var sts = chosenStations();
     if (sts.length > 1) {
       return sts.map(function (s) {
-        return '<a class="open" href="' + groupHref(sk[0], s) + '" target="_blank" rel="noopener" aria-label="Open ' + name + " for " + esc(s.name) + '">' + esc(s.name) + "</a>";
+        return '<a class="open" href="' + groupHref(sk[0], s, mod) + '" target="_blank" rel="noopener" aria-label="Open ' + name + " for " + esc(s.name) + '">' + esc(s.name) + "</a>";
       }).join("");
     }
-    return '<a class="open" href="' + groupHref(sk[0], sts[0]) + '" target="_blank" rel="noopener" aria-label="Open ' + name + ' in saaslearn">Open</a>';
+    return '<a class="open" href="' + groupHref(sk[0], sts[0], mod) + '" target="_blank" rel="noopener" aria-label="Open ' + name + ' in saaslearn">Open</a>';
   }
 
   function renderStations() {
@@ -262,7 +267,7 @@
           rows += '<li class="' + cls + '" data-id="' + sk[0] + '">' +
             '<input type="checkbox" id="c' + sk[0] + '" data-id="' + sk[0] + '"' + (isDone ? " checked" : "") + ' aria-label="Finished: ' + esc(sk[1]) + '">' +
             '<label class="name" for="c' + sk[0] + '">' + esc(sk[1]) + '<span class="kind">' + sk[2] + '</span></label>' +
-            '<div class="opens">' + opens(sk) + "</div>" +
+            '<div class="opens">' + opens(sk, m.m) + "</div>" +
             "</li>";
         });
         if (rows) html += '<h3 class="mod">' + esc(m.m) + '</h3><ul class="skills">' + rows + "</ul>";
