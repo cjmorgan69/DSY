@@ -141,7 +141,7 @@ the sign-off skills. Guide section 14 updated. Live (PR #345, merged 24 Nov 2026
 Pre-course induction, done as soon as a student has a SAAS ID. `/ar/course/` Induction tab: students with
 "n / 26" (Not started / n of 26 done / Induction complete); tap one for the checklist (`#ind=<student id>`): Paperwork
 and accounts (photo emailed to HealthSAASSecurity-Access@sa.gov.au for photo ID card and bi-lock key, pager, uniform on
-wwgonline.com.au, AR course enrolment on VETenrol (owner's link, updated 24 Nov 2026), vendor form and Ambulance Cover (welcome email), MFA,
+wwgonline.com.au, AR course enrolment on VETenrol (permanent link `https://enrol.vetenrol.com.au/?clientid=vt-saas&occuID=75700`, from the SAAS welcome email, 24 Nov 2026: links with `(S(...))` in them carry a session code and expire; this one makes a fresh session each visit; `occuID` is this course occurrence, so a new intake may need a new one), vendor form and Ambulance Cover (welcome email), MFA,
 SAAS login, eLearning login), Practical (infection control prac, link to the sign-off navigator), Induction declaration
 (15 statements in the owner's wording, Fatigue Management link `course/view.php?id=28`, and "Declaration submitted"
 with the questionnaire link `mod/questionnaire/view.php?id=15344`). Items are `INDUCTION` in `ar/course/app.js`; ticks
