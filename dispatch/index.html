@@ -13,8 +13,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Patrick+Hand&display=swap">
 <style>
-/* Leaders-only dispatch timeline. One road per day; each job is an ambulance at its dispatch time.
-   Data: Supabase public.paging_jobs (row-level security lets leaders read). No data is stored in this file. */
+/* Leaders-only dispatch timeline (leaders, relief Team Leaders on cover, VTLs). One road per day; each job is an ambulance at its dispatch time.
+   Data: Supabase public.paging_jobs (row-level security lets leaders, relievers on cover and VTLs read). No data is stored in this file. */
 :root{
   --bg:#e9f0f5; --card:#ffffff; --fg:#1d2a35; --muted:#5b6b79; --line:#c6d3de;
   --road:#3a4552; --road-edge:#c9d2db; --night:rgba(10,25,60,.16); --tick:rgba(255,255,255,.14);
@@ -90,7 +90,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:no-preference){.ab{transition:box-shadow .12s}}
 </style>
-<script src="../training/config.js?v=20261124r"></script>
+<script src="../training/config.js?v=20261125a"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 </head>
 <body>
@@ -153,7 +153,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
     app.textContent = "";
     var f = el("div", "auth");
     f.appendChild(el("h1", null, "Leaders only"));
-    f.appendChild(el("p", "sub", "This page shows job details and is only open to team leaders. If you should have access, ask the lead instructor."));
+    f.appendChild(el("p", "sub", "This page shows job details and is only open to team leaders, relief Team Leaders and Volunteer Team Leaders. If you should have access, ask the lead instructor."));
     var b = el("button", "go", "Sign out"); b.type = "button"; b.addEventListener("click", function () { sb.auth.signOut(); }); f.appendChild(b);
     app.appendChild(f);
   }
@@ -328,8 +328,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
   /* ---------- start ---------- */
   function start(session) {
     if (!session) { renderAuth(); return; }
-    q(sb.from("profiles").select("role").eq("id", session.user.id)).then(function (rows) {
-      if (!rows.length || rows[0].role !== "leader") { renderDenied(); return; }
+    /* my_access(): role "leader" covers real leaders and relief Team Leaders on active cover; vtl is set for a VTL. */
+    q(sb.rpc("my_access")).then(function (a) {
+      if (!a || !(a.role === "leader" || a.vtl)) { renderDenied(); return; }
       return loadBounds().then(function (b) {
         if (!b) { app.textContent = ""; app.appendChild(el("p", "sub", "No jobs have been captured yet.")); return; }
         S.bounds = b; S.weekStart = mondayOf(b.max); shell(); showWeek();

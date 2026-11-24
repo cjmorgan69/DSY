@@ -176,3 +176,12 @@ row). No test member accounts remain; make a new one if a signed-in check is nee
 `training/pwreveal.js` puts an eye button at the right of every password box (also boxes drawn later). Loaded on `/signin/`,
 `/training/`, `/teams/`, `/region/`. The box goes back to hidden when the form is sent. Old roster manager password prompts
 and the CP-* / presenter gates are not included.
+
+## Dispatch page for VTLs and relief Team Leaders (owner, 24 Nov 2026)
+
+`/dispatch/` let in only `profiles.role = 'leader'`, and the `paging_jobs` `leaders_read` policy checked the same, so
+relief Team Leaders saw nothing there or in the main dashboard's Dispatch panel, and VTLs got "Leaders only" on the page.
+The page now uses `my_access()` (role leader, which includes relievers on active cover, or `vtl` set). Migration
+`paging_jobs_relief_read` (`supabase/paging-jobs-relief-read.sql`): `leaders_read` uses `is_leader()`. Rehearsed in a
+rolled-back transaction with a stand-in cover: reliever 1556 jobs on cover, 0 after it ended, leader 1556. Database
+change applied 24 Nov 2026; page change on a branch, not merged.
