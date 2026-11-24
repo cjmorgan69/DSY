@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261124q" data-level="leader"></script>
+<script src="/shared/gate.js?v=20261124r" data-level="leader"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
@@ -84,6 +84,7 @@ a { color:var(--brand); text-underline-offset:2px; }
 .chip2 { border:1px solid var(--line); background:none; color:var(--muted); border-radius:7px; padding:3px 9px; font-size:12px; }
 .chip2:hover { color:var(--ink); border-color:var(--faint); }
 .chip2[aria-pressed="true"] { background:var(--brand); color:var(--brand-ink); border-color:var(--brand); }
+.rnav { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; margin:.2rem 0 .5rem; } .rnav .rday { flex-basis:100%; order:-1; font-weight:600; font-size:.88rem; } .chip2[disabled] { opacity:.4; cursor:default; }
 .skel { height:110px; border-radius:10px; background:linear-gradient(90deg,var(--soft),var(--line),var(--soft)); background-size:200% 100%; animation:sk 1.4s infinite linear; opacity:.7; }
 @keyframes sk { to { background-position:-200% 0; } }
 @media (prefers-reduced-motion:reduce) { .skel { animation:none; } }
@@ -235,8 +236,8 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
 .amsg.err { color:var(--r); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="/modules/rosters/shared/teams.js?v=20261124q"></script>
-<script src="/modules/rosters/shared/roster-data.js?v=20261124q"></script>
+<script src="/modules/rosters/shared/teams.js?v=20261124r"></script>
+<script src="/modules/rosters/shared/roster-data.js?v=20261124r"></script>
 </head>
 <body>
 <header class="bar">
@@ -264,6 +265,7 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
   <div class="col c1">
     <section class="card" aria-labelledby="hRoster">
       <div class="ch"><h2 id="hRoster">Roster · next 24 hours</h2><a href="/modules/rosters/operations/">Operations overview →</a></div>
+      <div class="rnav" id="rNav" role="group" aria-label="Roster day"></div>
       <div class="stats" id="rStats"></div>
       <div class="chips" id="rFilter" role="group" aria-label="Clusters"></div>
       <div class="heat" id="rHeat"><div class="skel"></div></div>
@@ -336,6 +338,6 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
   </form>
 </dialog>
 
-<script src="/dashboard/dash.js?v=20261124q"></script>
+<script src="/dashboard/dash.js?v=20261124r"></script>
 </body>
 </html>
