@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261124e">
+<link rel="stylesheet" href="theme.css?v=20261124f">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -61,10 +61,10 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261124e"></script>
-<script src="pwreveal.js?v=20261124e" defer></script>
-<script src="/shared/reminders.js?v=20261124e" defer></script>
-<script src="sa-dates.js?v=20261124e"></script>
+<script src="config.js?v=20261124f"></script>
+<script src="pwreveal.js?v=20261124f" defer></script>
+<script src="/shared/reminders.js?v=20261124f" defer></script>
+<script src="sa-dates.js?v=20261124f"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -236,7 +236,7 @@ li[hidden]{display:none!important}
   }
   function arRow(w, title) {
     var act, full = w.capacity != null && w.booked >= w.capacity;
-    var cons = !!S.arExtra[w.day];
+    var cons = !!S.arExtra[w.day] && w.day !== 0;
     if (w.attended) act = '<span class="chip' + (w.attended === "absent" ? "" : " good") + '">' + AR_ATT[w.attended] + "</span>";
     else if (w.my === "confirmed") act = '<span class="chip good">Booked</span>' + (w.can_cancel ? '<button class="btn danger small" data-act="arcancel" data-id="' + w.id + '">Cancel</button>'
       : '<span class="small muted">Too close to cancel here: tell your facilitator</span>');
@@ -244,7 +244,7 @@ li[hidden]{display:none!important}
     else if (full) act = '<span class="chip warn">Full</span><button class="btn ghost small" data-act="arwait" data-id="' + w.id + '">Join waiting list</button>';
     else act = '<button class="btn small" data-act="arbook" data-id="' + w.id + '">Book</button>';
     var when = w.start ? hhmm(w.start) + (w.end ? " to " + hhmm(w.end) : "") : "Time to be confirmed";
-    return '<li class="ar-row">' + tile(w.date) + '<div class="what"><span class="t">Day ' + w.day + (title[w.day] ? " · " + esc(title[w.day]) : "") + (cons ? ' <span class="chip">Extra</span>' : "") + "</span>" +
+    return '<li class="ar-row">' + tile(w.date) + '<div class="what"><span class="t">' + (w.day === 0 ? esc(title[0] || "Induction") : "Day " + w.day + (title[w.day] ? " · " + esc(title[w.day]) : "")) + (cons ? ' <span class="chip">Extra</span>' : "") + "</span>" +
       '<span class="small muted">' + when + (w.location ? " - " + esc(w.location) : "") + "</span></div>" + '<div class="act">' + act + "</div></li>";
   }
   function renderArCard() {

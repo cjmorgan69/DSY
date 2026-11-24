@@ -135,3 +135,19 @@ non-extra days. "+ Add a consolidation day" saves extra = true.
 Day 4, which keeps placeholders), Days 8 and 9 Consolidation panels, Day 10 Stress Management (online webinar, presentation
 placeholders only). The `/ar/` topics keep the checklist module names (First Aid and AA Protocols) because they list
 the sign-off skills. Guide section 14 updated. On a branch, not merged (PR open).
+
+## Induction (24 Nov 2026, owner)
+
+Pre-course induction, done as soon as a student has a SAAS ID. `/ar/course/` Induction tab: students with
+"n / 26" (Not started / n of 26 done / Induction complete); tap one for the checklist (`#ind=<student id>`): Paperwork
+and accounts (photo emailed to HealthSAASSecurity-Access@sa.gov.au for photo ID card and bi-lock key, pager, uniform on
+wwgonline.com.au, AR course enrolment on VETenrol (owner's link), vendor form and Ambulance Cover (welcome email), MFA,
+SAAS login, eLearning login), Practical (infection control prac, link to the sign-off navigator), Induction declaration
+(15 statements in the owner's wording, Fatigue Management link `course/view.php?id=28`, and "Declaration submitted"
+with the questionnaire link `mod/questionnaire/view.php?id=15344`). Items are `INDUCTION` in `ar/course/app.js`; ticks
+in `public.course_induction` (student_id, item, done, note, done_at, done_by; facilitator-only RLS; migration
+`course_induction`, SQL in `supabase/course-induction.sql`). Ticks save on change; Print. Scheduling: Day 0 "Induction
+(pre-course)" is the first AR day in Build the course and new groups (extra = true, so not counted in the 8 days);
+Day 0 shows as "Induction" everywhere (trackers show "I"). `/ar/` has an Induction panel linking to the checklist;
+guide section 14 explains it. The welcome email itself is not built (vendor form and Ambulance Cover are ticks only).
+On a branch, not merged (PR open).

@@ -61,7 +61,7 @@
       '<div class="row">' + (extra || "") + '<a class="link" href="/signin/?out=1">Sign out</a></div></header>';
   }
   function tracker(states) {
-    return '<ol class="days">' + states.map(function (x) { return '<li class="' + x.state + '" title="Day ' + x.day + '">' + x.day + "</li>"; }).join("") + "</ol>" +
+    return '<ol class="days">' + states.map(function (x) { return '<li class="' + x.state + '" title="' + dayName(x.day) + '">' + (x.day === 0 ? "I" : x.day) + "</li>"; }).join("") + "</ol>" +
       '<div class="legend"><span><i class="done"></i>Done</span><span><i class="booked"></i>Booked</span><span><i class="part"></i>Left early</span><span><i></i>To book</span></div>';
   }
 
@@ -124,7 +124,7 @@
     var xtra = {}; (h.days || []).forEach(function (x) { if (x.extra) xtra[x.day] = true; });
     var days = studentDays(h), total = h.cohort.total_days || days.filter(function (x) { return !xtra[x.day]; }).length;
     var done = days.filter(function (x) { return x.state === "done" && !xtra[x.day]; }).length;
-    var today = h.today, title = function (d) { return "Day " + d.day + (d.title ? " · " + d.title : ""); };
+    var today = h.today, title = function (d) { return d.day === 0 ? d.title || "Induction" : "Day " + d.day + (d.title ? " · " + d.title : ""); };
     var html = '<main class="wrap">' + header({ title: h.cohort.course_name, line: h.student.first_name + " " + h.student.last_name + " · " + h.cohort.name }, facLink);
 
     html += '<section class="panel pad stack"><div class="dayhead"><h2>Your progress</h2><span class="count">' + done + " of " + total + " days</span></div>" + tracker(days) +
@@ -185,7 +185,7 @@
           '</div><button class="btn ghost" data-act="na-withdraw" data-day="' + x.day + '">Take back</button></div>';
       } else if (!bookedHere && list.length) {
         if (S.naOpen[x.day]) {
-          html += '<div class="na-form"><b>Can\'t make any of the Day ' + x.day + ' dates?</b><span class="small muted">Your facilitator will see this and may add another date.</span>' +
+          html += '<div class="na-form"><b>Can\'t make any of the ' + dayName(x.day) + ' dates?</b><span class="small muted">Your facilitator will see this and may add another date.</span>' +
             '<textarea id="na-' + x.day + '" maxlength="300" placeholder="Optional note, e.g. working every Saturday in March"></textarea>' +
             '<div class="na-actions"><button class="btn" data-act="na-send" data-day="' + x.day + '">Send</button><button class="btn ghost" data-act="na-toggle" data-day="' + x.day + '">Never mind</button></div></div>';
         } else html += '<button class="link na-link" data-act="na-toggle" data-day="' + x.day + '">Can\'t make any of these dates?</button>';
@@ -231,10 +231,12 @@
       return Promise.all([
         wids.length ? q(sb.from("course_bookings").select("*").in("workshop_id", wids)) : [],
         wids.length ? q(sb.from("course_attendance").select("*").in("workshop_id", wids)) : [],
-        sids.length ? q(sb.from("course_unavailable").select("*").in("student_id", sids).eq("status", "open")) : []
+        sids.length ? q(sb.from("course_unavailable").select("*").in("student_id", sids).eq("status", "open")) : [],
+        sids.length ? q(sb.from("course_induction").select("*").in("student_id", sids)) : []
       ]);
     }).then(function (r) {
       d.bookings = r[0]; d.attendance = r[1]; d.unavailable = r[2];
+      d.ind = {}; (r[3] || []).forEach(function (x) { if (x.done) d.ind[x.student_id + "|" + x.item] = x; });
       index(d); S.d = d; renderFac();
     });
   }
@@ -250,7 +252,8 @@
     d.dayTitle = {}; d.extra = {}; d.days.forEach(function (x) { d.dayTitle[x.day_number] = x.title; if (x.extra) d.extra[x.day_number] = true; });
   }
   function nameOf(s) { return s ? (s.first_name + " " + s.last_name).trim() || s.staff_id : "Someone"; }
-  function dayLabel(d, n) { return "Day " + n + (d.dayTitle[n] ? " · " + d.dayTitle[n] : ""); }
+  function dayName(n) { return +n === 0 ? "Induction" : "Day " + n; }
+  function dayLabel(d, n) { return +n === 0 ? (d.dayTitle[0] || "Induction") : "Day " + n + (d.dayTitle[n] ? " · " + d.dayTitle[n] : ""); }
   function counts(d, w) {
     var c = { booked: 0, wait: 0, marked: 0, present: 0 };
     d.active.forEach(function (s) {
@@ -290,11 +293,13 @@
     var nNew = newEvents(d).length;
     html += '<div class="row no-print">' + picker + '<a class="link" href="#new">+ New group</a></div>';
     if ((m = /^w=(.+)$/.exec(h))) { html += workshopScreen(d, m[1]); app.innerHTML = html + "</main>"; return; }
-    var tabs = [["dates", "Dates"], ["students", "Students"], ["progress", "Progress"], ["changes", "Changes"], ["setup", "Setup"]];
+    if ((m = /^ind=(.+)$/.exec(h))) { html += inductionScreen(d, m[1]); app.innerHTML = html + "</main>"; return; }
+    var tabs = [["dates", "Dates"], ["students", "Students"], ["induction", "Induction"], ["progress", "Progress"], ["changes", "Changes"], ["setup", "Setup"]];
     html += '<div class="tabs many" role="tablist">' + tabs.map(function (t) {
       return '<button role="tab" data-tab="' + t[0] + '" aria-selected="' + (h === t[0]) + '">' + t[1] + (t[0] === "changes" && nNew && h !== "changes" ? '<span class="n">' + nNew + "</span>" : "") + "</button>";
     }).join("") + "</div>";
     if (h === "students") html += studentsTab(d);
+    else if (h === "induction") html += inductionTab(d);
     else if (h === "progress") html += progressTab(d);
     else if (h === "changes") html += changesTab(d);
     else if (h === "setup") html += setupTab(d);
@@ -307,6 +312,7 @@
      DRiVE principles and knowledge (Day 3) and the Stress Management webinar (Day 10). Days 8 and 9 are consolidation
      (extra: course_days.extra, not counted towards completing the course). */
   var AR_DAYS = [
+    { n: 0, title: "Induction (pre-course)", extra: true },
     { n: 1, title: "Infection control, operational safety, manual tasks" },
     { n: 2, title: "Manual tasks (continued)" },
     { n: 3, title: "Operational preparedness (GRN radio and MDT), DRiVE principles and knowledge" },
@@ -340,18 +346,20 @@
     return '<div class="b-row cons" data-day="' + n + '" data-title="Consolidation" data-extra="1"><label class="check"><input type="checkbox" class="b-pick"' + (unticked ? "" : " checked") + '> <span><b>Day ' + n +
       '</b> <span class="b-title">· Consolidation (extra, not counted in the days to complete)</span></span></label>' +
       '<button class="b-x" type="button" data-act="b-rm-row" aria-label="Remove this consolidation day">×</button>' +
-      '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for Day ' + n + "</button></div>";
+      '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for ' + dayName(n) + "</button></div>";
   }
   function buildPanel(d) {
     if (!S.building) return '<button class="btn wide" data-act="b-toggle">Build the course: pick days, dates and start times</button>';
     var rows = buildDays(d).map(function (n) {
       var tpl = !d.dayList.length ? arDay(n) : null;
-      if (tpl && tpl.extra) return consRow(n, true);
+      if (tpl && tpl.extra && n !== 0) return consRow(n, true);
+      var cons = isExtra(d, n) && n !== 0;
       var title = d.dayTitle[n] || (tpl ? tpl.title : "") || "";
       var have = d.workshops.filter(function (w) { return w.day_number === n && !w.cancelled; }).length;
-      return '<div class="b-row' + (isExtra(d, n) ? " cons" : "") + '" data-day="' + n + '"' + (tpl ? ' data-title="' + esc(tpl.title) + '"' : "") + '><label class="check"><input type="checkbox" class="b-pick"> <span><b>Day ' + n + "</b>" + (title ? ' <span class="b-title">· ' + esc(title) + (isExtra(d, n) ? " (extra)" : "") + "</span>" : "") +
+      return '<div class="b-row' + (cons ? " cons" : "") + '" data-day="' + n + '"' + (tpl ? ' data-title="' + esc(tpl.title) + '"' + (tpl.extra ? ' data-extra="1"' : "") : "") +
+        '><label class="check"><input type="checkbox" class="b-pick"> <span><b>' + dayName(n) + "</b>" + (n === 0 ? ' <span class="b-title">· before the course, once they have a SAAS ID</span>' : title ? ' <span class="b-title">· ' + esc(title) + (cons ? " (extra)" : "") + "</span>" : "") +
         (have ? ' <span class="chip">' + have + (have === 1 ? " date" : " dates") + " already</span>" : "") + "</span></label>" +
-        '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for Day ' + n + "</button></div>";
+        '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for ' + dayName(n) + "</button></div>";
     }).join("");
     return '<section class="panel pad stack"><h2>Build the course</h2><p class="small muted">Tick a day, then give it a date and start time. Adding a date ticks the day for you. ' +
       'Use "Another date" to run the same day more than once: students book the one that suits them. Each date can have its own location.</p>' +
@@ -501,6 +509,74 @@
     return html;
   }
 
+  /* ---- Induction (pre-course): a facilitator checklist per student (course_induction) ---- */
+  var SL = "https://saaslearn.com.au/moodle/";
+  var INDUCTION = [
+    { title: "Paperwork and accounts", items: [
+      ["photo", "Photo taken and emailed to request a photo ID card and bi-lock key", "mailto:HealthSAASSecurity-Access@sa.gov.au?subject=" + encodeURIComponent("Photo ID card and bi-lock key request"), "Email the request (HealthSAASSecurity-Access)"],
+      ["pager", "Pager assigned and instructions given"],
+      ["uniform", "Recruit uniform ordered on the uniform portal", "https://www.wwgonline.com.au/login", "Uniform portal"],
+      ["enrol", "Registered for the AR course", "https://enrol.vetenrol.com.au/(S(2ivsywzl4fywob401g0ct11v))/Enrol?1711928207", "AR course enrolment"],
+      ["vendor", "Vendor form completed, so they can claim reimbursements (in the welcome email)"],
+      ["cover", "Ambulance Cover application completed (in the welcome email)"],
+      ["mfa", "Multi-factor authentication set up"],
+      ["login", "SAAS login and password working"],
+      ["elearn", "SAAS eLearning login and password working", SL + "login/?lang=en", "SAAS eLearning"]
+    ] },
+    { title: "Practical", items: [
+      ["infection", "Infection control prac: hand washing, alcohol-based hand rub, donning and doffing PPE (sign off in saaslearn)", "../signoff/", "Skill sign-off navigator"]
+    ] },
+    { title: "Induction declaration", note: "The student submits this on SAAS eLearning. Go through each statement with them and tick it when they can answer yes.", items: [
+      ["d1", "I have ordered a SAAS recruit uniform, photo ID card and bi-lock key."],
+      ["d2", "I have completed the local team induction checklist with my Volunteer Training Coordinator (VTC), Volunteer Team Leader (VTL) or Regional Team Leader (RTL)."],
+      ["d3", "I know how to access my local Peer Support Officer, Volunteer Equity Contact Officer and a Mental Health Professional should I require."],
+      ["d4", "I understand that until I complete manual handling training in the Ambulance Assist (AA) course, I can not operate or carry equipment and participate in patient movements."],
+      ["d5", "I have been shown how to safely enter and exit an ambulance vehicle (3 points of contact) by a Manual Tasks Trainer, VTC, VTL or RTL."],
+      ["d6", "I understand how to access SAAS Policies and Procedures."],
+      ["d7", "I understand the function of the various notices and how to access them (Safety alerts, SAASnews, Clinical Communications, Information Notices etc)."],
+      ["d8", "I have an understanding that if a patient or worker incident occurs I will seek guidance on completing the required forms with a mentor: Safety Learning System - SLS (Patient Incident), Work Health and Safety Incident Report (WHSIR) (Staff Incident)."],
+      ["d9", "I have access to SAASnet (SharePoint) and my SAAS Volunteer email and know how to access the support of a volunteer digital mentor if required."],
+      ["d10", "I have read and understood PRO060 - Daily Operational Requirements (Operational Staff) accessible on SAASnet (SharePoint)."],
+      ["d11", "I know how and when to seek assistance from: my Volunteer Team Leader (VTL), my Regional Team Leader (RTL), the Country Rostering unit, the SAAS Clinical Education team, the SAAS Volunteer Support Unit (VSU), the Emergency Operations Centre (Region North or Region South communications dispatch) and the State Duty Manager (SDM)."],
+      ["d12", "I have been mask fit tested to wear a Particulate Filter Respirator (PFR mask) using either the Portacount or Hood Qualitative testing method."],
+      ["d13", "I have met with my RTL and completed the skills demonstrations (hand hygiene: handwashing and alcohol-based hand rub; PPE donning and doffing), and I understand when on shift I must follow the directions of the crew I'm working with in regards to infection control principles."],
+      ["d14", "I have completed the \u201cFatigue Management\u201d module on SAAS eLearning.", SL + "course/view.php?id=28", "Fatigue Management module"],
+      ["d15", "I have watched the SAAS eLearning introduction video."],
+      ["decl", "Declaration submitted on SAAS eLearning", SL + "mod/questionnaire/view.php?id=15344", "Induction declaration"]
+    ] }
+  ];
+  var IND_ITEMS = []; INDUCTION.forEach(function (s) { s.items.forEach(function (i) { IND_ITEMS.push(i[0]); }); });
+  function indDone(d, sid) { return IND_ITEMS.filter(function (k) { return d.ind[sid + "|" + k]; }).length; }
+  function inductionTab(d) {
+    var html = '<section class="panel pad stack"><h2>Induction</h2><p class="small muted">Before the course: as soon as a student has a SAAS ID number. Tap a student to tick off their induction. ' +
+      'Schedule it as the Induction date in Build the course.</p></section>';
+    if (!d.active.length) return html + '<p class="muted">No students yet. Add them on the Students tab.</p>';
+    return html + '<ul class="panel sessions">' + d.active.slice().sort(function (a, b) { return nameOf(a).localeCompare(nameOf(b)); }).map(function (s) {
+      var n = indDone(d, s.id), all = n === IND_ITEMS.length;
+      return '<li><button class="session tap" type="button" data-tab="ind=' + s.id + '"><span class="what"><span class="t">' + esc(nameOf(s)) + "</span>" +
+        '<span class="small muted">' + (all ? "Induction complete" : n ? n + " of " + IND_ITEMS.length + " done" : "Not started") + '</span></span>' +
+        '<span class="chip ' + (all ? "good" : n ? "warn" : "") + '">' + n + " / " + IND_ITEMS.length + '</span><span class="go" aria-hidden="true">›</span></button></li>';
+    }).join("") + "</ul>";
+  }
+  function inductionScreen(d, sid) {
+    var s = d.byStudent[sid];
+    if (!s) return '<p class="muted">That student is not in this group. <a href="#induction">Back to Induction</a></p>';
+    var n = indDone(d, sid);
+    var html = '<div class="stack"><a class="link" href="#induction">‹ Induction</a><div><p class="eyebrow">Induction</p><h2>' + esc(nameOf(s)) + "</h2></div>" +
+      '<p class="small muted"><span id="ind-count">' + n + " of " + IND_ITEMS.length + "</span> done. Ticks save as you go." +
+      ' <button class="link small no-print" type="button" onclick="window.print()">Print</button></p></div>';
+    INDUCTION.forEach(function (sec) {
+      html += '<section class="panel pad stack ind-sec"><h3>' + esc(sec.title) + "</h3>" + (sec.note ? '<p class="small muted">' + esc(sec.note) + "</p>" : "") + '<ul class="ind-list">' +
+        sec.items.map(function (i) {
+          var x = d.ind[sid + "|" + i[0]];
+          return '<li><label class="check"><input type="checkbox" class="ind-tick" data-sid="' + sid + '" data-item="' + i[0] + '"' + (x ? " checked" : "") + "> <span>" + esc(i[1]) +
+            (i[2] ? ' <a class="small" href="' + esc(i[2]) + '"' + (/^http/.test(i[2]) ? ' target="_blank" rel="noopener"' : "") + ">" + esc(i[3]) + "</a>" : "") +
+            '<span class="small muted ind-when">' + (x ? " Ticked " + esc(shortDate(String(x.done_at).slice(0, 10))) : "") + "</span></span></label></li>";
+        }).join("") + "</ul></section>";
+    });
+    return html;
+  }
+
   /* ---- Progress ---- */
   function progressTab(d) {
     var total = totalDays(d);
@@ -510,13 +586,13 @@
       var st = facStates(d, s), done = st.filter(function (x) { return x.state === "done" && !isExtra(d, x.day); }).length;
       var todo = st.filter(function (x) { return x.state !== "done" && !isExtra(d, x.day); }).map(function (x) { return x.day; });
       return '<li class="person"><div class="who"><b>' + esc(nameOf(s)) + "</b>" +
-        '<ol class="days mini">' + st.map(function (x) { return '<li class="' + x.state + '" title="Day ' + x.day + '">' + x.day + "</li>"; }).join("") + "</ol>" +
+        '<ol class="days mini">' + st.map(function (x) { return '<li class="' + x.state + '" title="' + dayName(x.day) + '">' + (x.day === 0 ? "I" : x.day) + "</li>"; }).join("") + "</ol>" +
         '<span class="small muted">' + (done >= total && total ? "" : "Still to do: Day " + todo.join(", ")) + "</span></div>" +
         (done >= total && total ? '<span class="chip good">Complete</span>' : '<span class="count">' + done + " / " + total + "</span>") + "</li>";
     }).join("") + "</ul>";
     // printable record
     html += '<div class="print-only"><h2>' + esc(d.cohort.course_name) + " · " + esc(d.cohort.name) + '</h2><p class="small">Attendance record printed ' + esc(fmtDate(todayIso())) + '</p><table class="record"><thead><tr><th>Student</th><th>ID</th>' +
-      d.dayList.map(function (n) { return "<th>Day " + n + "</th>"; }).join("") + "<th>Done</th></tr></thead><tbody>" +
+      d.dayList.map(function (n) { return "<th>" + dayName(n) + "</th>"; }).join("") + "<th>Done</th></tr></thead><tbody>" +
       d.active.map(function (s) {
         var st = facStates(d, s);
         return "<tr><td>" + esc(nameOf(s)) + "</td><td>" + esc(s.staff_id) + "</td>" + st.map(function (x) {
@@ -567,7 +643,7 @@
     var rows = d.dayList.length ? d.dayList : [1];
     html += rows.map(function (n) {
       var x = d.days.filter(function (y) { return y.day_number === n; })[0] || {};
-      return '<div class="stack day-edit" data-day="' + n + '"><b>Day ' + n + '</b><div class="field"><input class="d-title" value="' + esc(x.title || "") + '" placeholder="Title, e.g. Medical Conditions"></div>' +
+      return '<div class="stack day-edit" data-day="' + n + '"><b>' + dayName(n) + '</b><div class="field"><input class="d-title" value="' + esc(x.title || "") + '" placeholder="Title, e.g. Medical Conditions"></div>' +
         '<div class="field"><textarea class="d-links" placeholder="Day 6 skills stations | /stations/ar-day6/">' + esc(linksText(x.links)) + "</textarea></div></div>";
     }).join("");
     html += '<div class="row"><button class="btn" data-act="d-save">Save days</button><button class="btn ghost" data-act="d-add">+ Add a day</button></div></section>';
@@ -599,6 +675,16 @@
       $("p-add").textContent = addLabel();
     }
     if (t.classList.contains("b-date") && t.value) t.closest(".b-row").querySelector(".b-pick").checked = true;
+    if (t.classList.contains("ind-tick")) {
+      var sid = t.getAttribute("data-sid"), item = t.getAttribute("data-item"), key = sid + "|" + item, on = t.checked;
+      var row = { student_id: sid, item: item, done: on, done_at: new Date().toISOString() };
+      t.disabled = true;
+      q(sb.from("course_induction").upsert(row)).then(function () {
+        if (on) S.d.ind[key] = row; else delete S.d.ind[key];
+        t.closest("label").querySelector(".ind-when").textContent = on ? " Ticked " + shortDate(todayIso()) : "";
+        $("ind-count").textContent = indDone(S.d, sid) + " of " + IND_ITEMS.length;
+      }).catch(function (e) { t.checked = !on; fail(e); }).then(function () { t.disabled = false; });
+    }
   });
   app.addEventListener("input", function (e) {
     if (e.target.id === "p-q") { S.pQ = e.target.value; $("p-list").innerHTML = peopleRows(S.d); return; }
