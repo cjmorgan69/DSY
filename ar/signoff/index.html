@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261124m" data-level="facilitator"></script>
+<script src="/shared/gate.js?v=20261124n" data-level="facilitator"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Skill sign-off navigator - DSY Training</title>
@@ -12,8 +12,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../training/theme.css?v=20261124m">
-<link rel="stylesheet" href="../../hub/hub.css?v=20261124m">
+<link rel="stylesheet" href="../../training/theme.css?v=20261124n">
+<link rel="stylesheet" href="../../hub/hub.css?v=20261124n">
 <style>
 /* AR course skill sign-off navigator: sticky controls (stations, mode, search) above a day-by-day list of
    skills, each opening its saaslearn checklist report filtered to the station's Moodle group. */
@@ -26,6 +26,9 @@
 .chip { border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 7px 14px; border-radius: 999px; cursor: pointer; }
 .chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); font-weight: 700; }
 .chip:hover { border-color: var(--brand); }
+.st-pick { flex: 1 1 14rem; min-width: 0; }
+.st-pick > summary { cursor: pointer; font-weight: 700; color: var(--brand); padding: 6px 0; }
+.st-pick[open] > summary { margin-bottom: 6px; }
 .search { flex: 1 1 200px; min-width: 0; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); }
 .jump { border: 1px solid var(--brand); background: transparent; color: var(--brand); padding: 7px 14px; border-radius: 999px; font-weight: 700; }
 .jump:hover { background: var(--brand); color: var(--brand-ink); }
@@ -71,7 +74,7 @@
   <div class="bar">
     <div class="row" role="group" aria-label="Stations">
       <span class="label">Stations</span>
-      <span id="stations" class="row"></span>
+      <details class="st-pick" id="stPick"><summary id="stSummary">Choose</summary><span id="stations" class="row"></span></details>
     </div>
     <div class="row" role="group" aria-label="Open as" id="modeRow">
       <span class="label">Open as</span>
@@ -102,18 +105,16 @@
   </div>
 </main>
 
+<script src="../saaslearn-groups.js?v=20261124n"></script>
 <script>
 (function () {
   var BASE = "https://saaslearn.com.au/moodle/mod/checklist/report.php?id=";
-  var STATIONS = [
-    /* saaslearn numbers its groups per course: "First Aid and AA Protocols" skills are in a different course, so they use
-       the fa group numbers (owner, 24 Nov 2026, read from the Adult CPR sign-off page). */
-    { key: "tumby", name: "Tumby Bay", group: 44930, fa: 29693 },
-    { key: "cummins", name: "Cummins", group: 44935, fa: 29750 },
-    { key: "coffin", name: "Coffin Bay", group: 44926, fa: 29747 },
-    { key: "portneill", name: "Port Neill", group: 44932, fa: 29759 },
-    { key: "all", name: "All stations", group: null }
-  ];
+  /* Stations and their saaslearn group numbers per course come from ../saaslearn-groups.js (SAASLEARN).
+     The first four keep their old keys so saved choices and ticks carry over. */
+  var OLD_KEYS = { "Tumby Bay": "tumby", "Cummins": "cummins", "Coffin Bay": "coffin", "Port Neill": "portneill" };
+  var STATIONS = window.SAASLEARN.stations.map(function (n) {
+    return { key: OLD_KEYS[n] || n.toLowerCase().replace(/[^a-z]/g, ""), name: n };
+  }).concat([{ key: "all", name: "All stations" }]);
   var S = "Skill", SIM = "Simulation", DEC = "Declaration";
   var DAYS = [
     { day: "Day 1", mods: [
@@ -202,9 +203,8 @@
   }
   function doneKey(id) { return scope() + ":" + id; }
 
-  var FIRST_AID = "First Aid and AA Protocols";
   function groupHref(id, st, mod) {
-    var g = st ? (mod === FIRST_AID ? st.fa : st.group) : null;
+    var g = st && st.key !== "all" ? window.SAASLEARN.groupForModule(mod, st.name) : null;
     return BASE + id + (g ? "&group=" + g : "") + (state.edit ? "&editchecks=on" : "");
   }
 
@@ -221,6 +221,8 @@
   }
 
   function renderStations() {
+    var ch = chosenStations();
+    document.getElementById("stSummary").textContent = ch.length ? ch.map(function (s) { return s.name; }).join(", ") : "All stations";
     var box = document.getElementById("stations");
     box.innerHTML = "";
     STATIONS.forEach(function (s) {
