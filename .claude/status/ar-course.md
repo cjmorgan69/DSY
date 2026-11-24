@@ -192,7 +192,7 @@ Cowell, Cummins, Elliston, Hawker, Kimba, Leigh Creek, Lock, Port Kenny, Port Ne
 Tumby Bay) plus Wudinna (no FNWC group, so FNWC-course links open unfiltered for Wudinna). The owner also sent every
 other SA station's numbers for these courses (not stored; re-run the finder to add a region). DRiVE and Traumatic
 Injuries were not in the lists and use the FNWC course until confirmed. Navigator: stations in a "Stations" fold
-(multi-select, old keys kept for the first four); induction checklist: any of these teams. On a branch, not merged (PR open).
+(multi-select, old keys kept for the first four); induction checklist: any of these teams. Live (PR #355, merged 24 Nov 2026).
 (select, links, none); not yet tried on saaslearn itself. Live (PR #353, merged 24 Nov 2026).
 
 Navigator course picker (24 Nov 2026, owner): `/ar/signoff/` has a Course select (non-archived `course_cohorts`;
@@ -200,4 +200,4 @@ hidden when there are none or the person can't read them). Choosing a course set
 its active students (`course_people()` teams matched on ambulance ID, kept only if the team is a SAASLEARN station),
 with a note "Students' teams: Tumby Bay (3), …" and how many students have no team or a team without a saaslearn
 station. Stations can still be added in the fold; "Use the course stations" puts them back. The course is remembered in
-the browser with the stations. Guide section 14 updated. Tested with stand-in data. On a branch, not merged (PR open).
+the browser with the stations. Guide section 14 updated. Tested with stand-in data. Live (PR #356, merged 24 Nov 2026).
