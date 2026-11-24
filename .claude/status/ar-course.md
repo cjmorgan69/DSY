@@ -162,4 +162,4 @@ Induction station links (24 Nov 2026, owner): the student's station comes from t
 teams, matched on ambulance ID); teams Tumby Bay, Cummins, Coffin Bay and Port Neill map to the saaslearn groups
 44930, 44935, 44926, 44932 (same as `/ar/signoff/`). Practical links go straight to saaslearn with that group and Edit
 checks: infection control prac = Hand washing 32338, Hand rub 32337, PPE 32339; Adult CPR 26191. No team, or a team with
-no saaslearn group: the links show all students and the page says why. On a branch, not merged (PR open).
+no saaslearn group: the links show all students and the page says why. Live (PR #350, merged 24 Nov 2026).
