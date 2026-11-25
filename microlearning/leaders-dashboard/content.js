@@ -32,7 +32,7 @@ var M = window.MODULE = {
         { t: "Save it to your phone", text: "In Safari tap Share, then Add to Home Screen." }
       ] },
       { box: { title: "Buttons along the top", items: [
-        "DSY home and Training app",
+        "Training home and Team training",
         "📅 My Google Calendar. Tap ⚙︎ beside it to paste your own calendar link. It's saved to your DSY account, so it works on any device, and only you see it.",
         "↻ Refresh"
       ] } },

@@ -225,3 +225,7 @@ dropped (the header already links to Region).
 - Courses tab (owner, 25 Nov 2026): an Ambulance Responder course card at the top links to `/ar/` and `/ar/course/`;
   "Your courses" always shows (a note when the app has no other courses). Leader guide section on training updated
   (tabs Calendar, Lessons, Courses). Live (PR #365, merged 25 Nov 2026; live page loads with no errors).
+- Courses tab removed (owner, 25 Nov 2026: Team Training is for team training only): the training app has Calendar and
+  Lessons; "Add a course", the course list and course delete are gone (no course groups or course sessions existed,
+  checked). The AR course keeps its own entry point (AR course on the dashboard, `/ar/`). Course-type groups are still
+  understood by the code if any ever exist. Guide and Training nights module text updated. On a branch, not merged.

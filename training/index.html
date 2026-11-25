@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261125d">
+<link rel="stylesheet" href="theme.css?v=20261125f">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -61,10 +61,10 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261125d"></script>
-<script src="pwreveal.js?v=20261125d" defer></script>
-<script src="/shared/reminders.js?v=20261125d" defer></script>
-<script src="sa-dates.js?v=20261125d"></script>
+<script src="config.js?v=20261125f"></script>
+<script src="pwreveal.js?v=20261125f" defer></script>
+<script src="/shared/reminders.js?v=20261125f" defer></script>
+<script src="sa-dates.js?v=20261125f"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -208,7 +208,7 @@ li[hidden]{display:none!important}
 
   /* ---------- member view ---------- */
   function header(sub) {
-    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row"><a class="link" href="../">DSY home</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../access/">People</a><a class="link" href="../region/">Region</a>' : "") + '<a class="link" href="../teams/">Team page</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../userguides/leaders/#training">Leader guide</a>' : '<a class="link" href="../userguides/start/">How to use this</a>') + '<button class="link" data-act="signout">Sign out</button></div></header><div class="dsy-reminders remind-row"></div>';
+    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row"><a class="link" href="../">Training home</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../access/">People</a><a class="link" href="../region/">Region</a>' : "") + '<a class="link" href="../teams/">Team page</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../userguides/leaders/#training">Leader guide</a>' : '<a class="link" href="../userguides/start/">How to use this</a>') + '<button class="link" data-act="signout">Sign out</button></div></header><div class="dsy-reminders remind-row"></div>';
   }
 
   function renderMember() {
@@ -408,10 +408,10 @@ li[hidden]{display:none!important}
       }
       return;
     }
-    html += '<div class="tabs" role="tablist">' + [["calendar", "Calendar"], ["lessons", "Lessons"], ["courses", "Courses"]].map(function (t) {
+    html += '<div class="tabs" role="tablist">' + [["calendar", "Calendar"], ["lessons", "Lessons"]].map(function (t) {
       return '<button role="tab" aria-selected="' + (S.tab === t[0]) + '" data-act="tab" data-tab="' + t[0] + '">' + t[1] + "</button>";
     }).join("") + "</div>";
-    html += S.tab === "calendar" ? renderCalendar() : S.tab === "lessons" ? renderLessons() : renderCourses();
+    html += S.tab === "lessons" ? renderLessons() : renderCalendar();
     $app.innerHTML = html;
   }
 
@@ -834,35 +834,6 @@ li[hidden]{display:none!important}
     }).then(function () { toast("Lesson saved."); S.lessonEdit = null; return load().then(render); }).catch(fail);
   }
 
-  /* ---------- leader: courses ----------
-     People moved out of the training app to one People page, /access/ (owner, 25 Nov 2026): this tab keeps the
-     courses that used to sit under the people list. */
-  function renderCourses() {
-    /* Ambulance Responder course (owner, 25 Nov 2026): it runs on its own pages, so the tab links to them */
-    var html = '<section class="panel pad stack"><h3>Ambulance Responder course</h3><p class="small muted">The AR course has its own pages: the course page (days, stations, slides and students) and the bookings page.</p>' +
-      '<div class="row"><a class="btn small" href="../ar/">Open the AR course page</a><a class="btn ghost small" href="../ar/course/">AR course bookings</a></div></section>';
-    html += clusterChips();
-    var courses = S.groups.filter(function (g) { return g.type === "course"; });
-    if (!courses.length) html += '<section class="panel pad stack"><h3>Your courses</h3><p class="small muted">No other courses set up in the training app yet. Add one below if you need a separate set of sessions.</p></section>';
-    if (courses.length) {
-      html += '<section class="panel pad stack"><h3>Your courses</h3><ul class="stack">' + courses.map(function (g) {
-        var ns = S.sessions.filter(function (s) { return s.group_id === g.id; }).length;
-        var nm = S.memberships.filter(function (m) { return m.group_id === g.id; }).length;
-        var info = ns + " session" + (ns === 1 ? "" : "s") + ", " + nm + " " + (nm === 1 ? "person" : "people");
-        if (S.delCourse === g.id) {
-          return '<li class="notice stack"><p><strong>Delete ' + esc(g.name) + '?</strong> This removes its ' + ns + ' session' + (ns === 1 ? "" : "s") + ', all bookings and attendance for them, and takes ' + nm + ' ' + (nm === 1 ? "person" : "people") + ' out of the course. Lessons are kept. This cannot be undone.</p>' +
-            '<div class="row"><button class="btn danger small" type="button" data-act="deletecourse" data-id="' + g.id + '">Yes, delete course</button><button class="btn ghost small" type="button" data-act="keepcourse">Keep it</button></div></li>';
-        }
-        return '<li class="row"><div class="what"><span class="t">' + esc(g.name) + '</span><span class="small muted">' + info + '</span></div><button class="btn danger small" type="button" data-act="askdelcourse" data-id="' + g.id + '">Delete</button></li>';
-      }).join("") + "</ul></section>";
-    }
-    html += '<form class="panel pad stack" data-form="course"><h3>Add a course</h3><p class="small muted">A course is a separate set of sessions, for example for recruits from different teams. Choose the first date and the last date; sessions are created at the interval you set.</p>' +
-      '<label>Course name<input id="c-name" name="name" placeholder="Ambulance Responders 2026" required></label>' +
-      '<div class="grid2"><label>First session<input id="c-first" name="first" type="date" required></label><label>Last date<input id="c-last" name="last" type="date" required></label><label>Days between sessions<input id="c-every" name="every" type="number" min="1" value="14" required></label></div>' +
-      '<button class="btn" type="submit">Create course</button></form>';
-    return html;
-  }
-
   function linksToText(a) { return (Array.isArray(a) ? a : []).map(function (l) { return (l.label || "") + " | " + (l.url || ""); }).join("\n"); }
   function parseLinks(t) {
     return String(t || "").split("\n").map(function (line) {
@@ -872,7 +843,7 @@ li[hidden]{display:none!important}
     }).filter(Boolean);
   }
   function renderPageForm() {
-    var g = by(S.pageEdit, S.groups); if (!g) { S.pageEdit = null; return renderCourses(); }
+    var g = by(S.pageEdit, S.groups); if (!g) { S.pageEdit = null; return renderCalendar(); }
     return '<button class="link back" type="button" data-act="pageback">Back to people</button>' +
       '<form class="panel pad stack" data-form="page" data-id="' + g.id + '"><h2>' + esc(g.name) + ' page</h2>' +
       '<label>About this team (members see this)<textarea id="pg-blurb" name="blurb" placeholder="Station address, meeting place, contacts and anything else the team should know. Leave a blank line between paragraphs.">' + esc(g.blurb || "") + "</textarea></label>" +
@@ -965,14 +936,6 @@ li[hidden]{display:none!important}
     }).then(function () { toast("Photo removed."); return load().then(render); }).catch(fail);
   }
 
-  function createCourse(form) {
-    var f = new FormData(form), name = f.get("name").trim();
-    return sb.from("groups").insert({ name: name, type: "course", year: parseDate(f.get("first")).getFullYear(), cluster: myCluster() }).select().single().then(function (r) {
-      if (r.error) throw r.error;
-      return sb.rpc("generate_sessions", { p_group: r.data.id, p_first: f.get("first"), p_last: f.get("last"), p_every: +f.get("every") });
-    }).then(function (r) { if (r.error) throw r.error; toast("Course created with " + r.data + " sessions."); return refresh(); }).catch(fail);
-  }
-
   /* ---------- render and events ---------- */
   function render() {
     $app.classList.toggle("wide", !!(S.user && isLeader() && monthOn()));
@@ -1028,15 +991,6 @@ li[hidden]{display:none!important}
     removephoto: function (d) { return removePhoto(d.id); },
     gremove: function (d) { if (!window.confirm("Remove this photo from the gallery?")) return; return galleryChange(d.gid, function (l) { return l.splice(+d.i, 1)[0].path || null; }, "Photo removed."); },
     gmove: function (d) { return galleryChange(d.gid, function (l) { var x = l.splice(+d.i, 1)[0]; l.splice(+d.to, 0, x); }); },
-    askdelcourse: function (d) { S.delCourse = d.id; render(); },
-    keepcourse: function () { S.delCourse = null; render(); },
-    deletecourse: function (d) {
-      var g = groupOf(d.id); if (!g || g.type !== "course") return;
-      return sb.from("groups").delete().eq("id", d.id).eq("type", "course").then(function (r) {
-        if (r.error) throw r.error;
-        S.delCourse = null; if (S.filter === d.id) S.filter = "all"; toast("Course deleted."); return refresh();
-      }).catch(fail);
-    },
     openfile: function (d) { return openFile(d.id); },
     removefile: function (d) { return removeFile(d.id); },
     droplesson: function (d) { redrawPicker(pickedLessons().filter(function (x) { return x !== d.id; })); },
@@ -1144,7 +1098,6 @@ li[hidden]{display:none!important}
     } else if (kind === "reflection") job = saveReflection(form);
     else if (kind === "session") job = saveSession(form);
     else if (kind === "lesson") job = saveLesson(form);
-    else if (kind === "course") job = createCourse(form);
     else if (kind === "plan") job = createPlan(form);
     else if (kind === "onesession") job = createOne(form);
     else if (kind === "copy") job = copySession(form);
