@@ -136,5 +136,7 @@ The small links at the bottom of the home page were removed except **Dashboard**
 Sign in / Sign out (signing in lands on the Team page, which has Sign out), Team Leader training, People, and the
 hidden "Other groups and pages" box. Its links (All AO walk-throughs, Paramedic, Rural ED, GP clinic, Rural nursing
 microlearning, Classic hub) moved to an "Other pages" line under the footer of both dashboards; AR course was
-already in the dashboard footer. On a branch, not merged.
-
+already in the dashboard footer. Live (PR #368, merged 25 Nov 2026; checked in a fresh browser).
+- "Open training app" on the dashboards' Training sessions panel now reads "Open Team training"; other on-screen
+  "the training app" wording (dashboards, team dashboard, dispatch sign-in, user guides, Team Leader module text) says
+  Team training (25 Nov 2026). On a branch, not merged.

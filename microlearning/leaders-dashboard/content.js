@@ -27,7 +27,7 @@ var M = window.MODULE = {
     { title: "Getting there", blocks: [
       { image: { src: "img/hero.jpg", alt: "The top of the dashboard: greeting, clock and buttons for DSY home, My Google Calendar, Training app and Refresh", caption: "The top of the dashboard" } },
       { steps: [
-        { t: "Sign in", text: "Use your ambulance ID and password. It's the same account as the training app." },
+        { t: "Sign in", text: "Use your ambulance ID and password. It's the same account as Team training." },
         { t: "Open the dashboard", text: "Signed in as a leader, the home page shows a Dashboard link at the bottom." },
         { t: "Save it to your phone", text: "In Safari tap Share, then Add to Home Screen." }
       ] },
@@ -77,8 +77,8 @@ var M = window.MODULE = {
         "The next session",
         "A 4-week calendar for your cluster",
         "How many sessions in the next 4 weeks have no lesson yet"
-      ], check: { q: "The panel says \"2 of 7 sessions in the next 4 weeks have no lesson\". What do you do?", a: "Tap the count. It opens the training app, where you choose a lesson for each of those sessions." } } },
-      { text: "The Lessons tile at the bottom opens the lesson library in the training app." }
+      ], check: { q: "The panel says \"2 of 7 sessions in the next 4 weeks have no lesson\". What do you do?", a: "Tap the count. It opens Team training, where you choose a lesson for each of those sessions." } } },
+      { text: "The Lessons tile at the bottom opens the lesson library in Team training." }
     ] },
 
     { title: "Dispatch and weather", blocks: [
@@ -120,7 +120,7 @@ var M = window.MODULE = {
       { q: "A task has a red date. What does that mean?", options: ["It's overdue", "It's due soon", "It's urgent"], answer: 0,
         why: "Overdue tasks show a red date; tasks due soon show an amber date." },
       { q: "The training panel counts sessions with no lesson. How far ahead does it look?", options: ["1 week", "4 weeks", "6 months"], answer: 1,
-        why: "It counts sessions in the next 4 weeks that have no lesson yet. Tap the count to fix them in the training app." },
+        why: "It counts sessions in the next 4 weeks that have no lesson yet. Tap the count to fix them in Team training." },
       { q: "Which jobs are hidden when the dispatch panel opens?", options: ["Priority 1 jobs", "Port Lincoln and Ceduna crews' jobs", "Team leader jobs"], answer: 1,
         why: "Jobs run by Port Lincoln (PL) and Ceduna (CD) crews are hidden when the page opens. A button in the panel shows them." },
       { q: "The weather flags Friday as hot and windy. What should you check?", options: ["The CFS fire danger and BOM warnings", "Nothing, it's only a forecast", "The roster for Friday only"], answer: 0,
