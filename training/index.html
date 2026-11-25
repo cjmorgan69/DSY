@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261125e">
+<link rel="stylesheet" href="theme.css?v=20261125f">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -61,10 +61,10 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261125e"></script>
-<script src="pwreveal.js?v=20261125e" defer></script>
-<script src="/shared/reminders.js?v=20261125e" defer></script>
-<script src="sa-dates.js?v=20261125e"></script>
+<script src="config.js?v=20261125f"></script>
+<script src="pwreveal.js?v=20261125f" defer></script>
+<script src="/shared/reminders.js?v=20261125f" defer></script>
+<script src="sa-dates.js?v=20261125f"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -208,7 +208,7 @@ li[hidden]{display:none!important}
 
   /* ---------- member view ---------- */
   function header(sub) {
-    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row"><a class="link" href="../">DSY home</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../access/">People</a><a class="link" href="../region/">Region</a>' : "") + '<a class="link" href="../teams/">Team page</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../userguides/leaders/#training">Leader guide</a>' : '<a class="link" href="../userguides/start/">How to use this</a>') + '<button class="link" data-act="signout">Sign out</button></div></header><div class="dsy-reminders remind-row"></div>';
+    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row"><a class="link" href="../">Training home</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../access/">People</a><a class="link" href="../region/">Region</a>' : "") + '<a class="link" href="../teams/">Team page</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../userguides/leaders/#training">Leader guide</a>' : '<a class="link" href="../userguides/start/">How to use this</a>') + '<button class="link" data-act="signout">Sign out</button></div></header><div class="dsy-reminders remind-row"></div>';
   }
 
   function renderMember() {

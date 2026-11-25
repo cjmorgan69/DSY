@@ -21,7 +21,7 @@ var M = window.MODULE = {
   panels: [
     { title: "Introduction", open: true, blocks: [
       { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Setting up your training nights" } },
-      { text: "Training is run in the training app, at dsytraining.com/training (Training app on the dashboard). As a leader you see the tabs Calendar, Lessons and People." },
+      { text: "Training is run in the training app, at dsytraining.com/training (Team training on the dashboard). As a leader you see the tabs Calendar, Lessons and People." },
       { text: "Every picture on this page uses invented people and sessions." }
     ] },
 
@@ -85,7 +85,7 @@ var M = window.MODULE = {
     ] },
 
     { title: "Knowledge check", blocks: [{ quiz: { intro: "Questions from the Team Leader guide. Pick an answer for each, then check.", questions: [
-      { q: "Where do you start setting up a team's nights for the year?", options: ["Dashboard, Crewing gaps", "Training app, Calendar, Set up training nights", "Training app, People"], answer: 1,
+      { q: "Where do you start setting up a team's nights for the year?", options: ["Dashboard, Crewing gaps", "Team training, Calendar, Set up training nights", "The People page"], answer: 1,
         why: "On Calendar, tap Set up training nights." },
       { q: "Team Leader visits are…", options: ["Team-led, facilitator chosen later", "Leader-led, with you as facilitator", "Open to every cluster"], answer: 1,
         why: "Team Leader visits are leader-led, with you as facilitator." },
