@@ -367,6 +367,7 @@
 
     .field input,
     .field select,
+    .field textarea,
     .search-input {
         width: 100%;
         min-height: 46px;
@@ -380,10 +381,18 @@
 
     .field input:focus,
     .field select:focus,
+    .field textarea:focus,
     .search-input:focus {
         border-color: var(--primary);
         background: var(--surface);
         box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+    }
+
+    .field textarea {
+        min-height: 80px;
+        resize: vertical;
+        font: inherit;
+        line-height: 1.45;
     }
 
     .field-help {

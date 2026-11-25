@@ -514,3 +514,13 @@ pages unchanged. Live (PR #343, merged 23 Nov 2026).
   Reset sent status) are an even 2-by-2 grid with more room under Schedule set-up (`.manager-buttons` in
   `roster.css`, class added in `tidyManagerControls`). Order: Booking list, Team hours, Edit sent cut-off, Reset
   sent status (CSS `order`). Signed-in rosters only. On a branch, not merged.
+
+## Notes on the Country Rostering PDF (25 Nov 2026)
+
+- Owner asked for free-text notes on the sent roster. "Send roster to Country Rostering" gets an optional "Notes for
+  Country Rostering" box (up to 600 characters). The notes are printed in a Notes box under the table on the LAST page
+  of the PDF (page 2 for a 7-day roster; that page's rows are made a little shorter to fit), added to the email under
+  "Notes:", and kept in the change log entry. Changing the notes after Preview means Preview again before Send now.
+  The box is cleared after a send. Scheduled (weekly) sends have no notes.
+- Page change on a branch, not merged. Edge function `roster-send` (index.ts, pdf.ts) to be deployed by Claude when
+  the PR merges (deployed version 5 matched main before the change; without notes the PDF and email are unchanged).

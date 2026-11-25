@@ -617,9 +617,9 @@
         return dateKey(today);
     }
 
-    async function sendRequest(mode, first, days) {
+    async function sendRequest(mode, first, days, notes) {
         const result = await withTimeout(client.functions.invoke("roster-send", {
-            body: { group_id: me.group_id, first, days, mode }
+            body: { group_id: me.group_id, first, days, mode, notes }
         }), 90000);
 
         if (result.error) {
@@ -659,6 +659,11 @@
             '<div class="field"><label for="rosterSendDays">Number of days</label>' +
             '<input id="rosterSendDays" type="number" min="1" max="28" value="7" inputmode="numeric" required></div>' +
             '</div>' +
+            '<div class="field"><label for="rosterSendNotes">Notes for Country Rostering (optional)</label>' +
+            '<textarea id="rosterSendNotes" maxlength="600" rows="3" ' +
+            'placeholder="For example: Tumby Bay crew covering Mon 18:00 to Tue 08:00."></textarea>' +
+            '<p class="field-help" style="margin:.3rem 0 0">Printed at the bottom of the last page of the PDF ' +
+            'and added to the email. Up to 600 characters. Not kept for the next send.</p></div>' +
             '<div class="action-bar">' +
             '<button id="rosterSendPreview" class="btn-secondary" type="button">Preview</button>' +
             '<button id="rosterSendGo" class="btn-primary" type="button" disabled>Send now</button>' +
@@ -672,10 +677,12 @@
         const preview = panel.querySelector("#rosterSendPreview");
         const go = panel.querySelector("#rosterSendGo");
         const status = panel.querySelector("#rosterSendStatus");
+        const notes = panel.querySelector("#rosterSendNotes");
         let previewed = "";
         let pdfUrl = "";
 
-        const key = () => first.value + "|" + days.value;
+        const noteText = () => notes.value.trim();
+        const key = () => first.value + "|" + days.value + "|" + noteText();
         const busy = on => { preview.disabled = on; go.disabled = on || previewed !== key(); };
         const line = (text, strong) => {
             const p = document.createElement("p");
@@ -691,7 +698,7 @@
         first.addEventListener("focus", () => {
             if (!first.value) first.value = defaultFirstDay();
         });
-        [first, days].forEach(input => input.addEventListener("input", () => {
+        [first, days, notes].forEach(input => input.addEventListener("input", () => {
             go.disabled = previewed !== key();
         }));
 
@@ -702,7 +709,7 @@
             busy(true);
 
             try {
-                const data = await sendRequest("preview", first.value, Number(days.value) || 7);
+                const data = await sendRequest("preview", first.value, Number(days.value) || 7, noteText());
                 const bytes = Uint8Array.from(atob(data.pdf_base64), c => c.charCodeAt(0));
 
                 if (pdfUrl) URL.revokeObjectURL(pdfUrl);
@@ -749,9 +756,10 @@
             busy(true);
 
             try {
-                const data = await sendRequest("send", first.value, Number(days.value) || 7);
+                const data = await sendRequest("send", first.value, Number(days.value) || 7, noteText());
 
                 previewed = "";
+                notes.value = "";
                 status.textContent = "";
                 line("Sent to " + data.to.join(", ") + ".", true);
                 line(data.period);
