@@ -284,3 +284,10 @@ Back / Now / Next day buttons. Now is the rolling 24 hours; the first step snaps
 next 8am, then one 8am-to-8am day per step, up to 7 days ahead. Each step is one `roster_coverage` call per cluster
 (all teams are on Supabase, so it is quick); crew names come from the bookings already loaded (180 days ahead). A future
 day shows uncovered team-hours and teams with a gap instead of the "now" counts. Tested against the real roster data. Merged (PR #360, 24 Nov 2026).
+
+## Widescreen layout (owner, 25 Nov 2026)
+
+`/dashboard/wide/` columns: left Roster then Dispatch; middle Training sessions then Tasks; right Weather, Ask DSY, then
+Suggestions. Below 1500 px the right column still runs as a row across the bottom; below 1000 px everything stacks.
+The phone dashboard (`/dashboard/`) is unchanged (Dispatch was already under the roster). On a branch, not merged.
+

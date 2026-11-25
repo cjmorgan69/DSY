@@ -139,4 +139,4 @@ microlearning, Classic hub) moved to an "Other pages" line under the footer of b
 already in the dashboard footer. Live (PR #368, merged 25 Nov 2026; checked in a fresh browser).
 - "Open training app" on the dashboards' Training sessions panel now reads "Open Team training"; other on-screen
   "the training app" wording (dashboards, team dashboard, dispatch sign-in, user guides, Team Leader module text) says
-  Team training (25 Nov 2026). On a branch, not merged.
+  Team training (25 Nov 2026). Live (PR #369, merged 25 Nov 2026).
