@@ -238,3 +238,7 @@ from Training into Grant access, people and passwords; Your team page is its own
 `/userguides/` has a "New Team Leader? Start here" card (leaders only) and a short VTL path (VTLs only), shown through
 `DSY_GATE.ready`. Dashboard footers (both) list leader pages in the same order with Team Leader training first; the
 home page leader links add Team Leader training. On a branch, not merged.
+- 25 Nov 2026: People and passwords (`leaders-people`) text updated for the one People page (`/access/`, the training
+  app's People tab is gone, take someone off a team with ✕ on the team chip); the `img/person.jpg` block was removed
+  from the page. Its video and the other screenshots still show "Grant access" and the old People tab: owner to say
+  whether to re-shoot and re-narrate. Relief, Dashboard and Team page modules: "Grant access" wording changed to People.
