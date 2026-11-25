@@ -61,7 +61,7 @@ Station 2 rewritten 25 Nov 2026 (owner: AOs don't do 12-leads): D-ECG and 12-lea
 from the SAAS General Operation Cert IV task card (owner's photo, 12-lead crossed to 4-lead): default screen, Jog dial
 leads, 4-lead print, NIBP Auto interval, views, shortcut keys, alarm autolimits, screenshot, trend and mission summary.
 Card items left out: module separate/reassemble, CPR screen, charge and defib in demo mode, LT ECG, CO2 (crossed out).
-On a branch, not merged.
+Live (PR #376, merged 25 Nov 2026).
 
 ## Asthma
 
