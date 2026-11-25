@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261125n">
+<link rel="stylesheet" href="theme.css?v=20261125o">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -47,6 +47,9 @@
 .ms { display: block; width: 100%; text-align: left; border: 1px solid color-mix(in srgb, var(--brand) 30%, var(--line)); border-left: 4px solid var(--brand); border-radius: 8px; padding: .25rem .4rem; background: var(--brand-soft); color: var(--ink); font: inherit; font-size: .78rem; line-height: 1.25; cursor: pointer; }
 .ms.team { border-left-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
 .ms.past { opacity: .6; }
+.ms.ar { border-left-color: #7c3aed; background: color-mix(in srgb, #7c3aed 10%, var(--surface)); border-color: color-mix(in srgb, #7c3aed 30%, var(--line)); text-decoration: none; color: inherit; }
+.chip.ar { background: color-mix(in srgb, #7c3aed 14%, var(--surface)); color: #7c3aed; }
+@media (prefers-color-scheme: dark) { .ms.ar { border-left-color: #a78bfa; } .chip.ar { color: #c4b5fd; } }
 .ms[draggable="true"] { cursor: grab; }
 .ms.dragging { opacity: .35; }
 .ms b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -61,10 +64,10 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261125n"></script>
-<script src="pwreveal.js?v=20261125n" defer></script>
-<script src="/shared/reminders.js?v=20261125n" defer></script>
-<script src="sa-dates.js?v=20261125n"></script>
+<script src="config.js?v=20261125o"></script>
+<script src="pwreveal.js?v=20261125o" defer></script>
+<script src="/shared/reminders.js?v=20261125o" defer></script>
+<script src="sa-dates.js?v=20261125o"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -179,13 +182,40 @@ li[hidden]{display:none!important}
       /* relief cover (owner, 22 Nov 2026): this leader's own covers, so leader-led nights in a cover default to the reliever */
       sb.from("leader_relief").select("*").eq("leader_id", S.user.id).is("ended_at", null).then(function (x) { return x.error ? [] : x.data || []; }),
       /* Volunteer Team Leaders, one per team (owner, 22 Nov 2026) */
-      sb.from("team_vtls").select("group_id,member_id").then(function (x) { return x.error ? [] : x.data || []; })
+      sb.from("team_vtls").select("group_id,member_id").then(function (x) { return x.error ? [] : x.data || []; }),
+      /* AR course days on the leader calendar (owner, 25 Nov 2026): read-only, from the course_* tables. Never blocks. */
+      loadArDays()
     ]).then(function (r) {
-      S.covers = r[10]; S.vtls = r[11];
+      S.covers = r[10]; S.vtls = r[11]; S.arDays = r[12] || [];
       S.reflections = {}; r[9].forEach(function (x) { S.reflections[x.session_id] = x.notes; });
       S.groups = r[0]; S.lessons = r[1]; S.sessions = r[2]; S.bookings = r[3];
       S.profiles = r[4]; S.memberships = r[5]; S.attendance = r[6]; S.files = r[7]; S.shares = r[8];
     });
+  }
+
+  function loadArDays() {
+    var none = function () { return []; }, ok = function (x) { if (x.error) throw x.error; return x.data || []; };
+    return Promise.all([
+      sb.from("course_workshops").select("id,cohort_id,day_number,date,start_time,end_time,location,capacity").eq("cancelled", false).then(ok),
+      sb.from("course_cohorts").select("id,name,course_name,archived").then(ok),
+      sb.from("course_days").select("cohort_id,day_number,title").then(ok),
+      sb.from("course_bookings").select("workshop_id,status").then(ok)
+    ]).then(function (r) {
+      var co = {}, dt = {}, bk = {};
+      r[1].forEach(function (c) { if (!c.archived) co[c.id] = c; });
+      r[2].forEach(function (d) { dt[d.cohort_id + ":" + d.day_number] = d.title; });
+      r[3].forEach(function (b) { if (b.status === "booked") bk[b.workshop_id] = (bk[b.workshop_id] || 0) + 1; });
+      return r[0].filter(function (w) { return co[w.cohort_id]; }).map(function (w) {
+        return { ar: true, id: w.id, session_date: w.date, start_time: w.start_time, end_time: w.end_time, location: w.location,
+          day: w.day_number, title: dt[w.cohort_id + ":" + w.day_number] || "", group: co[w.cohort_id].name, booked: bk[w.id] || 0, capacity: w.capacity };
+      });
+    }).catch(none);
+  }
+  function arTime(a) { return a.start_time ? hhmm(a.start_time) + (a.end_time ? " to " + hhmm(a.end_time) : "") : "Time to be set"; }
+  function arLabel(a) { return "AR course · Day " + a.day + (a.title ? ": " + a.title : ""); }
+  function arShown(t, past) {
+    if (!(S.filter === "all" || S.filter === "ar") || S.typeFilter !== "all") return [];
+    return (S.arDays || []).filter(function (a) { return past || a.session_date >= t; });
   }
 
   function load() {
@@ -549,8 +579,9 @@ li[hidden]{display:none!important}
     var end = new Date(first.getFullYear(), first.getMonth() + 1, 0); end.setDate(end.getDate() + (7 - ((end.getDay() + 6) % 7) - 1));
     var byDay = {}; list.forEach(function (s) { (byDay[s.session_date] = byDay[s.session_date] || []).push(s); });
     for (var d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      var k = ymd(d), items = (byDay[k] || []).sort(function (a, b) { return String(a.start_time).localeCompare(String(b.start_time)); });
+      var k = ymd(d), items = (byDay[k] || []).sort(function (a, b) { return String(a.start_time || "").localeCompare(String(b.start_time || "")); });
       cells.push('<div class="day' + (k.slice(0, 7) !== m ? " out" : "") + (k === t ? " today" : "") + '" data-day="' + k + '"><span class="dn">' + d.getDate() + "</span>" + items.map(function (s) {
+        if (s.ar) return '<a class="ms ar' + (s.session_date < t ? " past" : "") + '" href="../ar/course/" title="' + esc(arLabel(s) + " - " + arTime(s) + (s.location ? " - " + s.location : "") + " - " + s.group + " - " + s.booked + " booked") + '"><b>AR course · Day ' + esc(s.day) + "</b><span>" + esc(s.start_time ? hhmm(s.start_time) : "Time to be set") + "</span>" + (s.title ? "<span>" + esc(s.title) + "</span>" : "") + "</a>";
         var g = groupOf(s.group_id), ls = lessonsOf(s), team = s.session_type === "team", move = editableTeams().length > 0;
         var what = ls.length ? ls.map(function (l) { return l.title; }).join(" + ") : s.topic || "";
         return '<button class="ms' + (team ? " team" : "") + (s.session_date < t ? " past" : "") + '" data-act="open" data-id="' + s.id + '"' + (move ? ' draggable="true" data-move="' + s.id + '"' : "") +
@@ -596,20 +627,25 @@ li[hidden]{display:none!important}
     var month = monthOn();
     var tools = '<div class="row"><button class="btn small" data-act="plan" data-p="repeat">Set up training nights</button><button class="btn ghost small" data-act="plan" data-p="one">Add one session</button>' +
       (DESK.matches ? '<span style="margin-left:auto" class="filters" role="group" aria-label="Calendar view"><button aria-pressed="' + month + '" data-act="calview" data-v="month">Month</button><button aria-pressed="' + !month + '" data-act="calview" data-v="list">List</button></span>' : "") + "</div>";
-    if (S.filter !== "all" && !inView(groupOf(S.filter))) S.filter = "all";
+    if (S.filter !== "all" && S.filter !== "ar" && !inView(groupOf(S.filter))) S.filter = "all";
     var list = S.sessions.filter(function (s) {
       return inView(groupOf(s.group_id)) && (S.filter === "all" || s.group_id === S.filter) && (S.typeFilter === "all" || s.session_type === S.typeFilter) && (S.showPast || s.session_date >= t);
     });
     var html = clusterChips() + tools + '<div class="filters" role="group" aria-label="Filter by team or course"><button aria-pressed="' + (S.filter === "all") + '" data-act="filter" data-g="all">All</button>' +
-      S.groups.filter(inView).map(function (g) { return '<button aria-pressed="' + (S.filter === g.id) + '" data-act="filter" data-g="' + g.id + '">' + esc(g.name) + "</button>"; }).join("") + "</div>" +
+      S.groups.filter(inView).map(function (g) { return '<button aria-pressed="' + (S.filter === g.id) + '" data-act="filter" data-g="' + g.id + '">' + esc(g.name) + "</button>"; }).join("") +
+      ((S.arDays || []).length ? '<button aria-pressed="' + (S.filter === "ar") + '" data-act="filter" data-g="ar">AR course</button>' : "") + "</div>" +
       '<div class="filters" role="group" aria-label="Filter by who leads">' + [["all", "Any session"], ["leader", "Leader-led"], ["team", "Team-led"]].map(function (x) {
         return '<button aria-pressed="' + (S.typeFilter === x[0]) + '" data-act="typefilter" data-t="' + x[0] + '">' + x[1] + "</button>";
       }).join("") + (month ? "" : '<button aria-pressed="' + S.showPast + '" data-act="past">Show past</button>') + "</div>";
     if (month) return html + renderMonth(S.sessions.filter(function (s) {
       return inView(groupOf(s.group_id)) && (S.filter === "all" || s.group_id === S.filter) && (S.typeFilter === "all" || s.session_type === S.typeFilter);
-    }), t);
+    }).concat(arShown(t, true)), t);
+    list = list.concat(arShown(t, S.showPast)).sort(function (a, b) { return a.session_date < b.session_date ? -1 : a.session_date > b.session_date ? 1 : String(a.start_time || "").localeCompare(String(b.start_time || "")); });
     if (!list.length) return html + '<div class="panel empty">No sessions to show.</div>';
     return html + '<ul class="panel list">' + list.map(function (s) {
+      if (s.ar) return '<li><a class="item" href="../ar/course/" style="text-decoration:none;color:inherit">' + tile(s.session_date) +
+        '<div class="what"><span class="t">' + esc(arLabel(s)) + '</span><span class="small muted">' + esc(arTime(s)) + (s.location ? " - " + esc(s.location) : "") + " - " + esc(s.group) + '</span><span class="row"><span class="chip ar">AR course</span></span></div>' +
+        '<div class="act"><span class="chip">' + s.booked + (s.capacity ? " of " + s.capacity : "") + " booked</span></div></a></li>";
       var ls = lessonsOf(s), n = bookedCount(s.id), team = s.session_type === "team";
       var set = ls.length ? '<span class="chip good">' + (ls.length > 1 ? ls.length + " lessons" : "Lesson set") + "</span>" : s.topic ? '<span class="chip hi">Topic set</span>' : '<span class="chip warn">' + (team ? "Needs topic" : "Needs lesson") + "</span>";
       return '<li><button class="item" data-act="open" data-id="' + s.id + '">' + tile(s.session_date) +
