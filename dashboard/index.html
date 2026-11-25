@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261125j" data-level="leader"></script>
+<script src="/shared/gate.js?v=20261125l" data-level="leader"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/training/theme.css?v=20261125j">
+<link rel="stylesheet" href="/training/theme.css?v=20261125l">
 <style>
 /* Lead instructor's dashboard. Live data only, nothing stored in this file:
    roster coverage = each cluster's Apps Script "coverage" request (same as /modules/rosters/operations/),
@@ -39,7 +39,7 @@
 .card { background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:1rem 1.1rem; display:flex; flex-direction:column; gap:.8rem; min-width:0;
   box-shadow:0 1px 2px rgba(20,40,30,.05),0 8px 22px -16px rgba(20,40,30,.25); }
 .col { display:contents; }
-.o1 { order:1; } .o2 { order:2; } .o3 { order:3; } .o4 { order:4; } .o5 { order:5; } .o6 { order:6; }
+.o1 { order:1; } .o2 { order:2; } .o3 { order:3; } .o4 { order:4; } .o5 { order:5; } .o6 { order:6; } .o7 { order:7; } .o8 { order:8; }
 .grid { display:flex; flex-direction:column; gap:1rem; }
 @media (min-width:900px) {
   .grid { display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); align-items:start; }
@@ -218,8 +218,8 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
 .amsg.err { color:var(--r); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="/modules/rosters/shared/teams.js?v=20261125j"></script>
-<script src="/modules/rosters/shared/roster-data.js?v=20261125j"></script>
+<script src="/modules/rosters/shared/teams.js?v=20261125l"></script>
+<script src="/modules/rosters/shared/roster-data.js?v=20261125l"></script>
 </head>
 <body>
 <main class="dash">
@@ -252,18 +252,20 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
       <div id="cBody"><p class="note">Loading names from the team rosters…</p></div>
       <p class="note" id="rNote"></p>
     </section>
-    <section class="card o4" aria-labelledby="hDisp">
+    <section class="card o2" aria-labelledby="hDisp">
       <div class="ch"><h2 id="hDisp">Dispatch · last 7 days</h2><span><a href="/dashboard/contribution/">Hours and jobs by person →</a> · <a href="/dispatch/">Full dispatch screen →</a></span></div>
       <div id="dBody"><div class="skel"></div></div>
     </section>
-    <nav class="shorts o4" aria-label="Shortcuts">
+    <nav class="shorts o3" aria-label="Shortcuts">
       <a class="short" href="/dashboard/contribution/"><span class="si" aria-hidden="true">🙌</span><div><b>Volunteer contribution</b><span>Hours on roster and jobs paged, per person</span></div><span class="go" aria-hidden="true">→</span></a>
-      <a class="short" href="/microlearning/"><span class="si" aria-hidden="true">📱</span><div><b>Microlearning</b><span>AO, Paramedic and RN modules</span></div><span class="go" aria-hidden="true">→</span></a>
-      <a class="short" href="/training/#lessons"><span class="si" aria-hidden="true">📚</span><div><b>Lessons</b><span id="lessonCount">Lesson library in Team training</span></div><span class="go" aria-hidden="true">→</span></a>
     </nav>
     </div>
     <div class="col">
-    <section class="card o2" aria-labelledby="hTasks">
+    <section class="card o4" aria-labelledby="hTrain">
+      <div class="ch"><h2 id="hTrain">Training sessions</h2><a href="/training/">Open Team training →</a></div>
+      <div id="tBody"><div class="skel"></div></div>
+    </section>
+    <section class="card o5" aria-labelledby="hTasks">
       <div class="ch"><h2 id="hTasks">Tasks</h2><span class="note" id="tCount"></span></div>
       <form class="tadd" id="tForm" autocomplete="off">
         <input type="text" id="tTitle" maxlength="300" placeholder="Add a task" aria-label="New task" required>
@@ -272,7 +274,13 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
       </form>
       <div id="tList"><p class="tempty">Loading…</p></div>
     </section>
-    <section class="card o2" aria-labelledby="hAsk">
+    <section class="card o6" aria-labelledby="hWx">
+      <div class="ch"><h2 id="hWx">Weather · next 7 days</h2><a id="wxMore" href="https://www.bom.gov.au/sa/forecasts/eyre-peninsula.shtml" target="_blank" rel="noopener">BOM forecast →</a></div>
+      <div class="chips" id="wxTowns" role="group" aria-label="Town"></div>
+      <div id="wxBody"><div class="skel"></div></div>
+      <p class="note">Forecast from Open-Meteo. Check the BOM and CFS for warnings and fire danger.</p>
+    </section>
+    <section class="card o7" aria-labelledby="hAsk">
       <div class="ch"><h2 id="hAsk">Ask DSY</h2><a href="/userguides/leaders/">Team Leader guide →</a></div>
       <p class="note">How-to questions about the DSY site, answered by AI from the Team Leader and roster guides. Not for clinical questions or patient details.</p>
       <div class="alog" id="aLog" aria-live="polite"></div>
@@ -282,17 +290,7 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
       </form>
       <button class="tmore" type="button" id="aClear" hidden>Start again</button>
     </section>
-    <section class="card o3" aria-labelledby="hTrain">
-      <div class="ch"><h2 id="hTrain">Training sessions</h2><a href="/training/">Open Team training →</a></div>
-      <div id="tBody"><div class="skel"></div></div>
-    </section>
-    <section class="card o5" aria-labelledby="hWx">
-      <div class="ch"><h2 id="hWx">Weather · next 7 days</h2><a id="wxMore" href="https://www.bom.gov.au/sa/forecasts/eyre-peninsula.shtml" target="_blank" rel="noopener">BOM forecast →</a></div>
-      <div class="chips" id="wxTowns" role="group" aria-label="Town"></div>
-      <div id="wxBody"><div class="skel"></div></div>
-      <p class="note">Forecast from Open-Meteo. Check the BOM and CFS for warnings and fire danger.</p>
-    </section>
-    <section class="card o6" aria-labelledby="hSugg">
+    <section class="card o8" aria-labelledby="hSugg">
       <div class="ch"><h2 id="hSugg">Suggestions</h2><span class="note" id="sCount"></span></div>
       <p class="note" style="margin:0">Ideas to make DSY better for your teams. Every Team Leader can see them; the lead instructor replies.</p>
       <form class="sform" id="sForm" autocomplete="off">
@@ -319,6 +317,6 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
   </form>
 </dialog>
 
-<script src="/dashboard/dash.js?v=20261125j"></script>
+<script src="/dashboard/dash.js?v=20261125l"></script>
 </body>
 </html>

@@ -289,5 +289,14 @@ day shows uncovered team-hours and teams with a gap instead of the "now" counts.
 
 `/dashboard/wide/` columns: left Roster then Dispatch; middle Training sessions then Tasks; right Weather, Ask DSY, then
 Suggestions. Below 1500 px the right column still runs as a row across the bottom; below 1000 px everything stacks.
-The phone dashboard (`/dashboard/`) is unchanged (Dispatch was already under the roster). On a branch, not merged.
+Live (PR #370, merged 25 Nov 2026).
+
+## Phone dashboard order (owner, 25 Nov 2026)
+
+`/dashboard/` top to bottom: Roster, Dispatch, Volunteer contribution tile, Training sessions, Tasks, Weather, Ask DSY,
+Suggestions (order classes o1 to o8; on a tablet's two columns: left Roster, Dispatch, Volunteer contribution; right
+Training, Tasks, Weather, Ask DSY, Suggestions). The Microlearning and Lessons shortcut tiles were removed (reached
+through Team training); `dash.js` skips the lesson count when there is no Lessons tile. The widescreen top bar's
+Microlearning and Lessons links were removed too. Leader guide section 2 and the Your dashboard module text updated; the module's screenshots still show the old
+tiles. On a branch, not merged.
 

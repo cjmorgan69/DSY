@@ -389,6 +389,7 @@
 
   /* ---------- shortcut tile: lesson count ---------- */
   function loadLessonCount() {
+    if (!$("lessonCount")) return Promise.resolve(); /* neither dashboard shows a lesson count now (25 Nov 2026) */
     return sb.from("lessons").select("id", { count: "exact", head: true }).then(function (r) {
       if (!r.error && r.count != null) $("lessonCount").textContent = $("lessonCount").hasAttribute("data-short") ? String(r.count) : r.count + " lessons in the library";
     });
