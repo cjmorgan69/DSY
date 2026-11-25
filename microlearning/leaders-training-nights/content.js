@@ -1,6 +1,7 @@
 /* Setting up training nights - Team Leader microlearning. Content only: the layout lives in ../shared/module.js.
    Source: the DSY Team Leader guide (/userguides/leaders/), section 9 (Training sessions and lessons: Your cluster,
-   Setting up your training nights, Sessions and courses, Lessons), as of 21 November 2026. Screenshots are of
+   Setting up your training nights, Sessions and courses, Lessons), as of 21 November 2026 (course text updated 25 Nov
+   2026: the training app no longer makes courses). Screenshots are of
    /training/ (leader view) filled with INVENTED teams, people and sessions (see .claude/status/microlearning.md).
    Quiz, quick checks and the practical were written by Claude from the guide, for the owner to review. */
 var M = window.MODULE = {
@@ -80,7 +81,7 @@ var M = window.MODULE = {
         "Removes the night's bookings and attendance too",
         "Can't be undone"
       ] } },
-      { text: "Add a course (under Teams and courses) makes a separate set of sessions, for example for recruits from several teams: pick the first date, the last date and the days between sessions. A new course belongs to your cluster." }
+      { text: "The training app is for team training only. The Ambulance Responder course has its own pages: AR course, at the bottom of the dashboard." }
     ] },
 
     { title: "Knowledge check", blocks: [{ quiz: { intro: "Questions from the Team Leader guide. Pick an answer for each, then check.", questions: [
