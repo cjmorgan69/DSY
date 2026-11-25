@@ -298,5 +298,14 @@ Suggestions (order classes o1 to o8; on a tablet's two columns: left Roster, Dis
 Training, Tasks, Weather, Ask DSY, Suggestions). The Microlearning and Lessons shortcut tiles were removed (reached
 through Team training); `dash.js` skips the lesson count when there is no Lessons tile. The widescreen top bar's
 Microlearning and Lessons links were removed too. Leader guide section 2 and the Your dashboard module text updated; the module's screenshots still show the old
-tiles. On a branch, not merged.
+tiles. Live (PR #371, merged 25 Nov 2026).
+
+## Region link (owner, 25 Nov 2026)
+
+Both dashboards have a **Region** button (after Team training) to `/region/?mine=1`. Team training's leader header has
+Training home, People, Region (also `?mine=1`), Leader guide, Sign out; the Team page link now shows to members only.
+`?mine=1` makes the Region page start on the leader's own cluster (`profiles.cluster`; blank = All clusters for the
+lead instructor) instead of the cluster last chosen on that device; tapping a chip still changes and remembers it.
+Note: the Region page lets in only `profiles.role = 'leader'`, so a relief Team Leader on cover is sent to the Team
+page. On a branch, not merged.
 
