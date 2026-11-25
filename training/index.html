@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261125c">
+<link rel="stylesheet" href="theme.css?v=20261125d">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -61,10 +61,10 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261125c"></script>
-<script src="pwreveal.js?v=20261125c" defer></script>
-<script src="/shared/reminders.js?v=20261125c" defer></script>
-<script src="sa-dates.js?v=20261125c"></script>
+<script src="config.js?v=20261125d"></script>
+<script src="pwreveal.js?v=20261125d" defer></script>
+<script src="/shared/reminders.js?v=20261125d" defer></script>
+<script src="sa-dates.js?v=20261125d"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -838,8 +838,12 @@ li[hidden]{display:none!important}
      People moved out of the training app to one People page, /access/ (owner, 25 Nov 2026): this tab keeps the
      courses that used to sit under the people list. */
   function renderCourses() {
-    var html = clusterChips();
+    /* Ambulance Responder course (owner, 25 Nov 2026): it runs on its own pages, so the tab links to them */
+    var html = '<section class="panel pad stack"><h3>Ambulance Responder course</h3><p class="small muted">The AR course has its own pages: the course page (days, stations, slides and students) and the bookings page.</p>' +
+      '<div class="row"><a class="btn small" href="../ar/">Open the AR course page</a><a class="btn ghost small" href="../ar/course/">AR course bookings</a></div></section>';
+    html += clusterChips();
     var courses = S.groups.filter(function (g) { return g.type === "course"; });
+    if (!courses.length) html += '<section class="panel pad stack"><h3>Your courses</h3><p class="small muted">No other courses set up in the training app yet. Add one below if you need a separate set of sessions.</p></section>';
     if (courses.length) {
       html += '<section class="panel pad stack"><h3>Your courses</h3><ul class="stack">' + courses.map(function (g) {
         var ns = S.sessions.filter(function (s) { return s.group_id === g.id; }).length;
