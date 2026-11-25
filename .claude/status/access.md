@@ -222,3 +222,6 @@ dropped (the header already links to Region).
 - Tested with invented data in a browser (lead instructor, cluster leader, relief) at desktop and phone width.
   Live (PR #362, merged 25 Nov 2026; live page checked signed out: sends to sign-in). Follow-up live (PR #363, merged
   25 Nov 2026): the ID moved under the name so the action buttons fit on wider screens.
+- Courses tab (owner, 25 Nov 2026): an Ambulance Responder course card at the top links to `/ar/` and `/ar/course/`;
+  "Your courses" always shows (a note when the app has no other courses). Leader guide section on training updated
+  (tabs Calendar, Lessons, Courses). On a branch, not merged.
