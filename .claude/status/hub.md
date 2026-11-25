@@ -130,3 +130,11 @@ DSY Training). The feedback category "Training app" is now "Team training" (olde
 Not changed: screenshots and narrated videos in the Team Leader modules (Your dashboard hero picture, Training nights
 video) still show the old labels. On a branch, not merged.
 
+## Training home: links trimmed (owner, 25 Nov 2026)
+
+The small links at the bottom of the home page were removed except **Dashboard** (still shown only to leaders). Gone:
+Sign in / Sign out (signing in lands on the Team page, which has Sign out), Team Leader training, People, and the
+hidden "Other groups and pages" box. Its links (All AO walk-throughs, Paramedic, Rural ED, GP clinic, Rural nursing
+microlearning, Classic hub) moved to an "Other pages" line under the footer of both dashboards; AR course was
+already in the dashboard footer. On a branch, not merged.
+
