@@ -28,7 +28,7 @@ var M = window.MODULE = {
       { image: { src: "img/hero.jpg", alt: "The top of the dashboard: greeting, clock and buttons for DSY home, My Google Calendar, Training app and Refresh", caption: "The top of the dashboard" } },
       { steps: [
         { t: "Sign in", text: "Use your ambulance ID and password. It's the same account as the training app." },
-        { t: "Open the dashboard", text: "Signed in as a leader, the home page shows Dashboard and People links." },
+        { t: "Open the dashboard", text: "Signed in as a leader, the home page shows a Dashboard link at the bottom." },
         { t: "Save it to your phone", text: "In Safari tap Share, then Add to Home Screen." }
       ] },
       { box: { title: "Buttons along the top", items: [

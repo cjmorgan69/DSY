@@ -20,7 +20,7 @@ var M = window.MODULE = {
   panels: [
     { title: "Introduction", open: true, blocks: [
       { video: { src: "intro.mp4?v=2", poster: "intro-poster.jpg?v=2", title: "Adding people, and resetting passwords" } },
-      { text: "Only people whose ambulance ID is on the approved list can make a DSY account. The People page, at dsytraining.com/access (the 👥 People button on the dashboard, and People on the home page), is where leaders manage that list, their teams and passwords. It used to be called Grant access, and the training app used to have its own People tab: that is now all on this one page." },
+      { text: "Only people whose ambulance ID is on the approved list can make a DSY account. The People page, at dsytraining.com/access (the 👥 People button on the dashboard), is where leaders manage that list, their teams and passwords. It used to be called Grant access, and Team Training used to have its own People tab: that is now all on this one page." },
       { text: "Every picture on this page uses invented people and IDs." }
     ] },
 

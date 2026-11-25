@@ -228,4 +228,4 @@ dropped (the header already links to Region).
 - Courses tab removed (owner, 25 Nov 2026: Team Training is for team training only): the training app has Calendar and
   Lessons; "Add a course", the course list and course delete are gone (no course groups or course sessions existed,
   checked). The AR course keeps its own entry point (AR course on the dashboard, `/ar/`). Course-type groups are still
-  understood by the code if any ever exist. Guide and Training nights module text updated. On a branch, not merged.
+  understood by the code if any ever exist. Guide and Training nights module text updated. Live (PR #367, merged 25 Nov 2026).
