@@ -28,7 +28,7 @@ var M = window.MODULE = {
       { image: { src: "img/hero.jpg", alt: "The top of the dashboard: greeting, clock and buttons for DSY home, My Google Calendar, Training app and Refresh", caption: "The top of the dashboard" } },
       { steps: [
         { t: "Sign in", text: "Use your ambulance ID and password. It's the same account as the training app." },
-        { t: "Open the dashboard", text: "Signed in as a leader, the home page shows Dashboard and Grant access links." },
+        { t: "Open the dashboard", text: "Signed in as a leader, the home page shows Dashboard and People links." },
         { t: "Save it to your phone", text: "In Safari tap Share, then Add to Home Screen." }
       ] },
       { box: { title: "Buttons along the top", items: [
@@ -36,7 +36,7 @@ var M = window.MODULE = {
         "📅 My Google Calendar. Tap ⚙︎ beside it to paste your own calendar link. It's saved to your DSY account, so it works on any device, and only you see it.",
         "↻ Refresh"
       ] } },
-      { text: "On a computer, the widescreen version is at /dashboard/wide/. Each version links to the other at the bottom. The leader pages (Crewing gaps, Relief cover, Roster emails, Grant access, AR course, Retro car dash) are linked along the bottom too." }
+      { text: "On a computer, the widescreen version is at /dashboard/wide/. Each version links to the other at the bottom. The 👥 People button at the top opens the People page. The leader pages (Crewing gaps, Relief cover, Roster emails, AR course, Retro car dash) are linked along the bottom." }
     ] },
 
     { title: "Roster today", blocks: [

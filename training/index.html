@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261125a">
+<link rel="stylesheet" href="theme.css?v=20261125b">
 <style>
 /* AR course card (member view): the student's AR course dates, separate from team sessions. */
 .ar-card { border-left: 5px solid var(--brand); }
@@ -61,10 +61,10 @@ li[hidden]{display:none!important}
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261125a"></script>
-<script src="pwreveal.js?v=20261125a" defer></script>
-<script src="/shared/reminders.js?v=20261125a" defer></script>
-<script src="sa-dates.js?v=20261125a"></script>
+<script src="config.js?v=20261125b"></script>
+<script src="pwreveal.js?v=20261125b" defer></script>
+<script src="/shared/reminders.js?v=20261125b" defer></script>
+<script src="sa-dates.js?v=20261125b"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -76,7 +76,7 @@ li[hidden]{display:none!important}
   var S = {
     user: null, profile: null, tab: location.hash === "#lessons" ? "lessons" : "calendar", view: null,
     reflections: {}, attFilter: null, attSession: null, groups: [], lessons: [], sessions: [], bookings: [], profiles: [], memberships: [],
-    mySessions: [], myBookings: {}, filter: "all", typeFilter: "all", showPast: false, authMode: "in", detail: null, lessonEdit: null, personEdit: null,
+    mySessions: [], myBookings: {}, filter: "all", typeFilter: "all", showPast: false, authMode: "in", detail: null, lessonEdit: null,
     shared: [], files: [], shares: [], roster: [], rosterSession: null, lessonView: null, memberTab: "sessions", delSession: null, cluster: null, plan: null,
     calView: null, month: null
   };
@@ -208,7 +208,7 @@ li[hidden]{display:none!important}
 
   /* ---------- member view ---------- */
   function header(sub) {
-    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row"><a class="link" href="../">DSY home</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../region/">Region</a>' : "") + '<a class="link" href="../teams/">Team page</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../userguides/leaders/#training">Leader guide</a>' : '<a class="link" href="../userguides/start/">How to use this</a>') + '<button class="link" data-act="signout">Sign out</button></div></header><div class="dsy-reminders remind-row"></div>';
+    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row"><a class="link" href="../">DSY home</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../access/">People</a><a class="link" href="../region/">Region</a>' : "") + '<a class="link" href="../teams/">Team page</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../userguides/leaders/#training">Leader guide</a>' : '<a class="link" href="../userguides/start/">How to use this</a>') + '<button class="link" data-act="signout">Sign out</button></div></header><div class="dsy-reminders remind-row"></div>';
   }
 
   function renderMember() {
@@ -408,10 +408,10 @@ li[hidden]{display:none!important}
       }
       return;
     }
-    html += '<div class="tabs" role="tablist">' + [["calendar", "Calendar"], ["lessons", "Lessons"], ["people", "People"]].map(function (t) {
+    html += '<div class="tabs" role="tablist">' + [["calendar", "Calendar"], ["lessons", "Lessons"], ["courses", "Courses"]].map(function (t) {
       return '<button role="tab" aria-selected="' + (S.tab === t[0]) + '" data-act="tab" data-tab="' + t[0] + '">' + t[1] + "</button>";
     }).join("") + "</div>";
-    html += S.tab === "calendar" ? renderCalendar() : S.tab === "lessons" ? renderLessons() : renderPeople();
+    html += S.tab === "calendar" ? renderCalendar() : S.tab === "lessons" ? renderLessons() : renderCourses();
     $app.innerHTML = html;
   }
 
@@ -660,7 +660,7 @@ li[hidden]{display:none!important}
     }).join("") + '</select><span class="small muted">Bookings and attendance stay with the session if you change the team.</span></label>';
   }
   function renderAttendance(s, members, att, bookedIds, noIds) {
-    if (!members.length) return '<section class="panel pad stack"><h3>Attendance</h3><p class="muted">No one is in this group yet. Add people in the People tab.</p></section>';
+    if (!members.length) return '<section class="panel pad stack"><h3>Attendance</h3><p class="muted">No one is in this group yet. Add people on the <a href="../access/">People page</a>.</p></section>';
     var came = members.filter(function (p) { return att[p.id]; }), nots = members.filter(function (p) { return !att[p.id]; });
     var f = S.attFilter && S.attSession === s.id ? S.attFilter : (S.reflections[s.id] && came.length ? "came" : "all");
     var shown = f === "came" ? came : f === "not" ? nots : members;
@@ -834,31 +834,11 @@ li[hidden]{display:none!important}
     }).then(function () { toast("Lesson saved."); S.lessonEdit = null; return load().then(render); }).catch(fail);
   }
 
-  /* ---------- leader: people and groups ---------- */
-  function peopleMatch(key) { var q = String(S.peopleQ || "").trim().toLowerCase(); return !q || q.split(/\s+/).every(function (w) { return key.indexOf(w) > -1; }); }
-  function filterPeople() {
-    var list = document.getElementById("p-list"); if (!list) return;
-    var n = 0; list.querySelectorAll("li[data-q]").forEach(function (li) { var ok = peopleMatch(li.getAttribute("data-q")); li.hidden = !ok; if (ok) n++; });
-    var none = document.getElementById("p-none"); if (none) none.hidden = n > 0 || !list.querySelector("li[data-q]");
-  }
-  function renderPeople() {
-    if (S.personEdit) return renderPersonForm();
-    if (S.pageEdit) return renderPageForm();
-    var shownPeople = S.profiles.filter(function (p) {
-      if (S.cluster === "all") return true;
-      var gs = S.memberships.filter(function (m) { return m.member_id === p.id; });
-      return !gs.length || gs.some(function (m) { return inView(groupOf(m.group_id)); }) || p.cluster === S.cluster;
-    });
-    /* search box (owner, 22 Nov 2026): filters the list in place by name, ID or team, so typing keeps focus */
-    var html = clusterChips() + '<input type="search" id="p-search" class="psearch" placeholder="Search name, ID or team" aria-label="Search people" autocomplete="off" value="' + esc(S.peopleQ || "") + '">' +
-      '<ul class="panel list" id="p-list">' + (shownPeople.length ? shownPeople.map(function (p) {
-      var gs = S.memberships.filter(function (m) { return m.member_id === p.id; }).map(function (m) { return groupChip(groupOf(m.group_id)); }).join(" ");
-      var key = [nameOf(p), p.staff_id || "", S.memberships.filter(function (m) { return m.member_id === p.id; }).map(function (m) { return (groupOf(m.group_id) || {}).name || ""; }).join(" "), vtlOf(p.id) ? "vtl volunteer team leader" : "", p.role === "leader" ? "leader" : ""].join(" ").toLowerCase();
-      return '<li data-q="' + esc(key) + '"' + (peopleMatch(key) ? "" : " hidden") + '><button class="item" data-act="editperson" data-id="' + p.id + '"><div class="what"><span class="t">' + esc(nameOf(p)) + '</span>' + (p.staff_id ? '<span class="small muted">ID ' + esc(p.staff_id) + "</span>" : "") + '<span class="row">' + (gs || '<span class="small muted">Not in any group</span>') + "</span></div>" +
-        '<div class="act">' + (p.role === "leader" ? '<span class="chip warn">Leader' + (p.cluster ? " · " + esc(p.cluster) : "") + '</span>' : vtlOf(p.id) ? '<span class="chip good">VTL</span>' : "") + "</div></button></li>";
-    }).join("") : '<li class="empty">No one has signed up yet. Share the app link and ask your teams to create an account.</li>') +
-      '<li class="empty" id="p-none"' + (shownPeople.length && !shownPeople.some(function (p) { return peopleMatch([nameOf(p), p.staff_id || ""].join(" ").toLowerCase()); }) && S.peopleQ ? "" : " hidden") + '>Nobody matches.</li></ul>';
-    html += '<section class="panel pad stack"><h3>Team and region pages</h3><p class="small muted">Photos, information, roster links and policy links are now edited from the Region page.</p><div class="row"><a class="link" href="../region/">Open the Region page</a></div></section>';
+  /* ---------- leader: courses ----------
+     People moved out of the training app to one People page, /access/ (owner, 25 Nov 2026): this tab keeps the
+     courses that used to sit under the people list. */
+  function renderCourses() {
+    var html = clusterChips();
     var courses = S.groups.filter(function (g) { return g.type === "course"; });
     if (courses.length) {
       html += '<section class="panel pad stack"><h3>Your courses</h3><ul class="stack">' + courses.map(function (g) {
@@ -879,43 +859,6 @@ li[hidden]{display:none!important}
     return html;
   }
 
-  function renderPersonForm() {
-    var p = by(S.personEdit, S.profiles); if (!p) { S.personEdit = null; return renderPeople(); }
-    var inG = {}; S.memberships.forEach(function (m) { if (m.member_id === p.id) inG[m.group_id] = true; });
-    return '<button class="link back" data-act="personback">Back to people</button>' +
-      '<section class="panel pad stack"><h2>' + esc(nameOf(p)) + "</h2><h3>Teams and courses</h3><ul>" +
-      S.groups.map(function (g) { return '<li><label class="check"><input type="checkbox" data-act="member" data-mid="' + p.id + '" data-gid="' + g.id + '"' + (inG[g.id] ? " checked" : "") + (canEdit(g.id) ? "" : " disabled") + "> <span>" + esc(g.name) + "</span> " + (g.type === "course" ? '<span class="chip course">Course</span>' : g.cluster ? '<span class="small muted">' + esc(g.cluster) + "</span>" : "") + "</label></li>"; }).join("") + "</ul>" +
-      (p.id !== S.profile.id ? '<form class="stack" data-form="resetpw" data-id="' + p.id + '"><h3>Reset password</h3><p class="small muted">Set a temporary password and tell them. They can sign in with it straight away.</p><label>New password (8 or more characters)<input name="pw" type="text" minlength="8" autocomplete="off" required></label><button class="btn small" type="submit">Set password</button></form>' : "") +
-      (S.realLeader ? roleSelect(p, inG) : '<p class="small muted">Role: ' + roleText(p) + " (a relief team leader can't change roles).</p>") +
-      (p.role === "leader" ? (myCluster() || !S.realLeader ? '<p class="small muted">Cluster: ' + esc(p.cluster || "All clusters") + ". Only the lead instructor can change a leader's cluster.</p>" :
-        '<label>Cluster (this leader can change sessions and team lists only in their own cluster)<select data-act="pcluster" data-mid="' + p.id + '"><option value="">All clusters</option>' +
-        CLUSTERS.map(function (c) { return '<option value="' + c + '"' + (p.cluster === c ? " selected" : "") + ">" + c + "</option>"; }).join("") + "</select></label>") : "") + "</section>";
-  }
-
-  /* Role box on a person's page. Volunteer Team Leader (owner, 22 Nov 2026): one per team, saved in team_vtls (the
-     person's own role is not changed); a VTL counts as a facilitator and manages their team's roster. Only the person's
-     own teams in this leader's cluster are offered. */
-  function vtlOf(mid) { return (S.vtls || []).filter(function (v) { return v.member_id === mid; })[0] || null; }
-  function vtlOwner(gid) { return (S.vtls || []).filter(function (v) { return v.group_id === gid; })[0] || null; }
-  function roleText(p) {
-    var v = vtlOf(p.id), g = v && groupOf(v.group_id);
-    return p.role === "leader" ? "Leader" : v ? "Volunteer Team Leader" + (g ? ", " + esc(g.name) : "") : p.role === "facilitator" ? "Facilitator" : "Member";
-  }
-  function roleSelect(p, inG) {
-    var v = vtlOf(p.id), cur = p.role === "leader" ? "leader" : v ? "vtl:" + v.group_id : p.role === "facilitator" ? "facilitator" : "member";
-    var opt = function (val, label) { return '<option value="' + val + '"' + (val === cur ? " selected" : "") + ">" + label + "</option>"; };
-    var teams = S.groups.filter(function (g) { return g.type === "team" && (inG[g.id] || (v && v.group_id === g.id)); });
-    var html = opt("member", "Member") + opt("facilitator", "Facilitator");
-    teams.forEach(function (g) {
-      var o = vtlOwner(g.id), taken = o && o.member_id !== p.id ? by(o.member_id, S.profiles) : null;
-      if (!canEdit(g.id) && !(v && v.group_id === g.id)) return;
-      html += opt("vtl:" + g.id, "Volunteer Team Leader, " + esc(g.name) + (taken ? " (replaces " + esc(nameOf(taken)) + ")" : ""));
-    });
-    html += opt("leader", "Leader");
-    return '<label>Role<select id="p-role" data-act="role" data-mid="' + p.id + '">' + html + "</select></label>" +
-      '<p class="small muted">A Volunteer Team Leader (one per team) gets facilitator access, manages their team\'s roster and has a team dashboard. To offer it for a team, tick the team above first.</p>';
-  }
-
   function linksToText(a) { return (Array.isArray(a) ? a : []).map(function (l) { return (l.label || "") + " | " + (l.url || ""); }).join("\n"); }
   function parseLinks(t) {
     return String(t || "").split("\n").map(function (line) {
@@ -925,7 +868,7 @@ li[hidden]{display:none!important}
     }).filter(Boolean);
   }
   function renderPageForm() {
-    var g = by(S.pageEdit, S.groups); if (!g) { S.pageEdit = null; return renderPeople(); }
+    var g = by(S.pageEdit, S.groups); if (!g) { S.pageEdit = null; return renderCourses(); }
     return '<button class="link back" type="button" data-act="pageback">Back to people</button>' +
       '<form class="panel pad stack" data-form="page" data-id="' + g.id + '"><h2>' + esc(g.name) + ' page</h2>' +
       '<label>About this team (members see this)<textarea id="pg-blurb" name="blurb" placeholder="Station address, meeting place, contacts and anything else the team should know. Leave a blank line between paragraphs.">' + esc(g.blurb || "") + "</textarea></label>" +
@@ -1018,31 +961,6 @@ li[hidden]{display:none!important}
     }).then(function () { toast("Photo removed."); return load().then(render); }).catch(fail);
   }
 
-  function setMembership(mid, gid, on) {
-    var p = on ? sb.from("memberships").insert({ member_id: mid, group_id: gid }) : sb.from("memberships").delete().eq("member_id", mid).eq("group_id", gid);
-    return p.then(function (r) {
-      if (r.error) throw r.error;
-      S.memberships = S.memberships.filter(function (m) { return !(m.member_id === mid && m.group_id === gid); });
-      if (on) S.memberships.push({ member_id: mid, group_id: gid });
-    }).catch(function (e) { fail(e); refresh(); });
-  }
-  function setRole(mid, role) {
-    var p = by(mid, S.profiles), v = vtlOf(mid);
-    if (role.indexOf("vtl:") === 0) {
-      var gid = role.slice(4);
-      /* a VTL keeps their own role (member or facilitator); a leader made VTL goes back to member */
-      var step = v && v.group_id !== gid ? sb.from("team_vtls").delete().eq("group_id", v.group_id) : Promise.resolve({});
-      return step.then(function (r) { if (r.error) throw r.error; return sb.from("team_vtls").upsert({ group_id: gid, member_id: mid, set_at: new Date().toISOString() }, { onConflict: "group_id" }); })
-        .then(function (r) { if (r.error) throw r.error; return p && p.role === "leader" ? sb.from("profiles").update({ role: "member" }).eq("id", mid) : {}; })
-        .then(function (r) { if (r && r.error) throw r.error; toast("Now the Volunteer Team Leader for " + ((groupOf(gid) || {}).name || "the team") + "."); return refresh(); }).catch(fail);
-    }
-    var off = v ? sb.from("team_vtls").delete().eq("group_id", v.group_id) : Promise.resolve({});
-    return off.then(function (r) { if (r.error) throw r.error; return sb.from("profiles").update({ role: role }).eq("id", mid); })
-      .then(function (r) { if (r.error) throw r.error; toast("Role updated."); return refresh(); }).catch(fail);
-  }
-  function setCluster(mid, c) {
-    return sb.from("profiles").update({ cluster: c || null }).eq("id", mid).then(function (r) { if (r.error) throw r.error; toast("Cluster updated."); return refresh(); }).catch(fail);
-  }
   function createCourse(form) {
     var f = new FormData(form), name = f.get("name").trim();
     return sb.from("groups").insert({ name: name, type: "course", year: parseDate(f.get("first")).getFullYear(), cluster: myCluster() }).select().single().then(function (r) {
@@ -1069,7 +987,7 @@ li[hidden]{display:none!important}
     arform: function (d) { return downloadForm(d.k).catch(fail); },
     arcancel: function (d) { if (!confirm("Cancel this?")) return; return arCall("course_cancel", { p_workshop: d.id }, "Cancelled."); },
     cancel: function (d) { return cancelBooking(d.id); },
-    tab: function (d) { S.tab = d.tab; S.plan = null; S.lessonEdit = null; S.personEdit = null; S.pageEdit = null; render(); },
+    tab: function (d) { S.tab = d.tab; S.plan = null; S.lessonEdit = null; S.pageEdit = null; render(); },
     filter: function (d) { S.filter = d.g; render(); },
     cluster: function (d) { S.cluster = d.c; render(); if (S.plan) redrawPlan(); },
     plan: function (d) { S.plan = d.p || null; render(); window.scrollTo(0, 0); },
@@ -1118,8 +1036,6 @@ li[hidden]{display:none!important}
     openfile: function (d) { return openFile(d.id); },
     removefile: function (d) { return removeFile(d.id); },
     droplesson: function (d) { redrawPicker(pickedLessons().filter(function (x) { return x !== d.id; })); },
-    editperson: function (d) { S.personEdit = d.id; render(); window.scrollTo(0, 0); },
-    personback: function () { S.personEdit = null; render(); },
     copycancel: function () { S.copy = null; render(); },
     calview: function (d) { S.calView = d.v; try { localStorage.setItem("dsy-training-calview", d.v); } catch (e) {} render(); },
     month: function (d) {
@@ -1155,7 +1071,6 @@ li[hidden]{display:none!important}
   });
   document.addEventListener("input", function (e) {
     if (e.target && e.target.form && e.target.form.dataset.form === "plan") redrawPlan(e.target);
-    if (e.target && e.target.id === "p-search") { S.peopleQ = e.target.value; filterPeople(); }
     if (e.target && e.target.id === "l-search") { S.lessonQ = e.target.value; filterLessons(); }
     if (e.target && e.target.id === "s-lsearch") { var sel = document.getElementById("s-addlesson"), ids = pickedLessons();
       if (sel) sel.innerHTML = lessonOpts(S.lessons.filter(function (l) { return ids.indexOf(l.id) < 0; }).sort(function (a, b) { return a.title.localeCompare(b.title); }), e.target.value); }
@@ -1167,9 +1082,6 @@ li[hidden]{display:none!important}
     if (!t.dataset || !t.dataset.act) return;
     if (t.dataset.act === "attend") setAttendance(t.dataset.sid, t.dataset.mid, t.checked);
     else if (t.dataset.act === "rattend") setRoster(t.dataset.sid, t.dataset.mid, t.checked);
-    else if (t.dataset.act === "member") setMembership(t.dataset.mid, t.dataset.gid, t.checked);
-    else if (t.dataset.act === "role") setRole(t.dataset.mid, t.value);
-    else if (t.dataset.act === "pcluster") setCluster(t.dataset.mid, t.value);
     else if (t.dataset.act === "upload") uploadFiles(t.dataset.lid, t.files, t);
     else if (t.dataset.act === "uploadphoto") uploadPhoto(t.dataset.gid, t.files);
     else if (t.dataset.act === "uploadgallery") uploadGallery(t.dataset.gid, t.files);
@@ -1225,8 +1137,6 @@ li[hidden]{display:none!important}
           })
         : sb.auth.signInWithPassword({ email: email, password: pass }).then(function (r) { if (r.error) throw r.error; });
       job = job.catch(fail);
-    } else if (kind === "resetpw") {
-      job = sb.rpc("leader_set_password", { member: form.dataset.id, new_password: f.get("pw") }).then(function (r) { if (r.error) throw r.error; form.reset(); toast("Password set. Let them know."); }).catch(fail);
     } else if (kind === "reflection") job = saveReflection(form);
     else if (kind === "session") job = saveSession(form);
     else if (kind === "lesson") job = saveLesson(form);

@@ -498,7 +498,7 @@
     var html = peoplePanel(d) + '<section class="panel pad stack"><h2>Or paste students</h2><div class="field"><label for="f-people">One per line: ambulance ID, first name, last name</label>' +
       '<textarea id="f-people" placeholder="1234567, Sam, Smith&#10;7654321, Alex, Jones"></textarea></div><button class="btn" data-act="add-students">Add to ' + esc(d.cohort.name) + "</button>" +
       '<p class="small muted">' + (lead ? "As a leader, adding someone also puts their ID on the DSY access list so they can create an account."
-        : "IDs that are not on the DSY access list yet need a leader to add them (Grant access), or a leader can add the students here.") +
+        : "IDs that are not on the DSY access list yet need a leader to add them (the People page), or a leader can add the students here.") +
       " Students create their account at dsytraining.com/signin/ (Create account, with their ambulance ID), then open this page.</p></section>";
     if (!d.students.length) return html + '<p class="muted">No students yet.</p>';
     html += '<ul class="panel sessions">' + d.students.slice().sort(function (a, b) { return (b.active - a.active) || nameOf(a).localeCompare(nameOf(b)); }).map(function (s) {
@@ -587,7 +587,7 @@
     var n = indDone(d, sid), st = stationOf(s), teams = studentTeams(s);
     var stLine = st ? "Station: <b>" + esc(st.name) + "</b> (their DSY team). saaslearn links open that station's group with Edit checks."
       : teams && teams.length ? "Their DSY team (" + esc(teams.join(", ")) + ") has no saaslearn station group, so saaslearn links show all students."
-      : "They're not in a DSY team yet, so saaslearn links show all students. Add them to their team in Grant access.";
+      : "They're not in a DSY team yet, so saaslearn links show all students. Add them to their team on the People page.";
     var html = '<div class="stack"><a class="link" href="#induction">‹ Induction</a><div><p class="eyebrow">Induction</p><h2>' + esc(nameOf(s)) + "</h2></div>" +
       '<p class="small muted"><span id="ind-count">' + n + " of " + IND_ITEMS.length + "</span> done. Ticks save as you go." +
       ' <button class="link small no-print" type="button" onclick="window.print()">Print</button></p>' +
