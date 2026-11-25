@@ -128,7 +128,7 @@ user guides) and "Training app" now says **Team training** (dashboards, team das
 Team Leader modules' text). The home page's browser tab title is "Training home - DSY Training" (heading unchanged:
 DSY Training). The feedback category "Training app" is now "Team training" (older feedback rows keep the old word).
 Not changed: screenshots and narrated videos in the Team Leader modules (Your dashboard hero picture, Training nights
-video) still show the old labels. On a branch, not merged.
+video) still show the old labels. Live (PR #367, merged 25 Nov 2026; home page and Team Training checked, no errors).
 
 ## Training home: links trimmed (owner, 25 Nov 2026)
 
