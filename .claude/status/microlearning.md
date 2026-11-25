@@ -245,4 +245,5 @@ home page leader links add Team Leader training. On a branch, not merged.
 - 25 Nov 2026, owner asked to redo the People and passwords video: new screenshots of the People page (stand-in for
   supabase-js with invented Lower Eyre people; adding, reset and removal run for real in the page), new script (scene
   2 One page for people, scene 5 Teams with chips and view-only clusters), Lee re-narrated (see voice.json),
-  intro.mp4?v=2 (1:08), new poster, img/teams.jpg added, img/person.jpg removed. On a branch, not merged.
+  intro.mp4?v=2 (1:08), new poster, img/teams.jpg added, img/person.jpg removed. Live (PR #363, merged 25 Nov
+  2026; new video and content checked on the live site).
