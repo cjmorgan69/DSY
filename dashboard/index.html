@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261125a" data-level="leader"></script>
+<script>
+/* On a computer (mouse, wide screen) open the widescreen dashboard, unless "Phone and tablet version" was chosen here. */
+(function () {
+  try {
+    var qs = new URLSearchParams(location.search);
+    if (qs.get("phone") === "1") { localStorage.setItem("dsyDashView", "phone"); return; }
+    if (localStorage.getItem("dsyDashView") === "phone") return;
+  } catch (e) {}
+  if (window.innerWidth >= 1100 && window.matchMedia && matchMedia("(pointer: fine)").matches) location.replace("/dashboard/wide/" + location.search + location.hash);
+})();
+</script>
+<script src="/shared/gate.js?v=20261125b" data-level="leader"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
@@ -13,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/training/theme.css?v=20261125a">
+<link rel="stylesheet" href="/training/theme.css?v=20261125b">
 <style>
 /* Lead instructor's dashboard. Live data only, nothing stored in this file:
    roster coverage = each cluster's Apps Script "coverage" request (same as /modules/rosters/operations/),
@@ -218,8 +229,8 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
 .amsg.err { color:var(--r); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="/modules/rosters/shared/teams.js?v=20261125a"></script>
-<script src="/modules/rosters/shared/roster-data.js?v=20261125a"></script>
+<script src="/modules/rosters/shared/teams.js?v=20261125b"></script>
+<script src="/modules/rosters/shared/roster-data.js?v=20261125b"></script>
 </head>
 <body>
 <main class="dash">
@@ -317,6 +328,6 @@ dialog .row button.pri { background:var(--brand); color:var(--brand-ink); border
   </form>
 </dialog>
 
-<script src="/dashboard/dash.js?v=20261125a"></script>
+<script src="/dashboard/dash.js?v=20261125b"></script>
 </body>
 </html>

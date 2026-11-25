@@ -284,3 +284,9 @@ Back / Now / Next day buttons. Now is the rolling 24 hours; the first step snaps
 next 8am, then one 8am-to-8am day per step, up to 7 days ahead. Each step is one `roster_coverage` call per cluster
 (all teams are on Supabase, so it is quick); crew names come from the bookings already loaded (180 days ahead). A future
 day shows uncovered team-hours and teams with a gap instead of the "now" counts. Tested against the real roster data. Merged (PR #360, 24 Nov 2026).
+
+Widescreen by default on a computer (owner, 25 Nov 2026): `/dashboard/` jumps to `/dashboard/wide/` (keeping any
+query and hash) when the screen is at least 1100px wide and the pointer is a mouse (phones and iPads stay). "Phone and
+tablet version" links (wide footer, car dash) go to `/dashboard/?phone=1`, which keeps the phone version on that device
+(`localStorage` `dsyDashView` = phone) until the Widescreen version is opened again. Tested in a headless browser
+(PC, PC after choosing phone, iPhone, iPad landscape). On a branch, not merged.
