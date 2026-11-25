@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Grant access - DSY Training</title>
+<title>People - DSY Training</title>
 <link rel="icon" type="image/png" sizes="32x32" href="../shared/dsy-favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../shared/dsy-favicon-192.png">
 <link rel="apple-touch-icon" href="../shared/dsy-touch-180.png">
-<script src="/shared/gate.js?v=20261125b" data-level="leader"></script>
+<script src="/shared/gate.js?v=20261125p" data-level="leader"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261125b">
+<link rel="stylesheet" href="../training/theme.css?v=20261125p">
 <style>
 [hidden]{display:none!important}
 textarea{width:100%;min-height:7rem;font:inherit;padding:.6rem .75rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
@@ -29,20 +29,44 @@ th{font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mu
 .chip.wait{background:color-mix(in srgb,var(--accent) 22%,var(--surface));color:var(--ink)}
 input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
 .acts{display:flex;gap:.4rem;flex-wrap:wrap}
-#rows select{min-width:9rem;font-size:.85rem;padding:.3rem .45rem}
+#rows select{min-width:7.5rem;max-width:11rem;font-size:.85rem;padding:.3rem .45rem}
+.pname{font-weight:600}
 #rows td div.small{margin-bottom:.25rem}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.3rem}
+.tchip{display:inline-flex;align-items:center;gap:.2rem;padding:.1rem .2rem .1rem .55rem;border-radius:999px;font-size:.8rem;background:var(--surface-2,var(--brand-soft));border:1px solid var(--line)}
+.tchip.plain{padding-right:.55rem}
+.tchip button{border:0;background:none;color:var(--muted);font:inherit;font-size:.95rem;line-height:1;padding:.1rem .35rem;border-radius:999px;cursor:pointer}
+.tchip button:hover{color:var(--danger)}
+.filters{display:flex;flex-wrap:wrap;gap:.4rem}
+.filters button{font:inherit;font-size:.85rem;padding:.35rem .75rem;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.filters button[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:#fff}
+.notice{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:.6rem .8rem;background:var(--surface)}
+tr.ro td{color:var(--muted)}
+@media (max-width:640px){
+  #people{min-width:0}
+  #people thead{display:none}
+  #rows,#rows tr,#rows td{display:block}
+  #rows tr{border:1px solid var(--line);border-radius:12px;padding:.55rem .7rem;margin-bottom:.6rem;background:var(--surface)}
+  #rows td{border:0;padding:.25rem 0}
+  #rows td:first-child .pname{font-size:1rem}
+  #rows select{max-width:none}
+  #rows td[data-label]::before{content:attr(data-label);display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  #rows select{width:100%}
+}
 </style>
 </head>
 <body>
 <main class="wrap">
   <header class="top">
     <a class="brand" href="../" style="text-decoration:none;color:inherit"><div class="brand-icon"><img src="../microlearning/shared/dsy-logo.png" alt="" width="36" height="36"></div>
-      <div><h1>Grant access</h1><p>Approved ambulance IDs</p></div></a>
+      <div><h1>People</h1><p>Add, place and manage everyone</p></div></a>
+    <div class="row"><a class="link" href="../dashboard/">Dashboard</a><a class="link" href="../training/">Team training</a><a class="link" href="../userguides/leaders/#access">Leader guide</a></div>
   </header>
+  <p class="notice small" id="reliefNote" hidden><strong>Relief cover.</strong> You can add people, put them in teams and reset passwords. Changing roles, taking people off a team and switching accounts off stay with the Team Leaders.</p>
 
   <section class="panel pad stack">
-    <h2>Add IDs</h2>
-    <p class="small muted">One per line, or separated by commas. Add a name after the ID if you like: <code>12345, Sam Taylor</code>. A CSV file works too: ID in the first column, name in the second. Choose a Team to put them in it: someone already signed up joins straight away, anyone else joins when they sign up.</p>
+    <h2>Add people</h2>
+    <p class="small muted">One ambulance ID per line, or separated by commas. Add a name after the ID if you like: <code>12345, Sam Taylor</code>. A CSV file works too: ID in the first column, name in the second. Choose a Team to put them in it: someone already signed up joins straight away, anyone else joins when they sign up.</p>
     <textarea id="ids" aria-label="Ambulance IDs" placeholder="12345, Sam Taylor&#10;67890"></textarea>
     <div class="row">
       <label class="small">Add as <select id="role"><option value="member">Student</option><option value="facilitator">Facilitator</option></select></label>
@@ -54,31 +78,43 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
   </section>
 
   <section class="panel pad stack">
-    <h2>The list</h2>
+    <h2>Everyone</h2>
+    <div class="filters" id="clusters" role="group" aria-label="Cluster"></div>
     <div class="stats" id="stats"></div>
-    <div class="row"><input id="q" type="search" placeholder="Search name or ID" aria-label="Search" style="flex:1;min-width:10rem">
-      <select id="filter" aria-label="Show"><option value="all">Everyone</option><option value="wait">Not signed up yet</option><option value="facilitator">Facilitators</option><option value="off">Switched off</option></select></div>
-    <div class="scroll"><table><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Team</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div class="row"><input id="q" type="search" placeholder="Search name, ID or team" aria-label="Search" style="flex:1;min-width:10rem">
+      <select id="filter" aria-label="Show"><option value="all">Everyone</option><option value="wait">Not signed up yet</option><option value="noteam">Not in a team</option><option value="facilitator">Facilitators and leaders</option><option value="off">Switched off</option></select></div>
+    <div class="scroll"><table id="people"><thead><tr><th>Name</th><th>Role</th><th>Teams</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
     <p class="small muted" id="empty" hidden>Nobody matches.</p>
   </section>
   <section class="panel pad stack">
     <h2>Volunteer Team Leaders</h2>
-    <p class="small muted">One per team. A Volunteer Team Leader (VTL) gets facilitator access, can manage their own team's roster, and has a team dashboard (roster, dispatches, volunteer contribution, training and weather for their team). They are not a Team Leader: no Grant access and no other teams. Pick from the people signed up in that team.</p>
+    <p class="small muted">One per team. A Volunteer Team Leader (VTL) gets facilitator access, can manage their own team's roster, and has a team dashboard (roster, dispatches, volunteer contribution, training and weather for their team). They are not a Team Leader: no People page and no other teams. Pick from the people signed up in that team.</p>
     <div class="scroll"><table><thead><tr><th>Team</th><th>Volunteer Team Leader</th></tr></thead><tbody id="vtlRows"></tbody></table></div>
   </section>
-  <p class="small muted">Removing someone switches their account off: they cannot sign in again, and a session already open ends within about an hour. Add them back to restore it. Leaders cannot be switched off here. Use Reset password to give someone a temporary one; they choose their own when they next sign in.</p>
+  <p class="small muted">The page opens on your own cluster; people in other clusters are view only. Take someone off a team with the ✕ on the team. Remove switches the whole account off: they cannot sign in again, and a session already open ends within about an hour. Add them back to restore it. Leaders cannot be switched off here. Reset password gives someone a temporary one; they choose their own when they next sign in.</p>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="../training/config.js?v=20261125b"></script>
+<script src="../training/config.js?v=20261125p"></script>
 <script>
+/* People (owner, 25 Nov 2026): one page for Team Leaders to manage everyone. Grant access and Team training's
+   People tab are merged here; Team training now links to this page.
+   - Real leaders: everything for people in their own cluster (roles, teams on and off, VTLs, remove, add back,
+     reset password). People in other clusters are view only.
+   - The lead instructor (a real leader with no cluster): everything for everyone, plus Leader role and a leader's cluster.
+   - Relief Team Leaders on cover: add only (add IDs as students, put people in teams, reset passwords).
+   The database enforces the same (migration people_page_rules, supabase/people-page-rules.sql). */
 (function () {
   var C = window.TRAINING_APP, sb = window.supabase.createClient(C.supabaseUrl, C.supabaseKey);
+  var CLUSTERS = ["Lower Eyre", "Central Eyre", "West Coast"];
   var $ = function (id) { return document.getElementById(id); };
-  var S = { allowed: [], profiles: [], off: {}, groups: [], members: [], expected: {}, myCluster: null, vtls: [] };
+  var S = { allowed: [], profiles: [], off: {}, groups: [], members: [], expected: {}, vtls: [], me: null,
+            real: false, lead: false, myCluster: null, view: null };
   function norm(t) { return String(t || "").toLowerCase().replace(/[^a-z0-9]/g, ""); }
-  function say(t, bad) { $("msg").textContent = t; $("msg").style.color = bad ? "var(--danger)" : "var(--ink)"; }
+  function say(t, bad) { $("msg").textContent = t; $("msg").style.color = bad ? "var(--danger)" : "var(--ink)"; if (bad || t) $("msg").scrollIntoView({ block: "nearest" }); }
   function must(r) { if (r.error) throw r.error; return r.data || []; }
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function groupOf(id) { return S.groups.filter(function (x) { return x.id === id; })[0] || null; }
+  function groupName(id) { var g = groupOf(id); return g ? g.name : ""; }
 
   function load() {
     return Promise.all([
@@ -89,72 +125,131 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
       sb.from("memberships").select("member_id,group_id").then(must),
       sb.from("expected_members").select("staff_id,full_name,group_id").then(must),
       sb.auth.getUser(),
-      sb.from("team_vtls").select("group_id,member_id").then(must)
+      sb.from("team_vtls").select("group_id,member_id").then(must),
+      sb.rpc("my_access").then(must)
     ]).then(function (r) {
       S.allowed = r[0]; S.profiles = r[1]; S.off = {};
       r[2].forEach(function (a) { S.off[a.member_id] = a.switched_off; });
       S.groups = r[3]; S.members = r[4]; S.expected = {};
       r[5].forEach(function (e) { S.expected[e.staff_id] = e; });
-      var uid = r[6] && r[6].data && r[6].data.user && r[6].data.user.id;
-      var me = S.profiles.filter(function (p) { return p.id === uid; })[0];
-      S.myCluster = me && me.cluster || null;
+      S.me = r[6] && r[6].data && r[6].data.user && r[6].data.user.id;
       S.vtls = r[7] || [];
-      fillTeamPicker();
-      draw(); drawVtl();
+      var acc = r[8] || {};
+      S.real = !!acc.real_leader; S.myCluster = acc.cluster || null; S.lead = S.real && !S.myCluster;
+      if (S.view === null) S.view = S.myCluster || "all";
+      $("reliefNote").hidden = S.real;
+      if (!S.real) { var fo = $("role").querySelector('option[value="facilitator"]'); if (fo) fo.remove(); }
+      fillTeamPicker(); drawClusters(); draw(); drawVtl();
     });
   }
+
   /* one line per approved ID, plus accounts that exist but are no longer on the list */
   function people() {
     var byId = {}; S.profiles.forEach(function (p) { var k = norm(p.staff_id); if (k) byId[k] = p; });
     var out = S.allowed.map(function (a) {
       var p = byId[a.staff_id]; delete byId[a.staff_id];
-      return { id: a.staff_id, note: a.note, role: p && p.role === "leader" ? "leader" : a.role, p: p, listed: true, off: !!(p && S.off[p.id]) };
+      return { id: a.staff_id, note: a.note || (p && p.full_name) || "", role: p && p.role === "leader" ? "leader" : a.role, p: p, listed: true, off: !!(p && S.off[p.id]) };
     });
     Object.keys(byId).forEach(function (k) { var p = byId[k]; out.push({ id: k, note: p.full_name, role: p.role, p: p, listed: false, off: !!S.off[p.id] }); });
+    out.forEach(function (x) { x.teams = teamsOf(x); x.clusters = clustersOf(x); });
     return out;
   }
+  function teamsOf(x) {
+    if (x.p) return S.members.filter(function (m) { return m.member_id === x.p.id; }).map(function (m) { return m.group_id; }).filter(groupOf);
+    var e = S.expected[x.id]; return e && groupOf(e.group_id) ? [e.group_id] : [];
+  }
+  function clustersOf(x) {
+    var c = {}; x.teams.forEach(function (id) { var g = groupOf(id); if (g && g.cluster) c[g.cluster] = 1; });
+    if (x.role === "leader" && x.p && x.p.cluster) c[x.p.cluster] = 1;
+    return Object.keys(c);
+  }
   function status(x) { return x.off ? ["Switched off", "off"] : !x.p ? ["Not signed up yet", "wait"] : !x.listed ? ["Signed up, not on list", "wait"] : ["Signed up", ""]; }
+  /* a person with no team shows in every cluster, so whoever brings them in can place them */
+  function inView(x) { return S.view === "all" || !x.clusters.length || x.clusters.indexOf(S.view) > -1; }
+  function canEditPerson(x) {
+    if (x.role === "leader") return S.lead || (x.p && x.p.id === S.me); /* other leaders: the lead instructor only */
+    return !S.myCluster || !x.clusters.length || x.clusters.indexOf(S.myCluster) > -1;
+  }
+  function canEdit(g) { return !S.myCluster || g.cluster === S.myCluster; }
+
+  function drawClusters() {
+    var box = $("clusters"); box.textContent = "";
+    [["all", "All clusters"]].concat(CLUSTERS.map(function (c) { return [c, c + (c === S.myCluster ? " (yours)" : "")]; })).forEach(function (c) {
+      var b = el("button", null, c[1]); b.type = "button"; b.setAttribute("aria-pressed", String(S.view === c[0]));
+      b.addEventListener("click", function () { S.view = c[0]; drawClusters(); draw(); drawVtl(); });
+      box.appendChild(b);
+    });
+  }
 
   function draw() {
-    var all = people(), q = norm($("q").value), qt = $("q").value.trim().toLowerCase(), f = $("filter").value;
+    var all = people().filter(inView), q = norm($("q").value), qt = $("q").value.trim().toLowerCase(), f = $("filter").value;
     var count = function (fn) { return all.filter(fn).length; };
     var stats = $("stats"); stats.textContent = "";
     [["On the list", count(function (x) { return x.listed; })], ["Signed up", count(function (x) { return x.p && !x.off; })],
-     ["Not signed up", count(function (x) { return !x.p; })], ["Facilitators", count(function (x) { return x.role === "facilitator" || x.role === "leader"; })]].forEach(function (s) {
+     ["Not signed up", count(function (x) { return !x.p; })], ["Not in a team", count(function (x) { return !x.teams.length && !x.off; })]].forEach(function (s) {
       var d = el("div", "stat"); d.appendChild(el("b", null, String(s[1]))); d.appendChild(el("span", "small muted", s[0])); stats.appendChild(d);
     });
     var rows = all.filter(function (x) {
       if (f === "wait" && x.p) return false;
+      if (f === "noteam" && (x.teams.length || x.off)) return false;
       if (f === "facilitator" && x.role === "member") return false;
       if (f === "off" && !x.off) return false;
       if (!qt) return true;
-      return (q && x.id.indexOf(q) > -1) || String(x.note || "").toLowerCase().indexOf(qt) > -1;
+      var hay = [x.note || "", x.teams.map(groupName).join(" "), x.role === "leader" ? "leader" : "", vtlOf(x) ? "vtl" : ""].join(" ").toLowerCase();
+      return (q && x.id.indexOf(q) > -1) || qt.split(/\s+/).every(function (w) { return hay.indexOf(w) > -1; });
     }).sort(function (a, b) { return String(a.note || a.id).toLowerCase() < String(b.note || b.id).toLowerCase() ? -1 : 1; });
     var tb = $("rows"); tb.textContent = "";
     rows.forEach(function (x) {
-      var tr = el("tr"), st = status(x);
-      tr.appendChild(el("td", null, x.id)); tr.appendChild(el("td", null, x.note || ""));
-      var vt = x.p && S.vtls.filter(function (v) { return v.member_id === x.p.id; })[0];
-      tr.appendChild(el("td", null, (x.role === "member" ? "Student" : x.role === "leader" ? "Leader" : "Facilitator") + (vt ? " · VTL " + groupName(vt.group_id) : "")));
-      tr.appendChild(teamCell(x));
+      var ed = canEditPerson(x), tr = el("tr", ed ? null : "ro"), st = status(x);
+      var nm = el("td"); nm.appendChild(el("div", "pname", x.note || "No name")); nm.appendChild(el("div", "small muted", "ID " + x.id)); tr.appendChild(nm);
+      var rc = roleCell(x, ed); rc.setAttribute("data-label", "Role"); tr.appendChild(rc);
+      var tc = teamCell(x, ed); tc.setAttribute("data-label", "Teams"); tr.appendChild(tc);
       var s = el("td"); s.appendChild(el("span", "chip " + st[1], st[0])); tr.appendChild(s);
       var a = el("td"), acts = el("div", "acts");
-      if (x.role !== "leader") {
-        if (x.listed && !x.off) {
-          acts.appendChild(btn(x.role === "facilitator" ? "Make student" : "Make facilitator", function () { setRole(x, x.role === "facilitator" ? "member" : "facilitator"); }, true));
-          if (x.p) acts.appendChild(btn("Reset password", function () { resetForm(acts, x); }, true));
-          acts.appendChild(btn("Remove", function () { remove(x); }, true, true));
-        } else acts.appendChild(btn("Add back", function () { addBack(x); }, true));
+      if (!ed) acts.appendChild(el("span", "small muted", x.role === "leader" ? "View only" : "View only (" + x.clusters.join(", ") + ")"));
+      else {
+        var self = x.p && x.p.id === S.me;
+        if (x.p && !x.off && !self && (x.role !== "leader" || S.lead)) acts.appendChild(btn("Reset password", function () { resetForm(acts, x); }, true));
+        if (x.role !== "leader") {
+          if (x.listed && !x.off) { if (S.real) acts.appendChild(btn("Remove", function () { remove(x); }, true, true)); }
+          else if (S.real || !x.off) acts.appendChild(btn(x.off ? "Add back" : "Add to the list", function () { addBack(x); }, true));
+        }
       }
       a.appendChild(acts); tr.appendChild(a); tb.appendChild(tr);
     });
     $("empty").hidden = rows.length > 0;
   }
+
+  /* Role. Real leaders: Student or Facilitator. The lead instructor also: Leader, and a leader's cluster. */
+  function vtlOf(x) { return x.p && S.vtls.filter(function (v) { return v.member_id === x.p.id; })[0]; }
+  function roleName(r) { return r === "member" ? "Student" : r === "leader" ? "Leader" : "Facilitator"; }
+  function roleCell(x, ed) {
+    var td = el("td"), vt = vtlOf(x), self = x.p && x.p.id === S.me;
+    var canSet = ed && S.real && !self && !x.off && (x.role !== "leader" || S.lead);
+    if (!canSet) td.appendChild(el("div", null, roleName(x.role) + (x.role === "leader" ? " · " + (x.p && x.p.cluster || "All clusters") : "")));
+    else {
+      var sel = el("select"); sel.setAttribute("aria-label", "Role for " + (x.note || x.id));
+      var opts = [["member", "Student"], ["facilitator", "Facilitator"]];
+      if (S.lead && x.p) opts.push(["leader", "Leader"]);
+      opts.forEach(function (o) { var op = el("option", null, o[1]); op.value = o[0]; if (o[0] === x.role) op.selected = true; sel.appendChild(op); });
+      sel.addEventListener("change", function () { setRole(x, sel.value); });
+      td.appendChild(sel);
+      if (x.role === "leader") {
+        var cs = el("select"); cs.setAttribute("aria-label", "Cluster for " + (x.note || x.id)); cs.style.marginTop = ".3rem";
+        [["", "All clusters"]].concat(CLUSTERS.map(function (c) { return [c, c]; })).forEach(function (o) {
+          var op = el("option", null, o[1]); op.value = o[0]; if ((x.p.cluster || "") === o[0]) op.selected = true; cs.appendChild(op);
+        });
+        cs.addEventListener("change", function () { setCluster(x, cs.value); });
+        td.appendChild(el("div", "small muted", "Cluster")); td.appendChild(cs);
+      }
+    }
+    if (vt) td.appendChild(el("div", "small muted", "VTL " + groupName(vt.group_id)));
+    return td;
+  }
+
   /* Teams (owner, 19 Nov 2026): a signed-up person is put in the team straight away (memberships); someone not
      signed up yet is remembered in expected_members and joins the team when they sign up (handle_new_user). A leader
-     can only place people in their own cluster's teams. */
-  function canEdit(g) { return !S.myCluster || g.cluster === S.myCluster; }
-  function groupName(id) { var g = S.groups.filter(function (x) { return x.id === id; })[0]; return g ? g.name : ""; }
+     can only place people in their own cluster's teams. The ✕ takes a signed-up person off a team (real leaders). */
   function teamOptions(sel, first, current, skip) {
     sel.textContent = "";
     var o = el("option", null, first); o.value = ""; sel.appendChild(o);
@@ -167,17 +262,27 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
     });
   }
   function fillTeamPicker() { var t = $("team"), keep = t.value; teamOptions(t, "No team", keep); }
-  function teamCell(x) {
+  function teamCell(x, ed) {
     var td = el("td");
     if (x.p) {
-      var mine = S.members.filter(function (m) { return m.member_id === x.p.id; }).map(function (m) { return m.group_id; });
-      if (mine.length) td.appendChild(el("div", "small", mine.map(groupName).filter(Boolean).join(", ")));
-      var sel = el("select"); sel.setAttribute("aria-label", "Add " + (x.note || x.id) + " to a team");
-      teamOptions(sel, mine.length ? "Add another…" : "Add to a team…", "", mine);
-      sel.addEventListener("change", function () { if (sel.value) joinTeam(x, sel.value); });
-      td.appendChild(sel);
+      var chips = el("div", "chips");
+      x.teams.forEach(function (gid) {
+        var g = groupOf(gid), can = ed && S.real && canEdit(g);
+        var c = el("span", "tchip" + (can ? "" : " plain"), g.name + (g.type === "course" ? " (course)" : ""));
+        if (can) { var b = el("button", null, "✕"); b.type = "button"; b.setAttribute("aria-label", "Take " + (x.note || x.id) + " off " + g.name); b.addEventListener("click", function () { leaveTeam(x, gid); }); c.appendChild(b); }
+        chips.appendChild(c);
+      });
+      if (x.teams.length) td.appendChild(chips);
+      if (ed && !x.off) {
+        var sel = el("select"); sel.setAttribute("aria-label", "Add " + (x.note || x.id) + " to a team");
+        teamOptions(sel, x.teams.length ? "Add another…" : "Add to a team…", "", x.teams);
+        sel.addEventListener("change", function () { if (sel.value) joinTeam(x, sel.value); });
+        td.appendChild(sel);
+      } else if (!x.teams.length) td.appendChild(el("span", "small muted", "No team"));
     } else {
-      var e = S.expected[x.id], s2 = el("select"); s2.setAttribute("aria-label", "Team for " + (x.note || x.id));
+      var e = S.expected[x.id];
+      if (!ed) { td.appendChild(el("span", "small", e ? groupName(e.group_id) : "No team")); return td; }
+      var s2 = el("select"); s2.setAttribute("aria-label", "Team for " + (x.note || x.id));
       teamOptions(s2, "No team", e && e.group_id);
       if (e && !S.groups.some(function (g) { return g.id === e.group_id && canEdit(g); })) s2.disabled = true;
       s2.addEventListener("change", function () { expectTeam(x.id, x.note, s2.value); });
@@ -194,6 +299,13 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
     return sb.from("memberships").upsert({ member_id: x.p.id, group_id: gid }, { onConflict: "member_id,group_id", ignoreDuplicates: true }).then(must)
       .then(function () { say((x.note || x.id) + " added to " + groupName(gid) + "."); return load(); });
   });
+  var leaveTeam = safe(function (x, gid) {
+    var vt = S.vtls.filter(function (v) { return v.group_id === gid && v.member_id === x.p.id; })[0];
+    if (!window.confirm("Take " + (x.note || x.id) + " off " + groupName(gid) + "?" + (vt ? " They are its Volunteer Team Leader; that ends too." : ""))) return;
+    var step = vt ? sb.from("team_vtls").delete().eq("group_id", gid).then(must) : Promise.resolve();
+    return step.then(function () { return sb.from("memberships").delete().eq("member_id", x.p.id).eq("group_id", gid).then(must); })
+      .then(function () { say((x.note || x.id) + " is off " + groupName(gid) + " now."); return load(); });
+  });
   var expectTeam = safe(function (id, note, gid) {
     return expectRow(id, note, gid).then(function () {
       say(gid ? (note || id) + " will join " + groupName(gid) + " when they sign up." : (note || id) + " has no team now."); return load();
@@ -205,7 +317,7 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
   function drawVtl() {
     var tb = $("vtlRows"); tb.textContent = "";
     var pn = {}; S.profiles.forEach(function (p) { pn[p.id] = p; });
-    S.groups.filter(function (g) { return g.type === "team"; }).forEach(function (g) {
+    S.groups.filter(function (g) { return g.type === "team" && (S.view === "all" || g.cluster === S.view); }).forEach(function (g) {
       var tr = el("tr"), cur = S.vtls.filter(function (v) { return v.group_id === g.id; })[0];
       tr.appendChild(el("td", null, g.name + (g.cluster ? " · " + g.cluster : "")));
       var td = el("td"), sel = el("select"); sel.setAttribute("aria-label", "Volunteer Team Leader for " + g.name);
@@ -216,7 +328,7 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
         var op = el("option", null, (pn[id].full_name || "No name") + (pn[id].staff_id ? " (" + pn[id].staff_id + ")" : "")); op.value = id;
         if (cur && cur.member_id === id) op.selected = true; sel.appendChild(op);
       });
-      if (!canEdit(g)) sel.disabled = true;
+      if (!S.real || !canEdit(g)) sel.disabled = true;
       sel.addEventListener("change", function () { setVtl(g, sel.value); });
       td.appendChild(sel); tr.appendChild(td); tb.appendChild(tr);
     });
@@ -232,7 +344,7 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
     });
   });
 
-  /* a leader's reset gives a starter password; the person must choose their own at the next sign-in */
+  /* a leader's reset gives a temporary password; the person must choose their own at the next sign-in */
   function resetForm(box, x) {
     box.textContent = "";
     var inp = el("input"); inp.type = "text"; inp.placeholder = "Temporary password (8+ characters)"; inp.setAttribute("aria-label", "Temporary password"); inp.autocapitalize = "none"; inp.autocomplete = "off"; inp.spellcheck = false; inp.style.maxWidth = "11rem";
@@ -264,16 +376,20 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
   function safe(fn) { return function () { var a = arguments; return Promise.resolve().then(function () { return fn.apply(null, a); }).catch(function (e) { say((e && e.message) || "Something went wrong.", true); }); }; }
 
   var add = safe(function () {
-    var list = parse($("ids").value), role = $("role").value, gid = $("team").value;
+    var list = parse($("ids").value), role = S.real ? $("role").value : "member", gid = $("team").value;
     if (!list.length) return say("Type or paste at least one ID first.", true);
-    var rows = list.map(function (x) { return { staff_id: x.staff_id, note: x.note, role: role }; });
-    /* keep an existing name when the new line has none */
+    var byId = {}; S.profiles.forEach(function (p) { byId[norm(p.staff_id)] = p; });
     var have = {}; S.allowed.forEach(function (a) { have[a.staff_id] = a; });
+    /* relief cover is add only: nobody switched off is let back in, and nobody's role is changed */
+    var skipped = [];
+    if (!S.real) list = list.filter(function (x) { var p = byId[x.staff_id]; if (p && S.off[p.id]) { skipped.push(x.staff_id); return false; } return true; });
+    if (!list.length) return say("Not added: " + skipped.join(", ") + " is switched off. Ask a Team Leader to add them back.", true);
+    var rows = list.map(function (x) { return { staff_id: x.staff_id, note: x.note, role: !S.real && have[x.staff_id] ? have[x.staff_id].role : role }; });
+    /* keep an existing name when the new line has none */
     rows.forEach(function (r) { if (!r.note && have[r.staff_id]) r.note = have[r.staff_id].note; });
     return sb.from("allowed_ids").upsert(rows, { onConflict: "staff_id" }).then(must).then(function () {
-      var byId = {}; S.profiles.forEach(function (p) { byId[norm(p.staff_id)] = p; });
       var ops = [];
-      rows.forEach(function (r) {
+      if (S.real) rows.forEach(function (r) {
         var p = byId[r.staff_id]; if (!p) return;
         if (S.off[p.id]) ops.push(sb.rpc("leader_set_access", { member: p.id, allowed: true }).then(must));
         if (p.role !== "leader" && p.role !== r.role) ops.push(sb.from("profiles").update({ role: r.role }).eq("id", p.id).then(must));
@@ -284,16 +400,33 @@ input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var
                    : expectRow(r.staff_id, r.note, gid));
       });
       return Promise.all(ops);
-    }).then(function () { $("ids").value = ""; say("Added " + rows.length + (rows.length === 1 ? " ID" : " IDs") + (gid ? " to " + groupName(gid) + "." : ".")); return load(); });
+    }).then(function () {
+      $("ids").value = "";
+      say("Added " + rows.length + (rows.length === 1 ? " ID" : " IDs") + (gid ? " to " + groupName(gid) : "") + "." + (skipped.length ? " Not added (switched off, ask a Team Leader): " + skipped.join(", ") + "." : ""));
+      return load();
+    });
   });
   var setRole = safe(function (x, role) {
+    if (role === x.role) return;
+    if (role === "leader") {
+      var cl = x.clusters.length === 1 ? x.clusters[0] : null;
+      if (!window.confirm("Make " + (x.note || x.id) + " a Team Leader" + (cl ? " for " + cl : " (all clusters)") + "? Leaders can manage people, rosters and training. You can change their cluster next.")) { draw(); return; }
+      return sb.from("profiles").update({ role: "leader", cluster: cl }).eq("id", x.p.id).then(must)
+        .then(function () { return x.listed ? sb.from("allowed_ids").update({ role: "facilitator" }).eq("staff_id", x.id).then(must) : null; })
+        .then(function () { say((x.note || x.id) + " is now a Team Leader (" + (cl || "all clusters") + ")."); return load(); });
+    }
     return sb.from("allowed_ids").update({ role: role }).eq("staff_id", x.id).then(must).then(function () {
-      if (x.p && x.p.role !== "leader") return sb.from("profiles").update({ role: role }).eq("id", x.p.id).then(must);
-    }).then(function () { say((x.note || x.id) + " is now a " + (role === "member" ? "student" : "facilitator") + "."); return load(); });
+      if (x.p) return sb.from("profiles").update({ role: role }).eq("id", x.p.id).then(must);
+    }).then(function () { say((x.note || x.id) + " is now a " + roleName(role).toLowerCase() + "."); return load(); });
+  });
+  var setCluster = safe(function (x, c) {
+    return sb.from("profiles").update({ cluster: c || null }).eq("id", x.p.id).then(must)
+      .then(function () { say((x.note || x.id) + " now leads " + (c || "all clusters") + "."); return load(); });
   });
   var remove = safe(function (x) {
+    if (!window.confirm("Remove " + (x.note || x.id) + "?" + (x.p ? " Their account is switched off and they cannot sign in." : ""))) return;
     return sb.from("allowed_ids").delete().eq("staff_id", x.id).then(must).then(function () {
-      if (x.p && x.p.role !== "leader") return sb.rpc("leader_set_access", { member: x.p.id, allowed: false }).then(must);
+      if (x.p && x.role !== "leader") return sb.rpc("leader_set_access", { member: x.p.id, allowed: false }).then(must);
     }).then(function () { say((x.note || x.id) + " removed" + (x.p ? " and switched off." : ".")); return load(); });
   });
   var addBack = safe(function (x) {

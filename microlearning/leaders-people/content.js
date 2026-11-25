@@ -1,7 +1,7 @@
 /* People and passwords - Team Leader microlearning. Content only: the layout lives in ../shared/module.js.
-   Source: the DSY Team Leader guide (/userguides/leaders/), section 10 (Grant access and passwords) and section 9
-   (People: putting someone in a team or course), as of 21 November 2026. Screenshots are of /access/ and the training
-   app's People tab filled with INVENTED people and IDs (see .claude/status/microlearning.md).
+   Source: the DSY Team Leader guide (/userguides/leaders/), section 5 (People and passwords), as of 25 November 2026
+   (Team training's People tab was merged into the People page, /access/). Screenshots (25 Nov 2026) are of the People page
+   filled with INVENTED people and IDs; the intro video was re-narrated the same day (see .claude/status/microlearning.md).
    Quiz, quick checks and the practical were written by Claude from the guide, for the owner to review. */
 var M = window.MODULE = {
   flow: true,
@@ -12,49 +12,48 @@ var M = window.MODULE = {
   headline: "Who can sign in, and which team they're in",
   lead: "Add ambulance IDs to the approved list so people can make a DSY account, put them in the right team, and reset a password when someone is locked out.",
   minutes: 10,
-  protocol: { code: "Team Leader guide", source: "the DSY", name: "(sections 9 and 10)" },
+  protocol: { code: "Team Leader guide", source: "the DSY", name: "(section 5)" },
   relatedCodes: [],
   disclaimer: "Training resource for DSY Team Leaders. The screenshots use invented people and IDs. The Team Leader guide has the full detail.",
-  footerNotes: ["Taken from the DSY Team Leader guide, sections 9 and 10 (21 November 2026). If the pages change, the guide is updated first."],
+  footerNotes: ["Taken from the DSY Team Leader guide, section 5 (25 November 2026). If the pages change, the guide is updated first."],
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Adding people, and resetting passwords" } },
-      { text: "Only people whose ambulance ID is on the approved list can make a DSY account. Grant access, at dsytraining.com/access (on the home page and at the bottom of the dashboard), is where leaders manage that list." },
+      { video: { src: "intro.mp4?v=2", poster: "intro-poster.jpg?v=2", title: "Adding people, and resetting passwords" } },
+      { text: "Only people whose ambulance ID is on the approved list can make a DSY account. The People page, at dsytraining.com/access (the 👥 People button on the dashboard), is where leaders manage that list, their teams and passwords. It used to be called Grant access, and Team Training used to have its own People tab: that is now all on this one page." },
       { text: "Every picture on this page uses invented people and IDs." }
     ] },
 
     { title: "Adding IDs", blocks: [
-      { image: { src: "img/add.jpg", alt: "Add IDs: two IDs with names typed in, Add as Student, Team Cummins, and the Add to the list button", caption: "Add IDs, with a name after each" } },
+      { image: { src: "img/add.jpg", alt: "Add people: two IDs with names typed in, Add as Student, Team Cummins, and the Add to the list button", caption: "Add people, with a name after each" } },
       { tiles: { title: "Four steps", numbered: true, items: [
-        { title: "Paste the IDs", text: "Under Add IDs, one per line or separated by commas. Or choose a CSV file (ID in the first column, name in the second)." },
+        { title: "Paste the IDs", text: "Under Add people, one per line or separated by commas. Or choose a CSV file (ID in the first column, name in the second)." },
         { title: "Add the name", text: "After the ID: 12345, Sam Taylor. Sign-up asks only for the ID and a password, so the account takes the name you enter here." },
         { title: "Role and team", text: "Add as Student or Facilitator, and the Team they belong to (or No team)." },
         { title: "Add to the list", text: "They can now sign up on the sign-in page with that ID." }
       ] } },
       { box: { title: "Who joins the team, and when", items: [
         "Someone who has already signed up joins the team straight away.",
-        "Someone who hasn't signed up yet shows under Not signed up yet, and joins the team automatically when they sign up.",
+        "Someone who hasn't signed up yet shows as Not signed up yet, and joins the team automatically when they sign up.",
         "Anyone added without a name is asked for it once, straight after signing up."
       ], check: { q: "You add 42533 for Cummins with no name. What happens when that person signs up?", a: "They sign up with just the ID and a password, are asked for their name once straight after, and join Cummins automatically." } } }
     ] },
 
     { title: "The list", blocks: [
-      { image: { src: "img/waiting.jpg", alt: "The list filtered to Not signed up yet, showing three people with their team and the status Not signed up yet", caption: "Filter: Not signed up yet" } },
+      { image: { src: "img/waiting.jpg", alt: "The list filtered to Not signed up yet, showing four people with their team and the status Not signed up yet", caption: "Filter: Not signed up yet" } },
       { box: { title: "Filters and buttons", items: [
-        "Filter by Everyone, Not signed up yet, Facilitators or Switched off.",
-        "The Team column shows each person's teams. For someone signed up, Add to a team puts them in another team.",
-        "For someone not signed up yet, change the team in the box.",
-        "You can only choose teams in your own cluster."
+        "The list opens on your own cluster. People in other clusters are view only.",
+        "Search by name, ID or team, or filter: Not signed up yet, Not in a team, Facilitators and leaders, Switched off.",
+        "Each team shows as a chip. Tap ✕ on a chip to take the person off that team. Add to a team puts them in another team or course.",
+        "For someone not signed up yet, change the team in the box. You can only choose teams in your own cluster."
       ] } },
-      { image: { src: "img/person.jpg", alt: "A person's page in the training app with a tick box for each team; the Central Eyre teams are greyed out", caption: "Training app, People tab: tick or untick each team" } },
-      { text: "To take someone off a team, use the training app: People tab, tap the person, then untick the team under Teams and courses. Each tick saves straight away." }
+      { image: { src: "img/teams.jpg", alt: "Rows of the list: Ben Okafor with a Cummins chip and its cross, and an Add another box; people not signed up yet have a team box instead", caption: "Team chips: the cross takes them off that team" } }
     ] },
 
     { title: "Password resets", blocks: [
       { image: { src: "img/reset.jpg", alt: "Reset password open on a row, with a temporary password typed in and a Set password button", caption: "Reset password, then type a temporary one" } },
       { steps: [
-        { t: "Reset password", text: "On /access/, or on the person's page in the training app (People tab)." },
+        { t: "Reset password", text: "On the person's row on the People page (/access/)." },
         { t: "Temporary password", text: "Type one with 8 or more characters, and tell the person." },
         { t: "Their own", text: "They sign in with it and are asked to choose their own straight away." }
       ] },
@@ -63,7 +62,7 @@ var M = window.MODULE = {
         "Never post a password in a group chat or team messages.",
         "Volunteers can't reset their own password (there's no email on file), so a leader does it.",
         "Only the lead instructor can reset another leader's password."
-      ], check: { q: "A crew member messages the team chat: \"Locked out, can someone reset me?\" What do you do?", a: "Reset it on Grant access (or their People page) with a temporary password of 8 or more characters, and tell them directly, never in the group chat. They choose their own when they sign in." } } }
+      ], check: { q: "A crew member messages the team chat: \"Locked out, can someone reset me?\" What do you do?", a: "Reset it on the People page with a temporary password of 8 or more characters, and tell them directly, never in the group chat. They choose their own when they sign in." } } }
     ] },
 
     { title: "Switching an account off", blocks: [
@@ -78,10 +77,10 @@ var M = window.MODULE = {
         why: "Sign-up asks only for the ID and a password: the account takes the name you entered here." },
       { q: "How do you add a batch of IDs from a spreadsheet?", options: ["Type them one at a time only", "Choose a CSV file: ID in the first column, name in the second", "Email them to the lead instructor"], answer: 1,
         why: "Or choose a CSV file (ID in the first column, name in the second)." },
-      { q: "You add someone to Cummins who hasn't signed up yet. When do they join the team?", options: ["When you tick them in the training app", "Automatically, when they sign up", "Never: add them again later"], answer: 1,
+      { q: "You add someone to Cummins who hasn't signed up yet. When do they join the team?", options: ["When you add them to the team again", "Automatically, when they sign up", "Never: add them again later"], answer: 1,
         why: "Someone who hasn't signed up yet joins the team automatically when they sign up." },
-      { q: "Where do you take someone off a team?", options: ["Grant access: Remove", "Training app: People tab, untick the team", "The dashboard"], answer: 1,
-        why: "Take people off a team in the training app, People tab. Remove on Grant access switches the whole account off." },
+      { q: "Where do you take someone off a team?", options: ["People page: Remove", "People page: the ✕ on that team's chip", "The dashboard"], answer: 1,
+        why: "Tap ✕ on the team's chip. Remove switches the whole account off." },
       { q: "How long must a temporary password be?", options: ["4 or more characters", "6 or more characters", "8 or more characters"], answer: 2,
         why: "Type a temporary password (8 or more characters) and tell the person." },
       { q: "What happens when they sign in with the temporary password?", options: ["They keep it", "They are asked to choose their own straight away", "It expires in a week"], answer: 1,
@@ -94,8 +93,8 @@ var M = window.MODULE = {
 
     { title: "Try it", optional: true, collapsed: true, chip: "5 min", blocks: [
       { steps: [
-        { t: "Who's waiting?", text: "On Grant access, filter by Not signed up yet. Is anyone in your teams still to sign up? Remind them: dsytraining.com/signin." },
-        { t: "Teams", text: "Check the Team column for your crew. Anyone missing a team?" },
+        { t: "Who's waiting?", text: "On the People page, filter by Not signed up yet. Is anyone in your teams still to sign up? Remind them: dsytraining.com/signin." },
+        { t: "Teams", text: "Filter by Not in a team. Anyone in your crew missing a team?" },
         { t: "Practise a reset", text: "With a crew member beside you, reset their password and let them choose their own." }
       ] },
       { note: "Suggested activities written for training. Check them with your lead instructor." }
@@ -103,8 +102,8 @@ var M = window.MODULE = {
 
     { title: "Further reading", optional: true, collapsed: true, blocks: [
       { links: [
-        { label: "Team Leader guide: Grant access, people and passwords", href: "/userguides/leaders/#access" },
-        { label: "Open Grant access", href: "/access/" }
+        { label: "Team Leader guide: People and passwords", href: "/userguides/leaders/#access" },
+        { label: "Open the People page", href: "/access/" }
       ] }
     ] }
   ]

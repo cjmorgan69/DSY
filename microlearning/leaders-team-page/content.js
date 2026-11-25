@@ -71,7 +71,7 @@ var M = window.MODULE = {
     { title: "Knowledge check", blocks: [{ quiz: { intro: "Questions from the Team Leader guide. Pick an answer for each, then check.", questions: [
       { q: "Who sees the Team Page?", options: ["Only leaders", "Members, when they sign in", "Anyone on the internet"], answer: 1,
         why: "Each team has a Team Page (/teams/) that members see when they sign in." },
-      { q: "How do you open the editor?", options: ["Team page: Edit this page, or Region page: Edit page on the team's tile", "Dashboard: Tasks", "Grant access"], answer: 0,
+      { q: "How do you open the editor?", options: ["Team page: Edit this page, or Region page: Edit page on the team's tile", "Dashboard: Tasks", "The People page"], answer: 0,
         why: "Open your team's page and tap Edit this page. Or open the Region page and tap Edit page on the team's tile." },
       { q: "What happens to the town photo when you choose a banner photo?", options: ["Both show", "Your photo replaces it", "The town photo becomes a slide"], answer: 1,
         why: "Choose a photo to put it behind the team name. It replaces the town photo DSY put there." },

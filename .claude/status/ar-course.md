@@ -209,3 +209,13 @@ material"; the old Skill sign-off and Course admin sections became an "Other too
 Sheet bookings app `/course/`). Dashboard footer "AR course" (phone and wide) and the home page's leader-only Other
 pages button ("AR course") both go to `/ar/`; Workshop bookings' facilitator header links back ("AR course page").
 Guide section 14 opens with the AR course page. Live (PR #358, merged 24 Nov 2026).
+
+## AR days on the leader calendar (owner, 25 Nov 2026)
+
+`/training/` leader Calendar (month and list) now shows AR course dates with the team sessions: `loadArDays()` reads
+`course_workshops` (not cancelled) of non-archived `course_cohorts`, with the day title from `course_days` and the
+booked count from `course_bookings` (facilitator/leader read policies). Purple "AR course · Day n" items, read-only,
+linking to `/ar/course/`; an "AR course" filter chip (shown when there are AR dates); hidden under Leader-led / Team-led
+filters; shown in every cluster (cohorts have no cluster). A failed read never blocks the calendar. Tested with stand-in
+data. On 25 Nov 2026 the 2026 and 2027 groups had no upcoming dates set. On a branch, not merged.
+

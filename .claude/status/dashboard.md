@@ -285,8 +285,32 @@ next 8am, then one 8am-to-8am day per step, up to 7 days ahead. Each step is one
 (all teams are on Supabase, so it is quick); crew names come from the bookings already loaded (180 days ahead). A future
 day shows uncovered team-hours and teams with a gap instead of the "now" counts. Tested against the real roster data. Merged (PR #360, 24 Nov 2026).
 
+## Widescreen layout (owner, 25 Nov 2026)
+
+`/dashboard/wide/` columns: left Roster then Dispatch; middle Training sessions then Tasks; right Weather, Ask DSY, then
+Suggestions. Below 1500 px the right column still runs as a row across the bottom; below 1000 px everything stacks.
+Live (PR #370, merged 25 Nov 2026).
+
+## Phone dashboard order (owner, 25 Nov 2026)
+
+`/dashboard/` top to bottom: Roster, Dispatch, Volunteer contribution tile, Training sessions, Tasks, Weather, Ask DSY,
+Suggestions (order classes o1 to o8; on a tablet's two columns: left Roster, Dispatch, Volunteer contribution; right
+Training, Tasks, Weather, Ask DSY, Suggestions). The Microlearning and Lessons shortcut tiles were removed (reached
+through Team training); `dash.js` skips the lesson count when there is no Lessons tile. The widescreen top bar's
+Microlearning and Lessons links were removed too. Leader guide section 2 and the Your dashboard module text updated; the module's screenshots still show the old
+tiles. Live (PR #371, merged 25 Nov 2026).
+
+## Region link (owner, 25 Nov 2026)
+
+Both dashboards have a **Region** button (after Team training) to `/region/?mine=1`. Team training's leader header has
+Training home, People, Region (also `?mine=1`), Leader guide, Sign out; the Team page link now shows to members only.
+`?mine=1` makes the Region page start on the leader's own cluster (`profiles.cluster`; blank = All clusters for the
+lead instructor) instead of the cluster last chosen on that device; tapping a chip still changes and remembers it.
+The Region page now also lets in a relief Team Leader on cover (`my_access()` role leader), with the covered leader's
+cluster (owner, 25 Nov 2026). Live (PR #372, merged 25 Nov 2026).
+
 Widescreen by default on a computer (owner, 25 Nov 2026): `/dashboard/` jumps to `/dashboard/wide/` (keeping any
 query and hash) when the screen is at least 1100px wide and the pointer is a mouse (phones and iPads stay). "Phone and
 tablet version" links (wide footer, car dash) go to `/dashboard/?phone=1`, which keeps the phone version on that device
 (`localStorage` `dsyDashView` = phone) until the Widescreen version is opened again. Tested in a headless browser
-(PC, PC after choosing phone, iPhone, iPad landscape). On a branch, not merged.
+(PC, PC after choosing phone, iPhone, iPad landscape). Live (PR #374, merged 25 Nov 2026).

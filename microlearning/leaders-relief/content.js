@@ -38,7 +38,7 @@ var M = window.MODULE = {
         "Your dashboards and your task list",
         "Training for your cluster, with editing",
         "Volunteer contribution and dispatch",
-        "Grant access and password resets"
+        "The People page: add people, put them in teams, reset passwords (no role changes or removals)"
       ] } },
       { box: { title: "They don't get", tone: "no", items: [
         "Your Google Calendar link",
@@ -64,12 +64,12 @@ var M = window.MODULE = {
     ] },
 
     { title: "Knowledge check", blocks: [{ quiz: { intro: "Questions from the Team Leader guide. Pick an answer for each, then check.", questions: [
-      { q: "Where do you set up relief cover?", options: ["Grant access", "Relief cover, at the bottom of the dashboard", "The training app"], answer: 1,
+      { q: "Where do you set up relief cover?", options: ["The People page", "Relief cover, at the bottom of the dashboard", "Team training"], answer: 1,
         why: "/dashboard/relief/ (Relief cover at the bottom of the dashboard)." },
       { q: "Which of these does the relief Team Leader get?", options: ["Your Google Calendar link", "Training for your cluster, with editing", "Making someone a leader"], answer: 1,
-        why: "They get your dashboards and task list, training for your cluster with editing, contribution and dispatch, and Grant access with password resets." },
+        why: "They get your dashboards and task list, training for your cluster with editing, contribution and dispatch, and the People page to add people and reset passwords." },
       { q: "Can the relief Team Leader reset a volunteer's password?", options: ["Yes", "No", "Only with the lead instructor"], answer: 0,
-        why: "They get Grant access and password resets. They don't get resetting a leader's password." },
+        why: "They get the People page with password resets. They don't get resetting a leader's password." },
       { q: "Can the relief Team Leader reset another leader's password?", options: ["Yes", "No"], answer: 1,
         why: "They don't get resetting a leader's password." },
       { q: "When does a cover end?", options: ["Only when you end it", "By itself on the end date, or earlier with End now", "After 7 days"], answer: 1,

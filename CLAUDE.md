@@ -167,8 +167,11 @@ Development" cards. Raised with the owner and NOT yet decided or done:
   Modules 2 Crewing gaps and 5 Relief cover live (on main). All six are linked from the user guides.
   Learning order for a new Team Leader (23 Nov 2026): dashboard, people, gaps, training nights, relief, team page,
   with Next links, a Start here card on `/userguides/` and the guide in the same order (on a branch, not merged).
+- One People page (25 Nov 2026): `/access/` (People button on the dashboard) replaces Grant access and the training
+  app's People tab (now a Courses tab); relief Team Leaders add only; database rules `people_page_rules` applied.
+  Live (PR #362, merged 25 Nov 2026). People and passwords module re-shot and re-narrated (PR #363, merged 25 Nov 2026).
 - Volunteer Team Leader level (22 Nov 2026): one per team, facilitator + roster manager for their team, team dashboard
-  `/dashboard/team/`, set on Grant access (see `access.md`). Live (PR #320, merged 22 Nov 2026). Owner to name the VTLs.
+  `/dashboard/team/`, set on the People page `/access/` (see `access.md`). Live (PR #320, merged 22 Nov 2026). Owner to name the VTLs.
 - Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario

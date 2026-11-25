@@ -185,3 +185,47 @@ The page now uses `my_access()` (role leader, which includes relievers on active
 `paging_jobs_relief_read` (`supabase/paging-jobs-relief-read.sql`): `leaders_read` uses `is_leader()`. Rehearsed in a
 rolled-back transaction with a stand-in cover: reliever 1556 jobs on cover, 0 after it ended, leader 1556. Database
 change applied 24 Nov 2026; page live (PR #361, merged 24 Nov 2026), checked on the live site signed out.
+
+## One People page (owner, 25 Nov 2026)
+
+Owner asked for one clear place for Team Leaders to manage people. Grant access (`/access/`) and the training app's
+People tab were compared and merged: `/access/` is now **People** ("Add, place and manage everyone"), opened by a
+**👥 People** button at the top of both dashboards (the "Grant access" footer link is gone); the home page and Run a
+session links say People. The training app's People tab is gone: its third tab is now **Courses** (Your courses and
+Add a course, unchanged), the header has a People link for leaders, and the person page, role box, cluster box and
+the training app's own reset password were removed (all on `/access/` now). The "Team and region pages" box was
+dropped (the header already links to Region).
+- The People page: cluster chips (opens on the leader's own cluster; the lead instructor opens on All clusters);
+  people in other clusters are view only; someone with no team shows in every cluster so whoever adds them can place
+  them. Team chips with ✕ to take someone off a team (also ends their VTL row for that team, after a confirm). Role
+  is a select (Student, Facilitator); the lead instructor also gets Leader and a leader's cluster (making a leader
+  sets their cluster from their teams if they are in one cluster, else All clusters, after a confirm). Other
+  leaders' rows: lead instructor only (a leader can still add themselves to teams). Reset password on a leader's row:
+  lead instructor only. Filter adds Not in a team; search also matches team names, "leader" and "VTL". Rows become
+  cards at phone width.
+- Relief Team Leaders (owner: add only): add IDs as students, put people in teams, reset passwords. No role changes,
+  Remove, Add back of a switched-off account, team ✕ or VTL changes; a notice says so. Adding an ID that is switched
+  off is skipped with a message.
+- Database (migration `people_page_rules`, `supabase/people-page-rules.sql`, applied by Claude 25 Nov 2026 after a
+  rolled-back rehearsal with stand-ins): `protect_profile_fields` refuses role changes by relief Team Leaders and any
+  change to or from Leader by anyone but the lead instructor (`is_lead_instructor()`, a real leader with no cluster);
+  `leader_set_access` needs a real leader; trigger `protect_allowed_ids` lets relief cover insert students only (no
+  delete, no role change); `team_vtls_write` needs a real leader. Rehearsal: relief refused role change, switch off,
+  facilitator ID, delete ID and VTL, allowed student ID and password reset; Campbell allowed facilitator, refused
+  making a leader; lead instructor allowed all. Not enforced in the database: a cluster leader changing the role of
+  someone outside their cluster (the page stops it). Note Liz Guerin is covering the lead instructor to 3 Jan 2027,
+  so she now has the add-only People page.
+- Guides and Team Leader modules updated (leader guide section 5 "People and passwords" with a Relief cover part,
+  sections 1 and relief table; People and passwords, Relief, Dashboard, Team page modules' text). The People and
+  passwords module's narrated video and screenshots still show Grant access and the old People tab (owner to say
+  whether to re-shoot screenshots and re-narrate; narration costs credits).
+- Tested with invented data in a browser (lead instructor, cluster leader, relief) at desktop and phone width.
+  Live (PR #362, merged 25 Nov 2026; live page checked signed out: sends to sign-in). Follow-up live (PR #363, merged
+  25 Nov 2026): the ID moved under the name so the action buttons fit on wider screens.
+- Courses tab (owner, 25 Nov 2026): an Ambulance Responder course card at the top links to `/ar/` and `/ar/course/`;
+  "Your courses" always shows (a note when the app has no other courses). Leader guide section on training updated
+  (tabs Calendar, Lessons, Courses). Live (PR #365, merged 25 Nov 2026; live page loads with no errors).
+- Courses tab removed (owner, 25 Nov 2026: Team Training is for team training only): the training app has Calendar and
+  Lessons; "Add a course", the course list and course delete are gone (no course groups or course sessions existed,
+  checked). The AR course keeps its own entry point (AR course on the dashboard, `/ar/`). Course-type groups are still
+  understood by the code if any ever exist. Guide and Training nights module text updated. Live (PR #367, merged 25 Nov 2026).

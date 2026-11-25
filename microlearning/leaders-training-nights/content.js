@@ -1,6 +1,7 @@
 /* Setting up training nights - Team Leader microlearning. Content only: the layout lives in ../shared/module.js.
    Source: the DSY Team Leader guide (/userguides/leaders/), section 9 (Training sessions and lessons: Your cluster,
-   Setting up your training nights, Sessions and courses, Lessons), as of 21 November 2026. Screenshots are of
+   Setting up your training nights, Sessions and courses, Lessons), as of 21 November 2026 (course text updated 25 Nov
+   2026: Team training no longer makes courses). Screenshots are of
    /training/ (leader view) filled with INVENTED teams, people and sessions (see .claude/status/microlearning.md).
    Quiz, quick checks and the practical were written by Claude from the guide, for the owner to review. */
 var M = window.MODULE = {
@@ -10,22 +11,22 @@ var M = window.MODULE = {
   title: "Training nights",
   subtitle: "Team Leader microlearning",
   headline: "A whole year of nights, in one go",
-  lead: "Set up a team's training nights for the year in the training app, with the school and public holidays left out. Then give each night a lesson, and add or remove single nights as plans change.",
+  lead: "Set up a team's training nights for the year in Team training, with the school and public holidays left out. Then give each night a lesson, and add or remove single nights as plans change.",
   minutes: 10,
   protocol: { code: "Team Leader guide", source: "the DSY", name: "(section 9)" },
   relatedCodes: [],
   disclaimer: "Training resource for DSY Team Leaders. The screenshots use invented people and sessions. The Team Leader guide has the full detail.",
-  footerNotes: ["Taken from the DSY Team Leader guide, section 9 (21 November 2026). If the training app changes, the guide is updated first."],
+  footerNotes: ["Taken from the DSY Team Leader guide, section 9 (21 November 2026). If Team training changes, the guide is updated first."],
 
   panels: [
     { title: "Introduction", open: true, blocks: [
       { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Setting up your training nights" } },
-      { text: "Training is run in the training app, at dsytraining.com/training (Training app on the dashboard). As a leader you see the tabs Calendar, Lessons and People." },
+      { text: "Training is run in Team training, at dsytraining.com/training (Team training on the dashboard). As a leader you see two tabs, Calendar and Lessons." },
       { text: "Every picture on this page uses invented people and sessions." }
     ] },
 
     { title: "Your cluster", blocks: [
-      { image: { src: "img/calendar.jpg", alt: "The training app Calendar tab with cluster chips, the Set up training nights and Add one session buttons, and team filters", caption: "The Calendar tab opens on your own cluster" } },
+      { image: { src: "img/calendar.jpg", alt: "Team training Calendar tab with cluster chips, the Set up training nights and Add one session buttons, and team filters", caption: "The Calendar tab opens on your own cluster" } },
       { text: "The app opens on your own cluster. The cluster chips show the others, but another cluster's sessions are view only (a notice says whose they are). Lessons are one shared library for everyone." }
     ] },
 
@@ -80,11 +81,11 @@ var M = window.MODULE = {
         "Removes the night's bookings and attendance too",
         "Can't be undone"
       ] } },
-      { text: "Add a course (under Teams and courses) makes a separate set of sessions, for example for recruits from several teams: pick the first date, the last date and the days between sessions. A new course belongs to your cluster." }
+      { text: "Team training is only for team training nights. The Ambulance Responder course has its own pages: AR course, at the bottom of the dashboard." }
     ] },
 
     { title: "Knowledge check", blocks: [{ quiz: { intro: "Questions from the Team Leader guide. Pick an answer for each, then check.", questions: [
-      { q: "Where do you start setting up a team's nights for the year?", options: ["Dashboard, Crewing gaps", "Training app, Calendar, Set up training nights", "Training app, People"], answer: 1,
+      { q: "Where do you start setting up a team's nights for the year?", options: ["Dashboard, Crewing gaps", "Team training, Calendar, Set up training nights", "The People page"], answer: 1,
         why: "On Calendar, tap Set up training nights." },
       { q: "Team Leader visits are…", options: ["Team-led, facilitator chosen later", "Leader-led, with you as facilitator", "Open to every cluster"], answer: 1,
         why: "Team Leader visits are leader-led, with you as facilitator." },
@@ -120,7 +121,7 @@ var M = window.MODULE = {
       { links: [
         { label: "Team Leader guide: training sessions and lessons", href: "/userguides/leaders/#training" },
         { label: "Your dashboard (module 1)", href: "../leaders-dashboard/" },
-        { label: "Open the training app", href: "/training/" }
+        { label: "Open Team training", href: "/training/" }
       ] }
     ] }
   ]

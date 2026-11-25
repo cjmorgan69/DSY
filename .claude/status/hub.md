@@ -120,3 +120,23 @@ list (title and summary, every word must match; Enter adds the only match and do
 on the Lessons tab hides lessons that do not match (kept while the tab is open). Tested with stand-in data. Merged (PR #334, 22 Nov 2026).
 Region page tile (owner, 22 Nov 2026): "Manager dashboard" (old Lower Eyre roster manager dashboard) is now "Team Leader
 Dashboard" and opens `/dashboard/`. Merged (PR #335, 22 Nov 2026).
+
+## Names: Training home and Team training (owner, 25 Nov 2026)
+
+Buttons and links that said "DSY home" now say **Training home** (dashboards, car dash, dispatch, training app header,
+user guides) and "Training app" now says **Team training** (dashboards, team dashboard, People page, leader guide,
+Team Leader modules' text). The home page's browser tab title is "Training home - DSY Training" (heading unchanged:
+DSY Training). The feedback category "Training app" is now "Team training" (older feedback rows keep the old word).
+Not changed: screenshots and narrated videos in the Team Leader modules (Your dashboard hero picture, Training nights
+video) still show the old labels. Live (PR #367, merged 25 Nov 2026; home page and Team Training checked, no errors).
+
+## Training home: links trimmed (owner, 25 Nov 2026)
+
+The small links at the bottom of the home page were removed except **Dashboard** (still shown only to leaders). Gone:
+Sign in / Sign out (signing in lands on the Team page, which has Sign out), Team Leader training, People, and the
+hidden "Other groups and pages" box. Its links (All AO walk-throughs, Paramedic, Rural ED, GP clinic, Rural nursing
+microlearning, Classic hub) moved to an "Other pages" line under the footer of both dashboards; AR course was
+already in the dashboard footer. Live (PR #368, merged 25 Nov 2026; checked in a fresh browser).
+- "Open training app" on the dashboards' Training sessions panel now reads "Open Team training"; other on-screen
+  "the training app" wording (dashboards, team dashboard, dispatch sign-in, user guides, Team Leader module text) says
+  Team training (25 Nov 2026). Live (PR #369, merged 25 Nov 2026).
