@@ -306,6 +306,6 @@ Both dashboards have a **Region** button (after Team training) to `/region/?mine
 Training home, People, Region (also `?mine=1`), Leader guide, Sign out; the Team page link now shows to members only.
 `?mine=1` makes the Region page start on the leader's own cluster (`profiles.cluster`; blank = All clusters for the
 lead instructor) instead of the cluster last chosen on that device; tapping a chip still changes and remembers it.
-Note: the Region page lets in only `profiles.role = 'leader'`, so a relief Team Leader on cover is sent to the Team
-page. On a branch, not merged.
+The Region page now also lets in a relief Team Leader on cover (`my_access()` role leader), with the covered leader's
+cluster (owner, 25 Nov 2026). Live (PR #372, merged 25 Nov 2026).
 
