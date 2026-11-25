@@ -296,7 +296,7 @@ Live (PR #370, merged 25 Nov 2026).
 `/dashboard/` top to bottom: Roster, Dispatch, Volunteer contribution tile, Training sessions, Tasks, Weather, Ask DSY,
 Suggestions (order classes o1 to o8; on a tablet's two columns: left Roster, Dispatch, Volunteer contribution; right
 Training, Tasks, Weather, Ask DSY, Suggestions). The Microlearning and Lessons shortcut tiles were removed (reached
-through Team training); `dash.js` skips the lesson count when there is no Lessons tile (the widescreen bar still has
-it). Leader guide section 2 and the Your dashboard module text updated; the module's screenshots still show the old
+through Team training); `dash.js` skips the lesson count when there is no Lessons tile. The widescreen top bar's
+Microlearning and Lessons links were removed too. Leader guide section 2 and the Your dashboard module text updated; the module's screenshots still show the old
 tiles. On a branch, not merged.
 
