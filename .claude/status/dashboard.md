@@ -309,3 +309,8 @@ lead instructor) instead of the cluster last chosen on that device; tapping a ch
 The Region page now also lets in a relief Team Leader on cover (`my_access()` role leader), with the covered leader's
 cluster (owner, 25 Nov 2026). Live (PR #372, merged 25 Nov 2026).
 
+Widescreen by default on a computer (owner, 25 Nov 2026): `/dashboard/` jumps to `/dashboard/wide/` (keeping any
+query and hash) when the screen is at least 1100px wide and the pointer is a mouse (phones and iPads stay). "Phone and
+tablet version" links (wide footer, car dash) go to `/dashboard/?phone=1`, which keeps the phone version on that device
+(`localStorage` `dsyDashView` = phone) until the Widescreen version is opened again. Tested in a headless browser
+(PC, PC after choosing phone, iPhone, iPad landscape). Live (PR #374, merged 25 Nov 2026).
