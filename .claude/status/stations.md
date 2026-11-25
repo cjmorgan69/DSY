@@ -57,6 +57,11 @@ is limited so request clinical support for a 12-lead), 3 oxygen (CSSG p69 to 73:
 pain SpO2 above 94% else nasal cannula, ACPO high flow NRB), 4 listening to the chest (CSSG p50, AO only), ACPO
 posture, no walking with active chest pain (CPPRO-001), carry chair and stretcher head up (DSY). Finish: Graham or
 Kevin walk-through. Linked from both hub topics. Live 27 Oct 2026, lesson added.
+Station 2 rewritten 25 Nov 2026 (owner: AOs don't do 12-leads): D-ECG and 12-lead removed, now "Know your Corpuls"
+from the SAAS General Operation Cert IV task card (owner's photo, 12-lead crossed to 4-lead): default screen, Jog dial
+leads, 4-lead print, NIBP Auto interval, views, shortcut keys, alarm autolimits, screenshot, trend and mission summary.
+Card items left out: module separate/reassemble, CPR screen, charge and defib in demo mode, LT ECG, CO2 (crossed out).
+On a branch, not merged.
 
 ## Asthma
 
