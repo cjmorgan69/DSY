@@ -224,4 +224,4 @@ dropped (the header already links to Region).
   25 Nov 2026): the ID moved under the name so the action buttons fit on wider screens.
 - Courses tab (owner, 25 Nov 2026): an Ambulance Responder course card at the top links to `/ar/` and `/ar/course/`;
   "Your courses" always shows (a note when the app has no other courses). Leader guide section on training updated
-  (tabs Calendar, Lessons, Courses). On a branch, not merged.
+  (tabs Calendar, Lessons, Courses). Live (PR #365, merged 25 Nov 2026; live page loads with no errors).
