@@ -220,5 +220,5 @@ dropped (the header already links to Region).
   passwords module's narrated video and screenshots still show Grant access and the old People tab (owner to say
   whether to re-shoot screenshots and re-narrate; narration costs credits).
 - Tested with invented data in a browser (lead instructor, cluster leader, relief) at desktop and phone width.
-  Live (PR #362, merged 25 Nov 2026; live page checked signed out: sends to sign-in). Follow-up on a branch, not
-  merged: the ID moved under the name so the action buttons fit on wider screens.
+  Live (PR #362, merged 25 Nov 2026; live page checked signed out: sends to sign-in). Follow-up live (PR #363, merged
+  25 Nov 2026): the ID moved under the name so the action buttons fit on wider screens.
