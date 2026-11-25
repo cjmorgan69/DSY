@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261125l">
+<link rel="stylesheet" href="../training/theme.css?v=20261125n">
 <style>
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: .9rem; }
 .tile { display: flex; flex-direction: column; overflow: hidden; border-radius: 18px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(20, 40, 30, .05); }
@@ -41,8 +41,8 @@
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast err" hidden></div>
 
-<script src="../training/config.js?v=20261125l"></script>
-<script src="../training/pwreveal.js?v=20261125l" defer></script>
+<script src="../training/config.js?v=20261125n"></script>
+<script src="../training/pwreveal.js?v=20261125n" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -81,8 +81,11 @@
   }
 
   function load() {
-    return q(sb.from("profiles").select("*").eq("id", S.user.id)).then(function (rows) {
+    return Promise.all([q(sb.from("profiles").select("*").eq("id", S.user.id)), sb.rpc("my_access")]).then(function (res) {
+      var rows = res[0], acc = (res[1] && !res[1].error && res[1].data) || {};
       S.profile = rows[0] || { role: "member" };
+      /* relief Team Leaders on cover count as leaders here, with the covered leader's cluster (owner, 25 Nov 2026) */
+      if (S.profile.role !== "leader" && acc.role === "leader") S.profile = Object.assign({}, S.profile, { role: "leader", cluster: acc.cluster || null });
       if (S.profile.role !== "leader") { location.replace("../teams/"); return null; }
       return Promise.all([
         q(sb.from("region_info").select("*").limit(1)),
@@ -130,7 +133,13 @@
   function render() {
     var r = S.region, html = header();
     /* Cluster filter (owner, 22 Nov 2026): remembered on this device; starts on the leader's own cluster. */
-    if (S.cluster == null) { var c0 = cstore(); S.cluster = c0 != null ? c0 : (S.profile && CLUSTERS.indexOf(S.profile.cluster) > -1 ? S.profile.cluster : ""); }
+    /* ?mine=1 (links from the dashboard and Team training, owner 25 Nov 2026): always start on the leader's own cluster
+       (All clusters for the lead instructor), whatever was last chosen on this device. */
+    if (S.cluster == null) {
+      var own = S.profile && CLUSTERS.indexOf(S.profile.cluster) > -1 ? S.profile.cluster : "";
+      var c0 = /[?&]mine=1(&|$)/.test(location.search) ? null : cstore();
+      S.cluster = c0 != null ? c0 : own;
+    }
     /* banner: the region name for All clusters, else the cluster's name (owner, 22 Nov 2026) */
     var title = S.cluster || r.name || "Eyre Peninsula";
     html += '<section class="hero' + (S.regionPhoto ? "" : " plain") + '">' + (S.regionPhoto ? '<img src="' + esc(S.regionPhoto) + '" alt="' + esc(title) + '">' : "") +
