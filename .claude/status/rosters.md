@@ -522,5 +522,5 @@ pages unchanged. Live (PR #343, merged 23 Nov 2026).
   of the PDF (page 2 for a 7-day roster; that page's rows are made a little shorter to fit), added to the email under
   "Notes:", and kept in the change log entry. Changing the notes after Preview means Preview again before Send now.
   The box is cleared after a send. Scheduled (weekly) sends have no notes.
-- Page change on a branch, not merged. Edge function `roster-send` (index.ts, pdf.ts) to be deployed by Claude when
-  the PR merges (deployed version 5 matched main before the change; without notes the PDF and email are unchanged).
+- Live (PR #375, merged 25 Nov 2026). Edge function `roster-send` version 6 deployed the same day (matches main);
+  live page checked loading. Not yet tried with a real manager sign-in: owner to Preview with a note.
