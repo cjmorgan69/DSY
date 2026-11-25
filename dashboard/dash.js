@@ -427,13 +427,13 @@
     var nowM = mins(parts().hour + ":" + parts().minute);
     rows = rows.filter(function (s) { return s.session_date > t || mins(s.end_time || s.start_time) > nowM; });
     var html = "";
-    if (!rows.length) { $("tBody").innerHTML = '<div class="banner"><b>No sessions booked in the next 2 months</b><span class="small">Add them in the training app.</span></div>'; return; }
+    if (!rows.length) { $("tBody").innerHTML = '<div class="banner"><b>No sessions booked in the next 2 months</b><span class="small">Add them in Team training.</span></div>'; return; }
     var n = rows[0], days = Math.round((dOf(n.session_date) - dOf(t)) / 864e5);
     var when = days === 0 ? "Tonight" : days === 1 ? "Tomorrow" : "In " + days + " days";
     if (days === 0 && mins(n.start_time) < 17 * 60) when = "Today";
     html += '<a class="banner golink" href="/training/#session=' + encodeURIComponent(n.id) + '"><span class="eyebrow">Next session · ' + when + '</span><b>' + esc(gn[n.group_id] || "Team") + (n.topic ? " · " + esc(n.topic) : "") + "</b>" +
       '<span class="small">' + nice(n.session_date) + ", " + t12(n.start_time) + (n.end_time ? " to " + t12(n.end_time) : "") + (n.location ? " · " + esc(n.location) : "") + " · " + (n.session_type === "team" ? "Team-led" : "Leader-led") +
-      (n.facilitator_name ? " · " + esc(n.facilitator_name) : "") + "</span>" + (hasLesson(n) ? "" : '<span class="small"><b style="font-size:inherit;font-family:inherit">No lesson yet</b>: pick one in the training app.</span>') + '<span class="small go">Open in the planner →</span></a>';
+      (n.facilitator_name ? " · " + esc(n.facilitator_name) : "") + "</span>" + (hasLesson(n) ? "" : '<span class="small"><b style="font-size:inherit;font-family:inherit">No lesson yet</b>: pick one in Team training.</span>') + '<span class="small go">Open in the planner →</span></a>';
     var soon = rows.filter(function (s) { return s.session_date <= addDays(t, 27); }), need = soon.filter(function (s) { return !hasLesson(s); });
     if (need.length) html += '<div class="banner warn"><span><b style="font-size:1rem">' + need.length + " of " + soon.length + "</b> sessions in the next 4 weeks have no lesson. " +
       '<a href="/training/">Allocate lessons →</a></span></div>';

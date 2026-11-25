@@ -1,6 +1,6 @@
 /* People and passwords - Team Leader microlearning. Content only: the layout lives in ../shared/module.js.
    Source: the DSY Team Leader guide (/userguides/leaders/), section 5 (People and passwords), as of 25 November 2026
-   (the training app's People tab was merged into the People page, /access/). Screenshots (25 Nov 2026) are of the People page
+   (Team training's People tab was merged into the People page, /access/). Screenshots (25 Nov 2026) are of the People page
    filled with INVENTED people and IDs; the intro video was re-narrated the same day (see .claude/status/microlearning.md).
    Quiz, quick checks and the practical were written by Claude from the guide, for the owner to review. */
 var M = window.MODULE = {

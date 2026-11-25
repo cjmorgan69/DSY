@@ -64,7 +64,7 @@ var M = window.MODULE = {
     ] },
 
     { title: "Knowledge check", blocks: [{ quiz: { intro: "Questions from the Team Leader guide. Pick an answer for each, then check.", questions: [
-      { q: "Where do you set up relief cover?", options: ["The People page", "Relief cover, at the bottom of the dashboard", "The training app"], answer: 1,
+      { q: "Where do you set up relief cover?", options: ["The People page", "Relief cover, at the bottom of the dashboard", "Team training"], answer: 1,
         why: "/dashboard/relief/ (Relief cover at the bottom of the dashboard)." },
       { q: "Which of these does the relief Team Leader get?", options: ["Your Google Calendar link", "Training for your cluster, with editing", "Making someone a leader"], answer: 1,
         why: "They get your dashboards and task list, training for your cluster with editing, contribution and dispatch, and the People page to add people and reset passwords." },

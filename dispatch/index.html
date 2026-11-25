@@ -90,7 +90,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:no-preference){.ab{transition:box-shadow .12s}}
 </style>
-<script src="../training/config.js?v=20261125h"></script>
+<script src="../training/config.js?v=20261125i"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 </head>
 <body>
@@ -136,7 +136,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
     app.textContent = "";
     var f = el("form", "auth");
     f.appendChild(el("h1", null, "Dispatch Week 🚑"));
-    f.appendChild(el("p", "sub", "Leaders only. Sign in with the same details as the team training app."));
+    f.appendChild(el("p", "sub", "Leaders only. Sign in with your DSY ambulance ID and password."));
     var l1 = el("label", null, "Ambulance ID number (or email)"), i1 = el("input"); i1.id = "f-id"; i1.name = "id"; i1.autocomplete = "username"; i1.autocapitalize = "none"; i1.spellcheck = false; i1.required = true; l1.appendChild(i1); f.appendChild(l1);
     var l2 = el("label", null, "Password"), i2 = el("input"); i2.id = "f-pw"; i2.name = "pw"; i2.type = "password"; i2.autocomplete = "current-password"; i2.required = true; l2.appendChild(i2); f.appendChild(l2);
     var m = el("p", "err", msg || ""); m.id = "auth-msg"; m.hidden = !msg; f.appendChild(m);

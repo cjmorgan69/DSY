@@ -353,7 +353,7 @@
   function drawSessions(rows, t) {
     var nowM = mins(parts().hour + ":" + parts().minute);
     rows = rows.filter(function (s) { return s.session_date > t || mins(s.end_time || s.start_time) > nowM; });
-    if (!rows.length) { $("tBody").innerHTML = '<div class="banner"><b>No sessions booked in the next 2 months</b><span class="small">Your Team Leader adds them in the training app.</span></div>'; return; }
+    if (!rows.length) { $("tBody").innerHTML = '<div class="banner"><b>No sessions booked in the next 2 months</b><span class="small">Your Team Leader adds them in Team training.</span></div>'; return; }
     var n = rows[0], days = Math.round((dOf(n.session_date) - dOf(t)) / 864e5);
     var when = days === 0 ? (mins(n.start_time) < 17 * 60 ? "Today" : "Tonight") : days === 1 ? "Tomorrow" : "In " + days + " days";
     var html = '<div class="banner"><span class="eyebrow">Next session · ' + when + "</span><b>" + esc(n.topic || (n.session_type === "team" ? "Team training" : "Team Leader visit")) + "</b>" +
