@@ -1,7 +1,7 @@
 /* People and passwords - Team Leader microlearning. Content only: the layout lives in ../shared/module.js.
    Source: the DSY Team Leader guide (/userguides/leaders/), section 5 (People and passwords), as of 25 November 2026
-   (the training app's People tab was merged into the People page, /access/). Screenshots are of /access/ before it was
-   renamed from Grant access, filled with INVENTED people and IDs (see .claude/status/microlearning.md).
+   (the training app's People tab was merged into the People page, /access/). Screenshots (25 Nov 2026) are of the People page
+   filled with INVENTED people and IDs; the intro video was re-narrated the same day (see .claude/status/microlearning.md).
    Quiz, quick checks and the practical were written by Claude from the guide, for the owner to review. */
 var M = window.MODULE = {
   flow: true,
@@ -19,13 +19,13 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
-      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Adding people, and resetting passwords" } },
+      { video: { src: "intro.mp4?v=2", poster: "intro-poster.jpg?v=2", title: "Adding people, and resetting passwords" } },
       { text: "Only people whose ambulance ID is on the approved list can make a DSY account. The People page, at dsytraining.com/access (the 👥 People button on the dashboard, and People on the home page), is where leaders manage that list, their teams and passwords. It used to be called Grant access, and the training app used to have its own People tab: that is now all on this one page." },
       { text: "Every picture on this page uses invented people and IDs." }
     ] },
 
     { title: "Adding IDs", blocks: [
-      { image: { src: "img/add.jpg", alt: "Add IDs: two IDs with names typed in, Add as Student, Team Cummins, and the Add to the list button", caption: "Add IDs, with a name after each" } },
+      { image: { src: "img/add.jpg", alt: "Add people: two IDs with names typed in, Add as Student, Team Cummins, and the Add to the list button", caption: "Add people, with a name after each" } },
       { tiles: { title: "Four steps", numbered: true, items: [
         { title: "Paste the IDs", text: "Under Add people, one per line or separated by commas. Or choose a CSV file (ID in the first column, name in the second)." },
         { title: "Add the name", text: "After the ID: 12345, Sam Taylor. Sign-up asks only for the ID and a password, so the account takes the name you enter here." },
@@ -40,13 +40,14 @@ var M = window.MODULE = {
     ] },
 
     { title: "The list", blocks: [
-      { image: { src: "img/waiting.jpg", alt: "The list filtered to Not signed up yet, showing three people with their team and the status Not signed up yet", caption: "Filter: Not signed up yet" } },
+      { image: { src: "img/waiting.jpg", alt: "The list filtered to Not signed up yet, showing four people with their team and the status Not signed up yet", caption: "Filter: Not signed up yet" } },
       { box: { title: "Filters and buttons", items: [
         "The list opens on your own cluster. People in other clusters are view only.",
         "Search by name, ID or team, or filter: Not signed up yet, Not in a team, Facilitators and leaders, Switched off.",
         "Each team shows as a chip. Tap ✕ on a chip to take the person off that team. Add to a team puts them in another team or course.",
         "For someone not signed up yet, change the team in the box. You can only choose teams in your own cluster."
-      ] } }
+      ] } },
+      { image: { src: "img/teams.jpg", alt: "Rows of the list: Ben Okafor with a Cummins chip and its cross, and an Add another box; people not signed up yet have a team box instead", caption: "Team chips: the cross takes them off that team" } }
     ] },
 
     { title: "Password resets", blocks: [

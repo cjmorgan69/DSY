@@ -6,10 +6,10 @@ svg{position:absolute;inset:0}
 </style>
 <svg id="v" width="1280" height="720" viewBox="0 0 1280 720" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
 <script>
-/* Team Leader people and passwords intro. Screenshots (*.jpg, 2x) are of /access/ and the training app's People tab
-   filled with invented people; SH holds each picture's size and the boxes of the parts that get highlighted (image px). */
+/* Team Leader people and passwords intro (redone 25 Nov 2026 for the one People page). Screenshots (*.jpg, 2x) are
+   of /access/ filled with invented people; SH holds each picture's size and the boxes of the parts that get highlighted (image px). */
 const TL=TIMELINE, NS="http://www.w3.org/2000/svg";
-const SH={"add":{"_w":796,"_h":951,"ids":[47,386,702,224],"role":[47,636,214,139],"team":[280,636,228,139],"add":[47,794,295,88],"csv":[360,802,312,72]},"added":{"_w":796,"_h":992,"msg":[47,907,702,41]},"waiting":{"_w":1456,"_h":1293,"filter":[47,392,1362,88],"rows":[47,506,1362,743],"stats":[47,116,1362,144]},"list":{"_w":1456,"_h":1400,"stats":[47,116,1362,144],"team":[501,506,323,69],"rows":[47,506,1362,3884],"add2":[47,575,1362,343]},"reset":{"_w":1456,"_h":1100,"row":[47,575,1362,292]},"reset-done":{"_w":796,"_h":1077,"msg":[47,911,702,122]},"off":{"_w":1456,"_h":790,"row":[47,575,1362,171]},"person":{"_w":860,"_h":1180,"teams":[79,191,702,528],"cummins":[79,367,702,88],"cleve":[79,543,702,88],"reset":[79,744,702,407]}};
+const SH={"add":{"_w":796,"_h":951,"ids":[47,386,702,224],"role":[47,686,214,88],"team":[280,686,416,88],"add":[47,794,295,88],"csv":[360,802,312,72]},"added":{"_w":796,"_h":992,"msg":[47,907,702,41]},"list":{"_w":1456,"_h":1400,"clusters":[47,116,1362,68],"stats":[47,209,1362,144],"chip":[520,864,196,78],"addsel":[520,952,306,88],"ben":[47,840,1362,224],"search":[47,379,1362,88]},"waiting":{"_w":1456,"_h":1265,"filter":[47,486,1362,88],"rows":[47,669,1362,552],"stats":[47,209,1362,144]},"allview":{"_w":1456,"_h":1240,"clusters":[47,-1296,1362,68],"sophie":[47,1656,1362,171],"harper":[47,48,1362,171]},"reset":{"_w":1456,"_h":1120,"row":[47,48,1362,292]},"reset-done":{"_w":796,"_h":1073,"msg":[47,907,702,122]},"off":{"_w":1456,"_h":840,"row":[47,669,1362,127]}};
 const C={gold:"#e3a712",red:"#e2574c",mint:"#8be0b1",ink:"#123d2c",card:"rgba(0,0,0,.30)",cardLine:"rgba(255,255,255,.16)",ok:"#3fae74",g:"#2e9d5f",y:"#e3a712",r:"#c9483a"};
 const cl=t=>Math.max(0,Math.min(1,t)), eo=t=>1-Math.pow(1-cl(t),3);
 const pr=(t,a,b)=>cl((t-a)/(b-a));
@@ -91,8 +91,9 @@ function scene(t,i){
   if(i===0) title("PEOPLE AND PASSWORDS","Who can sign in, and which team",230);
 
   if(i===1){
-    const P=shot(g,"list",...LOW,0,rv(T,S[0].s-0.2,0.5)); hi(P,"stats",rv(T,frac(0,0.5),0.3));
-    chip(g,"Grant access: home page, or the bottom of the dashboard",640-390,505,rv(T,S[1].s,0.4),"rgba(18,61,44,.92)");
+    const P=shot(g,"list",...LOW,0,rv(T,S[0].s-0.2,0.5)); hi(P,"stats",rv(T,frac(0,0.4),0.3)*(1-pr(T,S[2].s-0.2,S[2].s))); hi(P,"clusters",rv(T,S[2].s,0.3));
+    chip(g,"Dashboard: the People button at the top",640-300,505,rv(T,S[1].s,0.4)*(1-pr(T,S[2].s-0.2,S[2].s)),"rgba(18,61,44,.92)");
+    chip(g,"Your own cluster first",640-170,505,rv(T,S[2].s,0.4),"rgba(18,61,44,.92)");
   }
 
   if(i===2){
@@ -112,23 +113,25 @@ function scene(t,i){
   }
 
   if(i===4){
-    if(T<S[1].s-0.1){ const P=shot(g,"list",...WIDE,520,rv(T,S[0].s-0.2,0.5)); hi(P,"add2",rv(T,S[0].s+0.3,0.3)); }
-    else { const P=shot(g,"person",...W,120,1); hi(P,"teams",rv(T,S[1].s+0.3,0.3)*(1-pr(T,S[2].s-0.2,S[2].s))); hi(P,"cleve",rv(T,S[2].s,0.3),C.red);
-      row(g,680,170,530,110,"People tab","Tick or untick each team",rv(T,S[1].s),C.mint);
-      row(g,680,300,530,110,"Your own cluster","Other clusters greyed out",rv(T,S[2].s),C.gold); }
+    if(T<S[3].s-0.1){ const P=shot(g,"list",...LOW,mix(800,830,pr(T,S[0].s,S[2].e)),rv(T,S[0].s-0.2,0.5));
+      hi(P,"chip",rv(T,S[0].s+0.2,0.3),T>=S[1].s?C.red:C.gold); hi(P,"addsel",rv(T,S[2].s,0.3));
+      const k=T<S[1].s?0:T<S[2].s?1:2;
+      chip(g,["One chip for each team","Tap the cross: off that team","Add to a team: puts them in another"][k],640-[175,215,265][k],500,rv(T,S[k].s,0.4),k===1?"rgba(226,87,76,.75)":"rgba(18,61,44,.92)"); }
+    else { const P=shot(g,"allview",...LOW,0,1); hi(P,"harper",rv(T,S[3].s+0.3,0.3));
+      chip(g,"Other clusters: view only",640-190,500,rv(T,S[3].s+0.2,0.4),"rgba(18,61,44,.92)"); }
   }
 
   if(i===5){
-    if(T<S[3].s-0.1){ const P=shot(g,"reset",...(T<S[2].s-0.1?LOW:WIDE),500,rv(T,S[0].s-0.2,0.5)); hi(P,"row",rv(T,S[2].s,0.3));
+    if(T<S[3].s-0.1){ const P=shot(g,"reset",...(T<S[2].s-0.1?LOW:WIDE),0,rv(T,S[0].s-0.2,0.5)); hi(P,"row",rv(T,S[2].s,0.3));
       if(T<S[2].s-0.1) chip(g,"No email on file: a leader resets it",640-290,505,rv(T,S[0].s,0.4),"rgba(18,61,44,.92)"); }
-    else { const P=shot(g,"reset-done",...W,560,1); hi(P,"msg",rv(T,S[3].s+0.2,0.3));
+    else { const P=shot(g,"reset-done",...W,460,1); hi(P,"msg",rv(T,S[3].s+0.2,0.3));
       row(g,680,170,530,110,"Temporary password","8 or more characters",1,C.gold);
       row(g,680,300,530,110,"They choose their own","at their next sign-in",rv(T,S[3].s,0.4),C.mint); }
   }
 
   if(i===6){
     if(T<S[1].s-0.1){ chip(g,"Never post a password in a group chat",640-290,300,rv(T,S[0].s,0.4),"rgba(226,87,76,.75)"); }
-    else { const P=shot(g,"off",...LOW,380,1); hi(P,"row",rv(T,S[1].s+0.3,0.3),C.red);
+    else { const P=shot(g,"off",...LOW,440,1); hi(P,"row",rv(T,S[1].s+0.3,0.3),C.red);
       chip(g,"Remove: switched off.  Add back: switched on.",640-320,500,rv(T,S[2].s,0.4),"rgba(18,61,44,.92)"); }
   }
 

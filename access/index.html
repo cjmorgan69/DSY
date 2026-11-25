@@ -8,11 +8,11 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../shared/dsy-favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../shared/dsy-favicon-192.png">
 <link rel="apple-touch-icon" href="../shared/dsy-touch-180.png">
-<script src="/shared/gate.js?v=20261125b" data-level="leader"></script>
+<script src="/shared/gate.js?v=20261125c" data-level="leader"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261125b">
+<link rel="stylesheet" href="../training/theme.css?v=20261125c">
 <style>
 [hidden]{display:none!important}
 textarea{width:100%;min-height:7rem;font:inherit;padding:.6rem .75rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
@@ -29,7 +29,8 @@ th{font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mu
 .chip.wait{background:color-mix(in srgb,var(--accent) 22%,var(--surface));color:var(--ink)}
 input[type=search],select{font:inherit;padding:.45rem .6rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
 .acts{display:flex;gap:.4rem;flex-wrap:wrap}
-#rows select{min-width:9rem;font-size:.85rem;padding:.3rem .45rem}
+#rows select{min-width:7.5rem;max-width:11rem;font-size:.85rem;padding:.3rem .45rem}
+.pname{font-weight:600}
 #rows td div.small{margin-bottom:.25rem}
 .chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.3rem}
 .tchip{display:inline-flex;align-items:center;gap:.2rem;padding:.1rem .2rem .1rem .55rem;border-radius:999px;font-size:.8rem;background:var(--surface-2,var(--brand-soft));border:1px solid var(--line)}
@@ -47,8 +48,8 @@ tr.ro td{color:var(--muted)}
   #rows,#rows tr,#rows td{display:block}
   #rows tr{border:1px solid var(--line);border-radius:12px;padding:.55rem .7rem;margin-bottom:.6rem;background:var(--surface)}
   #rows td{border:0;padding:.25rem 0}
-  #rows td:first-child{font-size:.8rem;color:var(--muted)}
-  #rows td:nth-child(2){font-weight:600;font-size:1rem}
+  #rows td:first-child .pname{font-size:1rem}
+  #rows select{max-width:none}
   #rows td[data-label]::before{content:attr(data-label);display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
   #rows select{width:100%}
 }
@@ -82,7 +83,7 @@ tr.ro td{color:var(--muted)}
     <div class="stats" id="stats"></div>
     <div class="row"><input id="q" type="search" placeholder="Search name, ID or team" aria-label="Search" style="flex:1;min-width:10rem">
       <select id="filter" aria-label="Show"><option value="all">Everyone</option><option value="wait">Not signed up yet</option><option value="noteam">Not in a team</option><option value="facilitator">Facilitators and leaders</option><option value="off">Switched off</option></select></div>
-    <div class="scroll"><table id="people"><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Teams</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div class="scroll"><table id="people"><thead><tr><th>Name</th><th>Role</th><th>Teams</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
     <p class="small muted" id="empty" hidden>Nobody matches.</p>
   </section>
   <section class="panel pad stack">
@@ -93,7 +94,7 @@ tr.ro td{color:var(--muted)}
   <p class="small muted">The page opens on your own cluster; people in other clusters are view only. Take someone off a team with the ✕ on the team. Remove switches the whole account off: they cannot sign in again, and a session already open ends within about an hour. Add them back to restore it. Leaders cannot be switched off here. Reset password gives someone a temporary one; they choose their own when they next sign in.</p>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="../training/config.js?v=20261125b"></script>
+<script src="../training/config.js?v=20261125c"></script>
 <script>
 /* People (owner, 25 Nov 2026): one page for Team Leaders to manage everyone. Grant access and the training app's
    People tab are merged here; the training app now links to this page.
@@ -200,7 +201,7 @@ tr.ro td{color:var(--muted)}
     var tb = $("rows"); tb.textContent = "";
     rows.forEach(function (x) {
       var ed = canEditPerson(x), tr = el("tr", ed ? null : "ro"), st = status(x);
-      tr.appendChild(el("td", null, "ID " + x.id)); tr.appendChild(el("td", null, x.note || ""));
+      var nm = el("td"); nm.appendChild(el("div", "pname", x.note || "No name")); nm.appendChild(el("div", "small muted", "ID " + x.id)); tr.appendChild(nm);
       var rc = roleCell(x, ed); rc.setAttribute("data-label", "Role"); tr.appendChild(rc);
       var tc = teamCell(x, ed); tc.setAttribute("data-label", "Teams"); tr.appendChild(tc);
       var s = el("td"); s.appendChild(el("span", "chip " + st[1], st[0])); tr.appendChild(s);

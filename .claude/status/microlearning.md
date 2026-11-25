@@ -241,4 +241,8 @@ home page leader links add Team Leader training. On a branch, not merged.
 - 25 Nov 2026: People and passwords (`leaders-people`) text updated for the one People page (`/access/`, the training
   app's People tab is gone, take someone off a team with ✕ on the team chip); the `img/person.jpg` block was removed
   from the page. Its video and the other screenshots still show "Grant access" and the old People tab: owner to say
-  whether to re-shoot and re-narrate. Relief, Dashboard and Team page modules: "Grant access" wording changed to People.
+  whether to re-shoot and re-narrate (done the same day, see below). Relief, Dashboard and Team page modules: "Grant access" wording changed to People.
+- 25 Nov 2026, owner asked to redo the People and passwords video: new screenshots of the People page (stand-in for
+  supabase-js with invented Lower Eyre people; adding, reset and removal run for real in the page), new script (scene
+  2 One page for people, scene 5 Teams with chips and view-only clusters), Lee re-narrated (see voice.json),
+  intro.mp4?v=2 (1:08), new poster, img/teams.jpg added, img/person.jpg removed. On a branch, not merged.
