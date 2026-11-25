@@ -78,7 +78,7 @@ var M = window.MODULE = {
         "A 4-week calendar for your cluster",
         "How many sessions in the next 4 weeks have no lesson yet"
       ], check: { q: "The panel says \"2 of 7 sessions in the next 4 weeks have no lesson\". What do you do?", a: "Tap the count. It opens Team training, where you choose a lesson for each of those sessions." } } },
-      { text: "The Lessons tile at the bottom opens the lesson library in Team training." }
+      { text: "The lesson library is in Team training: tap Open Team training, then Lessons." }
     ] },
 
     { title: "Dispatch and weather", blocks: [
