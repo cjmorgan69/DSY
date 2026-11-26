@@ -5,7 +5,7 @@
 // saved under its own name straight after it loads. build.js then turns them into slide sections.
 window.DRIVE_SECTIONS = [];
 (function () {
-  var v = '?v=20261127b';
+  var v = '?v=20261127c';
   document.write('<script src="/microlearning/refusal/content.js' + v + '" charset="utf-8"><\/script>');
   document.write('<script>window.RF_ML = window.MODULE;<\/script>');
   document.write('<script src="/modules/refusal-ao/content.js' + v + '" charset="utf-8"><\/script>');
