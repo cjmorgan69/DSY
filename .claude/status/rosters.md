@@ -118,7 +118,7 @@ Rostering" button (preview, then the system builds the PDF with full names and I
 Roster" <EProsters@dsytraining.com> with the manager copied and Reply-To the manager, sets the sent cut-off in the
 same step, and keeps the PDF in the change log; Print stays as a backup). Then a weekly scheduled send per team that
 does the same at a set time, so later changes follow the existing rules (more than 24 h away: change email to
-Country Rostering; within 24 h: the person is asked to phone). Trial clusters send to the trial address only. The
+Country Rostering; within 24 h: the person is asked to phone; the pop-up has a tap-to-call button for 1300 850 985, 26 Nov 2026). Trial clusters send to the trial address only. The
 owner is checking that Country Rostering accept rosters from EProsters@dsytraining.com. Still to decide: send day and
 time, the period each send covers, a reminder to the manager beforehand, pausing a week, same for all teams or not.
 Schedule decisions (owner, 16 Nov 2026): each team's manager sets up its own schedule in Manager controls ("Schedule

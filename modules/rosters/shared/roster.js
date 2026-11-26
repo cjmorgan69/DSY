@@ -2736,11 +2736,10 @@ function askManagerPassword(question) {
                 return;
             }
 
-            window.alert(
-                messages.phone +
-                "\n\nThis change affects the submitted hard-copy roster." +
-                "\n\nPlease phone Country Rostering now to advise them " +
-                "of the change on 1300 850 985."
+            showPhoneCountryRostering(
+                messages.phone,
+                "This change affects the submitted hard-copy roster. " +
+                "Please phone Country Rostering now to advise them of the change."
             );
 
             if (calendarAction) {
@@ -3087,11 +3086,12 @@ function askManagerPassword(question) {
                     // The reply with the hard-copy outcome was lost, so err
                     // on the side of asking them to make sure.
                     if (shiftNeedsCentralRosteringNotice(event.start, event.end)) {
-                        window.alert(
-                            "Shift cancelled.\n\nThis shift is inside the hard-copy roster " +
+                        showPhoneCountryRostering(
+                            "Shift cancelled.",
+                            "This shift is inside the hard-copy roster " +
                             "already sent to Country Rostering. The confirmation of whether " +
                             "they were emailed was lost, so please phone Country Rostering " +
-                            "on 1300 850 985 to make sure they know."
+                            "to make sure they know."
                         );
                     }
                     return;
@@ -3465,11 +3465,12 @@ function askManagerPassword(question) {
                         shiftNeedsCentralRosteringNotice(event.start, event.end) ||
                         shiftNeedsCentralRosteringNotice(change.start, change.end)
                     ) {
-                        window.alert(
-                            "Shift changed.\n\nThis shift is inside the hard-copy roster " +
+                        showPhoneCountryRostering(
+                            "Shift changed.",
+                            "This shift is inside the hard-copy roster " +
                             "already sent to Country Rostering. The confirmation of whether " +
                             "they were emailed was lost, so please phone Country Rostering " +
-                            "on 1300 850 985 to make sure they know."
+                            "to make sure they know."
                         );
                     }
                     return;
@@ -8250,6 +8251,57 @@ function askManagerPassword(question) {
                 .replace(/>/g, "&gt;")
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
+        }
+
+        /*
+         * "Phone Country Rostering" pop-up. A plain alert() cannot hold a
+         * link, so this one has a tap-to-call button (tel:) that opens the
+         * phone's dialler, plus the number written out for computers.
+         */
+        const COUNTRY_ROSTERING_PHONE = "1300 850 985";
+
+        function showPhoneCountryRostering(title, message) {
+            const overlay = document.createElement("div");
+            overlay.setAttribute("role", "dialog");
+            overlay.setAttribute("aria-modal", "true");
+            overlay.style.cssText =
+                "position:fixed;inset:0;z-index:10000;display:flex;" +
+                "align-items:center;justify-content:center;padding:16px;" +
+                "background:rgba(0,0,0,0.55)";
+
+            const box = document.createElement("div");
+            box.style.cssText =
+                "background:#fff;color:#1a1a1a;max-width:380px;width:100%;" +
+                "border-radius:14px;padding:22px 20px;text-align:center;" +
+                "box-shadow:0 10px 30px rgba(0,0,0,0.3);font-size:16px;line-height:1.45";
+
+            const heading = document.createElement("h3");
+            heading.textContent = title;
+            heading.style.cssText = "margin:0 0 10px;font-size:19px";
+
+            const text = document.createElement("p");
+            text.textContent = message;
+            text.style.cssText = "margin:0 0 16px";
+
+            const call = document.createElement("a");
+            call.href = "tel:" + COUNTRY_ROSTERING_PHONE.replace(/\s+/g, "");
+            call.textContent = "📞 Call " + COUNTRY_ROSTERING_PHONE;
+            call.style.cssText =
+                "display:block;background:#1b7f3b;color:#fff;text-decoration:none;" +
+                "font-weight:700;font-size:18px;padding:14px;border-radius:10px;margin-bottom:10px";
+
+            const close = document.createElement("button");
+            close.type = "button";
+            close.textContent = "Close";
+            close.style.cssText =
+                "display:block;width:100%;background:#eee;color:#1a1a1a;border:0;" +
+                "font-size:16px;padding:12px;border-radius:10px;cursor:pointer";
+            close.addEventListener("click", () => overlay.remove());
+
+            box.append(heading, text, call, close);
+            overlay.append(box);
+            document.body.append(overlay);
+            call.focus();
         }
 
         function showToast(message, action) {
