@@ -129,3 +129,20 @@ Modules for nursing staff use a navy colour theme instead of the green: add
 `<meta name="theme-color" content="#1c3c6e">`, and set `logo: "dsy-logo-navy.png"` in `content.js`. `disclaimer`
 in `content.js` replaces the footer's EOC Clinician line with wording for the audience. For the intro video, use a
 navy background in `video-src/scene.html` (see `sepsis-nursing/video-src/scene.html`).
+
+## Ambulance Responder (AR) version
+
+Give a module (or walk-through) an `ar` object and it gets an **Officer (AO) / Responder (AR)** switch under the
+headline (kept in the link as `?scope=ar`; the Facilitator / Student choice is kept too). In the AR version:
+
+- every key in `ar` replaces the same key (for example `subtitle`, `protocol`, `intro`, `keyPoints`, `session`);
+- anywhere in the content, an item with `scope: "ao"` or `scope: "ar"` shows only in that version (quiz questions,
+  reference tables, links, steps, scenarios); in a list of strings use `{ text: "...", scope: "ao" }`;
+- a checker's `evaluate()` can read `window.MODULE_SCOPE` (`"ao"` or `"ar"`) to follow the AR pathway;
+- `videoNote: { title, text, tone }` shows a box under the intro video (use it to say what the AO video says that
+  ARs don't do, instead of re-narrating);
+- the "two rules in every protocol" box (request clinical support; consult the EOC Clinician before transport,
+  CPP-025-AR) is added to the first section automatically (`arRules: false` turns it off);
+- set `relatedCodes` to the AO code so the "Built on the same protocol" links still show; they carry `?scope=ar`.
+
+The AR vs AO differences for every protocol are in `.claude/references/ar-vs-ao-protocols.md`. Pilot: hypoglycaemia.

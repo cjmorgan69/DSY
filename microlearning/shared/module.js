@@ -6,6 +6,33 @@
   "use strict";
   var M = window.MODULE;
   if (!M) return;
+
+  /* Ambulance Officer / Ambulance Responder versions. A module with an `ar` object gets an AO / AR switch
+     (kept in the link as ?scope=ar). In the AR version every key in M.ar replaces the same key in M, and anywhere
+     in the content an item with scope: "ao" or scope: "ar" shows only in that version ({ text, scope } in a list
+     of strings becomes that string). window.MODULE_SCOPE tells a checker's evaluate() which version is shown. */
+  var SCOPE = null;
+  if (M.ar) {
+    SCOPE = /[?&]scope=ar\b/.test(location.search) ? "ar" : "ao";
+    var arKeys = M.ar;
+    if (SCOPE === "ar") Object.keys(arKeys).forEach(function (k) { M[k] = arKeys[k]; });
+    delete M.ar;
+    (function strip(o) {
+      Object.keys(o).forEach(function (k) {
+        var v = o[k];
+        if (Array.isArray(v)) {
+          o[k] = v.filter(function (x) { return !(x && typeof x === "object" && x.scope && x.scope !== SCOPE); })
+            .map(function (x) { return x && typeof x === "object" && !Array.isArray(x) && Object.keys(x).every(function (q) { return q === "text" || q === "scope"; }) ? x.text : x; });
+          o[k].forEach(function (x) { if (x && typeof x === "object") strip(x); });
+        } else if (v && typeof v === "object") strip(v);
+      });
+    })(M);
+  }
+  window.MODULE_SCOPE = SCOPE;
+  function withScope(href) {   // carry the AR choice on to related pages (pages without an AR version ignore it)
+    if (SCOPE !== "ar" || !href || /^https?:/.test(href)) return href;
+    var h = href.split("#"); return h[0] + (h[0].indexOf("?") < 0 ? "?" : "&") + "scope=ar" + (h[1] ? "#" + h[1] : "");
+  }
   var app = document.getElementById("app");
   var P = M.protocol || {};
 
@@ -350,7 +377,7 @@
     }
     (B.decisions || []).forEach(function (d) { wrap.appendChild(only(decision(d), "student")); });
     if (B.cards && B.cards.length) wrap.appendChild(only(cards({ quick: true, title: "Flash card" + (B.cards.length > 1 ? "s" : ""), items: B.cards }), "student"));
-    if (B.expected) wrap.appendChild(only(box({ title: "Expected AO reasoning", items: B.expected }), "facilitator"));
+    if (B.expected) wrap.appendChild(only(box({ title: "Expected " + (SCOPE === "ar" ? "AR" : "AO") + " reasoning", items: B.expected }), "facilitator"));
     if (B.teaching) wrap.appendChild(only(box({ title: "Key teaching points", items: B.teaching, note: B.teachingNote }), "facilitator"));
     if (B.realJob) wrap.appendChild(box({ title: "Real-job translation", tone: "warn", text: B.realJob }));
     return wrap;
@@ -387,7 +414,7 @@
   /* shorthand keys -> panels, in the fixed order */
   function defaultPanels() {
     var out = [];
-    out.push({ title: "Introduction", open: true, blocks: [{ video: M.video }].concat((M.intro || []).map(function (t) { return { text: t }; })) });
+    out.push({ title: "Introduction", open: true, blocks: [{ video: M.video }].concat(M.videoNote ? [{ box: M.videoNote }] : [], (M.intro || []).map(function (t) { return { text: t }; })) });
     if (M.keyPoints && M.keyPoints.length) out.push({ title: M.keyPointsTitle || "Key points", blocks: [{ boxes: M.keyPoints }] });
     if (M.tool) out.push({ title: M.tool.title, blocks: [{ tool: M.tool }] });
     if (M.reference && M.reference.length) out.push({ title: M.referenceTitle || "Reference", collapsed: true, blocks: M.reference.map(function (r) { return { table: r }; }).concat(M.links ? [{ links: M.links }] : []) });
@@ -432,6 +459,23 @@
   if (M.draft) intro.appendChild(el("p", "notice small", "Draft: sections marked \"coming soon\" are placeholders. Fill them in or remove them in content.js before sharing."));
   app.appendChild(intro);
 
+  /* AO / AR switch: reloads the page with or without ?scope=ar, keeping the facilitator / student choice */
+  if (SCOPE) {
+    var sbar = el("div", "mode-toggle scope-toggle");
+    sbar.setAttribute("role", "group"); sbar.setAttribute("aria-label", "Clinical level");
+    [["ao", "Officer (AO)"], ["ar", "Responder (AR)"]].forEach(function (m) {
+      var b = el("button", null, m[1]); b.type = "button"; b.setAttribute("aria-pressed", String(m[0] === SCOPE));
+      b.addEventListener("click", function () {
+        if (m[0] === SCOPE) return;
+        var q = new URLSearchParams(location.search); if (m[0] === "ar") q.set("scope", "ar"); else q.delete("scope");
+        var qs = q.toString(); location.assign(location.pathname + (qs ? "?" + qs : "") + location.hash);
+      });
+      sbar.appendChild(b);
+    });
+    intro.appendChild(sbar);
+    intro.appendChild(el("p", "small muted", SCOPE === "ar" ? "Ambulance Responder version: what changes under the AR protocol." : "Switch to the Ambulance Responder version to see what changes under the AR protocol."));
+  }
+
   /* scenario pages: switch between the facilitator and student versions (kept in the link as ?mode=student) */
   if (M.scenario) {
     var bar = el("div", "mode-toggle"), modes = [["facilitator", "Facilitator"], ["student", "Student"]];
@@ -442,8 +486,11 @@
     var setMode = function (m, push) {
       cur = m; document.body.classList.toggle("mode-student", m === "student"); document.body.classList.toggle("mode-facilitator", m !== "student");
       mbtn.forEach(function (b, k) { b.setAttribute("aria-pressed", String(modes[k][0] === m)); });
-      mnote.textContent = m === "student" ? "Student version: answer each break point with the tiles and flash cards, then compare at the debrief." : "Facilitator version: prompts, expected AO reasoning and teaching points at every break point.";
-      if (push && window.history && history.replaceState) history.replaceState(null, "", location.pathname + (m === "student" ? "?mode=student" : "") + location.hash);
+      mnote.textContent = m === "student" ? "Student version: answer each break point with the tiles and flash cards, then compare at the debrief." : "Facilitator version: prompts, expected " + (SCOPE === "ar" ? "AR" : "AO") + " reasoning and teaching points at every break point.";
+      if (push && window.history && history.replaceState) {
+        var q = new URLSearchParams(location.search); if (m === "student") q.set("mode", "student"); else q.delete("mode");
+        var qs = q.toString(); history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
+      }
     };
     intro.appendChild(bar); intro.appendChild(mnote); setMode(cur, false);
     /* students (approved, signed in) only get the student version; the site gate says who is a facilitator */
@@ -470,7 +517,7 @@
   if (rel.length) {
     var rb = el("div", "related");
     rb.appendChild(el("span", "eyebrow", "Built on the same protocol"));
-    rel.forEach(function (r) { var a = el("a", "rel-card"); a.href = r.href; a.appendChild(el("span", "chip hi", r.kind)); a.appendChild(el("strong", null, r.title)); if (r.text) a.appendChild(el("span", "small muted", r.text)); rb.appendChild(a); });
+    rel.forEach(function (r) { var a = el("a", "rel-card"); a.href = withScope(r.href); a.appendChild(el("span", "chip hi", r.kind)); a.appendChild(el("strong", null, r.title)); if (r.text) a.appendChild(el("span", "small muted", r.text)); rb.appendChild(a); });
     intro.appendChild(rb);
   }
 
@@ -496,7 +543,16 @@
     p.blocks.forEach(function (b) { var part = el("div", "stack"); renderBlock(b, part); if (part.children.length) body.appendChild(part); });
     sec.appendChild(body); return sec;
   }
-  (M.panels || defaultPanels()).forEach(function (p) {
+  var allPanels = M.panels || defaultPanels();
+  /* AR version: the two rules that run through every AR protocol (CPP-025-AR), once, at the end of the first section */
+  if (SCOPE === "ar" && M.arRules !== false && allPanels.length) allPanels[0].blocks = allPanels[0].blocks.concat([{ box: {
+    title: "Ambulance Responders: two rules in every protocol", tone: "warn",
+    steps: [
+      { t: "Request clinical support", text: "Most AR protocols say request, where the AO version says consider." },
+      { t: "Consult the EOC Clinician before transport", text: "Required for every patient except inter-hospital transfers. The EOC Clinician may advise: transport and cancel clinical support; transport and RV with clinical support en route; or monitor the patient until clinical support arrives." }
+    ],
+    note: "CPP-025-AR Basic Care and Life Support" } }]);
+  allPanels.forEach(function (p) {
     if (M.flow && !p.collapsed) { stack.appendChild(flowSection(p)); return; }
     var d = panel(p.title, { open: p.open && !M.flow, optional: p.optional, chip: p.chip, numbered: M.flow ? !!p.optional : true });
     p.blocks.forEach(function (b) { renderBlock(b, d.body); });
@@ -529,7 +585,7 @@
   if (M.next) {
     var nb = el("div", "related next-up"), na = el("a", "rel-card");
     nb.appendChild(el("span", "eyebrow", M.next.eyebrow || "Next module"));
-    na.href = M.next.href; na.appendChild(el("strong", null, M.next.title + " →"));
+    na.href = withScope(M.next.href); na.appendChild(el("strong", null, M.next.title + " →"));
     if (M.next.text) na.appendChild(el("span", "small muted", M.next.text));
     nb.appendChild(na); app.appendChild(nb);
   }

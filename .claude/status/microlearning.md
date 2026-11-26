@@ -256,3 +256,12 @@ VIRCA, three pathways (chooser) + one tile row (valid refusal steps), who can co
 Responsible order, emergency box), "Which pathway?" checker (evaluate tested against its six DSY scenarios), what to
 write (CTL-126 PCR lines), 13-question quiz, optional practical. Three quick checks. Intro video (26 Nov 2026, owner said yes): Lee, two takes, 1:47,
 `video-src/` with overrides for every sentence; poster from 2.2 s. In MODULE_LISTS.ao. On a branch, not merged.
+
+## AR version (AO / AR switch)
+
+Pilot on hypoglycaemia (26 Nov 2026, owner asked): `/microlearning/hypoglycaemia/?scope=ar` shows the CPP-031-AR v2.1
+version (no glucagon; oral glucose, under 2 = clinical support + consult for oral gel, consult about treatment and
+transport; video kept with an AR note under it; AR quiz 9 questions; AR checker pathway). The switch is generic in
+`shared/module.js` (see README "Ambulance Responder (AR) version"). Gap analysis for all protocols:
+`.claude/references/ar-vs-ao-protocols.md`. On a branch, not merged. Walk-through (Ron) not done yet: needs the
+owner's call on what the EOC Clinician advises when oral glucose fails for an AR crew.
