@@ -144,4 +144,4 @@ pressure; won't take the paste; Jack is 15; changes his mind). Sources CPP-056-A
 v4.1. Story, obs, EOC Clinician lines and the risk wording ("can come back while insulin is active", general
 teaching) are DSY-written (owner to review). `relatedCodes: ["CPP-009-AO"]`. MDT job `refusal`, PCR job `sam` (with a
 case card), stations, case-night deck. Customiser template `refusal-ao` (26 Nov 2026, `scenarios/tools/convert-refusal.js`, page time 07:00 to 11:00
-because of the 1300 cricket final; loaded unpublished, md5 checked). On a branch, not merged.
+because of the 1300 cricket final; loaded unpublished, md5 checked). Live (PR #377, merged 26 Nov 2026).

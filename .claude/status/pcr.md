@@ -57,4 +57,4 @@ student walk-through, and keeps its own saved work per customisation. Live (PR #
 PCR job `sam` (26 Nov 2026): treated and not transported; both VIRCA results in Care, the referral plan in
 Recommendation, "Patient information provided" and "Clinical consult" ticked (`infoText` filled). First walk-through
 job with a `caseCard` (dispatch, arrival, history, what happens): the trainer now shows a "case card" link for any job
-that has one, as well as the walk-through link. DSY-written (owner to review). On a branch, not merged.
+that has one, as well as the walk-through link. DSY-written (owner to review). Live (PR #377, merged 26 Nov 2026).

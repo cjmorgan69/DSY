@@ -129,4 +129,4 @@ EOC replies are DSY-written (owner to review). Linked from the sepsis hub topic.
 conversation (role cards in threes; example questions DSY-written), 3 who decides (CTL-067, Person Responsible order,
 the three pathways, cards), 4 the EOC Clinician call, the AMA form (team's own form or paper: DSY has no copy of the
 SAAS AMA form) and the VIRCA PCR lines. Finish: Sam walk-through and PCR. No medicines or clinical kit. Cards and
-EOC lines DSY-written (owner to review). On a branch, not merged.
+EOC lines DSY-written (owner to review). Live (PR #377, merged 26 Nov 2026).

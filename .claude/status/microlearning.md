@@ -255,4 +255,4 @@ CTL-126 VIRCA Tool, CTL-067 Consent (adult flowchart, read from the image). Pane
 VIRCA, three pathways (chooser) + one tile row (valid refusal steps), who can consent (CTL-067 steps, Person
 Responsible order, emergency box), "Which pathway?" checker (evaluate tested against its six DSY scenarios), what to
 write (CTL-126 PCR lines), 13-question quiz, optional practical. Three quick checks. Intro video (26 Nov 2026, owner said yes): Lee, two takes, 1:47,
-`video-src/` with overrides for every sentence; poster from 2.2 s. In MODULE_LISTS.ao. On a branch, not merged.
+`video-src/` with overrides for every sentence; poster from 2.2 s. In MODULE_LISTS.ao. Live (PR #377, merged 26 Nov 2026).
