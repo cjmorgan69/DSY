@@ -178,7 +178,7 @@ Development" cards. Raised with the owner and NOT yet decided or done:
   On a branch, not merged (PR #377). After merge: publish the `refusal-ao` row, add the Supabase lessons.
 - AR version (26 Nov 2026): AO / AR switch on modules (`ar` in content.js, `?scope=ar`); pilot on the hypoglycaemia
   module, Ron's walk-through and an AR PCR job (`ronAR`); gap analysis in `.claude/references/ar-vs-ao-protocols.md`. Live (PR #378, merged
-  26 Nov 2026). Next: the other 7 topics with real AR differences (asthma, chest pain, pain, stroke, seizures, ABD, refusal).
+  26 Nov 2026; the three AR lessons added in Supabase). Next: the other 7 topics with real AR differences (asthma, chest pain, pain, stroke, seizures, ABD, refusal).
 - Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario

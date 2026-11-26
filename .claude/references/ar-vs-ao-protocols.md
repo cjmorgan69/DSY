@@ -2,7 +2,7 @@
 
 Read from the SAAS clinical site on 26 Nov 2026 (`main.10d22172e56532ee.js`, PDFs exported 31 Aug 2026) and the app's
 dose table (`scope.ar` vs `scope.ao`). 24 AR protocols, 34 AO protocols. Each AR PDF was compared word by word with
-its AO twin. The "Training impact" lines are Claude's suggestions, not protocol: owner to review.
+its AO twin. Section 5 is suggestions for DSY training, not protocol.
 
 ## 1. The two differences that run through every AR protocol
 
@@ -92,7 +92,7 @@ AR crews have no protocol for these; the work goes to EOC consult and clinical s
   EOC if CPR is not started. Prolonged care: AR leaves out NEWS2 re-scoring, sedation score with opiates, pupils and
   cardiac monitoring.
 
-## 5. What this means for DSY training (Claude's suggestions, owner to decide)
+## 5. What this means for DSY training (suggestions, not protocol)
 
 Existing DSY modules and walk-throughs that teach AO-only steps an AR could not do:
 
