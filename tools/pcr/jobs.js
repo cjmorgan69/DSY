@@ -452,6 +452,62 @@ window.PCR_JOBS = {
     marks: []
   },
 
+  ronAR: {
+    label: 'Ron, 67: hypoglycaemia (AR)',
+    short: 'Ron (AR)',
+    walk: '/modules/hypoglycaemia-ao/?scope=ar',
+    walkStudent: '/modules/hypoglycaemia-ao/?scope=ar&mode=student',
+    // The Ambulance Responder version of Ron (CPP-031-AR): the same job up to 1740, then no glucagon; the EOC Clinician
+    // advises transport and RV with clinical support en route (owner's choice, 26 Nov 2026). Times 1748, 1750, 1755 and
+    // the RV at Edillilie at 1805 are DSY's, from the AR walk-through.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Hypoglycaemia (BGL 2.2): insulin-treated T2DM, missed lunch, working all day.',
+      recommendation: 'Transport and RV with clinical support (EOC Clinician 1741). Handed over to the paramedic crew at the RV, Edillilie, 1805. Oral glucose 1730 ineffective. BGL 2.2, 2.6, 2.5. GCS 11, on his side, suction ready. On insulin. Wife following.',
+      ecg: 'Sinus tachycardia.'
+    },
+    sections: {
+      pc: 'Found confused + sweaty in the shed. Insulin-treated diabetic. BGL 2.2.',
+      phx: 'Type 2 diabetes on insulin (8 yrs).',
+      medn: 'Insulin (usual morning dose today), metformin, atorvastatin.',
+      hx: 'Seeding since 0600, missed lunch. Last seen well ~1300 (two-way). Wife found him ~1710 in the machinery shed, sweaty, "not making sense". Nil fall known, nil head injury seen. Wife called SAAS.',
+      oa: '67M sitting on the concrete floor of the machinery shed against a tractor tyre, pale + drenched in sweat. Looks at us, words muddled, pushes hand away. Water bottle beside him. Diesel smell, tractor off.',
+      cns: 'GCS 13 (E4 V3 M6), confused, muddled speech. Strong cough on request. 1740: GCS 11 (E3 V3 M5), drowsy, weak cough. 1755: GCS 11, unchanged.',
+      skin: 'Pale, diaphoretic.',
+      cvs: 'Pulse 104. BP 146/84. Nil blood loss.',
+      resp: 'RR 18, nil resp distress. SpO2 97% RA. Airway clear.',
+      pain: 'Nil c/o pain.',
+      survey: '',
+      care: 'BGL 2.2. Strong cough on request: oral glucose gel in small amounts 1730, swallowed. Clinical support requested.\n1740: BGL 2.6, GCS 11, weak cough: nil more oral glucose. EOC Clinician 1741: transport and RV with clinical support en route, repeated back. Positioned on side, suction ready, nil by mouth. Stretcher, depart 1750.\n1755: BGL 2.5, GCS 11, EOC Clinician updated. RV with paramedic crew at Edillilie 1805, handed over.'
+    },
+    tips: {
+      survey: 'No injury found and no fall known: no secondary survey. A quick check for injury is still worth a line.',
+      cns: 'Write the GCS as E V M: the fall to 11 and the weak cough are why no more oral glucose was given.',
+      care: 'Record the EOC Clinician\'s advice and the time (transport and RV), and the RV place and time.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Nothing to mark.',
+      info: 'Not ticked: transported (handed over to the paramedics at the RV).', consult: 'Ticked: EOC Clinician consulted at 1741 and updated at 1755.'
+    },
+    ticks: ['medsHanded', 'consult'],
+    obs: [
+      { time: '1728', rr: 18, o2: 'RA', spo2: 97, bp: '146/84', hr: 104, temp: 36.2, gcs: 13, evm: [4, 3, 6], bgl: 2.2 },
+      { time: '1740', o2: 'RA', spo2: 97, bp: '142/80', hr: 100, gcs: 11, evm: [3, 3, 5], bgl: 2.6 },
+      { time: '1755', o2: 'RA', spo2: 97, bp: '140/80', hr: 98, gcs: 11, evm: [3, 3, 5], bgl: 2.5 }
+    ],
+    drugs: [
+      ['1728', 'BGL 2.2'],
+      ['1730', 'Oral glucose gel', '15', 'g', 'Oral'],
+      ['1730', 'Clinical support requested'],
+      ['1741', 'EOC Clinician: transport + RV'],
+      ['1750', 'Depart scene'],
+      ['1755', 'BGL 2.5. EOC Clinician updated'],
+      ['1805', 'RV Edillilie: handed to paramedics']
+    ],
+    marks: []
+  },
+
   robert: {
     label: 'Robert, 71: sepsis (AO)',
     short: 'Robert',

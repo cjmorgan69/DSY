@@ -520,13 +520,13 @@
   /* links to the other pages built on the same protocol (shared/related.js) */
   var relCodes = [P.code].concat(M.relatedCodes || []), rel = [], seen = {};
   relCodes.forEach(function (c) { ((window.RELATED || {})[c] || []).forEach(function (r) {
-    if (r.kind === "PCR trainer" && c !== P.code) return; // one scenario = one PCR job: only the page's own protocol's
+    if (r.kind === "PCR trainer" && c !== P.code && !(SCOPE === "ar" && r.arHref)) return; // one scenario = one PCR job: only the page's own protocol's
     var here = location.pathname.replace(/index\.html$/, "");
     if (seen[r.href] || here === r.href || here.slice(-r.href.length) === r.href) return; seen[r.href] = 1; rel.push(r); }); });
   if (rel.length) {
     var rb = el("div", "related");
     rb.appendChild(el("span", "eyebrow", "Built on the same protocol"));
-    rel.forEach(function (r) { var a = el("a", "rel-card"); a.href = withScope(r.href); a.appendChild(el("span", "chip hi", r.kind)); a.appendChild(el("strong", null, r.title)); if (r.text) a.appendChild(el("span", "small muted", r.text)); rb.appendChild(a); });
+    rel.forEach(function (r) { var a = el("a", "rel-card"); a.href = SCOPE === "ar" && r.arHref ? r.arHref : withScope(r.href); a.appendChild(el("span", "chip hi", r.kind)); a.appendChild(el("strong", null, r.title)); if (r.text) a.appendChild(el("span", "small muted", r.text)); rb.appendChild(a); });
     intro.appendChild(rb);
   }
 
