@@ -43,6 +43,8 @@ Clinician may contact Port Lincoln Hospital and/or the crew notifies by GRN radi
 Hypoglycaemia: `/modules/hypo/` is an MVA walk-through (convert separately, later) and `/modules/hypoglycaemia` is
 an old short learning page, not a scenario. Owner chose a new non-trauma walk-through: `/modules/hypoglycaemia-ao/`
 (Ron 67, near Cummins; not Port Lincoln, which has paramedics), all DSY-written on CPP-009-AO (live, lesson added).
+AR version (`?scope=ar`, 26 Nov 2026, CPP-031-AR): no glucagon; EOC Clinician advises transport towards Port Lincoln
+and RV with the paramedics at Edillilie (owner chose transport and RV); seven break points.
 
 ## Sepsis (Robert)
 

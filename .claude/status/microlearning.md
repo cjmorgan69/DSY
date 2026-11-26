@@ -263,5 +263,7 @@ Pilot on hypoglycaemia (26 Nov 2026, owner asked): `/microlearning/hypoglycaemia
 version (no glucagon; oral glucose, under 2 = clinical support + consult for oral gel, consult about treatment and
 transport; video kept with an AR note under it; AR quiz 9 questions; AR checker pathway). The switch is generic in
 `shared/module.js` (see README "Ambulance Responder (AR) version"). Gap analysis for all protocols:
-`.claude/references/ar-vs-ao-protocols.md`. On a branch, not merged. Walk-through (Ron) not done yet: needs the
-owner's call on what the EOC Clinician advises when oral glucose fails for an AR crew.
+`.claude/references/ar-vs-ao-protocols.md`. Live (PR #378, merged 26 Nov 2026). Ron's walk-through
+(`/modules/hypoglycaemia-ao/?scope=ar`) has an AR version too: no glucagon; when oral glucose fails at 1740 the EOC
+Clinician advises transport and RV with clinical support en route (owner's choice, 26 Nov 2026); DSY-written RV with
+the Port Lincoln paramedics at Edillilie at 1805, handover at the RV. `ar.replace` swaps codes and words in the AR view.

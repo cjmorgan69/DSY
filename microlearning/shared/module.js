@@ -10,12 +10,21 @@
   /* Ambulance Officer / Ambulance Responder versions. A module with an `ar` object gets an AO / AR switch
      (kept in the link as ?scope=ar). In the AR version every key in M.ar replaces the same key in M, and anywhere
      in the content an item with scope: "ao" or scope: "ar" shows only in that version ({ text, scope } in a list
-     of strings becomes that string). window.MODULE_SCOPE tells a checker's evaluate() which version is shown. */
+     of strings becomes that string). ar.replace: [[from, to]] word swaps on the shared text. window.MODULE_SCOPE tells a checker's evaluate() which version is shown. */
   var SCOPE = null;
   if (M.ar) {
     SCOPE = /[?&]scope=ar\b/.test(location.search) ? "ar" : "ao";
     var arKeys = M.ar;
-    if (SCOPE === "ar") Object.keys(arKeys).forEach(function (k) { M[k] = arKeys[k]; });
+    /* M.arReplace: [[from, to], ...] word swaps applied to the shared (AO) text in the AR version, before the AR keys go in */
+    if (SCOPE === "ar" && arKeys.replace) (function swap(o) {
+      Object.keys(o).forEach(function (k) {
+        if (o === M && (k === "ar" || k === "relatedCodes")) return;
+        var v = o[k];
+        if (typeof v === "string") { arKeys.replace.forEach(function (r) { v = v.split(r[0]).join(r[1]); }); o[k] = v; }
+        else if (v && typeof v === "object") swap(v);
+      });
+    })(M);
+    if (SCOPE === "ar") Object.keys(arKeys).forEach(function (k) { if (k !== "replace") M[k] = arKeys[k]; });
     delete M.ar;
     (function strip(o) {
       Object.keys(o).forEach(function (k) {
