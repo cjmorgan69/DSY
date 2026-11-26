@@ -1,8 +1,8 @@
 // Refusal against advice case night: builds the slide sections from the refusal microlearning module (RF_ML) and
 // Sam's walk-through (RF_WT). Clinical wording all comes from those two files. The slide order, section titles, MDT
 // screenshot captions, the "Tonight" and "Next week" slides and the short presenter cues below are DSY-written
-// (owner to review). Same layout as /classroom/acpo/data/build.js; Sam is not transported, so the MDT screens stop on
-// scene and the job ends with "Clear, and the PCR" instead of a handover.
+// (owner to review). Same layout as /classroom/acpo/data/build.js; Sam is not transported, so the MDT screens end with
+// a clear from scene (hold MOBILE 2 s, owner 26 Nov 2026) and the job ends with "Clear, and the PCR" instead of a handover.
 (function () {
   var ML = window.RF_ML, WT = window.RF_WT;
   if (!ML || !WT) return;
@@ -102,7 +102,11 @@
       shot('2-enroute', '0949: Enroute', ['F6 sends ENROUTE (no confirm)', 'The status bar shows what the EOC sees', 'The F6 button now offers Time Scene'], ''),
       shot('3-remarks', 'The remarks keep coming', ['0950: his meter says 2.3; he went for a run', '0952: he doesn\'t want an ambulance', 'Newest at the top: check the REMARKS tab on the way'], 'He doesn\'t want an ambulance. Does that change your plan?')
     ],
-    arrival: [shot('4-confirm-scene', '0955: Time Scene', ['F6, then Confirm', 'Press it when you arrive, not when you reach the patient'], '')]
+    arrival: [shot('4-confirm-scene', '0955: Time Scene', ['F6, then Confirm', 'Press it when you arrive, not when you reach the patient'], '')],
+    clear: [
+      shot('6-hold-clear', '1052: not transported? Hold MOBILE', ['Press and hold MOBILE for 2 seconds', 'It goes straight to Clear Event Confirm: no hospital list', 'Leave Direct Admission to Ward unticked, then Confirm'], 'How do you clear a job when the patient stays home?'),
+      shot('7-cleared', 'Cleared: TB81 available', ['The status bar shows TB81 AVAILABLE', 'Then finish the PCR, with the AMA form and VIRCA'], '')
+    ]
   };
   var nBP = 0, totalBP = 0;
   jobPanels.forEach(function (t) { panel(t).blocks.forEach(function (b) { if (b.breakpoint) totalBP++; }); });
@@ -133,6 +137,7 @@
       }
     });
     if (pi === 1) job.splice(first, 0, mdtAt.arrival[0]);                 // the panel after dispatch: arrival
+    if (title === 'Clear, and the PCR') job.splice(first + 1, 0, mdtAt.clear[0], mdtAt.clear[1]);   // after "1052. You clear..."
   });
   job.unshift({ type: 'bullets', title: 'Before we start', points: ['This is a walk-through: we pause at each break point to talk it through', 'Vote on each decision before the answer shows', 'Anyone can call "real world" to stop for a genuine safety concern'],
     notes: { time: 1, tip: 'DSY-written (the walk-through has no safety brief box).' } });

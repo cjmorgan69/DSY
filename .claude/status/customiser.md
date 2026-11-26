@@ -24,3 +24,6 @@ and ACPO; patients keep their sex.
 the son's cricket final is at 1300; hospital, backup town and minutes). Row inserted with `published` false, md5 of
 template and fields checked. MDT link and PCR trainer (`tools/pcr/custom.js`, new `times` value 'fixed' keeps 1300 put).
 Set `published` true once the PR is merged and the pages are live.
+
+Dementia row title corrected to "Dementia - AO: Jo-Anne, 84" (owner, 26 Nov 2026; was still Joan). `refusal-ao` template
+updated in place for the MDT hold-to-clear line (md5 checked).

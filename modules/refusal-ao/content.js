@@ -231,7 +231,7 @@ window.MODULE = {
     ] },
 
     { title: "Clear, and the PCR", blocks: [
-      { text: "1052. You clear from the scene, not transported. Back at the station, you finish the PCR." },
+      { text: "1052. You clear from the scene, not transported: on the MDT, press and hold MOBILE for 2 seconds to go straight to Clear. Back at the station, you finish the PCR." },
       { box: { title: "VIRCA on Sam's PCR (CTL-126 headings, DSY example wording)", items: [
         "V: Decision made by pt. Partner present, would prefer he went to hospital but says it is his decision. Nil pressure from others",
         "I: Explained ?hypoglycaemia after run + insulin with little breakfast; protocol advises transport + hospital review; risk of further hypo today while insulin active; told can call 000 again at any time",

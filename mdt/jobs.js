@@ -162,7 +162,7 @@ window.MDT_JOBS = [
     note:'38M ALTERED CONSCIOUS STATE - DIABETIC', patient:'BRENNAN, SAM', age:'38Y', weight:'', caller:'PARTNER (KIRSTY)',
     unitLoc:'TUMBY BAY AMBULANCE STATION',
     remarks:'FOUND IN BATHROOM - SWEATY AND "NOT MAKING SENSE"\nTYPE 1 DIABETIC\nPT TOLD PARTNER TO GET OUT - NO WEAPONS - NO THREATS\nBREATHING - NO FALL REPORTED\n+2 PARTNER: HIS METER SAYS 2.3 - WENT FOR A RUN THIS MORNING\n+4 PARTNER: SAYS HE DOESNT WANT AN AMBULANCE - SHE WILL MEET CREW AT FRONT DOOR',
-    expected:'Not transported: valid refusal against advice after EOC Clinician consult (scenario). Clear from scene; TUMBY BAY HOSPITAL (5 minutes) if he changes his mind' }
+    expected:'Not transported: valid refusal against advice after EOC Clinician consult (scenario). Clear from scene (hold MOBILE 2 s); TUMBY BAY HOSPITAL (5 minutes) if he changes his mind' }
 ];
 
 /* Links from the scenario customiser (Supabase public.scenarios) for the jobs that have no custom() of their own.
@@ -217,7 +217,7 @@ window.MDT_JOBS = [
   link('dementia', 'dementia-ao', { patient:'Jo-Anne', age:'84', partner:'husband', partner_name:'Ray', town:'Cummins', station:'Cummins', hospital_town:'Cummins', response:'12', transport:'15', dispatch:'18:40' },
     town('hospital_town', 'Cummins'));
   link('refusal', 'refusal-ao', { patient:'Sam', age:'38', partner_name:'Kirsty', town:'Tumby Bay', station:'Tumby Bay', response:'7', transport:'5', dispatch:'09:48' },
-    v => 'Not transported: valid refusal against advice (scenario). Clear from scene; ' + U(v.hospital || 'Tumby Bay Hospital') + ' if he changes his mind');
+    v => 'Not transported: valid refusal against advice (scenario). Clear from scene (hold MOBILE 2 s); ' + U(v.hospital || 'Tumby Bay Hospital') + ' if he changes his mind');
 })();
 
 /* Eyre Peninsula call signs (owner, 11 and 16 Nov 2026): team letters + 81 for jobs between 0800 and 1800, + 181
