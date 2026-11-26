@@ -17,3 +17,10 @@ published (checked 15 Nov 2026); every MDT job and hub topic now links to its cu
 of `mdt/jobs.js`). Limits kept clinical content true: stroke hospital is one of the three Eyre Peninsula STS with 21
 to 59 min travel; pain age 18 to 64 (ketamine wafer); headache age over 50 (red flag); night-only times for asthma
 and ACPO; patients keep their sex.
+
+## Refusal against advice
+
+`refusal-ao` (26 Nov 2026): 13 fields (patient stays a man, partner stays "partner"/she; page time 07:00 to 11:00 because
+the son's cricket final is at 1300; hospital, backup town and minutes). Row inserted with `published` false, md5 of
+template and fields checked. MDT link and PCR trainer (`tools/pcr/custom.js`, new `times` value 'fixed' keeps 1300 put).
+Set `published` true once the PR is merged and the pages are live.

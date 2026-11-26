@@ -4,7 +4,8 @@
    CTL-126 VIRCA Tool (no version shown) and CTL-067 Consent to Medical Treatment and Healthcare (the "Adults" flowchart
    under the Advance Care Directives Act 2013 and the Consent to Medical Treatment and Palliative Care Act 1995; read from
    the chart image). Hypoglycaemia lines in the examples come from CPP-009-AO v4.1.
-   The checker's scenarios, the practical and the quick checks are DSY-written for the owner to review. */
+   The checker's scenarios, the practical and the quick checks are DSY-written for the owner to review.
+   Intro video: Lee on eleven_v4, two takes, 26 Nov 2026 (video-src/). */
 
 var M = window.MODULE = {
   flow: true,
@@ -28,7 +29,7 @@ var M = window.MODULE = {
   session: {
     intro: "For a team-led session. Allow about 25 minutes. Everyone works through the page on their own device, then discusses together.",
     steps: [
-      { t: "Read the introduction", time: "2 min", text: "Ask: what does 'care' mean in this protocol? (Assessment, treatment and transport.)" },
+      { t: "Watch the introduction", time: "4 min", text: "Ask: what does 'care' mean in this protocol? (Assessment, treatment and transport.)" },
       { t: "VIRCA", time: "5 min", text: "Go round the room: each person says one letter and what it means. Then the four parts of capacity." },
       { t: "The three pathways", time: "6 min", text: "Use the chooser. For each pathway, what do you do, and what do you write?" },
       { t: "Which pathway? checker", time: "5 min", text: "Run the scenarios. Decide your answer before you press the button." },
@@ -38,6 +39,7 @@ var M = window.MODULE = {
 
   panels: [
     { title: "Introduction", open: true, blocks: [
+      { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Refusal against advice: is this refusal valid?" } },
       { text: "SAAS clinicians must seek consent in every patient interaction. Sometimes a patient, their Advance Care Directive (ACD), their substitute decision maker (SDM) or person responsible (PR) refuses care." },
       { text: "A refusal against advice is where you recommend care to the patient, SDM or PR, and that person validly refuses. In this protocol, \"care\" means SAAS assessment, treatment and transport: any or all of them." },
       { box: { title: "Who can refuse (CPP-056-AO)", items: [

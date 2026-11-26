@@ -25,7 +25,8 @@
     'falls-ao':         { job: 'mavis', hosp: 'Cummins', hospKey: 'hospital_town', defaults: { patient: 'Mavis', age: '81', town: 'Cummins', hospital_town: 'Cummins', dispatch: '06:30', response: '8', transport: '5' } },
     'burns-ao':         { job: 'daniel', hosp: 'Tumby Bay', times: { '1920': 'scene' }, hospKey: 'hospital', defaults: { patient: 'Daniel', age: '42', town: 'Port Neill', hospital: 'Tumby Bay Hospital', dispatch: '18:45', response: '12', transport: '25' } },
     'mva-ao':           { job: 'jason', hosp: 'Port Lincoln', hospText: [': Port Lincoln, paramedics'], hospKey: 'hospital_town', road: 'Tod Hwy', defaults: { patient: 'Jason', age: '34', road: 'Tod Highway', town: 'Cummins', hospital_town: 'Port Lincoln', dispatch: '17:30', response: '12', transport: '50' } },
-    'dementia-ao':      { job: 'joanne', hosp: 'Cummins', hospKey: 'hospital_town', defaults: { patient: 'Jo-Anne', age: '84', partner_name: 'Ray', town: 'Cummins', hospital_town: 'Cummins', dispatch: '18:40', response: '12', transport: '15' } }
+    'dementia-ao':      { job: 'joanne', hosp: 'Cummins', hospKey: 'hospital_town', defaults: { patient: 'Jo-Anne', age: '84', partner_name: 'Ray', town: 'Cummins', hospital_town: 'Cummins', dispatch: '18:40', response: '12', transport: '15' } },
+    'refusal-ao':       { job: 'sam', hosp: 'Tumby Bay', times: { '1300': 'fixed' }, hospKey: 'hospital', defaults: { backup_from: 'Port Lincoln', backup_mins: '45', patient: 'Sam', age: '38', partner_name: 'Kirsty', town: 'Tumby Bay', hospital: 'Tumby Bay Hospital', dispatch: '09:48', response: '7', transport: '5' } }
   };
 
   var str = function (x) { return String(x == null ? '' : x).trim(); };
@@ -58,6 +59,7 @@
     var depart0 = hand && +d.transport ? mins(hand[0]) - +d.transport : null;
     function shiftTime(t) {
       var how = M.times && M.times[hhmm(t)];
+      if (how === 'fixed') return t;   // a set time in the story (Sam's son's cricket final at 1300)
       if (how === 'page') return t + dD;
       if (how === 'scene') return t + dD + dR;
       if (disp0 == null) return t + dR + dT;

@@ -59,4 +59,4 @@ PCR card, `nausea-ao` template default). Live (PR #317, merged 22 Nov 2026).
 
 Refusal job `refusal` (26 Nov 2026): Sam, 38, Tumby Bay township, 0948, two live remarks (meter 2.3; doesn't want an
 ambulance). Not transported, so the expected line says clear from scene. The simulator has no clear-from-scene
-status: ask the owner how the real MDT does it before adding one. No customiser link. On a branch, not merged.
+status: ask the owner how the real MDT does it before adding one. Customiser link via `link('refusal', 'refusal-ao', ...)`. On a branch, not merged.

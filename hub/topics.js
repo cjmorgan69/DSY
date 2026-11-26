@@ -46,7 +46,7 @@ window.DSY_TOPICS = [
   { id:'health-checks', group:'safety', title:'Health checks for emergency services', protocol:'PRO-384', patient:'Fire standby: checking the firefighters off the line',
     stations:'/stations/health-checks/' },
   { id:'refusal', group:'decisions', title:'Refusal against advice', protocol:'CPP-056-AO', patient:'Sam, 38: a hypo who tells the crew to get out, then still refuses',
-    module:'refusal', walk:'/modules/refusal-ao/', mdt:'refusal', stations:'/stations/refusal/', pcr:'sam', slides:'/classroom/refusal/' }
+    module:'refusal', walk:'/modules/refusal-ao/', mdt:'refusal', custom:'refusal-ao', stations:'/stations/refusal/', pcr:'sam', slides:'/classroom/refusal/' }
 ];
 
 /* Categories on Run a session (11 Nov 2026, owner). */

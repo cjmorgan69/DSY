@@ -143,4 +143,5 @@ copy left. Seven break points, six variations (boat ramp = validity cannot be de
 pressure; won't take the paste; Jack is 15; changes his mind). Sources CPP-056-AO v1.0, CTL-126, CTL-067, CPP-009-AO
 v4.1. Story, obs, EOC Clinician lines and the risk wording ("can come back while insulin is active", general
 teaching) are DSY-written (owner to review). `relatedCodes: ["CPP-009-AO"]`. MDT job `refusal`, PCR job `sam` (with a
-case card), stations, case-night deck. No customiser template yet. On a branch, not merged.
+case card), stations, case-night deck. Customiser template `refusal-ao` (26 Nov 2026, `scenarios/tools/convert-refusal.js`, page time 07:00 to 11:00
+because of the 1300 cricket final; loaded unpublished, md5 checked). On a branch, not merged.

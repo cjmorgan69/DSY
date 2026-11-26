@@ -28,7 +28,7 @@ window.MODULE = {
 
   panels: [
     { title: "Overview", blocks: [
-      { text: "A Saturday morning in March in Tumby Bay. A 38 year old man with type 1 diabetes went for an early run and skipped most of his breakfast. His partner finds him in the bathroom, sweaty and muddled, telling her to get out. Tumby Bay Hospital is 5 minutes away; paramedic backup from Port Lincoln is about 45 minutes." },
+      { text: "A Saturday morning in March in Tumby Bay. A 38 year old man with type 1 diabetes went for an early run and skipped most of his breakfast. His partner finds him in the bathroom, sweaty and muddled, telling her to get out. Tumby Bay Hospital is about 5 minutes away; paramedic backup from Port Lincoln is about 45 minutes." },
       { box: { title: "Learning objectives", items: [
         "Use the VIRCA tool to decide whether a refusal is valid",
         "Recognise that capacity can be absent, partial or whole, and can change, and that GCS does not equal capacity",
@@ -47,7 +47,7 @@ window.MODULE = {
       ] } },
       { box: { title: "Timing and resources", items: [
         "Pre-brief about 10 minutes; walk-through 40 to 50 minutes; debrief 10 to 15 minutes",
-        "Response to scene: about 6 minutes",
+        "Response to scene: about 7 minutes",
         "Tumby Bay Hospital: about 5 minutes",
         "Paramedic backup from Port Lincoln: about 45 minutes",
         "EOC Clinician: available by phone"
@@ -108,7 +108,7 @@ window.MODULE = {
         ],
         teaching: ["Plan for the refusal before you get there", "Scene safety: an agitated patient can lash out. Keep an exit and keep it calm (general teaching)"],
         teachingNote: "General teaching, from the scenario, except where a protocol is named.",
-        realJob: "Six minutes is enough to agree who talks to whom. One calm voice with the patient.",
+        realJob: "Seven minutes is enough to agree who talks to whom. One calm voice with the patient.",
         decisions: [{ q: "A confused patient tells you to leave. What does CPP-056-AO say to do?", options: ["Leave: he has refused", "Use the VIRCA tool to work out whether the refusal is valid", "Call the police"], answer: 1,
           why: "CPP-056-AO: if refusing care, use the VIRCA tool to ascertain validity, then consult the EOC Clinician." }]
       } }
