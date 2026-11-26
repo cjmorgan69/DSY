@@ -156,7 +156,13 @@ window.MDT_JOBS = [
     note:'84F AGITATED - HX DEMENTIA', patient:'SMITH, JO-ANNE', age:'84Y', weight:'', caller:'HUSBAND - RAY (ON SCENE)',
     unitLoc:'CUMMINS AMBULANCE STATION',
     remarks:'HX DEMENTIA - AGITATED - DOES NOT RECOGNISE HUSBAND\nPUSHED HUSBAND AWAY - NO INJURIES\nNO WEAPONS - NO THREATS\nHUSBAND SAFE - WILL WAIT AT FRONT DOOR\n+4 HUSBAND: PT WALKING UP AND DOWN KITCHEN - SAYS SHE WANTS TO GO HOME TO MUM\n+9 HUSBAND HAS TURNED TV DOWN - FRONT LIGHT ON',
-    expected:'CUMMINS HOSPITAL, about 15 minutes (scenario)' }
+    expected:'CUMMINS HOSPITAL, about 15 minutes (scenario)' },
+  { id:'refusal', label:'Refusal against advice: Sam, 38 (Tumby Bay, 0948)', scenario:'/modules/refusal-ao/',
+    priority:'2', startTime:'09:48', typeName:'Altered conscious state', town:'Tumby Bay', street:'HOUSE IN TOWNSHIP',
+    note:'38M ALTERED CONSCIOUS STATE - DIABETIC', patient:'BRENNAN, SAM', age:'38Y', weight:'', caller:'PARTNER (KIRSTY)',
+    unitLoc:'TUMBY BAY AMBULANCE STATION',
+    remarks:'FOUND IN BATHROOM - SWEATY AND "NOT MAKING SENSE"\nTYPE 1 DIABETIC\nPT TOLD PARTNER TO GET OUT - NO WEAPONS - NO THREATS\nBREATHING - NO FALL REPORTED\n+2 PARTNER: HIS METER SAYS 2.3 - WENT FOR A RUN THIS MORNING\n+4 PARTNER: SAYS HE DOESNT WANT AN AMBULANCE - SHE WILL MEET CREW AT FRONT DOOR',
+    expected:'Not transported: valid refusal against advice after EOC Clinician consult (scenario). Clear from scene; TUMBY BAY HOSPITAL (5 minutes) if he changes his mind' }
 ];
 
 /* Links from the scenario customiser (Supabase public.scenarios) for the jobs that have no custom() of their own.

@@ -247,3 +247,12 @@ home page leader links add Team Leader training. On a branch, not merged.
   2 One page for people, scene 5 Teams with chips and view-only clusters), Lee re-narrated (see voice.json),
   intro.mp4?v=2 (1:08), new poster, img/teams.jpg added, img/person.jpg removed. Live (PR #363, merged 25 Nov
   2026; new video and content checked on the live site).
+
+## Refusal against advice
+
+`/microlearning/refusal/` (26 Nov 2026): CPP-056-AO Refusal Against Advice - AO v1.0 (22 Jan 2025, no review date),
+CTL-126 VIRCA Tool, CTL-067 Consent (adult flowchart, read from the image). Panels: introduction, the two tests,
+VIRCA, three pathways (chooser) + one tile row (valid refusal steps), who can consent (CTL-067 steps, Person
+Responsible order, emergency box), "Which pathway?" checker (evaluate tested against its six DSY scenarios), what to
+write (CTL-126 PCR lines), 13-question quiz, optional practical. Three quick checks. No intro video yet (script not
+written; narration costs credits, ask the owner). In MODULE_LISTS.ao. On a branch, not merged.

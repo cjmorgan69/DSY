@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<script src="/shared/gate.js?v=20261126c" data-level="stations"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Refusal against advice skills stations - DSY Training</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../../shared/dsy-favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../../shared/dsy-favicon-192.png">
+<link rel="apple-touch-icon" href="../../shared/dsy-touch-180.png">
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261126c">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Refusal against advice skills stations (AO). Built 26 Nov 2026 for a group training night without the instructor
+   present, to go with the module /microlearning/refusal/ and the walk-through /modules/refusal-ao/ (Sam, 38).
+   Sources, exported 31.08.2026: CPP-056-AO Refusal Against Advice - AO v1.0 (22 Jan 2025); CTL-126 VIRCA Tool;
+   CTL-067 Consent to Medical Treatment and Healthcare. Patient cards, the role-play lines, the example questions for
+   testing capacity and the how-to-run notes are DSY-written. DSY has no copy of the SAAS AMA form: the station uses
+   the team's own form, or plain paper. */
+var SRC = {
+  cpp056: "CPP-056-AO Refusal Against Advice v1.0",
+  c126: "CTL-126 VIRCA Tool",
+  c067: "CTL-067 Consent to Medical Treatment and Healthcare",
+  lead: "DSY lead instructor",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "VIRCA: valid or not?", mins: 15,
+  goal: "Say every VIRCA letter and the four parts of capacity from memory, then decide whether each card is a valid refusal.",
+  kit: ["This page on a phone", "The cards below (or read them aloud)", "A pen and paper"],
+  blocks: [
+    { h: "VIRCA", src: ["c126"], list: [
+      "V Voluntary: a voluntary choice, free of coercion, undue influence, manipulation or false information conveyed by another person",
+      "I Informed: of their condition or likely condition, and the risks and possible consequences of refusing care",
+      "R Relevant: the decision, and the assessment, treatment or transport being refused, clearly specified",
+      "C Capacity: can understand the relevant information (including the consequences), retain it, use it in making the decision, and communicate the decision in any manner",
+      "A Advice: to the patient and/or others, aimed at the patient's safety and comfort upon discharge"
+    ] },
+    { h: "Capacity", src: ["cpp056", "c126"], tone: "warn", list: [
+      "Can be whole, partial or absent, and can change over time",
+      "GCS does not directly relate to capacity",
+      "May be affected by alcohol, drugs, acute mental health conditions, or medical conditions (e.g. dementia, post-ictal states, metabolic disorders, delirium)",
+      "A valid refusal needs capacity AND a voluntary decision not based on false or misleading information"
+    ] },
+    { h: "Cards", src: ["dsy", "c126", "cpp056"], cases: [
+      { who: "A. Sam, 38, at 0955", text: "Type 1 diabetic, BGL 2.3, sweaty, swearing at the crew to get out. Asks his partner the time twice in a minute.",
+        answer: "Not valid. C fails: he can't retain the information, so he can't use it. A metabolic disorder can affect capacity (CTL-126). Consult the EOC Clinician and follow the plan for an invalid refusal." },
+      { who: "B. Sam, 38, at 1020", text: "BGL 6.4 after glucose, alert and apologetic. Refuses transport only. Tells you in his own words what could happen, still remembers it 5 minutes later, and says the cricket final matters more to him today.",
+        answer: "Likely valid, if V, I and R are also covered. Consult the EOC Clinician. If he still refuses after that clinical support and validity is confirmed: comply, advise, consider health services, AMA form, document, leave a copy." },
+      { who: "C. Edna, 80, chest pain", text: "She says she'll go if her son agrees. Her son, standing over her, says \"You're not wasting an ambulance, Mum.\" She then says no.",
+        answer: "V is in doubt (undue influence), and \"wasting an ambulance\" may be false information. Talk to her on her own, correct the information, then repeat VIRCA. Consult the EOC Clinician." },
+      { who: "D. Rob, 52, GCS 15", text: "He's had six beers at the club and fell off the verandah. GCS 15. He keeps saying he's fine, but can't tell you back what you just explained about his head.",
+        answer: "GCS 15 doesn't settle it (CPP-056-AO). Alcohol can affect capacity, and he isn't showing he understands or retains the information. Not shown to be valid: consult the EOC Clinician." },
+      { who: "E. Pat, 70, \"just leave me\"", text: "A painful ankle after a fall. \"I don't want any of it.\" You haven't yet said what you think is wrong.",
+        answer: "Not ready to decide: I and R aren't done. Explain what you think is wrong and the risks, and ask exactly what she's refusing: the assessment, the pain relief or the trip. She may accept some of it." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Each person says VIRCA and the four parts of capacity without looking. Partners check.",
+      "One person reads a card. The others decide: valid, invalid, or not ready to decide, and which letter. Then open the answer."
+    ] }
+  ],
+  checks: ["Said all five VIRCA letters correctly", "Named the four parts of capacity", "Said GCS does not equal capacity",
+    "Called card A invalid and card E not ready to decide", "Spotted the V problem in card C"] },
+
+{ id: "s2", n: 2, title: "The capacity conversation", mins: 20,
+  goal: "Test each part of capacity in plain words, find out why the patient is refusing, and try to remove the barrier, without arguing.",
+  kit: ["Three people: patient, AO1, observer", "A chair or the floor for the patient", "The role cards below (only the patient reads their card)"],
+  blocks: [
+    { h: "What you need to hear (CTL-126)", src: ["c126"], list: [
+      "Understand: the information relevant to the decision, including the consequences",
+      "Retain: that information",
+      "Use: the information in making the decision",
+      "Communicate: the decision, in any manner"
+    ] },
+    { h: "Example questions", src: ["dsy"], list: [
+      "Understand: \"Can you tell me in your own words what we think is going on?\"",
+      "Consequences: \"What could happen if you stay home today?\"",
+      "Retain: ask again a few minutes later, after talking about something else",
+      "Use: \"What's making you decide not to come?\" \"How are you weighing that up?\"",
+      "Communicate: any manner counts: speech, writing, nodding, a communication board"
+    ] },
+    { h: "Barriers", src: ["c126", "dsy"], list: [
+      "CTL-126 asks you to record the details of and reasons for refusing, and any attempts to remove barriers to assessment, treatment or transport",
+      "Common barriers (DSY): a child or pet to look after, a job or event, a bad past experience, fear of being kept in, how to get home"
+    ] },
+    { h: "Role cards (patient only)", src: ["dsy"], cases: [
+      { who: "1. Sam, 38, after a hypo", text: "You feel fine now. You understand the risk and can say it back. You don't want to miss your son's cricket final at 1pm. If offered that your partner takes him, still say no, politely.",
+        answer: "Observer: did AO1 hear all four parts of capacity, ask why, and offer a way round the barrier? This refusal is likely valid: next comes the consult." },
+      { who: "2. June, 76, after a fall", text: "You're refusing because you can't leave your dog alone overnight. If the crew offers a way to have the dog looked after (a neighbour), agree to go.",
+        answer: "Observer: the barrier was practical. Did AO1 find it by asking why, and solve it? Record the barrier and what was offered." },
+      { who: "3. Leo, 45, post-seizure", text: "You keep asking where you are. Each time you're told, you agree, then ask again. You say you want to go home.",
+        answer: "Observer: he can't retain the information. A post-ictal state can affect capacity (CTL-126). Did AO1 stay calm and consult rather than argue or simply leave?" }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "The patient reads one role card silently. AO1 has 3 minutes to work through VIRCA.",
+      "The observer ticks which parts of capacity AO1 actually heard, then gives two good things and one thing to change. Swap roles."
+    ] }
+  ],
+  checks: ["Asked the patient to explain in their own words", "Checked retention later in the conversation", "Asked why they were refusing",
+    "Offered a way round the barrier", "Stayed calm and didn't argue"] },
+
+{ id: "s3", n: 3, title: "Who decides? Consent and the three pathways", mins: 15,
+  goal: "Use CTL-067 to say who can decide when the patient can't, and say what CPP-056-AO says for a valid, an invalid and an undetermined refusal.",
+  kit: ["This page", "A pen and paper"],
+  blocks: [
+    { h: "CTL-067: consent for adults", src: ["c067"], steps: [
+      "Does the patient have capacity for this decision? Yes: seek consent from the patient",
+      "No: can the decision be delayed until they regain capacity? Yes: defer it",
+      "No: an ACD appointing a Substitute Decision-Maker? Yes: seek consent from the SDM (relevant refusals of health care are binding)",
+      "No: an ACD with relevant instructions but no SDM? Yes: follow the instructions and any relevant (binding) refusal",
+      "No: seek consent from the Person Responsible"
+    ] },
+    { h: "Person Responsible, in legal order", src: ["c067"], list: [
+      "1. Guardian appointed by the SA Civil and Administrative Tribunal",
+      "2. Spouse or domestic partner; adult related by blood, marriage or adoption; Aboriginal or Torres Strait Islander kinship or marriage *",
+      "3. Adult friend *",
+      "4. Adult charged with overseeing day-to-day care",
+      "5. SACAT, on application (last resort)",
+      "* close and continuing relationship, and available and willing to decide",
+      "In an emergency, with no capacity and no one found in time (or the ACD isn't relevant or is unclear): treat in line with section 13 of the Consent to Medical Treatment and Palliative Care Act 1995"
+    ] },
+    { h: "CPP-056-AO: the three pathways", src: ["cpp056"], tone: "warn", list: [
+      "Always: basic care and life support, VIRCA, consult the EOC Clinician (State Duty Manager or Team Leader if you can't contact them)",
+      "Valid: still refusing after clinical support and validity confirmed: comply, offer advice, consider internal or external health services; AMA form; document VIRCA and the EOC Clinician discussion; leave a copy of all documentation",
+      "Invalid: deliver care as per the plan made with the EOC Clinician, State Duty Manager or Team Leader; document clinical assessment, VIRCA, attempts to contact an SDM or PR, the EOC Clinician discussion, treatment and any restraint",
+      "Validity cannot be determined (urgent care needed, capacity uncertain, no ACD, SDM or PR you can find or contact): care aimed at stabilisation, reassess VIRCA, discuss once stabilised (continue care if no one can be contacted), document",
+      "Under 16: parents or guardians can refuse care of that child. Concerns for a child's safety and wellbeing must be clinically escalated"
+    ] },
+    { h: "Cards", src: ["dsy", "c067", "cpp056"], cases: [
+      { who: "A. Sam, confused, partner present", text: "Sam (BGL 2.3) can't decide. No guardian, no ACD. His partner Kirsty of 12 years is in the room.",
+        answer: "Kirsty, as Person Responsible (domestic partner, close and continuing relationship, available and willing). Invalid refusal: consult the EOC Clinician and follow the plan." },
+      { who: "B. Alone at the boat ramp", text: "A man alone in his car, drowsy, sweaty, refusing to be touched. No phone, no ID, nobody to call. You think he needs urgent care.",
+        answer: "Validity cannot be determined: provide care with the goal of stabilisation, reassess capacity with VIRCA, then discuss with the EOC Clinician, State Duty Manager or Team Leader once stabilised." },
+      { who: "C. The ACD on the fridge", text: "An 88 year old who can't communicate today. Her Advance Care Directive appoints her daughter as SDM. The daughter is on the phone.",
+        answer: "Seek consent from the SDM (the daughter). She must try to follow any relevant instructions; relevant refusals of health care are binding. Consult the EOC Clinician." },
+      { who: "D. Fifteen, at cricket", text: "Jack, 15, recovered after a hypo, refuses to go. His mum is at work in Port Lincoln.",
+        answer: "Under 16: his parents or guardians can refuse care for him, so contact his mum. Consult the EOC Clinician. Escalate any concerns for his safety and wellbeing." },
+      { who: "E. No answer", text: "You can't get through to the EOC Clinician for some time.",
+        answer: "Consult the State Duty Manager or Team Leader (CPP-056-AO)." }
+    ] }
+  ],
+  checks: ["Said the CTL-067 steps in order", "Named the first three in the Person Responsible order", "Said the three conditions for \"validity cannot be determined\"",
+    "Said what to document for an invalid refusal, including restraint", "Answered card D correctly"] },
+
+{ id: "s4", n: 4, title: "The call, the AMA form and the PCR", mins: 20,
+  goal: "Give the EOC Clinician a one-minute refusal call, finish a valid refusal properly, and write the VIRCA lines.",
+  kit: ["A phone to role-play the EOC Clinician call", "Your team's Acknowledgement of Medical Advice (AMA) form, or plain paper", "A blank PCR or paper", "A phone with the PCR trainer (Sam's job)"],
+  blocks: [
+    { h: "The refusal call", src: ["dsy"], list: [
+      "Who you are and where; the patient and what's wrong",
+      "Obs and treatment with times",
+      "Each VIRCA letter: what you heard",
+      "What they refuse (and accept), why, and what you offered",
+      "What you're asking: \"Can you speak to him?\" \"Do you agree this is valid?\"",
+      "Repeat the advice back"
+    ] },
+    { h: "Valid refusal: before you leave", src: ["cpp056"], steps: [
+      "Patient still refusing after clinical support, and validity confirmed: comply with their wishes",
+      "Offer advice",
+      "Consider internal or external health services to support their safety",
+      "Complete the AMA form",
+      "Document the VIRCA assessment and the EOC Clinician discussion",
+      "Leave a copy of all documentation with the patient"
+    ] },
+    { h: "VIRCA on the PCR", src: ["c126"], list: [
+      "V: details of the voluntary nature of the decision",
+      "I: details of the information given (be specific)",
+      "R: precisely which assessment, treatment and/or transport was refused",
+      "C: evidence of capacity or impaired capacity; details of and reasons for refusing; attempts to remove barriers",
+      "A: details of the advice given to the patient and/or others"
+    ] },
+    { h: "Cards", src: ["dsy"], cases: [
+      { who: "A. Sam at 1025", text: "Make the call for Sam (BGL 2.3, glucose 15 g at 1000, BGL 6.4 at 1020, GCS 15, refusing transport for his son's cricket final, partner offered to take the son: declined).",
+        answer: "Covered: obs and trend with times, the glucose, each VIRCA letter, the barrier and what was offered, the ask.",
+        eoc: "\"Put him on, I'll talk to him.\" (then) \"He still says no. I'm satisfied it's valid. Respect it. Kirsty stays with him today. Eat, check his BGL more often, call 000 if it comes back, GP this week. AMA form and leave him a copy.\"" },
+      { who: "B. Write Sam's R and C lines", text: "Each person writes them, then compares.",
+        answer: "R: \"Refuses transport to Tumby Bay Hospital. Accepts assessment, BGL checks, food.\" C: what showed each part of capacity at 1020, the reason (the final), the barrier offer, and that capacity was absent at 0955 (BGL 2.3)." },
+      { who: "C. Which line proves nothing?", text: "\"Pt informed of risks.\" or \"Told risk of further hypo today while insulin active; protocol advises transport and hospital review; can call 000 again any time.\"",
+        answer: "The first. CTL-126: record the information given, and be specific." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person makes the call for card A; a partner plays the EOC Clinician using the lines in the answer. Swap.",
+      "Fill in the AMA form (or paper) with your 'patient'. Say what you leave behind.",
+      "Write the five VIRCA lines. If there's time, open Sam's job in the PCR trainer and compare with the model card."
+    ] }
+  ],
+  checks: ["Covered every VIRCA letter in the call", "Repeated the EOC Clinician's advice back", "Said all six valid-refusal steps",
+    "Wrote a specific R line", "Said a copy of all documentation stays with the patient"] }
+];
+
+var END = { title: "Finish together", mins: 25,
+  steps: [
+    "Run the whole job as one crew with the student walk-through: Sam, 38, in Tumby Bay. Use each station as you reach that part: VIRCA, the conversation, who consents, the call and the AMA form.",
+    "Then each person does the knowledge check in the microlearning on their own phone, and writes Sam's PCR in the PCR trainer if there's time.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-refusal";
+
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/refusal/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Refusal against advice skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Student walk-through", "../../modules/refusal-ao/?mode=student", "btn small"));
+  links.appendChild(a("Knowledge check (microlearning)", "../../microlearning/refusal/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-through: " + root + "modules/refusal-ao/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY refusal against advice skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Refusal against advice skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Refusal against advice\" (about 20 min). Send the link a few days ahead."],
+    ["0:00", "Split into threes: station 2 needs a patient, a crew member and an observer. Remind everyone the role cards are made up: no real patients' stories."],
+    ["0:05", "Rotate through stations 1 to 4 (about 15 to 20 min each). Partners tick the checks on the phone."],
+    ["about 1:15", "Finish together: the student walk-through as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per group.",
+    "Station 2: a chair (or a mat for the floor), and the role cards. Only the 'patient' reads their card.",
+    "Station 4: your team's Acknowledgement of Medical Advice (AMA) forms (spare or photocopied, marked TRAINING) or plain paper, blank PCRs, and a phone with the PCR trainer.",
+    "No medicines or clinical kit are needed tonight.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Training AMA forms and PCRs collected and shredded: they may hold made-up details that look real.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Four stations to practise the decisions and conversations of a refusal job, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Refusal against advice\" first (about 20 minutes)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/refusal/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Full job, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cpp018, SRC.c021, SRC.c001, SRC.cssg, SRC.cpp013, SRC.cpp047, SRC.c012, SRC.c008, SRC.c009].join(", ") +
+    ". The review dates of CPPRO-021 (Mar 2023), CPPRO-001 (Dec 2019), CPPRO-012 (Mar 2021) and CPPRO-008/009 (June 2020) have passed. The chair-to-stretcher method and the collar choice follow the DSY lead instructor. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>

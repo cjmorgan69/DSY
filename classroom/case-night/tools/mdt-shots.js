@@ -17,7 +17,11 @@ const SHOTS = {
   // Karen: page 0215, Enroute 0216, scene 0227, Mobile 0255, Cummins Hospital 0325 (owner moved the homestead to
   // 20 km north of Cummins, 11 Nov 2026). CU181 = Cummins at night (owner).
   'asthma': { job: 'asthma', start: '02:14:50', callsign: 'CU181', hospital: 'CUMMINS HOSPITAL',
-    toEnroute: 1, toRemarks: 8, toScene: 3, onScene: 28, transport: 30 }
+    toEnroute: 1, toRemarks: 8, toScene: 3, onScene: 28, transport: 30 },
+  // Sam: page 0948 (day, so TB81), Enroute 0949, scene 0955. Not transported, so the shots stop on scene: the MDT
+  // simulator has no clear-from-scene status yet (how the real MDT does it is to be checked with the owner).
+  'refusal': { job: 'refusal', start: '09:47:50', callsign: 'TB81', stopAtScene: true,
+    toEnroute: 1, toRemarks: 4, toScene: 2 }
 };
 const deck = process.argv[2], S = SHOTS[deck];
 if (!S) { console.log('Usage: node mdt-shots.js ' + Object.keys(SHOTS).join('|')); process.exit(1); }
@@ -43,6 +47,7 @@ const OUT = path.join(__dirname, '..', '..', deck, 'img');
   await p.evaluate(() => act.tab('EVENT'));
   await min(S.toScene); await click('f6'); await shot('mdt-4-confirm-scene');
   await click('sceneYes'); await shot('mdt-5-on-scene');
+  if (S.stopAtScene) { await b.close(); return; }
   await min(S.onScene); await click('f6'); await p.evaluate(() => act.filter('Closest')); await shot('mdt-6-destination');
   await p.evaluate(h => act.pickDest(h), S.hospital); await shot('mdt-7-confirm-mobile');
   await click('mobileYes'); await min(S.transport); await click('f6'); await shot('mdt-8-arrive-dest');

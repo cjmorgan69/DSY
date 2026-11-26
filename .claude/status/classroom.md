@@ -41,3 +41,11 @@ min (walk-through, MDT job and customiser link, PCR job, converter); MedSTAR lin
 information is known" (was 90 min); MDT screenshots 0215 to Cummins Hospital 0325, call sign CU181 (Cummins); PCR
 `karen`; about 115 min. Supabase `asthma-ao` row updated (it reads Cummins; checked 15 Nov 2026). On main. Next:
 other topics' nights when the owner asks.
+
+## Refusal against advice case night
+
+`/classroom/refusal/` (26 Nov 2026): copy of the ACPO deck; part 2 is built from the refusal module (no video yet: the
+slide appears automatically once the module has one), part 3 is Sam's seven break points. MDT screenshots stop on
+scene (page 0948, Enroute 0949, remarks 0950/0952, scene 0955, TB81) because the MDT simulator has no
+clear-from-scene status (`stopAtScene` in `tools/mdt-shots.js`; how the real MDT clears a no-transport job is to be
+checked with the owner). PCR `sam`, next week `/stations/refusal/`, feedback `t=refusal`. On a branch, not merged.

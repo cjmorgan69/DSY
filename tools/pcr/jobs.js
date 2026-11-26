@@ -883,5 +883,82 @@ window.PCR_JOBS = {
       ['2003', 'Handover Cummins Hosp']
     ],
     marks: [['front', 50, 98, 'P', 6]]
+  },
+  sam: {
+    label: 'Sam, 38: refusal against advice (AO)',
+    short: 'Sam',
+    walk: '/modules/refusal-ao/',
+    note: 'Treated and not transported: a valid refusal against advice after the EOC Clinician consult.',
+    protocol: 'CPP-056-AO Refusal Against Advice - AO (with CPP-009-AO Hypoglycaemia - AO)',
+    // Case card (DSY-written, from the walk-through): shown by the "case card" link in the trainer.
+    caseCard: {
+      dispatch: 'Saturday in March, 0948. Tumby Bay crew (TB81). P2 altered conscious state, 38M, type 1 diabetic, house in the Tumby Bay township. Caller: partner Kirsty. Found in the bathroom, sweaty, "not making sense", told her to get out. Live remarks: his meter says 2.3; he doesn\'t want an ambulance.',
+      arrival: '0955. Sam sitting on the bathroom floor in running gear, pale, drenched in sweat. "Get out of my house. I don\'t need you." Swearing, asks the time twice in a minute, pulls his hand away. Partner Kirsty and son Jack (9, in cricket whites) in the house.',
+      history: 'T1DM since age 12, on insulin. Ran ~10 km early, took breakfast insulin, only had a coffee. Own meter 2.3 at 0945. No fall, no head knock, no alcohol. Previous hypos, never this bad. NKA. Jack\'s cricket final at 1300.',
+      course: '0955 refuses all care: can\'t retain information. Invalid refusal.\n0958 EOC Clinician: Kirsty (partner) consents as Person Responsible; oral glucose if he can swallow, no restraint, BGL in 10 to 15 min.\n1000 strong cough; oral glucose 15 g from Kirsty.\n1012 BGL 4.8, GCS 15. 1015 toast eaten.\n1020 BGL 6.4, alert, oriented, apologetic. Refuses transport (wants to go to Jack\'s final). VIRCA repeated: valid. Offered Kirsty taking Jack while he goes: declined.\n1025 EOC Clinician speaks to Sam; still refuses; EOC Clinician: valid, respect it; Kirsty to stay with him; eat, check BGL more often, call 000 if it comes back, GP this week; AMA form and leave a copy.\n1030 AMA form signed. 1045 BGL 6.6. Copy left. 1052 clear, not transported.'
+    },
+    // From /modules/refusal-ao/. All times are the walk-through's. VIRCA lines follow the CTL-126 PCR headings.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Hypoglycaemia (BGL 2.3), resolved with oral glucose. T1DM: insulin + run with little breakfast. Valid refusal against advice (transport).',
+      recommendation:
+        'Treated and not transported (TNT): valid refusal of transport after EOC Clinician consult 1025 (EOC Clinician spoke to pt). AMA form completed + signed, ' +
+        'copy of all documentation left with pt. BGL 2.3 to 6.6 after oral glucose 15 g + toast. Advice to pt + partner: eat now + regularly, check BGL more often today, ' +
+        'partner to stay with him today, call 000 if sweaty, confused or hard to wake, see GP this week. Can call 000 again at any time.',
+      infoText: 'Hypo advice + when to call 000 (verbal, to pt + partner); copy of AMA form + PCR'
+    },
+    sections: {
+      pc: 'Found confused + sweaty in bathroom, told partner to get out. T1DM. BGL 2.3.',
+      phx: 'Type 1 diabetes since age 12. Previous hypos, "never this bad" (partner).',
+      medn: 'Insulin (usual breakfast dose today).',
+      hx: 'Ran ~10 km early this morning, took breakfast insulin, only had a coffee. Partner found him in bathroom ~0945, sweaty, "not making sense", told her to get out. Own meter 0945: 2.3. Nil fall, nil head strike known, nil alcohol. Partner called SAAS.',
+      oa: '38M sitting on bathroom floor in running gear, pale + drenched in sweat. Swearing, "get out of my house, I don\'t need you", asked the time twice in a minute. Pulled hand away. Partner + son (9) in house, safe.',
+      cns: 'GCS 14 (E4 V4 M6), confused, unable to retain information (repeating questions). Strong cough on request. 1012 + 1020: GCS 15, alert, oriented x3, recalls events from ~1005, apologetic. Moves all 4 limbs.',
+      skin: 'Pale, diaphoretic. 1020: warm, dry, normal colour.',
+      cvs: 'Pulse 112 regular. BP declined (pulled arm away) 0957. 1012: P 96, BP 130/80. 1020: P 88, BP 128/78.',
+      resp: 'RR 20, nil resp distress. SpO2 98% RA. 1020: RR 16, SpO2 99% RA.',
+      pain: 'Nil pain, 0/10.',
+      survey: '',
+      care: '0955 refusing all care ("get out"). VIRCA: C absent (unable to retain or use info, BGL 2.3, metabolic cause), unable to take in I or R: INVALID refusal.\n' +
+        '0958 EOC Clinician consult: invalid refusal; partner Kirsty (domestic partner, close + continuing relationship, present + willing) as Person Responsible consented; plan: oral glucose if able to swallow, nil restraint, call back if unable, BGL in 10-15 min. Repeated back.\n' +
+        '1000 strong cough on request; oral glucose 15 g, taken from partner in small amounts. Nil restraint used.\n' +
+        '1012 BGL 4.8, GCS 15; EOC Clinician updated. 1015 toast + peanut butter eaten.\n' +
+        '1020 BGL 6.4, GCS 15. Refuses transport. VIRCA repeated:\n' +
+        'V: own decision; partner would prefer he went but says it is his decision; nil pressure from others.\n' +
+        'I: told ?hypo from insulin + run with little breakfast; protocol advises transport + hospital review; risk of further hypo today while insulin active; can call 000 again at any time.\n' +
+        'R: refuses transport to Tumby Bay Hospital. Accepts assessment, BGL checks, food.\n' +
+        'C: explains in own words what happened + the risk, recalls it 5 min later, weighs it against son\'s cricket final 1300, states decision clearly. Barrier: son\'s final; offered partner taking son while he attends hospital: declined.\n' +
+        'A: see recommendation.\n' +
+        '1025 EOC Clinician consult, spoke to pt; still refuses; EOC Clinician: valid refusal, respect it; advice as recommendation. Repeated back.\n' +
+        '1030 AMA form completed with pt + partner, signed. 1045 BGL 6.6. Copy of all documentation left with pt. 1052 clear, not transported.'
+    },
+    tips: {
+      care: 'Two refusals, two VIRCA results. Write the evidence for each and why the answer changed. CPP-056-AO also asks for the attempts to contact an SDM or PR and any restraint used for the invalid part: "nil restraint" is worth a line.',
+      recommendation: 'For a patient treated and not transported, this box is the referral plan: what to do, who is with them, and what should make them call again.',
+      cns: 'Capacity is not the GCS (CPP-056-AO). Write what showed you he could or could not retain and use the information.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Nothing to mark.', ecg: 'Nothing: no ECG on this job.',
+      info: 'Ticked: verbal advice to Sam and Kirsty, and a copy of the AMA form and PCR left with Sam.', consult: 'Ticked: EOC Clinician consulted at 0958 and 1025 (and updated at 1012).'
+    },
+    ticks: ['info', 'consult'],
+    obs: [
+      { time: '0957', rr: 20, o2: 'RA', spo2: 98, hr: 112, gcs: 14, evm: [4, 4, 6], bgl: 2.3 },
+      { time: '1012', rr: 18, o2: 'RA', spo2: 98, bp: '130/80', hr: 96, gcs: 15, evm: [4, 5, 6], bgl: 4.8 },
+      { time: '1020', rr: 16, o2: 'RA', spo2: 99, bp: '128/78', hr: 88, temp: 36.6, gcs: 15, evm: [4, 5, 6], bgl: 6.4 },
+      { time: '1045', bgl: 6.6 }
+    ],
+    drugs: [
+      ['0945', 'BGL 2.3 (own meter, partner)'],
+      ['0958', 'EOC Clinician consult (invalid refusal)'],
+      ['1000', 'Oral glucose paste', '15', 'g', 'Oral'],
+      ['1015', 'Toast + peanut butter eaten'],
+      ['1020', 'VIRCA: valid refusal of transport'],
+      ['1025', 'EOC Clinician consult (spoke to pt)'],
+      ['1030', 'AMA form signed, copy left'],
+      ['1052', 'Clear: not transported']
+    ],
+    marks: []
   }
 };
