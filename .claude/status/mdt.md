@@ -56,3 +56,9 @@ surnames now match the walk-throughs' handovers (Mitchell, Collins, Thompson, Pa
 to fit the PCR card's onset 1015 and "45 minutes ago"; "Cummins Hospital" used for Helen everywhere (walk-through,
 PCR card, `nausea-ao` template default). Live (PR #317, merged 22 Nov 2026).
 
+
+Refusal job `refusal` (26 Nov 2026): Sam, 38, Tumby Bay township, 0948, two live remarks (meter 2.3; doesn't want an
+ambulance). Not transported, so the expected line says clear from scene.
+Clear from scene (owner, 26 Nov 2026, like the real MDT): on scene, press and hold MOBILE for 2 seconds: straight to
+Clear Event Confirm, no hospital list (`act.clearFromScene`, run log "Cleared from scene: not transported"); in the
+MDT user guide's status table. Customiser link via `link('refusal', 'refusal-ao', ...)`. On a branch, not merged.

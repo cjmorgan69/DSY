@@ -41,3 +41,8 @@ min (walk-through, MDT job and customiser link, PCR job, converter); MedSTAR lin
 information is known" (was 90 min); MDT screenshots 0215 to Cummins Hospital 0325, call sign CU181 (Cummins); PCR
 `karen`; about 115 min. Supabase `asthma-ao` row updated (it reads Cummins; checked 15 Nov 2026). On main. Next:
 other topics' nights when the owner asks.
+
+## Refusal against advice case night
+
+`/classroom/refusal/` (26 Nov 2026): copy of the ACPO deck; part 2 is built from the refusal module (with its intro video), part 3 is Sam's seven break points. MDT screenshots: page 0948, Enroute 0949, remarks
+0950/0952, scene 0955, then hold MOBILE 2 s and Clear at 1052 (`clearFromScene` in `tools/mdt-shots.js`), TB81. PCR `sam`, next week `/stations/refusal/`, feedback `t=refusal`. On a branch, not merged.

@@ -24,6 +24,7 @@ The category tiles on Run a session come from `group` in `hub/topics.js`; planne
 | CPP-009-AO | Hypoglycaemia | Hypoglycaemia | Medical |
 | CPP-047-AO | Nausea and Vomiting | Nausea and vomiting | Medical |
 | CPP-062-AO | Sepsis | Sepsis | Medical |
+| CPP-056-AO | Refusal Against Advice | Refusal against advice | Decisions |
 
 Partly used: CPP-004-AO Basic Care and Life Support (every scenario), CPP-042-AO and CPP-158-AO (MVA topic).
 
@@ -35,7 +36,7 @@ Partly used: CPP-004-AO Basic Care and Life Support (every scenario), CPP-042-AO
 4. CPP-042-AO Amputation and Haemorrhage (tourniquet and pelvic sling already in the MVA stations) - Trauma and injury
 5. CPP-011-AO Narcotic Overdose (old page `/modules/narcotic_od/`) - Medical
 6. CPP-158-AO Chest Trauma (vented chest seal CPPRO-037, AO on EOC consult) - Trauma and injury
-7. CPP-055-AO Treat and Refer, CPP-056-AO Refusal Against Advice - Decisions
+7. CPP-055-AO Treat and Refer - Decisions (CPP-056-AO Refusal Against Advice done 26 Nov 2026)
 8. CPP-019-AO Hypothermia (Severe and Unresponsive) - Medical
 9. CPP-065-AO Button Battery Ingestion (short, children) - Medical
 10. CPP-015-AO Transfer of Patients Exceeding AO ATP - Decisions

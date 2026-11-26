@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="/shared/gate.js?v=20261126a" data-level="mdt"></script>
+<script src="/shared/gate.js?v=20261126e" data-level="mdt"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -74,7 +74,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 .bezel{position:absolute;left:52px;right:52px;top:62px;bottom:72px;background:#111;border-radius:16px;padding:12px}
 
 /* ---------- MDT screen ---------- */
-.screen{position:relative;width:100%;height:100%;background:#0f1923;color:#fff;display:flex;flex-direction:column;overflow:hidden;font-family:"Segoe UI",Tahoma,Arial,sans-serif;user-select:none;-webkit-user-select:none}
+.screen{position:relative;width:100%;height:100%;background:#0f1923;color:#fff;display:flex;flex-direction:column;overflow:hidden;font-family:"Segoe UI",Tahoma,Arial,sans-serif;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .topbar{display:flex;align-items:stretch;gap:8px;padding:8px 10px 6px;height:88px;flex:none}
 .k{position:relative;width:150px;border:0;border-radius:3px;color:#fff;font-weight:600;font-size:22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
 .k i{position:absolute;right:10px;top:4px;font-style:normal;font-size:12px;border-bottom:1px solid #fff;padding:0 2px}
@@ -349,7 +349,7 @@ details summary{cursor:pointer;font-weight:600;margin:6px 0}
 <div class="logwrap" id="logWrap" hidden><div class="logcard" id="logCard"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="jobs.js?v=20261126a"></script>
+<script src="jobs.js?v=20261126e"></script>
 <script>
 'use strict';
 // [name, lat, lon, group] group: M = major metro, V = virtual
@@ -609,14 +609,17 @@ const act = {
   mobileNo(){ logIt('Cancelled Mobile to ' + S.pending); S.view='dest'; render(); },
   ph(){ S.phCount++; logIt('P.H. pressed (priority to hospital notified)'); render(); },
   toggleDirect(){ S.direct=!S.direct; render(); },
+  // Not transported (owner, 26 Nov 2026): on scene, press and hold MOBILE for 2 seconds to go straight to Clear,
+  // skipping the destination list.
+  clearFromScene(){ if (S.st!==3) return; S.view='confirmClear'; S.direct=false; S.fromScene=true; logIt('MOBILE held 2 s: clear from scene (not transported)'); render(); },
   clearYes(){
-    logIt('Clear confirmed' + (S.direct ? ' - direct admission to ward ticked' : '')); setStatus(6); S.view='menu';
+    logIt('Clear confirmed' + (S.fromScene ? ' from scene (not transported)' : '') + (S.direct ? ' - direct admission to ward ticked' : '')); setStatus(6); S.view='menu';
     S.done.push({no:S.jobNo, title:titleText(), dcode:C.dcode, checks:jobChecks()});
     // Queued job: dispatched after the gap (at least a few seconds, so the crew sees AVAILABLE)
     if (S.queue.length) S.nextAt = simSecs() + Math.max(S.gap*60, 4*(+C.speed||1));
     render();
   },
-  clearNo(){ logIt('Cancelled Clear'); S.view='event'; render(); },
+  clearNo(){ logIt('Cancelled Clear'); S.fromScene=false; S.view='event'; render(); },
   tab(t){
     S.tab=t;
     if (!S.seen[t]){ S.seen[t] = {time:clock(), st:S.st}; logIt('Opened ' + t + ' tab'); }
@@ -824,8 +827,18 @@ document.getElementById('screen').addEventListener('click', e=>{
   const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
   const a = el.dataset.a, v = el.dataset.v;
   if (a==='view' && v==='event' && S.st===6) return act.view('list');
+  if (a==='f6' && holdDone){ holdDone=false; return; }     // the click after a 2 s hold on MOBILE
   act[a] && act[a](v);
 });
+// Press and hold MOBILE (F6, on scene) for 2 seconds: clear from scene, not transported
+let holdTimer=null, holdDone=false;
+const holdStop = ()=>{ clearTimeout(holdTimer); holdTimer=null; };
+document.getElementById('screen').addEventListener('pointerdown', e=>{
+  const el = e.target.closest('[data-a="f6"]'); holdDone=false; if (!el || el.disabled || S.st!==3 || S.view!=='event') return;
+  holdTimer = setTimeout(()=>{ holdTimer=null; holdDone=true; act.clearFromScene(); }, 2000);
+});
+['pointerup','pointerleave','pointercancel'].forEach(ev=>document.getElementById('screen').addEventListener(ev, holdStop));
+document.getElementById('screen').addEventListener('contextmenu', e=>{ if (e.target.closest('[data-a="f6"]')) e.preventDefault(); });
 
 // ---------- logon screen ----------
 const LOGON_TEXT = ['callsign','crew1','crew2','mobile','crew3','observer','odometer'];
@@ -1061,7 +1074,7 @@ function nextJob(){
   const unit = {}; UNIT_KEYS.forEach(k=>unit[k]=C[k]);
   C = Object.assign({}, q, unit, {unitLoc: S.dest || C.unitLoc});
   Object.assign(S, { st:0, view:'event', tab:'EVENT', popup:true, seen:{}, filter:'All', pending:null, dest:null, stTimes:[],
-    phCount:0, direct:false, nav:false, remarks:[], live:[], newRemarks:false, jobNo:S.jobNo+1, ackPos:null, gpsSet:[] });
+    phCount:0, direct:false, fromScene:false, nav:false, remarks:[], live:[], newRemarks:false, jobNo:S.jobNo+1, ackPos:null, gpsSet:[] });
   gpsScene();
   logIt('--- Job ' + S.jobNo + ' ---'); dispatchNow(); queueInfo(); render();
 }
@@ -1131,7 +1144,7 @@ function jobChecks(){
     C.alerts ? `Alerts tab: ${seen('Alerts')}` : 'No alerts were set',
     `Units tab: ${seen('Units')}`,
     ...(S.newRemarks ? ['A new remark was never read'] : []),
-    S.dest ? `Destination: ${S.dest}${C.booked ? (S.dest===C.booked ? ' (matches the booking)' : ' — booking was ' + C.booked) : ''}` : 'Destination: not chosen yet',
+    S.fromScene && !S.dest ? 'Cleared from scene: not transported' : S.dest ? `Destination: ${S.dest}${C.booked ? (S.dest===C.booked ? ' (matches the booking)' : ' — booking was ' + C.booked) : ''}` : 'Destination: not chosen yet',
     `P.H. pressed: ${S.phCount ? S.phCount + ' time(s)' : 'no'}`,
     ...(C.expected ? [`Expected destination: ${C.expected}`] : []),
     ...(C.gps==='on' ? [`Set by GPS: ${S.gpsSet && S.gpsSet.length ? S.gpsSet.join(', ') : 'none'}`] : []),
