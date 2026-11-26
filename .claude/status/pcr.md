@@ -58,3 +58,8 @@ PCR job `sam` (26 Nov 2026): treated and not transported; both VIRCA results in 
 Recommendation, "Patient information provided" and "Clinical consult" ticked (`infoText` filled). First walk-through
 job with a `caseCard` (dispatch, arrival, history, what happens): the trainer now shows a "case card" link for any job
 that has one, as well as the walk-through link. DSY-written (owner to review). On a branch, not merged.
+
+AR PCR job (26 Nov 2026, owner asked): `ronAR`, "Ron, 67: hypoglycaemia (AR)", for the AR version of Ron's walk-through
+(`?scope=ar`): same job to 1740, then no glucagon, EOC Clinician 1741 transport and RV, 1755 obs (BGL 2.5, GCS 11), RV
+with the paramedics at Edillilie 1805. `walkStudent` opens the AR student walk-through. The AR pages link to it through
+`arHref` on the Ron PCR line in `related.js`. Live (merged 26 Nov 2026).
