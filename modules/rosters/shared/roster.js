@@ -2699,7 +2699,7 @@ function askManagerPassword(question) {
          * The user is only asked to phone when the backend has not
          * confirmed an automatic email.
          */
-        function showHardCopyChangeOutcome(action, data, calendarEvent) {
+        function showHardCopyChangeOutcome(action, data, calendarEvent, thankYouLine) {
             const messages = {
                 booked: {
                     done: "Your shift was booked successfully.",
@@ -2737,7 +2737,8 @@ function askManagerPassword(question) {
             }
 
             showPhoneCountryRostering(
-                messages.phone,
+                thankYouLine ? "Thank you! 🎉" : messages.phone,
+                (thankYouLine ? messages.phone + " " + thankYouLine + "\n\n" : "") +
                 "This change affects the submitted hard-copy roster. " +
                 "Please phone Country Rostering now to advise them of the change."
             );
@@ -2840,8 +2841,15 @@ function askManagerPassword(question) {
                 // Name and clinical level continue to persist.
                 lastCentralRosteringWarningKey = "";
 
-               showThankYouConfetti();
-                showHardCopyChangeOutcome("booked", data, newEvent);
+                // One thank-you line per booking. When they must phone
+                // Country Rostering it goes in that pop-up instead of the
+                // banner, so the banner does not sit behind it.
+                const thankYouLine = pickThankYouLine();
+                const mustPhone =
+                    Boolean(data.requiresCentralNotification) &&
+                    data.countryRosteringEmailed !== true;
+                showThankYouConfetti(mustPhone ? null : thankYouLine);
+                showHardCopyChangeOutcome("booked", data, newEvent, thankYouLine);
 
                 // No extra reload: the save response supplied the roster.
                 showLoadedConnectionStatus();
@@ -8265,7 +8273,7 @@ function askManagerPassword(question) {
             overlay.setAttribute("role", "dialog");
             overlay.setAttribute("aria-modal", "true");
             overlay.style.cssText =
-                "position:fixed;inset:0;z-index:10000;display:flex;" +
+                "position:fixed;inset:0;z-index:2990;display:flex;" +
                 "align-items:center;justify-content:center;padding:16px;" +
                 "background:rgba(0,0,0,0.55)";
 
@@ -8281,7 +8289,7 @@ function askManagerPassword(question) {
 
             const text = document.createElement("p");
             text.textContent = message;
-            text.style.cssText = "margin:0 0 16px";
+            text.style.cssText = "margin:0 0 16px;white-space:pre-line";
 
             const call = document.createElement("a");
             call.href = "tel:" + COUNTRY_ROSTERING_PHONE.replace(/\s+/g, "");
@@ -8395,13 +8403,32 @@ function askManagerPassword(question) {
             setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
 
+        /*
+         * Thank-you lines, one picked at random per booking (written by
+         * Claude for the owner to review).
+         */
+        const THANK_YOU_LINES = [
+            "Your availability is invaluable to your community.",
+            "Every shift you cover means help is close by when someone needs it.",
+            "Thanks for keeping an ambulance ready for your town.",
+            "Your time makes a real difference to people on their worst day.",
+            "Volunteers like you keep the Eyre Peninsula covered.",
+            "Because of you, someone nearby can get help sooner.",
+            "Your community is lucky to have you on the roster.",
+            "Thanks for giving your time. It matters more than you know."
+        ];
+
+        function pickThankYouLine() {
+            return THANK_YOU_LINES[Math.floor(Math.random() * THANK_YOU_LINES.length)];
+        }
+
          /*
  * Thank-you message with confetti.
  * Shown only after a confirmed booking, never for cancellations.
  */
  let thankYouTimer;
  let confettiFrame;
- function showThankYouConfetti() {
+ function showThankYouConfetti(thankYouLine) {
  // Respect users who have asked their device to reduce motion.
  const reduceMotion =
  window.matchMedia &&
@@ -8416,6 +8443,14 @@ function askManagerPassword(question) {
  banner.innerHTML =
  '<p class="thank-you-title">Thank you! 🎉</p>' +
  '<p class="thank-you-text">Your shift has been booked.</p>';
+ if (thankYouLine) {
+ const line = document.createElement("p");
+ line.className = "thank-you-text";
+ line.textContent = thankYouLine;
+ banner.appendChild(line);
+ }
+ // No banner when the phone pop-up carries the thank-you.
+ if (thankYouLine === null) banner.hidden = true;
  document.body.appendChild(banner);
  requestAnimationFrame(() => banner.classList.add("show"));
  const removeAll = () => {
@@ -8423,7 +8458,7 @@ function askManagerPassword(question) {
  setTimeout(() => banner.remove(), 300);
  };
  if (reduceMotion) {
- thankYouTimer = setTimeout(removeAll, 3000);
+ thankYouTimer = setTimeout(removeAll, 5000);
  return;
  }
  const canvas = document.createElement("canvas");
@@ -8480,5 +8515,5 @@ function askManagerPassword(question) {
  }
  }
  confettiFrame = requestAnimationFrame(frame);
- thankYouTimer = setTimeout(removeAll, 3200);
+ thankYouTimer = setTimeout(removeAll, 5000);
  }
