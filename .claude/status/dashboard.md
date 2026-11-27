@@ -333,4 +333,4 @@ protocols (the 34 AO protocols, PDF link and DSY topic), People, Training (upcom
 - Other words list (`ALSO` in the script: "can't breathe" finds asthma and ACPO, "sugar" hypoglycaemia...): search words
   only, nothing clinical. Matches words, not meaning.
 - Tested in a headless browser with stand-in sign-in data (phone, wide, team dashboard as a VTL). Leader guide section 2
-  has a "Search box" row. On a branch, not merged.
+  has a "Search box" row. Live (PR #384, merged 27 Nov 2026).
