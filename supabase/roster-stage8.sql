@@ -6,6 +6,5 @@
 select cron.unschedule('roster-sync');
 comment on table public.roster_bookings is 'Archive: copy of the old Google Sheet rosters, frozen 28 Nov 2026 (stage 8). Every team books in roster_shifts.';
 
--- NOT yet done: the confirmation prompt got no answer (owner on the phone). Run when the owner can approve it.
--- Nothing calls it: the volunteer-hours page uses member_contribution_v2.
--- drop function if exists public.member_contribution(timestamptz, timestamptz);
+-- Applied 28 Nov 2026 (owner approved) as migration roster_stage8_drop_member_contribution.
+drop function if exists public.member_contribution(timestamptz, timestamptz);
