@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<script src="/shared/gate.js?v=20261127e" data-level="facilitator"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>saaslearn group finder - DSY Training</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../../../shared/dsy-favicon-32.png">
+<link rel="apple-touch-icon" href="../../../shared/dsy-touch-180.png">
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../training/theme.css?v=20261127e">
+<link rel="stylesheet" href="../../../hub/hub.css?v=20261127e">
+<style>
+/* saaslearn group finder: a bookmark that lists every station group (name = number) on a saaslearn sign-off page,
+   so the skill sign-off navigator and induction checklist can open each skill filtered to a station.
+   saaslearn numbers groups per course, so one list is needed from each course. */
+.top a { color: inherit; text-decoration: none; }
+.steps-list { margin: 0; padding-left: 1.3rem; display: grid; gap: .5rem; }
+.code { width: 100%; min-height: 6rem; font: 12px ui-monospace, Menlo, monospace; border: 1px solid var(--line); border-radius: 10px; padding: .6rem; background: var(--surface); color: var(--ink); }
+.topics-list { margin: 0; padding-left: 1.3rem; display: grid; gap: .45rem; }
+.drag { display: inline-block; padding: .4rem .9rem; border-radius: 999px; background: var(--brand); color: var(--brand-ink); font-weight: 700; text-decoration: none; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <a class="brand" href="../../../"><div class="brand-icon"><img src="../../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>
+      <div><h1>DSY Training</h1><p>saaslearn group finder</p></div></a>
+  </header>
+
+  <section class="panel pad stack">
+    <h2>What this is for</h2>
+    <p>saaslearn numbers its station groups separately in each course, so "Tumby Bay" has a different number in the First Aid course from the infection control one. This bookmark reads every station group and its number from a saaslearn sign-off page. Paste the result to Claude and the sign-off links get the right numbers for every team.</p>
+    <p class="small muted">It only reads the page you are on and shows the list. Nothing is sent anywhere.</p>
+  </section>
+
+  <section class="panel pad stack">
+    <h2>1. Add the bookmark (once)</h2>
+    <p><b>On an iPhone or iPad (Safari)</b></p>
+    <ol class="steps-list">
+      <li>Tap <button class="btn small" type="button" id="copy">Copy the bookmark code</button></li>
+      <li>Tap the Share button, then <b>Add Bookmark</b>, and Save (it bookmarks this page for now).</li>
+      <li>Open Bookmarks, tap <b>Edit</b>, tap the new bookmark. Change the name to <b>DSY group finder</b>, clear the address and paste the code. Tap Done.</li>
+    </ol>
+    <p><b>On a computer</b>: drag this to your bookmarks bar: <a class="drag" id="drag" href="#">DSY group finder</a></p>
+    <details><summary class="small">Show the code</summary><textarea class="code" id="code" readonly></textarea></details>
+  </section>
+
+  <section class="panel pad stack">
+    <h2>2. Use it on each course</h2>
+    <ol class="steps-list">
+      <li>Sign in to saaslearn, then open one of the skills below.</li>
+      <li>Tap the address bar, type <b>DSY group finder</b> and tap the bookmark in the suggestions (or open Bookmarks and tap it).</li>
+      <li>A box lists the course with every station and its number. If it says no groups were found, open the group menu on the page first and tap the bookmark again.</li>
+      <li>Tap <b>Copy</b> and paste it to Claude. Then do the next skill.</li>
+    </ol>
+    <p class="small muted">One skill from each topic (topics that share a saaslearn course will show the same numbers):</p>
+    <ul class="topics-list">
+      <li><a href="https://saaslearn.com.au/moodle/mod/checklist/report.php?id=32338" target="_blank" rel="noopener"><b>Infection Prevention and Control</b></a> <span class="small muted">(Hand Washing)</span></li>
+      <li><a href="https://saaslearn.com.au/moodle/mod/checklist/report.php?id=26191" target="_blank" rel="noopener"><b>First Aid and AA Protocols</b></a> <span class="small muted">(Adult CPR)</span></li>
+      <li><a href="https://saaslearn.com.au/moodle/mod/checklist/report.php?id=754" target="_blank" rel="noopener"><b>Manual Tasks</b></a> <span class="small muted">(Postures)</span></li>
+      <li><a href="https://saaslearn.com.au/moodle/mod/checklist/report.php?id=1523" target="_blank" rel="noopener"><b>Operational Preparedness</b></a> <span class="small muted">(GRN, radio procedures and MDT)</span></li>
+      <li><a href="https://saaslearn.com.au/moodle/mod/checklist/report.php?id=22397" target="_blank" rel="noopener"><b>DRiVE Volunteer Practical Assessments</b></a> <span class="small muted">(Practical Assessment Completion)</span></li>
+      <li><a href="https://saaslearn.com.au/moodle/mod/checklist/report.php?id=22683" target="_blank" rel="noopener"><b>Foundations of Care</b></a> <span class="small muted">(Palpatory Blood Pressure)</span></li>
+      <li><a href="https://saaslearn.com.au/moodle/mod/checklist/report.php?id=2349" target="_blank" rel="noopener"><b>Cardiac Arrest Management</b></a> <span class="small muted">(i-gel)</span></li>
+      <li><a href="https://saaslearn.com.au/moodle/mod/checklist/report.php?id=1643" target="_blank" rel="noopener"><b>SAAS Resuscitation and AA Protocols</b></a> <span class="small muted">(BVM Ventilations)</span></li>
+      <li><a href="https://saaslearn.com.au/moodle/mod/checklist/report.php?id=2400" target="_blank" rel="noopener"><b>Medical Conditions</b></a> <span class="small muted">(Nebulised Medication (6+))</span></li>
+      <li><a href="https://saaslearn.com.au/moodle/mod/checklist/report.php?id=22779" target="_blank" rel="noopener"><b>Traumatic Injuries</b></a> <span class="small muted">(Femoral Traction Splint)</span></li>
+    </ul>
+  </section>
+
+  <div class="stack">
+    <p class="small muted"><a href="../">Back to the skill sign-off navigator</a></p>
+  </div>
+</main>
+<script>
+(function () {
+  var CODE = "javascript:(function(){var seen={},rows=[];function add(id,name){id=String(id||'').trim();name=String(name||'').replace(/\\s+/g,' ').trim();if(!/^\\d+$/.test(id)||id==='0'||!name||seen[id])return;seen[id]=1;rows.push([name,id]);}document.querySelectorAll('select').forEach(function(s){if(!/group/i.test(s.name+' '+s.id+' '+(s.closest('form')||{}).className))return;s.querySelectorAll('option').forEach(function(o){var m=/[?&]group=(\\d+)/.exec(o.value);add(m?m[1]:o.value,o.textContent);});});document.querySelectorAll('a[href*=\"group=\"],[data-group-id],[data-groupid]').forEach(function(a){var m=/[?&]group=(\\d+)/.exec(a.getAttribute('href')||'');add(m?m[1]:(a.getAttribute('data-group-id')||a.getAttribute('data-groupid')),a.textContent);});var h=document.querySelector('.page-header-headings h1,#page-header h1,h1'),crumbs=[].map.call(document.querySelectorAll('.breadcrumb li,nav[aria-label] ol li'),function(l){return l.textContent.replace(/\\s+/g,' ').trim();}).filter(Boolean);var skill=/[?&]id=(\\d+)/.exec(location.search);rows.sort(function(a,b){return a[0].localeCompare(b[0]);});var out='saaslearn groups\\nCourse: '+(crumbs[0]||'(not shown)')+'\\nPage: '+(h?h.textContent.replace(/\\s+/g,' ').trim():document.title)+'\\nSkill id: '+(skill?skill[1]:'?')+'\\n'+(rows.length?rows.map(function(r){return r[0]+' = '+r[1];}).join('\\n'):'No groups found. Open the group menu on this page first, then tap the bookmark again.');var old=document.getElementById('dsy-groups');if(old)old.remove();var d=document.createElement('div');d.id='dsy-groups';d.style.cssText='position:fixed;inset:12px;z-index:2147483647;background:#fff;color:#111;border:2px solid #1f5b43;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;font:15px -apple-system,system-ui,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.3)';var t=document.createElement('textarea');t.value=out;t.readOnly=true;t.style.cssText='flex:1;width:100%;font:14px ui-monospace,Menlo,monospace;border:1px solid #ccc;border-radius:8px;padding:8px';var c=document.createElement('button');c.textContent='Copy';var x=document.createElement('button');x.textContent='Close';[c,x].forEach(function(b){b.style.cssText='padding:10px 16px;border-radius:999px;border:0;font-weight:700;background:#1f5b43;color:#fff';});x.style.background='#777';c.onclick=function(){t.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}if(navigator.clipboard)navigator.clipboard.writeText(out).then(function(){c.textContent='Copied';},function(){c.textContent=ok?'Copied':'Select and copy';});else c.textContent=ok?'Copied':'Select and copy';};x.onclick=function(){d.remove();};var bar=document.createElement('div');bar.style.cssText='display:flex;gap:8px';bar.append(c,x);var p=document.createElement('b');p.textContent='DSY group finder: copy this and paste it to Claude';d.append(p,t,bar);document.body.appendChild(d);})();";
+  document.getElementById("code").value = CODE;
+  document.getElementById("drag").setAttribute("href", CODE);
+  document.getElementById("drag").addEventListener("click", function (e) { e.preventDefault(); alert("Drag this to your bookmarks bar instead of clicking it here."); });
+  var b = document.getElementById("copy");
+  b.addEventListener("click", function () {
+    function done(ok) { b.textContent = ok ? "Copied" : "Copy failed: use Show the code"; }
+    if (navigator.clipboard) navigator.clipboard.writeText(CODE).then(function () { done(true); }, function () { var t = document.getElementById("code"); t.parentNode.open = true; t.select(); done(document.execCommand("copy")); });
+    else { var t = document.getElementById("code"); t.parentNode.open = true; t.select(); done(document.execCommand("copy")); }
+  });
+})();
+</script>
+</body>
+</html>

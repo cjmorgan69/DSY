@@ -1845,8 +1845,10 @@ function askManagerPassword(question) {
             const hasSavedCutOff =
                 submissionStatusLoaded && Boolean(rosterSentUntil);
 
+            // Signed-in rosters can also set a cut-off when there is none
+            // (for example a roster sent to Country Rostering another way).
             document.getElementById("editRosterSentUntilButton").disabled =
-                isLoading || !hasSavedCutOff;
+                isLoading || (!hasSavedCutOff && !ROSTER_BACKEND);
 
             document.getElementById("resetRosterSentButton").disabled =
                 isLoading || !hasSavedCutOff;
@@ -1973,6 +1975,11 @@ function askManagerPassword(question) {
 
             try {
                 await loadRosterSubmissionStatus();
+
+                // Signed-in rosters with no cut-off: set a new one.
+                if (editing && !rosterSentUntil && ROSTER_BACKEND) {
+                    editing = false;
+                }
 
                 if (editing && !rosterSentUntil) {
                     throw new Error(
@@ -2692,7 +2699,7 @@ function askManagerPassword(question) {
          * The user is only asked to phone when the backend has not
          * confirmed an automatic email.
          */
-        function showHardCopyChangeOutcome(action, data, calendarEvent) {
+        function showHardCopyChangeOutcome(action, data, calendarEvent, thankYouLine) {
             const messages = {
                 booked: {
                     done: "Your shift was booked successfully.",
@@ -2729,11 +2736,11 @@ function askManagerPassword(question) {
                 return;
             }
 
-            window.alert(
-                messages.phone +
-                "\n\nThis change affects the submitted hard-copy roster." +
-                "\n\nPlease phone Country Rostering now to advise them " +
-                "of the change on 1300 850 985."
+            showPhoneCountryRostering(
+                thankYouLine ? "Thank you! 🎉" : messages.phone,
+                (thankYouLine ? messages.phone + " " + thankYouLine + "\n\n" : "") +
+                "This change affects the submitted hard-copy roster. " +
+                "Please phone Country Rostering now to advise them of the change."
             );
 
             if (calendarAction) {
@@ -2834,8 +2841,15 @@ function askManagerPassword(question) {
                 // Name and clinical level continue to persist.
                 lastCentralRosteringWarningKey = "";
 
-               showThankYouConfetti();
-                showHardCopyChangeOutcome("booked", data, newEvent);
+                // One thank-you line per booking. When they must phone
+                // Country Rostering it goes in that pop-up instead of the
+                // banner, so the banner does not sit behind it.
+                const thankYouLine = pickThankYouLine();
+                const mustPhone =
+                    Boolean(data.requiresCentralNotification) &&
+                    data.countryRosteringEmailed !== true;
+                showThankYouConfetti(mustPhone ? null : thankYouLine);
+                showHardCopyChangeOutcome("booked", data, newEvent, thankYouLine);
 
                 // No extra reload: the save response supplied the roster.
                 showLoadedConnectionStatus();
@@ -3080,11 +3094,12 @@ function askManagerPassword(question) {
                     // The reply with the hard-copy outcome was lost, so err
                     // on the side of asking them to make sure.
                     if (shiftNeedsCentralRosteringNotice(event.start, event.end)) {
-                        window.alert(
-                            "Shift cancelled.\n\nThis shift is inside the hard-copy roster " +
+                        showPhoneCountryRostering(
+                            "Shift cancelled.",
+                            "This shift is inside the hard-copy roster " +
                             "already sent to Country Rostering. The confirmation of whether " +
                             "they were emailed was lost, so please phone Country Rostering " +
-                            "on 1300 850 985 to make sure they know."
+                            "to make sure they know."
                         );
                     }
                     return;
@@ -3458,11 +3473,12 @@ function askManagerPassword(question) {
                         shiftNeedsCentralRosteringNotice(event.start, event.end) ||
                         shiftNeedsCentralRosteringNotice(change.start, change.end)
                     ) {
-                        window.alert(
-                            "Shift changed.\n\nThis shift is inside the hard-copy roster " +
+                        showPhoneCountryRostering(
+                            "Shift changed.",
+                            "This shift is inside the hard-copy roster " +
                             "already sent to Country Rostering. The confirmation of whether " +
                             "they were emailed was lost, so please phone Country Rostering " +
-                            "on 1300 850 985 to make sure they know."
+                            "to make sure they know."
                         );
                     }
                     return;
@@ -5311,8 +5327,12 @@ function askManagerPassword(question) {
             bookPanel.prepend(sentBox);
 
             // The PDF view's Mark as sent sets the cut-off, so only Reset
-            // is kept here, for a cut-off marked by mistake.
-            document.getElementById("editRosterSentUntilButton").hidden = true;
+            // is kept here, for a cut-off marked by mistake. Signed-in
+            // (Supabase) rosters have no Mark as sent, so they keep
+            // Edit sent cut-off (owner, 23 Nov 2026; roster guide 13).
+            if (!ROSTER_BACKEND) {
+                document.getElementById("editRosterSentUntilButton").hidden = true;
+            }
 
             const managerHelp = managerPanel.querySelector(
                 ".manager-controls-content > .field-help"
@@ -8241,6 +8261,57 @@ function askManagerPassword(question) {
                 .replace(/'/g, "&#039;");
         }
 
+        /*
+         * "Phone Country Rostering" pop-up. A plain alert() cannot hold a
+         * link, so this one has a tap-to-call button (tel:) that opens the
+         * phone's dialler, plus the number written out for computers.
+         */
+        const COUNTRY_ROSTERING_PHONE = "1300 850 985";
+
+        function showPhoneCountryRostering(title, message) {
+            const overlay = document.createElement("div");
+            overlay.setAttribute("role", "dialog");
+            overlay.setAttribute("aria-modal", "true");
+            overlay.style.cssText =
+                "position:fixed;inset:0;z-index:2990;display:flex;" +
+                "align-items:center;justify-content:center;padding:16px;" +
+                "background:rgba(0,0,0,0.55)";
+
+            const box = document.createElement("div");
+            box.style.cssText =
+                "background:#fff;color:#1a1a1a;max-width:380px;width:100%;" +
+                "border-radius:14px;padding:22px 20px;text-align:center;" +
+                "box-shadow:0 10px 30px rgba(0,0,0,0.3);font-size:16px;line-height:1.45";
+
+            const heading = document.createElement("h3");
+            heading.textContent = title;
+            heading.style.cssText = "margin:0 0 10px;font-size:19px";
+
+            const text = document.createElement("p");
+            text.textContent = message;
+            text.style.cssText = "margin:0 0 16px;white-space:pre-line";
+
+            const call = document.createElement("a");
+            call.href = "tel:" + COUNTRY_ROSTERING_PHONE.replace(/\s+/g, "");
+            call.textContent = "📞 Call " + COUNTRY_ROSTERING_PHONE;
+            call.style.cssText =
+                "display:block;background:#1b7f3b;color:#fff;text-decoration:none;" +
+                "font-weight:700;font-size:18px;padding:14px;border-radius:10px;margin-bottom:10px";
+
+            const close = document.createElement("button");
+            close.type = "button";
+            close.textContent = "Close";
+            close.style.cssText =
+                "display:block;width:100%;background:#eee;color:#1a1a1a;border:0;" +
+                "font-size:16px;padding:12px;border-radius:10px;cursor:pointer";
+            close.addEventListener("click", () => overlay.remove());
+
+            box.append(heading, text, call, close);
+            overlay.append(box);
+            document.body.append(overlay);
+            call.focus();
+        }
+
         function showToast(message, action) {
             clearTimeout(toastTimer);
             toast.textContent = message;
@@ -8332,13 +8403,32 @@ function askManagerPassword(question) {
             setTimeout(() => URL.revokeObjectURL(url), 1000);
         }
 
+        /*
+         * Thank-you lines, one picked at random per booking (written by
+         * Claude for the owner to review).
+         */
+        const THANK_YOU_LINES = [
+            "Your availability is invaluable to your community.",
+            "Every shift you cover means help is close by when someone needs it.",
+            "Thanks for keeping an ambulance ready for your town.",
+            "Your time makes a real difference to people on their worst day.",
+            "Volunteers like you keep the Eyre Peninsula covered.",
+            "Because of you, someone nearby can get help sooner.",
+            "Your community is lucky to have you on the roster.",
+            "Thanks for giving your time. It matters more than you know."
+        ];
+
+        function pickThankYouLine() {
+            return THANK_YOU_LINES[Math.floor(Math.random() * THANK_YOU_LINES.length)];
+        }
+
          /*
  * Thank-you message with confetti.
  * Shown only after a confirmed booking, never for cancellations.
  */
  let thankYouTimer;
  let confettiFrame;
- function showThankYouConfetti() {
+ function showThankYouConfetti(thankYouLine) {
  // Respect users who have asked their device to reduce motion.
  const reduceMotion =
  window.matchMedia &&
@@ -8353,6 +8443,14 @@ function askManagerPassword(question) {
  banner.innerHTML =
  '<p class="thank-you-title">Thank you! 🎉</p>' +
  '<p class="thank-you-text">Your shift has been booked.</p>';
+ if (thankYouLine) {
+ const line = document.createElement("p");
+ line.className = "thank-you-text";
+ line.textContent = thankYouLine;
+ banner.appendChild(line);
+ }
+ // No banner when the phone pop-up carries the thank-you.
+ if (thankYouLine === null) banner.hidden = true;
  document.body.appendChild(banner);
  requestAnimationFrame(() => banner.classList.add("show"));
  const removeAll = () => {
@@ -8360,7 +8458,7 @@ function askManagerPassword(question) {
  setTimeout(() => banner.remove(), 300);
  };
  if (reduceMotion) {
- thankYouTimer = setTimeout(removeAll, 3000);
+ thankYouTimer = setTimeout(removeAll, 5000);
  return;
  }
  const canvas = document.createElement("canvas");
@@ -8417,5 +8515,5 @@ function askManagerPassword(question) {
  }
  }
  confettiFrame = requestAnimationFrame(frame);
- thankYouTimer = setTimeout(removeAll, 3200);
+ thankYouTimer = setTimeout(removeAll, 5000);
  }

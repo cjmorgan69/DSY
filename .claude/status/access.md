@@ -132,3 +132,100 @@ blank it shows "One more thing: your name" once and saves it to `profiles.full_n
 first-time mode; the old "Create an account" links on `/teams/`, `/region/` and `/training/` now go to
 `/signin/?first=1&next=<page>` (their own sign-up forms are no longer reachable). Getting started and leader guides
 updated. Tested with stand-in data. On a branch, not merged.
+
+## Volunteer Team Leader (VTL) (owner, 22 Nov 2026)
+
+Owner asked for a VTL level: the same as roster manager plus facilitator, NOT Team Leader, one per team, with their own
+team dashboard (roster, dispatches, volunteer contribution and training for their team only, and weather; no footer links).
+- Table `public.team_vtls` (group_id primary key = one per team, member_id unique = one team per person); write policy
+  `can_edit_group(group_id)` (cluster leaders), read by leaders, the VTL and the team's members. `profiles.role` is NOT
+  changed: deleting the row takes the access away.
+- `is_facilitator()` and `roster_can_manage(g)` include the VTL (`is_vtl_of(g)`); `sessions_read` and `groups_read` let a
+  VTL read their team; `my_access()` returns `role` = facilitator for a VTL who is a member, plus `vtl` {group_id, team,
+  cluster}. Team-only data through security definer functions `team_dash_group`, `team_dispatch(p_group, p_from, p_to)`,
+  `team_contribution(p_group, p_from, p_to)` (a VTL their own team, a leader any team).
+- SQL `supabase/vtl-setup.sql`, migration `vtl_access`, applied by Claude 22 Nov 2026 after a rolled-back rehearsal with
+  a stand-in Cummins VTL (facilitator yes, leader no, manage Cummins roster yes, Tumby Bay no, sees only the Cummins
+  group and sessions, no direct `paging_jobs` read, team dispatch and contribution work).
+- `shared/gate.js`: new `data-level="vtl"` (VTL or leader); a VTL counts as facilitator on facilitator pages.
+- `/access/`: "Volunteer Team Leaders" section, one row per team, picker of the team's signed-up members; the Role column
+  shows "· VTL <team>". `/teams/`: a Team dashboard button for the VTL on their team.
+- Migration `vtl_wide_view` (owner, 22 Nov 2026): the team dashboard's roster and dispatch show every team, so
+  `is_vtl()`, a `vtl_read` select policy on `paging_jobs`, and `roster_can_view()` lets a VTL see any team's roster names
+  (not staff IDs; roster pages are open anyway). `team_dispatch` is no longer used by the page.
+- Training app People page (owner, 22 Nov 2026): the Role box on a person's page now offers Member, Facilitator,
+  Volunteer Team Leader, <team> (each of the person's own teams in the leader's cluster; "replaces <name>" when the team
+  has one) and Leader. Choosing VTL writes `team_vtls` and leaves the person's role alone (a leader made VTL goes back to
+  member); choosing any other role removes their VTL row. The People list shows a VTL chip. Real leaders only (relief
+  Team Leaders see the role as text). Facilitator was added because the box used to show facilitators as Member.
+  Tested with stand-in data. Live (PR #321, merged 22 Nov 2026), checked on the live site.
+- People search (owner, 22 Nov 2026): a search box at the top of the training app's People list filters in place by name,
+  ambulance ID, team, "VTL" or "leader" (every word must match; kept while the app re-draws). On a branch, not merged.
+- Not covered: VTLs do not get roster change emails (that is `roster_managers.notify_email`); in the training app
+  (`/training/`) they are treated as facilitators already: the app has only a leader view and a member view, and
+  facilitators use the member view too (checked 22 Nov 2026); database rules that use `is_facilitator()` include VTLs. No VTLs set yet: owner to name them. Live (PR #320, merged 22 Nov 2026; checked on the live site with stand-in sign-in data, and signed-out visits go to sign-in).
+
+## Test accounts removed (22 Nov 2026)
+
+On the owner's say-so, deleted from Supabase (sign-in, profile, memberships, bookings): "Test" (1003464, Tumby Bay),
+"Test Member" (Summer Bay, owner's sa.gov.au email) and "Claude Testaccount" (999123, Summer Bay, also its expected_members
+row). No test member accounts remain; make a new one if a signed-in check is needed.
+
+## Show / hide password (22 Nov 2026)
+
+`training/pwreveal.js` puts an eye button at the right of every password box (also boxes drawn later). Loaded on `/signin/`,
+`/training/`, `/teams/`, `/region/`. The box goes back to hidden when the form is sent. Old roster manager password prompts
+and the CP-* / presenter gates are not included.
+
+## Dispatch page for VTLs and relief Team Leaders (owner, 24 Nov 2026)
+
+`/dispatch/` let in only `profiles.role = 'leader'`, and the `paging_jobs` `leaders_read` policy checked the same, so
+relief Team Leaders saw nothing there or in the main dashboard's Dispatch panel, and VTLs got "Leaders only" on the page.
+The page now uses `my_access()` (role leader, which includes relievers on active cover, or `vtl` set). Migration
+`paging_jobs_relief_read` (`supabase/paging-jobs-relief-read.sql`): `leaders_read` uses `is_leader()`. Rehearsed in a
+rolled-back transaction with a stand-in cover: reliever 1556 jobs on cover, 0 after it ended, leader 1556. Database
+change applied 24 Nov 2026; page live (PR #361, merged 24 Nov 2026), checked on the live site signed out.
+
+## One People page (owner, 25 Nov 2026)
+
+Owner asked for one clear place for Team Leaders to manage people. Grant access (`/access/`) and the training app's
+People tab were compared and merged: `/access/` is now **People** ("Add, place and manage everyone"), opened by a
+**👥 People** button at the top of both dashboards (the "Grant access" footer link is gone); the home page and Run a
+session links say People. The training app's People tab is gone: its third tab is now **Courses** (Your courses and
+Add a course, unchanged), the header has a People link for leaders, and the person page, role box, cluster box and
+the training app's own reset password were removed (all on `/access/` now). The "Team and region pages" box was
+dropped (the header already links to Region).
+- The People page: cluster chips (opens on the leader's own cluster; the lead instructor opens on All clusters);
+  people in other clusters are view only; someone with no team shows in every cluster so whoever adds them can place
+  them. Team chips with ✕ to take someone off a team (also ends their VTL row for that team, after a confirm). Role
+  is a select (Student, Facilitator); the lead instructor also gets Leader and a leader's cluster (making a leader
+  sets their cluster from their teams if they are in one cluster, else All clusters, after a confirm). Other
+  leaders' rows: lead instructor only (a leader can still add themselves to teams). Reset password on a leader's row:
+  lead instructor only. Filter adds Not in a team; search also matches team names, "leader" and "VTL". Rows become
+  cards at phone width.
+- Relief Team Leaders (owner: add only): add IDs as students, put people in teams, reset passwords. No role changes,
+  Remove, Add back of a switched-off account, team ✕ or VTL changes; a notice says so. Adding an ID that is switched
+  off is skipped with a message.
+- Database (migration `people_page_rules`, `supabase/people-page-rules.sql`, applied by Claude 25 Nov 2026 after a
+  rolled-back rehearsal with stand-ins): `protect_profile_fields` refuses role changes by relief Team Leaders and any
+  change to or from Leader by anyone but the lead instructor (`is_lead_instructor()`, a real leader with no cluster);
+  `leader_set_access` needs a real leader; trigger `protect_allowed_ids` lets relief cover insert students only (no
+  delete, no role change); `team_vtls_write` needs a real leader. Rehearsal: relief refused role change, switch off,
+  facilitator ID, delete ID and VTL, allowed student ID and password reset; Campbell allowed facilitator, refused
+  making a leader; lead instructor allowed all. Not enforced in the database: a cluster leader changing the role of
+  someone outside their cluster (the page stops it). Note Liz Guerin is covering the lead instructor to 3 Jan 2027,
+  so she now has the add-only People page.
+- Guides and Team Leader modules updated (leader guide section 5 "People and passwords" with a Relief cover part,
+  sections 1 and relief table; People and passwords, Relief, Dashboard, Team page modules' text). The People and
+  passwords module's narrated video and screenshots still show Grant access and the old People tab (owner to say
+  whether to re-shoot screenshots and re-narrate; narration costs credits).
+- Tested with invented data in a browser (lead instructor, cluster leader, relief) at desktop and phone width.
+  Live (PR #362, merged 25 Nov 2026; live page checked signed out: sends to sign-in). Follow-up live (PR #363, merged
+  25 Nov 2026): the ID moved under the name so the action buttons fit on wider screens.
+- Courses tab (owner, 25 Nov 2026): an Ambulance Responder course card at the top links to `/ar/` and `/ar/course/`;
+  "Your courses" always shows (a note when the app has no other courses). Leader guide section on training updated
+  (tabs Calendar, Lessons, Courses). Live (PR #365, merged 25 Nov 2026; live page loads with no errors).
+- Courses tab removed (owner, 25 Nov 2026: Team Training is for team training only): the training app has Calendar and
+  Lessons; "Add a course", the course list and course delete are gone (no course groups or course sessions existed,
+  checked). The AR course keeps its own entry point (AR course on the dashboard, `/ar/`). Course-type groups are still
+  understood by the code if any ever exist. Guide and Training nights module text updated. Live (PR #367, merged 25 Nov 2026).

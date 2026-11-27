@@ -38,3 +38,28 @@ AO or Paramedic, a protocol or guideline (or "Generally unwell": basic or univer
 Prolonged Care, no drugs unless named) and the RDR zone counts; Claude (the artifact's sample capability) writes the
 case card and model PCR from the walk-through card or the P guideline text plus the app dose table, checks the
 zones, and gives a `/tools/pcr/#c=` link.
+
+## Customised walk-throughs in the PCR trainer (22 Nov 2026)
+
+The customiser has an "Open in PCR trainer" button for all 15 templates (`/tools/pcr/#s=<slug>&...`, same link as
+the MDT). `tools/pcr/custom.js` rewrites the walk-through's job: first name and age, the person with the patient and
+their name, scene town, road (MVA), hospital, backup town and minutes, and every clock time (an hour or more before
+the page stays put; up to arrival moves with the page time; on scene also with the drive out; after leaving for
+hospital also with the drive to hospital). Obs, treatment and doses are unchanged; dose cells in the drug table are
+never treated as times. Checked with a script against every customiser template (page time, drive out, drive to
+hospital, all three): each time the walk-through and the card share moves the same way (four times needed an
+override, listed in `times`). The job shows in the list as "<name>, <age>: ... (customised)", links to the customised
+student walk-through, and keeps its own saved work per customisation. Live (PR #318, merged 22 Nov 2026).
+
+
+## Sam (refusal against advice)
+
+PCR job `sam` (26 Nov 2026): treated and not transported; both VIRCA results in Care, the referral plan in
+Recommendation, "Patient information provided" and "Clinical consult" ticked (`infoText` filled). First walk-through
+job with a `caseCard` (dispatch, arrival, history, what happens): the trainer now shows a "case card" link for any job
+that has one, as well as the walk-through link. DSY-written (owner to review). On a branch, not merged.
+
+AR PCR job (26 Nov 2026, owner asked): `ronAR`, "Ron, 67: hypoglycaemia (AR)", for the AR version of Ron's walk-through
+(`?scope=ar`): same job to 1740, then no glucagon, EOC Clinician 1741 transport and RV, 1755 obs (BGL 2.5, GCS 11), RV
+with the paramedics at Edillilie 1805. `walkStudent` opens the AR student walk-through. The AR pages link to it through
+`arHref` on the Ron PCR line in `related.js`. Live (merged 26 Nov 2026).

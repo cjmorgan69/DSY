@@ -3,6 +3,11 @@
 //        Rostering within 24 hours (roster_reminder_claim, once per send), notify the team members who turned
 //        reminders on, listing the hours that still have no crew. Takes no other input.
 // body { mode: "test" }       from a signed-in person on the roster page: a test notification to their own devices.
+// body { mode: "test", kind: "dsy" } the same from the shared DSY switch (/shared/reminders.js), to the person's
+//        whole-site devices (scope "/"), which get every reminder: roster and training sessions (owner, 22 Nov 2026).
+// body { mode: "sessions" }   from the pg_cron job session-remind (owner, 22 Nov 2026): for each training session that
+//        starts within 12 hours (session_reminder_claim, once per session), notify its team's members who turned
+//        reminders on (not those who said "Sorry, not this time"): session name, who leads it, time and place.
 // body { mode: "key" }        makes sure the signing keys exist and returns the public one (the page subscribes with it).
 // The signing (VAPID) keys are made here the first time and kept in public.roster_push_keys: only this function's
 // service role can read the private key.
@@ -59,6 +64,21 @@ function gaps(data: any) {
   return out;
 }
 
+// "7:00 pm"
+function clock(t: string | null) {
+  if (!t) return "";
+  const [h, m] = t.split(":").map(Number);
+  return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${h < 12 ? "am" : "pm"}`;
+}
+// "today", "tomorrow" or "on Tuesday", for a session date (YYYY-MM-DD) seen from now in Adelaide.
+function whenDay(date: string) {
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date());
+  const diff = Math.round((Date.parse(date) - Date.parse(today)) / 86400000);
+  if (diff === 0) return "today";
+  if (diff === 1) return "tomorrow";
+  return "on " + new Intl.DateTimeFormat("en-AU", { timeZone: "UTC", weekday: "long" }).format(new Date(date));
+}
+
 // Send one message to a list of devices; forget the devices the push service says are gone.
 async function push(sb: ReturnType<typeof service>, subs: any[], make: (s: any) => unknown) {
   let sent = 0;
@@ -88,11 +108,34 @@ Deno.serve(async (req) => {
 
     if (body.mode === "test") {
       const user = createClient(URL_, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: req.headers.get("Authorization") || "" } } });
-      const { data: mine, error } = await user.rpc("roster_push_mine");
+      const { data: all, error } = await user.rpc("roster_push_mine");
       if (error) return json({ error: error.message }, 400);
-      if (!mine || !mine.length) return json({ error: "Reminders are not turned on for this device yet." }, 400);
+      const dsy = body.kind === "dsy";
+      const mine = (all || []).filter((s: any) => !dsy || s.sw_scope === "/");
+      if (!mine.length) return json({ error: "Reminders are not turned on for this device yet." }, 400);
+      if (dsy) {
+        return json(await push(sb, mine, () => ({ title: "Reminders are on", body: "This is a test. You'll get your team's roster reminder, and a reminder 12 hours before each training session.", url: "/" })));
+      }
       const r = await push(sb, mine, (s) => ({ title: "Roster reminders are on", body: "This is a test. You'll get a reminder the day before your team's roster is sent.", url: s.page_url || "/modules/rosters/" }));
       return json(r);
+    }
+
+    if (body.mode === "sessions") {
+      const { data: due, error } = await sb.rpc("session_reminder_claim");
+      if (error) return json({ error: error.message }, 500);
+      const results: unknown[] = [];
+      for (const s of due || []) {
+        try {
+          const { data: subs } = await sb.rpc("session_push_targets", { p_session: s.session_id });
+          const time = clock(s.start_time) + (s.end_time ? ` to ${clock(s.end_time)}` : "");
+          const text = `${s.title}. ${s.led_by ? `Led by ${s.led_by}. ` : ""}${time}${s.location ? ` at ${s.location}` : ""}. Tap to say if you're coming.`;
+          const r = await push(sb, subs || [], () => ({ title: `${s.team} training ${whenDay(s.session_date)}, ${clock(s.start_time)}`, body: text, url: "/training/" }));
+          results.push({ team: s.team, session: s.session_id, ...r });
+        } catch (e) {
+          results.push({ team: s.team, session: s.session_id, error: String((e as Error).message || e).slice(0, 200) });
+        }
+      }
+      return json({ processed: results.length, results });
     }
 
     if (body.mode !== "scheduled") return json({ error: "Unknown request." }, 400);

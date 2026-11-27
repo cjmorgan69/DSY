@@ -290,7 +290,8 @@
                     p_flexibility: payload.restriction || "N",
                     p_member: acting.kind === "member" ? acting.id : null,
                     p_placeholder: acting.kind === "placeholder" ? acting.name : null,
-                    p_level: payload.clinicalLevel || null
+                    p_level: payload.clinicalLevel || null,
+                    p_no_email: acting.kind === "placeholder" && quietPlaceholder()
                 }, timeoutMs);
 
                 return {
@@ -415,6 +416,12 @@
         return button;
     }
 
+    function quietPlaceholder() {
+        const box = document.getElementById("placeholderNoEmail");
+
+        return Boolean(box && box.checked);
+    }
+
     function applyActing() {
         if (!hooks) return;
 
@@ -470,8 +477,27 @@
             guest.hidden = true;
             guest.setAttribute("aria-label", "Name or unit not on the list");
 
+            // Placeholder shifts Country Rostering already know about
+            // (LEP40 etc.): book them without a change email.
+            const quiet = document.createElement("label");
+            quiet.id = "placeholderNoEmailRow";
+            quiet.hidden = true;
+            quiet.style.cssText =
+                "display:flex;gap:.45rem;align-items:flex-start;font-size:.85rem;font-weight:normal";
+            const quietBox = document.createElement("input");
+            quietBox.type = "checkbox";
+            quietBox.id = "placeholderNoEmail";
+            quietBox.style.cssText = "width:auto;margin-top:.15rem";
+            quiet.append(
+                quietBox,
+                document.createTextNode(
+                    "Don't email Country Rostering (they already know about this shift)"
+                )
+            );
+
             select.addEventListener("change", () => {
                 guest.hidden = select.value !== NOT_LISTED;
+                quiet.hidden = select.value !== NOT_LISTED;
 
                 if (select.value === NOT_LISTED) {
                     acting = { kind: "placeholder", name: guest.value.trim() };
@@ -490,7 +516,7 @@
                 applyActing();
             });
 
-            box.append(select, guest);
+            box.append(select, guest, quiet);
         } else {
             const shown = document.createElement("strong");
 
@@ -591,9 +617,9 @@
         return dateKey(today);
     }
 
-    async function sendRequest(mode, first, days) {
+    async function sendRequest(mode, first, days, notes) {
         const result = await withTimeout(client.functions.invoke("roster-send", {
-            body: { group_id: me.group_id, first, days, mode }
+            body: { group_id: me.group_id, first, days, mode, notes }
         }), 90000);
 
         if (result.error) {
@@ -633,6 +659,11 @@
             '<div class="field"><label for="rosterSendDays">Number of days</label>' +
             '<input id="rosterSendDays" type="number" min="1" max="28" value="7" inputmode="numeric" required></div>' +
             '</div>' +
+            '<div class="field"><label for="rosterSendNotes">Notes for Country Rostering (optional)</label>' +
+            '<textarea id="rosterSendNotes" maxlength="600" rows="3" ' +
+            'placeholder="For example: Tumby Bay crew covering Mon 18:00 to Tue 08:00."></textarea>' +
+            '<p class="field-help" style="margin:.3rem 0 0">Printed at the bottom of the last page of the PDF ' +
+            'and added to the email. Up to 600 characters. Not kept for the next send.</p></div>' +
             '<div class="action-bar">' +
             '<button id="rosterSendPreview" class="btn-secondary" type="button">Preview</button>' +
             '<button id="rosterSendGo" class="btn-primary" type="button" disabled>Send now</button>' +
@@ -646,10 +677,12 @@
         const preview = panel.querySelector("#rosterSendPreview");
         const go = panel.querySelector("#rosterSendGo");
         const status = panel.querySelector("#rosterSendStatus");
+        const notes = panel.querySelector("#rosterSendNotes");
         let previewed = "";
         let pdfUrl = "";
 
-        const key = () => first.value + "|" + days.value;
+        const noteText = () => notes.value.trim();
+        const key = () => first.value + "|" + days.value + "|" + noteText();
         const busy = on => { preview.disabled = on; go.disabled = on || previewed !== key(); };
         const line = (text, strong) => {
             const p = document.createElement("p");
@@ -665,7 +698,7 @@
         first.addEventListener("focus", () => {
             if (!first.value) first.value = defaultFirstDay();
         });
-        [first, days].forEach(input => input.addEventListener("input", () => {
+        [first, days, notes].forEach(input => input.addEventListener("input", () => {
             go.disabled = previewed !== key();
         }));
 
@@ -676,7 +709,7 @@
             busy(true);
 
             try {
-                const data = await sendRequest("preview", first.value, Number(days.value) || 7);
+                const data = await sendRequest("preview", first.value, Number(days.value) || 7, noteText());
                 const bytes = Uint8Array.from(atob(data.pdf_base64), c => c.charCodeAt(0));
 
                 if (pdfUrl) URL.revokeObjectURL(pdfUrl);
@@ -723,9 +756,10 @@
             busy(true);
 
             try {
-                const data = await sendRequest("send", first.value, Number(days.value) || 7);
+                const data = await sendRequest("send", first.value, Number(days.value) || 7, noteText());
 
                 previewed = "";
+                notes.value = "";
                 status.textContent = "";
                 line("Sent to " + data.to.join(", ") + ".", true);
                 line(data.period);
@@ -896,6 +930,14 @@
             if (help) help.style.display = "none";
         }
 
+        // Owner, 23 Nov 2026: the buttons under the folds (Edit sent
+        // cut-off, Team hours, Booking list, Reset sent status) the same
+        // size, with more room below the Schedule set-up toggle.
+        const editButton = document.getElementById("editRosterSentUntilButton");
+        const buttonBar = editButton && editButton.closest(".action-bar");
+
+        if (buttonBar) buttonBar.classList.add("manager-buttons");
+
         ["rosterSendPanel", "rosterSchedulePanel"].forEach(id => {
             const panel = document.getElementById(id);
 
@@ -917,169 +959,18 @@
     }
 
     /* ---------------------------------------------------------
-     * Reminders: an app notification 24 hours before the team's
-     * roster is sent (edge function roster-remind, service worker
-     * /modules/rosters/sw.js). Each person turns it on per device.
-     * On iPhone the roster must first be added to the Home Screen.
+     * Reminders (owner, 22 Nov 2026): one switch for the whole
+     * DSY site, drawn by /shared/reminders.js into this box. It
+     * covers the roster reminder (24 hours before the roster is
+     * sent) and the training session reminders. Older roster-only
+     * devices (service worker /modules/rosters/sw.js) still work.
      * --------------------------------------------------------- */
-
-    const SW_URL = "/modules/rosters/sw.js";
-    const SW_SCOPE = "/modules/rosters/";
-
-    function pushSupported() {
-        return "serviceWorker" in navigator &&
-            "PushManager" in window &&
-            "Notification" in window;
-    }
-
-    async function currentSubscription() {
-        if (!pushSupported()) return null;
-
-        const registration = await navigator.serviceWorker.getRegistration(SW_SCOPE);
-
-        return registration ? registration.pushManager.getSubscription() : null;
-    }
-
-    function keyBytes(base64url) {
-        const padded = (base64url + "===".slice((base64url.length + 3) % 4))
-            .replace(/-/g, "+").replace(/_/g, "/");
-
-        return Uint8Array.from(atob(padded), c => c.charCodeAt(0));
-    }
-
-    async function turnOnReminders() {
-        if (!pushSupported()) {
-            const iPhone = /iPhone|iPad|iPod/.test(navigator.userAgent);
-
-            window.alert(iPhone
-                ? "On an iPhone, add the roster to your Home Screen first:\n\n" +
-                  "1. Tap the Share button in Safari.\n" +
-                  "2. Tap \"Add to Home Screen\".\n" +
-                  "3. Open the roster from the new icon, sign in, and tap " +
-                  "\"Turn on reminders\" again.\n\n(Needs iOS 16.4 or later.)"
-                : "This browser can't show notifications. Try Chrome or Safari.");
-            return false;
-        }
-
-        if ((await Notification.requestPermission()) !== "granted") {
-            window.alert(
-                "Notifications are blocked for the roster. " +
-                "Allow them in your phone's settings, then try again."
-            );
-            return false;
-        }
-
-        const registration = await navigator.serviceWorker.register(
-            SW_URL, { scope: SW_SCOPE }
-        );
-
-        await navigator.serviceWorker.ready;
-
-        let key = await rpc("roster_push_public_key");
-
-        if (!key) {
-            const made = await client.functions.invoke("roster-remind", { body: { mode: "key" } });
-
-            key = made.data && made.data.public_key;
-        }
-
-        if (!key) throw new Error("Reminders are not set up yet.");
-
-        const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: keyBytes(key)
-        });
-        const details = subscription.toJSON();
-
-        await rpc("roster_push_subscribe", {
-            p_endpoint: details.endpoint,
-            p_p256dh: details.keys.p256dh,
-            p_auth: details.keys.auth,
-            p_page: location.pathname
-        });
-
-        return true;
-    }
-
-    async function turnOffReminders() {
-        const subscription = await currentSubscription();
-
-        if (!subscription) return;
-
-        await rpc("roster_push_unsubscribe", { p_endpoint: subscription.endpoint });
-        await subscription.unsubscribe();
-    }
-
-    async function sendTestReminder() {
-        const result = await client.functions.invoke("roster-remind", { body: { mode: "test" } });
-
-        if (result.error || !result.data || !result.data.sent) {
-            throw new Error("The test could not be sent to this device.");
-        }
-    }
 
     function buildReminderControls() {
         const row = document.createElement("div");
 
         row.id = "rosterReminders";
-        row.style.cssText = "display:flex;flex-wrap:wrap;gap:.2rem .8rem;font-size:.82rem";
-
-        const draw = async note => {
-            let on = false;
-
-            try {
-                on = Boolean(await currentSubscription());
-            } catch (error) {
-                on = false;
-            }
-
-            row.textContent = "";
-
-            const guard = action => async () => {
-                try {
-                    const message = await action();
-
-                    await draw(message || "");
-                } catch (error) {
-                    await draw(error.message || "That didn't work.");
-                }
-            };
-
-            if (on) {
-                const label = document.createElement("span");
-
-                label.textContent = "🔔 Reminders are on";
-                row.append(
-                    label,
-                    link("Send a test", guard(async () => {
-                        await sendTestReminder();
-
-                        return "Test sent. If no banner appears, look in Notification " +
-                            "Centre: a Focus (Sleep, Do Not Disturb) hides banners.";
-                    })),
-                    link("Turn off", guard(turnOffReminders))
-                );
-            } else {
-                row.append(link("🔔 Turn on reminders", guard(async () => {
-                    if (!(await turnOnReminders())) return "";
-
-                    await sendTestReminder().catch(() => {});
-
-                    return "Reminders are on. A test is on its way. If no banner " +
-                        "appears, look in Notification Centre: a Focus hides banners.";
-                })));
-            }
-
-            if (note) {
-                const text = document.createElement("span");
-
-                text.style.cssText = "flex-basis:100%;font-weight:400";
-                text.textContent = note;
-                row.append(text);
-            }
-        };
-
-        void draw("");
+        row.className = "dsy-reminders";
 
         return row;
     }

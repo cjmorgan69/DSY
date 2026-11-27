@@ -25,7 +25,7 @@ function dayLabel(day: string) {   // "2026-11-16" -> "Mon, 16 Nov"
   return new Intl.DateTimeFormat("en-AU", { timeZone: "UTC", weekday: "short", day: "numeric", month: "short" }).format(d);
 }
 
-export async function buildRosterPdf(data: any, opts: { trial: boolean; generatedAt: Date }) {
+export async function buildRosterPdf(data: any, opts: { trial: boolean; generatedAt: Date; notes?: string }) {
   const pdf = await PDFDocument.create();
   const font = await pdf.embedFont(StandardFonts.Helvetica);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
@@ -52,6 +52,27 @@ export async function buildRosterPdf(data: any, opts: { trial: boolean; generate
   const period = `Roster from ${when(data.from)} to ${when(data.to)}`;
   let pageNo = 0;
 
+  // Notes from the manager: a box under the table on the last page; that page's rows are made shorter to fit it.
+  const NOTE_SIZE = 8, NOTE_LINE = 10.5, NOTE_MAX = 8;
+  const noteLines: string[] = [];
+  for (const para of String(opts.notes || "").split(/\r?\n/).map(latin)) {
+    let cur = "";
+    for (const word of para.split(/ +/)) {
+      let w = word;
+      while (font.widthOfTextAtSize(w, NOTE_SIZE) > W - 2 * M - 16) {   // a very long word: break it
+        let k = w.length; while (k > 1 && font.widthOfTextAtSize(w.slice(0, k), NOTE_SIZE) > W - 2 * M - 16) k--;
+        if (cur) { noteLines.push(cur); cur = ""; }
+        noteLines.push(w.slice(0, k)); w = w.slice(k);
+      }
+      const next = cur ? cur + " " + w : w;
+      if (font.widthOfTextAtSize(next, NOTE_SIZE) > W - 2 * M - 16) { noteLines.push(cur); cur = w; } else cur = next;
+    }
+    noteLines.push(cur);
+  }
+  while (noteLines.length && !noteLines[noteLines.length - 1].trim()) noteLines.pop();
+  if (noteLines.length > NOTE_MAX) { noteLines.length = NOTE_MAX; noteLines[NOTE_MAX - 1] += " ..."; }
+  const notesH = noteLines.length ? 8 + 16 + noteLines.length * NOTE_LINE + 6 : 0;
+
   // Shrink to fit, then shorten the name only: the ambulance ID and level are always kept.
   const fit = (name: string, tail: string, f: any, size: number, max: number, min = 5) => {
     let s = size;
@@ -76,7 +97,8 @@ export async function buildRosterPdf(data: any, opts: { trial: boolean; generate
         const t = "TRIAL - NOT AN OFFICIAL ROSTER";
         page.drawText(t, { x: W - M - bold.widthOfTextAtSize(t, 11), y: top - 14, size: 11, font: bold, color: hex("#b91c1c") });
       }
-      const tableTop = top - HEAD, rowH = (tableTop - COL_HEAD - M) / ROWS, lineH = rowH / 3;
+      const withNotes = notesH > 0 && pageNo === totalPages;
+      const tableTop = top - HEAD, rowH = (tableTop - COL_HEAD - M - (withNotes ? notesH : 0)) / ROWS, lineH = rowH / 3;
       // column headings
       page.drawRectangle({ x: M, y: tableTop - COL_HEAD, width: W - 2 * M, height: COL_HEAD, color: hex("#e8f1fb") });
       page.drawText("Time", { x: M + 7, y: tableTop - 16, size: 7.5, font: bold, color: ink });
@@ -120,6 +142,12 @@ export async function buildRosterPdf(data: any, opts: { trial: boolean; generate
       }
       page.drawRectangle({ x: M, y: bottom, width: W - 2 * M, height: tableTop - bottom, borderColor: line, borderWidth: 0.8 });
       page.drawLine({ start: { x: M, y: tableTop - COL_HEAD }, end: { x: W - M, y: tableTop - COL_HEAD }, thickness: 0.8, color: line });
+      if (withNotes) {
+        const boxTop = bottom - 8, boxH = notesH - 8;
+        page.drawRectangle({ x: M, y: boxTop - boxH, width: W - 2 * M, height: boxH, color: hex("#f8fafc"), borderColor: line, borderWidth: 0.8 });
+        page.drawText("Notes", { x: M + 8, y: boxTop - 13, size: 8.5, font: bold, color: green });
+        noteLines.forEach((t, k) => page.drawText(t, { x: M + 8, y: boxTop - 16 - (k + 1) * NOTE_LINE + 2, size: NOTE_SIZE, font, color: ink }));
+      }
     }
   }
   return await pdf.save();

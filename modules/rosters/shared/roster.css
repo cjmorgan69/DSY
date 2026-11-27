@@ -150,6 +150,16 @@
     .user-section input { width: 145px; }
     .user-section select { min-height: 32px; }
 
+    /* A long name in "Booking for" (name · full name) must not widen
+       the header past a phone screen (Wudinna, 23 Nov 2026). */
+    .user-section { min-width: 0; max-width: 100%; }
+    #rosterSignedIn select,
+    #rosterSignedIn input[type="text"] {
+        width: 100%;
+        max-width: 100%;
+        text-overflow: ellipsis;
+    }
+
     .user-section input:focus-visible,
     .user-section select:focus-visible {
         outline: 2px solid var(--primary);
@@ -357,6 +367,7 @@
 
     .field input,
     .field select,
+    .field textarea,
     .search-input {
         width: 100%;
         min-height: 46px;
@@ -370,10 +381,18 @@
 
     .field input:focus,
     .field select:focus,
+    .field textarea:focus,
     .search-input:focus {
         border-color: var(--primary);
         background: var(--surface);
         box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+    }
+
+    .field textarea {
+        min-height: 80px;
+        resize: vertical;
+        font: inherit;
+        line-height: 1.45;
     }
 
     .field-help {
@@ -515,6 +534,31 @@
     }
 
     .manager-section { margin-top: 1.5rem; }
+
+    /* Manager controls buttons on signed-in rosters: even sizes, set
+       apart from the Schedule set-up toggle above (owner, 23 Nov 2026). */
+    .action-bar.manager-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: 1fr;
+        gap: 0.6rem;
+        margin-top: 1.5rem;
+    }
+
+    .action-bar.manager-buttons > button {
+        width: 100%;
+        min-height: 48px;
+        margin: 0;
+    }
+
+    .action-bar.manager-buttons > button[hidden] { display: none; }
+
+    /* Order (owner, 23 Nov 2026): Booking list, Team hours,
+       Edit sent cut-off, Reset sent status. */
+    .manager-buttons > #bookingListButton { order: 1; }
+    .manager-buttons > #teamHoursButton { order: 2; }
+    .manager-buttons > #editRosterSentUntilButton { order: 3; }
+    .manager-buttons > #resetRosterSentButton { order: 4; }
 
     .manager-booking-list { margin-top: 1rem; }
 
@@ -1286,6 +1330,8 @@
  top: 50%;
  left: 50%;
  z-index: 3001;
+ width: min(22rem, calc(100vw - 2rem));
+ box-sizing: border-box;
  max-width: calc(100vw - 2rem);
  padding: 1.4rem 2rem;
  color: white;

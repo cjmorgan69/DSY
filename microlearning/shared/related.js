@@ -2,6 +2,11 @@
    codes in its relatedCodes). Each page lists the others under "Built on the same protocol" and leaves itself out.
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
+  "CPP-056-AO": [
+    { kind: "Microlearning module", title: "Refusal against advice", href: "/microlearning/refusal/", text: "Is this refusal valid? The VIRCA tool, capacity, the EOC Clinician consult, the three pathways, who can consent for someone else (CTL-067), the AMA form and what to write." },
+    { kind: "Walk-through scenario", title: "Refusal against advice - AO: Sam, 38", href: "/modules/refusal-ao/", text: "Two-person AO crew in Tumby Bay: a confused hypo who tells the crew to get out, then recovers and still refuses. Invalid then valid refusal, VIRCA twice, the consult and the AMA form. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Sam's patient care record", href: "/tools/pcr/#job=sam", text: "After the walk-through: write the PCR for a patient treated and not transported, including both VIRCA assessments, the EOC Clinician consults, the oral glucose and the advice left. Tap any heading to see what goes there, then compare with the model card." }
+  ],
   "CPP-017-AO": [
     { kind: "Microlearning module", title: "Dementia and changed behaviours", href: "/microlearning/dementia/", text: "Behaviour is communication: the PLST and need-driven behaviour models, looking for the cause first, PAINAD, STAMP and LOWLINE, and the AO Acute Behavioural Disturbance protocol." },
     { kind: "Walk-through scenario", title: "Dementia - AO: Jo-Anne, 84", href: "/modules/dementia-ao/", text: "Two-person AO crew near Cummins: a woman living with Alzheimer's disease who doesn't recognise her husband tonight. Risk assessment, de-escalation, pain and a possible infection, PAINAD, voluntary care and a calm trip. Facilitator and student versions." },
@@ -69,7 +74,7 @@ window.RELATED = {
   "CPP-009-AO": [
     { kind: "Microlearning module", title: "Hypoglycaemia", href: "/microlearning/hypoglycaemia/", text: "Oral glucose, glucagon on EOC Clinician advice and the treatment checker, with a narrated video and quiz." },
     { kind: "Walk-through scenario", title: "Hypoglycaemia - AO: Ron, 67", href: "/modules/hypoglycaemia-ao/", text: "Two-person AO crew, an insulin-treated farmer near Cummins. Facilitator and student versions." },
-    { kind: "PCR trainer", title: "Write Ron's patient care record", href: "/tools/pcr/#job=ron", text: "After the walk-through: write the PCR on a copy of the card, including the BGL trend, oral glucose and glucagon. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
+    { kind: "PCR trainer", title: "Write Ron's patient care record", href: "/tools/pcr/#job=ron", arHref: "/tools/pcr/#job=ronAR", text: "After the walk-through: write the PCR on a copy of the card, including the BGL trend, oral glucose and glucagon. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-016-AO": [
     { kind: "Microlearning module", title: "Stroke", href: "/microlearning/stroke/", text: "BGL, ROSIER, the Code Stroke criteria and the eligibility checker, with a narrated video and quiz." },

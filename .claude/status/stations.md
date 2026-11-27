@@ -57,6 +57,11 @@ is limited so request clinical support for a 12-lead), 3 oxygen (CSSG p69 to 73:
 pain SpO2 above 94% else nasal cannula, ACPO high flow NRB), 4 listening to the chest (CSSG p50, AO only), ACPO
 posture, no walking with active chest pain (CPPRO-001), carry chair and stretcher head up (DSY). Finish: Graham or
 Kevin walk-through. Linked from both hub topics. Live 27 Oct 2026, lesson added.
+Station 2 rewritten 25 Nov 2026 (owner: AOs don't do 12-leads): D-ECG and 12-lead removed, now "Know your Corpuls"
+from the SAAS General Operation Cert IV task card (owner's photo, 12-lead crossed to 4-lead): default screen, Jog dial
+leads, 4-lead print, NIBP Auto interval, views, shortcut keys, alarm autolimits, screenshot, trend and mission summary.
+Card items left out: module separate/reassemble, CPR screen, charge and defib in demo mode, LT ECG, CO2 (crossed out).
+On a branch, not merged.
 
 ## Asthma
 
@@ -117,3 +122,11 @@ Sepsis skills stations (`/stations/sepsis/`, built 27 Oct 2026 in PR #133, folde
 PR #236 with the sign-in gate added). Sources as printed on the page: CPP-062-AO Sepsis v1.0 (Dec 2025) and CTL-062
 NEWS2 Adult Sepsis Screening Tool v1.1, with the Clinical Skills Study Guide for the skills. Patient cards and any
 EOC replies are DSY-written (owner to review). Linked from the sepsis hub topic. No lesson added yet.
+
+## Refusal against advice
+
+`/stations/refusal/` (26 Nov 2026, same engine as dementia): 1 VIRCA valid or not (cards A to E), 2 the capacity
+conversation (role cards in threes; example questions DSY-written), 3 who decides (CTL-067, Person Responsible order,
+the three pathways, cards), 4 the EOC Clinician call, the AMA form (team's own form or paper: DSY has no copy of the
+SAAS AMA form) and the VIRCA PCR lines. Finish: Sam walk-through and PCR. No medicines or clinical kit. Cards and
+EOC lines DSY-written (owner to review). On a branch, not merged.

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<script src="/shared/gate.js?v=20261127e" data-level="facilitator"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Skill sign-off navigator - DSY Training</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../../shared/dsy-favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../../shared/dsy-favicon-192.png">
+<link rel="apple-touch-icon" href="../../shared/dsy-touch-180.png">
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261127e">
+<link rel="stylesheet" href="../../hub/hub.css?v=20261127e">
+<style>
+/* AR course skill sign-off navigator: sticky controls (stations, mode, search) above a day-by-day list of
+   skills, each opening its saaslearn checklist report filtered to the station's Moodle group. */
+.top a { color: inherit; text-decoration: none; }
+.wrap { gap: 0; }
+.intro { margin: 1rem 0 0; color: var(--muted); max-width: 65ch; }
+.bar { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 12px 0; margin-top: 1rem; border-bottom: 1px solid var(--line); display: grid; gap: 10px; }
+.bar .row { gap: 8px; }
+.label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); min-width: 64px; }
+.chip { border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 7px 14px; border-radius: 999px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); font-weight: 700; }
+.chip:hover { border-color: var(--brand); }
+.st-pick { flex: 1 1 14rem; min-width: 0; }
+.course-note { flex: 1 1 100%; margin: 0; }
+.course-note button { background: none; border: 0; padding: 0; color: var(--brand); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.st-pick > summary { cursor: pointer; font-weight: 700; color: var(--brand); padding: 6px 0; }
+.st-pick[open] > summary { margin-bottom: 6px; }
+.search { flex: 1 1 200px; min-width: 0; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); }
+.jump { border: 1px solid var(--brand); background: transparent; color: var(--brand); padding: 7px 14px; border-radius: 999px; font-weight: 700; }
+.jump:hover { background: var(--brand); color: var(--brand-ink); }
+.check { display: inline-flex; font-weight: 400 !important; gap: 6px; align-items: center; color: var(--muted); font-size: .92rem; cursor: pointer; }
+.day { margin-top: 28px; }
+.day-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-bottom: 2px solid var(--ink); padding-bottom: 6px; }
+.day-head h2 { font-size: 1.15rem; }
+.count { font-size: .85rem; color: var(--muted); }
+.mod { margin: 16px 0 6px; font-family: var(--font-body); font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); }
+.skills { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+.skill { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); }
+.skill:first-child { border-top: 0; }
+.skill.is-done .name { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.skill.next { box-shadow: inset 4px 0 0 var(--accent); }
+.skill input { width: 20px; height: 20px; accent-color: var(--ok); cursor: pointer; }
+.name { display: block; min-width: 0; font-size: 1rem; font-weight: 400; color: var(--ink); }
+.check, .bar .label { flex-direction: row; font-weight: 700; }
+.kind { display: inline-block; margin-left: 8px; font-size: .72rem; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; vertical-align: middle; }
+.open { text-decoration: none; background: var(--brand); color: var(--brand-ink); padding: 6px 14px; border-radius: 999px; font-weight: 700; white-space: nowrap; }
+.open:hover { filter: brightness(1.1); }
+.empty { margin-top: 24px; color: var(--muted); }
+.note { margin-top: 36px; padding: 14px 16px; color: var(--muted); font-size: .92rem; display: grid; gap: 6px; }
+.foot { margin-top: 1.5rem; display: grid; gap: .5rem; }
+.opens { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.opens .open { padding: 5px 12px; font-size: .9rem; }
+@media (max-width: 600px) { .bar { position: static; } }
+@media (max-width: 480px) { .opens { grid-column: 2; justify-content: flex-start; } }
+@media (max-width: 480px) {
+  .skill { grid-template-columns: auto 1fr; }
+  .open { grid-column: 2; justify-self: start; }
+  .label { min-width: 100%; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <a class="brand" href="../../"><div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>
+      <div><h1>DSY Training</h1><p>AR course: skill sign-off navigator</p></div></a>
+  </header>
+  <p class="intro">FNWC Recruit to Ambulance Responder course. Pick your course to use its students' stations, or pick stations yourself. Each skill opens straight to that station's sign-off page in saaslearn.</p>
+
+  <div class="bar">
+    <div class="row" id="courseRow" hidden>
+      <label class="label" for="course">Course</label>
+      <select id="course" class="search"></select>
+      <p class="small muted course-note" id="courseNote"></p>
+    </div>
+    <div class="row" role="group" aria-label="Stations">
+      <span class="label">Stations</span>
+      <details class="st-pick" id="stPick"><summary id="stSummary">Choose</summary><span id="stations" class="row"></span></details>
+    </div>
+    <div class="row" role="group" aria-label="Open as" id="modeRow">
+      <span class="label">Open as</span>
+      <button class="chip" id="mode-edit" type="button" aria-pressed="true">Edit checks</button>
+      <button class="chip" id="mode-view" type="button" aria-pressed="false">View only</button>
+    </div>
+    <div class="row">
+      <label for="q" class="label">Find</label>
+      <input class="search" id="q" type="search" placeholder="Skill name, e.g. cardiac, splint, BP" autocomplete="off">
+      <label class="check" for="hide"><input type="checkbox" id="hide"> Hide finished</label>
+      <button class="jump" id="next" type="button">Jump to next</button>
+    </div>
+  </div>
+
+  <div id="days"></div>
+  <p class="empty" id="empty" hidden>No skills match that search.</p>
+
+  <section class="panel note" aria-label="About this page">
+    <p>Sign in to saaslearn first. Sign-off is saved in Moodle only when you press Save changes there.</p>
+    <p>A station link showing everyone? saaslearn numbers its groups per course: use the <a href="groups/">saaslearn group finder</a> and send the result to Claude.</p>
+    <p>With several stations chosen, each skill shows one button per station.</p>
+    <p>The finished ticks here are your own place-keeping for the current choice of stations. They live in this browser, are not sent to Moodle, and do not change any student's record.</p>
+  </section>
+
+  <div class="foot">
+    <p class="small muted"><a href="../">Back to the Ambulance Responder course</a></p>
+    <p class="small muted">Training resource only. It does not replace the SAAS protocols or advice from the EOC Clinician.</p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="../saaslearn-groups.js?v=20261127e"></script>
+<script>
+(function () {
+  var BASE = "https://saaslearn.com.au/moodle/mod/checklist/report.php?id=";
+  /* Stations and their saaslearn group numbers per course come from ../saaslearn-groups.js (SAASLEARN).
+     The first four keep their old keys so saved choices and ticks carry over. */
+  var OLD_KEYS = { "Tumby Bay": "tumby", "Cummins": "cummins", "Coffin Bay": "coffin", "Port Neill": "portneill" };
+  var STATIONS = window.SAASLEARN.stations.map(function (n) {
+    return { key: OLD_KEYS[n] || n.toLowerCase().replace(/[^a-z]/g, ""), name: n };
+  }).concat([{ key: "all", name: "All stations" }]);
+  var S = "Skill", SIM = "Simulation", DEC = "Declaration";
+  var DAYS = [
+    { day: "Day 1", mods: [
+      { m: "Infection Prevention and Control", s: [
+        [32337, "Alcohol Based Hand Rub", S], [32338, "Hand Washing", S],
+        [32339, "Donning and Doffing Personal Protective Equipment", S],
+        [32340, "Respond to an Infection Control Breach", SIM] ] },
+      { m: "First Aid and AA Protocols", s: [[26191, "Adult CPR", SIM]] },
+      { m: "Manual Tasks", s: [
+        [754, "Postures", S], [909, "Loading Power-PRO Stretcher into Ambulance", S],
+        [910, "Unloading Power-PRO Stretcher from Ambulance", S], [904, "Compact Carry Chair", S] ] }
+    ]},
+    { day: "Day 2", mods: [
+      { m: "Manual Tasks", s: [[908, "Lateral Transfer of Patient", S], [911, "Transfer of Patient using Spinal Board Bridge", S]] }
+    ]},
+    { day: "Day 3", mods: [
+      { m: "Operational Preparedness", s: [[1523, "GRN (Portable and Vehicle), Radio Procedures and MDT", S]] }
+    ]},
+    { day: "Day 4", mods: [
+      { m: "DRiVE Volunteer Practical Assessments", s: [[22397, "Practical Assessment Completion", DEC]] }
+    ]},
+    { day: "Day 5", mods: [
+      { m: "Foundations of Care", s: [
+        [22683, "Palpatory Blood Pressure", S], [22685, "Blood Glucose Level", S],
+        [22684, "Auscultatory Blood Pressure", S], [22686, "Pulse Oximetry", S],
+        [22687, "Limb Lead ECG", S], [22688, "Methoxyflurane Preparation and Administration", S],
+        [22689, "Paracetamol Tablet (16+ Years)", S], [22690, "Paracetamol Elixir (Paediatric)", S] ] },
+      { m: "First Aid and AA Protocols", s: [[26099, "Choking", S], [26192, "Infant CPR", SIM]] },
+      { m: "Cardiac Arrest Management", s: [[2349, "i-gel", S]] },
+      { m: "SAAS Resuscitation and AA Protocols", s: [
+        [1643, "Bag-Valve-Mask (BVM) Ventilations", S], [1642, "Oropharyngeal Airway (OPA)", S],
+        [1641, "Patient Observations", S], [1658, "Spinal Immobilisation", S],
+        [1644, "Suction", S], [1646, "Use of Oxygen", S],
+        [1647, "Cardiac Arrest (Adult)", S], [1648, "Cardiac Arrest (Paediatric)", S] ] }
+    ]},
+    { day: "Day 6", mods: [
+      { m: "Medical Conditions", s: [
+        [2400, "Nebulised Medication (6 years or older)", S], [2660, "Nebulised Medication (under 6 years old)", S],
+        [2661, "Adrenaline (Epinephrine) for IM Injection", S], [2662, "GTN Sublingual", S],
+        [2663, "Assist in the Delivery of a Newborn", S], [35356, "Newborn Assessment (APGAR)", S],
+        [2664, "Intravenous Therapy (Set-up Line)", S], [2665, "Intravenous Therapy (Change Empty Bag)", S] ] },
+      { m: "First Aid and AA Protocols", s: [
+        [26061, "Asthma", S], [26098, "Anaphylaxis", S], [26106, "Chest Pain", S], [26107, "Diabetic Emergencies", S] ] }
+    ]},
+    { day: "Day 7", mods: [
+      { m: "First Aid and AA Protocols", s: [
+        [26100, "Non-Life-Threatening Bleeding and Minor Wound Care, and Shock", S],
+        [26101, "Nosebleeds", S], [26102, "Sprains and Strains", S], [26103, "Fractures and Dislocations", S],
+        [26108, "Pressure Immobilisation Technique (PIT)", S], [26104, "Haemorrhage Control and Amputations", S],
+        [26105, "Burns", S] ] },
+      { m: "Traumatic Injuries", s: [
+        [22779, "Femoral Traction Splint (STS Gen 2)", S], [22780, "Cervical Collar", S],
+        [22781, "Modified Towel Roll", S], [22782, "Pelvic Binder", S], [22783, "Vacuum Mattress", S] ] }
+    ]}
+  ];
+
+  /* state.stations: chosen station keys ([] = all stations). */
+  var state = { stations: ["tumby"], edit: true, q: "", hide: false, done: {} };
+
+  function load() {
+    try {
+      var raw = localStorage.getItem("fnwc-signoff-nav");
+      if (raw) {
+        var p = JSON.parse(raw);
+        var keys = STATIONS.map(function (s) { return s.key; });
+        if (Array.isArray(p.stations)) state.stations = p.stations.filter(function (k) { return keys.indexOf(k) > -1; });
+        else if (p.station === "all") state.stations = [];
+        else if (p.station && keys.indexOf(p.station) > -1) state.stations = [p.station];
+        if (typeof p.edit === "boolean") state.edit = p.edit;
+        if (typeof p.course === "string") state.course = p.course;
+        if (p.done && typeof p.done === "object") state.done = p.done;
+      }
+    } catch (e) {}
+  }
+  function save() {
+    try {
+      localStorage.setItem("fnwc-signoff-nav", JSON.stringify({ stations: state.stations, course: state.course || "", edit: state.edit, done: state.done }));
+    } catch (e) {}
+  }
+
+  function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function stationBy(key) { return STATIONS.filter(function (s) { return s.key === key; })[0]; }
+  function chosenStations() { return state.stations.length ? state.stations.map(stationBy) : []; }
+  /* Finished ticks belong to the current choice of stations ("all" when none). */
+  function scope() {
+    return state.stations.length ? state.stations.slice().sort().join("+") : "all";
+  }
+  function doneKey(id) { return scope() + ":" + id; }
+
+  function groupHref(id, st, mod) {
+    var g = st && st.key !== "all" ? window.SAASLEARN.groupForModule(mod, st.name) : null;
+    return BASE + id + (g ? "&group=" + g : "") + (state.edit ? "&editchecks=on" : "");
+  }
+
+  /* One button per chosen station; else one for everyone. */
+  function opens(sk, mod) {
+    var name = esc(sk[1]);
+    var sts = chosenStations();
+    if (sts.length > 1) {
+      return sts.map(function (s) {
+        return '<a class="open" href="' + groupHref(sk[0], s, mod) + '" target="_blank" rel="noopener" aria-label="Open ' + name + " for " + esc(s.name) + '">' + esc(s.name) + "</a>";
+      }).join("");
+    }
+    return '<a class="open" href="' + groupHref(sk[0], sts[0], mod) + '" target="_blank" rel="noopener" aria-label="Open ' + name + ' in saaslearn">Open</a>';
+  }
+
+  function renderStations() {
+    var ch = chosenStations();
+    document.getElementById("stSummary").textContent = ch.length ? ch.map(function (s) { return s.name; }).join(", ") : "All stations";
+    var box = document.getElementById("stations");
+    box.innerHTML = "";
+    STATIONS.forEach(function (s) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.textContent = s.name;
+      var on = s.key === "all" ? !state.stations.length : state.stations.indexOf(s.key) > -1;
+      b.setAttribute("aria-pressed", String(on));
+      b.addEventListener("click", function () {
+        if (s.key === "all") state.stations = [];
+        else if (state.stations.indexOf(s.key) > -1) state.stations = state.stations.filter(function (k) { return k !== s.key; });
+        else state.stations = state.stations.concat(s.key);
+        save(); renderAll(); if (state.course) renderCourseNote();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function renderModes() {
+    document.getElementById("mode-edit").setAttribute("aria-pressed", String(state.edit));
+    document.getElementById("mode-view").setAttribute("aria-pressed", String(!state.edit));
+  }
+
+  function renderDays() {
+    var q = state.q.trim().toLowerCase();
+    var out = "";
+    var shown = 0;
+    var firstOpen = true;
+    DAYS.forEach(function (d) {
+      var total = 0, finished = 0, html = "";
+      d.mods.forEach(function (m) {
+        var rows = "";
+        m.s.forEach(function (sk) {
+          total++;
+          var isDone = !!state.done[doneKey(sk[0])];
+          if (isDone) finished++;
+          var hay = (sk[1] + " " + m.m + " " + sk[2]).toLowerCase();
+          if (q && hay.indexOf(q) === -1) return;
+          if (state.hide && isDone) return;
+          shown++;
+          var cls = "skill" + (isDone ? " is-done" : "");
+          if (!isDone && firstOpen) { cls += " next"; firstOpen = false; }
+          rows += '<li class="' + cls + '" data-id="' + sk[0] + '">' +
+            '<input type="checkbox" id="c' + sk[0] + '" data-id="' + sk[0] + '"' + (isDone ? " checked" : "") + ' aria-label="Finished: ' + esc(sk[1]) + '">' +
+            '<label class="name" for="c' + sk[0] + '">' + esc(sk[1]) + '<span class="kind">' + sk[2] + '</span></label>' +
+            '<div class="opens">' + opens(sk, m.m) + "</div>" +
+            "</li>";
+        });
+        if (rows) html += '<h3 class="mod">' + esc(m.m) + '</h3><ul class="skills">' + rows + "</ul>";
+      });
+      if (html) {
+        out += '<section class="day"><div class="day-head"><h2>' + d.day + '</h2><span class="count">' + finished + " of " + total + " finished</span></div>" + html + "</section>";
+      }
+    });
+    document.getElementById("days").innerHTML = out;
+    document.getElementById("empty").hidden = shown > 0;
+  }
+
+  function renderAll() { renderStations(); renderModes(); renderDays(); }
+
+  document.getElementById("days").addEventListener("change", function (e) {
+    var id = e.target && e.target.getAttribute("data-id");
+    if (!id || e.target.type !== "checkbox") return;
+    if (e.target.checked) state.done[doneKey(id)] = 1; else delete state.done[doneKey(id)];
+    save();
+    renderDays();
+  });
+  document.getElementById("mode-edit").addEventListener("click", function () { state.edit = true; save(); renderModes(); renderDays(); });
+  document.getElementById("mode-view").addEventListener("click", function () { state.edit = false; save(); renderModes(); renderDays(); });
+  document.getElementById("q").addEventListener("input", function (e) { state.q = e.target.value; renderDays(); });
+  document.getElementById("hide").addEventListener("change", function (e) { state.hide = e.target.checked; renderDays(); });
+  document.getElementById("next").addEventListener("click", function () {
+    var el = document.querySelector(".skill.next");
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    var a = el.querySelector("a.open");
+    if (a) a.focus({ preventScroll: true });
+  });
+
+  /* Course (21 Nov / 24 Nov 2026, owner): pick a Workshop bookings course group and the stations are set from the DSY
+     teams of its students (course_people(), matched on ambulance ID). Other stations can still be added in the fold. */
+  var SB_URL = "https://ekaodnbnpsuayvmxvxbm.supabase.co";
+  var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW9kbmJucHN1YXl2bXh2eGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzIxMzQsImV4cCI6MjEwNzM0ODEzNH0.q3lTeCQAQjYeMUNl6lwsrxUAsTijJikABW4Ua2N4bmI";
+  var sb = null, people = null, courseInfo = null;
+  try { sb = window.supabase.createClient(SB_URL, SB_KEY); } catch (e) {}
+  function digits(v) { return String(v || "").replace(/\D/g, "").replace(/^0+/, ""); }
+  function keyOf(name) { var s = STATIONS.filter(function (x) { return x.name === name; })[0]; return s ? s.key : null; }
+  function courseStations(cohortId) {
+    return Promise.all([
+      sb.from("course_students").select("staff_id,first_name,last_name").eq("cohort_id", cohortId).eq("active", true),
+      people ? { data: people } : sb.rpc("course_people")
+    ]).then(function (r) {
+      if (r[0].error) throw r[0].error;
+      if (r[1].error) throw r[1].error;
+      people = r[1].data || [];
+      var byId = {}; people.forEach(function (p) { byId[digits(p.staff_id)] = p.teams || []; });
+      var count = {}, other = 0;
+      (r[0].data || []).forEach(function (s) {
+        var st = (byId[digits(s.staff_id)] || []).filter(function (t) { return keyOf(t); })[0];
+        if (st) count[st] = (count[st] || 0) + 1; else other++;
+      });
+      return { count: count, other: other, total: (r[0].data || []).length };
+    });
+  }
+  function renderCourseNote() {
+    var n = document.getElementById("courseNote");
+    if (!state.course || !courseInfo) { n.textContent = state.course ? "Loading the course…" : "Or choose stations yourself below."; return; }
+    var names = Object.keys(courseInfo.count).sort();
+    var html = courseInfo.total ? "Students' teams: " + (names.length ? names.map(function (k) { return esc(k) + " (" + courseInfo.count[k] + ")"; }).join(", ") : "none matched a station") +
+      (courseInfo.other ? ". " + courseInfo.other + (courseInfo.other === 1 ? " student is" : " students are") + " in no team or a team without a saaslearn station: add their station below if needed." : ".")
+      : "No students in this course yet.";
+    var keys = names.map(keyOf).sort().join("+"), now = state.stations.slice().sort().join("+");
+    if (names.length && keys !== now) html += ' <button type="button" id="courseReset">Use the course stations</button>';
+    n.innerHTML = html;
+  }
+  function applyCourse(setStations) {
+    courseInfo = null; renderCourseNote();
+    if (!state.course) return;
+    courseStations(state.course).then(function (info) {
+      courseInfo = info;
+      var keys = Object.keys(info.count).map(keyOf);
+      if (setStations && keys.length) { state.stations = keys; save(); }
+      renderAll(); renderCourseNote();
+    }).catch(function (e) { document.getElementById("courseNote").textContent = "Could not load the course: " + (e.message || e); });
+  }
+  function loadCourses() {
+    if (!sb) return;
+    sb.from("course_cohorts").select("id,name,created_at").eq("archived", false).order("created_at", { ascending: false }).then(function (r) {
+      if (r.error || !r.data || !r.data.length) return;
+      var sel = document.getElementById("course");
+      if (!r.data.some(function (c) { return c.id === state.course; })) state.course = "";
+      sel.innerHTML = '<option value="">No course: choose stations</option>' + r.data.map(function (c) {
+        return '<option value="' + esc(c.id) + '"' + (c.id === state.course ? " selected" : "") + ">" + esc(c.name) + "</option>";
+      }).join("");
+      document.getElementById("courseRow").hidden = false;
+      applyCourse(false);
+    });
+  }
+  document.getElementById("course").addEventListener("change", function (e) { state.course = e.target.value; save(); applyCourse(true); });
+  document.getElementById("courseNote").addEventListener("click", function (e) {
+    if (e.target.id !== "courseReset" || !courseInfo) return;
+    state.stations = Object.keys(courseInfo.count).map(keyOf); save(); renderAll(); renderCourseNote();
+  });
+
+  load();
+  renderAll();
+  loadCourses();
+})();
+</script>
+</body>
+</html>

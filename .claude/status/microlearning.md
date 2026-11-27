@@ -190,3 +190,80 @@ from CTL-070 (live chart, exported 31.08.2026). Flagged: SpO2 89 or less is PURP
 without and the form's four steps with six DSY firefighter cards, confidentiality and paperwork) and a health check
 post finish. Bushfire module, burnover and health check stations live 13 Nov 2026 (PR #231). Narrated intro video
 (Lee, two takes, 2:41) added 13 Nov 2026; cache tag 20261113b.
+
+## Team Leaders group (started 21 Nov 2026; Your dashboard live, PR #305 merged 21 Nov 2026)
+
+Owner (21 Nov 2026): turn Team Leader guide topics into short modules with a Lee-narrated video and screenshots,
+starting with the dashboard. Planned set: 1 dashboard, 2 crewing gaps, 3 setting up training nights, 4 adding people
+and passwords, 5 relief cover, 6 team page photos (rosters and roster emails left until the roster move settles).
+- `/microlearning/leaders/` group page and a Team Leaders tile on the hub (`MODULE_LISTS.leaders`); pages gated at
+  leader level. The game uses its own groups, so leader modules add no questions to it.
+- `/microlearning/leaders-dashboard/`: guide sections 1 to 4 and 7. Screenshots in `img/` (page) and `video-src/`
+  (video, 2x) are of `/dashboard/` filled with INVENTED people and jobs: a Playwright script stubs `gate.js`,
+  supabase-js and `roster-data.js` and fixes the clock to Tue 24 Nov 2026 09:20 (not in the repo; rebuild from
+  `dash.js` if needed; launch Chromium with LANG=en_AU so date boxes show dd/mm/yyyy).
+- New `{ image: { src, alt, caption } }` block in `shared/module.js` (+ `figure.shot` in module.css), and
+  `protocol.source` sets the footer's "Based on ..." (default SA Ambulance Service). `make.sh` now copies any
+  jpg/png in video-src next to the scene so `scene.html` can show screenshots.
+- Owner OK'd the script ("record it", 21 Nov 2026). Lee narrated as two takes (see voice.json); intro.mp4 1:13,
+  overrides set for every sentence. Quiz, quick checks and Try it written by Claude: owner to review.
+- `/microlearning/leaders-training-nights/` (module 3, guide section 9): screenshots of `/training/` (leader view) made
+  with a stand-in for supabase-js that keeps its data in the page, so the real "Set up training nights" flow was run
+  (Cummins, fortnightly visits from Tue 2 Feb 2027, then team training from 9 Feb). Owner OK'd the script ("record
+  it", 21 Nov 2026); Lee narrated as two takes, intro.mp4 1:27. Live (PR #306, merged 21 Nov 2026). Quiz, quick checks and Try it
+  written by Claude: owner to review.
+- `/microlearning/leaders-people/` (module 4, guide sections 9 and 10) and `/microlearning/leaders-team-page/` (module 6,
+  section 9 team pages): screenshots of /access/, the training app People tab, /teams/ and /region/ with invented
+  people (stand-ins for supabase-js keep the data in the page, so adding IDs, a reset, a removal and real photo uploads
+  were run). Module 6's photos are Wikimedia Commons town photos (Coffin Bay, Port Neill, Streaky Bay; credited in
+  footerNotes and scene.html). Owner OK'd both scripts ("record both", 21 Nov 2026); intro videos 1:10 and 1:12.
+  Owner said "merge it" (21 Nov 2026) before watching the videos.
+- Linked from the user guides (21 Nov 2026): a "Team Leader training" tile on /userguides/ beside Team Leaders, a box
+  at the top of the Team Leader guide listing the 4 modules, and a "Prefer to watch?" box in guide sections 2, 9 (and
+  its Team pages part) and 10. Add a link the same way when modules 2 and 5 are built.
+- `/microlearning/leaders-gaps/` (module 2, guide section 5) and `/microlearning/leaders-relief/` (module 5, section 8):
+  screenshots of /dashboard/coverage/ with eight days of invented rosters (two groups set up in the real page, so the
+  gaps are real results) and of /dashboard/relief/ plus /dashboard/ as the relief Team Leader (banner, labelled tasks).
+  Owner OK'd both scripts ("record both", 21 Nov 2026); intro videos 1:15 and 0:57. All six Team Leader modules now
+  exist, listed in the owner's numbering order in MODULE_LISTS.leaders, and linked from the Team Leader guide.
+
+## Team Leader learning order (owner, 23 Nov 2026)
+
+Owner asked for a logical order for a new Team Leader, with Relief cover after Training nights. Order: 1 Your
+dashboard, 2 People and passwords, 3 Crewing gaps, 4 Training nights, 5 Relief cover, 6 Your team page
+(`MODULE_LISTS.leaders`). Each leader module has a `next` card at the end ("Next: Team Leader module N of 6"; the last
+points to the Team Leader guide), a new optional content key in `shared/module.js`. The videos never say a module
+number, so nothing was re-narrated. The Team Leader guide was reordered to the same path (16 sections: People moved
+from Training into Grant access, people and passwords; Your team page is its own section `#team-pages`).
+`/userguides/` has a "New Team Leader? Start here" card (leaders only) and a short VTL path (VTLs only), shown through
+`DSY_GATE.ready`. Dashboard footers (both) list leader pages in the same order with Team Leader training first; the
+home page leader links add Team Leader training. On a branch, not merged.
+- 25 Nov 2026: People and passwords (`leaders-people`) text updated for the one People page (`/access/`, the training
+  app's People tab is gone, take someone off a team with ✕ on the team chip); the `img/person.jpg` block was removed
+  from the page. Its video and the other screenshots still show "Grant access" and the old People tab: owner to say
+  whether to re-shoot and re-narrate (done the same day, see below). Relief, Dashboard and Team page modules: "Grant access" wording changed to People.
+- 25 Nov 2026, owner asked to redo the People and passwords video: new screenshots of the People page (stand-in for
+  supabase-js with invented Lower Eyre people; adding, reset and removal run for real in the page), new script (scene
+  2 One page for people, scene 5 Teams with chips and view-only clusters), Lee re-narrated (see voice.json),
+  intro.mp4?v=2 (1:08), new poster, img/teams.jpg added, img/person.jpg removed. Live (PR #363, merged 25 Nov
+  2026; new video and content checked on the live site).
+
+## Refusal against advice
+
+`/microlearning/refusal/` (26 Nov 2026): CPP-056-AO Refusal Against Advice - AO v1.0 (22 Jan 2025, no review date),
+CTL-126 VIRCA Tool, CTL-067 Consent (adult flowchart, read from the image). Panels: introduction, the two tests,
+VIRCA, three pathways (chooser) + one tile row (valid refusal steps), who can consent (CTL-067 steps, Person
+Responsible order, emergency box), "Which pathway?" checker (evaluate tested against its six DSY scenarios), what to
+write (CTL-126 PCR lines), 13-question quiz, optional practical. Three quick checks. Intro video (26 Nov 2026, owner said yes): Lee, two takes, 1:47,
+`video-src/` with overrides for every sentence; poster from 2.2 s. In MODULE_LISTS.ao. On a branch, not merged.
+
+## AR version (AO / AR switch)
+
+Pilot on hypoglycaemia (26 Nov 2026, owner asked): `/microlearning/hypoglycaemia/?scope=ar` shows the CPP-031-AR v2.1
+version (no glucagon; oral glucose, under 2 = clinical support + consult for oral gel, consult about treatment and
+transport; video kept with an AR note under it; AR quiz 9 questions; AR checker pathway). The switch is generic in
+`shared/module.js` (see README "Ambulance Responder (AR) version"). Gap analysis for all protocols:
+`.claude/references/ar-vs-ao-protocols.md`. Live (PR #378, merged 26 Nov 2026). Ron's walk-through
+(`/modules/hypoglycaemia-ao/?scope=ar`) has an AR version too: no glucagon; when oral glucose fails at 1740 the EOC
+Clinician advises transport and RV with clinical support en route (owner's choice, 26 Nov 2026); DSY-written RV with
+the Port Lincoln paramedics at Edillilie at 1805, handover at the RV. `ar.replace` swaps codes and words in the AR view.

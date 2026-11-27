@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-AU">
 <head>
-<script src="/shared/gate.js?v=20261119m" data-level="stations"></script>
+<script src="/shared/gate.js?v=20261127e" data-level="stations"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Chest pain and ACPO skills stations - DSY Training</title>
@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../training/theme.css?v=20261119m">
+<link rel="stylesheet" href="../../training/theme.css?v=20261127e">
 <style>
 /* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
    Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
@@ -92,7 +92,8 @@ table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em
    modules); CPPRO-008 Medication Checks and CPPRO-009 Oral Medication Administration (v1.0, review date June 2020 passed);
    CPPRO-001 Patient Mobility Assessment (active chest pain). Lead instructor guidance (owner, Oct 2026): GTN 300 microg
    tablet or 400 microg spray both acceptable; a patient who has used their own GTN can have the first crew dose if BP and HR
-   are within the limits, then the EOC Clinician is consulted; adequate oxygenation in chest pain = SpO2 above 94% on air,
+   are within the limits, then the EOC Clinician is consulted; station 2 uses the SAAS General Operation Cert IV Corpuls
+   task card (owner's photo, 25 Nov 2026, 12-lead changed to 4-lead by hand) in place of the D-ECG, as AOs don't do 12-leads; adequate oxygenation in chest pain = SpO2 above 94% on air,
    else nasal cannula to bring it above 94%. Patient cards and how-to-run notes are DSY-written and marked as such. */
 var SRC = {
   cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
@@ -102,6 +103,7 @@ var SRC = {
   c009: "CPPRO-009 Oral Medication Administration v1.0",
   c001: "CPPRO-001 Patient Mobility Assessment v1.1",
   lead: "DSY lead instructor",
+  card: "SAAS General Operation Cert IV task card (Corpuls)",
   dsy: "DSY-written for practice: check with your instructor"
 };
 
@@ -167,32 +169,29 @@ var STATIONS = [
   checks: ["Asked the three check questions without prompting", "Checked allergies and conscious state", "Aspirin chewed, patient sitting up", "Spray tested into the air; nozzle kept off the mouth",
     "Named the BP, pulse and PDE-5 limits", "Knew the ACPO difference: GTN only on EOC Clinician advice", "Recorded dose, route and time"] },
 
-{ id: "s2", n: 2, title: "The ECG and SpO2 on the Corpuls", mins: 20,
-  goal: "Put a 4-lead ECG and the SpO2 probe on a partner, get a clean trace, print a diagnostic strip, and mark an event.",
-  kit: ["Corpuls3 (charged) with ECG leads, SpO2 probe and spare paper", "In-date ECG electrodes", "Hand towel, razor (don't shave anyone tonight)", "Alcohol wipes", "A volunteer happy to bare their chest, or a manikin"],
+{ id: "s2", n: 2, title: "Know your Corpuls: 4-lead ECG, SpO2 and NIBP", mins: 20,
+  goal: "Put a 4-lead ECG, SpO2 and the NIBP cuff on a partner, get a clean trace, find your way round the Corpuls, and log an event. AOs don't do or read 12-lead ECGs.",
+  kit: ["Corpuls3 (charged) with ECG leads, SpO2 probe, NIBP cuff and spare paper", "In-date ECG electrodes", "Hand towel", "A volunteer happy to bare their chest, or a manikin"],
   blocks: [
     { h: "Electrodes on", src: ["cssg"], steps: [
       "PPE. Check the electrodes are in date: out of date ones may not work.",
-      "Clean, dry skin: wipe off moisture or dirt with a towel. Excess hair may need shaving.",
+      "Clean, dry skin: wipe off moisture or dirt with a towel. Excess hair may need shaving (don't shave anyone tonight).",
       "Clip the leads onto the electrode studs before you put them on the patient. Peel the backing and check the gel is moist.",
       "Press around the edge of the pad, not on the centre.",
       "White (RA): just under the right collarbone. Black (LA): just under the left collarbone.",
       "Red (LL): under the ribs on the left side of the abdomen. Green (RL): under the ribs on the right side."
     ] },
-    { h: "Monitor mode", src: ["cssg"], steps: [
-      "Green power button. The Corpuls3 starts in AED mode: wait for the screen to load, then press the soft key under Monitor.",
+    { h: "Start up and the 4-lead", src: ["cssg", "card"], steps: [
+      "Green power button. The Corpuls3 starts in AED mode: wait for the screen to load, then press the soft key under Monitor. This is the default screen.",
       "The metronome still sounds: press metronome off (bottom left soft key).",
-      "The screen shows leads I, II and III. Lead II is the main monitoring lead.",
-      "Look for a flat baseline and little artefact. Lots of wandering: check the leads and try again."
+      "The screen shows leads I, II and III. Lead II is the main monitoring lead. Turn the Jog dial to move between the leads.",
+      "Look for a flat baseline and little artefact. Lots of wandering: check the leads and try again.",
+      "Print the 4-lead: the print button on the default screen prints a running strip. It shows the rhythm for trends; it isn't diagnostic."
     ] },
-    { h: "Print it", src: ["cssg"], steps: [
-      "Diagnostic ECG: press the D-ECG soft key, patient sitting still. When Start lights up, press it.",
-      "Enter age and sex only (confidentiality), then Okay. When Print turns black, print: a 6-lead strip (I, II, III, aVR, aVL, aVF).",
-      "The print button on the home screen prints a running strip for trends only: it isn't diagnostic.",
-      "Corpuls1: no printer, no D-ECG, lead II only. Not for diagnosis."
-    ] },
-    { h: "Only 4 leads", src: ["cssg"], tone: "warn", list: [
-      "A 4-lead ECG gives a limited view of the heart. If you have clinical concerns, request clinical support for a 12-lead ECG"
+    { h: "Only 4 leads", src: ["lead"], tone: "warn", list: [
+      "The AO 4-lead ECG shows the rate and rhythm only. It can't show a STEMI, so a normal-looking trace doesn't rule out a heart attack",
+      "AOs don't do or read 12-lead ECGs. If you're worried, treat the patient per the protocol and request clinical support",
+      "Corpuls1: no printer, lead II only."
     ] },
     { h: "Artefact", src: ["cssg"], list: [
       "Patient moving, dry or loose electrodes, electrodes in the wrong place, loose cable connections",
@@ -203,20 +202,33 @@ var STATIONS = [
       "A good signal: the pleth wave reaches the top and bottom grid lines. A small, irregular wave: the reading isn't accurate",
       "Poor signal: nail polish, cold or shocked patients, movement, bright light"
     ] },
-    { h: "Mark an event", src: ["cssg"], list: [
+    { h: "NIBP", src: ["card", "cssg", "cpp007"], steps: [
+      "Cuff on your partner's bare upper arm and take a BP with the NIBP.",
+      "Set the NIBP to Auto and select an interval (1 to 60 minutes).",
+      "Chest pain: repeat obs every 3 to 5 minutes after each GTN dose, so pick an interval to match."
+    ] },
+    { h: "Find your way round", src: ["card"], list: [
+      "Use the soft keys to change the 'views': find 4 different views, then come back to the default screen",
+      "Find and use each shortcut key, and say what it does",
+      "Use the Jog dial to go to Systems > Alarms > Autolimits",
+      "Take a screenshot",
+      "Find the trend screen and print a trend summary"
+    ] },
+    { h: "Events and the mission summary", src: ["cssg", "card"], list: [
       "Press Event to time-stamp the ECG",
-      "Press and hold Event for the list of treatments, scroll with the Jog dial and push to select (for example, when you give GTN)",
-      "After the job: hold the Browser key 3 seconds for the operational log and the event summary (Corpuls3 only)"
+      "Press and hold Event for the SAAS list of events, scroll with the Jog dial and push to select (for example, when you give GTN)",
+      "After the job: hold the Browser key 3 seconds for the operational log and the event summary, then print the mission summary (Corpuls3 only)"
     ] },
     { h: "How to run it", src: ["dsy"], steps: [
       "Volunteer sitting up in a chair, as a chest pain patient would be.",
-      "Put the electrodes and SpO2 on, go to monitor mode, silence the metronome.",
+      "Put the electrodes, SpO2 and NIBP cuff on, start in the default screen, silence the metronome.",
       "Wiggle a lead and ask your volunteer to move: see the artefact. Fix it.",
-      "Print a D-ECG with age and sex only. Mark a 'GTN' event. Swap roles."
+      "Print a 4-lead strip. Set the NIBP to Auto. Log a 'GTN' event, take a screenshot, print a trend and a mission summary. Swap roles."
     ] }
   ],
-  checks: ["Electrodes in date, skin dry and clean", "Leads clipped on before applying; pressed round the edge", "White, black, red, green in the right places", "Monitor mode and metronome off",
-    "Spotted and fixed artefact", "D-ECG printed with age and sex only", "SpO2 pleth wave checked", "Event marked"] },
+  checks: ["Electrodes in date, skin dry and clean", "Leads clipped on before applying; pressed round the edge", "White, black, red, green in the right places", "Default screen and metronome off",
+    "Moved between leads with the Jog dial", "Spotted and fixed artefact", "4-lead strip printed", "SpO2 pleth wave checked", "NIBP taken and set to Auto with an interval",
+    "Found 4 views, the shortcut keys and the alarm autolimits", "Event logged from the SAAS list", "Screenshot, trend summary and mission summary printed"] },
 
 { id: "s3", n: 3, title: "Oxygen: how much, and how", mins: 20,
   goal: "Set up the Inhalo cylinder and each delivery device at the right flow, and match the oxygen to the patient: chest pain to keep SpO2 above 94%, ACPO high flow.",
@@ -477,7 +489,7 @@ function setupPage(print) {
   f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
     "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
     "Station 1: training stock only, labelled TRAINING and kept apart from operational stock: aspirin, GTN tablets, a GTN spray.",
-    "Station 2: the Corpuls3 charged, ECG leads, SpO2 probe, in-date electrodes, spare printer paper.",
+    "Station 2: the Corpuls3 charged, ECG leads, SpO2 probe, NIBP cuff, in-date electrodes, spare printer paper.",
     "Station 3: an Inhalo cylinder, nasal cannula, face mask and non-rebreather. The vehicle, if you'll practise the D-size change.",
     "Station 4: stethoscope, a bed or couch, the carry chair and the stretcher with clear space between them.",
     "Leave this page open on one phone so the group can find the finish."

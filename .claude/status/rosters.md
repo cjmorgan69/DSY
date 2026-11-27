@@ -118,7 +118,7 @@ Rostering" button (preview, then the system builds the PDF with full names and I
 Roster" <EProsters@dsytraining.com> with the manager copied and Reply-To the manager, sets the sent cut-off in the
 same step, and keeps the PDF in the change log; Print stays as a backup). Then a weekly scheduled send per team that
 does the same at a set time, so later changes follow the existing rules (more than 24 h away: change email to
-Country Rostering; within 24 h: the person is asked to phone). Trial clusters send to the trial address only. The
+Country Rostering; within 24 h: the person is asked to phone; the pop-up has a tap-to-call button for 1300 850 985 and a thank-you line, 26 Nov 2026; user guide updated). Trial clusters send to the trial address only. The
 owner is checking that Country Rostering accept rosters from EProsters@dsytraining.com. Still to decide: send day and
 time, the period each send covers, a reminder to the manager beforehand, pausing a week, same for all teams or not.
 Schedule decisions (owner, 16 Nov 2026): each team's manager sets up its own schedule in Manager controls ("Schedule
@@ -434,12 +434,6 @@ Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id)
   its Apps Script; operations page reads Lower Eyre and Central Eyre from Supabase and West Coast from its sheet; the
   Lower Eyre and Central Eyre manager dashboards read Supabase only (numbers match the old sheet; the team column
   order now follows teams.js). A second catch-up is scheduled for 07:26 UTC.
-
-## 7-day roster table (18 Nov 2026)
-
-Owner asked for the 14-day roster table to show 7 days. `shared/roster.js`: the table opens on today plus 6 days, the
-tab and launch button say "7 days", and the top buttons are "Previous 7 days" / "Next 7 days" (step 7 days). Roster
-user guide section updated to match.
 - Second catch-up (18 Nov 2026, 08:07 UTC, by the scheduled task): nothing new or cancelled on the old pages. One
   difference (Lou Rossi, Elliston, Fri 20 Nov) was an edit Lou made on the NEW roster at 6:23 pm, so the new roster was
   kept. Already in use: Jay Forsyth (Elliston) and Lauren Foster (Tumby Bay) booked 2 shifts each on the new roster;
@@ -475,3 +469,63 @@ user guide section updated to match.
   in a fresh browser: the West Coast pages ask for sign-in; the operations page and the West Coast manager dashboard
   now read only Supabase (no page reads an Apps Script any more). "Ben Dover" (100100) left active (owner, 19 Nov
   2026). All 12 teams are on the new roster; what remains is stage 8 (tidy up).
+
+## 7-day roster table (18 Nov 2026)
+
+Owner asked for the 14-day roster table to show 7 days. `shared/roster.js`: the table opens on today plus 6 days, the
+tab and launch button say "7 days", and the top buttons are "Previous 7 days" / "Next 7 days" (step 7 days). Roster
+user guide section updated to match. Live (PR #266, merged 18 Nov 2026).
+
+## Placeholder shifts without a change email (20 Nov 2026)
+
+Owner asked to add LEP40 placeholder shifts before the cut-off without emailing Country Rostering (they had reset
+Tumby Bay's sent status to do it; the cut-off was Wed 25 Nov 08:00). `roster_book` gets `p_no_email` (migration
+`roster_placeholder_no_email`, `supabase/roster-placeholder-no-email.sql`, applied by Claude): honoured only for a
+placeholder booked by a manager or TL; the shift is logged with `no_email: true` and no email is queued. Page: a
+"Don't email Country Rostering" tick under the "Not on the list" name box (`roster-supabase.js`). Edits and cancels,
+and crew bookings, still follow the normal rules. Tested in a rolled-back run on Summer Bay.
+
+## Roster user guide rewritten for sign-in (23 Nov 2026, owner asked)
+
+All 12 teams are on the Supabase roster, so `/userguides/rosters/` is now two parts, 16 sections. Part 1 Crew members:
+getting started (sign-in, name shown, Switch person, level saved to the account, Home screen), reminders, booking,
+reading the roster, changing or cancelling, changes to a sent roster (phone when no Country Rostering address), team
+messages (old sheet messages not carried over), help. Part 2 Roster managers and Team Leaders: manager controls and
+booking for others (no password, Not on the list, Don't email Country Rostering), sending (print settings kept as a
+backup), weekly schedule, after it's sent and the change log, correcting the cut-off, removing messages, team hours,
+trial rosters and Summer Bay. Dropped: typed name, saved roster on the device, manager password, the PDF view and Mark
+as sent, the Google Sheet Change Log. Anchors kept where the topic stayed; `#new-roster`, `#new-managers`, `#opening`,
+`#print`, `#mark-sent` are gone. On a branch, not merged (PR #339).
+
+## Pager task after the switch (19 Nov 2026)
+
+- The scheduled task "DSY pager capture" (claude.ai cloud scheduled task, was "DSY pager and roster capture") now runs
+  at 5:35 am, 11:35 am and 5:35 pm Adelaide (owner asked for 6, 12 and 6). It only captures the paging list: the
+  Google Sheet roster copy step was removed, as every team books on the new roster.
+- `paging_jobs_by_member(_detail)` read `roster_shifts` (see dashboard.md).
+- Still copying from the old sheets: the edge function `roster-sync` (every 2 hours into `roster_bookings`). Stage 8:
+  stop it once nothing reads `roster_bookings` (`member_contribution_v2` still reads it for teams not passed as moved).
+- 23 Nov 2026: Wudinna (5652) was not in the task's postcode list, so WU jobs stopped after 13 Nov (earlier ones came
+  in through neighbouring postcodes). Added a Part C: 5651 Kyancutta, 5652 Wudinna, 5653 Yaninee, 5654 Minnipa,
+  5671 Port Kenny. A test load found a WU181 Minnipa job (21 Nov) not yet in `paging_jobs`.
+
+## Edit sent cut-off back in Manager controls (23 Nov 2026, owner asked)
+
+The new layout hid "Edit sent cut-off" (left over from the PDF view's Mark as sent). On signed-in (Supabase) rosters
+it is shown again, as the roster guide section 13 says, and it also works when there is no cut-off (it then sets a
+new one, `roster_set_sent` with `p_editing` false). Forward only, as before; Reset first to go back. Apps Script
+pages unchanged. Live (PR #343, merged 23 Nov 2026).
+- Follow-up (owner, 23 Nov 2026): the four buttons below the folds (Edit sent cut-off, Team hours, Booking list,
+  Reset sent status) are an even 2-by-2 grid with more room under Schedule set-up (`.manager-buttons` in
+  `roster.css`, class added in `tidyManagerControls`). Order: Booking list, Team hours, Edit sent cut-off, Reset
+  sent status (CSS `order`). Signed-in rosters only. On a branch, not merged.
+
+## Notes on the Country Rostering PDF (25 Nov 2026)
+
+- Owner asked for free-text notes on the sent roster. "Send roster to Country Rostering" gets an optional "Notes for
+  Country Rostering" box (up to 600 characters). The notes are printed in a Notes box under the table on the LAST page
+  of the PDF (page 2 for a 7-day roster; that page's rows are made a little shorter to fit), added to the email under
+  "Notes:", and kept in the change log entry. Changing the notes after Preview means Preview again before Send now.
+  The box is cleared after a send. Scheduled (weekly) sends have no notes.
+- Page change on a branch, not merged. Edge function `roster-send` (index.ts, pdf.ts) to be deployed by Claude when
+  the PR merges (deployed version 5 matched main before the change; without notes the PDF and email are unchanged).

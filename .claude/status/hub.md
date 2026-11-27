@@ -92,3 +92,51 @@ Move up, Remove; files under `<group id>/slides/`). Team Page: leaders get an "E
 Banner position (owner, 18 Nov 2026: Kimba's galah lost its head): column `groups.banner_y` (0 top to 100 bottom, null
 centre) sets the banner photo's `object-position`; slider with a live preview in the Region page team form (saves on
 release; a new upload resets it). Kimba set to 10. Merged (PR #278, 18 Nov 2026), checked live.
+
+## User guide links (21 Nov 2026)
+Owner asked where the user guides are linked. Added: a "User guides" tile in Tools on the main page (/userguides/), "How to
+use this" (Getting started) in the team page header, and in the training app header "How to use this" for members or
+"Leader guide" (/userguides/leaders/#training) for leaders. Already linked before: sign-in (Getting started), dashboard
+(Team Leader guide), /hub/run/ (Running a session), MDT (MDT guide), roster manager pages (roster guide). Crew roster
+pages and Learn on your own still have no guide link.
+
+## Region page: cluster filter and banner position (22 Nov 2026)
+Owner: filter the Region page by cluster, and moving the banner photo did not keep. Supabase logs showed the slider saves
+were reaching `groups.banner_y` (Kimba 27); the Region page tiles ignored the position, so it looked lost. Now: tiles use
+`banner_y`; the slider also saves 0.8 s after the last move, checks a row came back (no silent RLS miss) and says "Saved".
+Cluster chips (All, Lower Eyre, Central Eyre, West Coast) filter the Teams tiles from `groups.cluster`; the choice is kept
+on the device (`dsy-region-cluster`), starting on the leader's own `profiles.cluster`. Tested with stand-in data. Merged (PR #331, 22 Nov 2026).
+Banner title (owner, 22 Nov 2026): "Eyre Peninsula" (the region name, `region_info.name`, changed from "Lower Eyre
+Peninsula") when All clusters is chosen, otherwise the cluster's name with "Cluster overview". Merged (PR #332, 22 Nov 2026).
+
+Session name first for members (owner, 22 Nov 2026): members see the session's name (`sessions.topic`, "Session name"
+in the session form) and only the lesson title when no name is set: training app member list, Team Page "Next training",
+Region tile, and the push reminder title (`session_reminder_claim()` in `supabase/session-reminders.sql`, applied on
+merge). With several lessons, members see the summaries only (facilitators also see
+each title). Leaders' views still lead with the lessons. Merged (PR #333, 22 Nov 2026); SQL applied.
+
+Lesson search (owner, 22 Nov 2026), training app: a search box above "Add a lesson" in the session form narrows the
+list (title and summary, every word must match; Enter adds the only match and does not save the form), and a search box
+on the Lessons tab hides lessons that do not match (kept while the tab is open). Tested with stand-in data. Merged (PR #334, 22 Nov 2026).
+Region page tile (owner, 22 Nov 2026): "Manager dashboard" (old Lower Eyre roster manager dashboard) is now "Team Leader
+Dashboard" and opens `/dashboard/`. Merged (PR #335, 22 Nov 2026).
+
+## Names: Training home and Team training (owner, 25 Nov 2026)
+
+Buttons and links that said "DSY home" now say **Training home** (dashboards, car dash, dispatch, training app header,
+user guides) and "Training app" now says **Team training** (dashboards, team dashboard, People page, leader guide,
+Team Leader modules' text). The home page's browser tab title is "Training home - DSY Training" (heading unchanged:
+DSY Training). The feedback category "Training app" is now "Team training" (older feedback rows keep the old word).
+Not changed: screenshots and narrated videos in the Team Leader modules (Your dashboard hero picture, Training nights
+video) still show the old labels. Live (PR #367, merged 25 Nov 2026; home page and Team Training checked, no errors).
+
+## Training home: links trimmed (owner, 25 Nov 2026)
+
+The small links at the bottom of the home page were removed except **Dashboard** (still shown only to leaders). Gone:
+Sign in / Sign out (signing in lands on the Team page, which has Sign out), Team Leader training, People, and the
+hidden "Other groups and pages" box. Its links (All AO walk-throughs, Paramedic, Rural ED, GP clinic, Rural nursing
+microlearning, Classic hub) moved to an "Other pages" line under the footer of both dashboards; AR course was
+already in the dashboard footer. Live (PR #368, merged 25 Nov 2026; checked in a fresh browser).
+- "Open training app" on the dashboards' Training sessions panel now reads "Open Team training"; other on-screen
+  "the training app" wording (dashboards, team dashboard, dispatch sign-in, user guides, Team Leader module text) says
+  Team training (25 Nov 2026). Live (PR #369, merged 25 Nov 2026).

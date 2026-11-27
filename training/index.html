@@ -9,17 +9,65 @@
 <link rel="icon" type="image/png" sizes="192x192" href="../shared/dsy-favicon-192.png">
 <link rel="apple-touch-icon" href="../shared/dsy-touch-180.png">
 <meta name="theme-color" content="#1f5b43">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Training">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="theme.css?v=20261119m">
+<link rel="stylesheet" href="theme.css?v=20261127e">
+<style>
+/* AR course card (member view): the student's AR course dates, separate from team sessions. */
+.ar-card { border-left: 5px solid var(--brand); }
+.ar-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: .4rem .8rem; }
+.ar-head h2 { font-size: 1.15rem; }
+.ar-list { display: flex; flex-direction: column; }
+.ar-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .8rem; padding: .65rem 0; border-top: 1px solid var(--line); }
+.ar-row .what { flex: 1 1 9rem; min-width: 0; display: flex; flex-direction: column; gap: .1rem; }
+.ar-row .t { font-weight: 600; overflow-wrap: anywhere; }
+.remind-row { margin: -.2rem 0 .8rem; }
+.attending { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .4rem; }
+.attending > span { flex-basis: 100%; text-align: right; }
+.attending .btn { white-space: nowrap; }
+@media (max-width: 480px) { .attending { width: 100%; } .attending > span { text-align: left; } .attending .btn { flex: 1 1 auto; padding-inline: .7rem; } }
+.ar-row .act { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+.ar-more > summary { cursor: pointer; font-weight: 600; color: var(--brand); padding: .3rem 0; }
+/* Month view (owner, 22 Nov 2026): desktop only; drag a session to another day to copy it (no bookings) for a team. */
+.wrap.wide { width: min(1240px, 100%); }
+.mhead { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.mhead h2 { font-size: 1.25rem; margin-right: auto; }
+.month { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+.month .dh { padding: .45rem .5rem; font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--line); background: var(--bg); }
+.month .day { min-height: 7.2rem; padding: .3rem; border-top: 1px solid var(--line); border-left: 1px solid var(--line); display: flex; flex-direction: column; gap: .25rem; min-width: 0; }
+.month .day:nth-child(7n+1) { border-left: 0; }
+.month .day.out { background: color-mix(in srgb, var(--bg) 70%, var(--surface)); }
+.month .day.out .dn { color: var(--muted); opacity: .6; }
+.month .day.today .dn { background: var(--brand); color: var(--brand-ink); }
+.month .day.over { background: var(--brand-soft); outline: 2px dashed var(--brand); outline-offset: -3px; }
+.month .dn { align-self: flex-start; font-size: .82rem; font-weight: 700; min-width: 1.6rem; text-align: center; padding: .05rem .35rem; border-radius: 999px; }
+.ms { display: block; width: 100%; text-align: left; border: 1px solid color-mix(in srgb, var(--brand) 30%, var(--line)); border-left: 4px solid var(--brand); border-radius: 8px; padding: .25rem .4rem; background: var(--brand-soft); color: var(--ink); font: inherit; font-size: .78rem; line-height: 1.25; cursor: pointer; }
+.ms.team { border-left-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.ms.past { opacity: .6; }
+.ms.ar { border-left-color: #7c3aed; background: color-mix(in srgb, #7c3aed 10%, var(--surface)); border-color: color-mix(in srgb, #7c3aed 30%, var(--line)); text-decoration: none; color: inherit; }
+.chip.ar { background: color-mix(in srgb, #7c3aed 14%, var(--surface)); color: #7c3aed; }
+@media (prefers-color-scheme: dark) { .ms.ar { border-left-color: #a78bfa; } .chip.ar { color: #c4b5fd; } }
+.ms[draggable="true"] { cursor: grab; }
+.ms.dragging { opacity: .35; }
+.ms b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms span { display: block; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms .need { color: var(--danger); }
+.copybox { border: 2px solid var(--brand); }
+.psearch{width:100%;font:inherit;padding:.6rem .8rem;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);margin:.2rem 0 .6rem}
+li[hidden]{display:none!important}
+</style>
 </head>
 <body>
 <div class="wrap" id="app"><p class="muted">Loading...</p></div>
 <div id="toast" class="toast" hidden></div>
 
-<script src="config.js?v=20261119m"></script>
-<script src="sa-dates.js?v=20261119m"></script>
+<script src="config.js?v=20261127e"></script>
+<script src="pwreveal.js?v=20261127e" defer></script>
+<script src="/shared/reminders.js?v=20261127e" defer></script>
+<script src="sa-dates.js?v=20261127e"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function () {
@@ -31,8 +79,9 @@
   var S = {
     user: null, profile: null, tab: location.hash === "#lessons" ? "lessons" : "calendar", view: null,
     reflections: {}, attFilter: null, attSession: null, groups: [], lessons: [], sessions: [], bookings: [], profiles: [], memberships: [],
-    mySessions: [], myBookings: {}, filter: "all", typeFilter: "all", showPast: false, authMode: "in", detail: null, lessonEdit: null, personEdit: null,
-    shared: [], files: [], shares: [], roster: [], rosterSession: null, lessonView: null, memberTab: "sessions", delSession: null, cluster: null, plan: null
+    mySessions: [], myBookings: {}, filter: "all", typeFilter: "all", showPast: false, authMode: "in", detail: null, lessonEdit: null,
+    shared: [], files: [], shares: [], roster: [], rosterSession: null, lessonView: null, memberTab: "sessions", delSession: null, cluster: null, plan: null,
+    calView: null, month: null
   };
 
   /* ---------- helpers ---------- */
@@ -89,7 +138,7 @@
   function renderAuth() {
     var up = S.authMode === "up";
     $app.innerHTML =
-      '<div class="auth stack"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>Sign in to see your sessions and book a spot.</p></div></div>" +
+      '<div class="auth stack"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>Sign in to see your sessions and let us know if you're coming.</p></div></div>" +
       '<form class="panel pad stack" data-form="auth" autocomplete="on">' +
       (up ? '<label>Your name<input id="f-name" name="name" autocomplete="name" required></label>' : "") +
       '<label>' + (up ? "Ambulance ID number" : "Ambulance ID number (or email)") + '<input id="f-email" name="email" autocomplete="username" autocapitalize="none" spellcheck="false" inputmode="' + (up ? "numeric" : "text") + '" required></label>' +
@@ -107,8 +156,11 @@
       q(sb.from("upcoming_sessions").select("*").gte("session_date", todayStr()).order("session_date").order("start_time")),
       q(sb.from("bookings").select("session_id,status").eq("member_id", S.user.id)),
       q(sb.from("lessons").select("*").order("created_at", { ascending: false })),
-      q(sb.from("lesson_files").select("*").order("created_at"))
+      q(sb.from("lesson_files").select("*").order("created_at")),
+      /* AR course (21 Nov 2026): a student in an active AR course group sees its dates here too. Never blocks the calendar. */
+      sb.rpc("course_home").then(function (x) { return x.error ? null : x.data; }, function () { return null; })
     ]).then(function (r) {
+      S.ar = r[4] && r[4].enrolled ? r[4] : null;
       S.mySessions = r[0]; S.myBookings = {};
       r[1].forEach(function (b) { S.myBookings[b.session_id] = b.status; });
       S.shared = r[2]; S.files = r[3];
@@ -126,12 +178,44 @@
       q(sb.from("attendance").select("*")),
       q(sb.from("lesson_files").select("*").order("created_at")),
       q(sb.from("lesson_shares").select("*")),
-      q(sb.from("session_reflections").select("*"))
+      q(sb.from("session_reflections").select("*")),
+      /* relief cover (owner, 22 Nov 2026): this leader's own covers, so leader-led nights in a cover default to the reliever */
+      sb.from("leader_relief").select("*").eq("leader_id", S.user.id).is("ended_at", null).then(function (x) { return x.error ? [] : x.data || []; }),
+      /* Volunteer Team Leaders, one per team (owner, 22 Nov 2026) */
+      sb.from("team_vtls").select("group_id,member_id").then(function (x) { return x.error ? [] : x.data || []; }),
+      /* AR course days on the leader calendar (owner, 25 Nov 2026): read-only, from the course_* tables. Never blocks. */
+      loadArDays()
     ]).then(function (r) {
+      S.covers = r[10]; S.vtls = r[11]; S.arDays = r[12] || [];
       S.reflections = {}; r[9].forEach(function (x) { S.reflections[x.session_id] = x.notes; });
       S.groups = r[0]; S.lessons = r[1]; S.sessions = r[2]; S.bookings = r[3];
       S.profiles = r[4]; S.memberships = r[5]; S.attendance = r[6]; S.files = r[7]; S.shares = r[8];
     });
+  }
+
+  function loadArDays() {
+    var none = function () { return []; }, ok = function (x) { if (x.error) throw x.error; return x.data || []; };
+    return Promise.all([
+      sb.from("course_workshops").select("id,cohort_id,day_number,date,start_time,end_time,location,capacity").eq("cancelled", false).then(ok),
+      sb.from("course_cohorts").select("id,name,course_name,archived").then(ok),
+      sb.from("course_days").select("cohort_id,day_number,title").then(ok),
+      sb.from("course_bookings").select("workshop_id,status").then(ok)
+    ]).then(function (r) {
+      var co = {}, dt = {}, bk = {};
+      r[1].forEach(function (c) { if (!c.archived) co[c.id] = c; });
+      r[2].forEach(function (d) { dt[d.cohort_id + ":" + d.day_number] = d.title; });
+      r[3].forEach(function (b) { if (b.status === "booked") bk[b.workshop_id] = (bk[b.workshop_id] || 0) + 1; });
+      return r[0].filter(function (w) { return co[w.cohort_id]; }).map(function (w) {
+        return { ar: true, id: w.id, session_date: w.date, start_time: w.start_time, end_time: w.end_time, location: w.location,
+          day: w.day_number, title: dt[w.cohort_id + ":" + w.day_number] || "", group: co[w.cohort_id].name, booked: bk[w.id] || 0, capacity: w.capacity };
+      });
+    }).catch(none);
+  }
+  function arTime(a) { return a.start_time ? hhmm(a.start_time) + (a.end_time ? " to " + hhmm(a.end_time) : "") : "Time to be set"; }
+  function arLabel(a) { return "AR course · Day " + a.day + (a.title ? ": " + a.title : ""); }
+  function arShown(t, past) {
+    if (!(S.filter === "all" || S.filter === "ar") || S.typeFilter !== "all") return [];
+    return (S.arDays || []).filter(function (a) { return past || a.session_date >= t; });
   }
 
   function load() {
@@ -154,7 +238,7 @@
 
   /* ---------- member view ---------- */
   function header(sub) {
-    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row"><a class="link" href="../">DSY home</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../region/">Region</a>' : "") + '<a class="link" href="../teams/">Team page</a><button class="link" data-act="signout">Sign out</button></div></header>';
+    return '<header class="top"><div class="brand"><div class="brand-icon" aria-hidden="true">+</div><div><h1>' + esc(C.appName) + "</h1><p>" + esc(sub) + '</p></div></div><div class="row"><a class="link" href="../">Training home</a>' + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../access/">People</a><a class="link" href="../region/?mine=1">Region</a>' : '<a class="link" href="../teams/">Team page</a>') + (S.profile && S.profile.role === "leader" ? '<a class="link" href="../userguides/leaders/#training">Leader guide</a>' : '<a class="link" href="../userguides/start/">How to use this</a>') + '<button class="link" data-act="signout">Sign out</button></div></header><div class="dsy-reminders remind-row"></div>';
   }
 
   function renderMember() {
@@ -169,22 +253,89 @@
     $app.innerHTML = html + (S.memberTab === "shared" && S.shared.length ? renderSharedList() : renderMemberSessions());
   }
 
+  /* ---------- AR course card in the member calendar (bookings and roll live in the course_* tables) ---------- */
+  var AR_ATT = { present: "Attended", late: "Attended (late)", left_early: "Left early", absent: "Marked absent" };
+  function arDayState(day) {
+    var st = "";
+    (S.ar.workshops || []).forEach(function (w) {
+      if (w.day !== day) return;
+      if (w.attended === "present" || w.attended === "late") st = "done";
+      else if (st !== "done" && w.my && !w.cancelled && w.date >= todayStr()) st = w.my;
+    });
+    return st;
+  }
+  function arRow(w, title) {
+    var act, full = w.capacity != null && w.booked >= w.capacity;
+    var cons = !!S.arExtra[w.day] && w.day !== 0;
+    if (w.attended) act = '<span class="chip' + (w.attended === "absent" ? "" : " good") + '">' + AR_ATT[w.attended] + "</span>";
+    else if (w.my === "confirmed") act = '<span class="chip good">Booked</span>' + (w.can_cancel ? '<button class="btn danger small" data-act="arcancel" data-id="' + w.id + '">Cancel</button>'
+      : '<span class="small muted">Too close to cancel here: tell your facilitator</span>');
+    else if (w.my === "waitlist") act = '<span class="chip warn">Waiting list #' + (w.my_place || 1) + '</span><button class="btn ghost small" data-act="arcancel" data-id="' + w.id + '">Leave list</button>';
+    else if (full) act = '<span class="chip warn">Full</span><button class="btn ghost small" data-act="arwait" data-id="' + w.id + '">Join waiting list</button>';
+    else act = '<button class="btn small" data-act="arbook" data-id="' + w.id + '">Book</button>';
+    var when = w.start ? hhmm(w.start) + (w.end ? " to " + hhmm(w.end) : "") : "Time to be confirmed";
+    return '<li class="ar-row">' + tile(w.date) + '<div class="what"><span class="t">' + (w.day === 0 ? esc(title[0] || "Induction") : "Day " + w.day + (title[w.day] ? " · " + esc(title[w.day]) : "")) + (cons ? ' <span class="chip">Extra</span>' : "") + "</span>" +
+      '<span class="small muted">' + when + (w.location ? " - " + esc(w.location) : "") + "</span></div>" + '<div class="act">' + act + "</div></li>";
+  }
+  function renderArCard() {
+    if (!S.ar) return "";
+    var a = S.ar, today = todayStr(), title = {}, nums = {};
+    S.arExtra = {};
+    (a.days || []).forEach(function (d) { title[d.day] = d.title; nums[d.day] = 1; if (d.extra) S.arExtra[d.day] = true; });
+    var up = (a.workshops || []).filter(function (w) { return w.date >= today && !w.cancelled; });
+    up.forEach(function (w) { nums[w.day] = 1; });
+    // Consolidation days (extra) don't count towards finishing the course.
+    var core = Object.keys(nums).filter(function (n) { return !S.arExtra[n]; });
+    var total = a.cohort.total_days || core.length;
+    var done = core.filter(function (n) { return arDayState(+n) === "done"; }).length;
+    var mine = up.filter(function (w) { return w.my; });
+    var open = up.filter(function (w) { return !w.my && !arDayState(w.day); });
+    var html = '<section class="panel pad stack ar-card"><div class="ar-head"><div><span class="eyebrow">Your course</span><h2>' + esc(a.cohort.course_name || "Ambulance Responder Course") + "</h2></div></div>";
+    html += mine.length ? '<ul class="ar-list">' + mine.map(function (w) { return arRow(w, title); }).join("") + "</ul>"
+      : '<p class="small muted">' + (open.length ? "Nothing booked yet. Pick your dates below." : done >= total && total ? "All course days done. Well done." : "No dates to book yet. Your facilitator will add them.") + "</p>";
+    if (open.length) {
+      html += '<details class="ar-more"' + (S.arMore || !mine.length ? " open" : "") + '><summary>Dates to book (' + open.length + ")</summary>" +
+        '<ul class="ar-list">' + open.map(function (w) { return arRow(w, title); }).join("") + "</ul></details>";
+    }
+    html += '<p class="small muted ar-forms">Forms from your welcome email: <button class="link small" type="button" data-act="arform" data-k="vendor">Vendor form</button> · ' +
+      '<button class="link small" type="button" data-act="arform" data-k="cover">Ambulance Cover application</button></p>';
+    return html + '<a class="link small" href="../ar/course/">All course days, attendance and progress</a></section>';
+  }
+
+  /* Blank course forms stored in the database (course_form(): any signed-in user). Downloads as a PDF file. */
+  function downloadForm(key) {
+    return sb.rpc("course_form", { p_key: key }).then(function (r) {
+      if (r.error) throw r.error;
+      if (!r.data) throw new Error("That form isn't available yet. Ask your facilitator.");
+      var bin = atob(r.data.b64), bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      var url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" })), a = document.createElement("a");
+      a.href = url; a.download = r.data.filename; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+    });
+  }
+  function arCall(fn, args, msg) {
+    return sb.rpc(fn, args).then(function (r) { if (r.error) throw r.error; toast(msg); return refresh(); }).catch(fail);
+  }
+
   function renderMemberSessions() {
-    var rows = S.mySessions;
-    if (!rows.length) return '<div class="panel empty">No upcoming sessions yet. If you expected to see some, ask your team leader to add you to your team.</div>';
-    return '<ul class="panel list">' + rows.map(function (s, i) {
-      var booked = S.myBookings[s.id] === "booked", mine = s.is_facilitator && s.session_type === "team";
-      var title = s.lesson_title || s.topic;
+    var rows = S.mySessions, card = renderArCard();
+    if (!rows.length) return card + '<div class="panel empty">No upcoming ' + (card ? "team " : "") + 'sessions yet. If you expected to see some, ask your team leader to add you to your team.</div>';
+    return card + '<ul class="panel list">' + rows.map(function (s, i) {
+      var reply = S.myBookings[s.id], mine = s.is_facilitator && s.session_type === "team";
+      /* members see the session name only; the facilitator also sees the lessons (owner, 23 Nov 2026) */
+      var title = s.is_facilitator ? (s.topic || s.lesson_title) : s.topic;
       return '<li><div class="item' + (i === 0 ? " next" : "") + '">' + tile(s.session_date) +
         '<div class="what"><span class="t">' + (title ? esc(title) : '<span class="muted">Topic to be confirmed</span>') + "</span>" +
         '<span class="small muted">' + timeRange(s) + (s.location ? " - " + esc(s.location) : "") + "</span>" +
         (ledBy(s) ? '<span class="small muted">' + esc(ledBy(s)) + "</span>" : "") +
         '<span class="row">' + groupChip({ name: s.group_name, type: s.group_type }) + typeChip(s.session_type) + (mine ? '<span class="chip good">You are facilitating</span>' : "") + "</span>" +
-        (s.lessons && s.lessons.length > 1 ? s.lessons.map(function (l) { return '<span class="small muted"><strong>' + esc(l.title) + "</strong>" + (l.summary ? " - " + esc(l.summary) : "") + "</span>"; }).join("")
+        (s.is_facilitator && s.lessons && s.lessons.some(function (l) { return l.url; }) ? '<span class="row">' + s.lessons.filter(function (l) { return l.url; }).map(function (l) {
+          return '<a class="link small" href="' + esc(l.url) + '" target="_blank" rel="noopener">Open ' + (s.lessons.length > 1 ? esc(l.title) : "lesson") + "</a>"; }).join("") + "</span>" : "") +
+        (!s.is_facilitator ? "" : s.lessons && s.lessons.length > 1 ? s.lessons.map(function (l) { return '<span class="small muted"><strong>' + esc(l.title) + "</strong>" + (l.summary ? " - " + esc(l.summary) : "") + "</span>"; }).join("")
           : s.lesson_summary ? '<span class="small muted">' + esc(s.lesson_summary) + "</span>" : "") + "</div>" +
         '<div class="act">' + (mine ? '<button class="btn ghost small" type="button" data-act="roster" data-id="' + s.id + '">Team list</button>' : "") +
-        (booked ? '<span class="chip good">Booked</span><button class="btn danger small" data-act="cancel" data-id="' + s.id + '">Cancel</button>'
-          : '<button class="btn small" data-act="book" data-id="' + s.id + '">Book a spot</button>') + "</div></div></li>";
+        attendingButtons(s.id, reply) + "</div></div></li>";
     }).join("") + "</ul>";
   }
 
@@ -205,13 +356,14 @@
       (fs.length ? '<section class="panel pad stack"><h3>Files</h3>' + filesList(l.id, true) + "</section>" : "");
   }
 
+  function replyChip(yes, no) { return yes ? ' <span class="chip good">Coming \u{1F600}</span>' : no ? ' <span class="chip">Not this time</span>' : ""; }
   function renderRoster() {
     var s = by(S.rosterSession, S.mySessions) || {}, here = S.roster.filter(function (r) { return r.attended; }).length;
     return '<button class="link back" type="button" data-act="rback">Back</button>' +
       '<section class="panel pad stack"><div class="row">' + groupChip({ name: s.group_name, type: s.group_type }) + typeChip(s.session_type) + "</div><h2>" + esc(s.session_date ? longDate(s.session_date) : "Team list") + "</h2>" +
       '<p class="muted">You are facilitating this session. Tick each person who is here. <strong id="rcount">' + here + " of " + S.roster.length + " here</strong></p>" +
       (S.roster.length ? "<ul>" + S.roster.map(function (r) {
-        return '<li><label class="check"><input type="checkbox" data-act="rattend" data-sid="' + S.rosterSession + '" data-mid="' + r.member_id + '"' + (r.attended ? " checked" : "") + "> <span>" + esc(r.full_name || "Unnamed member") + "</span>" + (r.booked ? ' <span class="chip good">Booked</span>' : "") + "</label></li>";
+        return '<li><label class="check"><input type="checkbox" data-act="rattend" data-sid="' + S.rosterSession + '" data-mid="' + r.member_id + '"' + (r.attended ? " checked" : "") + "> <span>" + esc(r.full_name || "Unnamed member") + "</span>" + replyChip(r.booked, r.not_coming) + "</label></li>";
       }).join("") + "</ul>" : '<p class="muted">No one is in this team yet.</p>') + "</section>";
   }
   function openRoster(id) {
@@ -229,27 +381,44 @@
     }).catch(function (e) { fail(e); openRoster(sid); });
   }
 
-  function book(id) {
-    return sb.from("bookings").upsert({ session_id: id, member_id: S.user.id, status: "booked" }, { onConflict: "session_id,member_id" })
-      .then(function (r) { if (r.error) throw r.error; toast("Booked. See you there."); return refresh(); }).catch(fail);
+  /* Attending? (owner, 22 Nov 2026): two friendly answers instead of Book / Cancel. Members can still just turn up.
+     Stored in bookings.status: "booked" = Yes, "cancelled" = Sorry, not this time. Tap the other answer to change it. */
+  function attendingButtons(id, reply) {
+    var yes = reply === "booked", no = reply === "cancelled";
+    return '<div class="attending" role="group" aria-label="Attending?"><span class="small"><strong>Attending?</strong></span>' +
+      '<button class="btn small' + (yes ? " picked" : " ghost") + '" type="button" data-act="book" data-id="' + id + '" aria-pressed="' + yes + '">Yes, absolutely! \u{1F600}</button>' +
+      '<button class="btn small' + (no ? " picked" : " ghost") + '" type="button" data-act="cancel" data-id="' + id + '" aria-pressed="' + no + '">Sorry, not this time \u{1F622}</button></div>';
   }
-  function cancelBooking(id) {
-    return sb.from("bookings").update({ status: "cancelled" }).eq("session_id", id).eq("member_id", S.user.id)
-      .then(function (r) { if (r.error) throw r.error; toast("Booking cancelled."); return refresh(); }).catch(fail);
+  function reply(id, status, msg) {
+    if (S.myBookings[id] === status) return Promise.resolve();
+    return sb.from("bookings").upsert({ session_id: id, member_id: S.user.id, status: status }, { onConflict: "session_id,member_id" })
+      .then(function (r) { if (r.error) throw r.error; toast(msg); return refresh(); }).catch(fail);
   }
+  function book(id) { return reply(id, "booked", "Great, see you there!"); }
+  function cancelBooking(id) { return reply(id, "cancelled", "Thanks for letting us know."); }
 
   /* ---------- leader: shared pieces ---------- */
   function bookedCount(sid) { return S.bookings.filter(function (b) { return b.session_id === sid && b.status === "booked"; }).length; }
+  function notComingCount(sid) { return S.bookings.filter(function (b) { return b.session_id === sid && b.status === "cancelled"; }).length; }
   function lessonIds(s) { return s.lesson_ids && s.lesson_ids.length ? s.lesson_ids : s.lesson_id ? [s.lesson_id] : []; }
+  /* Open lesson (owner, 22 Nov 2026): the first web link in a lesson's Resources and links */
+  function lessonUrl(text) { var m = String(text || "").match(/https?:\/\/[^\s<>"]+[^\s<>".,;:!?)\]]/); return m ? m[0] : ""; }
+  function openLesson(url) { return url ? '<a class="link small" href="' + esc(url) + '" target="_blank" rel="noopener">Open lesson</a>' : ""; }
   function lessonsOf(s) { return lessonIds(s).map(function (id) { return by(id, S.lessons); }).filter(Boolean); }
+  /* Lesson search (owner, 22 Nov 2026): every word must appear in the title or summary */
+  function lessonMatch(l, q) { var k = (l.title + " " + (l.summary || "")).toLowerCase(); q = String(q || "").trim().toLowerCase(); return !q || q.split(/\s+/).every(function (w) { return k.indexOf(w) > -1; }); }
+  function lessonOpts(rest, q) {
+    var m = rest.filter(function (l) { return lessonMatch(l, q); });
+    return '<option value="">' + (m.length ? (q ? m.length + " match" + (m.length === 1 ? "" : "es") + ": choose one" : "Choose a lesson to add") : "No lessons match") + "</option>" + m.map(function (l) { return '<option value="' + l.id + '">' + esc(l.title) + "</option>"; }).join("");
+  }
   function lessonPicker(ids) {
     var chosen = ids.map(function (id) { return by(id, S.lessons); }).filter(Boolean);
     var rest = S.lessons.filter(function (l) { return ids.indexOf(l.id) < 0; }).sort(function (a, b) { return a.title.localeCompare(b.title); });
     return '<span style="font-size:.85rem;font-weight:600;color:var(--muted)">Lessons</span>' +
       (chosen.length ? '<ul class="stack">' + chosen.map(function (l, i) {
-        return '<li class="row" style="justify-content:space-between"><input type="hidden" name="lesson" value="' + l.id + '"><span>' + (i + 1) + ". " + esc(l.title) + '</span><button class="link" type="button" data-act="droplesson" data-id="' + l.id + '">Remove</button></li>';
+        return '<li class="row" style="justify-content:space-between"><input type="hidden" name="lesson" value="' + l.id + '"><span>' + (i + 1) + ". " + esc(l.title) + '</span><span class="row">' + openLesson(lessonUrl(l.resources)) + '<button class="link" type="button" data-act="droplesson" data-id="' + l.id + '">Remove</button></span></li>';
       }).join("") + "</ul>" : '<p class="small muted">No lesson yet.</p>') +
-      (rest.length ? '<label>Add a lesson<select id="s-addlesson" data-act="addlesson"><option value="">Choose a lesson to add</option>' + rest.map(function (l) { return '<option value="' + l.id + '">' + esc(l.title) + "</option>"; }).join("") + "</select></label>" : "");
+      (rest.length ? '<label>Add a lesson<input type="search" id="s-lsearch" class="psearch" placeholder="Search lessons" aria-label="Search lessons" autocomplete="off"><select id="s-addlesson" data-act="addlesson">' + lessonOpts(rest, "") + "</select></label>" : "");
   }
   function pickedLessons() { return Array.prototype.map.call(document.querySelectorAll('#s-lessons input[name="lesson"]'), function (x) { return x.value; }); }
   function redrawPicker(ids) { var b = document.getElementById("s-lessons"); if (b) b.innerHTML = lessonPicker(ids); }
@@ -269,10 +438,10 @@
       }
       return;
     }
-    html += '<div class="tabs" role="tablist">' + [["calendar", "Calendar"], ["lessons", "Lessons"], ["people", "People"]].map(function (t) {
+    html += '<div class="tabs" role="tablist">' + [["calendar", "Calendar"], ["lessons", "Lessons"]].map(function (t) {
       return '<button role="tab" aria-selected="' + (S.tab === t[0]) + '" data-act="tab" data-tab="' + t[0] + '">' + t[1] + "</button>";
     }).join("") + "</div>";
-    html += S.tab === "calendar" ? renderCalendar() : S.tab === "lessons" ? renderLessons() : renderPeople();
+    html += S.tab === "lessons" ? renderLessons() : renderCalendar();
     $app.innerHTML = html;
   }
 
@@ -312,7 +481,7 @@
       (unknown ? '<p class="small muted">School holidays after ' + esc(shortDate(SAD.knownUntil)) + " are not loaded yet, so dates after that are not checked for them.</p>" : "") +
       '<ul class="stack">' + rows.map(function (r) {
         return '<li class="row" style="justify-content:space-between"><span' + (r.skip ? ' class="muted" style="text-decoration:line-through"' : "") + ">" + esc(shortDate(r.d)) + "</span>" +
-          (r.skip ? '<span class="chip warn">' + esc(r.skip) + "</span>" : '<span class="chip good">New</span>') + "</li>";
+          (r.skip ? '<span class="chip warn">' + esc(r.skip) + "</span>" : (f.get("type") !== "team" && reliefOn(r.d, f.get("start")) ? '<span class="chip">Led by ' + esc(nameOf(reliefOn(r.d, f.get("start")))) + "</span> " : "") + '<span class="chip good">New</span>') + "</li>";
       }).join("") + "</ul>";
   }
   function redrawPlan(changed) {
@@ -335,7 +504,7 @@
   }
   function whoChoice() {
     return '<fieldset class="stack" style="border:0;padding:0;margin:0"><legend style="font-weight:600;margin-bottom:.3rem">Who are these nights for?</legend>' +
-      '<label class="check"><input type="radio" name="type" value="leader" checked> <span><strong>Team Leader visits</strong>: leader-led, with you as facilitator</span></label>' +
+      '<label class="check"><input type="radio" name="type" value="leader" checked> <span><strong>Team Leader visits</strong>: leader-led, with you as facilitator' + ((S.covers || []).some(function (c) { return Date.parse(c.ends_at) > Date.now(); }) ? " (your relief Team Leader on nights during your relief cover)" : "") + '</span></label>' +
       '<label class="check"><input type="radio" name="type" value="team"> <span><strong>Team training</strong>: team-led, choose the facilitator later</span></label></fieldset>';
   }
   function timeFields(p) {
@@ -364,10 +533,16 @@
       '<div id="plan-preview" class="stack"><p class="small muted">Choose the first night and a last date after it.</p></div>' +
       '<button class="btn" type="submit" disabled>Create sessions</button></form>';
   }
+  /* The relief Team Leader covering this leader when a night starts (device time, Adelaide for our leaders), or null. */
+  function reliefOn(d, start) {
+    var t = new Date(d + "T" + (start || "19:00")).getTime(), c = (S.covers || []).filter(function (x) { return Date.parse(x.starts_at) <= t && t < Date.parse(x.ends_at); })[0];
+    return c ? by(c.reliever_id, S.profiles) || { id: c.reliever_id, full_name: "Relief Team Leader" } : null;
+  }
+  function leaderFor(d, start) { return reliefOn(d, start) || S.profile; }
   function sessionRow(f, d) {
-    var type = f.get("type") === "team" ? "team" : "leader";
+    var type = f.get("type") === "team" ? "team" : "leader", who = type === "leader" ? leaderFor(d, f.get("start")) : null;
     return { group_id: f.get("group"), session_date: d, start_time: f.get("start"), end_time: f.get("end"), session_type: type,
-      facilitator_id: type === "leader" ? S.profile.id : null, facilitator_name: type === "leader" ? nameOf(S.profile) : null, location: (f.get("location") || "").trim() || null };
+      facilitator_id: who ? who.id : null, facilitator_name: who ? nameOf(who) : null, location: (f.get("location") || "").trim() || null };
   }
   function createPlan(form) {
     var f = new FormData(form);
@@ -392,27 +567,91 @@
     }).catch(fail);
   }
 
+  /* Month view (owner, 22 Nov 2026): on a desktop-width screen the calendar can show one month. Dragging a session to a
+     day copies it (owner: a copy, not a move; bookings, attendance and reflections are not copied) and asks which team the
+     copy is for (a team can't have two sessions on one day: the database refuses that too). Phones keep the list. */
+  var DESK = window.matchMedia ? window.matchMedia("(min-width: 900px)") : { matches: false };
+  function monthOn() { return S.tab === "calendar" && !S.plan && !S.detail && DESK.matches && (S.calView || "month") === "month"; }
+  function ymd(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function renderMonth(list, t) {
+    var m = S.month || t.slice(0, 7), first = parseDate(m + "-01"), start = new Date(first), cells = [];
+    start.setDate(1 - ((first.getDay() + 6) % 7));
+    var end = new Date(first.getFullYear(), first.getMonth() + 1, 0); end.setDate(end.getDate() + (7 - ((end.getDay() + 6) % 7) - 1));
+    var byDay = {}; list.forEach(function (s) { (byDay[s.session_date] = byDay[s.session_date] || []).push(s); });
+    for (var d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      var k = ymd(d), items = (byDay[k] || []).sort(function (a, b) { return String(a.start_time || "").localeCompare(String(b.start_time || "")); });
+      cells.push('<div class="day' + (k.slice(0, 7) !== m ? " out" : "") + (k === t ? " today" : "") + '" data-day="' + k + '"><span class="dn">' + d.getDate() + "</span>" + items.map(function (s) {
+        if (s.ar) return '<a class="ms ar' + (s.session_date < t ? " past" : "") + '" href="../ar/course/" title="' + esc(arLabel(s) + " - " + arTime(s) + (s.location ? " - " + s.location : "") + " - " + s.group + " - " + s.booked + " booked") + '"><b>AR course · Day ' + esc(s.day) + "</b><span>" + esc(s.start_time ? hhmm(s.start_time) : "Time to be set") + "</span>" + (s.title ? "<span>" + esc(s.title) + "</span>" : "") + "</a>";
+        var g = groupOf(s.group_id), ls = lessonsOf(s), team = s.session_type === "team", move = editableTeams().length > 0;
+        var what = ls.length ? ls.map(function (l) { return l.title; }).join(" + ") : s.topic || "";
+        return '<button class="ms' + (team ? " team" : "") + (s.session_date < t ? " past" : "") + '" data-act="open" data-id="' + s.id + '"' + (move ? ' draggable="true" data-move="' + s.id + '"' : "") +
+          ' title="' + esc((g ? g.name : "") + " - " + timeRange(s) + (what ? " - " + what : "") + (ledBy(s) ? " - " + ledBy(s) : "") + (move ? " (drag to another day to copy)" : "")) + '"><b>' + esc(g ? g.name : "Session") + "</b>" +
+          "<span>" + esc(hhmm(s.start_time)) + (team ? " · Team-led" : " · Leader-led") + "</span>" +
+          (what ? "<span>" + esc(what) + "</span>" : '<span class="need">' + (team ? "No topic yet" : "No lesson yet") + "</span>") + "</button>";
+      }).join("") + "</div>");
+    }
+    var title = first.toLocaleDateString("en-AU", { month: "long", year: "numeric" });
+    return '<div class="mhead"><h2>' + esc(title) + '</h2><button class="btn ghost small" data-act="month" data-step="-1" aria-label="Previous month">‹ Prev</button><button class="btn ghost small" data-act="month" data-step="0">This month</button><button class="btn ghost small" data-act="month" data-step="1" aria-label="Next month">Next ›</button></div>' +
+      '<p class="small muted">Click a session to open it. Drag a session to a day to copy it there, then choose the team. Bookings are not copied.</p>' + copyBox() +
+      '<div class="month"><div class="dh">Mon</div><div class="dh">Tue</div><div class="dh">Wed</div><div class="dh">Thu</div><div class="dh">Fri</div><div class="dh">Sat</div><div class="dh">Sun</div>' + cells.join("") + "</div>";
+  }
+  function copyBox() {
+    var c = S.copy, src = c && by(c.id, S.sessions); if (!src) return "";
+    var taken = {}; S.sessions.forEach(function (x) { if (x.session_date === c.day) taken[x.group_id] = 1; });
+    var teams = editableTeams().filter(function (g) { return !taken[g.id]; });
+    var g0 = groupOf(src.group_id), ls = lessonsOf(src), what = ls.length ? ls.map(function (l) { return l.title; }).join(" + ") : src.topic || "";
+    var pick = teams.some(function (g) { return g.id === src.group_id; }) ? src.group_id : "";
+    return '<form class="panel pad stack copybox" data-form="copy"><h3>Copy to ' + esc(longDate(c.day)) + "</h3>" +
+      '<p class="small muted">From ' + esc(g0 ? g0.name : "a session") + ", " + esc(shortDate(src.session_date)) + " (" + esc(timeRange(src)) + (what ? ", " + esc(what) : "") + "). The copy has the same times, lessons, location and who leads; no bookings or attendance.</p>" +
+      (teams.length ? '<label>Team for the copy<select name="group" required><option value="">Choose a team</option>' + teams.map(function (g) {
+        return '<option value="' + g.id + '"' + (g.id === pick ? " selected" : "") + ">" + esc(g.name) + (g.cluster ? " (" + esc(g.cluster) + ")" : "") + "</option>";
+      }).join("") + '</select></label><div class="row"><button class="btn" type="submit">Copy session</button><button class="btn ghost" type="button" data-act="copycancel">Cancel</button></div>'
+        : '<p class="muted">Every team you can change already has a session that day.</p><div class="row"><button class="btn ghost" type="button" data-act="copycancel">Close</button></div>') + "</form>";
+  }
+  function copySession(form) {
+    var c = S.copy, src = c && by(c.id, S.sessions), gid = new FormData(form).get("group");
+    if (!src || !gid) return Promise.resolve(fail({ message: "Choose a team." }));
+    if (S.sessions.some(function (x) { return x.group_id === gid && x.session_date === c.day; })) return Promise.resolve(fail({ message: groupOf(gid).name + " already has a session that day." }));
+    var fid = src.facilitator_id, fname = src.facilitator_name;
+    if (src.session_type === "leader" && (!fid || fid === S.profile.id || (S.covers || []).some(function (x) { return x.reliever_id === fid; }))) { var w = leaderFor(c.day, String(src.start_time).slice(0, 5)); fid = w.id; fname = nameOf(w); }
+    else if (src.session_type === "team" && gid !== src.group_id) { fid = null; fname = null; }
+    var row = { group_id: gid, session_date: c.day, start_time: src.start_time, end_time: src.end_time, session_type: src.session_type,
+      facilitator_id: fid, facilitator_name: fname, location: src.location || null, topic: src.topic || null, lesson_ids: lessonIds(src) };
+    return sb.from("sessions").insert(row).then(function (r) {
+      if (r.error) throw r.error; S.copy = null; toast("Copied to " + groupOf(gid).name + ", " + shortDate(c.day) + "."); return refresh();
+    }).catch(fail);
+  }
   function renderCalendar() {
     var t = todayStr();
     if (S.plan) return clusterChips() + renderPlan();
-    var tools = '<div class="row"><button class="btn small" data-act="plan" data-p="repeat">Set up training nights</button><button class="btn ghost small" data-act="plan" data-p="one">Add one session</button></div>';
-    if (S.filter !== "all" && !inView(groupOf(S.filter))) S.filter = "all";
+    var month = monthOn();
+    var tools = '<div class="row"><button class="btn small" data-act="plan" data-p="repeat">Set up training nights</button><button class="btn ghost small" data-act="plan" data-p="one">Add one session</button>' +
+      (DESK.matches ? '<span style="margin-left:auto" class="filters" role="group" aria-label="Calendar view"><button aria-pressed="' + month + '" data-act="calview" data-v="month">Month</button><button aria-pressed="' + !month + '" data-act="calview" data-v="list">List</button></span>' : "") + "</div>";
+    if (S.filter !== "all" && S.filter !== "ar" && !inView(groupOf(S.filter))) S.filter = "all";
     var list = S.sessions.filter(function (s) {
       return inView(groupOf(s.group_id)) && (S.filter === "all" || s.group_id === S.filter) && (S.typeFilter === "all" || s.session_type === S.typeFilter) && (S.showPast || s.session_date >= t);
     });
     var html = clusterChips() + tools + '<div class="filters" role="group" aria-label="Filter by team or course"><button aria-pressed="' + (S.filter === "all") + '" data-act="filter" data-g="all">All</button>' +
-      S.groups.filter(inView).map(function (g) { return '<button aria-pressed="' + (S.filter === g.id) + '" data-act="filter" data-g="' + g.id + '">' + esc(g.name) + "</button>"; }).join("") + "</div>" +
+      S.groups.filter(inView).map(function (g) { return '<button aria-pressed="' + (S.filter === g.id) + '" data-act="filter" data-g="' + g.id + '">' + esc(g.name) + "</button>"; }).join("") +
+      ((S.arDays || []).length ? '<button aria-pressed="' + (S.filter === "ar") + '" data-act="filter" data-g="ar">AR course</button>' : "") + "</div>" +
       '<div class="filters" role="group" aria-label="Filter by who leads">' + [["all", "Any session"], ["leader", "Leader-led"], ["team", "Team-led"]].map(function (x) {
         return '<button aria-pressed="' + (S.typeFilter === x[0]) + '" data-act="typefilter" data-t="' + x[0] + '">' + x[1] + "</button>";
-      }).join("") + '<button aria-pressed="' + S.showPast + '" data-act="past">Show past</button></div>';
+      }).join("") + (month ? "" : '<button aria-pressed="' + S.showPast + '" data-act="past">Show past</button>') + "</div>";
+    if (month) return html + renderMonth(S.sessions.filter(function (s) {
+      return inView(groupOf(s.group_id)) && (S.filter === "all" || s.group_id === S.filter) && (S.typeFilter === "all" || s.session_type === S.typeFilter);
+    }).concat(arShown(t, true)), t);
+    list = list.concat(arShown(t, S.showPast)).sort(function (a, b) { return a.session_date < b.session_date ? -1 : a.session_date > b.session_date ? 1 : String(a.start_time || "").localeCompare(String(b.start_time || "")); });
     if (!list.length) return html + '<div class="panel empty">No sessions to show.</div>';
     return html + '<ul class="panel list">' + list.map(function (s) {
+      if (s.ar) return '<li><a class="item" href="../ar/course/" style="text-decoration:none;color:inherit">' + tile(s.session_date) +
+        '<div class="what"><span class="t">' + esc(arLabel(s)) + '</span><span class="small muted">' + esc(arTime(s)) + (s.location ? " - " + esc(s.location) : "") + " - " + esc(s.group) + '</span><span class="row"><span class="chip ar">AR course</span></span></div>' +
+        '<div class="act"><span class="chip">' + s.booked + (s.capacity ? " of " + s.capacity : "") + " booked</span></div></a></li>";
       var ls = lessonsOf(s), n = bookedCount(s.id), team = s.session_type === "team";
       var set = ls.length ? '<span class="chip good">' + (ls.length > 1 ? ls.length + " lessons" : "Lesson set") + "</span>" : s.topic ? '<span class="chip hi">Topic set</span>' : '<span class="chip warn">' + (team ? "Needs topic" : "Needs lesson") + "</span>";
       return '<li><button class="item" data-act="open" data-id="' + s.id + '">' + tile(s.session_date) +
         '<div class="what"><span class="t">' + (ls.length ? esc(ls.map(function (l) { return l.title; }).join(" + ")) : s.topic ? esc(s.topic) : '<span class="muted">' + (team ? "No topic yet" : "No lesson yet") + "</span>") + "</span>" +
         '<span class="small muted">' + timeRange(s) + (s.location ? " - " + esc(s.location) : "") + (ledBy(s) ? " - " + esc(ledBy(s)) : "") + '</span><span class="row">' + groupChip(groupOf(s.group_id)) + typeChip(s.session_type) + "</span></div>" +
-        '<div class="act">' + set + (team && !s.facilitator_name ? '<span class="chip warn">Needs facilitator</span>' : "") + '<span class="chip">' + n + " booked</span>" + (S.reflections[s.id] ? '<span class="chip good">Reflection</span>' : s.session_date < t ? '<span class="chip warn">Needs reflection</span>' : "") + "</div></button></li>";
+        '<div class="act">' + set + (team && !s.facilitator_name ? '<span class="chip warn">Needs facilitator</span>' : "") + '<span class="chip">' + n + " coming</span>" + (notComingCount(s.id) ? '<span class="chip">' + notComingCount(s.id) + " not coming</span>" : "") + (S.reflections[s.id] ? '<span class="chip good">Reflection</span>' : s.session_date < t ? '<span class="chip warn">Needs reflection</span>' : "") + "</div></button></li>";
     }).join("") + "</ul>";
   }
 
@@ -420,29 +659,44 @@
     var s = by(S.detail, S.sessions); if (!s) { S.detail = null; return ""; }
     var g = groupOf(s.group_id);
     var members = S.memberships.filter(function (m) { return m.group_id === s.group_id; }).map(function (m) { return by(m.member_id, S.profiles); }).filter(Boolean);
-    var bookedIds = {}; S.bookings.forEach(function (b) { if (b.session_id === s.id && b.status === "booked") bookedIds[b.member_id] = true; });
+    var bookedIds = {}, noIds = {}; S.bookings.forEach(function (b) { if (b.session_id === s.id) { if (b.status === "booked") bookedIds[b.member_id] = true; else if (b.status === "cancelled") noIds[b.member_id] = true; } });
     var att = {}; S.attendance.forEach(function (a) { if (a.session_id === s.id) att[a.member_id] = a.attended; });
     var nb = Object.keys(bookedIds).length;
     var facOpts = '<option value="">To be confirmed</option><option value="' + S.profile.id + '"' + (s.facilitator_id === S.profile.id ? " selected" : "") + ">" + esc(nameOf(S.profile)) + " (regional team leader)</option>" +
       members.filter(function (p) { return p.id !== S.profile.id; }).map(function (p) { return '<option value="' + p.id + '"' + (s.facilitator_id === p.id ? " selected" : "") + ">" + esc(nameOf(p)) + "</option>"; }).join("");
+    /* relief Team Leaders from this leader's current and coming covers (owner, 22 Nov 2026) */
+    var seen = {}; seen[S.profile.id] = 1; members.forEach(function (p) { seen[p.id] = 1; });
+    (S.covers || []).filter(function (c) { return Date.parse(c.ends_at) > Date.now() && !seen[c.reliever_id]; }).forEach(function (c) {
+      seen[c.reliever_id] = 1; var p = by(c.reliever_id, S.profiles);
+      facOpts += '<option value="' + c.reliever_id + '"' + (s.facilitator_id === c.reliever_id ? " selected" : "") + ">" + esc(nameOf(p)) + " (relief team leader)</option>";
+    });
     var visitor = !s.facilitator_id && s.facilitator_name ? s.facilitator_name : "";
     return '<button class="link back" data-act="back">Back to calendar</button>' +
-      '<section class="panel pad stack"><div class="row">' + groupChip(g) + typeChip(s.session_type) + '<span class="chip">' + nb + " booked</span></div><h2>" + esc(longDate(s.session_date)) + '</h2><p class="muted">' + timeRange(s) + "</p>" +
-      '<form class="stack" data-form="session" data-id="' + s.id + '"><div class="grid2">' +
+      '<section class="panel pad stack"><div class="row">' + groupChip(g) + typeChip(s.session_type) + '<span class="chip">' + nb + " coming</span>" + (Object.keys(noIds).length ? '<span class="chip">' + Object.keys(noIds).length + " not coming</span>" : "") + "</div><h2>" + esc(longDate(s.session_date)) + '</h2><p class="muted">' + timeRange(s) + "</p>" +
+      '<form class="stack" data-form="session" data-id="' + s.id + '">' + sessionTeam(s) + '<div class="grid2">' +
       '<label>Who leads<select id="s-type" name="type"><option value="leader"' + (s.session_type === "leader" ? " selected" : "") + '>Leader-led</option><option value="team"' + (s.session_type === "team" ? " selected" : "") + ">Team-led</option></select></label>" +
       '<label>Facilitator<select id="s-fac" name="fac">' + facOpts + "</select></label></div>" +
       '<label>Visitor or other name (leave blank when choosing from the list)<input id="s-facname" name="facname" value="' + esc(visitor) + '" autocomplete="off"></label>' +
       '<div class="stack" id="s-lessons">' + lessonPicker(lessonIds(s)) + "</div>" +
       '<label>Location<input id="s-loc" name="location" value="' + esc(s.location || "") + '"></label>' +
-      '<label>Session name (shown when there are no lessons)<input id="s-topic" name="topic" value="' + esc(s.topic || "") + '"></label>' +
+      '<label>Session name (what team members see; leave blank to show the lesson name)<input id="s-topic" name="topic" value="' + esc(s.topic || "") + '"></label>' +
       '<label>Notes for you<input id="s-notes" name="notes" value="' + esc(s.notes || "") + '"></label>' +
       '<div class="row"><button class="btn" type="submit">Save session</button>' + (S.delSession === s.id ? "" : '<button class="btn danger" type="button" data-act="asksession" data-id="' + s.id + '">Delete session</button>') + "</div></form>" +
       (S.delSession === s.id ? '<div class="notice stack"><p><strong>Delete this session?</strong> Its bookings and attendance are removed too. This cannot be undone.</p><div class="row"><button class="btn danger small" type="button" data-act="deletesession" data-id="' + s.id + '">Yes, delete session</button><button class="btn ghost small" type="button" data-act="keepsession">Keep it</button></div></div>' : "") + "</section>" +
-      renderAttendance(s, members, att, bookedIds) + renderReflection(s);
+      renderAttendance(s, members, att, bookedIds, noIds) + renderReflection(s);
   }
 
-  function renderAttendance(s, members, att, bookedIds) {
-    if (!members.length) return '<section class="panel pad stack"><h3>Attendance</h3><p class="muted">No one is in this group yet. Add people in the People tab.</p></section>';
+  /* Team for a session (owner, 22 Nov 2026): move a session to another team you can change (not courses). */
+  function sessionTeam(s) {
+    var g = groupOf(s.group_id); if (g && g.type === "course") return "";
+    var teams = S.groups.filter(function (x) { return x.type !== "course" && canEdit(x.id); });
+    if (g && !teams.some(function (x) { return x.id === g.id; })) teams.unshift(g);
+    return '<label>Team<select id="s-group" name="group">' + teams.map(function (x) {
+      return '<option value="' + x.id + '"' + (x.id === s.group_id ? " selected" : "") + ">" + esc(x.name) + (x.cluster ? " (" + esc(x.cluster) + ")" : "") + "</option>";
+    }).join("") + '</select><span class="small muted">Bookings and attendance stay with the session if you change the team.</span></label>';
+  }
+  function renderAttendance(s, members, att, bookedIds, noIds) {
+    if (!members.length) return '<section class="panel pad stack"><h3>Attendance</h3><p class="muted">No one is in this group yet. Add people on the <a href="../access/">People page</a>.</p></section>';
     var came = members.filter(function (p) { return att[p.id]; }), nots = members.filter(function (p) { return !att[p.id]; });
     var f = S.attFilter && S.attSession === s.id ? S.attFilter : (S.reflections[s.id] && came.length ? "came" : "all");
     var shown = f === "came" ? came : f === "not" ? nots : members;
@@ -450,9 +704,9 @@
       return '<button type="button" aria-pressed="' + (f === x[0]) + '" data-act="attfilter" data-f="' + x[0] + '" data-sid="' + s.id + '">' + x[1] + "</button>";
     }).join("");
     return '<section class="panel pad stack"><h3>Attendance</h3><div class="filters" role="group" aria-label="Filter attendance">' + chips + "</div>" +
-      '<p class="small muted">Tick each person who came. Those who booked are marked. Nobody is removed when you tick them, so you can still add or fix people; use the filters to see just who attended.' + (s.session_type === "team" && s.facilitator_id && s.facilitator_id !== S.profile.id ? " The facilitator can also tick people on the night." : "") + "</p>" +
+      '<p class="small muted">Tick each person who came. Those who said if they are coming are marked. Nobody is removed when you tick them, so you can still add or fix people; use the filters to see just who attended.' + (s.session_type === "team" && s.facilitator_id && s.facilitator_id !== S.profile.id ? " The facilitator can also tick people on the night." : "") + "</p>" +
       (shown.length ? "<ul>" + shown.map(function (p) {
-        return '<li><label class="check"><input type="checkbox" data-act="attend" data-sid="' + s.id + '" data-mid="' + p.id + '"' + (att[p.id] ? " checked" : "") + "> <span>" + esc(nameOf(p)) + "</span>" + (bookedIds[p.id] ? ' <span class="chip good">Booked</span>' : "") + "</label></li>";
+        return '<li><label class="check"><input type="checkbox" data-act="attend" data-sid="' + s.id + '" data-mid="' + p.id + '"' + (att[p.id] ? " checked" : "") + "> <span>" + esc(nameOf(p)) + "</span>" + replyChip(bookedIds[p.id], noIds[p.id]) + "</label></li>";
       }).join("") + "</ul>" : '<p class="muted">' + (f === "came" ? "No one is marked as attended yet." : "Everyone is marked as attended.") + "</p>") + "</section>";
   }
 
@@ -475,9 +729,13 @@
     var type = f.get("type"), fid = f.get("fac") || null, ftext = f.get("facname").trim(), fname = null;
     if (ftext) { fid = null; fname = ftext; }
     else if (fid) { fname = nameOf(by(fid, S.profiles)); }
-    else if (type === "leader") { fid = S.profile.id; fname = nameOf(S.profile); }
+    var sx = by(id, S.sessions);
+    if (!ftext && !fid && type === "leader") { var lw = sx ? leaderFor(sx.session_date, sx.start_time && sx.start_time.slice(0, 5)) : S.profile; fid = lw.id; fname = nameOf(lw); }
+    var gid = f.get("group") || (sx && sx.group_id);
+    if (sx && gid !== sx.group_id && S.sessions.some(function (x) { return x.id !== id && x.group_id === gid && x.session_date === sx.session_date; }))
+      return Promise.resolve(fail({ message: (groupOf(gid) ? groupOf(gid).name : "That team") + " already has a session on that date." }));
     return sb.from("sessions").update({
-      lesson_ids: f.getAll("lesson"), location: f.get("location") || null, notes: f.get("notes") || null,
+      group_id: gid, lesson_ids: f.getAll("lesson"), location: f.get("location") || null, notes: f.get("notes") || null,
       session_type: type, facilitator_id: fid, facilitator_name: fname, topic: f.get("topic").trim() || null
     }).eq("id", id)
       .then(function (r) { if (r.error) throw r.error; toast("Session saved."); return load().then(render); }).catch(fail);
@@ -492,12 +750,19 @@
     if (S.lessonEdit) return renderLessonForm();
     var html = '<div class="row"><button class="btn" data-act="newlesson">New lesson</button></div>';
     if (!S.lessons.length) return html + '<div class="panel empty">No lessons yet. Add your first one, then assign it to sessions.</div>';
-    return html + '<ul class="panel list">' + S.lessons.map(function (l) {
+    var lq = S.lessonQ || "";
+    html += '<input type="search" id="l-search" class="psearch" placeholder="Search lessons" aria-label="Search lessons" autocomplete="off" value="' + esc(lq) + '">';
+    return html + '<ul class="panel list" id="l-list">' + S.lessons.map(function (l) {
       var n = S.sessions.filter(function (s) { return lessonIds(s).indexOf(l.id) > -1; }).length;
       var sh = S.shares.filter(function (x) { return x.lesson_id === l.id; }).length;
-      return '<li><button class="item" data-act="editlesson" data-id="' + l.id + '"><div class="what"><span class="t">' + esc(l.title) + "</span>" +
+      return '<li data-lid="' + l.id + '"' + (lessonMatch(l, lq) ? "" : " hidden") + '><button class="item" data-act="editlesson" data-id="' + l.id + '"><div class="what"><span class="t">' + esc(l.title) + "</span>" +
         (l.summary ? '<span class="small muted">' + esc(l.summary) + "</span>" : "") + '</div><div class="act">' + (sh ? '<span class="chip hi">Shared with ' + sh + "</span>" : "") + '<span class="chip ' + (n ? "good" : "warn") + '">' + n + " session" + (n === 1 ? "" : "s") + "</span></div></button></li>";
-    }).join("") + "</ul>";
+    }).join("") + '<li class="empty" id="l-none"' + (S.lessons.some(function (l) { return lessonMatch(l, lq); }) ? " hidden" : "") + ">No lessons match.</li></ul>";
+  }
+  function filterLessons() {
+    var any = false;
+    S.lessons.forEach(function (l) { var li = document.querySelector('#l-list li[data-lid="' + l.id + '"]'), on = lessonMatch(l, S.lessonQ); if (li) li.hidden = !on; any = any || on; });
+    var none = document.getElementById("l-none"); if (none) none.hidden = any;
   }
 
   function renderLessonForm() {
@@ -605,54 +870,6 @@
     }).then(function () { toast("Lesson saved."); S.lessonEdit = null; return load().then(render); }).catch(fail);
   }
 
-  /* ---------- leader: people and groups ---------- */
-  function renderPeople() {
-    if (S.personEdit) return renderPersonForm();
-    if (S.pageEdit) return renderPageForm();
-    var shownPeople = S.profiles.filter(function (p) {
-      if (S.cluster === "all") return true;
-      var gs = S.memberships.filter(function (m) { return m.member_id === p.id; });
-      return !gs.length || gs.some(function (m) { return inView(groupOf(m.group_id)); }) || p.cluster === S.cluster;
-    });
-    var html = clusterChips() + '<ul class="panel list">' + (shownPeople.length ? shownPeople.map(function (p) {
-      var gs = S.memberships.filter(function (m) { return m.member_id === p.id; }).map(function (m) { return groupChip(groupOf(m.group_id)); }).join(" ");
-      return '<li><button class="item" data-act="editperson" data-id="' + p.id + '"><div class="what"><span class="t">' + esc(nameOf(p)) + '</span>' + (p.staff_id ? '<span class="small muted">ID ' + esc(p.staff_id) + "</span>" : "") + '<span class="row">' + (gs || '<span class="small muted">Not in any group</span>') + "</span></div>" +
-        '<div class="act">' + (p.role === "leader" ? '<span class="chip warn">Leader' + (p.cluster ? " · " + esc(p.cluster) : "") + '</span>' : "") + "</div></button></li>";
-    }).join("") : '<li class="empty">No one has signed up yet. Share the app link and ask your teams to create an account.</li>') + "</ul>";
-    html += '<section class="panel pad stack"><h3>Team and region pages</h3><p class="small muted">Photos, information, roster links and policy links are now edited from the Region page.</p><div class="row"><a class="link" href="../region/">Open the Region page</a></div></section>';
-    var courses = S.groups.filter(function (g) { return g.type === "course"; });
-    if (courses.length) {
-      html += '<section class="panel pad stack"><h3>Your courses</h3><ul class="stack">' + courses.map(function (g) {
-        var ns = S.sessions.filter(function (s) { return s.group_id === g.id; }).length;
-        var nm = S.memberships.filter(function (m) { return m.group_id === g.id; }).length;
-        var info = ns + " session" + (ns === 1 ? "" : "s") + ", " + nm + " " + (nm === 1 ? "person" : "people");
-        if (S.delCourse === g.id) {
-          return '<li class="notice stack"><p><strong>Delete ' + esc(g.name) + '?</strong> This removes its ' + ns + ' session' + (ns === 1 ? "" : "s") + ', all bookings and attendance for them, and takes ' + nm + ' ' + (nm === 1 ? "person" : "people") + ' out of the course. Lessons are kept. This cannot be undone.</p>' +
-            '<div class="row"><button class="btn danger small" type="button" data-act="deletecourse" data-id="' + g.id + '">Yes, delete course</button><button class="btn ghost small" type="button" data-act="keepcourse">Keep it</button></div></li>';
-        }
-        return '<li class="row"><div class="what"><span class="t">' + esc(g.name) + '</span><span class="small muted">' + info + '</span></div><button class="btn danger small" type="button" data-act="askdelcourse" data-id="' + g.id + '">Delete</button></li>';
-      }).join("") + "</ul></section>";
-    }
-    html += '<form class="panel pad stack" data-form="course"><h3>Add a course</h3><p class="small muted">A course is a separate set of sessions, for example for recruits from different teams. Choose the first date and the last date; sessions are created at the interval you set.</p>' +
-      '<label>Course name<input id="c-name" name="name" placeholder="Ambulance Responders 2026" required></label>' +
-      '<div class="grid2"><label>First session<input id="c-first" name="first" type="date" required></label><label>Last date<input id="c-last" name="last" type="date" required></label><label>Days between sessions<input id="c-every" name="every" type="number" min="1" value="14" required></label></div>' +
-      '<button class="btn" type="submit">Create course</button></form>';
-    return html;
-  }
-
-  function renderPersonForm() {
-    var p = by(S.personEdit, S.profiles); if (!p) { S.personEdit = null; return renderPeople(); }
-    var inG = {}; S.memberships.forEach(function (m) { if (m.member_id === p.id) inG[m.group_id] = true; });
-    return '<button class="link back" data-act="personback">Back to people</button>' +
-      '<section class="panel pad stack"><h2>' + esc(nameOf(p)) + "</h2><h3>Teams and courses</h3><ul>" +
-      S.groups.map(function (g) { return '<li><label class="check"><input type="checkbox" data-act="member" data-mid="' + p.id + '" data-gid="' + g.id + '"' + (inG[g.id] ? " checked" : "") + (canEdit(g.id) ? "" : " disabled") + "> <span>" + esc(g.name) + "</span> " + (g.type === "course" ? '<span class="chip course">Course</span>' : g.cluster ? '<span class="small muted">' + esc(g.cluster) + "</span>" : "") + "</label></li>"; }).join("") + "</ul>" +
-      (p.id !== S.profile.id ? '<form class="stack" data-form="resetpw" data-id="' + p.id + '"><h3>Reset password</h3><p class="small muted">Set a temporary password and tell them. They can sign in with it straight away.</p><label>New password (8 or more characters)<input name="pw" type="text" minlength="8" autocomplete="off" required></label><button class="btn small" type="submit">Set password</button></form>' : "") +
-      (S.realLeader ? '<label>Role<select id="p-role" data-act="role" data-mid="' + p.id + '"><option value="member"' + (p.role === "member" ? " selected" : "") + '>Member</option><option value="leader"' + (p.role === "leader" ? " selected" : "") + ">Leader</option></select></label>" : '<p class="small muted">Role: ' + (p.role === "leader" ? "Leader" : "Member") + " (a relief team leader can't change roles).</p>") +
-      (p.role === "leader" ? (myCluster() || !S.realLeader ? '<p class="small muted">Cluster: ' + esc(p.cluster || "All clusters") + ". Only the lead instructor can change a leader's cluster.</p>" :
-        '<label>Cluster (this leader can change sessions and team lists only in their own cluster)<select data-act="pcluster" data-mid="' + p.id + '"><option value="">All clusters</option>' +
-        CLUSTERS.map(function (c) { return '<option value="' + c + '"' + (p.cluster === c ? " selected" : "") + ">" + c + "</option>"; }).join("") + "</select></label>") : "") + "</section>";
-  }
-
   function linksToText(a) { return (Array.isArray(a) ? a : []).map(function (l) { return (l.label || "") + " | " + (l.url || ""); }).join("\n"); }
   function parseLinks(t) {
     return String(t || "").split("\n").map(function (line) {
@@ -662,7 +879,7 @@
     }).filter(Boolean);
   }
   function renderPageForm() {
-    var g = by(S.pageEdit, S.groups); if (!g) { S.pageEdit = null; return renderPeople(); }
+    var g = by(S.pageEdit, S.groups); if (!g) { S.pageEdit = null; return renderCalendar(); }
     return '<button class="link back" type="button" data-act="pageback">Back to people</button>' +
       '<form class="panel pad stack" data-form="page" data-id="' + g.id + '"><h2>' + esc(g.name) + ' page</h2>' +
       '<label>About this team (members see this)<textarea id="pg-blurb" name="blurb" placeholder="Station address, meeting place, contacts and anything else the team should know. Leave a blank line between paragraphs.">' + esc(g.blurb || "") + "</textarea></label>" +
@@ -755,41 +972,25 @@
     }).then(function () { toast("Photo removed."); return load().then(render); }).catch(fail);
   }
 
-  function setMembership(mid, gid, on) {
-    var p = on ? sb.from("memberships").insert({ member_id: mid, group_id: gid }) : sb.from("memberships").delete().eq("member_id", mid).eq("group_id", gid);
-    return p.then(function (r) {
-      if (r.error) throw r.error;
-      S.memberships = S.memberships.filter(function (m) { return !(m.member_id === mid && m.group_id === gid); });
-      if (on) S.memberships.push({ member_id: mid, group_id: gid });
-    }).catch(function (e) { fail(e); refresh(); });
-  }
-  function setRole(mid, role) {
-    return sb.from("profiles").update({ role: role }).eq("id", mid).then(function (r) { if (r.error) throw r.error; toast("Role updated."); return refresh(); }).catch(fail);
-  }
-  function setCluster(mid, c) {
-    return sb.from("profiles").update({ cluster: c || null }).eq("id", mid).then(function (r) { if (r.error) throw r.error; toast("Cluster updated."); return refresh(); }).catch(fail);
-  }
-  function createCourse(form) {
-    var f = new FormData(form), name = f.get("name").trim();
-    return sb.from("groups").insert({ name: name, type: "course", year: parseDate(f.get("first")).getFullYear(), cluster: myCluster() }).select().single().then(function (r) {
-      if (r.error) throw r.error;
-      return sb.rpc("generate_sessions", { p_group: r.data.id, p_first: f.get("first"), p_last: f.get("last"), p_every: +f.get("every") });
-    }).then(function (r) { if (r.error) throw r.error; toast("Course created with " + r.data + " sessions."); return refresh(); }).catch(fail);
-  }
-
   /* ---------- render and events ---------- */
   function render() {
+    $app.classList.toggle("wide", !!(S.user && isLeader() && monthOn()));
     if (!S.user) return renderAuth();
     if (isLeader()) return renderLeader();
     return renderMember();
   }
 
+
   var actions = {
     authmode: function () { S.authMode = S.authMode === "in" ? "up" : "in"; renderAuth(); },
     signout: function () { sb.auth.signOut(); },
     book: function (d) { return book(d.id); },
+    arbook: function (d) { return arCall("course_book", { p_workshop: d.id, p_waitlist: false }, "Booked. See you there."); },
+    arwait: function (d) { return arCall("course_book", { p_workshop: d.id, p_waitlist: true }, "You are on the waiting list."); },
+    arform: function (d) { return downloadForm(d.k).catch(fail); },
+    arcancel: function (d) { if (!confirm("Cancel this?")) return; return arCall("course_cancel", { p_workshop: d.id }, "Cancelled."); },
     cancel: function (d) { return cancelBooking(d.id); },
-    tab: function (d) { S.tab = d.tab; S.plan = null; S.lessonEdit = null; S.personEdit = null; S.pageEdit = null; render(); },
+    tab: function (d) { S.tab = d.tab; S.plan = null; S.lessonEdit = null; S.pageEdit = null; render(); },
     filter: function (d) { S.filter = d.g; render(); },
     cluster: function (d) { S.cluster = d.c; render(); if (S.plan) redrawPlan(); },
     plan: function (d) { S.plan = d.p || null; render(); window.scrollTo(0, 0); },
@@ -826,28 +1027,47 @@
     removephoto: function (d) { return removePhoto(d.id); },
     gremove: function (d) { if (!window.confirm("Remove this photo from the gallery?")) return; return galleryChange(d.gid, function (l) { return l.splice(+d.i, 1)[0].path || null; }, "Photo removed."); },
     gmove: function (d) { return galleryChange(d.gid, function (l) { var x = l.splice(+d.i, 1)[0]; l.splice(+d.to, 0, x); }); },
-    askdelcourse: function (d) { S.delCourse = d.id; render(); },
-    keepcourse: function () { S.delCourse = null; render(); },
-    deletecourse: function (d) {
-      var g = groupOf(d.id); if (!g || g.type !== "course") return;
-      return sb.from("groups").delete().eq("id", d.id).eq("type", "course").then(function (r) {
-        if (r.error) throw r.error;
-        S.delCourse = null; if (S.filter === d.id) S.filter = "all"; toast("Course deleted."); return refresh();
-      }).catch(fail);
-    },
     openfile: function (d) { return openFile(d.id); },
     removefile: function (d) { return removeFile(d.id); },
     droplesson: function (d) { redrawPicker(pickedLessons().filter(function (x) { return x !== d.id; })); },
-    editperson: function (d) { S.personEdit = d.id; render(); window.scrollTo(0, 0); },
-    personback: function () { S.personEdit = null; render(); }
+    copycancel: function () { S.copy = null; render(); },
+    calview: function (d) { S.calView = d.v; try { localStorage.setItem("dsy-training-calview", d.v); } catch (e) {} render(); },
+    month: function (d) {
+      var step = +d.step, base = parseDate((S.month || todayStr().slice(0, 7)) + "-01");
+      if (!step) S.month = todayStr().slice(0, 7); else { base.setMonth(base.getMonth() + step); S.month = ymd(base).slice(0, 7); }
+      render();
+    }
   };
+  try { S.calView = localStorage.getItem("dsy-training-calview"); } catch (e) {}
+  if (DESK.addEventListener) DESK.addEventListener("change", function () { if (S.user && isLeader()) render(); });
+  /* month view: drag a session to another day */
+  var dragId = null;
+  document.addEventListener("dragstart", function (e) {
+    var b = e.target.closest && e.target.closest("[data-move]"); if (!b) return;
+    dragId = b.dataset.move; b.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "copy"; try { e.dataTransfer.setData("text/plain", dragId); } catch (x) {}
+  });
+  document.addEventListener("dragend", function () {
+    dragId = null;
+    Array.prototype.forEach.call(document.querySelectorAll(".ms.dragging, .day.over"), function (d) { d.classList.remove("dragging", "over"); });
+  });
 
   document.addEventListener("click", function (e) {
     var t = e.target.closest("[data-act]"); if (!t || t.tagName === "INPUT" || t.tagName === "SELECT") return;
     var fn = actions[t.dataset.act]; if (fn) fn(t.dataset, t);
   });
+  document.addEventListener("toggle", function (e) { if (e.target.classList && e.target.classList.contains("ar-more")) S.arMore = e.target.open; }, true);
+  /* Enter in the lesson search picks the only match instead of saving the session */
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" || !e.target || e.target.id !== "s-lsearch") return;
+    e.preventDefault(); var sel = document.getElementById("s-addlesson");
+    if (sel && sel.options.length === 2) { redrawPicker(pickedLessons().concat(sel.options[1].value)); }
+  });
   document.addEventListener("input", function (e) {
     if (e.target && e.target.form && e.target.form.dataset.form === "plan") redrawPlan(e.target);
+    if (e.target && e.target.id === "l-search") { S.lessonQ = e.target.value; filterLessons(); }
+    if (e.target && e.target.id === "s-lsearch") { var sel = document.getElementById("s-addlesson"), ids = pickedLessons();
+      if (sel) sel.innerHTML = lessonOpts(S.lessons.filter(function (l) { return ids.indexOf(l.id) < 0; }).sort(function (a, b) { return a.title.localeCompare(b.title); }), e.target.value); }
     if (e.target && e.target.id === "l-res") { var b = document.getElementById("l-links"); if (b) b.innerHTML = linkRow(e.target.value); }
   });
   document.addEventListener("change", function (e) {
@@ -856,9 +1076,6 @@
     if (!t.dataset || !t.dataset.act) return;
     if (t.dataset.act === "attend") setAttendance(t.dataset.sid, t.dataset.mid, t.checked);
     else if (t.dataset.act === "rattend") setRoster(t.dataset.sid, t.dataset.mid, t.checked);
-    else if (t.dataset.act === "member") setMembership(t.dataset.mid, t.dataset.gid, t.checked);
-    else if (t.dataset.act === "role") setRole(t.dataset.mid, t.value);
-    else if (t.dataset.act === "pcluster") setCluster(t.dataset.mid, t.value);
     else if (t.dataset.act === "upload") uploadFiles(t.dataset.lid, t.files, t);
     else if (t.dataset.act === "uploadphoto") uploadPhoto(t.dataset.gid, t.files);
     else if (t.dataset.act === "uploadgallery") uploadGallery(t.dataset.gid, t.files);
@@ -868,6 +1085,12 @@
   /* drag and drop: highlight the drop zone, and stop the browser opening a file dropped elsewhere */
   function hasFiles(e) { return e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], "Files") >= 0; }
   document.addEventListener("dragover", function (e) {
+    if (dragId) {
+      var day = e.target.closest && e.target.closest("[data-day]");
+      Array.prototype.forEach.call(document.querySelectorAll(".day.over"), function (d) { if (d !== day) d.classList.remove("over"); });
+      if (day) { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; day.classList.add("over"); }
+      return;
+    }
     if (!hasFiles(e)) return;
     e.preventDefault();
     var z = e.target.closest && e.target.closest(".drop");
@@ -878,6 +1101,13 @@
     if (!e.relatedTarget) Array.prototype.forEach.call(document.querySelectorAll(".drop"), function (d) { d.classList.remove("over"); });
   });
   document.addEventListener("drop", function (e) {
+    if (dragId) {
+      e.preventDefault();
+      var day = e.target.closest && e.target.closest("[data-day]"), id = dragId; dragId = null;
+      Array.prototype.forEach.call(document.querySelectorAll(".day.over, .ms.dragging"), function (d) { d.classList.remove("over", "dragging"); });
+      if (day) { S.copy = { id: id, day: day.dataset.day }; render(); var box = document.querySelector(".copybox"); if (box) { box.scrollIntoView({ block: "nearest", behavior: "smooth" }); var sel = box.querySelector("select"); if (sel) sel.focus(); } }
+      return;
+    }
     if (!hasFiles(e)) return;
     e.preventDefault();
     Array.prototype.forEach.call(document.querySelectorAll(".drop"), function (d) { d.classList.remove("over"); });
@@ -901,14 +1131,12 @@
           })
         : sb.auth.signInWithPassword({ email: email, password: pass }).then(function (r) { if (r.error) throw r.error; });
       job = job.catch(fail);
-    } else if (kind === "resetpw") {
-      job = sb.rpc("leader_set_password", { member: form.dataset.id, new_password: f.get("pw") }).then(function (r) { if (r.error) throw r.error; form.reset(); toast("Password set. Let them know."); }).catch(fail);
     } else if (kind === "reflection") job = saveReflection(form);
     else if (kind === "session") job = saveSession(form);
     else if (kind === "lesson") job = saveLesson(form);
-    else if (kind === "course") job = createCourse(form);
     else if (kind === "plan") job = createPlan(form);
     else if (kind === "onesession") job = createOne(form);
+    else if (kind === "copy") job = copySession(form);
     else if (kind === "page") job = savePage(form);
     if (job) job.then(function () { if (btn && document.contains(btn)) btn.disabled = false; });
   });
@@ -917,7 +1145,13 @@
   function onSession(session) {
     S.user = session ? session.user : null;
     if (!S.user) { S.profile = null; S.detail = null; S.tab = location.hash === "#lessons" ? "lessons" : "calendar"; return renderAuth(); }
-    load().then(render).catch(function (e) { fail(e); renderAuth(); });
+    load().then(openFromHash).then(render).catch(function (e) { fail(e); renderAuth(); });
+  }
+  /* /training/#session=<id> opens that session (links from the Team Leader dashboard, owner 22 Nov 2026). */
+  function openFromHash() {
+    var m = /^#session=([\w-]+)$/.exec(location.hash || ""); if (!m) return;
+    history.replaceState(null, "", location.pathname + location.search);
+    if (isLeader() && by(m[1], S.sessions || [])) { S.tab = "calendar"; S.detail = m[1]; S.attFilter = null; }
   }
   sb.auth.onAuthStateChange(function (event, session) {
     if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "SIGNED_OUT") setTimeout(function () { onSession(session); }, 0);

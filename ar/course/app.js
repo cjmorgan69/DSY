@@ -9,7 +9,7 @@
   var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW9kbmJucHN1YXl2bXh2eGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzIxMzQsImV4cCI6MjEwNzM0ODEzNH0.q3lTeCQAQjYeMUNl6lwsrxUAsTijJikABW4Ua2N4bmI";
   var sb = window.supabase.createClient(SB_URL, SB_KEY);
   var app = document.getElementById("app");
-  var S = { me: null, home: null, cohorts: [], cohortId: null, d: null, draft: {}, adding: false, naOpen: {} };
+  var S = { me: null, home: null, cohorts: [], cohortId: null, d: null, draft: {}, adding: false, naOpen: {}, building: false, picking: false, people: null, pTeam: "", pQ: "", pSel: {} };
   var ATT = { present: "Present", late: "Late", left_early: "Left early", absent: "Absent" };
   var DONE = { present: 1, late: 1 };
 
@@ -61,7 +61,7 @@
       '<div class="row">' + (extra || "") + '<a class="link" href="/signin/?out=1">Sign out</a></div></header>';
   }
   function tracker(states) {
-    return '<ol class="days">' + states.map(function (x) { return '<li class="' + x.state + '" title="Day ' + x.day + '">' + x.day + "</li>"; }).join("") + "</ol>" +
+    return '<ol class="days">' + states.map(function (x) { return '<li class="' + x.state + '" title="' + dayName(x.day) + '">' + (x.day === 0 ? "I" : x.day) + "</li>"; }).join("") + "</ol>" +
       '<div class="legend"><span><i class="done"></i>Done</span><span><i class="booked"></i>Booked</span><span><i class="part"></i>Left early</span><span><i></i>To book</span></div>';
   }
 
@@ -120,8 +120,11 @@
         (h.staff_id ? " (" + esc(h.staff_id) + ")" : "") + '. Once you are added, your course days and dates show here.</p></section></main>';
       return;
     }
-    var days = studentDays(h), done = days.filter(function (x) { return x.state === "done"; }).length;
-    var total = h.cohort.total_days || days.length, today = h.today, title = function (d) { return "Day " + d.day + (d.title ? " · " + d.title : ""); };
+    // Only the course days count: consolidation days (course_days.extra) are extra.
+    var xtra = {}; (h.days || []).forEach(function (x) { if (x.extra) xtra[x.day] = true; });
+    var days = studentDays(h), total = h.cohort.total_days || days.filter(function (x) { return !xtra[x.day]; }).length;
+    var done = days.filter(function (x) { return x.state === "done" && !xtra[x.day]; }).length;
+    var today = h.today, title = function (d) { return d.day === 0 ? d.title || "Induction" : "Day " + d.day + (d.title ? " · " + d.title : ""); };
     var html = '<main class="wrap">' + header({ title: h.cohort.course_name, line: h.student.first_name + " " + h.student.last_name + " · " + h.cohort.name }, facLink);
 
     html += '<section class="panel pad stack"><div class="dayhead"><h2>Your progress</h2><span class="count">' + done + " of " + total + " days</span></div>" + tracker(days) +
@@ -182,7 +185,7 @@
           '</div><button class="btn ghost" data-act="na-withdraw" data-day="' + x.day + '">Take back</button></div>';
       } else if (!bookedHere && list.length) {
         if (S.naOpen[x.day]) {
-          html += '<div class="na-form"><b>Can\'t make any of the Day ' + x.day + ' dates?</b><span class="small muted">Your facilitator will see this and may add another date.</span>' +
+          html += '<div class="na-form"><b>Can\'t make any of the ' + dayName(x.day) + ' dates?</b><span class="small muted">Your facilitator will see this and may add another date.</span>' +
             '<textarea id="na-' + x.day + '" maxlength="300" placeholder="Optional note, e.g. working every Saturday in March"></textarea>' +
             '<div class="na-actions"><button class="btn" data-act="na-send" data-day="' + x.day + '">Send</button><button class="btn ghost" data-act="na-toggle" data-day="' + x.day + '">Never mind</button></div></div>';
         } else html += '<button class="link na-link" data-act="na-toggle" data-day="' + x.day + '">Can\'t make any of these dates?</button>';
@@ -228,10 +231,12 @@
       return Promise.all([
         wids.length ? q(sb.from("course_bookings").select("*").in("workshop_id", wids)) : [],
         wids.length ? q(sb.from("course_attendance").select("*").in("workshop_id", wids)) : [],
-        sids.length ? q(sb.from("course_unavailable").select("*").in("student_id", sids).eq("status", "open")) : []
+        sids.length ? q(sb.from("course_unavailable").select("*").in("student_id", sids).eq("status", "open")) : [],
+        sids.length ? q(sb.from("course_induction").select("*").in("student_id", sids)) : []
       ]);
     }).then(function (r) {
       d.bookings = r[0]; d.attendance = r[1]; d.unavailable = r[2];
+      d.ind = {}; (r[3] || []).forEach(function (x) { if (x.done) d.ind[x.student_id + "|" + x.item] = x; });
       index(d); S.d = d; renderFac();
     });
   }
@@ -244,10 +249,11 @@
     var nums = {}; d.days.forEach(function (x) { nums[x.day_number] = 1; }); d.workshops.forEach(function (w) { nums[w.day_number] = 1; });
     for (var i = 1; i <= (d.cohort.total_days || 0); i++) nums[i] = 1;
     d.dayList = Object.keys(nums).map(Number).sort(function (a, b) { return a - b; });
-    d.dayTitle = {}; d.days.forEach(function (x) { d.dayTitle[x.day_number] = x.title; });
+    d.dayTitle = {}; d.extra = {}; d.days.forEach(function (x) { d.dayTitle[x.day_number] = x.title; if (x.extra) d.extra[x.day_number] = true; });
   }
   function nameOf(s) { return s ? (s.first_name + " " + s.last_name).trim() || s.staff_id : "Someone"; }
-  function dayLabel(d, n) { return "Day " + n + (d.dayTitle[n] ? " · " + d.dayTitle[n] : ""); }
+  function dayName(n) { return +n === 0 ? "Induction" : "Day " + n; }
+  function dayLabel(d, n) { return +n === 0 ? (d.dayTitle[0] || "Induction") : "Day " + n + (d.dayTitle[n] ? " · " + d.dayTitle[n] : ""); }
   function counts(d, w) {
     var c = { booked: 0, wait: 0, marked: 0, present: 0 };
     d.active.forEach(function (s) {
@@ -279,7 +285,7 @@
     var picker = S.cohorts.length ? '<select id="cohort" aria-label="Group">' + S.cohorts.map(function (c) {
       return '<option value="' + c.id + '"' + (c.id === S.cohortId ? " selected" : "") + ">" + esc(c.name) + (c.archived ? " (archived)" : "") + "</option>";
     }).join("") + "</select>" : "";
-    var html = '<main class="wrap">' + header({ title: "AR course bookings", line: "Facilitator · " + (S.me.name || "") }, '<a class="link" href="#student">Student view</a>');
+    var html = '<main class="wrap">' + header({ title: "AR course bookings", line: "Facilitator · " + (S.me.name || "") }, '<a class="link" href="/ar/">AR course page</a><a class="link" href="#student">Student view</a>');
     if (d.none || h === "new") {
       html += newGroupForm(d.none);
       app.innerHTML = html + "</main>"; return;
@@ -287,17 +293,115 @@
     var nNew = newEvents(d).length;
     html += '<div class="row no-print">' + picker + '<a class="link" href="#new">+ New group</a></div>';
     if ((m = /^w=(.+)$/.exec(h))) { html += workshopScreen(d, m[1]); app.innerHTML = html + "</main>"; return; }
-    var tabs = [["dates", "Dates"], ["students", "Students"], ["progress", "Progress"], ["changes", "Changes"], ["setup", "Setup"]];
+    if ((m = /^ind=(.+)$/.exec(h))) { html += inductionScreen(d, m[1]); app.innerHTML = html + "</main>"; return; }
+    var tabs = [["dates", "Dates"], ["students", "Students"], ["induction", "Induction"], ["progress", "Progress"], ["changes", "Changes"], ["setup", "Setup"]];
     html += '<div class="tabs many" role="tablist">' + tabs.map(function (t) {
       return '<button role="tab" data-tab="' + t[0] + '" aria-selected="' + (h === t[0]) + '">' + t[1] + (t[0] === "changes" && nNew && h !== "changes" ? '<span class="n">' + nNew + "</span>" : "") + "</button>";
     }).join("") + "</div>";
     if (h === "students") html += studentsTab(d);
+    else if (h === "induction") html += inductionTab(d);
     else if (h === "progress") html += progressTab(d);
     else if (h === "changes") html += changesTab(d);
     else if (h === "setup") html += setupTab(d);
     else html += datesTab(d);
     app.innerHTML = html + "</main>";
     if (h === "changes" && d.events.length) store(seenKey(), d.events[0].at);
+  }
+
+  /* The AR course days (owner, 24 Nov 2026), from the course completion checklist plus Operational Safety (Day 1),
+     DRiVE principles and knowledge (Day 3) and the Stress Management webinar (Day 10). Days 8 and 9 are consolidation
+     (extra: course_days.extra, not counted towards completing the course). */
+  var AR_DAYS = [
+    { n: 0, title: "Induction (pre-course)", extra: true },
+    { n: 1, title: "Infection control, operational safety, manual tasks" },
+    { n: 2, title: "Manual tasks (continued)" },
+    { n: 3, title: "Operational preparedness (GRN radio and MDT), DRiVE principles and knowledge" },
+    { n: 4, title: "DRiVE practical assessments" },
+    { n: 5, title: "Foundations of care, cardiac arrest, resuscitation" },
+    { n: 6, title: "Medical conditions" },
+    { n: 7, title: "Traumatic injuries" },
+    { n: 8, title: "Consolidation", extra: true },
+    { n: 9, title: "Consolidation", extra: true },
+    { n: 10, title: "Stress management (online webinar)" }
+  ];
+  function arDay(n) { return AR_DAYS.filter(function (x) { return x.n === n; })[0]; }
+  var AR_CORE = AR_DAYS.filter(function (x) { return !x.extra; }).length;
+  /* Days that count towards completing the course: every day except consolidation days. */
+  function isExtra(d, n) { return !!d.extra[n]; }
+  function totalDays(d) { return d.cohort.total_days || d.dayList.filter(function (n) { return !isExtra(d, n); }).length; }
+
+  /* ---- Build the course: tick days, give each a date and start time ---- */
+  function buildDays(d) {
+    var n = {};
+    d.dayList.forEach(function (x) { n[x] = 1; });
+    if (!d.dayList.length) AR_DAYS.forEach(function (x) { n[x.n] = 1; });
+    return Object.keys(n).map(Number).sort(function (a, b) { return a - b; });
+  }
+  function whenLine(n, extra) {
+    return '<div class="b-when"><input type="date" class="b-date" aria-label="Date for Day ' + n + '"><input type="time" class="b-start" value="09:00" aria-label="Start time for Day ' + n + '">' +
+      (extra ? '<button class="b-x" type="button" data-act="b-rm" aria-label="Remove this date">×</button>' : "") +
+      '<input class="b-loc" placeholder="Location (blank = the one below)" aria-label="Location for this Day ' + n + ' date"></div>';
+  }
+  function consRow(n, unticked) {
+    return '<div class="b-row cons" data-day="' + n + '" data-title="Consolidation" data-extra="1"><label class="check"><input type="checkbox" class="b-pick"' + (unticked ? "" : " checked") + '> <span><b>Day ' + n +
+      '</b> <span class="b-title">· Consolidation (extra, not counted in the days to complete)</span></span></label>' +
+      '<button class="b-x" type="button" data-act="b-rm-row" aria-label="Remove this consolidation day">×</button>' +
+      '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for ' + dayName(n) + "</button></div>";
+  }
+  function buildPanel(d) {
+    if (!S.building) return '<button class="btn wide" data-act="b-toggle">Build the course: pick days, dates and start times</button>';
+    var rows = buildDays(d).map(function (n) {
+      var tpl = !d.dayList.length ? arDay(n) : null;
+      if (tpl && tpl.extra && n !== 0) return consRow(n, true);
+      var cons = isExtra(d, n) && n !== 0;
+      var title = d.dayTitle[n] || (tpl ? tpl.title : "") || "";
+      var have = d.workshops.filter(function (w) { return w.day_number === n && !w.cancelled; }).length;
+      return '<div class="b-row' + (cons ? " cons" : "") + '" data-day="' + n + '"' + (tpl ? ' data-title="' + esc(tpl.title) + '"' + (tpl.extra ? ' data-extra="1"' : "") : "") +
+        '><label class="check"><input type="checkbox" class="b-pick"> <span><b>' + dayName(n) + "</b>" + (n === 0 ? ' <span class="b-title">· before the course, once they have a SAAS ID</span>' : title ? ' <span class="b-title">· ' + esc(title) + (cons ? " (extra)" : "") + "</span>" : "") +
+        (have ? ' <span class="chip">' + have + (have === 1 ? " date" : " dates") + " already</span>" : "") + "</span></label>" +
+        '<div class="b-dates">' + whenLine(n) + '</div><button class="link small" type="button" data-act="b-more">+ Another date for ' + dayName(n) + "</button></div>";
+    }).join("");
+    return '<section class="panel pad stack"><h2>Build the course</h2><p class="small muted">Tick a day, then give it a date and start time. Adding a date ticks the day for you. ' +
+      'Use "Another date" to run the same day more than once: students book the one that suits them. Each date can have its own location.</p>' +
+      '<div id="b-rows">' + rows + '</div><button class="btn ghost" type="button" data-act="b-cons">+ Add a consolidation day</button><div class="grid2">' +
+      '<div class="field"><label for="b-end">Finish (optional, all days)</label><input id="b-end" type="time"></div>' +
+      '<div class="field"><label for="b-loc">Location (any date left blank)</label><input id="b-loc" placeholder="e.g. Cummins station"></div>' +
+      '<div class="field"><label for="b-cap">Places (blank = no limit)</label><input id="b-cap" type="number" min="1" inputmode="numeric"></div></div>' +
+      '<div class="row"><button class="btn" data-act="b-save">Add the ticked days</button><button class="btn ghost" data-act="b-toggle">Close</button></div></section>';
+  }
+
+  /* ---- Students from the people list (course_people(): ID, name, teams, signed up) ---- */
+  function peoplePanel(d) {
+    if (!S.picking) return '<button class="btn wide" data-act="p-toggle">Add students from the people list</button>';
+    if (!S.people) return '<section class="panel pad"><p class="muted">Loading the people list…</p></section>';
+    var teams = {};
+    S.people.forEach(function (p) { (p.teams || []).forEach(function (x) { teams[x] = 1; }); });
+    return '<section class="panel pad stack"><h2>Add from the people list</h2><div class="grid2">' +
+      '<div class="field"><label for="p-team">Team</label><select id="p-team"><option value="">All teams</option>' +
+      Object.keys(teams).sort().map(function (x) { return '<option' + (S.pTeam === x ? " selected" : "") + ">" + esc(x) + "</option>"; }).join("") + "</select></div>" +
+      '<div class="field"><label for="p-q">Search</label><input id="p-q" type="search" autocomplete="off" placeholder="Name or ID" value="' + esc(S.pQ || "") + '"></div></div>' +
+      '<ul class="p-list" id="p-list">' + peopleRows(d) + "</ul>" +
+      '<div class="row"><button class="btn" data-act="p-add" id="p-add">' + addLabel() + '</button><button class="btn ghost" data-act="p-toggle">Close</button></div></section>';
+  }
+  function inGroup(d, id) { return d.students.some(function (s) { return s.active && norm(s.staff_id) === norm(id); }); }
+  function norm(v) { return String(v || "").replace(/\D/g, "").replace(/^0+/, ""); }
+  function peopleRows(d) {
+    var q = (S.pQ || "").trim().toLowerCase();
+    var list = S.people.filter(function (p) {
+      if (S.pTeam && (p.teams || []).indexOf(S.pTeam) === -1) return false;
+      return !q || (p.full_name + " " + p.staff_id).toLowerCase().indexOf(q) > -1;
+    }).sort(function (a, b) { return a.full_name.localeCompare(b.full_name); });
+    if (!list.length) return '<li class="muted small">No one matches.</li>';
+    return list.map(function (p) {
+      var inG = inGroup(d, p.staff_id), on = !!S.pSel[p.staff_id];
+      return '<li><label class="check"><input type="checkbox" class="p-pick" data-id="' + esc(p.staff_id) + '"' + (inG ? " checked disabled" : on ? " checked" : "") + "> <span>" +
+        esc(p.full_name || "(no name)") + ' <span class="small muted">' + esc(p.staff_id) + ((p.teams || []).length ? " · " + esc(p.teams.join(", ")) : "") + "</span>" +
+        (inG ? ' <span class="chip good">In group</span>' : "") + (p.signed_up ? "" : ' <span class="chip warn">Not signed up</span>') + "</span></label></li>";
+    }).join("");
+  }
+  function addLabel() {
+    var n = Object.keys(S.pSel).length;
+    return n ? "Add " + n + (n === 1 ? " student" : " students") : "Tick people to add";
   }
 
   /* ---- Dates ---- */
@@ -331,6 +435,7 @@
             (u.note ? '<span class="small">"' + esc(u.note) + '"</span>' : "") + '</div><button class="btn ghost" data-act="na-clear" data-sid="' + u.student_id + '" data-day="' + u.day_number + '">Clear</button></li>';
         }).join("") + '</ul><p class="small muted">Add another date for that day: they drop off this list when they book it.</p></section>';
     }
+    html += buildPanel(d);
     if (S.adding) {
       html += '<section class="panel pad stack"><h2>Add a date</h2>' + workshopForm(d) + '<div class="row"><button class="btn" data-act="w-add">Save date</button><button class="btn ghost" data-act="w-add-toggle">Close</button></div></section>';
     } else html += '<button class="btn wide" data-act="w-add-toggle">+ Add a date</button>';
@@ -390,10 +495,10 @@
   /* ---- Students ---- */
   function studentsTab(d) {
     var lead = S.me.role === "leader";
-    var html = '<section class="panel pad stack"><h2>Add students</h2><div class="field"><label for="f-people">One per line: ambulance ID, first name, last name</label>' +
+    var html = peoplePanel(d) + '<section class="panel pad stack"><h2>Or paste students</h2><div class="field"><label for="f-people">One per line: ambulance ID, first name, last name</label>' +
       '<textarea id="f-people" placeholder="1234567, Sam, Smith&#10;7654321, Alex, Jones"></textarea></div><button class="btn" data-act="add-students">Add to ' + esc(d.cohort.name) + "</button>" +
       '<p class="small muted">' + (lead ? "As a leader, adding someone also puts their ID on the DSY access list so they can create an account."
-        : "IDs that are not on the DSY access list yet need a leader to add them (Grant access), or a leader can add the students here.") +
+        : "IDs that are not on the DSY access list yet need a leader to add them (the People page), or a leader can add the students here.") +
       " Students create their account at dsytraining.com/signin/ (Create account, with their ambulance ID), then open this page.</p></section>";
     if (!d.students.length) return html + '<p class="muted">No students yet.</p>';
     html += '<ul class="panel sessions">' + d.students.slice().sort(function (a, b) { return (b.active - a.active) || nameOf(a).localeCompare(nameOf(b)); }).map(function (s) {
@@ -404,22 +509,132 @@
     return html;
   }
 
+  /* ---- Induction (pre-course): a facilitator checklist per student (course_induction) ---- */
+  var SL = "https://saaslearn.com.au/moodle/";
+  var INDUCTION = [
+    { title: "Paperwork and accounts", items: [
+      ["photo", "Photo taken and emailed to request a photo ID card and bi-lock key", "mailto:HealthSAASSecurity-Access@sa.gov.au?subject=" + encodeURIComponent("Photo ID card and bi-lock key request"), "Email the request (HealthSAASSecurity-Access)"],
+      ["pager", "Pager assigned and instructions given"],
+      ["uniform", "Recruit uniform ordered on the uniform portal", "https://www.wwgonline.com.au/login", "Uniform portal"],
+      ["enrol", "Registered for the AR course", "https://enrol.vetenrol.com.au/?clientid=vt-saas&occuID=75700", "AR course enrolment"],
+      ["vendor", "Vendor form completed, so they can claim reimbursements (in the welcome email)", "form:vendor", "Download the form"],
+      ["cover", "Ambulance Cover application completed (in the welcome email)", "form:cover", "Download the form"],
+      ["mfa", "Multi-factor authentication set up"],
+      ["login", "SAAS login and password working"],
+      ["elearn", "SAAS eLearning login and password working", SL + "login/?lang=en", "SAAS eLearning"]
+    ] },
+    { title: "Practical", items: [
+      ["infection", "Infection control prac: hand washing, alcohol-based hand rub, donning and doffing PPE (sign off in saaslearn)", "skills:fnwc:32338|Hand washing,32337|Hand rub,32339|PPE"],
+      ["cpr", "Adult CPR simulation (the Day 1 sign-off)", "skills:fa:26191|Open in saaslearn"]
+    ] },
+    { title: "Induction declaration", note: "The student submits this on SAAS eLearning. Go through each statement with them and tick it when they can answer yes.", items: [
+      ["d1", "I have ordered a SAAS recruit uniform, photo ID card and bi-lock key."],
+      ["d2", "I have completed the local team induction checklist with my Volunteer Training Coordinator (VTC), Volunteer Team Leader (VTL) or Regional Team Leader (RTL)."],
+      ["d3", "I know how to access my local Peer Support Officer, Volunteer Equity Contact Officer and a Mental Health Professional should I require."],
+      ["d4", "I understand that until I complete manual handling training in the Ambulance Assist (AA) course, I can not operate or carry equipment and participate in patient movements."],
+      ["d5", "I have been shown how to safely enter and exit an ambulance vehicle (3 points of contact) by a Manual Tasks Trainer, VTC, VTL or RTL."],
+      ["d6", "I understand how to access SAAS Policies and Procedures."],
+      ["d7", "I understand the function of the various notices and how to access them (Safety alerts, SAASnews, Clinical Communications, Information Notices etc)."],
+      ["d8", "I have an understanding that if a patient or worker incident occurs I will seek guidance on completing the required forms with a mentor: Safety Learning System - SLS (Patient Incident), Work Health and Safety Incident Report (WHSIR) (Staff Incident)."],
+      ["d9", "I have access to SAASnet (SharePoint) and my SAAS Volunteer email and know how to access the support of a volunteer digital mentor if required."],
+      ["d10", "I have read and understood PRO060 - Daily Operational Requirements (Operational Staff) accessible on SAASnet (SharePoint)."],
+      ["d11", "I know how and when to seek assistance from: my Volunteer Team Leader (VTL), my Regional Team Leader (RTL), the Country Rostering unit, the SAAS Clinical Education team, the SAAS Volunteer Support Unit (VSU), the Emergency Operations Centre (Region North or Region South communications dispatch) and the State Duty Manager (SDM)."],
+      ["d12", "I have been mask fit tested to wear a Particulate Filter Respirator (PFR mask) using either the Portacount or Hood Qualitative testing method."],
+      ["d13", "I have met with my RTL and completed the skills demonstrations (hand hygiene: handwashing and alcohol-based hand rub; PPE donning and doffing), and I understand when on shift I must follow the directions of the crew I'm working with in regards to infection control principles."],
+      ["d14", "I have completed the \u201cFatigue Management\u201d module on SAAS eLearning.", SL + "course/view.php?id=28", "Fatigue Management module"],
+      ["d15", "I have watched the SAAS eLearning introduction video."],
+      ["decl", "Declaration submitted on SAAS eLearning", SL + "mod/questionnaire/view.php?id=15344", "Induction declaration"]
+    ] }
+  ];
+  /* saaslearn (Moodle) station groups, keyed by DSY team name: the same groups as the skill sign-off navigator. */
+  /* Station groups per saaslearn course come from ../saaslearn-groups.js (SAASLEARN); the station is the student's DSY team. */
+  function studentTeams(s) {
+    var p = (S.people || []).filter(function (x) { return norm(x.staff_id) === norm(s.staff_id); })[0];
+    return p ? p.teams || [] : null;
+  }
+  function stationOf(s) {
+    var teams = studentTeams(s) || [];
+    for (var i = 0; i < teams.length; i++) if (window.SAASLEARN.stations.indexOf(teams[i]) > -1) return { name: teams[i] };
+    return null;
+  }
+  function skillLinks(spec, st) {
+    var parts = spec.split(":"), course = parts[1];
+    return parts[2].split(",").map(function (x) {
+      var p = x.split("|"), g = st ? window.SAASLEARN.group(course, st.name) : null;
+      return '<a class="small" href="' + SL + "mod/checklist/report.php?id=" + p[0] + (g ? "&group=" + g : "") + '&editchecks=on" target="_blank" rel="noopener">' + esc(p[1]) + "</a>";
+    }).join(" · ");
+  }
+  var IND_ITEMS = []; INDUCTION.forEach(function (s) { s.items.forEach(function (i) { IND_ITEMS.push(i[0]); }); });
+  function indDone(d, sid) { return IND_ITEMS.filter(function (k) { return d.ind[sid + "|" + k]; }).length; }
+  function inductionTab(d) {
+    var html = '<section class="panel pad stack"><h2>Induction</h2><p class="small muted">Before the course: as soon as a student has a SAAS ID number. Tap a student to tick off their induction. ' +
+      'Schedule it as the Induction date in Build the course.</p></section>';
+    if (!d.active.length) return html + '<p class="muted">No students yet. Add them on the Students tab.</p>';
+    return html + '<ul class="panel sessions">' + d.active.slice().sort(function (a, b) { return nameOf(a).localeCompare(nameOf(b)); }).map(function (s) {
+      var n = indDone(d, s.id), all = n === IND_ITEMS.length;
+      return '<li><button class="session tap" type="button" data-tab="ind=' + s.id + '"><span class="what"><span class="t">' + esc(nameOf(s)) + "</span>" +
+        '<span class="small muted">' + (all ? "Induction complete" : n ? n + " of " + IND_ITEMS.length + " done" : "Not started") + '</span></span>' +
+        '<span class="chip ' + (all ? "good" : n ? "warn" : "") + '">' + n + " / " + IND_ITEMS.length + '</span><span class="go" aria-hidden="true">›</span></button></li>';
+    }).join("") + "</ul>";
+  }
+  function inductionScreen(d, sid) {
+    var s = d.byStudent[sid];
+    if (!s) return '<p class="muted">That student is not in this group. <a href="#induction">Back to Induction</a></p>';
+    if (!S.people) {
+      if (!S.peopleLoading) { S.peopleLoading = true; q(sb.rpc("course_people")).then(function (rows) { S.people = rows || []; }).catch(function () { S.people = []; }).then(function () { S.peopleLoading = false; renderFac(); }); }
+      return '<p class="muted">Loading…</p>';
+    }
+    var n = indDone(d, sid), st = stationOf(s), teams = studentTeams(s);
+    var stLine = st ? "Station: <b>" + esc(st.name) + "</b> (their DSY team). saaslearn links open that station's group with Edit checks."
+      : teams && teams.length ? "Their DSY team (" + esc(teams.join(", ")) + ") has no saaslearn station group, so saaslearn links show all students."
+      : "They're not in a DSY team yet, so saaslearn links show all students. Add them to their team on the People page.";
+    var html = '<div class="stack"><a class="link" href="#induction">‹ Induction</a><div><p class="eyebrow">Induction</p><h2>' + esc(nameOf(s)) + "</h2></div>" +
+      '<p class="small muted"><span id="ind-count">' + n + " of " + IND_ITEMS.length + "</span> done. Ticks save as you go." +
+      ' <button class="link small no-print" type="button" onclick="window.print()">Print</button></p>' +
+      '<p class="small muted">' + stLine + "</p></div>";
+    INDUCTION.forEach(function (sec) {
+      html += '<section class="panel pad stack ind-sec"><h3>' + esc(sec.title) + "</h3>" + (sec.note ? '<p class="small muted">' + esc(sec.note) + "</p>" : "") + '<ul class="ind-list">' +
+        sec.items.map(function (i) {
+          var x = d.ind[sid + "|" + i[0]];
+          return '<li><label class="check"><input type="checkbox" class="ind-tick" data-sid="' + sid + '" data-item="' + i[0] + '"' + (x ? " checked" : "") + "> <span>" + esc(i[1]) +
+            (i[2] && /^skills:/.test(i[2]) ? " " + skillLinks(i[2], st)
+              : i[2] && /^form:/.test(i[2]) ? ' <button class="link small" type="button" data-act="form" data-id="' + i[2].slice(5) + '">' + esc(i[3]) + "</button>"
+              : i[2] ? ' <a class="small" href="' + esc(i[2]) + '"' + (/^http/.test(i[2]) ? ' target="_blank" rel="noopener"' : "") + ">" + esc(i[3]) + "</a>" : "") +
+            '<span class="small muted ind-when">' + (x ? " Ticked " + esc(shortDate(String(x.done_at).slice(0, 10))) : "") + "</span></span></label></li>";
+        }).join("") + "</ul></section>";
+    });
+    return html;
+  }
+
+  /* Blank course forms stored in the database (course_form(): any signed-in user). Downloads as a PDF file. */
+  function downloadForm(key) {
+    return sb.rpc("course_form", { p_key: key }).then(function (r) {
+      if (r.error) throw r.error;
+      if (!r.data) throw new Error("That form isn't available yet. Ask your facilitator.");
+      var bin = atob(r.data.b64), bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      var url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" })), a = document.createElement("a");
+      a.href = url; a.download = r.data.filename; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+    });
+  }
+
   /* ---- Progress ---- */
   function progressTab(d) {
-    var total = d.cohort.total_days || d.dayList.length;
+    var total = totalDays(d);
     var html = '<div class="row no-print"><button class="btn ghost" onclick="window.print()">Print attendance record</button></div>' +
       '<div class="legend no-print"><span><i class="done"></i>Done</span><span><i class="booked"></i>Booked</span><span><i class="part"></i>Left early</span><span><i></i>Not done</span></div>';
     html += '<ul class="panel sessions no-print">' + d.active.map(function (s) {
-      var st = facStates(d, s), done = st.filter(function (x) { return x.state === "done"; }).length;
-      var todo = st.filter(function (x) { return x.state !== "done"; }).map(function (x) { return x.day; });
+      var st = facStates(d, s), done = st.filter(function (x) { return x.state === "done" && !isExtra(d, x.day); }).length;
+      var todo = st.filter(function (x) { return x.state !== "done" && !isExtra(d, x.day); }).map(function (x) { return x.day; });
       return '<li class="person"><div class="who"><b>' + esc(nameOf(s)) + "</b>" +
-        '<ol class="days mini">' + st.map(function (x) { return '<li class="' + x.state + '" title="Day ' + x.day + '">' + x.day + "</li>"; }).join("") + "</ol>" +
+        '<ol class="days mini">' + st.map(function (x) { return '<li class="' + x.state + '" title="' + dayName(x.day) + '">' + (x.day === 0 ? "I" : x.day) + "</li>"; }).join("") + "</ol>" +
         '<span class="small muted">' + (done >= total && total ? "" : "Still to do: Day " + todo.join(", ")) + "</span></div>" +
         (done >= total && total ? '<span class="chip good">Complete</span>' : '<span class="count">' + done + " / " + total + "</span>") + "</li>";
     }).join("") + "</ul>";
     // printable record
     html += '<div class="print-only"><h2>' + esc(d.cohort.course_name) + " · " + esc(d.cohort.name) + '</h2><p class="small">Attendance record printed ' + esc(fmtDate(todayIso())) + '</p><table class="record"><thead><tr><th>Student</th><th>ID</th>' +
-      d.dayList.map(function (n) { return "<th>Day " + n + "</th>"; }).join("") + "<th>Done</th></tr></thead><tbody>" +
+      d.dayList.map(function (n) { return "<th>" + dayName(n) + "</th>"; }).join("") + "<th>Done</th></tr></thead><tbody>" +
       d.active.map(function (s) {
         var st = facStates(d, s);
         return "<tr><td>" + esc(nameOf(s)) + "</td><td>" + esc(s.staff_id) + "</td>" + st.map(function (x) {
@@ -430,7 +645,7 @@
             if (a) cell += (cell ? "<br>" : "") + esc(shortDate(w.date)) + " " + esc(ATT[a.status]) + (a.note ? "<br><i>" + esc(a.note) + "</i>" : "");
           });
           return "<td>" + (cell || "–") + "</td>";
-        }).join("") + "<td>" + st.filter(function (x) { return x.state === "done"; }).length + " / " + total + "</td></tr>";
+        }).join("") + "<td>" + st.filter(function (x) { return x.state === "done" && !isExtra(d, x.day); }).length + " / " + total + "</td></tr>";
       }).join("") + "</tbody></table></div>";
     return html;
   }
@@ -470,14 +685,15 @@
     var rows = d.dayList.length ? d.dayList : [1];
     html += rows.map(function (n) {
       var x = d.days.filter(function (y) { return y.day_number === n; })[0] || {};
-      return '<div class="stack day-edit" data-day="' + n + '"><b>Day ' + n + '</b><div class="field"><input class="d-title" value="' + esc(x.title || "") + '" placeholder="Title, e.g. Medical Conditions"></div>' +
+      return '<div class="stack day-edit" data-day="' + n + '"><b>' + dayName(n) + '</b><div class="field"><input class="d-title" value="' + esc(x.title || "") + '" placeholder="Title, e.g. Medical Conditions"></div>' +
         '<div class="field"><textarea class="d-links" placeholder="Day 6 skills stations | /stations/ar-day6/">' + esc(linksText(x.links)) + "</textarea></div></div>";
     }).join("");
     html += '<div class="row"><button class="btn" data-act="d-save">Save days</button><button class="btn ghost" data-act="d-add">+ Add a day</button></div></section>';
     return html;
   }
   function newGroupForm(first) {
-    var copy = S.cohortId ? '<label class="check"><input type="checkbox" id="n-copy" checked> Copy the course days, titles and links from ' + esc((S.d.cohort || {}).name || "the current group") + "</label>" : "";
+    var copy = (S.cohortId ? '<label class="check"><input type="checkbox" id="n-copy"> Copy the course days, titles and links from ' + esc((S.d.cohort || {}).name || "the current group") + "</label>" : "") +
+      '<label class="check"><input type="checkbox" id="n-ar" checked> Start with the AR course days (Day 1 to 10: Days 8 and 9 are consolidation)</label>';
     return '<section class="panel pad stack"><h2>' + (first ? "Set up your first group" : "New group") + '</h2><div class="grid2">' +
       '<div class="field"><label for="n-name">Group name</label><input id="n-name" placeholder="e.g. AR course 2027 group 1"></div>' +
       '<div class="field"><label for="n-total">Days to complete</label><input id="n-total" type="number" min="1" inputmode="numeric" value="' + esc(S.d && S.d.cohort && S.d.cohort.total_days || "") + '"></div>' +
@@ -492,7 +708,28 @@
   app.addEventListener("change", function (e) {
     if (e.target.id === "cohort") { S.cohortId = e.target.value; S.draft = {}; act(loadCohort()); }
   });
+  app.addEventListener("change", function (e) {
+    var t = e.target;
+    if (t.id === "p-team") { S.pTeam = t.value; $("p-list").innerHTML = peopleRows(S.d); }
+    if (t.classList.contains("p-pick")) {
+      var id = t.getAttribute("data-id");
+      if (t.checked) S.pSel[id] = 1; else delete S.pSel[id];
+      $("p-add").textContent = addLabel();
+    }
+    if (t.classList.contains("b-date") && t.value) t.closest(".b-row").querySelector(".b-pick").checked = true;
+    if (t.classList.contains("ind-tick")) {
+      var sid = t.getAttribute("data-sid"), item = t.getAttribute("data-item"), key = sid + "|" + item, on = t.checked;
+      var row = { student_id: sid, item: item, done: on, done_at: new Date().toISOString() };
+      t.disabled = true;
+      q(sb.from("course_induction").upsert(row)).then(function () {
+        if (on) S.d.ind[key] = row; else delete S.d.ind[key];
+        t.closest("label").querySelector(".ind-when").textContent = on ? " Ticked " + shortDate(todayIso()) : "";
+        $("ind-count").textContent = indDone(S.d, sid) + " of " + IND_ITEMS.length;
+      }).catch(function (e) { t.checked = !on; fail(e); }).then(function () { t.disabled = false; });
+    }
+  });
   app.addEventListener("input", function (e) {
+    if (e.target.id === "p-q") { S.pQ = e.target.value; $("p-list").innerHTML = peopleRows(S.d); return; }
     if (e.target.classList.contains("note")) {
       var sid = e.target.getAttribute("data-sid"), cur = S.draft[sid] || currentMark(sid);
       S.draft[sid] = { status: cur.status, note: e.target.value };
@@ -520,6 +757,62 @@
 
     // facilitator
     if (a === "w-add-toggle") { S.adding = !S.adding; return renderFac(); }
+    if (a === "form") { e.preventDefault(); return downloadForm(id).catch(fail); }
+    if (a === "b-toggle") { S.building = !S.building; return renderFac(); }
+    if (a === "b-more") {
+      var row = t.closest(".b-row"), box = row.querySelector(".b-dates");
+      box.insertAdjacentHTML("beforeend", whenLine(+row.getAttribute("data-day"), true));
+      box.lastChild.querySelector(".b-date").focus(); return;
+    }
+    if (a === "b-rm") { t.closest(".b-when").remove(); return; }
+    if (a === "b-rm-row") { t.closest(".b-row").remove(); return; }
+    if (a === "b-cons") {
+      var nums = [].map.call(document.querySelectorAll(".b-row"), function (r) { return +r.getAttribute("data-day"); });
+      $("b-rows").insertAdjacentHTML("beforeend", consRow(Math.max.apply(null, nums.concat([0])) + 1));
+      return;
+    }
+    if (a === "b-save") {
+      var cap = $("b-cap").value.trim(), ws = [], titles = [], missing = [];
+      [].forEach.call(document.querySelectorAll(".b-row"), function (r) {
+        if (!r.querySelector(".b-pick").checked) return;
+        var n = +r.getAttribute("data-day"), newTitle = r.getAttribute("data-title"), extra = r.getAttribute("data-extra") === "1", dated = 0;
+        [].forEach.call(r.querySelectorAll(".b-when"), function (l) {
+          var date = l.querySelector(".b-date").value;
+          if (!date) return;
+          dated++;
+          ws.push({ cohort_id: S.cohortId, day_number: n, date: date, start_time: l.querySelector(".b-start").value || null, end_time: $("b-end").value || null,
+            location: l.querySelector(".b-loc").value.trim() || $("b-loc").value.trim(), capacity: cap ? +cap : null, notes: "", updated_at: new Date().toISOString() });
+        });
+        if (!dated) { missing.push(n); return; }
+        if (newTitle && !d.dayTitle[n]) titles.push({ cohort_id: S.cohortId, day_number: n, title: newTitle, links: [], extra: extra });
+      });
+      // A group built from the AR days (none saved yet) gets its days to complete: every AR day except consolidation.
+      var setTotal = !d.dayList.length && !d.cohort.total_days ? q(sb.from("course_cohorts").update({ total_days: AR_CORE }).eq("id", S.cohortId)) : null;
+      if (missing.length) return toast("Give Day " + missing.join(", Day ") + " a date, or untick it", true);
+      if (!ws.length) return toast("Tick at least one day and give it a date", true);
+      return act(q(sb.from("course_workshops").insert(ws)).then(function () {
+        if (titles.length) return q(sb.from("course_days").upsert(titles));
+      }).then(function () { return setTotal; }).then(function () { S.building = false; if (setTotal) d.cohort.total_days = AR_CORE; return refresh(ws.length + (ws.length === 1 ? " date added" : " dates added")); }));
+    }
+    if (a === "p-toggle") {
+      S.picking = !S.picking; S.pSel = {};
+      if (S.picking && !S.people) {
+        renderFac();
+        return act(q(sb.rpc("course_people")).then(function (rows) { S.people = rows || []; renderFac(); }));
+      }
+      return renderFac();
+    }
+    if (a === "p-add") {
+      var ids = Object.keys(S.pSel);
+      if (!ids.length) return toast("Tick at least one person", true);
+      var people = ids.map(function (id) {
+        var p = S.people.filter(function (x) { return x.staff_id === id; })[0] || {}, parts = String(p.full_name || "").trim().split(/\s+/);
+        return { staff_id: id, first_name: parts[0] || "", last_name: parts.slice(1).join(" ") };
+      });
+      return act(q(sb.rpc("course_add_students", { p_cohort: S.cohortId, p_people: people })).then(function () {
+        S.pSel = {}; return refresh(people.length + (people.length === 1 ? " student added" : " students added"));
+      }));
+    }
     if (a === "w-add") {
       return act(Promise.resolve().then(function () {
         var w = readWorkshopForm(); w.cohort_id = S.cohortId;
@@ -596,9 +889,10 @@
       var name = $("n-name").value.trim();
       if (!name) return toast("Give the group a name", true);
       var copyFrom = $("n-copy") && $("n-copy").checked ? S.cohortId : null, oldDays = copyFrom && S.d.days ? S.d.days : [];
-      return act(q(sb.from("course_cohorts").insert({ name: name, total_days: +$("n-total").value || null, cancel_cutoff_hours: +$("n-cut").value || 0 }).select().single()).then(function (c) {
+      if (!oldDays.length && $("n-ar") && $("n-ar").checked) oldDays = AR_DAYS.map(function (x) { return { day_number: x.n, title: x.title, links: [], extra: !!x.extra }; });
+      return act(q(sb.from("course_cohorts").insert({ name: name, total_days: +$("n-total").value || ($("n-ar") && $("n-ar").checked && !copyFrom ? AR_CORE : null), cancel_cutoff_hours: +$("n-cut").value || 0 }).select().single()).then(function (c) {
         S.cohortId = c.id;
-        if (oldDays.length) return q(sb.from("course_days").insert(oldDays.map(function (x) { return { cohort_id: c.id, day_number: x.day_number, title: x.title, links: x.links }; })));
+        if (oldDays.length) return q(sb.from("course_days").insert(oldDays.map(function (x) { return { cohort_id: c.id, day_number: x.day_number, title: x.title, links: x.links, extra: !!x.extra }; })));
       }).then(function () { location.hash = "setup"; return loadFacilitator(); }).then(function () { toast("Group created"); }));
     }
   });

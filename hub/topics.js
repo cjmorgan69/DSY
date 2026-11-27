@@ -44,7 +44,9 @@ window.DSY_TOPICS = [
   { id:'bushfire', group:'safety', title:'Bushfire and burnover', protocol:'PRO-239', patient:'Crew safety on a fire day, and the burnover drill',
     module:'bushfire', stations:'/stations/burnover/', slides:'https://docs.google.com/presentation/d/1SQdORJyJlNf7aV2fLu5gcXrDIkWu7eLa/edit?usp=sharing' },
   { id:'health-checks', group:'safety', title:'Health checks for emergency services', protocol:'PRO-384', patient:'Fire standby: checking the firefighters off the line',
-    stations:'/stations/health-checks/' }
+    stations:'/stations/health-checks/' },
+  { id:'refusal', group:'decisions', title:'Refusal against advice', protocol:'CPP-056-AO', patient:'Sam, 38: a hypo who tells the crew to get out, then still refuses',
+    module:'refusal', walk:'/modules/refusal-ao/', mdt:'refusal', custom:'refusal-ao', stations:'/stations/refusal/', pcr:'sam', slides:'/classroom/refusal/' }
 ];
 
 /* Categories on Run a session (11 Nov 2026, owner). */
@@ -73,7 +75,6 @@ window.DSY_PLANNED = [
   { group:'birth', title:'Primary postpartum haemorrhage', protocol:'CPP-053-AO' },
   { group:'birth', title:'Newborn care and resuscitation', protocol:'CPP-012-AO' },
   { group:'decisions', title:'Treat and refer', protocol:'CPP-055-AO' },
-  { group:'decisions', title:'Refusal against advice', protocol:'CPP-056-AO' },
   { group:'decisions', title:'Prolonged care', protocol:'CPP-063-AO' },
   { group:'decisions', title:'Transfer of patients exceeding AO scope', protocol:'CPP-015-AO' }
 ];

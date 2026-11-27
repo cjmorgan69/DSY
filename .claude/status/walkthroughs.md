@@ -22,7 +22,8 @@ it above 94%; no CPR detail in scenarios.
 
 Envenomation (`/modules/envenomation/`, Greg 52, brown snake) rebuilt and linked with the envenomation module (live,
 lesson added); owner: longboard or carry chair both fine, chosen by helpers and distance, as long as movement is
-minimal and timely.
+minimal and timely. Owner (22 Nov 2026): the crew is paged from Cummins, not Port Lincoln (25 minutes to
+scene and Port Lincoln Hospital 30 minutes unchanged); live (PR #317, merged 22 Nov 2026).
 
 ## Anaphylaxis (David)
 
@@ -42,6 +43,8 @@ Clinician may contact Port Lincoln Hospital and/or the crew notifies by GRN radi
 Hypoglycaemia: `/modules/hypo/` is an MVA walk-through (convert separately, later) and `/modules/hypoglycaemia` is
 an old short learning page, not a scenario. Owner chose a new non-trauma walk-through: `/modules/hypoglycaemia-ao/`
 (Ron 67, near Cummins; not Port Lincoln, which has paramedics), all DSY-written on CPP-009-AO (live, lesson added).
+AR version (`?scope=ar`, 26 Nov 2026, CPP-031-AR): no glucagon; EOC Clinician advises transport towards Port Lincoln
+and RV with the paramedics at Edillilie (owner chose transport and RV); seven break points.
 
 ## Sepsis (Robert)
 
@@ -130,3 +133,17 @@ no restraint practice). Extras live 10 Nov 2026 (PR #195).
 Dementia patient renamed 10 Nov 2026 (owner): Joan Pedler -> Jo-Anne Smith everywhere (Pedler is a common
 Cummins-district name; avoid real local surnames); PCR job id `joanne`; customiser row updated in place (md5
 checked). The narrated intro video of `/microlearning/dementia/` still says "Joan" (not re-recorded).
+
+## Refusal against advice (Sam, 38)
+
+New walk-through `/modules/refusal-ao/` (26 Nov 2026, owner asked for the whole Decisions "Refusal against advice"
+topic): Sam, 38, type 1 diabetic, Tumby Bay township, Saturday in March, page 0948 (TB81), scene 0955, clear 1052, not
+transported. Confused hypo (BGL 2.3) telling the crew to get out = invalid refusal (C fails); EOC Clinician plan;
+partner Kirsty consents as Person Responsible (CTL-067); oral glucose 15 g from Kirsty, no restraint; recovers (6.4)
+and refuses transport for his son's cricket final; VIRCA again = valid; EOC Clinician speaks to him; AMA form, advice,
+copy left. Seven break points, six variations (boat ramp = validity cannot be determined; no EOC answer; brother's
+pressure; won't take the paste; Jack is 15; changes his mind). Sources CPP-056-AO v1.0, CTL-126, CTL-067, CPP-009-AO
+v4.1. Story, obs, EOC Clinician lines and the risk wording ("can come back while insulin is active", general
+teaching) are DSY-written (owner to review). `relatedCodes: ["CPP-009-AO"]`. MDT job `refusal`, PCR job `sam` (with a
+case card), stations, case-night deck. Customiser template `refusal-ao` (26 Nov 2026, `scenarios/tools/convert-refusal.js`, page time 07:00 to 11:00
+because of the 1300 cricket final; loaded unpublished, md5 checked). On a branch, not merged.

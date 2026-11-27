@@ -16,10 +16,10 @@ settings or play files you leave in the container: send files with the file tool
 - `/microlearning/shared/` - `module.js`, `module.css`, `landing.js`, `related.js` (pages on the same protocol link to
   each other), `dsy-logo.png`. `/training/theme.css` is the shared colour and type theme.
 - `/microlearning/tools/video/` - the narrated intro-video pipeline (`make.sh`, `align.py`, `render.js`, `voice.json`).
-- `/modules/` - walk-through scenarios. 16 are rebuilt on the microlearning template with facilitator and student
+- `/modules/` - walk-through scenarios. 17 are rebuilt (16 converted plus the new refusal one) on the microlearning template with facilitator and student
   versions (their `index.html` loads `microlearning/shared/module.js`); the rest are the old standalone style.
 - `/scenarios/` - trial scenario customiser: pick a walk-through and change its local details (names, places, times).
-  Templates are in Supabase `public.scenarios`. Read `scenarios/README.md`. 15 templates (every converted walk-through except spinal).
+  Templates are in Supabase `public.scenarios`. Read `scenarios/README.md`. 16 templates (every converted walk-through except spinal; `refusal-ao` unpublished until PR #377 merges).
 - `/training/` - the training-session app (Supabase). `/teams/`, `/region/` - team and region pages. A session can
   have several lessons (`sessions.lesson_ids`, in order; a trigger keeps `lesson_id` = the first one).
 - `/userguides/` - user guides: home, Team Leaders (`leaders/`, source for the dashboard's Ask DSY helper), rosters, MDT.
@@ -84,6 +84,14 @@ Travel Diary page, URL in the README), read `.claude/vehicle-log/README.md`, run
   "Y" or "Consult") and the linked guideline per level (`cpg`). Use it for doses the protocol PDFs leave out.
 - GTN for AO chest pain: the app lists it as "Consult", but the owner confirmed (8 Nov 2026) that the AO crew may still
   give the FIRST dose without a consult if SBP and HR are within the protocol limits, then consult for further doses.
+  Only when the patient's own GTN is prescribed; not prescribed = consult first (owner, 22 Nov 2026).
+- Salbutamol MDI for AO asthma: give without a consult, as CPP-050-AO says (owner, 22 Nov 2026; the app lists Consult).
+- Benzylpenicillin: follow CPP-062-AO Sepsis (ceftriaxone); benzylpenicillin is to be changed over for ceftriaxone
+  (owner, 22 Nov 2026).
+- Co-Phenylcaine Forte: AOs may use it to insert an NPA (owner, 22 Nov 2026; the app lists paramedic and above).
+- Ipratropium MDI for AO asthma: on EOC Clinician consult, doses as per the paramedic guideline (owner, 22 Nov 2026).
+- Nasal cannula: AOs may use it, up to 4 L/min, whenever a protocol says oxygen may be needed (owner, 22 Nov 2026).
+  CPP-004-AO lists face mask, NRB or IPPV; where a protocol says high-flow oxygen, the mask it names is used.
   ACPO GTN stays consult-first.
 - Eyre Peninsula call signs (owner, 11 Nov 2026): XX81 for jobs between 0800 and 1800, XX181 between 1800 and 0800
   (Tumby Bay TB81 / TB181, Cleve CL81 / CL181, Port Neill PT181 at night). Use them in MDT screenshots and jobs.
@@ -130,9 +138,8 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 
 - 44 active accounts (38 students, 6 facilitators) are still on the shared starter password; "must change password" is
   enforced by the pages only.
-- Pager and roster copies in Supabase (`paging_jobs`, `roster_bookings`): fed by a scheduled run in the owner's Claude
-  desktop app on their PC, every day at 9 am (owner, 15 Nov 2026); it is not in this repo. On 15 Nov 2026 the owner
-  said it ran at 9:30, but the newest rows were still from 14 Nov 11:26 Adelaide time: the owner is checking the run.
+- Pager copy in Supabase (`paging_jobs`): fed by the claude.ai scheduled task "DSY pager capture" at 5:35 am, 11:35 am
+  and 5:35 pm Adelaide (19 Nov 2026); not in this repo. It no longer copies rosters (see `rosters.md`).
 - Supabase advisor tidy-up: leaked-password protection off; `protect_profile_fields()` and `require_allowed_id()`
   callable by anon (trigger functions, harmless); `norm_id`, `course_today`, `course_starts_at` have no fixed search
   path; anon holds full grants on most tables, so RLS is the only barrier. The `upcoming_sessions` view is security
@@ -154,6 +161,26 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - PRs #155 (more than one lesson per session), #133 (sepsis skills stations) and #119 (NSW ECAT protocols in the
   rural ED asthma/COPD module) were folded into the health check PR #236 on 15 Nov 2026 (owner: merge them as long
   as nothing newer is overwritten). The rural ED module's intro video was narrated before the ECAT additions.
+- Team Leader microlearning (`/microlearning/leaders/`, started 21 Nov 2026): module 1 Your dashboard live
+  (PR #305, merged 21 Nov 2026). Module 3 Training nights live
+  (PR #306, merged 21 Nov 2026). Modules 4 People and passwords and 6 Your team page live (21 Nov 2026).
+  Modules 2 Crewing gaps and 5 Relief cover live (on main). All six are linked from the user guides.
+  Learning order for a new Team Leader (23 Nov 2026): dashboard, people, gaps, training nights, relief, team page,
+  with Next links, a Start here card on `/userguides/` and the guide in the same order (on a branch, not merged).
+- One People page (25 Nov 2026): `/access/` (People button on the dashboard) replaces Grant access and the training
+  app's People tab (now a Courses tab); relief Team Leaders add only; database rules `people_page_rules` applied.
+  Live (PR #362, merged 25 Nov 2026). People and passwords module re-shot and re-narrated (PR #363, merged 25 Nov 2026).
+- Volunteer Team Leader level (22 Nov 2026): one per team, facilitator + roster manager for their team, team dashboard
+  `/dashboard/team/`, set on the People page `/access/` (see `access.md`). Live (PR #320, merged 22 Nov 2026). Owner to name the VTLs.
+- Refusal against advice (Decisions topic, 26 Nov 2026): module `/microlearning/refusal/`, walk-through
+  `/modules/refusal-ao/` (Sam, 38), MDT job, PCR job `sam` with a case card, stations `/stations/refusal/`, case-night
+  deck `/classroom/refusal/`, intro video, customiser template `refusal-ao` (Supabase row unpublished).
+  On a branch, not merged (PR #377). After merge: publish the `refusal-ao` row, add the Supabase lessons.
+- AR version (26 Nov 2026): AO / AR switch on modules (`ar` in content.js, `?scope=ar`); pilot on the hypoglycaemia
+  module, Ron's walk-through and an AR PCR job (`ronAR`); gap analysis in `.claude/references/ar-vs-ao-protocols.md`. Live (PR #378, merged
+  26 Nov 2026; the three AR lessons added in Supabase). Next: the other 7 topics with real AR differences (asthma, chest pain, pain, stroke, seizures, ABD, refusal).
+- Dashboard search box (27 Nov 2026): one box on `/dashboard/`, `/dashboard/wide/` and `/dashboard/team/` finds topics,
+  AO protocols, people, sessions, lessons and pages (see `dashboard.md`). On a branch, not merged.
 - Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario

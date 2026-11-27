@@ -22,7 +22,7 @@ window.MODULE = {
 
   panels: [
     { title: "Overview", blocks: [
-      { text: "A 62 year old woman on a farm 5 km west of Cummins has been vomiting for eight hours and can't keep fluids down. Her husband calls when she nearly faints walking from the bathroom. Cummins District Hospital is about 7 minutes away; backup is limited; the EOC Clinician is available by phone." },
+      { text: "A 62 year old woman on a farm 5 km west of Cummins has been vomiting for eight hours and can't keep fluids down. Her husband calls when she nearly faints walking from the bathroom. Cummins Hospital is about 7 minutes away; backup is limited; the EOC Clinician is available by phone." },
       { box: { title: "Learning objectives", items: [
         "Decide whether an antiemetic is indicated (uncontrolled nausea and vomiting, and/or safe transport)",
         "Screen the two contraindications and three precautions, and confirm precautions with the patient",
@@ -39,7 +39,7 @@ window.MODULE = {
       ] } },
       { box: { title: "Timing and resources", items: [
         "Pre-brief about 10 minutes; walk-through 45 to 55 minutes; debrief 10 to 15 minutes",
-        "Cummins District Hospital: about 7 minutes",
+        "Cummins Hospital: about 7 minutes",
         "Backup: limited. EOC Clinician: by phone"
       ] } },
       { box: { title: "Crew roles", items: [
@@ -190,7 +190,7 @@ window.MODULE = {
       ] } } },
       { box: { title: "The EOC Clinician call (story)", items: [
         "Driver: \"62 year old female, 8 hours of vomiting, likely food poisoning. AF on metoprolol and apixaban, type 2 diabetes on metformin. Ondansetron 4 mg ODT at 2047, AF precaution noted. Vomiting stopped, but nausea still 5 out of 10. HR 98 irregular, BP 110/74, BGL 4.6 and drifting. Requesting advice.\"",
-        "EOC Clinician: \"Give a second ondansetron 4 mg ODT. Keep checking her BGL; if it falls below 3.5, follow the hypoglycaemia protocol. Transport to Cummins District Hospital and notify them.\""
+        "EOC Clinician: \"Give a second ondansetron 4 mg ODT. Keep checking her BGL; if it falls below 3.5, follow the hypoglycaemia protocol. Transport to Cummins Hospital and notify them.\""
       ] } },
       { breakpoint: { title: "Still nauseated: consult", type: "Decision making",
         prompts: ["What does the protocol say now?", "What do you tell the EOC Clinician?", "Why watch the BGL?", "If she'd had two precautions, what would have been different?"],
