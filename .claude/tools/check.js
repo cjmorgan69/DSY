@@ -7,7 +7,8 @@
      4 topics          hub/topics.js entries point at real modules, walk-throughs, stations, decks, MDT and PCR jobs
      5 walk-throughs   each converted walk-through has a hub topic, a PCR job, a related.js line and a card on /ao/
      6 microlearning   every module folder is on a list in modules.js and the other way round
-     7 case nights     each case-night deck ends with a feedback slide */
+     7 case nights     each case-night deck ends with a feedback slide
+     8 search index    shared/search-index.js matches the pages (fix: node .claude/tools/stamp.js) */
 const fs = require("fs"), path = require("path"), cp = require("child_process"), vm = require("vm");
 const root = path.resolve(__dirname, "../..");
 const read = f => fs.readFileSync(path.join(root, f), "utf8");
@@ -104,6 +105,10 @@ for (const m of folders) if (!exists("microlearning/" + m + "/index.html")) bad(
 
 // 7 case-night decks
 for (const f of tracked.filter(f => /^classroom\/[^/]+\/data\/build\.js$/.test(f))) if (!/\/feedback\/\?t=/.test(read(f))) bad("case nights", f + " has no feedback QR slide");
+
+// 8 dashboard search index
+try { cp.execSync("node .claude/tools/search-index.js --check", { cwd: root, stdio: "pipe" }); }
+catch (e) { bad("search index", "shared/search-index.js is out of date. Run: node .claude/tools/stamp.js"); }
 
 console.log("Checked " + pages.length + " pages, " + topics.length + " topics, " + walks.length + " walk-throughs, " + folders.length + " modules.");
 if (notes.length) { console.log("\nNOTES (" + notes.length + ")"); notes.forEach(n => console.log("  " + n)); }

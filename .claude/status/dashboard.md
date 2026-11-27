@@ -314,3 +314,23 @@ query and hash) when the screen is at least 1100px wide and the pointer is a mou
 tablet version" links (wide footer, car dash) go to `/dashboard/?phone=1`, which keeps the phone version on that device
 (`localStorage` `dsyDashView` = phone) until the Widescreen version is opened again. Tested in a headless browser
 (PC, PC after choosing phone, iPhone, iPad landscape). Live (PR #374, merged 25 Nov 2026).
+
+## Site search box (owner, 27 Nov 2026)
+
+One search box under the heading on `/dashboard/`, `/dashboard/wide/` and `/dashboard/team/` (owner: "TL dashboards also").
+Script `shared/site-search.js` (mounts into `<div class="dsy-search">`; uses the page's Supabase client `window.DSY_SB`,
+set in `dash.js` and `team.js`). Results as you type, grouped: Topics (`hub/topics.js`, a button per part), SAAS
+protocols (the 34 AO protocols, PDF link and DSY topic), People, Training (upcoming sessions; lessons for leaders), Pages.
+- Page index `shared/search-index.js` is made by `.claude/tools/search-index.js` (titles, headings, descriptions, main
+  words of each page and its content.js, and each page's gate level so a VTL is not shown leader pages). `stamp.js`
+  rebuilds it first; `check.js` reports it when out of date. Official AO protocol names (for the PDF links) are in that
+  script, taken from the SAAS site's `main.*.js` on 27 Nov 2026.
+- People: Supabase function `site_search_people(p_q)` (security definer, authenticated only; SQL
+  `supabase/site-search.sql`, migration `site_search_people`, applied by Claude 27 Nov 2026): leaders (relief TLs too)
+  anyone, with ambulance ID; a VTL only their own team's members, no IDs; anyone else nothing. Rehearsed in a
+  rolled-back transaction with a stand-in Cummins VTL. A leader's tap opens `/access/?q=<ID>` (the People page now takes
+  `?q=`, filled in, all clusters); a VTL's tap opens the person's team roster.
+- Other words list (`ALSO` in the script: "can't breathe" finds asthma and ACPO, "sugar" hypoglycaemia...): search words
+  only, nothing clinical. Matches words, not meaning.
+- Tested in a headless browser with stand-in sign-in data (phone, wide, team dashboard as a VTL). Leader guide section 2
+  has a "Search box" row. On a branch, not merged.

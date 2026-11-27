@@ -8,11 +8,11 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../shared/dsy-favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="../shared/dsy-favicon-192.png">
 <link rel="apple-touch-icon" href="../shared/dsy-touch-180.png">
-<script src="/shared/gate.js?v=20261127c" data-level="leader"></script>
+<script src="/shared/gate.js?v=20261127e" data-level="leader"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../training/theme.css?v=20261127c">
+<link rel="stylesheet" href="../training/theme.css?v=20261127e">
 <style>
 [hidden]{display:none!important}
 textarea{width:100%;min-height:7rem;font:inherit;padding:.6rem .75rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
@@ -94,7 +94,7 @@ tr.ro td{color:var(--muted)}
   <p class="small muted">The page opens on your own cluster; people in other clusters are view only. Take someone off a team with the ✕ on the team. Remove switches the whole account off: they cannot sign in again, and a session already open ends within about an hour. Add them back to restore it. Leaders cannot be switched off here. Reset password gives someone a temporary one; they choose their own when they next sign in.</p>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="../training/config.js?v=20261127c"></script>
+<script src="../training/config.js?v=20261127e"></script>
 <script>
 /* People (owner, 25 Nov 2026): one page for Team Leaders to manage everyone. Grant access and Team training's
    People tab are merged here; Team training now links to this page.
@@ -136,7 +136,7 @@ tr.ro td{color:var(--muted)}
       S.vtls = r[7] || [];
       var acc = r[8] || {};
       S.real = !!acc.real_leader; S.myCluster = acc.cluster || null; S.lead = S.real && !S.myCluster;
-      if (S.view === null) S.view = S.myCluster || "all";
+      if (S.view === null) S.view = S.qFrom ? "all" : (S.myCluster || "all");   /* opened from the dashboard search: every cluster */
       $("reliefNote").hidden = S.real;
       if (!S.real) { var fo = $("role").querySelector('option[value="facilitator"]'); if (fo) fo.remove(); }
       fillTeamPicker(); drawClusters(); draw(); drawVtl();
@@ -442,6 +442,8 @@ tr.ro td{color:var(--muted)}
     rd.onload = function () { $("ids").value = String(rd.result); say("Loaded " + parse(String(rd.result)).length + " IDs from " + f.name + ". Check them, then tap Add to the list."); };
     rd.readAsText(f); this.value = "";
   });
+  /* /access/?q=<name or ID>: opened from the dashboard search, start with that search filled in */
+  (function () { var q0 = new URLSearchParams(location.search).get("q"); if (q0) { $("q").value = q0.slice(0, 80); S.qFrom = true; } })();
   $("q").addEventListener("input", draw); $("filter").addEventListener("change", draw);
   /* the gate has already confirmed a leader; load once it lets the page show */
   (window.DSY_GATE ? window.DSY_GATE.ready : Promise.resolve()).then(function () { return load(); }).catch(function (e) { say((e && e.message) || "Could not load the list.", true); });
