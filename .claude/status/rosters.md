@@ -539,9 +539,9 @@ pages unchanged. Live (PR #343, merged 23 Nov 2026).
 - Removed the old Apps Script trial pages `/modules/rosters/lowereyre/coverage-gaps/` and `coverage-gaps-6h/`
   (replaced by `/dashboard/coverage/`; they read the frozen sheets). The cluster manager pages
   (`/<cluster>/manager/`) are link hubs with no password, so they stay.
-- NOT done: dropping the old `member_contribution` function (the approval prompt got no answer; nothing calls it).
+- Old `member_contribution` function dropped (owner approved, 28 Nov 2026); `member_contribution_v2` checked after.
 - Left in the code, harmless: the Apps Script paths in `roster.js` (manager password, PDF view) and the `apiUrl`
   lines in `teams.js` (roster-data.js still groups teams by them). No page calls an Apps Script now.
 - Owner's part: in each of the three Apps Script projects, Deploy > Manage deployments > archive the web app; set the
   three Google Sheets to view-only for everyone else (keep them as the archive).
-- On a branch, not merged.
+- Live: PR #386 merged 28 Nov 2026; the coverage-gaps pages now 404.
