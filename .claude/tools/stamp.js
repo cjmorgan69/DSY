@@ -16,6 +16,8 @@ const fs = require("fs"), path = require("path"), cp = require("child_process");
 const root = path.resolve(__dirname, "../..");
 const args = process.argv.slice(2), checkOnly = args.includes("--check");
 const skip = f => f.startsWith("LOGO files/") || f.startsWith(".claude/") || f.includes("/video-src/");
+/* rebuild the dashboard search index first, so it goes out with the new tag */
+if (!checkOnly) cp.execSync("node .claude/tools/search-index.js", { cwd: root, stdio: "inherit" });
 const files = cp.execSync("git ls-files -z -- '*.html' '*.js'", { cwd: root }).toString().split("\0").filter(f => f && !skip(f));
 
 const REF = /((?:src|href)=")([^"?#]+\.(?:js|css))(?:\?v=[^"#]*)?(")/g;          // local js / css link in a page
