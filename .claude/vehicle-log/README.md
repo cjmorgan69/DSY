@@ -29,3 +29,11 @@ Odometer photos (12 Nov 2026): the diary has a photo button. Claude (the page's 
 the photo's time and GPS (exifr) name the nearest town (list in the page). A photo near Port Lincoln (home base, within
 8 km) is the closing reading; elsewhere it names the destination. Each trip saved with photos keeps a `photos` list
 (kind away/home, time, lat, lon, town, odo) as an evidence log; the owner keeps the original photos in their iPhone Photos.
+
+## Away December 2026 (owner, 27 Nov 2026)
+
+The owner is away from Sunday 29 November 2026 to the end of December. A reliever drives the vehicle and fills in the
+paper log book by hand. No Claude sheets for that time. When the owner is back they may upload photos of the reliever's
+pages: before making January's sheets, read those pages for the last odometer reading and the last serial number used
+(the paper book's own serials may differ from 1234014), and ask the owner which serial to continue from. Check that
+the Travel Diary's first January trip starts at the reliever's last odometer reading.
