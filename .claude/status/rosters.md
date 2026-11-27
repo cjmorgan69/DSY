@@ -464,6 +464,11 @@ Addresses come from `modules/rosters/shared/teams.js` (cluster folder + team id)
 - Pages: the 4 West Coast pages switched like the others; teams.js `backend: "supabase"` on all 12 real teams, so
   the Apps Scripts are no longer read by any page. Checked locally against the real database with the test account
   (switched off again): the West Coast pages and manager dashboard call only Supabase.
+- LIVE: PR #286 merged 19 Nov 2026; the 4 West Coast pages on the new roster from 07:10 UTC (5:40 pm Adelaide).
+  Catch-up straight after: nothing booked, changed or cancelled on the old West Coast pages. Checked on the live site
+  in a fresh browser: the West Coast pages ask for sign-in; the operations page and the West Coast manager dashboard
+  now read only Supabase (no page reads an Apps Script any more). "Ben Dover" (100100) left active (owner, 19 Nov
+  2026). All 12 teams are on the new roster; what remains is stage 8 (tidy up).
 
 ## 7-day roster table (18 Nov 2026)
 
@@ -524,3 +529,19 @@ pages unchanged. Live (PR #343, merged 23 Nov 2026).
   The box is cleared after a send. Scheduled (weekly) sends have no notes.
 - Page change on a branch, not merged. Edge function `roster-send` (index.ts, pdf.ts) to be deployed by Claude when
   the PR merges (deployed version 5 matched main before the change; without notes the PDF and email are unchanged).
+
+## Stage 8: tidy up (28 Nov 2026, owner: "can you do stage 8 now?")
+
+- `roster-sync` cron unscheduled (`supabase/roster-stage8.sql`). `roster_bookings` is kept, frozen, as the archive of
+  the sheet era (last copy 27 Nov 20:17 UTC, 920 rows): `member_contribution_v2` and `team_contribution` still read it
+  for teams not yet on the new roster, which is none now. The edge function `roster-sync` stays deployed, unused.
+- The owner's PC/cloud roster copy was already removed on 19 Nov (pager task captures paging only).
+- Removed the old Apps Script trial pages `/modules/rosters/lowereyre/coverage-gaps/` and `coverage-gaps-6h/`
+  (replaced by `/dashboard/coverage/`; they read the frozen sheets). The cluster manager pages
+  (`/<cluster>/manager/`) are link hubs with no password, so they stay.
+- NOT done: dropping the old `member_contribution` function (the approval prompt got no answer; nothing calls it).
+- Left in the code, harmless: the Apps Script paths in `roster.js` (manager password, PDF view) and the `apiUrl`
+  lines in `teams.js` (roster-data.js still groups teams by them). No page calls an Apps Script now.
+- Owner's part: in each of the three Apps Script projects, Deploy > Manage deployments > archive the web app; set the
+  three Google Sheets to view-only for everyone else (keep them as the archive).
+- On a branch, not merged.

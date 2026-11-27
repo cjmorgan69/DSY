@@ -16,7 +16,7 @@ const OUT = "shared/search-index.js";
 const read = f => fs.readFileSync(path.join(root, f), "utf8");
 const exists = f => fs.existsSync(path.join(root, f));
 
-const SKIP = ["modules/rosters/lowereyre/test/", "modules/rosters/lowereyre/coverage-gaps-6h/", "modules/asthma/",
+const SKIP = ["modules/rosters/lowereyre/test/", "modules/asthma/",
   "modules/rural-ed/", "tools/roster-share/", "modules/hypoglycaemia/", "modules/rosters/backend/"];
 const skip = f => f.startsWith("LOGO files/") || f.startsWith(".claude/") || f.includes("/video-src/") ||
   SKIP.some(s => f.startsWith(s)) || f === "hub/index.html";

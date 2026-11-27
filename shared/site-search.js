@@ -9,7 +9,7 @@
    The page index loads the first time the box is used. Uses window.DSY_SB (the page's Supabase client) when set. */
 (function () {
   "use strict";
-  var INDEX_SRC = "/shared/search-index.js?v=20261127c";
+  var INDEX_SRC = "/shared/search-index.js?v=20261128a";
   var SB_URL = "https://ekaodnbnpsuayvmxvxbm.supabase.co";
   var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrYW9kbmJucHN1YXl2bXh2eGJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NzIxMzQsImV4cCI6MjEwNzM0ODEzNH0.q3lTeCQAQjYeMUNl6lwsrxUAsTijJikABW4Ua2N4bmI";
   var PDF = "https://clinical.saambulance.sa.gov.au/assets/pdf/home/";
