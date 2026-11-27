@@ -149,7 +149,7 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - 17 old pages (`/ao/`, `/classic/`, `/paramedic/`, `/rural-ed/`, `/gp-clinic/` and old `/modules/*`) load pictures from
   `cdn.simtheory.ai`.
 - Not linked from anywhere, owner to say which can go: `/LOGO files/`, `/modules/asthma/`, `/modules/rural-ed/`,
-  `/tools/roster-share/`, `/modules/rosters/lowereyre/test/`, `/modules/rosters/lowereyre/coverage-gaps-6h/`.
+  `/tools/roster-share/`, `/modules/rosters/lowereyre/test/`.
   `/modules/hypoglycaemia/` is an old page replaced by the new module and walk-through.
 - Old branches: 50 are fully merged into main and safe to delete, 41 more hold one or two commits that never reached
   main (mostly notes or superseded roster work). Claude's session is not allowed to delete branches: the owner
@@ -186,7 +186,7 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario
   (`/modules/hypo/`) is to be converted when asked.
 - Retire `/course/` (Google Sheet app) once the current AR group finishes; `/ar/course/` replaces it.
-- Planned: a request portal (`/request/`) with an inbox panel on the dashboard; the Supabase roster (see `rosters.md`; stages 1 to 6 done by 18 Nov 2026 (database, people, emails, new roster page on the Summer Bay test roster, import rehearsal, dashboards); all 12 teams on the new roster: Lower Eyre and Central Eyre since 18 Nov 2026, West Coast since 19 Nov 2026 (stage 7); still to do: stage 8 tidy up).
+- Planned: a request portal (`/request/`) with an inbox panel on the dashboard; the Supabase roster (see `rosters.md`; stages 1 to 6 done by 18 Nov 2026 (database, people, emails, new roster page on the Summer Bay test roster, import rehearsal, dashboards); all 12 teams on the new roster: Lower Eyre and Central Eyre since 18 Nov 2026, West Coast since 19 Nov 2026 (stage 7); stage 8 tidy up done 28 Nov 2026 except dropping the old `member_contribution` function and the owner archiving the Apps Scripts).
 
 - User guide (17 Nov 2026): Team Leader section, roster guide Part 3, Getting started and Running a session done;
   still to write: Learning on your own. Ask DSY on the dashboard: live, on Claude since 18 Nov 2026 (key `ANTHROPIC_API_KEY` in
