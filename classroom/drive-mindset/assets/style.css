@@ -174,3 +174,22 @@ body.guide-on #guide { display: block; }
 #guide .gtag { font-size: 12px; background: var(--tint); color: var(--gd); border-radius: 10px; padding: 2px 10px; margin-left: 8px; }
 #guide .gbox { background: var(--tint); border-radius: 6px; padding: 8px 12px; margin: 8px 0 0; }
 #guide .gclose { position: sticky; top: 0; float: right; background: var(--g); color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; font: inherit; cursor: pointer; }
+
+/* ---------- more room for the text (owner, 28 Nov 2026) ----------
+   Smaller margins, title and footer label, and a bigger starting size for dot points.
+   Busy slides are split in two (common.js) rather than shrunk. */
+.slide { padding: 56px 96px 84px; }
+.slide .lab { left: 96px; bottom: 28px; font-size: 20px; }
+h1.t { font-size: 64px; margin: 0 0 28px; }
+.kicker, .slide.light .kicker { font-size: 30px; margin-bottom: 10px; }
+.body { --fs: 60px; }
+ul.points > li { padding-left: 50px; margin-bottom: .45em; line-height: 1.25; }
+.cols { gap: 50px; }
+.cols.has-callout { grid-template-columns: 1.6fr 1fr; }
+.mdtchip { top: 20px; right: 36px; }
+.slide.dec h1.t.q { font-size: 58px; margin-bottom: 26px; }
+/* MDT screenshot slides: points get more of the width */
+.imgbody.two.wide { grid-template-columns: 1fr 1.55fr; gap: 44px; }
+ul.points > li.hd { padding-left: 0; font-weight: 700; color: var(--gd); margin-top: .2em; }
+ul.points > li.hd::before { display: none; }
+.dark ul.points > li.hd, .pane.r ul.points > li.hd, .callout ul.points > li.hd { color: var(--amber); }

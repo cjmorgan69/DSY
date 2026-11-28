@@ -2,6 +2,94 @@
 (function () {
   var D = window.DRIVE = { sections: window.DRIVE_SECTIONS || [] };
 
+  // Busy slides are split in two so the text can be larger (owner, 28 Nov 2026; same rules as the case-night
+  // decks in /classroom/case-night/assets/common.js). The estimate below is the text size at which a slide fits;
+  // under MIN it becomes "Title (1 of 2)" and "Title (2 of 2)". The notes stay with the first half.
+  var MIN = { bullets: 44, table: 38, compare: 40 };
+  function txt(p) { return typeof p === 'string' ? p : (p.t || p.h || '') + ' ' + (p.text || '') + ' ' + (p.sub || []).join(' '); }
+  function lines(s, chars) { return Math.max(1, Math.ceil(String(s).length / chars)); }
+  function listH(list, w, f) { return list.reduce(function (a, p) { return a + lines(txt(p), w / (0.5 * f)) * 1.25 * f + 0.45 * f; }, 0); }
+  function fitSize(sl) {
+    for (var f = sl.type === 'table' ? (sl.fs || 48) : 60; f > 24; f -= 2) {
+      var h;
+      if (sl.type === 'bullets') h = listH(sl.points, sl.callout ? 1000 : 1660, f);
+      else if (sl.type === 'compare') h = 1.6 * f + Math.max(listH(sl.left.points, 700 - 0.9 * f, 0.9 * f), listH(sl.right.points, 700 - 0.9 * f, 0.9 * f)) + 2 * f + (sl.callout ? 3 * f : 0);
+      else {
+        var cols = (sl.head || sl.rows[0]).length, cw = 1700 / cols;
+        h = (sl.head ? 1 : 0) * 1.6 * f + sl.rows.reduce(function (a, r) {
+          return a + Math.max.apply(null, r.map(function (c) { return lines(c, (cw - 0.8 * f) / (0.5 * f)); })) * 1.25 * f + 0.76 * f;
+        }, 0) + (sl.callout ? 3 * f : 0);
+      }
+      if (h <= 760) return f;
+    }
+    return 24;
+  }
+  function busy(sl) {
+    if (sl.type === 'bullets' && sl.points && sl.points.length >= 4) return fitSize(sl) < MIN.bullets;
+    if (sl.type === 'table' && sl.rows && sl.rows.length >= 4) return fitSize(sl) < MIN.table;
+    if (sl.type === 'compare' && sl.left && sl.right && sl.left.points && sl.right.points &&
+        sl.left.points.length + sl.right.points.length >= 4) return fitSize(sl) < MIN.compare;
+    return false;
+  }
+  // Split a list in two, preferring a break at a heading point ("What to do:") near the middle.
+  function halfAt(list) {
+    var mid = Math.ceil(list.length / 2), best = mid;
+    for (var d = 1; d <= 2; d++) [mid - d, mid + d].forEach(function (k) {
+      if (best === mid && !/:$/.test(txt(list[mid]).trim()) && k > 0 && k < list.length && /:$/.test(txt(list[k]).trim())) best = k;
+    });
+    return best;
+  }
+  function copy(sl) { var c = {}; for (var k in sl) c[k] = sl[k]; return c; }
+  D.sections.forEach(function (sec) {
+    var out = [];
+    (sec.slides || []).forEach(function (sl) {
+      var parts = null;
+      if (busy(sl)) {
+        if (sl.type === 'compare') {
+          parts = [0, 1].map(function (i) {
+            var c = copy(sl);
+            ['left', 'right'].forEach(function (side) {
+              var p = sl[side].points, h = Math.ceil(p.length / 2), q = copy(sl[side]);
+              q.points = i ? p.slice(h) : p.slice(0, h); c[side] = q;
+            });
+            if (!i) delete c.callout;
+            // One side has nothing left for this half: show the other side as a dot-point slide instead.
+            var empty = !c.left.points.length ? 'left' : !c.right.points.length ? 'right' : '';
+            if (empty) {
+              var full = c[empty === 'left' ? 'right' : 'left'];
+              c = { type: 'bullets', title: c.title, points: [full.head.replace(/:?\s*$/, ':')].concat(full.points), notes: c.notes, callout: c.callout ? { text: c.callout.text } : undefined };
+              if (!c.callout) delete c.callout;
+            }
+            return c;
+          });
+        } else {
+          var key = sl.type === 'table' ? 'rows' : 'points', h = halfAt(sl[key]);
+          parts = [sl[key].slice(0, h), sl[key].slice(h)].map(function (part, i) {
+            var c = copy(sl); c[key] = part;
+            if (sl.type === 'table' ? !i : i) delete c.callout;
+            return c;
+          });
+        }
+      } else if ((sl.type === 'cards' || sl.type === 'numbered') && sl.items && sl.items.length > 4 && JSON.stringify(sl.items).length > 700) {
+        var half = Math.ceil(sl.items.length / 2);
+        parts = [sl.items.slice(0, half), sl.items.slice(half)].map(function (part, i) {
+          var c = copy(sl); c.items = part;
+          if (sl.type === 'cards') c.cols = part.length === 4 ? 2 : Math.min(part.length, 3);
+          if (sl.type === 'numbered') c.start = i ? half : 0;
+          if (i) delete c.callout;
+          return c;
+        });
+      }
+      if (!parts) { out.push(sl); return; }
+      parts.forEach(function (c, i) {
+        c.title = sl.title + ' (' + (i + 1) + ' of 2)';
+        if (i) c.notes = { time: 1 };
+        out.push(c);
+      });
+    });
+    sec.slides = out;
+  });
+
   D.secName = function (sec) { return sec.name || ('Part ' + sec.number); };
 
   D.esc = function (s) {

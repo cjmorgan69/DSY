@@ -47,7 +47,7 @@
           ['Moderate risk: self-harm', 'Drug use with anxiety; moderate lethality attempt (overdose, lacerations, abrasions); severe depressive illness without firm suicidal intent; suicidal ideation without severe depression or psychosis; cooperative', 'SAPOL not required. Monitor the patient'],
           ['Low risk: self-harm', 'Alcohol or drug use; no suicide attempt; depressive illness with no suicidal ideation', 'SAPOL not required. Monitor the patient']
         ],
-        fs: 28,
+        fs: 48,
         source: 'Risk factors for violence: past violence (most important), impulsiveness, young males (worse in groups), child abuse history, substance intoxication or withdrawal, personality disorder, psychosis, dementia, organic brain disorder.',
         notes: { time: 0, say: ['Walk through the four levels and their actions.'], tip: 'From the Risk Assessment Matrix as printed in the study guide, page 27. Fits in the risk assessment time.' }
       },

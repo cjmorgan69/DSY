@@ -225,7 +225,7 @@
           ['Activity', 'Limp', 'Some flexion of the limbs', 'Active motion'],
           ['Respirations', 'Absent', 'Slow and irregular', 'Strong cry, adequate breathing']
         ],
-        fs: 38,
+        fs: 48,
         source: 'Score 0 to 10. Pulse: at the base of the cord, or the ECG.',
         notes: {
           time: 3,
