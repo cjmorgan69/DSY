@@ -13,7 +13,9 @@
     return '<ul class="points">' + (arr || []).map(function (p) {
       var t = typeof p === 'string' ? p : p.t, sub = typeof p === 'string' ? '' : p.sub;
       n++;
-      return '<li' + (stepped ? ' class="step" data-step="' + n + '"' : '') + '>' + E(t) +
+      // A point ending in ':' ("What to do:") is a heading over the points below it, not a dot point.
+      var cls = [stepped ? 'step' : '', /:\s*$/.test(t) ? 'hd' : ''].join(' ').trim();
+      return '<li' + (cls ? ' class="' + cls + '"' : '') + (stepped ? ' data-step="' + n + '"' : '') + '>' + E(t) +
         (sub && sub.length ? '<ul>' + sub.map(function (x) { return '<li>' + E(x) + '</li>'; }).join('') + '</ul>' : '') + '</li>';
     }).join('') + '</ul>';
   }
@@ -64,7 +66,7 @@
         }).join('') + '</div>' + (s.callout ? '<div class="callout-band step" data-step="' + (s.items.length + 1) + '">' + E(s.callout.text) + '</div>' : '') + '</div>' + lab(it) + '</div>';
     },
     numbered: function (s, it) {
-      return '<div class="slide light">' + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body"' + (s.items.length > 4 && !twoCols(s.items) ? ' style="--fs:42px"' : '') + '><div class="nums' + (twoCols(s.items) ? ' two' : '') + '">' +
+      return '<div class="slide light">' + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body"' + (s.items.length > 4 && !twoCols(s.items) ? ' style="--fs:50px"' : '') + '><div class="nums' + (twoCols(s.items) ? ' two' : '') + '">' +
         s.items.map(function (t, i) {
           return '<div class="num step" data-step="' + (i + 1) + '"><div class="bd">' + (i + 1 + (s.start || 0)) + '</div><div>' +
             (typeof t === 'string' ? E(t) : '<b>' + E(t.h) + '</b>' + (t.t ? '<div class="tx">' + E(t.t) + '</div>' : '')) + '</div></div>';
@@ -82,7 +84,7 @@
       var rows = s.rows.map(function (r, i) {
         return '<tr' + (s.noStep ? '' : ' class="step" data-step="' + (i + 1) + '"') + '>' + r.map(function (c, j) { return j === 0 ? '<th>' + E(c) + '</th>' : '<td>' + E(c) + '</td>'; }).join('') + '</tr>';
       }).join('');
-      return '<div class="slide light">' + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body" style="--fs:' + (s.fs || 40) + 'px"><table class="tbl">' + hd + rows + '</table>' +
+      return '<div class="slide light">' + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body" style="--fs:' + (s.fs || 48) + 'px"><table class="tbl">' + hd + rows + '</table>' +
         (s.callout ? '<div class="callout-band' + (s.noStep ? '' : ' step" data-step="' + (s.rows.length + 1)) + '">' + E(s.callout.text) + '</div>' : '') +
         (s.source ? '<div class="src">' + E(s.source) + '</div>' : '') + '</div>' + lab(it) + '</div>';
     },
@@ -95,7 +97,7 @@
     },
     image: function (s, it) {
       var pic = '<figure class="pic"><img src="' + E(s.img) + '" alt="' + E(s.alt || s.title) + '">' + (s.caption ? '<figcaption>' + E(s.caption) + '</figcaption>' : '') + '</figure>';
-      return '<div class="slide light">' + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body imgbody' + (s.points ? ' two' : '') + (s.wide ? ' wide' : '') + '" style="--fs:' + (s.fs || 40) + 'px">' +
+      return '<div class="slide light">' + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body imgbody' + (s.points ? ' two' : '') + (s.wide ? ' wide' : '') + '" style="--fs:' + (s.fs || 48) + 'px">' +
         (s.points ? '<div>' + pts(s.points, true) + (s.callout ? callout(s.callout).replace('class="callout"', 'class="callout step" data-step="' + (s.points.length + 1) + '"') : '') + '</div>' : '') + pic + '</div>' + lab(it) + '</div>';
     },
     video: function (s, it) {
@@ -123,7 +125,7 @@
     },
     // Break point: the discussion questions, one at a time.
     prompts: function (s, it) {
-      return '<div class="slide light bp">' + mdt(s) + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body" style="--fs:48px"><div class="nums">' +
+      return '<div class="slide light bp">' + mdt(s) + kick(s) + '<h1 class="t">' + E(s.title) + '</h1><div class="body" style="--fs:54px"><div class="nums">' +
         s.prompts.map(function (t, i) {
           return '<div class="num step" data-step="' + (i + 1) + '"><div class="bd">' + (i + 1 + (s.start || 0)) + '</div><div>' + E(t) + '</div></div>';
         }).join('') + '</div></div>' + lab(it) + '</div>';
@@ -131,7 +133,7 @@
     // Decision tile: the room votes, the next click shows the answer and why.
     decision: function (s, it) {
       var L = 'ABCDE';
-      return '<div class="slide light dec">' + mdt(s) + kick(s) + '<h1 class="t q">' + E(s.q) + '</h1><div class="body" style="--fs:52px"><div class="opts">' +
+      return '<div class="slide light dec">' + mdt(s) + kick(s) + '<h1 class="t q">' + E(s.q) + '</h1><div class="body" style="--fs:58px"><div class="opts">' +
         s.options.map(function (o, i) {
           return '<div class="opt' + (i === s.answer ? ' ans' : '') + '"><div class="bd">' + L[i] + '</div><div class="ot">' + E(o) + '</div>' +
             (i === s.answer ? '<div class="tick step" data-step="1">&#10003;</div>' : '') + '</div>';
@@ -167,7 +169,7 @@
       for (var q = 0; q < bx.length; q++) if (bx[q].scrollHeight > bx[q].clientHeight + 2) return true;
       return false;
     }
-    while (over() && fs > 26) { fs -= 2; b.style.setProperty('--fs', fs + 'px'); }
+    while (over() && fs > 24) { fs -= 2; b.style.setProperty('--fs', fs + 'px'); }
   }
   function scaleStage() {
     var v = document.getElementById('viewport');

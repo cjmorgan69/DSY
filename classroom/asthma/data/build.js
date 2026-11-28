@@ -18,7 +18,7 @@
   function step(t) { return t.text ? { h: t.t, t: t.text } : t.t; }
   function split(x) { var k = x.indexOf(': '); return k > 0 ? { h: x.slice(0, k), t: x.slice(k + 2) } : { h: x }; }
   function tableSlide(tb, extra) {
-    var t = tb.table, s = { type: 'table', title: tb.title, noStep: true, fs: 44 };
+    var t = tb.table, s = { type: 'table', title: tb.title, noStep: true, fs: 50 };
     if (t.rows.length === 1 && t.head.length > 4) { s.head = ['Observation', 'Value']; s.rows = t.head.map(function (h, i) { return [h, t.rows[0][i]]; }); s.fs = 46; }
     else { s.head = t.head; s.rows = t.rows; }
     for (var k in extra) s[k] = extra[k];
@@ -65,10 +65,16 @@
       { type: 'mp4', title: ML.video.title, length: '3 min', src: '/microlearning/asthma/' + ML.video.src, poster: '/microlearning/asthma/' + ML.video.poster,
         notes: { time: 4, say: ['Watch the whole video, then we go through the key points together.'], tip: 'The narrated intro video from the asthma microlearning module.' } }
     ].concat(kp).concat([
-      tableSlide(ctl.table, { kicker: 'Pre-brief', fs: 28, notes: { time: 2, say: [ctl.table.text || ''].filter(Boolean), ask: ['Which row is Karen likely to be in, from the MDT alone?'] } }),
+      // The four-column severity table is shown as two slides (severity, signs and one age group each)
+      // so the text can be larger (owner, 28 Nov 2026).
+    ].concat([[0, 1, 2], [0, 1, 3]].map(function (cols, i) {
+      var t = ctl.table.table, pick = function (r) { return cols.map(function (c) { return r[c]; }); };
+      return tableSlide({ title: ctl.table.title + ' (' + (i + 1) + ' of 2)', table: { head: pick(t.head), rows: t.rows.map(pick) } },
+        i ? { kicker: 'Pre-brief', fs: 48, notes: { time: 1 } } : { kicker: 'Pre-brief', fs: 48, notes: { time: 2, say: [ctl.table.text || ''].filter(Boolean), ask: ['Which row is Karen likely to be in, from the MDT alone?'] } });
+    })).concat([
       { type: 'bullets', kicker: 'Pre-brief (' + WT.protocol.code + ')', title: reminders.title, points: reminders.items, notes: { time: 1 } },
       { type: 'bullets', kicker: 'Background', title: general.title, points: general.items, notes: { time: 1 } }
-    ])
+    ]))
   });
 
   /* ---------- Part 3: The job (walk-through break points, MDT screenshots) ---------- */
@@ -76,7 +82,7 @@
   var jobPanels = order.slice(order.indexOf('Dispatch and en route'), order.indexOf('Handover') + 1);
   // MDT screenshots (img/mdt-*.png, taken by /classroom/case-night/tools/mdt-shots.js asthma with the walk-through's times).
   function shot(n, title, points, say) {
-    return { type: 'image', kicker: 'The MDT', title: title, img: 'img/mdt-' + n + '.png', alt: 'MDT screen: ' + title, points: points, fs: 38, wide: true,
+    return { type: 'image', kicker: 'The MDT', title: title, img: 'img/mdt-' + n + '.png', alt: 'MDT screen: ' + title, points: points, fs: 48, wide: true,
       notes: { time: 1, say: say ? [say] : [], tip: 'Screenshot of the DSY MDT simulator (fictional data). Students can drill the same job later from Learn on your own.' } };
   }
   var mdtAt = {
