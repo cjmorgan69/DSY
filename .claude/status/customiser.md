@@ -32,4 +32,4 @@ updated in place for the MDT hold-to-clear line (md5 checked).
 
 `seizures-ao` (28 Nov 2026): 12 fields (Josh stays a man, his friend stays "friend"/she; page 18:00 to 23:30); the
 template carries the AR version too. Converter `scenarios/tools/convert-seizures.js` (0 differences at defaults).
-Row inserted with `published` false, md5 of template and fields checked. Set `published` true once merged and live.
+Row inserted with `published` false, md5 of template and fields checked. Published after the merge (PR #398, 28 Nov 2026).

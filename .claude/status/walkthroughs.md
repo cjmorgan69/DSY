@@ -191,6 +191,6 @@ RV. AR break point 7 (what an AR has left), AR decisions, obs, take-home lines a
 (CL181), first seizure 2137, second from 2150 with no recovery, arrival 2153. AO: consult 2156, midazolam 10 mg IM in
 two thighs 2158, stops 2202, trismus, 7 mm NPA 2206, Cleve Hospital (closest ED) 2230. AR: protect, positioning and
 suction, consults 2156 and 2207, stops 2204 without medicines, transport to Cleve Hospital with clinical support
-cancelled (DSY's choice, following the owner's pattern: hospital 20 min vs paramedic 55; owner to confirm). Story,
+cancelled (owner confirmed 28 Nov 2026: hospital 20 min vs paramedic 55). Story,
 times, EOC Clinician lines all DSY-written (owner to review). MDT job `seizures`, PCR `josh` and `joshAR`, card on
-`/ao/`, customiser `seizures-ao` (row inserted unpublished, md5 checked; publish after merge). On a branch, not merged.
+`/ao/`, customiser `seizures-ao` (row inserted unpublished, md5 checked; publish after merge). Live (PR #398, merged 28 Nov 2026).

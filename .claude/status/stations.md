@@ -148,4 +148,4 @@ still). Added to station 3 and to the extrication box in Greg's walk-through (an
 `/stations/seizures/` (28 Nov 2026): 1 protect, don't restrain, time it (consult-now cards), 2 basic care while they
 seize (BGL, oxygen, suction, febrile child), 3 midazolam dose cards, drawing up two single 5 mL doses of water and IM
 into a pad (AO; CPPRO-010, 011), 4 the airway afterwards (NPA for AOs, OPA/suction for ARs) and the EOC Clinician call
-(AO and AR cards). AR boxes throughout. DSY-written cards and lines (owner to review). On a branch, not merged.
+(AO and AR cards). AR boxes throughout. DSY-written cards and lines (owner to review). Live (PR #398, merged 28 Nov 2026).
