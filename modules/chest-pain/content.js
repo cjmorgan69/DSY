@@ -33,7 +33,8 @@ window.MODULE = {
         "Give oral aspirin 300 mg, and check the GTN limits (systolic BP, pulse rate, PDE-5 inhibitors) before every dose",
         "Ask about PDE-5 inhibitors clearly and know the time windows (24 and 48 hours)",
         "Monitor vital signs every 3 to 5 minutes while giving GTN",
-        "Know when to consult the EOC Clinician, and consider clinical support",
+        { scope: "ao", text: "Know when to consult the EOC Clinician, and consider clinical support" },
+        { scope: "ar", text: "Request clinical support, consult the EOC Clinician before any GTN, and follow their transport advice" },
         "Deliver a structured ISBAR handover",
         "Work as a crew with clear Clinician and Driver roles"
       ] } },
@@ -64,17 +65,30 @@ window.MODULE = {
       { steps: [
         { t: "Basic care including ECG monitoring" },
         { t: "Monitor vital signs every 5 minutes" },
-        { t: "Consider clinical support" },
+        { t: "Consider clinical support", scope: "ao" },
+        { t: "Request clinical support", scope: "ar" },
         { t: "Oral aspirin 300 mg, unless allergic", text: "SAAS aspirin is chewed before it is swallowed (CPPRO-009)." }
       ] },
-      { table: { title: "GTN limits: all must apply", table: { head: ["Check", "GTN previously prescribed", "GTN not previously prescribed"], rows: [
+      { scope: "ar", table: { title: "GTN limits: all must apply (CPP-029-AR)", table: { head: ["Check", "Every patient"], rows: [
+        ["Who decides", "The EOC Clinician may advise GTN, whether or not the patient has their own GTN prescribed"],
+        ["Systolic BP", "Above 100 mmHg"],
+        ["Pulse rate", "60 to 120"],
+        ["PDE-5 inhibitors", "None within 24 hrs (sildenafil, vardenafil, avanafil) or 48 hrs (tadalafil)"],
+        ["Dose", "Sublingual GTN 300 microg; repeat every 5 mins prn if pain persists and the limits hold; total max 3 doses, or as directed by the EOC Clinician"],
+        ["Vital signs", "Every 3 to 5 minutes"]
+      ] } } },
+      { scope: "ar", box: { title: "Consult the EOC Clinician", tone: "warn", items: [
+        "Before any GTN: they may advise it if the limits apply",
+        "For transport options: transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives"
+      ] } },
+      { scope: "ao", table: { title: "GTN limits: all must apply", table: { head: ["Check", "GTN previously prescribed", "GTN not previously prescribed"], rows: [
         ["Systolic BP", "100 mmHg or more", "Above 100 mmHg"],
         ["Pulse rate", "60 to 120", "60 to 120"],
         ["PDE-5 inhibitors", "None within 24 hrs (sildenafil, vardenafil, avanafil) or 48 hrs (tadalafil)", "Same"],
         ["Dose", "Sublingual GTN 300 microg; repeat every 5 mins prn if pain persists and the limits hold; total max 3 doses", "Only as advised by the EOC Clinician: same dose and limits, or as directed"],
         ["Vital signs", "Every 3 to 5 minutes", "Every 3 to 5 minutes"]
       ] } } },
-      { box: { title: "Consult the EOC Clinician if", tone: "warn", items: [
+      { scope: "ao", box: { title: "Consult the EOC Clinician if", tone: "warn", items: [
         "BP or HR fall outside the limits at any time",
         "Chest pain remains unresolved",
         "Chest pain that had resolved returns",
@@ -82,7 +96,8 @@ window.MODULE = {
       ] } },
       { box: { title: "DSY lead instructor guidance (not protocol text)", items: [
         "GTN form: SAAS is changing from the 300 microg tablet back to the 400 microg spray. Either is acceptable. The current protocol still says 300 microg per dose",
-        "Patient has already used their own GTN: if BP and HR are within the limits, the crew can give the first dose, then consult the EOC Clinician for a plan",
+        { scope: "ao", text: "Patient has already used their own GTN: if BP and HR are within the limits, the crew can give the first dose, then consult the EOC Clinician for a plan" },
+        { scope: "ar", text: "AR crews: this local first-dose rule is for AOs only. CPP-029-AR: every GTN dose is on EOC Clinician advice, even with the patient's own prescribed GTN" },
         "Adequate oxygenation: SpO2 above 94% on room air, or add oxygen via nasal cannula to bring it above 94%"
       ] } },
       { box: { title: "General teaching (not in the protocol)", tone: "warn", items: [
@@ -114,7 +129,8 @@ window.MODULE = {
           "Pain not settling with his own GTN suggests this is different from his usual angina: time critical (\"time is muscle\")",
           "Driver: Corpuls3 powered on with defib pads ready. Clinician: Red Kit (aspirin, GTN), Response Bag, oxygen",
           "Cardiac arrest plan agreed before arrival",
-          "Consider clinical support early (protocol), knowing the hospital is closer than the paramedic crew"
+          { scope: "ao", text: "Consider clinical support early (protocol), knowing the hospital is closer than the paramedic crew" },
+          { scope: "ar", text: "Request clinical support (protocol), knowing the hospital is closer than the paramedic crew: the EOC Clinician will give the transport options" }
         ],
         teaching: ["The MDT gives you the working picture before you arrive", "Allocating kit en route saves time at the door", "Always have a cardiac arrest plan: cardiac ischaemia carries a risk of life-threatening rhythm changes (CPP-007-AO)"],
         realJob: "The drive gives you 10 to 15 minutes of planning time. Use it: roles, kit, the worst case. The crew that arrives with a plan works faster than the crew that plans on the doorstep.",
@@ -168,7 +184,8 @@ window.MODULE = {
           "Vital signs every 5 minutes, then every 3 to 5 minutes once GTN starts",
           "ECG early: he is at risk of life-threatening rhythm changes",
           "SpO2 94% is not above 94%: add oxygen via nasal cannula to bring it above 94% (DSY lead instructor guidance)",
-          "Systolic 138 (100 or more) and HR 92 (60 to 120): within the GTN limits",
+          { scope: "ao", text: "Systolic 138 (100 or more) and HR 92 (60 to 120): within the GTN limits" },
+          { scope: "ar", text: "Systolic 138 (above 100) and HR 92 (60 to 120): within the GTN limits" },
           "Pain 8/10 drives the urgency"
         ],
         teaching: ["Every observation now is your baseline for the GTN decisions", "Adequate oxygenation is one of the primary treatments in the protocol", "Systolic BP and pulse rate are the gatekeepers for GTN: check them before every dose"],
@@ -190,22 +207,37 @@ window.MODULE = {
           "Suspected cardiac ischaemia: classic symptoms, no obvious alternative",
           "Other causes are possible (muscle, lung, gut), but the protocol says suspect cardiac ischaemia unless there is an obvious alternative",
           "Aspirin 300 mg: not allergic, so yes. His daily low-dose aspirin does not change this",
-          "GTN previously prescribed: systolic 138, HR 92, no PDE-5 inhibitor: all limits met",
-          "He has used his own GTN: the crew can give the first dose, then consult the EOC Clinician for a plan (DSY lead instructor guidance)"
+          { scope: "ao", text: "GTN previously prescribed: systolic 138, HR 92, no PDE-5 inhibitor: all limits met" },
+          { scope: "ao", text: "He has used his own GTN: the crew can give the first dose, then consult the EOC Clinician for a plan (DSY lead instructor guidance)" },
+          { scope: "ar", text: "Systolic 138, HR 92, no PDE-5 inhibitor: all limits met. But at AR level GTN is only given on EOC Clinician advice (CPP-029-AR)" },
+          { scope: "ar", text: "Consult the EOC Clinician now: tell them his two sprays and the times, so they can count the doses" },
+          { scope: "ar", text: "Request clinical support (CPP-029-AR)" }
         ],
         teaching: ["Use the protocol as your checklist: one criterion at a time", "Ask about PDE-5 inhibitors directly; use the drug names if needed. Do not skip it", "Find out how much of his own GTN he has used, and when: it goes to the EOC Clinician"],
         realJob: "The PDE-5 question can feel awkward in front of family. Keep it simple: \"Graham, I need to ask: do you take anything for erectile dysfunction, like Viagra or Cialis? It affects what we can give you.\"",
         decisions: [
           { q: "He took sildenafil (Viagra) 20 hours ago. Can you give GTN?", options: ["Yes, it's more than 12 hours", "No: sildenafil has a 24-hour window", "Yes: only tadalafil matters"], answer: 1,
             why: "CPP-007-AO: no GTN within 24 hours of sildenafil, vardenafil or avanafil, or 48 hours of tadalafil. Together they can cause life-threatening hypotension." },
-          { q: "Graham has used two sprays of his own GTN. BP and HR are within the limits. What is the plan?", options: [
+          { scope: "ar", q: "Graham has used two sprays of his own GTN. BP and HR are within the limits. You're an AR crew. What is the plan?", options: [
+            "Give the first dose, then consult the EOC Clinician",
+            "Consult the EOC Clinician first: they may advise GTN",
+            "Give three more doses, 5 minutes apart" ], answer: 1,
+            why: "CPP-029-AR: consult the EOC Clinician, who may advise sublingual GTN 300 microg if the limits apply. The local first-dose rule is for AOs only. The total maximum is 3 doses." },
+          { scope: "ao", q: "Graham has used two sprays of his own GTN. BP and HR are within the limits. What is the plan?", options: [
             "No GTN from the crew until the EOC Clinician is consulted",
             "Give the first dose, then consult the EOC Clinician for a plan",
             "Give three more doses, 5 minutes apart" ], answer: 1,
             why: "DSY lead instructor guidance: if BP and HR are within the limits, the crew can give the first dose, then consult the EOC Clinician for a plan. The protocol's total maximum is 3 doses." }],
         cards: [{ q: "Which PDE-5 inhibitor has a 48-hour window?", a: "Tadalafil. Sildenafil, vardenafil and avanafil: 24 hours." }]
       } },
-      { table: { title: "Criteria check", table: { head: ["Criterion", "Required", "Graham", "Met?"], rows: [
+      { scope: "ar", table: { title: "Criteria check", table: { head: ["Criterion", "Required", "Graham", "Met?"], rows: [
+        ["Aspirin allergy", "Not allergic", "Nil known", "Yes"],
+        ["Systolic BP", "Above 100 mmHg", "138", "Yes"],
+        ["Pulse rate", "60 to 120", "92", "Yes"],
+        ["PDE-5 inhibitor", "None within 24 or 48 hrs", "None (patient and wife)", "Yes"],
+        ["EOC Clinician advice", "Required for every dose", "Consulted at 2137", "Yes"]
+      ] } } },
+      { scope: "ao", table: { title: "Criteria check", table: { head: ["Criterion", "Required", "Graham", "Met?"], rows: [
         ["Aspirin allergy", "Not allergic", "Nil known", "Yes"],
         ["Systolic BP", "100 mmHg or more (GTN prescribed)", "138", "Yes"],
         ["Pulse rate", "60 to 120", "92", "Yes"],
@@ -216,9 +248,12 @@ window.MODULE = {
         "Working diagnosis: suspected cardiac ischaemia",
         "Aspirin 300 mg, chewed",
         "Oxygen via nasal cannula to bring SpO2 above 94%",
-        "GTN: crew gives the first dose (limits met), then consult the EOC Clinician for a plan",
-        "Clinical support: considered (paramedic crew 55 minutes, hospital 20)",
-        "Transport and notify the receiving facility"
+        { scope: "ao", text: "GTN: crew gives the first dose (limits met), then consult the EOC Clinician for a plan" },
+        { scope: "ao", text: "Clinical support: considered (paramedic crew 55 minutes, hospital 20)" },
+        { scope: "ao", text: "Transport and notify the receiving facility" },
+        { scope: "ar", text: "GTN: consult the EOC Clinician first (limits met); give it only as they advise" },
+        { scope: "ar", text: "Clinical support: requested (paramedic crew 55 minutes, hospital 20)" },
+        { scope: "ar", text: "Transport: as the EOC Clinician advises" }
       ] } }
     ] },
 
@@ -226,30 +261,42 @@ window.MODULE = {
       { steps: [
         { t: "Oxygen", text: "Nasal cannula to bring SpO2 above 94%. Graham sits as he is comfortable." },
         { t: "Aspirin 300 mg oral (2136)", text: "Medication checks with your partner. Check allergies. Ask him to chew it, then swallow. Record the dose, route and time." },
-        { t: "GTN, first crew dose (2138)", text: "Say the limits aloud first, then give it (steps below)." },
+        { t: "GTN, first crew dose (2138)", text: "Say the limits aloud first, then give it (steps below).", scope: "ao" },
+        { t: "Request clinical support", text: "The Driver calls while the Clinician gives the aspirin.", scope: "ar" },
+        { t: "Consult the EOC Clinician (2137)", text: "His two sprays with the times, the obs, PDE-5 status and his pain. In the scenario, the EOC Clinician advises one sublingual GTN dose now: with his two sprays that makes three, the maximum. Repeat the advice back.", scope: "ar" },
+        { t: "GTN as advised (2138)", text: "Say the limits aloud first, then give it (steps below).", scope: "ar" },
         { t: "Vital signs every 3 to 5 minutes", text: "GTN may have a profound effect on blood pressure: observe him closely." },
-        { t: "Consult the EOC Clinician", text: "For a plan: his own doses, your dose, the obs and his pain." }
+        { t: "Consult the EOC Clinician", text: "For a plan: his own doses, your dose, the obs and his pain.", scope: "ao" },
+        { t: "Update the EOC Clinician (2144)", text: "The obs and pain after the GTN, and the transport options.", scope: "ar" }
       ] },
       { box: { title: "Giving GTN", tiles: true, steps: [
         { t: "Medication checks", text: "Check before preparing, before giving and after giving, with your partner where possible: the medication, its integrity, expiry and dose (CPPRO-008)." },
-        { t: "Check the limits aloud", text: "\"Systolic 138, 100 or more. Pulse 92, between 60 and 120. No PDE-5 inhibitor.\" All must apply (CPP-007-AO)." },
+        { t: "Check the limits aloud", text: "\"Systolic 138, 100 or more. Pulse 92, between 60 and 120. No PDE-5 inhibitor.\" All must apply (CPP-007-AO).", scope: "ao" },
+        { t: "Check the limits aloud", text: "\"Systolic 138, above 100. Pulse 92, between 60 and 120. No PDE-5 inhibitor. EOC Clinician advised one dose.\" All must apply (CPP-029-AR).", scope: "ar" },
         { t: "Explain and check allergies", text: "Explain what it is for and the possible side effects, and gain consent where able (CPPRO-009)." },
         { t: "Tablet or spray", text: "Tablet: under the tongue to dissolve. Spray: test it into the air, ask him to lift the tip of his tongue, spray underneath without the nozzle touching his mouth (CPPRO-009)." },
         { t: "Hand hygiene and record", text: "GTN bottles are multiple-patient use: never let the bottle touch the patient. Record the dose, route and time." },
-        { t: "Watch the blood pressure", text: "Vital signs every 3 to 5 minutes. Consult the EOC Clinician if BP or HR fall outside the limits at any time." }
+        { t: "Watch the blood pressure", text: "Vital signs every 3 to 5 minutes. Consult the EOC Clinician if BP or HR fall outside the limits at any time.", scope: "ao" },
+        { t: "Watch the blood pressure", text: "Vital signs every 3 to 5 minutes. Outside the limits: no more GTN, and tell the EOC Clinician.", scope: "ar" }
       ] } },
       { breakpoint: { title: "Treatment and medication safety", type: "Practical skill",
         prompts: ["Walk through the aspirin: what do you check, what do you say?", "Before the GTN, say the three limits out loud.", "Tablet or spray: show me the technique.", "What could GTN do to his blood pressure, and what is your plan if it drops?"],
         expected: [
           "Aspirin 300 mg, chewed then swallowed; not withheld because he takes daily aspirin",
-          "Limits: systolic 100 or more (prescribed), pulse 60 to 120, no PDE-5 inhibitor within 24 or 48 hours",
+          { scope: "ao", text: "Limits: systolic 100 or more (prescribed), pulse 60 to 120, no PDE-5 inhibitor within 24 or 48 hours" },
+          { scope: "ar", text: "Limits: systolic above 100, pulse 60 to 120, no PDE-5 inhibitor within 24 or 48 hours; and the EOC Clinician's advice" },
           "GTN 300 microg tablet or 400 microg spray (DSY lead instructor: either is acceptable while SAAS changes over)",
           "Vital signs every 3 to 5 minutes after GTN",
           "If BP or HR fall outside the limits at any time: no further GTN, consult the EOC Clinician"
         ],
         teaching: ["GTN may have a profound effect on blood pressure (CPP-007-AO)", "PDE-5 check is non-negotiable: life-threatening hypotension", "Say your checks out loud every time: your partner can catch an error", "Expect a headache after GTN; laying a hypotensive patient flat is general teaching, not in the protocol"],
         realJob: "Check, say it aloud, give, record, monitor. It should feel automatic. The medication checks are your patient's safety net and your protection.",
-        decisions: [{ q: "After a GTN dose: systolic 92, HR 104, he feels dizzy. What now?", options: [
+        decisions: [{ scope: "ar", q: "After a GTN dose: systolic 92, HR 104, he feels dizzy. What now?", options: [
+          "Another dose: the pain is still there",
+          "No further GTN, and tell the EOC Clinician",
+          "Keep going and recheck in 15 minutes" ], answer: 1,
+          why: "Systolic 92 is below the limit (above 100), so no further GTN (CPP-029-AR). The EOC Clinician directs all GTN at AR level: tell them, and keep monitoring every 3 to 5 minutes." },
+          { scope: "ao", q: "After a GTN dose: systolic 92, HR 104, he feels dizzy. What now?", options: [
           "Another dose: the pain is still there",
           "No further GTN, and consult the EOC Clinician",
           "Keep going and recheck in 15 minutes" ], answer: 1,
@@ -262,25 +309,36 @@ window.MODULE = {
       { table: { title: "Observations", table: { head: ["", "2135", "2142 (4 min after GTN)"], rows: [
         ["HR", "92", "88"], ["BP", "138/86", "118/74"], ["SpO2", "94% (air)", "96% (nasal cannula)"], ["RR", "20", "18"], ["Pain", "8/10", "6/10"], ["ECG", "Sinus rhythm", "Sinus rhythm"]
       ] } } },
-      { text: "Graham says it is \"better but still there\", and he has a mild headache. At 2144 the Clinician consults the EOC Clinician. In the scenario, the EOC Clinician counts his two sprays and the crew's dose as three doses: no further GTN, transport now, notify the hospital, and call back if BP or HR fall outside the limits or the pain changes. They agree that transport is faster than waiting for the paramedic crew.", muted: true },
+      { scope: "ar", text: "Graham says it is \"better but still there\", and he has a mild headache. At 2144 the Clinician updates the EOC Clinician. In the scenario, the EOC Clinician confirms no further GTN (three doses in total), and advises transport to Cleve Hospital now with clinical support cancelled: the hospital is 20 minutes away and the paramedic crew 55. Call back if BP or HR fall outside the limits or the pain changes.", muted: true },
+      { scope: "ao", text: "Graham says it is \"better but still there\", and he has a mild headache. At 2144 the Clinician consults the EOC Clinician. In the scenario, the EOC Clinician counts his two sprays and the crew's dose as three doses: no further GTN, transport now, notify the hospital, and call back if BP or HR fall outside the limits or the pain changes. They agree that transport is faster than waiting for the paramedic crew.", muted: true },
       { breakpoint: { title: "Reassessment and escalation decision", type: "Decision making",
         prompts: ["Compare the two sets of obs. What has changed?", "Pain 8 down to 6: good response or a concern?", "BP 138 to 118: expected? Still within the limits?", "Why consult the EOC Clinician now?", "How will you structure the call?"],
         expected: [
-          "Systolic fell 20 after GTN: expected with a vasodilator, and 118 is still 100 or more",
-          "Partial relief only: the chest pain remains unresolved, which is a reason to consult (CPP-007-AO)",
-          "He has used his own GTN, so the plan after the first crew dose comes from the EOC Clinician (DSY lead instructor guidance)",
+          { scope: "ao", text: "Systolic fell 20 after GTN: expected with a vasodilator, and 118 is still 100 or more" },
+          { scope: "ar", text: "Systolic fell 20 after GTN: expected with a vasodilator, and 118 is still above 100" },
+          { scope: "ao", text: "Partial relief only: the chest pain remains unresolved, which is a reason to consult (CPP-007-AO)" },
+          { scope: "ao", text: "He has used his own GTN, so the plan after the first crew dose comes from the EOC Clinician (DSY lead instructor guidance)" },
+          { scope: "ar", text: "Partial relief only: tell the EOC Clinician, who directs any further GTN (CPP-029-AR)" },
+          { scope: "ar", text: "Three doses in total (his two sprays and the advised dose): the maximum" },
+          { scope: "ar", text: "Ask for the transport options: transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives" },
           "Headache is an expected effect of GTN",
           "Call: who you are, the patient, what you found, what you've given (own sprays and your dose, with times), current obs, what you need"
         ],
         teaching: ["Trends matter more than one number", "Partial relief is not resolution", "In a rural area the EOC Clinician is your safety net: call early, and have the obs written down"],
         realJob: "A structured call takes about 90 seconds and gives the EOC Clinician everything they need. Repeat any advice back: medication, dose and route (CPPRO-008).",
-        decisions: [{ q: "Pain 8 down to 6 after GTN, obs within the limits. What does the protocol say?", options: [
+        decisions: [{ scope: "ar", q: "Pain 8 down to 6 after GTN, obs within the limits. What does the AR protocol have you do?", options: [
+          "Wait 10 minutes and see if it settles",
+          "Update the EOC Clinician: further GTN and the transport are on their advice",
+          "Transport without calling" ], answer: 1,
+          why: "CPP-029-AR: GTN is repeated only as the EOC Clinician advises or directs, and the EOC Clinician gives the transport options." },
+          { scope: "ao", q: "Pain 8 down to 6 after GTN, obs within the limits. What does the protocol say?", options: [
           "Wait 10 minutes and see if it settles",
           "Consult the EOC Clinician: the chest pain remains unresolved",
           "Transport without calling" ], answer: 1,
           why: "CPP-007-AO: consult the EOC Clinician if chest pain remains unresolved, if BP or HR fall outside the limits, or if resolved pain returns. Then transport and notify the receiving facility." }]
       } },
-      { box: { title: "Practise the EOC Clinician call", text: "\"This is [name], AO crew from [station]. 62 year old male, 45 minutes of central chest pressure into the left arm and jaw. Known angina. He used two sprays of his own GTN before we arrived. We gave aspirin 300 mg at 2136 and one GTN dose at 2138. Pain is down from 8 to 6 but not resolved. BP 118/74, HR 88 regular, SpO2 96% on nasal cannula, GCS 15, sinus rhythm. No PDE-5 inhibitors. We're 20 minutes from Cleve Hospital. Requesting a plan.\"" } }
+      { scope: "ar", box: { title: "Practise the EOC Clinician call", text: "\"This is [name], AR crew from [station]. Update on Graham, 62, chest pain. On your advice we gave one GTN dose at 2138, after his own two sprays: three in total. Aspirin 300 mg at 2136. Pain is down from 8 to 6 but not resolved. BP 118/74, HR 88 regular, SpO2 96% on nasal cannula, GCS 15, sinus rhythm. Clinical support was requested at 2136. We're 20 minutes from Cleve Hospital and the paramedic crew is 55 minutes away. Requesting the transport plan.\"" } },
+      { scope: "ao", box: { title: "Practise the EOC Clinician call", text: "\"This is [name], AO crew from [station]. 62 year old male, 45 minutes of central chest pressure into the left arm and jaw. Known angina. He used two sprays of his own GTN before we arrived. We gave aspirin 300 mg at 2136 and one GTN dose at 2138. Pain is down from 8 to 6 but not resolved. BP 118/74, HR 88 regular, SpO2 96% on nasal cannula, GCS 15, sinus rhythm. No PDE-5 inhibitors. We're 20 minutes from Cleve Hospital. Requesting a plan.\"" } }
     ] },
 
     { title: "Extrication and transport", blocks: [
@@ -295,14 +353,19 @@ window.MODULE = {
           "Watch for: more pain, rhythm change, BP or HR outside the limits, change in conscious state; consult the EOC Clinician if any occur",
           "If he becomes unresponsive with absent or abnormal breathing: commence resuscitation (CPP-004-AO)"
         ],
-        teaching: ["The move is when patients often deteriorate: keep him monitored", "Keep the defib pads within reach", "Notify the receiving facility (CPP-007-AO)"],
+        teaching: ["The move is when patients often deteriorate: keep him monitored", "Keep the defib pads within reach", { scope: "ao", text: "Notify the receiving facility (CPP-007-AO)" }, { scope: "ar", text: "Follow the EOC Clinician's transport advice (CPP-029-AR)" }],
         teachingNote: "Carry chair technique and smooth driving are general teaching, not in the protocol.",
         realJob: "The carry chair keeps him seated and supported: he does almost no work. Take it slow, keep him monitored, and be ready for deterioration at any point.",
         decisions: [{ q: "Halfway to hospital his pain goes back up to 8/10. BP and HR are within the limits. What do you do?", options: [
           "Give another dose of GTN on your own",
           "Consult the EOC Clinician",
           "Keep driving: the hospital will deal with it" ], answer: 1,
-          why: "He has had three doses in total, and the EOC Clinician's plan was no further GTN. Worsening, unresolved pain means consult the EOC Clinician (CPP-007-AO)." }],
+          why: "He has had three doses in total, and the EOC Clinician's plan was no further GTN. Worsening, unresolved pain means consult the EOC Clinician (CPP-007-AO).", scope: "ao" },
+          { scope: "ar", q: "Halfway to hospital his pain goes back up to 8/10. BP and HR are within the limits. What do you do?", options: [
+          "Give another dose of GTN on your own",
+          "Consult the EOC Clinician",
+          "Keep driving: the hospital will deal with it" ], answer: 1,
+          why: "He has had three doses in total, the maximum, and any GTN at AR level is only as the EOC Clinician directs (CPP-029-AR). Consult them." }],
         cards: [{ q: "What does CPP-004-AO say if the patient becomes unresponsive with absent or abnormal breathing?", a: "Commence resuscitation." }]
       } }
     ] },
@@ -312,7 +375,14 @@ window.MODULE = {
       { table: { title: "Observations", table: { head: ["", "2135", "2142", "2208"], rows: [
         ["HR", "92", "88", "84"], ["BP", "138/86", "118/74", "122/76"], ["SpO2", "94% (air)", "96% (NC)", "97% (NC)"], ["RR", "20", "18", "16"], ["Pain", "8/10", "6/10", "5/10"], ["ECG", "Sinus", "Sinus", "Sinus"]
       ] } } },
-      { table: { title: "ISBAR", table: { head: ["", "Example"], rows: [
+      { scope: "ar", table: { title: "ISBAR", table: { head: ["", "Example"], rows: [
+        ["I", "\"I'm [name], Ambulance Officer from [station]. This is Graham, 62.\""],
+        ["S", "\"45 minutes of central chest pressure into his left arm and jaw, worse than his usual angina and not settled by his own GTN.\""],
+        ["B", "\"Angina for 4 years, hypertension, high cholesterol. On daily aspirin, atorvastatin, metoprolol, perindopril and his own GTN spray. No known allergies. No PDE-5 inhibitors.\""],
+        ["A", "\"On arrival: pale and sweaty, HR 92, BP 138/86, SpO2 94% on air, pain 8/10, sinus rhythm. Now: HR 84, BP 122/76, SpO2 97% on nasal cannula, pain 5/10, still sinus rhythm.\""],
+        ["R", "\"Two sprays of his own GTN before we arrived. We gave aspirin 300 mg at 2136. EOC Clinician consulted at 2137: one GTN dose, given at 2138, three in total. Updated at 2144: no further GTN, transport here, clinical support cancelled. Headache since the GTN. Pain improved but not resolved.\""]
+      ] } } },
+      { scope: "ao", table: { title: "ISBAR", table: { head: ["", "Example"], rows: [
         ["I", "\"I'm [name], Ambulance Officer from [station]. This is Graham, 62.\""],
         ["S", "\"45 minutes of central chest pressure into his left arm and jaw, worse than his usual angina and not settled by his own GTN.\""],
         ["B", "\"Angina for 4 years, hypertension, high cholesterol. On daily aspirin, atorvastatin, metoprolol, perindopril and his own GTN spray. No known allergies. No PDE-5 inhibitors.\""],
@@ -336,7 +406,8 @@ window.MODULE = {
         "Walk through your GTN checks. How did the PDE-5 question go?",
         "His own GTN: how did it change your plan?",
         "When did you consult the EOC Clinician? Could it have been earlier?",
-        "Did you consider clinical support? What did you decide, and why?",
+        { scope: "ao", text: "Did you consider clinical support? What did you decide, and why?" },
+        { scope: "ar", text: "When did you request clinical support, and what did the EOC Clinician advise about transport?" },
         "Were you ready for cardiac arrest at every stage? Where were the defib pads?",
         "How did the Clinician and Driver roles work together?"
       ] } },
@@ -345,16 +416,34 @@ window.MODULE = {
         "Aspirin 300 mg for everyone who is not allergic, chewed",
         "Check systolic BP, pulse rate and PDE-5 use before every GTN dose; vital signs every 3 to 5 minutes",
         "Ask what GTN the patient has already used, and when",
-        "Consult the EOC Clinician if BP or HR fall outside the limits, pain remains unresolved, or resolved pain returns",
+        { scope: "ao", text: "Consult the EOC Clinician if BP or HR fall outside the limits, pain remains unresolved, or resolved pain returns" },
+        { scope: "ar", text: "As an AR: request clinical support; every GTN dose is on EOC Clinician advice, even the patient's own prescribed GTN; then consult the EOC Clinician for the transport options (CPP-029-AR)" },
         "Keep the defib pads within reach from the lounge room to the hospital door"
       ] } }
     ] },
 
     { title: "Scenario variations", optional: true, collapsed: true, chip: "Optional", blocks: [
-      { box: { title: "1. PDE-5 inhibitor", text: "Graham hesitates, then says he took sildenafil about 18 hours ago. His wife did not know. No GTN: sildenafil has a 24-hour window. Aspirin 300 mg as per protocol, oxygen if needed, monitoring, consult the EOC Clinician (the pain remains unresolved), transport and notify. Discuss how to handle this sensitively." } },
+      { scope: "ar", box: { title: "1. PDE-5 inhibitor", text: "Graham hesitates, then says he took sildenafil about 18 hours ago. His wife did not know. No GTN: sildenafil has a 24-hour window, so the EOC Clinician cannot advise it. Aspirin 300 mg as per protocol, oxygen if needed, monitoring, request clinical support, and consult the EOC Clinician for the transport options. Discuss how to handle this sensitively." } },
+      { scope: "ao", box: { title: "1. PDE-5 inhibitor", text: "Graham hesitates, then says he took sildenafil about 18 hours ago. His wife did not know. No GTN: sildenafil has a 24-hour window. Aspirin 300 mg as per protocol, oxygen if needed, monitoring, consult the EOC Clinician (the pain remains unresolved), transport and notify. Discuss how to handle this sensitively." } },
       { box: { title: "2. Hypotension after GTN", text: "Five minutes after the crew's GTN dose: BP 88/54, HR 104, dizzy. Systolic is below the limit: no further GTN, consult the EOC Clinician immediately, keep monitoring every 3 to 5 minutes. Discuss posture (general teaching) and how this changes transport." } },
-      { box: { title: "3. Cardiac arrest on scene", text: "Soon after the GTN, Graham becomes unresponsive with abnormal breathing, and the monitor shows VF. Commence resuscitation (CPP-004-AO) and follow Cardiac Arrest (Adult) - AO, CPP-002-AO. Discuss: were the pads ready, who does what, and when do you call for backup?" } },
-      { box: { title: "4. No chest pain", text: "Margaret, 58: nausea, jaw pain, back pain between the shoulder blades and tiredness. She denies chest pain. No cardiac history, no prescribed GTN. The protocol lists neck, jaw, arms, back or shoulder, with nausea, dizziness, sweating or shortness of breath. Aspirin 300 mg unless allergic; oxygen if SpO2 is not above 94%. GTN not previously prescribed: consult the EOC Clinician, who may advise it (systolic must be above 100). Discuss how the pathway changes." } }
+      { box: { title: "3. Cardiac arrest on scene", text: "Soon after the GTN, Graham becomes unresponsive with abnormal breathing, and the monitor shows VF. Commence resuscitation (CPP-004-AO) and follow the adult cardiac arrest protocol for your level (CPP-002-AO for AOs). Discuss: were the pads ready, who does what, and when do you call for backup?" } },
+      { scope: "ar", box: { title: "4. No chest pain", text: "Margaret, 58: nausea, jaw pain, back pain between the shoulder blades and tiredness. She denies chest pain. No cardiac history, no prescribed GTN. The protocol lists neck, jaw, arms, back or shoulder, with nausea, dizziness, sweating or shortness of breath. Aspirin 300 mg unless allergic; request clinical support; oxygen if SpO2 is not above 94%. Consult the EOC Clinician, who may advise GTN (systolic must be above 100) and the transport. Discuss how symptoms without chest pain can delay the call." } },
+      { scope: "ao", box: { title: "4. No chest pain", text: "Margaret, 58: nausea, jaw pain, back pain between the shoulder blades and tiredness. She denies chest pain. No cardiac history, no prescribed GTN. The protocol lists neck, jaw, arms, back or shoulder, with nausea, dizziness, sweating or shortness of breath. Aspirin 300 mg unless allergic; oxygen if SpO2 is not above 94%. GTN not previously prescribed: consult the EOC Clinician, who may advise it (systolic must be above 100). Discuss how the pathway changes." } }
     ] }
-  ]
+  ],
+
+  /* ---------- Ambulance Responder version (CPP-029-AR Chest Pain - AR v2.1) ---------- */
+  ar: {
+    replace: [["CPP-007-AO", "CPP-029-AR"], ["Chest Pain - AO", "Chest Pain - AR"], ["CPP-004-AO", "CPP-025-AR"], ["Ambulance Officer", "Ambulance Responder"],
+      ["AO1", "AR1"], ["AO2", "AR2"], ["AO crew", "AR crew"], ["AO chest pain protocol", "AR chest pain protocol"], [" (CPP-002-AO for AOs)", ""]],
+    title: "Chest Pain - AR",
+    subtitle: "Walk-through scenario: 2-person volunteer AR crew",
+    lead: "A suspected cardiac chest pain call for a two-person volunteer Ambulance Responder crew, with eight break points for discussion, skills practice and decisions. Aspirin and basic care as for AOs; clinical support is requested, every GTN dose is on EOC Clinician advice, and the EOC Clinician decides the transport.",
+    protocol: {
+      code: "CPP-029-AR", name: "Chest Pain - AR", version: "v2.1 (23 April 2020)", exported: "31 August 2026",
+      also: [{ code: "CPP-025-AR", name: "Basic Care and Life Support - AR", version: "v2.0 (4 January 2019)" },
+             { code: "CPPRO-008, 009", name: "Medication Checks, Oral Medication Administration", version: "each v1.0 (5 July 2017)" }]
+    },
+    relatedCodes: ["CPP-007-AO"]
+  }
 };

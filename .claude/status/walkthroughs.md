@@ -166,3 +166,13 @@ handover at Cummins Hospital ED 0325; AR treatment table adds the 0250 advice).
 AR pre-brief table from CTL-083, AR decisions at break points 4, 6 and 7 (one new: who decides the transport), no IM
 adrenaline anywhere, AR take-home lines and variation 2. ARs may use nasal cannula (owner, 28 Nov 2026). The customiser template
 `asthma-ao` stays AO only (the converter `scenarios/tools/convert-asthma.js` was not re-run). Live (PR #394, merged 28 Nov 2026).
+
+## Chest pain AR version (Graham, 28 Nov 2026)
+
+`/modules/chest-pain/?scope=ar` (CPP-029-AR v2.1, CPP-025-AR): clinical support requested 2136; the crew consults the
+EOC Clinician at 2137, before any GTN (the owner's AO first-dose rule is marked AO only); the EOC Clinician advises one
+dose, the third counting his two sprays; GTN 2138 as in the AO story; at 2144 the update: no further GTN, transport to
+Cleve Hospital with clinical support cancelled (hospital 20 min, paramedic 55; same choice the owner made for Karen,
+owner to confirm). AR pre-brief table and consult box, AR criteria check, decisions, call script, ISBAR and variations
+1 and 4. AO change: variation 3 now says "the adult cardiac arrest protocol for your level (CPP-002-AO for AOs)" (was
+"Cardiac Arrest (Adult) - AO, CPP-002-AO"); the deck's notes show the same wording. Customiser template stays AO. On a branch, not merged.

@@ -124,6 +124,64 @@ window.PCR_JOBS = {
     marks: [['front', 50, 50, 'P', 6]]
   },
 
+  grahamAR: {
+    label: 'Graham, 62: chest pain (AR)',
+    short: 'Graham (AR)',
+    walk: '/modules/chest-pain/?scope=ar',
+    walkStudent: '/modules/chest-pain/?scope=ar&mode=student',
+    // The Ambulance Responder version of Graham (CPP-029-AR): clinical support requested 2136, EOC Clinician 2137 advises one
+    // GTN dose (three with his two sprays), updated 2144: no further GTN, transport to Cleve, clinical support cancelled.
+    // Times 2137 (oxygen) and 2155 (depart) are DSY's; the rest are the AR walk-through's.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: '?Acute coronary syndrome (suspected cardiac ischaemia): chest pain not settling with own GTN.',
+      recommendation: 'Transported to Cleve Hospital ED on EOC Clinician advice (2144, clinical support cancelled). Aspirin 300 mg 2136, GTN 2138 on EOC Clinician advice (2137; 3 doses incl. 2 own sprays). Pain 8/10 to 5/10, not resolved. Headache since GTN. Needs ongoing cardiac monitoring + review. Handed over 2210 (ISBAR).',
+      ecg: 'Sinus rhythm (4-lead), unchanged throughout. 12-lead not available.'
+    },
+    sections: {
+      pc: 'Central chest pressure ~45 min, radiating to L arm + jaw, not settling with own GTN.',
+      phx: 'Angina (4 yrs), HTN, high cholesterol.',
+      medn: 'Aspirin 100 mg daily, atorvastatin, metoprolol, perindopril, own GTN spray. Nil PDE-5 inhibitors (pt + wife).',
+      hx: 'Watching TV ~2050, onset of heavy, weight-like central chest pressure at rest. "Worse than my usual angina." Own GTN spray x2 over 30 min: little relief, then pain returned. Nausea (nil vomiting), sweating, mildly SOB. Wife called SAAS. Last meal 1830.',
+      oa: '62M sitting upright in a recliner in a well-lit lounge, pale and still, one hand flat on his sternum. Own GTN spray on the armrest. Wife at the door, anxious.',
+      cns: 'A on AVPU, GCS 15, oriented, recalls events. Speech normal.',
+      skin: 'Pale, sweaty (diaphoretic).',
+      cvs: 'Pulse 92 regular. BP 138/86. ECG sinus rhythm. Nil blood loss.',
+      resp: 'RR 20, mildly SOB, speaking full sentences, nil resp distress. SpO2 94% RA, 96% on NC.',
+      pain: 'Central heavy pressure, radiating to L arm + jaw, onset at rest ~2045, 8/10. After GTN 6/10, on arrival at hospital 5/10.',
+      survey: '',
+      care: 'Aspirin 300 mg chewed 2136. Clinical support requested 2136. NC O2 for SpO2 94%. EOC Clinician 2137 (own sprays x2, obs, nil PDE-5): one GTN dose advised, repeated back. GTN limits checked aloud (SBP 138, HR 92, nil PDE-5): GTN 400 microg SL spray 2138. 2142 BP 118/74, HR 88, pain 6/10, mild headache.\nEOC Clinician updated 2144: 3 GTN doses in total, nil further GTN, transport to Cleve Hospital, clinical support cancelled, call back if BP/HR outside limits or pain changes. Carry chair (stand + pivot), stretcher, monitor + O2 on, kept warm. Obs every 3-5 min en route, stable.'
+    },
+    tips: {
+      survey: 'No trauma, so no secondary survey.',
+      care: 'At AR level every GTN dose is on EOC Clinician advice: write the consult time and what was advised before the dose. GTN: a 300 microg tablet SL is also right (lead instructor: either while SAAS changes back to the spray). Your oxygen flow may differ: the walk-through only says "nasal cannula to bring SpO2 above 94%".',
+      provisional: 'Also fair: "Chest pain, ?cardiac ischaemia". Keep the "?".'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'P on the front of the chest, centre (pain), with the radiation to the left arm and jaw described in the text.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted at 2137 and updated at 2144.'
+    },
+    ticks: ['medsHanded', 'consult'],
+    obs: [
+      { time: '2135', rr: 20, o2: 'RA', spo2: 94, bp: '138/86', hr: 92, temp: 36.4, gcs: 15, evm: [4, 5, 6], pain: 8, bgl: 7.2 },
+      { time: '2142', rr: 18, o2: 'NC', spo2: 96, bp: '118/74', hr: 88, pain: 6 },
+      { time: '2208', rr: 16, o2: 'NC', spo2: 97, bp: '122/76', hr: 84, pain: 5 }
+    ],
+    drugs: [
+      ['2135', 'Monitor, 4-lead ECG: sinus'],
+      ['2136', 'Aspirin (chewed)', '300', 'mg', 'Oral'],
+      ['2136', 'Clinical support requested'],
+      ['2137', 'Oxygen', '', '', 'Nasal cannula'],
+      ['2137', 'EOC Clinician: 1 GTN dose'],
+      ['2138', 'GTN spray (EOC advice)', '400', 'microg', 'Sublingual'],
+      ['2144', 'EOC: transport, clin support cancelled'],
+      ['2155', 'Carry chair to stretcher'],
+      ['2210', 'Handover regional ED']
+    ],
+    marks: [['front', 50, 50, 'P', 6]]
+  },
+
   karen: {
     label: 'Karen, 45: asthma (AO)',
     short: 'Karen',
