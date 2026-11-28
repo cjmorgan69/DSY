@@ -55,4 +55,4 @@ Busy dot-point slides (estimated to fit only below 44px) and tables (below 38px)
 "(2 of 2)" in `common.js`, breaking at a heading point where there is one; points ending in ":" show as headings.
 MDT screenshot slides: points 48px (were 38), screenshot a little narrower. Asthma severity table (CTL-071) shown as
 two slides (severity, signs and one age group each). Before: median dot-point size 52, 65 of 203 slides under 44px;
-after: median 60, 8 under 44px (smallest 38). Text unchanged. On a branch, not merged.
+after: median 60, 8 under 44px (smallest 38). Text unchanged. Live (PR #388, merged 28 Nov 2026).
