@@ -50,9 +50,9 @@ function compose(cluster: string, first: string, rows: Row[]) {
   const text =
 `Hi ${first},
 
-This is your weekly sign-in check for the ${cluster} teams on dsytraining.com.
+Thank you for your enthusiasm in supporting DSY Training.
 
-${n} ${n === 1 ? "person" : "people"} in your teams ${n === 1 ? "has" : "have"} never set up their sign-in. For each one, please do one of two things:
+There is just a bit of housekeeping to attend to to keep things tidy. ${n} ${n === 1 ? "person" : "people"} in your ${cluster} teams ${n === 1 ? "has" : "have"} never set up their sign-in on dsytraining.com. For each one, please do one of two things:
 
 1. SIGN UP, if they are still active on the team.
    Ask them to go to dsytraining.com/signin, tap "First time here? Set up your sign-in", enter their ambulance ID and choose their own password. It takes about a minute. No starter password is needed.
@@ -77,7 +77,11 @@ This email was sent automatically by dsytraining.com.`;
   return { subject, text };
 }
 
+// The name each Team Leader goes by (owner, 28 Nov 2026).
+const GREETING: Record<string, string> = { "West Coast": "Dave", "Central Eyre": "Campbell" };
+
 async function leaderFirstName(cluster: string) {
+  if (GREETING[cluster]) return GREETING[cluster];
   const { data } = await sb.from("profiles").select("full_name,preferred_name").eq("role", "leader").eq("cluster", cluster).limit(1).maybeSingle();
   const n = (data?.preferred_name || "").trim() || (data?.full_name || "").trim().split(/\s+/)[0];
   return n || "there";
