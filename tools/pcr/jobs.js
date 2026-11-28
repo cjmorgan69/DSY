@@ -574,6 +574,114 @@ window.PCR_JOBS = {
     marks: [['front', 39, 205, 'S bite', -6]]
   },
 
+  josh: {
+    label: 'Josh, 27: seizures (AO)',
+    short: 'Josh',
+    walk: '/modules/seizures-ao/',
+    // From /modules/seizures-ao/ (28 Nov 2026). All times are the walk-through's; DSY-written.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Generalised seizures, clusters with no recovery (>5 min). Known epilepsy, missed levetiracetam x2 days, ETOH, sleep deprived.',
+      recommendation: 'Transported to Cleve Hospital ED (closest ED), early notification. Seizures 2137 (~2 min) + 2150 to 2202, nil recovery between. Midazolam 10 mg IM 2158 (EOC Clinician 2156), 5 mL each thigh. Trismus: NPA 7 mm 2206. GCS 3, 7, 10. Watch resps (midazolam + ETOH). Needs review of missed meds. Handed over 2230 (ISBAR).',
+      ecg: 'Sinus tachycardia.'
+    },
+    sections: {
+      pc: 'Generalised seizures: 2137 (~2 min), then 2150, ongoing on arrival, nil recovery in between.',
+      phx: 'Epilepsy since age 15, usually well controlled.',
+      medn: 'Levetiracetam: nil for 2 days (left at home). Nil seizure management plan with him.',
+      hx: 'At a 21st in a shearing shed ~15 km from Cleve. Seizure ~2137 lasting ~2 min, confused + sleepy after, never back to normal. 2nd seizure from ~2150. Missed meds x2 days, little sleep last night, "a fair few beers" tonight, nil other drugs known (friend Ellie). Friend called SAAS.',
+      oa: '27M on the board floor of a shearing shed between the wool table and steel gates, generalised jerking of all 4 limbs, eyes rolled back, frothing. Friend holding his arms. Music on, ~20 people. Smells of ETOH.',
+      cns: 'Generalised tonic-clonic activity all 4 limbs, eyes deviated, GCS 3 while seizing. Seizure stopped 2202. 2205 GCS 7 (E1 V2 M4). 2220 GCS 10 (E3 V3 M4).',
+      skin: 'Warm. Nil rash. Graze to forehead (board floor).',
+      cvs: 'Pulse 132 while seizing. BP unable (moving), 138/82 at 2205.',
+      resp: 'RR 28 irregular, frothy saliva, noisy, lips dusky, SpO2 89% RA. Post-seizure RR 12 snoring, trismus. NPA: snoring settled, SpO2 97% on O2.',
+      pain: 'Unable to assess (GCS).',
+      survey: '',
+      care: 'Music off, crowd back, steel gates moved, head padded, nil restraint (friend asked to let go). Clinical support requested. BGL 6.4. O2 face mask, suction. Seizure timed from 2150.\n2155: >5 min + clusters. EOC Clinician 2156: midazolam 10 mg IM advised, repeated back. Medication checks, 2 x 5 mL syringes. 2158 midazolam 10 mg IM, 5 mL L thigh + 5 mL R thigh. 2202 seizure stopped.\n2205 snoring, trismus: Co-Phenylcaine, NPA 7 mm R nostril 2206, SpO2 97%. Recovery position. EOC Clinician updated 2208. Carry sheet to stretcher, BVM + suction ready, early notification to Cleve Hospital.'
+    },
+    tips: {
+      pc: 'Put the start time of each seizure in: the doctor will ask for them.',
+      care: 'Midazolam: dose, route, both sites, time and who advised it. The NPA: size, nostril and time (CPPRO-025).',
+      survey: 'No trauma secondary survey, but the forehead graze goes in SKIN.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'A (abrasion) on the forehead, front figure.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted at 2156 and updated at 2208.'
+    },
+    ticks: ['consult'],
+    obs: [
+      { time: '2154', rr: 28, o2: 'RA', spo2: 89, hr: 132, temp: 37.6, gcs: 3, evm: [1, 1, 1], bgl: 6.4 },
+      { time: '2205', rr: 12, o2: 'FM', spo2: 93, bp: '138/82', hr: 108, gcs: 7, evm: [1, 2, 4], bgl: 6.4 },
+      { time: '2220', rr: 14, o2: 'FM', spo2: 97, bp: '130/78', hr: 96, gcs: 10, evm: [3, 3, 4], bgl: 6.2 }
+    ],
+    drugs: [
+      ['2154', 'BGL 6.4'],
+      ['2154', 'Oxygen', '', '', 'Face mask'],
+      ['2156', 'EOC Clinician: midazolam advised'],
+      ['2158', 'Midazolam (EOC advice)', '10', 'mg', 'IM L + R thigh'],
+      ['2202', 'Seizure stopped'],
+      ['2206', 'NPA 7 mm R nostril'],
+      ['2208', 'EOC Clinician updated'],
+      ['2230', 'Handover Cleve ED']
+    ],
+    marks: [['front', 50, 18, 'A', 6]]
+  },
+
+  joshAR: {
+    label: 'Josh, 27: seizures (AR)',
+    short: 'Josh (AR)',
+    walk: '/modules/seizures-ao/?scope=ar',
+    walkStudent: '/modules/seizures-ao/?scope=ar&mode=student',
+    // The Ambulance Responder version of Josh (CPP-037-AR): no midazolam or NPA; the seizure stops at 2204; EOC Clinician
+    // 2156 and 2207 (transport to Cleve Hospital, clinical support cancelled). Times from the AR walk-through; DSY-written.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Generalised seizures, clusters with no recovery (>5 min). Known epilepsy, missed levetiracetam x2 days, ETOH, sleep deprived.',
+      recommendation: 'Transported to Cleve Hospital ED on EOC Clinician advice (2207, clinical support cancelled), notified. Seizures 2137 (~2 min) + 2150 to 2204, nil recovery between. Nil medicines. Airway: positioning + suction, trismus. GCS 3, 7, 10. Needs review of missed meds. Handed over 2230 (ISBAR).',
+      ecg: 'Sinus tachycardia.'
+    },
+    sections: {
+      pc: 'Generalised seizures: 2137 (~2 min), then 2150, ongoing on arrival, nil recovery in between.',
+      phx: 'Epilepsy since age 15, usually well controlled.',
+      medn: 'Levetiracetam: nil for 2 days (left at home). Nil seizure management plan with him.',
+      hx: 'At a 21st in a shearing shed ~15 km from Cleve. Seizure ~2137 lasting ~2 min, confused + sleepy after, never back to normal. 2nd seizure from ~2150. Missed meds x2 days, little sleep last night, "a fair few beers" tonight, nil other drugs known (friend Ellie). Friend called SAAS.',
+      oa: '27M on the board floor of a shearing shed between the wool table and steel gates, generalised jerking of all 4 limbs, eyes rolled back, frothing. Friend holding his arms. Music on, ~20 people. Smells of ETOH.',
+      cns: 'Generalised tonic-clonic activity all 4 limbs, eyes deviated, GCS 3 while seizing. Seizure stopped 2204. 2206 GCS 7 (E1 V2 M4). 2220 GCS 10 (E3 V3 M4).',
+      skin: 'Warm. Nil rash. Graze to forehead (board floor).',
+      cvs: 'Pulse 132 while seizing. BP unable (moving), 140/84 at 2206.',
+      resp: 'RR 28 irregular, frothy saliva, noisy, lips dusky, SpO2 89% RA. Post-seizure RR 14 snoring, trismus. Positioned + suctioned: SpO2 96% on O2.',
+      pain: 'Unable to assess (GCS).',
+      survey: '',
+      care: 'Music off, crowd back, steel gates moved, head protected, nil restraint (friend asked to let go). Clinical support requested. BGL 6.4. O2 face mask, suction. Seizure timed from 2150.\n2155: >5 min + clusters. EOC Clinician 2156 (treatment + transport): keep protecting, O2, on side when practical, suction, call back. 2204 seizure stopped. Recovery position, head tilt/jaw thrust, suction: snoring settled, SpO2 96%. OPA not placed (trismus).\nEOC Clinician 2207: transport to Cleve Hospital, clinical support cancelled, repeated back. Carry sheet to stretcher, on side, BVM + suction ready, Cleve Hospital notified.'
+    },
+    tips: {
+      pc: 'Put the start and stop time of each seizure in: the doctor will ask for them.',
+      care: 'Record that no anticonvulsant was given at AR level, and each EOC Clinician consult with its time and advice.',
+      survey: 'No trauma secondary survey, but the forehead graze goes in SKIN.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'A (abrasion) on the forehead, front figure.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted at 2156 and 2207.'
+    },
+    ticks: ['consult'],
+    obs: [
+      { time: '2154', rr: 28, o2: 'RA', spo2: 89, hr: 132, temp: 37.6, gcs: 3, evm: [1, 1, 1], bgl: 6.4 },
+      { time: '2206', rr: 14, o2: 'FM', spo2: 92, bp: '140/84', hr: 112, gcs: 7, evm: [1, 2, 4], bgl: 6.4 },
+      { time: '2220', rr: 14, o2: 'FM', spo2: 97, bp: '130/78', hr: 96, gcs: 10, evm: [3, 3, 4], bgl: 6.2 }
+    ],
+    drugs: [
+      ['2154', 'BGL 6.4'],
+      ['2154', 'Oxygen', '', '', 'Face mask'],
+      ['2156', 'EOC Clinician consult'],
+      ['2204', 'Seizure stopped'],
+      ['2207', 'EOC: transport, clin support cancelled'],
+      ['2230', 'Handover Cleve ED']
+    ],
+    marks: [['front', 50, 18, 'A', 6]]
+  },
+
   ron: {
     label: 'Ron, 67: hypoglycaemia (AO)',
     short: 'Ron',

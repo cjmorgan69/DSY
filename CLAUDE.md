@@ -127,7 +127,7 @@ What exists for each topic (module, walk-through, MDT job, customiser, stations,
 `hub/topics.js`; the check script confirms each entry points at something real. The 34 AO protocols, what is covered
 and the suggested build order are in `.claude/references/ao-protocols.md`.
 
-For a new walk-through, wire up all of: a topic in `hub/topics.js`, a line in `microlearning/shared/related.js`, a card
+For a new topic follow `.claude/references/new-topic-recipe.md` (every part, AO and AR). For a new walk-through, wire up all of: a topic in `hub/topics.js`, a line in `microlearning/shared/related.js`, a card
 on `/ao/`, an MDT job in `mdt/jobs.js`, a PCR job in `tools/pcr/jobs.js` (and `pcr:` on the topic), a customiser
 template, and a feedback slide if it gets a case-night deck. The check script lists what is missing.
 
@@ -192,7 +192,10 @@ Development" cards. Raised with the owner and NOT yet decided or done:
   Live (PR #391, merged 28 Nov 2026); the five lessons added in Supabase, Envenomation lesson link tidied.
 - Stations still to build: pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
-- Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario
+- Seizures topic (28 Nov 2026), the first built AO and AR from the start with every part: module + video, walk-through
+  (Josh, 27), MDT, PCR `josh`/`joshAR`, customiser `seizures-ao` (unpublished until merge), stations, case-night deck.
+  On a branch, not merged. Standard for every new topic from now on: `.claude/references/new-topic-recipe.md`.
+- Next modules: amputation and haemorrhage (no walk-through exists). The MVA hypo scenario
   (`/modules/hypo/`) is to be converted when asked.
 - Retire `/course/` (Google Sheet app) once the current AR group finishes; `/ar/course/` replaces it.
 - Planned: a request portal (`/request/`) with an inbox panel on the dashboard; the Supabase roster (see `rosters.md`; stages 1 to 6 done by 18 Nov 2026 (database, people, emails, new roster page on the Summer Bay test roster, import rehearsal, dashboards); all 12 teams on the new roster: Lower Eyre and Central Eyre since 18 Nov 2026, West Coast since 19 Nov 2026 (stage 7); stage 8 tidy up done 28 Nov 2026 (Apps Scripts archived, sheets view-only): the move is complete).

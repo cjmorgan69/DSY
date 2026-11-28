@@ -46,7 +46,9 @@ window.DSY_TOPICS = [
   { id:'health-checks', group:'safety', title:'Health checks for emergency services', protocol:'PRO-384', patient:'Fire standby: checking the firefighters off the line',
     stations:'/stations/health-checks/' },
   { id:'refusal', group:'decisions', title:'Refusal against advice', protocol:'CPP-056-AO', patient:'Sam, 38: a hypo who tells the crew to get out, then still refuses',
-    module:'refusal', walk:'/modules/refusal-ao/', mdt:'refusal', custom:'refusal-ao', stations:'/stations/refusal/', pcr:'sam', slides:'/classroom/refusal/' }
+    module:'refusal', walk:'/modules/refusal-ao/', mdt:'refusal', custom:'refusal-ao', stations:'/stations/refusal/', pcr:'sam', slides:'/classroom/refusal/' },
+  { id:'seizures', group:'brain', title:'Seizures', protocol:'CPP-014-AO', patient:'Josh, 27: seizing again at a 21st in a shearing shed near Cleve',
+    module:'seizures', walk:'/modules/seizures-ao/', mdt:'seizures', custom:'seizures-ao', stations:'/stations/seizures/', pcr:'josh', slides:'/classroom/seizures/' }
 ];
 
 /* Categories on Run a session (11 Nov 2026, owner). */
@@ -67,7 +69,6 @@ window.DSY_PLANNED = [
   { group:'heart', title:'Cardiac arrest (adult and children)', protocol:'CPP-002-AO, CPP-043-AO, CPP-020-AO' },
   { group:'trauma', title:'Amputation and haemorrhage', protocol:'CPP-042-AO' },
   { group:'trauma', title:'Chest trauma', protocol:'CPP-158-AO' },
-  { group:'brain', title:'Seizures', protocol:'CPP-014-AO' },
   { group:'medical', title:'Narcotic overdose', protocol:'CPP-011-AO' },
   { group:'medical', title:'Hypothermia (severe and unresponsive)', protocol:'CPP-019-AO' },
   { group:'medical', title:'Button battery ingestion', protocol:'CPP-065-AO' },

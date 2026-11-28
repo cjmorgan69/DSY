@@ -63,7 +63,7 @@ In the suggested order from `ao-protocols.md`. Each one: the full AO set, then i
 | 2 | Pregnancy and birth | CPP-059-AO | small (PPH and destination by consult) | old `/modules/childbirth/`; pairs with `/tools/obstetric/` |
 | 3 | Postpartum haemorrhage | CPP-053-AO | none (AR consults) | fundus procedure CPPRO-023 |
 | 4 | Newborn care | CPP-012-AO | big (NeoHelp/TransWarmer on consult, no i-gel, no SpO2) | AR BGL "≥ 2.5" looks like a typo: ask SAAS |
-| 5 | Seizures | CPP-014-AO | big (no midazolam, no NPA) | |
+| 5 | Seizures | CPP-014-AO | big (no midazolam, no NPA) | **built 28 Nov 2026**, AO and AR, every part: on a branch |
 | 6 | Amputation and haemorrhage | CPP-042-AO | small | tourniquet and pelvic sling already in MVA stations |
 | 7 | Narcotic overdose | CPP-011-AO | none | old `/modules/narcotic_od/` |
 | 8 | Chest trauma | CPP-158-AO | none | vented chest seal on consult (CPPRO-037) |

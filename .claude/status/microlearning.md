@@ -315,3 +315,13 @@ a short "Not in the AR protocol" section, its own reference table, four AR quiz 
 Shared fixes (28 Nov 2026): `ar.replace` word swaps no longer run inside items marked `scope: "ar"` (they had turned
 "the AO protocol (CPP-008-AO)" in the snake bite AR video note into "(CPP-030-AR)"); related cards take `arTitle` /
 `arText`, now set for the hypoglycaemia, envenomation, asthma, chest pain and pain lines. Live (PR #397, merged 28 Nov 2026).
+
+## Seizures (AO and AR, 28 Nov 2026)
+
+`/microlearning/seizures/`: the first topic built AO and AR from the start (owner: "this will be how we go forward";
+recipe in `.claude/references/new-topic-recipe.md`). Sources CPP-014-AO v5.0 (3 Dec 2024), CPP-037-AR v2.1 (2 Dec 2024),
+CPPRO-025 NPA (review date 2022 passed), CPPRO-011; midazolam 5 mg/5 mL and the 0.3 mg/kg total max from the app
+(DMO-022). Documents differ: the app's 65+ formula text says "single max 10 mg", its table and the protocol say 5 mg;
+the module follows the protocol and says so. Seizure checker (consult criteria, dose by weight, two sites over 5 mL;
+AR pathway), NPA tile row (AO), 18 quiz questions across both versions, Resus Room "Seizures; Roadside to Resus"
+(Jan 2020) and the paediatric episode (Jan 2026). Intro video: Lee, two takes (45.1 s + 54.8 s), 1:42. On a branch, not merged.
