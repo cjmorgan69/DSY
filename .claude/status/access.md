@@ -229,3 +229,19 @@ dropped (the header already links to Region).
   Lessons; "Add a course", the course list and course delete are gone (no course groups or course sessions existed,
   checked). The AR course keeps its own entry point (AR course on the dashboard, `/ar/`). Course-type groups are still
   understood by the code if any ever exist. Guide and Training nights module text updated. Live (PR #367, merged 25 Nov 2026).
+
+## Weekly sign-in check email (owner, 28 Nov 2026)
+
+Owner asked for a weekly email to the Central Eyre and West Coast Team Leaders (Campbell Forsyth, David Coombe) listing
+team members who have never set up their sign-in (`claim_open`, not switched off), explaining sign up versus switch
+off and the risk of an open account (anyone who knows the ID can claim it first). Edge function `signin-nudge`
+(`supabase/functions/signin-nudge`, verify_jwt on), SQL `supabase/signin-nudge.sql` (migration `signin_nudge`: log
+table `signin_nudge_log`, leaders read; `signin_nudge_list(cluster)`, service role only). Sends to
+`roster_contacts.area_manager_email`, reply-to the lead instructor; skips a cluster with nobody left; at most one weekly
+email per cluster in 6 days. Preview (mode `preview`, to the lead instructor only) sent 28 Nov 2026: Central Eyre 15,
+West Coast 28. The weekly pg_cron job `signin-nudge` is NOT scheduled until the owner approves the wording.
+
+Same day, on the owner's say-so: switched off, taken off the approved list and off their teams: Amanda Kerslake,
+Amber Clarke, Cheryl Jones, Cheyanne Donnelly (Coffin Bay), Andrew Bizewski (Port Neill), Karl Fredrickson, Tayla
+Allen, Tyrene Gardiner (Tumby Bay); Matilda Crettenden (Cummins) switched off by the owner on the People page. Liz
+Guerin had two accounts: her Port Kenny place moved to 5023 (her facilitator / relief account) and 600994 switched off.
