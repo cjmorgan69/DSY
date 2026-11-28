@@ -295,7 +295,8 @@ window.MODULE = {
         "Longboard or carry chair: either is acceptable. The crew chooses by how many helpers are there to lift and how close the stretcher can get to the verandah (DSY lead instructor)",
         "Whichever you use, move him as little as possible, in a timely way, supporting the bandaged leg",
         "Vacuum mattress on the stretcher with a sheet. Move him onto it keeping him and the limb still; raise the head end to about 20 to 30 degrees so the mattress conforms, then remove the air (CPPRO-022)",
-        "Don't remove his clothing first"
+        "Don't remove his clothing first",
+        "Another option (DSY lead instructor): take the vacuum mattress to Greg, package him where he is, then carry him to the stretcher on a spinal board under the mattress. The board is only for carrying: it is our usual practice from spinal precautions, but here it is for keeping him still, not for a spinal injury"
       ] } },
       { box: { title: "Transport", items: [
         "Clinician in the back: Corpuls3 on, suction, BVM and vomit bags within reach",
