@@ -39,7 +39,7 @@ Each AR version starts with the AR PDF, read again on the day: AR PDFs were expo
 | Dementia (ABD) | CPP-052-AR, big | lesson for stations, PCR `joanne` lesson, deck? | full: risk assessment, MSE, clinical support, SAPOL, consult |
 | Refusal | CPP-058-AR, big | PCR `sam` lesson | full: seek consent, clinical support or consult; no VIRCA steps |
 | Anaphylaxis | CPP-022-AR, small | deck? | light |
-| Snake bite | small | intro video, stations, deck?; lesson link has two blank lines | light |
+| Snake bite | small | stations, deck?; lesson link has two blank lines (intro video by Lee is on YouTube, not in the repo) | light |
 | Falls | small (pain part big) | deck? | light, plus the pain-relief changes |
 | Burns | small (pain part big) | MDT job, deck? | light, plus the pain-relief changes |
 | Spinal precautions | small | MDT job, customiser, deck? | light |
@@ -79,8 +79,7 @@ In the suggested order from `ao-protocols.md`. Each one: the full AO set, then i
    the sepsis and dementia stations, and the chest pain, asthma and ACPO decks; trim the snake bite lesson link.
 2. **AR, big-difference topics (one topic a PR, like the hypo pilot):** asthma, chest pain, pain, stroke, refusal,
    dementia. Each: list the AR clinical changes in chat first for approval, then build, then the AR lessons.
-3. **Fill the AO gaps:** spinal MDT job and customiser, burns MDT job, snake bite and pain stations, snake bite
-   intro video (Lee, one take: costs credits, ask first).
+3. **Fill the AO gaps:** spinal MDT job and customiser, burns MDT job, snake bite and pain stations.
 4. **AR, small-difference and no-AR-protocol topics:** light or short versions, a few topics a PR.
 5. **New topics** in the order above, each with its AR version.
 6. **Case-night decks** for the topics the owner picks.
