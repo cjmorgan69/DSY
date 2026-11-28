@@ -29,6 +29,7 @@ window.MODULE = {
         "Request early clinical support and consult the EOC Clinician, repeating the advice back",
         "Set up a nebuliser and use an MDI and spacer as in CPPRO-012",
         "Reassess, recognise deterioration to life-threatening asthma, and plan the escalation",
+        { scope: "ar", text: "Consult the EOC Clinician about treatment and transport, and follow the transport advice" },
         "Deliver a concise ISBAR handover"
       ] } },
       { box: { title: "Required equipment", items: [
@@ -54,7 +55,12 @@ window.MODULE = {
 
     { title: "Pre-brief: the AO asthma protocol", blocks: [
       { text: "About 10 minutes. Read this together before the scenario." },
-      { table: { title: "AO Asthma Severity & Treatment Table (CTL-071)", text: "First: assess GCS and work of breathing; baseline obs (RR, PR, monitor, SpO2); past medical history.", table: { head: ["Severity", "Common signs", "Over 6 years and adults", "Under 6 years"], rows: [
+      { scope: "ar", table: { title: "AR Asthma Severity and Treatment (CTL-083)", text: "First: assess GCS and work of breathing; baseline obs (RR, PR, monitor, SpO2); past medical history.", table: { head: ["Severity", "Common signs", "Over 6 years and adults", "Under 6 years"], rows: [
+        ["Mild", "Talks in sentences; normal work of breathing; SpO2 usually above 95%", "MDI + spacer: 12 puffs salbutamol (4 breaths per puff). EOC Clinician may advise repeat doses", "MDI + spacer: 6 puffs salbutamol. EOC Clinician may advise repeat doses"],
+        ["More severe", "Talks in phrases, words or unable to speak; distressed; SpO2 usually below 95%", "Neb: 5 mg salbutamol + 500 microg ipratropium (one neb of each drug). Request early clinical support. Consult the EOC Clinician for MDI + spacer and O2 at 4 L/min, repeat nebs or continuous nebs", "Neb: 2.5 mg salbutamol + 250 microg ipratropium (about half a neb of each + 3 mL saline). Consult as for adults"],
+        ["Life threatening", "Unable to speak; drowsy or unconscious; cyanosed; poor respiratory effort; or respiratory arrest", "High flow oxygen; early clinical support; if IPPV, slow and gentle (4 per min); consult the EOC Clinician for continuous nebs", "As for adults"]
+      ] } } },
+      { scope: "ao", table: { title: "AO Asthma Severity & Treatment Table (CTL-071)", text: "First: assess GCS and work of breathing; baseline obs (RR, PR, monitor, SpO2); past medical history.", table: { head: ["Severity", "Common signs", "Over 6 years and adults", "Under 6 years"], rows: [
         ["Mild", "Talks in sentences; normal work of breathing; SpO2 usually above 95%", "MDI + spacer: 12 puffs salbutamol (4 breaths per puff). EOC Clinician may advise repeat doses", "MDI + spacer: 6 puffs salbutamol. EOC Clinician may advise repeat doses"],
         ["More severe", "Talks in phrases, words or unable to speak; distressed; SpO2 usually below 95%", "Neb: 5 mg salbutamol + 500 microg ipratropium (one neb of each drug). Request early clinical support. Consult for MDI + spacer and O2 at 4 L/min, repeat nebs, continuous nebs or IM adrenaline", "Neb: 2.5 mg salbutamol + 250 microg ipratropium (about half a neb of each + 3 mL saline). Consult as for adults"],
         ["Life threatening", "Unable to speak; drowsy or unconscious; cyanosed; poor respiratory effort; or respiratory arrest", "High flow oxygen; early clinical support; if IPPV, slow and gentle (4 per min); consult for continuous nebs or adrenaline; urgent transport", "As for adults"]
@@ -64,6 +70,8 @@ window.MODULE = {
         "Consider whether the signs could be allergy or anaphylaxis: if so, follow Anaphylaxis CPP-003-AO first, including early clinical support",
         "Never use SpO2 alone to judge severity: use it with a thorough patient assessment",
         "Repeat doses are given on EOC Clinician advice. Consult the EOC Clinician immediately if the patient deteriorates at any time",
+        { scope: "ar", text: "Consult the EOC Clinician about treatment and transport. They may advise transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives" },
+        { scope: "ar", text: "No IM adrenaline in the AR asthma protocol (removed in v3.2, June 2022)" },
         "If at any point the patient becomes unresponsive and is not breathing normally, commence CPR",
         "Position the patient at more than 45 degrees, or upright, for inhaled medication (CPPRO-012)"
       ] } },
@@ -170,18 +178,24 @@ window.MODULE = {
           "Not life threatening: alert, speaking, not cyanosed, not drowsy, respiratory effort maintained",
           "Request early clinical support",
           "Nebulised salbutamol 5 mg and ipratropium 500 microg (over 6 years: one neb of each drug)",
-          "Consult the EOC Clinician, who may advise further doses: MDI and spacer with O2 at 4 L/min, repeat nebs, continuous nebs or IM adrenaline"
+          { scope: "ao", text: "Consult the EOC Clinician, who may advise further doses: MDI and spacer with O2 at 4 L/min, repeat nebs, continuous nebs or IM adrenaline" },
+          { scope: "ar", text: "Consult the EOC Clinician, who may advise repeat doses (MDI and spacer with O2 at 4 L/min, repeat nebs or continuous nebs) and the transport: transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives" }
         ],
         teaching: ["Severity sets the treatment: for more severe asthma it is the nebuliser with ipratropium, not 12 puffs of salbutamol", "The protocol's principle: first-line treatment for severe asthma is high-flow oxygen and nebulised bronchodilator therapy, with early clinical support and transport", "Mild asthma doses go by age (12 puffs if 6 or older, 6 puffs if 1 to 6), not by severity"],
         realJob: "Look at the whole picture: speech, work of breathing, alertness, and how much reliever she has already used. If it looks more severe, treat it as more severe.",
         decisions: [
           { q: "Which severity is Karen?", options: ["Mild", "More severe", "Life threatening"], answer: 1,
             why: "Phrases, distressed, SpO2 91%: more severe. She is alert, speaking and not cyanosed, so not life threatening." },
-          { q: "What is her first treatment?", options: [
+          { scope: "ao", q: "What is her first treatment?", options: [
             "Salbutamol 12 puffs via MDI and spacer",
             "Nebulised salbutamol 5 mg and ipratropium 500 microg, and request early clinical support",
             "IM adrenaline straight away" ], answer: 1,
-            why: "More severe asthma, over 6 years: nebulised salbutamol 5 mg and ipratropium 500 microg (one neb of each), with early clinical support. IM adrenaline is only if the EOC Clinician advises it." }],
+            why: "More severe asthma, over 6 years: nebulised salbutamol 5 mg and ipratropium 500 microg (one neb of each), with early clinical support. IM adrenaline is only if the EOC Clinician advises it." },
+          { scope: "ar", q: "What is her first treatment?", options: [
+            "Salbutamol 12 puffs via MDI and spacer",
+            "Nebulised salbutamol 5 mg and ipratropium 500 microg, and request early clinical support",
+            "Nothing until the EOC Clinician has been consulted" ], answer: 1,
+            why: "More severe asthma, 6 years or older: nebulised salbutamol 5 mg and ipratropium 500 microg (one neb of each), with early clinical support (CPP-048-AR). The EOC Clinician consult about further doses and transport comes after the neb is started." }],
         cards: [{ q: "Before you treat Karen's asthma, what does the protocol ask you to consider?", a: "Whether the signs could indicate allergy or anaphylaxis. If so, follow CPP-003-AO first, including early clinical support." }]
       } },
       { box: { title: "Clinical decision point", tone: "warn", items: [
@@ -189,7 +203,8 @@ window.MODULE = {
         "Treatment: nebulised salbutamol 5 mg and ipratropium 500 microg",
         "Clinical support: request early (paramedic 50 minutes away)",
         "EOC Clinician: consult for further doses and the transport plan",
-        "Transport: Cummins Hospital, 30 minutes. Do not delay"
+        { scope: "ao", text: "Transport: Cummins Hospital, 30 minutes. Do not delay" },
+        { scope: "ar", text: "Transport: as the EOC Clinician advises (Cummins Hospital 30 minutes, paramedic 50 minutes)" }
       ] } }
     ] },
 
@@ -198,9 +213,11 @@ window.MODULE = {
         { t: "Position", text: "Keep Karen sitting upright, more than 45 degrees, and never lay her down. Pillows behind her back. Reassure her calmly." },
         { t: "Request early clinical support", text: "The driver calls while the clinician starts treatment." },
         { t: "Nebulised salbutamol 5 mg and ipratropium 500 microg", text: "Medication checks with your partner, then set up the nebuliser (steps below)." },
-        { t: "Consult the EOC Clinician", text: "Patient details, severity, treatment so far and response. Repeat the advice back: medication, dose and route." },
+        { t: "Consult the EOC Clinician", text: "Patient details, severity, treatment so far and response. Repeat the advice back: medication, dose and route.", scope: "ao" },
+        { t: "Consult the EOC Clinician about treatment and transport", text: "Patient details, severity, treatment so far and response, and the times: hospital 30 minutes, paramedic 50. Repeat the advice back: medication, dose and route, and the transport plan.", scope: "ar" },
         { t: "Monitor and reassess", text: "Continuous SpO2 and ECG, full obs about every 5 minutes, and watch speech, work of breathing and alertness. Consult the EOC Clinician immediately if she deteriorates." },
-        { t: "Transport", text: "Don't delay for extra rounds on scene: the hospital is 30 minutes away." }
+        { t: "Transport", text: "Don't delay for extra rounds on scene: the hospital is 30 minutes away.", scope: "ao" },
+        { t: "Transport as the EOC Clinician advises", text: "The AR protocol has no \"provide transport\": the EOC Clinician may advise transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives.", scope: "ar" }
       ] },
       { box: { title: "Nebuliser set-up (CPPRO-012)", tiles: true, steps: [
         { t: "Checks", text: "Complete all medication checks with your partner. Check allergies. Explain and gain consent where able." },
@@ -233,15 +250,19 @@ window.MODULE = {
         ["HR", "118", "106"], ["RR", "28", "22"], ["SpO2", "91% (air)", "95% (oxygen-driven neb)"], ["BP", "140/88", "132/82"],
         ["Speech", "Phrases", "Short sentences"], ["Work of breathing", "Marked accessory muscle use", "Mild accessory muscle use"], ["Wheeze", "Loud, both sides", "Present but reduced"]
       ] } } },
-      { text: "Mild hand tremor and a dry mouth. Karen says she feels \"better but not right yet\". In the scenario, the EOC Clinician advises a repeat dose of salbutamol via MDI and spacer with oxygen at 4 L/min via nasal cannula, to give en route.", muted: true },
+      { scope: "ao", text: "Mild hand tremor and a dry mouth. Karen says she feels \"better but not right yet\". In the scenario, the EOC Clinician advises a repeat dose of salbutamol via MDI and spacer with oxygen at 4 L/min via nasal cannula, to give en route.", muted: true },
+      { scope: "ar", text: "Mild hand tremor and a dry mouth. Karen says she feels \"better but not right yet\". In the scenario, the crew updates the EOC Clinician at 0250, who advises a repeat dose of salbutamol via MDI and spacer with oxygen at 4 L/min via nasal cannula, to give en route, and transport to Cummins Hospital now. She is improving and the hospital is closer than the paramedic, so clinical support is cancelled.", muted: true },
       { breakpoint: { title: "Reassessment and escalation decision", type: "Decision making",
         prompts: ["Compare the numbers. Better, worse or the same?", "Can you give another round on your own?", "Stay and treat, or load and go?", "Would waiting for the paramedic change anything?", "What if she had NOT improved?"],
         expected: [
           "Improving: SpO2 91 to 95, RR 28 to 22, phrases to short sentences, less work of breathing. Not back to baseline",
           "Further doses are on EOC Clinician advice: update the EOC Clinician, and repeat the advice back (here, salbutamol via MDI and spacer with O2 at 4 L/min)",
-          "Load and go: the hospital is 30 minutes away, the paramedic 50. Treat en route",
-          "If NOT improving: consult the EOC Clinician immediately (repeat nebs, continuous nebs or IM adrenaline may be advised); keep clinical support coming; transport",
-          "If she becomes drowsy, cyanosed or her breathing effort drops: life threatening. High flow oxygen, early clinical support, urgent transport"
+          { scope: "ao", text: "Load and go: the hospital is 30 minutes away, the paramedic 50. Treat en route" },
+          { scope: "ao", text: "If NOT improving: consult the EOC Clinician immediately (repeat nebs, continuous nebs or IM adrenaline may be advised); keep clinical support coming; transport" },
+          { scope: "ao", text: "If she becomes drowsy, cyanosed or her breathing effort drops: life threatening. High flow oxygen, early clinical support, urgent transport" },
+          { scope: "ar", text: "The transport is the EOC Clinician's call (CPP-048-AR): transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives. Give them the trend and the times so they can choose. Here: transport to Cummins Hospital, and clinical support is cancelled" },
+          { scope: "ar", text: "If NOT improving: consult the EOC Clinician immediately (repeat nebs or continuous nebs may be advised; no IM adrenaline at AR level); keep clinical support coming" },
+          { scope: "ar", text: "If she becomes drowsy, cyanosed or her breathing effort drops: life threatening. High flow oxygen, early clinical support, consult the EOC Clinician immediately" }
         ],
         teaching: ["Reassessment means comparing trends and looking at the whole patient", "Improving is not resolved: keep treating and monitoring", "In a rural setting the transport decision is simple maths: what gets her to definitive care fastest?"],
         realJob: "The question is always: is staying here going to make her better than the hospital can? If the answer is no, load and go.",
@@ -249,7 +270,17 @@ window.MODULE = {
           "Yes, every 20 minutes",
           "Only as the EOC Clinician advises",
           "No, she doesn't need any more" ], answer: 1,
-          why: "For more severe asthma the EOC Clinician may advise further doses (MDI and spacer with O2 at 4 L/min, repeat nebs, continuous nebs or IM adrenaline). Repeat their advice back." }],
+          why: "For more severe asthma the EOC Clinician may advise further doses (MDI and spacer with O2 at 4 L/min, repeat nebs, continuous nebs or IM adrenaline). Repeat their advice back.", scope: "ao" },
+          { scope: "ar", q: "Karen is improving. Can you give another dose on your own?", options: [
+          "Yes, every 20 minutes",
+          "Only as the EOC Clinician advises",
+          "No, she doesn't need any more" ], answer: 1,
+          why: "CPP-048-AR: the EOC Clinician may advise repeat doses as per paramedic level treatment (CTL-083: MDI and spacer with O2 at 4 L/min, repeat nebs or continuous nebs). Repeat their advice back." },
+          { scope: "ar", q: "She's improving, the hospital is 30 minutes away and the paramedic 50. Who decides whether you go?", options: [
+          "You do: load and go",
+          "The EOC Clinician, who may advise transport and cancel clinical support, transport and RV en route, or monitoring until clinical support arrives",
+          "The paramedic, when they arrive" ], answer: 1,
+          why: "CPP-048-AR (and CPP-025-AR): consult the EOC Clinician before transport. In this scenario the advice is transport to Cummins Hospital, 30 minutes, and clinical support is cancelled: she is improving and the hospital is closer than the paramedic, 50 minutes away." }],
         cards: [{ q: "Using an MDI and spacer: how many breaths per puff?", a: "Four (CTL-071 and CPPRO-012): one puff into the spacer, then breathe in deeply and slowly, holding about 10 seconds if able, four times. Wait 30 to 60 seconds before the next." }]
       } }
     ] },
@@ -259,7 +290,8 @@ window.MODULE = {
         "Green carry chair from the bedroom to the ambulance (about 15 metres): keep her upright and don't let her walk",
         "Stretcher sitting fully upright, pillow behind her back, blanket: it's a cool night",
         "Corpuls3 reconnected; nebuliser, MDI and spacer, oxygen, BVM and suction within reach",
-        "Clinician in the back; smooth driving; notify the receiving hospital"
+        { scope: "ao", text: "Clinician in the back; smooth driving; notify the receiving hospital" },
+        { scope: "ar", text: "Clinician in the back; smooth driving; update the EOC Clinician if anything changes" }
       ] } },
       { table: { title: "Pre-arrival observations", table: { head: ["", "Initial", "20 min", "Pre-arrival"], rows: [
         ["HR", "118", "106", "98"], ["RR", "28", "22", "20"], ["SpO2", "91% (air)", "95%", "96% (O2 4 L/min)"], ["BP", "140/88", "132/82", "128/80"], ["Speech", "Phrases", "Short sentences", "Sentences"], ["Wheeze", "Loud", "Moderate", "Mild"]
@@ -270,13 +302,20 @@ window.MODULE = {
           "Carry chair, upright: minimal exertion",
           "Stretcher fully upright: never lay her flat",
           "Nebuliser, MDI and spacer, oxygen, BVM, suction, Corpuls3 within reach",
-          "Deterioration plan: consult the EOC Clinician immediately. If life threatening: high flow oxygen, early clinical support, urgent transport",
+          { scope: "ao", text: "Deterioration plan: consult the EOC Clinician immediately. If life threatening: high flow oxygen, early clinical support, urgent transport" },
+          { scope: "ar", text: "Deterioration plan: consult the EOC Clinician immediately. If life threatening: high flow oxygen, early clinical support; the EOC Clinician may advise continuous salbutamol nebs" },
           "If IPPV is needed: small tidal volumes, slow and gentle (4 per minute) so the chest can deflate",
           "If she becomes unresponsive and is not breathing normally: commence CPR"
         ],
-        teaching: ["Have your deterioration plan ready before you leave the driveway", "Life-threatening asthma treatments beyond oxygen (continuous nebs, IM adrenaline) are on EOC Clinician advice"],
+        teaching: ["Have your deterioration plan ready before you leave the driveway", { scope: "ao", text: "Life-threatening asthma treatments beyond oxygen (continuous nebs, IM adrenaline) are on EOC Clinician advice" },
+          { scope: "ar", text: "Life-threatening asthma treatments beyond oxygen (continuous nebs) are on EOC Clinician advice. IM adrenaline is not in the AR protocol" }],
         realJob: "Picture the worst thing that could happen in the next 30 minutes and have your response ready. Medication in your hand, not buried in a bag.",
-        decisions: [{ q: "En route, Karen becomes drowsy, stops speaking and her SpO2 is falling. What now?", options: [
+        decisions: [{ scope: "ar", q: "En route, Karen becomes drowsy, stops speaking and her SpO2 is falling. What now?", options: [
+          "Another 12 puffs and keep driving",
+          "Life threatening: high flow oxygen, consult the EOC Clinician immediately, early clinical support, and assist ventilation slow and gentle if needed",
+          "Lay her flat to rest" ], answer: 1,
+          why: "Drowsy and unable to speak is life-threatening asthma. High flow oxygen and early clinical support. The EOC Clinician may advise continuous salbutamol nebs and the transport or RV plan. IPPV: small, slow (4 per minute), gentle (CPP-048-AR, CTL-083)." },
+          { scope: "ao", q: "En route, Karen becomes drowsy, stops speaking and her SpO2 is falling. What now?", options: [
           "Another 12 puffs and keep driving",
           "Life threatening: high flow oxygen, consult the EOC Clinician immediately, early clinical support, urgent transport, and assist ventilation slow and gentle if needed",
           "Lay her flat to rest" ], answer: 1,
@@ -293,7 +332,14 @@ window.MODULE = {
         ["A", "\"On arrival, more severe asthma: phrases, distressed, SpO2 91% on air, RR 28, HR 118, wheeze both sides. After a salbutamol and ipratropium neb and a repeat salbutamol dose by spacer, she's speaking in sentences, SpO2 96% on oxygen, HR 98, RR 20, mild wheeze.\""],
         ["R", "\"Improved but not at baseline. She still needs oxygen and ongoing monitoring, and review of her preventer.\""]
       ] } } },
-      { table: { title: "Treatment for handover (scenario times)", table: { head: ["Time", "Treatment"], rows: [
+      { scope: "ar", table: { title: "Treatment for handover (scenario times)", table: { head: ["Time", "Treatment"], rows: [
+        ["0225", "Clinical support requested"],
+        ["0228", "Nebulised salbutamol 5 mg and ipratropium 500 microg, oxygen at 6 to 8 L/min"],
+        ["0235", "EOC Clinician consulted about treatment and transport"],
+        ["0250", "EOC Clinician updated: repeat salbutamol via MDI and spacer, transport to Cummins Hospital, clinical support cancelled"],
+        ["0300", "Salbutamol via MDI and spacer as advised by the EOC Clinician, oxygen 4 L/min via nasal cannula"]
+      ] } } },
+      { scope: "ao", table: { title: "Treatment for handover (scenario times)", table: { head: ["Time", "Treatment"], rows: [
         ["0225", "Clinical support requested"],
         ["0228", "Nebulised salbutamol 5 mg and ipratropium 500 microg, oxygen at 6 to 8 L/min"],
         ["0235", "EOC Clinician consulted"],
@@ -324,15 +370,35 @@ window.MODULE = {
         "Mild asthma doses go by age; repeat doses are on EOC Clinician advice",
         "Positioning is treatment: upright, never flat",
         "Reassess, compare, decide. Plan for deterioration before it happens",
-        "Life threatening: high flow oxygen, slow gentle ventilation if needed, urgent transport, CPR if not breathing normally"
+        { scope: "ao", text: "Life threatening: high flow oxygen, slow gentle ventilation if needed, urgent transport, CPR if not breathing normally" },
+        { scope: "ar", text: "Life threatening: high flow oxygen, early clinical support, slow gentle ventilation if needed, the EOC Clinician for continuous nebs, CPR if not breathing normally" },
+        { scope: "ar", text: "As an AR: consult the EOC Clinician about treatment and transport, and repeat the advice back (CPP-048-AR)" }
       ] } }
     ] },
 
     { title: "Scenario variations", optional: true, collapsed: true, chip: "Optional", blocks: [
       { box: { title: "1. Paediatric: 8 years old", text: "An 8 year old with known asthma, nocturnal attack, anxious parents. Over 6 years, so the doses are as for adults: mild, 12 puffs salbutamol by MDI and spacer; more severe, nebulised salbutamol 5 mg and ipratropium 500 microg. For young children who cannot use the mouthpiece, use a face mask on the spacer (CPPRO-012). Talk to the child and the parents." } },
-      { box: { title: "2. Life-threatening deterioration", text: "After the first neb, Karen becomes drowsy, stops speaking and her SpO2 falls to 86%. Life threatening: high flow oxygen, early clinical support, consult the EOC Clinician immediately (continuous salbutamol nebs and/or IM adrenaline 10 microg/kg to a total maximum of 500 microg may be advised), urgent transport. If IPPV is needed: small tidal volumes, slow and gentle, 4 per minute. CPR if she becomes unresponsive and is not breathing normally." } },
+      { scope: "ar", box: { title: "2. Life-threatening deterioration", text: "After the first neb, Karen becomes drowsy, stops speaking and her SpO2 falls to 86%. Life threatening: high flow oxygen, early clinical support, consult the EOC Clinician immediately (continuous salbutamol nebs as per the paramedic level CPG may be advised, and the transport or RV plan). No IM adrenaline at AR level. If IPPV is needed: small tidal volumes, slow and gentle, 4 per minute. CPR if she becomes unresponsive and is not breathing normally." } },
+      { scope: "ao", box: { title: "2. Life-threatening deterioration", text: "After the first neb, Karen becomes drowsy, stops speaking and her SpO2 falls to 86%. Life threatening: high flow oxygen, early clinical support, consult the EOC Clinician immediately (continuous salbutamol nebs and/or IM adrenaline 10 microg/kg to a total maximum of 500 microg may be advised), urgent transport. If IPPV is needed: small tidal volumes, slow and gentle, 4 per minute. CPR if she becomes unresponsive and is not breathing normally." } },
       { box: { title: "3. Remote property, long transport", text: "A remote farm, 55 minutes from hospital and 80 from paramedic backup. Discuss early clinical support, MedSTAR, how often to update the EOC Clinician, and managing more severe asthma for a long time with limited resources." } },
       { box: { title: "4. First ever wheeze", text: "Karen has no asthma history. The protocol notes that asthma symptoms can occur without a history of asthma, especially with a chest infection or smoke inhalation. Consider allergy and anaphylaxis first (CPP-003-AO), and discuss other causes of wheeze with the EOC Clinician." } }
     ] }
-  ]
+  ],
+
+  /* ---------- Ambulance Responder version (CPP-048-AR Asthma - AR v3.2, CTL-083) ---------- */
+  ar: {
+    replace: [["CPP-050-AO", "CPP-048-AR"], ["CTL-071", "CTL-083"], ["CPP-003-AO", "CPP-022-AR"], ["Ambulance Officer", "Ambulance Responder"],
+      ["AO1", "AR1"], ["AO2", "AR2"], ["AO crew", "AR crew"], ["AO asthma protocol", "AR asthma protocol"], ["the AO severity signs", "the severity signs"],
+      ["AO Asthma Severity & Treatment Table", "AR Asthma Severity and Treatment table"]],
+    title: "Asthma - AR",
+    subtitle: "Walk-through scenario: 2-person volunteer AR crew",
+    lead: "A realistic acute asthma call for a two-person volunteer Ambulance Responder crew, with eight break points for discussion, skills practice and decisions. The treatment is the same as for AOs up to the EOC Clinician consult; there is no IM adrenaline, and the EOC Clinician decides the transport.",
+    protocol: {
+      code: "CPP-048-AR", name: "Asthma - AR", version: "v3.2 (16 June 2022)", exported: "31 August 2026",
+      also: [{ code: "CTL-083", name: "AR Asthma Severity and Treatment", version: "v1.0 (16 June 2022)" },
+             { code: "CPPRO-012", name: "Inhaled Medication Administration", version: "v2.0 (19 April 2018)" }]
+    },
+    relatedCodes: ["CPP-050-AO"],
+    footerNotes: ["The patient, story, observations and EOC Clinician replies are a training scenario written by DSY. Check it with your lead instructor."]
+  }
 };

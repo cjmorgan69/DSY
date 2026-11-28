@@ -67,3 +67,8 @@ with the paramedics at Edillilie 1805. `walkStudent` opens the AR student walk-t
 PCR job `gregAR` (28 Nov 2026): Greg's AR version, from the AR walk-through: EOC Clinician 1524 transport and RV,
 depart 1530, obs 1538, RV with the paramedics on the Flinders Highway 1542. `arHref` on Greg's line in `related.js`.
 DSY-written (owner to review). Live (PR #391, merged 28 Nov 2026).
+
+PCR job `karenAR` (28 Nov 2026): Karen's AR version, from the AR walk-through: EOC Clinician 0235 and 0250 (repeat
+dose, transport to Cummins Hospital, clinical support cancelled), depart 0255, salbutamol MDI with O2 4 L/min nasal
+cannula 0300, handover Cummins Hospital ED 0325. `arHref` on Karen's line in `related.js`.
+DSY-written (owner to review). Live (PR #394, merged 28 Nov 2026).

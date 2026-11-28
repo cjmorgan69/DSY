@@ -43,7 +43,7 @@ window.MODULE = {
 
   keyPointsTitle: "Key points",
   keyPoints: [
-    { title: "First, for every patient", check: { q: "Severe asthma, and the signs could be anaphylaxis. Which protocol comes first?", a: "Anaphylaxis (CPP-003-AO), before treating the asthma symptoms. That includes early activation of clinical support." }, items: [
+    { scope: "ao", title: "First, for every patient", check: { q: "Severe asthma, and the signs could be anaphylaxis. Which protocol comes first?", a: "Anaphylaxis (CPP-003-AO), before treating the asthma symptoms. That includes early activation of clinical support." }, items: [
       "Basic care and life support",
       "Assess GCS and work of breathing; take baseline obs (RR, PR, monitor, SpO2) and the past medical history (CTL-071)",
       "Use the Asthma Severity & Treatment Table (CTL-071) to guide treatment",
@@ -56,7 +56,15 @@ window.MODULE = {
       "More severe: talks in phrases, words, or unable to speak; distressed; SpO2 usually below 95%",
       "Life threatening: unable to speak; drowsy or unconscious; cyanosed; poor respiratory effort or respiratory arrest"
     ], note: "Never use oxygen saturations alone to judge severity. Use them only together with a thorough patient assessment." },
-    { title: "Mild asthma", steps: [
+    { scope: "ar", title: "First, for every patient", check: { q: "Severe asthma, and the signs could be anaphylaxis. Which protocol comes first?", a: "Anaphylaxis (CPP-022-AR), with clinical support, before treating the asthma symptoms." }, items: [
+      "Basic care and life support",
+      "Assess GCS and work of breathing; take baseline obs (RR, PR, monitor, SpO2) and the past medical history (CTL-083)",
+      "Use the AR Asthma Severity and Treatment table (CTL-083) to guide treatment",
+      "Consider whether the signs and symptoms could indicate allergy or anaphylaxis: if so, refer to Anaphylaxis CPP-022-AR, and clinical support",
+      "Consider the causes, and follow any existing asthma care plan if appropriate",
+      "If at any point the patient becomes unresponsive and is not breathing normally, commence CPR"
+    ] },
+    { scope: "ao", title: "Mild asthma", steps: [
       { t: "Follow the patient's asthma management plan", text: "If appropriate. Or:" },
       { t: "Salbutamol via MDI and spacer (CPPRO-012)", text: "1 puff is 100 microg, with 4 breaths per puff. 12 puffs (1200 microg) if 6 years or older; 6 puffs (600 microg) if 1 to 6 years." },
       { t: "If the patient is unable to use the MDI and spacer", text: "Consider adding a resuscitation mask to the MDI for under 4 years, or nebulised salbutamol: 2.5 mg (plus saline to make 5 mL) if 1 to 6 years, 5 mg if over 6 years." },
@@ -64,17 +72,36 @@ window.MODULE = {
       { t: "Consider clinical support, and continue basic care" },
       { t: "Provide transport", text: "And where appropriate notify the receiving facility. Consult the EOC Clinician immediately if the patient deteriorates at any time." }
     ] },
-    { title: "More severe asthma", steps: [
+    { scope: "ar", title: "Mild asthma", steps: [
+      { t: "Follow the patient's asthma management plan", text: "If appropriate. Or:" },
+      { t: "Salbutamol via MDI and spacer (CPPRO-012)", text: "1 puff is 100 microg, with 4 breaths per puff. 12 puffs (1200 microg) if 6 years or older; 6 puffs (600 microg) if 1 to 6 years." },
+      { t: "If the patient is unable to use the MDI and spacer", text: "Consider adding a resuscitation mask to the MDI for 1 to 4 years, or nebulised salbutamol: 2.5 mg (plus saline to make 5 mL) if 1 to 6 years, 5 mg if 6 years or older." },
+      { t: "Consult the EOC Clinician about treatment and transport", text: "Every time, not only if salbutamol fails. They may advise: repeat doses in line with paramedic level treatment; transport and cancel clinical support; transport and RV with clinical support en route; or monitoring until clinical support arrives." },
+      { t: "Continue basic care", text: "Consult the EOC Clinician immediately if the patient deteriorates at any time." }
+    ] },
+    { scope: "ao", title: "More severe asthma", steps: [
       { t: "Request early clinical support" },
       { t: "Commence nebulised salbutamol and ipratropium", text: "1 to 6 years: salbutamol 2.5 mg and ipratropium 250 microg (about half a neb of each drug), with 3 mL saline to make the volume up to 5 mL. Over 6 years: salbutamol 5 mg and ipratropium 500 microg (one neb of each drug)." },
       { t: "Consult the EOC Clinician", text: "Who may advise further doses per paramedic level treatment: salbutamol and ipratropium via MDI and spacer with oxygen at 4 L/min, repeat nebs, continuous nebs, or IM adrenaline (CPP-050-AO and CTL-071)." },
       { t: "Provide transport", text: "And where appropriate notify the receiving facility. Consult the EOC Clinician immediately if the patient deteriorates at any time." }
     ], note: "The protocol's principle adds that the first-line treatment for severe asthma is high-flow oxygen and nebulised bronchodilator therapy, with an early request for clinical support and transport." },
-    { title: "Life-threatening asthma", tone: "no", steps: [
+    { scope: "ar", title: "More severe asthma", steps: [
+      { t: "Request early clinical support" },
+      { t: "Commence nebulised salbutamol and ipratropium", text: "1 to 6 years: salbutamol 2.5 mg and ipratropium 250 microg (about half a neb of each drug), with 3 mL saline to make the volume up to 5 mL. 6 years or older: salbutamol 5 mg and ipratropium 500 microg (one neb of each drug)." },
+      { t: "Consult the EOC Clinician", text: "Who may advise repeat doses as per paramedic level treatment (CTL-083: MDI and spacer with oxygen at 4 L/min, repeat nebs or continuous nebs), and the transport: transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives." },
+      { t: "Continue basic care", text: "Consult the EOC Clinician immediately if the patient deteriorates at any time." }
+    ], note: "No IM adrenaline in the AR asthma protocol: it was removed in CPP-048-AR v3.2 (June 2022)." },
+    { scope: "ao", title: "Life-threatening asthma", tone: "no", steps: [
       { t: "High flow oxygen, and early clinical support" },
       { t: "If assisted ventilation (IPPV with BVM) is required", text: "Small tidal volumes; slow ventilation rates to allow adequate chest deflation (CTL-071: slow and gentle, 4 per minute); gentle ventilation to avoid over-pressurising the lungs and causing injury." },
       { t: "Consult the EOC Clinician", text: "Who may advise doses as per the paramedic level CPG, including continuous salbutamol nebulisation and/or IM adrenaline 10 microg/kg to a total maximum dose of 500 microg, repeated as needed." },
       { t: "Continue basic care, and provide urgent transport", text: "Notify the receiving facility. If the patient deteriorates during transport, consult the EOC Clinician immediately." }
+    ] },
+    { scope: "ar", title: "Life-threatening asthma", tone: "no", steps: [
+      { t: "High flow oxygen, and early clinical support" },
+      { t: "If assisted ventilation (IPPV with BVM) is required", text: "Small tidal volumes; slow ventilation rates to allow adequate chest deflation (CTL-083: slow and gentle, 4 per minute); gentle ventilation to avoid over-pressurising the lungs and causing injury." },
+      { t: "Consult the EOC Clinician", text: "Who may advise drug doses as per the paramedic level CPG, including continuous salbutamol nebulisation, and the transport: transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives." },
+      { t: "Continue basic care", text: "Consult the EOC Clinician immediately if the patient deteriorates." }
     ] },
     { title: "Using an MDI and spacer (CPPRO-012)", tiles: true, steps: [
       { t: "Check", text: "Complete the medication checks and check allergies. Where able, explain and gain consent." },
@@ -111,12 +138,27 @@ window.MODULE = {
         { value: "failed", label: "Given, but the patient failed to improve" } ] }
     ],
     evaluate: function (v) {
+      var AR = window.MODULE_SCOPE === "ar";
       var deteriorate = "Consult the EOC Clinician immediately if the patient deteriorates at any time";
       var cpr = "If at any point the patient becomes unresponsive and is not breathing normally, commence CPR.";
+      if (v.anaph && AR) {
+        return { tone: "warn", headline: "Think anaphylaxis: follow CPP-022-AR first",
+          why: ["The signs and symptoms could indicate allergy or anaphylaxis", "If severe asthma occurs in the setting of anaphylaxis, the anaphylaxis protocol is followed before treating the asthma symptoms"],
+          actions: ["Follow Anaphylaxis - AR CPP-022-AR (see the Anaphylaxis module)", "Request clinical support: the anaphylaxis protocol includes early activation of clinical support"], note: cpr };
+      }
       if (v.anaph) {
         return { tone: "warn", headline: "Think anaphylaxis: follow CPP-003-AO first",
           why: ["The signs and symptoms could indicate allergy or anaphylaxis", "If severe asthma occurs in the setting of anaphylaxis, the anaphylaxis protocol is followed before treating the asthma symptoms"],
           actions: ["Follow Anaphylaxis - AO CPP-003-AO (see the Anaphylaxis module)", "This includes early activation of clinical support"], note: cpr };
+      }
+      if (v.lt && AR) {
+        return { tone: "warn", headline: "Life-threatening asthma",
+          why: ["Drowsy or unconscious, cyanosed, or poor respiratory effort or respiratory arrest"],
+          actions: ["High flow oxygen", "Early clinical support",
+            "If assisted ventilation (IPPV with BVM) is required: small tidal volumes, slow and gentle ventilations (4 per minute, CTL-083) to allow adequate chest deflation and avoid over-pressurising the lungs",
+            "Consult the EOC Clinician, who may advise drug doses as per the paramedic level CPG, including continuous salbutamol nebulisation, and the transport: transport and cancel clinical support; transport and RV with clinical support en route; or monitoring until clinical support arrives",
+            "Continue basic care", "Consult the EOC Clinician immediately if the patient deteriorates"],
+          note: "No IM adrenaline in the AR protocol (removed in CPP-048-AR v3.2, June 2022). " + cpr };
       }
       if (v.lt) {
         return { tone: "warn", headline: "Life-threatening asthma",
@@ -131,27 +173,40 @@ window.MODULE = {
       if (v.age < 1) {
         return { tone: "warn", headline: (severe ? "More severe asthma" : "Mild asthma") + ", under 1 year: consult the EOC Clinician",
           why: ["The AO protocol gives salbutamol and ipratropium doses for patients 1 year and older only"],
-          actions: [severe ? "Request early clinical support" : "Consider clinical support", "Consult the EOC Clinician for treatment advice", "Continue basic care", "Provide transport and where appropriate notify the receiving facility", deteriorate],
+          actions: AR ? [severe ? "Request early clinical support" : "Request clinical support", "Consult the EOC Clinician for treatment and transport advice", "Continue basic care", deteriorate]
+                      : [severe ? "Request early clinical support" : "Consider clinical support", "Consult the EOC Clinician for treatment advice", "Continue basic care", "Provide transport and where appropriate notify the receiving facility", deteriorate],
           note: "This step is the checker's reading of the protocol, which has no dose for under 1 year. " + cpr };
       }
       var yrs = Math.floor(v.age);   // ages in completed years: a child of 6 and a half is "6"
-      var young = yrs <= 6;          // the nebuliser doses use "1-6 yrs" and "> 6 yrs"
+      var young = yrs <= 6;          // the nebuliser doses use "1-6 yrs" and "> 6 yrs" (AR: "1-6 yrs" and ">= 6 yrs", so 6 fits both)
+      var neb6 = AR && yrs === 6 ? "The AR protocol gives the nebuliser doses for 1 to 6 years AND for 6 years or older, so a 6 year old fits both. The AR table (CTL-083) uses \"under 6\" and \"over 6\", so it does not settle it either. Consult the EOC Clinician." : null;
       if (severe) {
         var why = [];
         if (v.speech !== "sentences") why.push("Talks in " + (v.speech === "unable" ? "no words: unable to speak" : v.speech));
         if (v.wob === "distressed") why.push("Distressed, visibly short of breath");
         return { tone: "warn", headline: "More severe asthma",
-          alerts: v.speech === "unable" ? ["Unable to speak is also a sign of life-threatening asthma. Check for drowsiness, cyanosis and poor respiratory effort."] : [],
+          alerts: (v.speech === "unable" ? ["Unable to speak is also a sign of life-threatening asthma. Check for drowsiness, cyanosis and poor respiratory effort."] : []).concat(neb6 ? [neb6] : []),
           why: why,
-          actions: ["Request early clinical support",
+          actions: AR ? ["Request early clinical support",
+            neb6 ? "Commence nebulised salbutamol and ipratropium: at 6 years the dose is not clear (see above), so consult the EOC Clinician for it"
+            : young ? "Commence nebulised salbutamol 2.5 mg and ipratropium 250 microg (about half a neb of each), with 3 mL saline to make the volume up to 5 mL (1 to 6 years)"
+                  : "Commence nebulised salbutamol 5 mg and ipratropium 500 microg, one neb of each (6 years or older)",
+            "Consult the EOC Clinician, who may advise repeat doses as per paramedic level treatment (MDI and spacer with oxygen at 4 L/min, repeat nebs or continuous nebs), and the transport: transport and cancel clinical support; transport and RV with clinical support en route; or monitoring until clinical support arrives",
+            "Continue basic care", deteriorate]
+          : ["Request early clinical support",
             young ? "Commence nebulised salbutamol 2.5 mg and ipratropium 250 microg (about half a neb of each), with 3 mL saline to make the volume up to 5 mL (1 to 6 years)"
                   : "Commence nebulised salbutamol 5 mg and ipratropium 500 microg, one neb of each (over 6 years)",
             "Consult the EOC Clinician, who may advise further doses: salbutamol and ipratropium via MDI and spacer with oxygen at 4 L/min, repeat nebs, continuous nebs, or IM adrenaline",
             "Provide transport and where appropriate notify the receiving facility", deteriorate],
           note: "The protocol's principle says the first-line treatment for severe asthma is high-flow oxygen and nebulised bronchodilator therapy, with early clinical support and transport. " + cpr };
       }
-      var tail = ["Consider clinical support", "Continue basic care", "Provide transport and where appropriate notify the receiving facility", deteriorate];
+      var tail = AR ? ["Consult the EOC Clinician regarding treatment and transport. They may advise repeat doses in accordance with paramedic level treatment; transport and cancel clinical support; transport and RV with clinical support en route; or monitoring until clinical support arrives", "Continue basic care", deteriorate]
+                    : ["Consider clinical support", "Continue basic care", "Provide transport and where appropriate notify the receiving facility", deteriorate];
       var mildWhy = ["Talks in sentences", "Normal work of breathing"];
+      if (v.response === "failed" && AR) {
+        return { tone: "warn", headline: "Mild asthma, not improving: consult the EOC Clinician", why: mildWhy.concat(["Failed to improve after salbutamol"]),
+          actions: tail, note: cpr };
+      }
       if (v.response === "failed") {
         return { tone: "warn", headline: "Mild asthma, not improving: consult the EOC Clinician", why: mildWhy.concat(["Failed to improve after salbutamol"]),
           actions: ["Consult the EOC Clinician, who may advise repeat doses in line with paramedic level treatment: salbutamol and ipratropium via MDI and spacer with oxygen at 4 L/min via nasal cannula, or salbutamol and ipratropium via nebuliser"].concat(tail), note: cpr };
@@ -170,15 +225,16 @@ window.MODULE = {
           head = "Mild asthma: salbutamol " + puffs + " via MDI and spacer";
           acts.push("Salbutamol " + puffs + " via MDI and spacer (CPPRO-012), 1 puff = 100 microg, 4 breaths per puff");
         }
-        if (v.age < 4) acts.push("Under 4 years: consider adding a resuscitation mask to improve medication delivery");
+        if (v.age < 4) acts.push(AR ? (v.age >= 1 ? "1 to 4 years: consider adding a resuscitation mask to the MDI" : "Resuscitation mask: CPP-048-AR says consider it for 1 to 4 years") : "Under 4 years: consider adding a resuscitation mask to improve medication delivery");
       } else {
-        var neb = young ? "nebulised salbutamol 2.5 mg, plus saline to make 5 mL (1 to 6 years)" : "nebulised salbutamol 5 mg (over 6 years)";
+        var neb = neb6 ? "nebulised salbutamol (check the dose at 6 years)" : young ? "nebulised salbutamol 2.5 mg, plus saline to make 5 mL (1 to 6 years)" : "nebulised salbutamol 5 mg (" + (AR ? "6 years or older" : "over 6 years") + ")";
+        if (neb6) alerts.push(neb6);
         head = "Mild asthma: " + neb.charAt(0).toUpperCase() + neb.slice(1);
-        if (v.age < 4) acts.push("Under 4 years: consider adding a resuscitation mask to the MDI, or");
+        if (v.age < 4) acts.push(AR ? "1 to 4 years: consider adding a resuscitation mask to the MDI, or" : "Under 4 years: consider adding a resuscitation mask to the MDI, or");
         acts.push("Give " + neb);
       }
       return { tone: "good", headline: head, alerts: alerts, why: mildWhy.concat(["SpO2 is usually above 95% on room air, but never judge severity on SpO2 alone"]),
-        actions: acts.concat(["If the patient fails to improve after salbutamol, consult the EOC Clinician"]).concat(tail), note: cpr };
+        actions: acts.concat(AR ? [] : ["If the patient fails to improve after salbutamol, consult the EOC Clinician"]).concat(tail), note: cpr };
     },
     disclaimer: "Training aid only. Use the current protocol, the Asthma Severity & Treatment Table (CTL-071) and the EOC Clinician for real patients.",
     scenariosNote: "Examples written for training from the protocol. Decide your answer before pressing the button.",
@@ -198,7 +254,12 @@ window.MODULE = {
 
   referenceTitle: "Severity, doses and related procedures",
   reference: [
-    { title: "AO Asthma Severity & Treatment Table (CTL-071)", text: "First: assess GCS and work of breathing; baseline obs (RR, PR, monitor, SpO2); past medical history. MDI and spacer: 4 breaths per puff.", table: { head: ["Severity and route", "Under 6 years", "Over 6 years and adults"], rows: [
+    { scope: "ar", title: "AR Asthma Severity and Treatment (CTL-083)", text: "First: assess GCS and work of breathing; baseline obs (RR, PR, monitor, SpO2); past medical history.", table: { head: ["Severity and route", "Under 6 years", "Over 6 years and adults"], rows: [
+      ["Mild (talks in sentences, normal work of breathing, SpO2 usually above 95%): MDI + spacer", "6 puffs salbutamol. EOC Clinician may advise repeat doses", "12 puffs salbutamol. EOC Clinician may advise repeat doses"],
+      ["More severe (phrases, words or unable to speak, distressed, SpO2 usually below 95%): neb or MDI + spacer", "2.5 mg salbutamol + 250 microg ipratropium (about half a neb of each drug + 3 mL saline). Consult the EOC Clinician for: MDI + spacer and O2 at 4 L/min, repeat nebs, or continuous nebs", "5 mg salbutamol + 500 microg ipratropium (one neb of each drug). Consult the EOC Clinician for: MDI + spacer and O2 at 4 L/min, repeat nebs, or continuous nebs"],
+      ["Life threatening (unable to speak, drowsy or unconscious, poor respiratory effort) or respiratory arrest: BVM", "Slow and gentle ventilations (4 per min). Consult the EOC Clinician for continuous nebs", "Slow and gentle ventilations (4 per min). Consult the EOC Clinician for continuous nebs"]
+    ] } },
+    { scope: "ao", title: "AO Asthma Severity & Treatment Table (CTL-071)", text: "First: assess GCS and work of breathing; baseline obs (RR, PR, monitor, SpO2); past medical history. MDI and spacer: 4 breaths per puff.", table: { head: ["Severity and route", "Under 6 years", "Over 6 years and adults"], rows: [
       ["Mild (talks in sentences, normal work of breathing, SpO2 usually above 95%): MDI + spacer", "6 puffs salbutamol. EOC Clinician may advise repeat doses", "12 puffs salbutamol. EOC Clinician may advise repeat doses"],
       ["More severe (phrases, words or unable to speak, distressed, SpO2 usually below 95%): neb or MDI + spacer", "2.5 mg salbutamol + 250 microg ipratropium (about half a neb of each drug + 3 mL saline). Consult for: MDI + spacer and O2 at 4 L/min, repeat nebs, continuous nebs, or IM adrenaline", "5 mg salbutamol + 500 microg ipratropium (one neb of each drug). Consult for: MDI + spacer and O2 at 4 L/min, repeat nebs, continuous nebs, or IM adrenaline"],
       ["Life threatening (unable to speak, drowsy or unconscious, poor respiratory effort) or respiratory arrest: neb or BVM", "High flow oxygen; early clinical support; if IPPV, slow and gentle ventilations (4 per min); consult for continuous nebs or adrenaline", "High flow oxygen; early clinical support; if IPPV, slow and gentle ventilations (4 per min); consult for continuous nebs or adrenaline"]
@@ -208,7 +269,12 @@ window.MODULE = {
       ["More severe", "Talks in phrases, words, or unable to speak; distressed; SpO2 usually below 95%"],
       ["Life threatening", "Unable to speak; drowsy or unconscious; cyanosed; poor respiratory effort or respiratory arrest"]
     ] }, text: "Oxygen saturations alone should never be used to judge severity, only together with a thorough patient assessment." },
-    { title: "Doses by age (CPP-050-AO)", table: { head: ["Treatment", "1 to 6 years", "Over 6 years"], rows: [
+    { scope: "ar", title: "Doses by age (CPP-048-AR)", table: { head: ["Treatment", "1 to 6 years", "6 years or older"], rows: [
+      ["Mild: salbutamol via MDI and spacer", "6 puffs (600 microg)", "12 puffs (1200 microg)"],
+      ["Mild, unable to use the MDI and spacer: nebulised salbutamol", "2.5 mg, plus saline to make 5 mL", "5 mg"],
+      ["More severe: nebulised salbutamol and ipratropium", "Salbutamol 2.5 mg and ipratropium 250 microg, with 3 mL saline to make 5 mL", "Salbutamol 5 mg and ipratropium 500 microg"]
+    ] }, text: "1 puff is 100 microg. Every dose names both \"1 to 6 years\" and \"6 years or older\", and the CTL-083 table says \"under 6\" and \"over 6\", so a 6 year old is not clearly covered: consult the EOC Clinician. The protocol gives no dose for under 1 year. For 1 to 4 years, consider adding a resuscitation mask to the MDI. No IM adrenaline in the AR protocol." },
+    { scope: "ao", title: "Doses by age (CPP-050-AO)", table: { head: ["Treatment", "1 to 6 years", "Over 6 years"], rows: [
       ["Mild: salbutamol via MDI and spacer", "6 puffs (600 microg)", "12 puffs (1200 microg), 6 years or older"],
       ["Mild, unable to use the MDI and spacer: nebulised salbutamol", "2.5 mg, plus saline to make 5 mL", "5 mg"],
       ["More severe: nebulised salbutamol and ipratropium", "Salbutamol 2.5 mg and ipratropium 250 microg, with 3 mL saline to make 5 mL", "Salbutamol 5 mg and ipratropium 500 microg"],
@@ -236,7 +302,8 @@ window.MODULE = {
   ],
   links: [
     { label: "SAAS Clinical app", href: "https://clinical.saambulance.sa.gov.au" },
-    { label: "CTL-071 AO Asthma Severity & Treatment Table (PDF)", href: "https://clinical.saambulance.sa.gov.au/assets/pdf/checklists/AO%20Asthma%20Severity%20and%20Treatment.pdf" },
+    { scope: "ar", label: "CTL-083 AR Asthma Severity and Treatment (PDF)", href: "https://clinical.saambulance.sa.gov.au/assets/pdf/checklists/AR%20Asthma%20Severity%20and%20Treatment.pdf" },
+    { scope: "ao", label: "CTL-071 AO Asthma Severity & Treatment Table (PDF)", href: "https://clinical.saambulance.sa.gov.au/assets/pdf/checklists/AO%20Asthma%20Severity%20and%20Treatment.pdf" },
     { label: "CPPRO-012 Inhaled Medication Administration (PDF)", href: "https://clinical.saambulance.sa.gov.au/assets/files/CPPRO-012%20Inhaled%20Medication%20Administration.pdf" },
     { label: "CPPRO-008 Medication Checks (PDF)", href: "https://clinical.saambulance.sa.gov.au/assets/files/CPPRO-008%20Medication%20Checks.pdf" },
     { label: "Anaphylaxis module", href: "../anaphylaxis/" }
@@ -278,7 +345,17 @@ window.MODULE = {
         "Small tidal volumes, slow rates to allow the chest to deflate, gently",
         "Only if the SpO2 is below 80%" ], answer: 1,
       why: "Small tidal volumes, slow ventilation rates to allow adequate chest deflation, and gentle ventilation to avoid over-pressurising the lungs. CTL-071: slow and gentle, 4 per minute." },
-    { q: "Mild asthma fails to improve after salbutamol. What next?", options: [
+    { scope: "ar", q: "You've given 12 puffs of salbutamol for mild asthma. What does CPP-048-AR say next?", options: [
+        "Provide transport and notify the receiving facility",
+        "Consult the EOC Clinician regarding treatment and transport",
+        "Repeat the 12 puffs every 20 minutes" ], answer: 1,
+      why: "CPP-048-AR, mild asthma: consult the EOC Clinician regarding treatment and transport. They may advise repeat doses in line with paramedic level treatment, transport and cancellation of clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives." },
+    { scope: "ar", q: "Life-threatening asthma. What may the EOC Clinician advise an AR crew to give?", options: [
+        "IM adrenaline 500 microg",
+        "Continuous salbutamol nebulisation, as per the paramedic level CPG",
+        "Nothing: just transport" ], answer: 1,
+      why: "CPP-048-AR: the EOC Clinician may advise drug doses as per the paramedic level CPG, including continuous salbutamol nebulisation. IM adrenaline was removed from the AR protocol in v3.2 (June 2022)." },
+    { scope: "ao", q: "Mild asthma fails to improve after salbutamol. What next?", options: [
         "Repeat salbutamol on your own as often as needed",
         "Consult the EOC Clinician, who may advise repeat doses in line with paramedic level treatment",
         "Stop treatment and wait" ], answer: 1,
@@ -309,5 +386,31 @@ window.MODULE = {
   },
   furtherLinks: [
     { label: "The Resus Room: Asthma; Roadside to Resus Part 2", href: "https://theresusroom.libsyn.com/asthma-roadside-to-resus-part-2" }
-  ]
+  ],
+
+  /* ---------- Ambulance Responder version (CPP-048-AR Asthma - AR v3.2, CTL-083): these keys replace the AO ones ---------- */
+  ar: {
+    replace: [["CPP-050-AO", "CPP-048-AR"], ["CTL-071", "CTL-083"], ["AO Asthma Severity & Treatment Table", "AR Asthma Severity and Treatment table"],
+      ["Asthma Severity & Treatment Table", "Asthma Severity and Treatment table"], ["CPP-003-AO", "CPP-022-AR"], ["version 3.1", "version 3.2"]],
+    subtitle: "Ambulance Responder microlearning",
+    lead: "The key to asthma treatment is relieving bronchospasm with bronchodilators. This version covers the Ambulance Responder protocol: thinking of anaphylaxis first, judging severity, salbutamol by MDI and spacer or nebuliser, ipratropium for more severe asthma, and the EOC Clinician consult about treatment and transport.",
+    protocol: {
+      code: "CPP-048-AR", name: "Asthma - AR", version: "v3.2 (16 June 2022)", exported: "31 August 2026",
+      also: [{ code: "CTL-083", name: "AR Asthma Severity and Treatment", version: "v1.0 (16 June 2022), exported 31 August 2026" },
+             { code: "CPPRO-012, 008", name: "Inhaled Medication Administration, Medication Checks", version: "v2.0 (19 April 2018) and v1.0 (5 July 2017)" }]
+    },
+    relatedCodes: ["CPP-050-AO"],
+    session: {
+      intro: "For a team-led session with Ambulance Responders. Allow about 25 minutes. Everyone works through the page on their own device, then discusses together.",
+      steps: [
+        { t: "Watch the intro video", time: "3 min", text: "It follows the AO protocol. Read the box under it for what changes for an AR, then read the key points together." },
+        { t: "Work the scenarios", time: "8 min", text: "Open the asthma checker. For each scenario, decide the severity and the treatment as a group before pressing the button, then compare." },
+        { t: "Read the related procedures", time: "4 min", text: "MDI and spacer, the nebuliser, and medication checks." },
+        { t: "Knowledge check", time: "5 min", text: "Everyone does it alone. Discuss any question people got wrong." },
+        { t: "Optional practical", time: "5 min", text: "Pair up: the MDI and spacer steps on a trainer, then the call to the EOC Clinician about treatment and transport." }
+      ]
+    },
+    videoNote: { title: "Watching as an Ambulance Responder", tone: "warn",
+      text: "The video follows the AO protocol (CPP-050-AO). Under the AR protocol (CPP-048-AR): after salbutamol for mild asthma, always consult the EOC Clinician about treatment and transport, not only when it hasn't worked. There is no IM adrenaline: for life-threatening asthma the EOC Clinician may advise continuous salbutamol nebs. And instead of \"transport\" or \"urgent transport\", the EOC Clinician advises: transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives." }
+  }
 };

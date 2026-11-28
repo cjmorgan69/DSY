@@ -5,6 +5,17 @@
 (function () {
   var ML = window.AS_ML, WT = window.AS_WT;
   if (!ML || !WT) return;
+  // Both files have an Ambulance Responder version (28 Nov 2026). The deck shows the AO version: drop scope "ar" items,
+  // unwrap { scope: "ao", text } strings, drop the ar keys (as /classroom/envenomation/data/build.js).
+  function ao(o) {
+    if (Array.isArray(o)) return o.filter(function (x) { return !(x && typeof x === 'object' && x.scope === 'ar'); }).map(function (x) {
+      if (x && typeof x === 'object' && !Array.isArray(x) && x.scope && Object.keys(x).every(function (k) { return k === 'text' || k === 'scope'; })) return x.text;
+      return ao(x);
+    });
+    if (o && typeof o === 'object') { var r = {}; Object.keys(o).forEach(function (k) { if (k !== 'ar') r[k] = ao(o[k]); }); return r; }
+    return o;
+  }
+  ML = ao(ML); WT = ao(WT);
   var DSY = 'Slide order and presenter cues are DSY-written for review. The clinical content comes from the module and the walk-through.';
 
   function panel(title) {

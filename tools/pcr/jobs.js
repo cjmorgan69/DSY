@@ -178,6 +178,65 @@ window.PCR_JOBS = {
     marks: []
   },
 
+  karenAR: {
+    label: 'Karen, 45: asthma (AR)',
+    short: 'Karen (AR)',
+    walk: '/modules/asthma-ao/?scope=ar',
+    walkStudent: '/modules/asthma-ao/?scope=ar&mode=student',
+    // The Ambulance Responder version of Karen (CPP-048-AR): the same job to 0248, then the EOC Clinician (0250) advises a repeat
+    // salbutamol MDI dose with O2 4 L/min via nasal cannula, transport to Cummins Hospital and cancels clinical support (owner,
+    // 28 Nov 2026). Times 0250 and 0255 are DSY's; the rest as the AO job.
+    text: {
+      allergies: 'Penicillin (rash)',
+      communicable: 'Nil known',
+      provisional: 'Acute asthma, more severe (CTL-083). Triggers: URTI, dust, preventer ran out.',
+      recommendation: 'Transported to Cummins Hospital ED on EOC Clinician advice (0250, clinical support cancelled). Improved after neb + MDI/spacer but not at baseline: needs O2 + ongoing monitoring, and review of her preventer (Seretide ran out 2 wks ago). Handed over 0325 (ISBAR).',
+      ecg: 'Sinus tachycardia (3-lead) on arrival.'
+    },
+    sections: {
+      pc: 'Acute SOB + wheeze ~30 min, nil relief from own Ventolin. Known asthmatic.',
+      phx: 'Asthma since age 12, 2 ED presentations this year, nil ICU admissions. Mild eczema. URTI 3 days.',
+      medn: 'Seretide 250/25 preventer (ran out 2 wks ago), Ventolin 100 microg MDI.',
+      hx: 'Woke ~0145 SOB, chest tightness + wheeze worsening over 30 min. Own Ventolin ~8 puffs (no spacer), nil relief. Cleaning a dusty shed yesterday. Nil chest pain, fever, productive cough. Nil new food, medicine, bite or sting. Husband called SAAS.',
+      oa: '45F sitting bolt upright on the edge of the bed, leaning forward on her arms. Audible wheeze from the hallway. Working hard to breathe. Husband at the door, worried.',
+      cns: 'A on AVPU, GCS 15, alert, oriented, anxious + distressed.',
+      skin: 'Pale, mildly sweaty. Nil rash, nil swelling of lips, tongue or throat.',
+      cvs: 'Pulse 118, fast, regular. BP 140/88. Nil oedema.',
+      resp: 'RR 28, speaking in short phrases. Bilateral exp wheeze (some insp), reduced air entry both sides, accessory muscle use. Airway patent, nil stridor. SpO2 91% RA. Not cyanosed, not drowsy.',
+      pain: 'Chest tightness. Nil chest pain.',
+      survey: '',
+      care: 'More severe asthma (phrases, distressed). Anaphylaxis considered: nil signs, nil new exposure. Clinical support requested 0225 (paramedic 50 min). Neb salbutamol 5 mg + ipratropium 500 microg, O2 6-8 L/min, sitting upright 0228. EOC Clinician consulted 0235 (treatment + transport).\n0248: speaking short sentences, RR 22, SpO2 95%, mild accessory muscle use, wheeze reduced. Mild tremor, dry mouth. EOC Clinician updated 0250, advice repeated back: salbutamol MDI + spacer, O2 4 L/min NC, transport to Cummins Hospital, clinical support cancelled. Carry chair upright, stretcher fully upright, depart 0255. Salbutamol MDI + spacer given 0300 en route.'
+    },
+    tips: {
+      survey: 'No trauma, so no secondary survey.',
+      pain: 'No pain score recorded in the walk-through. Writing what she has and hasn\'t got is still evidence.',
+      care: 'Record the EOC Clinician\'s advice and the time: the repeat dose, the transport, and that clinical support was cancelled. The walk-through doesn\'t give the MDI puff count: write the dose the EOC Clinician advised.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Nothing to mark.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted at 0235 and updated at 0250.'
+    },
+    ticks: ['medsHanded', 'consult'],
+    obs: [
+      { time: '0227', rr: 28, o2: 'RA', spo2: 91, bp: '140/88', hr: 118, temp: 36.8, gcs: 15, evm: [4, 5, 6] },
+      { time: '0248', rr: 22, o2: '8', spo2: 95, bp: '132/82', hr: 106 },
+      { time: '0320', rr: 20, o2: '4', spo2: 96, bp: '128/80', hr: 98 }
+    ],
+    drugs: [
+      ['0225', 'Clinical support requested'],
+      ['0228', 'Salbutamol', '5', 'mg', 'Nebuliser'],
+      ['0228', 'Ipratropium', '500', 'microg', 'Nebuliser'],
+      ['0228', 'Oxygen (neb)', '6-8', 'L/min', 'Mask'],
+      ['0235', 'EOC Clinician consult'],
+      ['0250', 'EOC: repeat dose, transport, clin support cancelled'],
+      ['0255', 'Depart scene'],
+      ['0300', 'Salbutamol (EOC advice)', '12', 'puffs', 'MDI + spacer'],
+      ['0300', 'Oxygen', '4', 'L/min', 'Nasal cannula'],
+      ['0325', 'Handover country ED']
+    ],
+    marks: []
+  },
+
   frank: {
     label: 'Frank, 78: stroke (AO)',
     short: 'Frank',
