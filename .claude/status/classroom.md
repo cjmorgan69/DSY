@@ -74,3 +74,10 @@ module (its two YouTube videos, the six bite and sting types, the pressure banda
 slide; part 3 is Greg's eight break points (AO version: `build.js` drops `scope: "ar"` items). MDT screenshots: page
 1432, Enroute 1433, remarks 1448, scene 1457, Mobile 1530, Port Lincoln Hospital 1605, call sign CU81 (Cummins, day).
 PCR `greg`, next week `/stations/envenomation/`, feedback `t=envenomation`. About 110 min. Live (PR #391, merged 28 Nov 2026).
+
+## Tile text grows to fill the tile (28 Nov 2026)
+
+Owner: tile slides (crew roles and others) left most of each tile empty. `fit()` in all four players (`case-night`,
+`drive-mindset`, `manual-tasks`, `medical-conditions`) now grows the text on a tile slide until a tile is full, then
+steps back to 92% of that size (cap 110px). Checked on all 55 tile slides in the eight decks: none overflow; typical
+size 60 to 96px (was 44 to 60). On a branch, not merged.
