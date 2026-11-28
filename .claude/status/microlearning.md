@@ -279,3 +279,16 @@ An AR box sits under the (YouTube) intro video; two AR quiz questions. Owner ask
 Shared fix (28 Nov 2026): in a module with an `ar` object, `module.js` turned every `{ text: "..." }` block into a plain
 string, so story paragraphs vanished from both views of the hypoglycaemia walk-through (13 paragraphs, live since PR #378).
 Only items that carry `scope` are unwrapped now. Live (PR #391, merged 28 Nov 2026).
+
+## Asthma AR version (28 Nov 2026)
+
+`/microlearning/asthma/?scope=ar` follows CPP-048-AR Asthma - AR v3.2 (16 June 2022, exported 31.08.2026) and the AR
+Asthma Severity and Treatment table CTL-083 v1.0 (16 June 2022). Differences from CPP-050-AO built in: anaphylaxis is
+CPP-022-AR "and clinical support"; mild asthma always ends with the EOC Clinician consult about treatment and
+transport (AO: only if salbutamol fails, then "consider clinical support" and transport); more severe and life
+threatening: the EOC Clinician may advise repeat doses (CTL-083: MDI + spacer and O2 at 4 L/min, repeat nebs,
+continuous nebs) and the three transport options; no IM adrenaline (removed in v3.2) and no "urgent transport";
+resuscitation mask "1 to 4 years" (AO: under 4); nebuliser doses "1 to 6" and "6 or older", so a 6 year old fits
+both: the checker says check the dose and consult (as the AO checker does for the MDI at 6). AR key points, CTL-083
+table, AR doses table, AR link, two AR quiz questions (one AO question swapped), video note under Lee's AO video.
+Checker tested on every scenario and the 6-year and under-1 boundaries in both versions. On a branch, not merged.

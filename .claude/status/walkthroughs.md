@@ -155,3 +155,14 @@ consulted before transport and advises transport and RV with clinical support en
 AR version: owner to confirm); depart 1530, obs 1538, RV with the paramedic crew on the Flinders Highway at 1542 and
 an ISBAR at the RV (own Handover panel, scope ar). AR decision at break point 6, AR objectives and a take-home line;
 variation 3 names "the adult cardiac arrest protocol for your level". DSY-written (owner to review). Live (PR #391, merged 28 Nov 2026).
+
+## Asthma AR version (Karen, 28 Nov 2026)
+
+`/modules/asthma-ao/?scope=ar` (CPP-048-AR v3.2, CTL-083): the same job to 0248; first consult at 0235 is about
+treatment and transport; at 0250 the EOC Clinician advises a repeat salbutamol MDI + spacer dose with O2 at 4 L/min and
+transport and RV with the paramedic crew en route (DSY chose this to match Ron and Greg: owner to confirm); depart
+0255, MDI dose 0256, obs 0300, RV on the road into Cummins at 0305 with an ISBAR at the RV (own Handover panel).
+AR pre-brief table from CTL-083, AR decisions at break points 4, 6 and 7 (one new: who decides the transport), no IM
+adrenaline anywhere, AR take-home lines and variation 2. The O2 device for the repeat dose is left as "4 L/min"
+(the AO story says nasal cannula; the owner's nasal cannula rule is for AOs): owner to say. The customiser template
+`asthma-ao` stays AO only (the converter `scenarios/tools/convert-asthma.js` was not re-run). On a branch, not merged.

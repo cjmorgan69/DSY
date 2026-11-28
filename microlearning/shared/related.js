@@ -99,6 +99,6 @@ window.RELATED = {
   "CPP-050-AO": [
     { kind: "Microlearning module", title: "Asthma", href: "/microlearning/asthma/", text: "Severity, doses and the asthma checker, with a narrated video and quiz." },
     { kind: "Walk-through scenario", title: "Asthma - AO: Karen, 45", href: "/modules/asthma-ao/", text: "Two-person AO crew, more severe asthma at a rural property. Facilitator and student versions." },
-    { kind: "PCR trainer", title: "Write Karen's patient care record", href: "/tools/pcr/#job=karen", text: "After the walk-through: write the PCR on a copy of the card, including her severity, the nebuliser and the EOC Clinician's advice. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
+    { kind: "PCR trainer", title: "Write Karen's patient care record", href: "/tools/pcr/#job=karen", arHref: "/tools/pcr/#job=karenAR", text: "After the walk-through: write the PCR on a copy of the card, including her severity, the nebuliser and the EOC Clinician's advice. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ]
 };

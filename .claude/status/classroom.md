@@ -90,3 +90,6 @@ to the 24px floor; tests run with `?reveal=1` (every step shown) missed it. `fit
 with every step in its final place. Measured on all 690 slides in the eight decks: the 54 tile slides went from 24px
 to a median of 72px; 7 compare, 8 decision and 7 numbered slides also grew a little; nothing else changed and nothing
 overflows. Live (PR #393, merged 28 Nov 2026).
+
+Asthma deck and the AR version (28 Nov 2026): `classroom/asthma/data/build.js` now drops `scope: "ar"` items, as
+the snake bite deck does. Checked: the deck's slide data is identical to before. On a branch, not merged.

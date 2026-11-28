@@ -178,7 +178,7 @@ Development" cards. Raised with the owner and NOT yet decided or done:
   26 Nov 2026); lessons added for the module, walk-through, stations and deck (not yet the PCR job `sam`).
 - AR version (26 Nov 2026): AO / AR switch on modules (`ar` in content.js, `?scope=ar`); pilot on the hypoglycaemia
   module, Ron's walk-through and an AR PCR job (`ronAR`); gap analysis in `.claude/references/ar-vs-ao-protocols.md`. Live (PR #378, merged
-  26 Nov 2026; the three AR lessons added in Supabase). Snake bite AR version live (PR #391, 28 Nov 2026). Next: the other 7 topics with real AR differences (asthma, chest pain, pain, stroke, seizures, ABD, refusal).
+  26 Nov 2026; the three AR lessons added in Supabase). Snake bite AR version live (PR #391, 28 Nov 2026). Asthma AR version (module, Karen's walk-through, PCR `karenAR`) on a branch, not merged (28 Nov 2026). Next: chest pain, pain, stroke, seizures, ABD, refusal.
 - Dashboard search box (27 Nov 2026): one box on `/dashboard/`, `/dashboard/wide/` and `/dashboard/team/` finds topics,
   AO protocols, people, sessions, lessons and pages (see `dashboard.md`). Live (PR #384, merged 27 Nov 2026).
 - Larger case-night slide text (28 Nov 2026): bigger dot points, busy slides split in two (see `classroom.md`).
