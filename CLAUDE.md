@@ -19,7 +19,7 @@ settings or play files you leave in the container: send files with the file tool
 - `/modules/` - walk-through scenarios. 17 are rebuilt (16 converted plus the new refusal one) on the microlearning template with facilitator and student
   versions (their `index.html` loads `microlearning/shared/module.js`); the rest are the old standalone style.
 - `/scenarios/` - trial scenario customiser: pick a walk-through and change its local details (names, places, times).
-  Templates are in Supabase `public.scenarios`. Read `scenarios/README.md`. 16 templates (every converted walk-through except spinal; `refusal-ao` unpublished until PR #377 merges).
+  Templates are in Supabase `public.scenarios`. Read `scenarios/README.md`. 16 templates (every converted walk-through except spinal), all published.
 - `/training/` - the training-session app (Supabase). `/teams/`, `/region/` - team and region pages. A session can
   have several lessons (`sessions.lesson_ids`, in order; a trigger keeps `lesson_id` = the first one).
 - `/userguides/` - user guides: home, Team Leaders (`leaders/`, source for the dashboard's Ask DSY helper), rosters, MDT.
@@ -166,7 +166,7 @@ Development" cards. Raised with the owner and NOT yet decided or done:
   (PR #306, merged 21 Nov 2026). Modules 4 People and passwords and 6 Your team page live (21 Nov 2026).
   Modules 2 Crewing gaps and 5 Relief cover live (on main). All six are linked from the user guides.
   Learning order for a new Team Leader (23 Nov 2026): dashboard, people, gaps, training nights, relief, team page,
-  with Next links, a Start here card on `/userguides/` and the guide in the same order (on a branch, not merged).
+  with Next links, a Start here card on `/userguides/` and the guide in the same order (PR #339, merged 23 Nov 2026).
 - One People page (25 Nov 2026): `/access/` (People button on the dashboard) replaces Grant access and the training
   app's People tab (now a Courses tab); relief Team Leaders add only; database rules `people_page_rules` applied.
   Live (PR #362, merged 25 Nov 2026). People and passwords module re-shot and re-narrated (PR #363, merged 25 Nov 2026).
@@ -174,16 +174,18 @@ Development" cards. Raised with the owner and NOT yet decided or done:
   `/dashboard/team/`, set on the People page `/access/` (see `access.md`). Live (PR #320, merged 22 Nov 2026). Owner to name the VTLs.
 - Refusal against advice (Decisions topic, 26 Nov 2026): module `/microlearning/refusal/`, walk-through
   `/modules/refusal-ao/` (Sam, 38), MDT job, PCR job `sam` with a case card, stations `/stations/refusal/`, case-night
-  deck `/classroom/refusal/`, intro video, customiser template `refusal-ao` (Supabase row unpublished).
-  On a branch, not merged (PR #377). After merge: publish the `refusal-ao` row, add the Supabase lessons.
+  deck `/classroom/refusal/`, intro video, customiser template `refusal-ao` (published). Live (PR #377, merged
+  26 Nov 2026); lessons added for the module, walk-through, stations and deck (not yet the PCR job `sam`).
 - AR version (26 Nov 2026): AO / AR switch on modules (`ar` in content.js, `?scope=ar`); pilot on the hypoglycaemia
   module, Ron's walk-through and an AR PCR job (`ronAR`); gap analysis in `.claude/references/ar-vs-ao-protocols.md`. Live (PR #378, merged
   26 Nov 2026; the three AR lessons added in Supabase). Next: the other 7 topics with real AR differences (asthma, chest pain, pain, stroke, seizures, ABD, refusal).
 - Dashboard search box (27 Nov 2026): one box on `/dashboard/`, `/dashboard/wide/` and `/dashboard/team/` finds topics,
-  AO protocols, people, sessions, lessons and pages (see `dashboard.md`). On a branch, not merged.
+  AO protocols, people, sessions, lessons and pages (see `dashboard.md`). Live (PR #384, merged 27 Nov 2026).
 - Larger case-night slide text (28 Nov 2026): bigger dot points, busy slides split in two (see `classroom.md`).
   Live (PR #388, merged 28 Nov 2026). Same for drive mindset, manual tasks and medical conditions:
   live (PR #389, merged 28 Nov 2026).
+- Plan to complete every topic with AO and AR versions (28 Nov 2026): `.claude/references/completion-plan.md`
+  (what each topic still needs, the AR work per protocol, order of work, four questions for the owner).
 - Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario

@@ -350,9 +350,9 @@ MessageMedia, opt-in, own mobile number) only if too few people turn notificatio
   is still judged on the whole joined gap, but each gap is then listed and counted once per segment it touches,
   Day 08:00-20:00 and Night 20:00-08:00 (a 36-hour gap shows as 3). A part-segment shows its real length and "Part
   of a longer gap". The segment times are fixed, not a rule. Claude's reading of "a gap length in hours is
-  determined by the rules": owner to confirm. On a branch, not merged.
+  determined by the rules": owner to confirm. Live (PR #253, merged 16 Nov 2026).
 - Segment times changed to the volunteer shifts (owner, 16 Nov 2026): Day 08:00-18:00 and Night 18:00-08:00,
-  replacing 08:00-20:00 and 20:00-08:00. On a branch, not merged (PR #253).
+  replacing 08:00-20:00 and 20:00-08:00. Live (PR #253, merged 16 Nov 2026).
 
 ## Roster user guide updated for the Supabase roster (17 Nov 2026, owner asked)
 
@@ -495,7 +495,7 @@ booking for others (no password, Not on the list, Don't email Country Rostering)
 backup), weekly schedule, after it's sent and the change log, correcting the cut-off, removing messages, team hours,
 trial rosters and Summer Bay. Dropped: typed name, saved roster on the device, manager password, the PDF view and Mark
 as sent, the Google Sheet Change Log. Anchors kept where the topic stayed; `#new-roster`, `#new-managers`, `#opening`,
-`#print`, `#mark-sent` are gone. On a branch, not merged (PR #339).
+`#print`, `#mark-sent` are gone. Live (PR #339, merged 23 Nov 2026).
 
 ## Pager task after the switch (19 Nov 2026)
 
@@ -518,7 +518,7 @@ pages unchanged. Live (PR #343, merged 23 Nov 2026).
 - Follow-up (owner, 23 Nov 2026): the four buttons below the folds (Edit sent cut-off, Team hours, Booking list,
   Reset sent status) are an even 2-by-2 grid with more room under Schedule set-up (`.manager-buttons` in
   `roster.css`, class added in `tidyManagerControls`). Order: Booking list, Team hours, Edit sent cut-off, Reset
-  sent status (CSS `order`). Signed-in rosters only. On a branch, not merged.
+  sent status (CSS `order`). Signed-in rosters only. Live (PR #344, merged 23 Nov 2026).
 
 ## Notes on the Country Rostering PDF (25 Nov 2026)
 
@@ -527,8 +527,8 @@ pages unchanged. Live (PR #343, merged 23 Nov 2026).
   of the PDF (page 2 for a 7-day roster; that page's rows are made a little shorter to fit), added to the email under
   "Notes:", and kept in the change log entry. Changing the notes after Preview means Preview again before Send now.
   The box is cleared after a send. Scheduled (weekly) sends have no notes.
-- Page change on a branch, not merged. Edge function `roster-send` (index.ts, pdf.ts) to be deployed by Claude when
-  the PR merges (deployed version 5 matched main before the change; without notes the PDF and email are unchanged).
+- Live (PR #375, merged 25 Nov 2026); edge function `roster-send` version 6 with the notes is deployed (checked 28 Nov 2026; without notes
+  the PDF and email are unchanged).
 
 ## Stage 8: tidy up (28 Nov 2026, owner: "can you do stage 8 now?")
 

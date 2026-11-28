@@ -45,7 +45,7 @@ other topics' nights when the owner asks.
 ## Refusal against advice case night
 
 `/classroom/refusal/` (26 Nov 2026): copy of the ACPO deck; part 2 is built from the refusal module (with its intro video), part 3 is Sam's seven break points. MDT screenshots: page 0948, Enroute 0949, remarks
-0950/0952, scene 0955, then hold MOBILE 2 s and Clear at 1052 (`clearFromScene` in `tools/mdt-shots.js`), TB81. PCR `sam`, next week `/stations/refusal/`, feedback `t=refusal`. On a branch, not merged.
+0950/0952, scene 0955, then hold MOBILE 2 s and Clear at 1052 (`clearFromScene` in `tools/mdt-shots.js`), TB81. PCR `sam`, next week `/stations/refusal/`, feedback `t=refusal`. Live (PR #377, merged 26 Nov 2026).
 
 ## Larger slide text (28 Nov 2026)
 

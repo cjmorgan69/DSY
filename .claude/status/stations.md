@@ -61,7 +61,7 @@ Station 2 rewritten 25 Nov 2026 (owner: AOs don't do 12-leads): D-ECG and 12-lea
 from the SAAS General Operation Cert IV task card (owner's photo, 12-lead crossed to 4-lead): default screen, Jog dial
 leads, 4-lead print, NIBP Auto interval, views, shortcut keys, alarm autolimits, screenshot, trend and mission summary.
 Card items left out: module separate/reassemble, CPR screen, charge and defib in demo mode, LT ECG, CO2 (crossed out).
-On a branch, not merged.
+Live (PR #376, merged 25 Nov 2026).
 
 ## Asthma
 
@@ -129,4 +129,4 @@ EOC replies are DSY-written (owner to review). Linked from the sepsis hub topic.
 conversation (role cards in threes; example questions DSY-written), 3 who decides (CTL-067, Person Responsible order,
 the three pathways, cards), 4 the EOC Clinician call, the AMA form (team's own form or paper: DSY has no copy of the
 SAAS AMA form) and the VIRCA PCR lines. Finish: Sam walk-through and PCR. No medicines or clinical kit. Cards and
-EOC lines DSY-written (owner to review). On a branch, not merged.
+EOC lines DSY-written (owner to review). Live (PR #377, merged 26 Nov 2026).

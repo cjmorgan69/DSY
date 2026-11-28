@@ -237,7 +237,7 @@ number, so nothing was re-narrated. The Team Leader guide was reordered to the s
 from Training into Grant access, people and passwords; Your team page is its own section `#team-pages`).
 `/userguides/` has a "New Team Leader? Start here" card (leaders only) and a short VTL path (VTLs only), shown through
 `DSY_GATE.ready`. Dashboard footers (both) list leader pages in the same order with Team Leader training first; the
-home page leader links add Team Leader training. On a branch, not merged.
+home page leader links add Team Leader training. Live (PR #339, merged 23 Nov 2026).
 - 25 Nov 2026: People and passwords (`leaders-people`) text updated for the one People page (`/access/`, the training
   app's People tab is gone, take someone off a team with ✕ on the team chip); the `img/person.jpg` block was removed
   from the page. Its video and the other screenshots still show "Grant access" and the old People tab: owner to say
@@ -255,7 +255,7 @@ CTL-126 VIRCA Tool, CTL-067 Consent (adult flowchart, read from the image). Pane
 VIRCA, three pathways (chooser) + one tile row (valid refusal steps), who can consent (CTL-067 steps, Person
 Responsible order, emergency box), "Which pathway?" checker (evaluate tested against its six DSY scenarios), what to
 write (CTL-126 PCR lines), 13-question quiz, optional practical. Three quick checks. Intro video (26 Nov 2026, owner said yes): Lee, two takes, 1:47,
-`video-src/` with overrides for every sentence; poster from 2.2 s. In MODULE_LISTS.ao. On a branch, not merged.
+`video-src/` with overrides for every sentence; poster from 2.2 s. In MODULE_LISTS.ao. Live (PR #377, merged 26 Nov 2026).
 
 ## AR version (AO / AR switch)
 

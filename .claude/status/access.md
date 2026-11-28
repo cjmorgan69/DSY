@@ -131,7 +131,7 @@ forms), else blank. `/signin/` first-time mode has no name box and sends only `s
 blank it shows "One more thing: your name" once and saves it to `profiles.full_name`. `/signin/?first=1` opens in
 first-time mode; the old "Create an account" links on `/teams/`, `/region/` and `/training/` now go to
 `/signin/?first=1&next=<page>` (their own sign-up forms are no longer reachable). Getting started and leader guides
-updated. Tested with stand-in data. On a branch, not merged.
+updated. Tested with stand-in data. Live (on main by 23 Nov 2026).
 
 ## Volunteer Team Leader (VTL) (owner, 22 Nov 2026)
 
@@ -160,7 +160,7 @@ team dashboard (roster, dispatches, volunteer contribution and training for thei
   Team Leaders see the role as text). Facilitator was added because the box used to show facilitators as Member.
   Tested with stand-in data. Live (PR #321, merged 22 Nov 2026), checked on the live site.
 - People search (owner, 22 Nov 2026): a search box at the top of the training app's People list filters in place by name,
-  ambulance ID, team, "VTL" or "leader" (every word must match; kept while the app re-draws). On a branch, not merged.
+  ambulance ID, team, "VTL" or "leader" (every word must match; kept while the app re-draws). Live (on main by 23 Nov 2026).
 - Not covered: VTLs do not get roster change emails (that is `roster_managers.notify_email`); in the training app
   (`/training/`) they are treated as facilitators already: the app has only a leader view and a member view, and
   facilitators use the member view too (checked 22 Nov 2026); database rules that use `is_facilitator()` include VTLs. No VTLs set yet: owner to name them. Live (PR #320, merged 22 Nov 2026; checked on the live site with stand-in sign-in data, and signed-out visits go to sign-in).
