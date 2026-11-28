@@ -30,16 +30,18 @@ window.MODULE = {
       { box: { title: "Learning objectives", items: [
         "Assess pain with a self-report scale before and after every treatment, and watch the trend",
         "Start non-drug measures early: reassurance, warmth, splinting and posture",
-        "Give multimodal analgesia within the protocol: paracetamol, methoxyflurane, and ibuprofen only when it is clearly safe",
-        "Withhold ibuprofen when there is any doubt about its safe use, and say why",
-        "Recognise uncontrolled pain and consult the EOC Clinician early about a sublingual ketamine wafer",
+        { scope: "ao", text: "Give multimodal analgesia within the protocol: paracetamol, methoxyflurane, and ibuprofen only when it is clearly safe" },
+        { scope: "ao", text: "Withhold ibuprofen when there is any doubt about its safe use, and say why" },
+        { scope: "ao", text: "Recognise uncontrolled pain and consult the EOC Clinician early about a sublingual ketamine wafer" },
+        { scope: "ar", text: "Give multimodal analgesia within the AR protocol: paracetamol and methoxyflurane, repeated once" },
+        { scope: "ar", text: "Request clinical support, recognise uncontrolled pain, and consult the EOC Clinician regarding treatment and transport" },
         "Splint the limb with neurovascular checks before and after",
         "Plan a safe lift and transport, and deliver an ISBAR handover"
       ] } },
       { box: { title: "Required equipment", items: [
         "Corpuls3 (SpO2, HR, NIBP, temperature), response bag, BGL meter, pen torch",
         "Paracetamol 500 mg tablets, Penthrox kit (3 mL), water",
-        "Ketamine 25 mg wafers (authorised crews), ibuprofen 400 mg (trained crews)",
+        { scope: "ao", text: "Ketamine 25 mg wafers (authorised crews), ibuprofen 400 mg (trained crews)" },
         "Box splint, padding, bandages or straps, blankets, carry sheet, stretcher",
         "Head torches and the ambulance lights, PPE, ePCR tablet"
       ] } },
@@ -60,13 +62,19 @@ window.MODULE = {
       { steps: [
         { t: "Basic care and life support", text: "Baseline vital signs. Pain score before and after treatment. Non-drug measures. Reassess regularly." },
         { t: "Paracetamol", text: "If none in the past 4 hours: adults 1000 mg oral. Under 16: consult the EOC Clinician for the dose." },
-        { t: "Ibuprofen (trained crews)", text: "If no ibuprofen or other NSAIDs in the past 6 hours: adults 400 mg oral. Check the monograph contraindications. Any ambiguity about safe use: withhold." },
+        { t: "Request clinical support", text: "CPP-036-AR asks for it for every patient in pain.", scope: "ar" },
+        { scope: "ao", t: "Ibuprofen (trained crews)", text: "If no ibuprofen or other NSAIDs in the past 6 hours: adults 400 mg oral. Check the monograph contraindications. Any ambiguity about safe use: withhold." },
         { t: "Methoxyflurane", text: "3 mL, repeated once if needed. Never more than 2 doses in 24 hours, or 15 mL a week." },
-        { t: "Ketamine wafer (authorised crews)", text: "Pain 7 to 10, GCS 15 or normal, aged 16 to 64: 25 mg sublingual, reassess, may repeat once after 15 minutes. Early EOC Clinician consult. Not in psychiatric presentations." },
-        { t: "IN fentanyl (authorised crews)", text: "Consult the EOC Clinician. Sedation score under 2 and uncontrolled or severe pain; adults SBP 100 or more." },
-        { t: "Provide transport and notify the receiving facility" }
+        { scope: "ao", t: "Ketamine wafer (authorised crews)", text: "Pain 7 to 10, GCS 15 or normal, aged 16 to 64: 25 mg sublingual, reassess, may repeat once after 15 minutes. Early EOC Clinician consult. Not in psychiatric presentations." },
+        { scope: "ao", t: "IN fentanyl (authorised crews)", text: "Consult the EOC Clinician. Sedation score under 2 and uncontrolled or severe pain; adults SBP 100 or more." },
+        { t: "Provide transport and notify the receiving facility", scope: "ao" },
+        { t: "Ongoing uncontrolled pain: consult the EOC Clinician regarding treatment and transport", text: "They may advise transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives.", scope: "ar" }
       ] },
-      { box: { title: "Ketamine: consult first (CPP-013-AO)", tone: "warn", items: [
+      { scope: "ar", box: { title: "Not in the AR protocol", tone: "warn", items: [
+        "Ibuprofen, IN fentanyl and sublingual ketamine are AO medicines (CPP-013-AO): they are not in CPP-036-AR",
+        "If paracetamol, methoxyflurane and the non-drug measures are not enough, consult the EOC Clinician regarding treatment and transport"
+      ] } },
+      { scope: "ao", box: { title: "Ketamine: consult first (CPP-013-AO)", tone: "warn", items: [
         "SAAS Medical Officer if the patient is under 16 or over 64, or has a history of severe mental health disorder",
         "The EOC Clinician to give more than 50 mg (2 wafers)"
       ] } },
@@ -74,7 +82,7 @@ window.MODULE = {
         "Pain management is a fundamental human right: start it as soon as clinically appropriate",
         "The aim is a comfortable or tolerable level, not complete relief",
         "Methoxyflurane's quick onset suits brief painful procedures such as splinting or extrication: time it deliberately",
-        "Ibuprofen can cause serious harm, especially in pregnancy, chronic kidney disease, heart failure and a past heart attack"
+        { scope: "ao", text: "Ibuprofen can cause serious harm, especially in pregnancy, chronic kidney disease, heart failure and a past heart attack" }
       ] } },
       { box: { title: "General teaching (not in the protocol)", tone: "warn", items: [
         "Penthrox setup and coaching, splinting technique and neurovascular checks come from device and skills training, not CPP-013-AO",
@@ -96,7 +104,8 @@ window.MODULE = {
         expected: [
           "2 m onto concrete: a lower limb fracture is likely; look for spinal, pelvic, other limb and head injuries too",
           "He's been on cold concrete: warmth starts at the door",
-          "Pain relief is coming: paracetamol, Penthrox, and the ketamine wafers if you're authorised. Splint and padding",
+          { scope: "ao", text: "Pain relief is coming: paracetamol, Penthrox, and the ketamine wafers if you're authorised. Splint and padding" },
+          { scope: "ar", text: "Pain relief is coming: paracetamol and Penthrox, splint and padding. Request clinical support early: the paramedic is about 50 minutes away" },
           "Lights: head torches, and drive as close to the shed as is safe"
         ],
         teaching: ["Plan analgesia before you arrive so it isn't delayed", "Agree who does what before you get out of the vehicle"],
@@ -154,25 +163,33 @@ window.MODULE = {
         "Non-drug measures now: reassurance, a blanket under and over him, support the leg in the position found, explain each step",
         "Paracetamol 1000 mg oral: none in the past 4 hours, swallowing safely",
         "Methoxyflurane 3 mL: for now and for the splinting",
-        "Ibuprofen: see below"
+        { scope: "ao", text: "Ibuprofen: see below" },
+        { scope: "ar", text: "Clinical support requested at 1858 (paramedic about 50 minutes)" }
       ] } },
-      { box: { title: "Why the crew withholds ibuprofen", tone: "warn", items: [
+      { scope: "ao", box: { title: "Why the crew withholds ibuprofen", tone: "warn", items: [
         "CPP-013-AO says ibuprofen can cause serious harm to some patients, sends you to the drug monograph for contraindications, and says to withhold it if there is any ambiguity about its safe use",
         "Gary takes perindopril for his blood pressure, and his kidney and heart history isn't clear on a dark farm",
         "So the crew doesn't give it, and mentions it when they consult the EOC Clinician. The hospital can decide once it has the full picture"
       ] } },
       { breakpoint: { title: "Choosing the analgesia", type: "Decision making",
-        prompts: ["What's your working diagnosis and protocol?", "Which medicines are options, and what do you check first?", "Ibuprofen: yes or no for Gary? Why?", "What order, and why give paracetamol early?"],
+        prompts: ["What's your working diagnosis and protocol?", "Which medicines are options, and what do you check first?", { scope: "ao", text: "Ibuprofen: yes or no for Gary? Why?" }, { scope: "ar", text: "Have you requested clinical support?" }, "What order, and why give paracetamol early?"],
         expected: [
           "Suspected closed tib/fib fracture; CPP-013-AO; pain 8/10",
-          "Paracetamol (none in 4 hours), methoxyflurane (fewer than 2 doses in 24 hours and under 15 mL this week), ibuprofen (no NSAIDs in 6 hours, monograph contraindications). Check allergies",
-          "Withhold ibuprofen: he's on a blood pressure medicine and you can't confirm it's safe, so any ambiguity means withhold (CPP-013-AO). Mention it to the EOC Clinician",
+          { scope: "ao", text: "Paracetamol (none in 4 hours), methoxyflurane (fewer than 2 doses in 24 hours and under 15 mL this week), ibuprofen (no NSAIDs in 6 hours, monograph contraindications). Check allergies" },
+          { scope: "ao", text: "Withhold ibuprofen: he's on a blood pressure medicine and you can't confirm it's safe, so any ambiguity means withhold (CPP-013-AO). Mention it to the EOC Clinician" },
+          { scope: "ar", text: "Paracetamol (none in 4 hours) and methoxyflurane (fewer than 2 doses in 24 hours and under 15 mL this week): the two AR options. Check allergies" },
+          { scope: "ar", text: "Request clinical support (CPP-036-AR): done at 1858" },
           "Non-drug measures first and throughout; paracetamol early because it takes time; Penthrox for the splinting"
         ],
-        teaching: ["Multimodal: complementary medicines with different mechanisms and routes work better and more safely (CPP-013-AO)", "Withholding a medicine when you're unsure is good practice, not a failure"],
+        teaching: ["Multimodal: complementary medicines with different mechanisms and routes work better and more safely (CPP-013-AO)", { scope: "ao", text: "Withholding a medicine when you're unsure is good practice, not a failure" }, { scope: "ar", text: "Paracetamol should be considered in all patients (CPP-036-AR)" }],
         realJob: "Say the check out loud: \"Any Panadol today? Any Nurofen or other anti-inflammatories?\" Patients often don't count them as medicines.",
         decisions: [
-          { q: "Gary takes perindopril for blood pressure and you can't confirm ibuprofen is safe. What does the protocol say?", options: [
+          { scope: "ar", q: "Which pain medicines does CPP-036-AR give you for Gary?", options: [
+            "Paracetamol and methoxyflurane",
+            "Paracetamol, ibuprofen and methoxyflurane",
+            "Methoxyflurane and a ketamine wafer" ], answer: 0,
+            why: "CPP-036-AR multimodal analgesia: paracetamol (none in the past 4 hours, adults 1000 mg oral) and methoxyflurane 3 mL, repeated once. Ibuprofen and ketamine are AO medicines." },
+          { scope: "ao", q: "Gary takes perindopril for blood pressure and you can't confirm ibuprofen is safe. What does the protocol say?", options: [
             "Give 400 mg: he's an adult with severe pain",
             "Withhold it: any ambiguity about safe use means the medication must be withheld",
             "Give 200 mg instead" ], answer: 1,
@@ -220,11 +237,38 @@ window.MODULE = {
         ["RR", "20", "16", "22"], ["SpO2", "98% (air)", "98% (air)", "98% (air)"], ["Temp", "36.4", "36.2", "36.2"]
       ] } } },
       { text: "1925. At rest Gary's pain is down to 4/10. When you start to roll him onto the carry sheet, it shoots to 8/10 and he shouts at you to stop. The first Penthrox is nearly used up and there's an 80 metre carry ahead." },
-      { box: { title: "The EOC Clinician call (story)", items: [
+      { scope: "ar", box: { title: "The EOC Clinician call (story)", items: [
+        "Driver: \"58 year old, isolated closed tib/fib fracture after a 2 m fall. GCS 15, no head strike. HR 104, BP 152/94, SpO2 98. Pain 4/10 at rest but 8/10 on movement, after paracetamol 1 g at 1905 and Penthrox 3 mL from 1907. We have an 80 metre carry ahead. Clinical support was requested at 1858. We're asking about treatment and transport.\"",
+        "EOC Clinician: \"Use your second Penthrox for the carry. Then transport towards the hospital and RV with the paramedic crew on the way: they can give him more for his pain. Call me back if anything changes.\""
+      ] } },
+      { scope: "ao", box: { title: "The EOC Clinician call (story)", items: [
         "Driver: \"58 year old, isolated closed tib/fib fracture after a 2 m fall. GCS 15, no head strike. HR 104, BP 152/94, SpO2 98. Pain 8/10 on movement after paracetamol 1 g at 1905 and Penthrox 3 mL from 1907. We've withheld ibuprofen: he's on perindopril and we couldn't confirm it's safe. No psychiatric history. We're authorised for ketamine wafers. Can we give one before the move?\"",
         "EOC Clinician: \"Agree with withholding the ibuprofen. Yes, give a 25 mg ketamine wafer sublingually, reassess, and you can repeat once after 15 minutes if he needs it. Call me back if you need more than that or anything changes.\""
       ] } },
-      { breakpoint: { title: "Uncontrolled pain: the ketamine wafer", type: "Decision making",
+      { scope: "ar", breakpoint: { title: "Uncontrolled pain: what an AR has left", type: "Decision making",
+        prompts: ["Is 4/10 at rest good enough? What changed?", "What is left in the AR protocol for the carry?", "What do you tell the EOC Clinician?", "Which transport option fits, and why?"],
+        expected: [
+          "At rest yes, but 8/10 on movement with a long carry ahead: uncontrolled pain for the move",
+          "Methoxyflurane can be repeated once (3 mL): time it for the carry. Never more than 2 doses in 24 hours or 15 mL a week",
+          "Obs, the pain trend, what's been given and when, that clinical support was requested, and that you're asking about treatment and transport (CPP-036-AR)",
+          "The EOC Clinician chooses: transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives. Here: transport and RV, so the paramedic can give more pain relief sooner"
+        ],
+        teaching: ["Plan analgesia before the painful move, not during it", "Ibuprofen, fentanyl and ketamine are AO medicines: clinical support brings other options (general teaching)"],
+        realJob: "A good consult is short: who, what, the numbers, what you've given, and what you want.",
+        decisions: [
+          { q: "The first Penthrox is nearly used up and the carry is ahead. What does CPP-036-AR allow?", options: [
+            "A second 3 mL dose, timed for the carry",
+            "Nothing more: one dose only",
+            "As many doses as he needs" ], answer: 0,
+            why: "Methoxyflurane 3 mL, repeated once as needed; total maximum 2 doses in 24 hours, 15 mL per week (CPP-036-AR)." },
+          { q: "Pain is still uncontrolled on movement. Who decides the transport?", options: [
+            "The crew: load and go",
+            "The EOC Clinician, who may advise transport and cancel clinical support, transport and RV en route, or monitoring until clinical support arrives",
+            "Gary's wife" ], answer: 1,
+            why: "CPP-036-AR: consult the EOC Clinician regarding treatment and transport. In this scenario the advice is transport and RV with the paramedic crew." }],
+        cards: [{ q: "What are the methoxyflurane limits?", a: "3 mL, repeated once as needed; no more than 2 doses in 24 hours or 15 mL a week (CPP-036-AR)." }]
+      } },
+      { scope: "ao", breakpoint: { title: "Uncontrolled pain: the ketamine wafer", type: "Decision making",
         prompts: ["Is 4/10 at rest good enough? What changed?", "Does Gary meet the ketamine criteria? Check each one.", "What do you tell the EOC Clinician?", "What could stop you giving ketamine?"],
         expected: [
           "At rest yes, but 8/10 on movement with a long carry ahead: uncontrolled pain for the move",
@@ -244,32 +288,66 @@ window.MODULE = {
             why: "Initial dose 25 mg (1 wafer); reassess and if required after 15 minutes the dose may be repeated once. Consult the EOC Clinician to give more than 50 mg (CPP-013-AO)." }],
         cards: [{ q: "When must you consult a SAAS Medical Officer before a ketamine wafer?", a: "If the patient is under 16 or over 64, or has a history of severe mental health disorder (CPP-013-AO)." }]
       } },
-      { text: "1928: ketamine 25 mg wafer under the tongue. 1943: pain 6/10 on gentle movement; second 25 mg wafer as advised. Penthrox second dose ready for the carry.", muted: true }
+      { scope: "ao", text: "1928: ketamine 25 mg wafer under the tongue. 1943: pain 6/10 on gentle movement; second 25 mg wafer as advised. Penthrox second dose ready for the carry.", muted: true },
+      { scope: "ar", text: "1940: second Penthrox 3 mL started, timed for the carry. 1950: on the stretcher. 1955: depart towards the hospital to meet the paramedic crew.", muted: true }
     ] },
 
     { title: "Extrication and transport", blocks: [
-      { table: { title: "Observations", table: { head: ["", "1925", "1950", "2010 (en route)"], rows: [
+      { scope: "ar", table: { title: "Observations", table: { head: ["", "1925", "1950", "2000 (en route)"], rows: [
+        ["Pain (NRS)", "8/10 on movement", "6/10 on movement", "5/10 at rest"],
+        ["GCS", "15", "15", "15"], ["HR", "104", "96", "92"], ["BP", "152/94", "146/90", "144/88"],
+        ["RR", "22", "18", "16"], ["SpO2", "98% (air)", "98% (air)", "98% (air)"], ["Temp", "36.2", "36.2", "36.3"]
+      ] } } },
+      { scope: "ao", table: { title: "Observations", table: { head: ["", "1925", "1950", "2010 (en route)"], rows: [
         ["Pain (NRS)", "8/10 on movement", "4/10 on movement", "3/10 at rest"],
         ["GCS", "15", "15", "15"], ["HR", "104", "90", "86"], ["BP", "152/94", "142/88", "138/86"],
         ["RR", "22", "16", "14"], ["SpO2", "98% (air)", "98% (air)", "98% (air)"], ["Temp", "36.2", "36.2", "36.3"]
       ] } } },
       { breakpoint: { title: "The lift and the drive", type: "Decision making",
-        prompts: ["How do you get him from the concrete to the stretcher?", "How do you manage pain during the move?", "What do you monitor on the way?", "Where are you going, and do you notify?"],
+        prompts: ["How do you get him from the concrete to the stretcher?", "How do you manage pain during the move?", "What do you monitor on the way?", { scope: "ao", text: "Where are you going, and do you notify?" }, { scope: "ar", text: "Where are you going, and who decided?" }],
         expected: [
           "Bring the ambulance and stretcher as close as is safe; carry sheet; support the splinted leg; one person calls the lift",
-          "Ketamine on board; Penthrox second dose for the carry; tell him what's happening before each step",
+          { scope: "ao", text: "Ketamine on board; Penthrox second dose for the carry; tell him what's happening before each step" },
+          { scope: "ar", text: "Second Penthrox timed for the carry; tell him what's happening before each step; support the splinted leg" },
           "Pain scores, obs and the foot checks, regularly; keep him warm",
-          "Nearest country hospital, about 30 minutes; provide transport and notify the receiving facility (CPP-013-AO)"
+          { scope: "ao", text: "Nearest country hospital, about 30 minutes; provide transport and notify the receiving facility (CPP-013-AO)" },
+          { scope: "ar", text: "As the EOC Clinician advised: transport towards the hospital and RV with the paramedic crew en route" }
         ],
         teaching: ["The move is often the most painful part: plan and medicate before it", "Reassess regularly (CPP-013-AO)"],
         teachingNote: "Lifting technique is general teaching, from the scenario.",
         realJob: "Three minutes planning the lift saves the patient the worst part of his night.",
-        decisions: [{ q: "Gary has had two ketamine wafers (50 mg). His pain rises again on the drive. What now?", options: ["Give a third wafer", "Consult the EOC Clinician: more than 50 mg needs their advice", "Nothing can be done"], answer: 1,
-          why: "Consult EOC Clinician to administer > 50 mg (2 wafers) (CPP-013-AO). Keep up the non-drug measures." }]
+        decisions: [{ scope: "ao", q: "Gary has had two ketamine wafers (50 mg). His pain rises again on the drive. What now?", options: ["Give a third wafer", "Consult the EOC Clinician: more than 50 mg needs their advice", "Nothing can be done"], answer: 1,
+          why: "Consult EOC Clinician to administer > 50 mg (2 wafers) (CPP-013-AO). Keep up the non-drug measures." },
+          { scope: "ar", q: "Gary has had two doses of Penthrox. His pain rises again on the drive. What now?", options: ["A third Penthrox", "Non-drug measures, and update the EOC Clinician", "Nothing can be done"], answer: 1,
+          why: "Methoxyflurane: no more than 2 doses in 24 hours (CPP-036-AR). Keep up the non-drug measures (reassurance, warmth, splinting, posture) and update the EOC Clinician." }]
       } }
     ] },
 
-    { title: "Handover", blocks: [
+    { scope: "ar", title: "Handover", blocks: [
+      { text: "2003, the RV on the highway end of Boundary Road. The paramedic crew pulls in behind you and comes to the back of your ambulance." },
+      { table: { title: "ISBAR", table: { head: ["", "Example"], rows: [
+        ["Identify", "\"I'm [name], volunteer AR from Cummins. This is Gary, 58.\""],
+        ["Situation", "\"Suspected closed left tib/fib fracture after a 2 m fall from a shed roof onto concrete at about 1840.\""],
+        ["Background", "\"Landed on his feet, no head strike, GCS 15 throughout. Isolated injury. High blood pressure on perindopril, mild osteoarthritis, no allergies. Ate at 1730.\""],
+        ["Assessment", "\"HR 92, BP 144/88, RR 16, SpO2 98% on air, temp 36.3. Pain 8 on movement, now 5 out of 10 at rest. Splinted; foot pulse, sensation and movement intact before and after.\""],
+        ["Recommendation", "\"Paracetamol 1 g oral at 1905. Penthrox 3 mL from 1907 and a second 3 mL at 1940 for the carry: that's his two doses for 24 hours. The EOC Clinician advised this RV at 1926. He needs more pain relief, imaging and orthopaedics. Margaret is following.\""]
+      ] } } },
+      { breakpoint: { title: "ISBAR handover at the RV", type: "Practical skill",
+        prompts: ["Give the handover out loud to the paramedic.", "Why do the medicine times and the Penthrox count matter?", "What did the EOC Clinician advise, and when?"],
+        expected: [
+          "Structured, under two minutes, with the pain trend and foot checks",
+          "The paramedic plans the next pain relief from your times: paracetamol 4 hours, and no more methoxyflurane in 24 hours",
+          "The EOC Clinician's advice and its time: transport and RV, 1926"
+        ],
+        teaching: ["Include what was found, what was done and when, and what still needs to happen", "An RV on a dark country road is a scene of its own: park safely off the road, hazard lights, hand over at the back of the ambulance"],
+        teachingNote: "General teaching, from the scenario.",
+        realJob: "Medicine names, doses and times are the most useful thing you hand over in a pain job.",
+        decisions: [{ q: "Which detail helps the paramedic most with Gary's next pain relief?", options: ["The colour of his ute", "Each medicine, dose and time, and that he has had two doses of Penthrox", "How long the drive took"], answer: 1,
+          why: "The next clinician plans further analgesia from what was given and when: methoxyflurane is limited to 2 doses in 24 hours." }]
+      } }
+    ] },
+
+    { scope: "ao", title: "Handover", blocks: [
       { table: { title: "ISBAR", table: { head: ["", "Example"], rows: [
         ["Identify", "\"I'm [name], volunteer AO from Cummins. This is Gary, 58.\""],
         ["Situation", "\"Suspected closed left tib/fib fracture after a 2 m fall from a shed roof onto concrete at about 1840.\""],
@@ -296,26 +374,46 @@ window.MODULE = {
       { box: { title: "Reflective questions", items: [
         "How did the pain scores guide your decisions, and when did the trend change?",
         "Which non-drug measures did you use, and when did you start them?",
-        "How did you decide about ibuprofen? Would anything have changed your mind?",
-        "Did Gary meet every ketamine criterion? Which ones would have stopped you?",
+        { scope: "ao", text: "How did you decide about ibuprofen? Would anything have changed your mind?" },
+        { scope: "ao", text: "Did Gary meet every ketamine criterion? Which ones would have stopped you?" },
+        { scope: "ar", text: "When did you request clinical support, and how did you time the second Penthrox?" },
         "How did you split the work, and when did you call the EOC Clinician?"
       ] } },
       { box: { title: "Take-home messages", tone: "warn", items: [
         "Pain score before and after every treatment; watch the trend",
         "Non-drug measures are the foundation, all the way to handover",
         "Multimodal analgesia: paracetamol early, Penthrox for painful procedures",
-        "Any ambiguity about ibuprofen's safe use: withhold it, and say why",
-        "Ketamine wafer: pain 7 to 10, GCS 15 or normal, 16 to 64, not psychiatric; 25 mg, repeat once after 15 minutes; consult for more than 50 mg",
+        { scope: "ao", text: "Any ambiguity about ibuprofen's safe use: withhold it, and say why" },
+        { scope: "ao", text: "Ketamine wafer: pain 7 to 10, GCS 15 or normal, 16 to 64, not psychiatric; 25 mg, repeat once after 15 minutes; consult for more than 50 mg" },
+        { scope: "ar", text: "As an AR: request clinical support; paracetamol and methoxyflurane (repeat once, max 2 doses in 24 hours); then consult the EOC Clinician regarding treatment and transport (CPP-036-AR)" },
         "Plan analgesia before the move, and consult the EOC Clinician early"
       ] } }
     ] },
 
     { title: "Scenario variations", optional: true, collapsed: true, chip: "Optional", blocks: [
-      { box: { title: "1. IN fentanyl instead of ketamine", text: "The crew is authorised for IN fentanyl, not ketamine. At 1925: sedation score 0, uncontrolled pain, SBP 152. Consult the EOC Clinician, who may advise IN fentanyl (SAAS Clinical app, adults: up to 180 microg, 0.6 mL of 300 microg/mL, up to 90 microg per nostril, by MAD on a 1 mL luer-lock syringe; total max 400 microg). Vital signs every 5 minutes and the sedation score. Cease all fentanyl and consult if the sedation score reaches 2 or the SBP falls below 100. Practise the MAD steps with water." } },
-      { box: { title: "2. Bleeding from the fracture", text: "Fifteen minutes into the drive Gary is pale and sweaty, HR 112, BP 96/64, and the leg is more swollen. Discuss occult haemorrhage, clinical support and the EOC Clinician. If he'd had fentanyl: SBP below 100 means cease it and consult (CPP-013-AO)." } },
-      { box: { title: "3. Panadol an hour ago", text: "Gary took two Panadol an hour before you arrived. No paracetamol (within 4 hours). Penthrox, non-drug measures and an earlier EOC Clinician consult. Hand over the time he took it." } },
-      { box: { title: "4. Mental health history", text: "Gary has a history of severe mental health disorder. Ketamine needs a SAAS Medical Officer consult (through the EOC Clinician) first; it is contraindicated in a psychiatric presentation. Discuss the alternatives." } },
-      { box: { title: "5. A child", text: "A 10 year old off a trampoline with a deformed forearm, pain 7/10. Paracetamol and ibuprofen doses under 16: consult the EOC Clinician. Penthrox with a parent helping. Ketamine under 16: SAAS Medical Officer consult. Fentanyl for children: the EOC Clinician advises the dose." } }
+      { scope: "ao", box: { title: "1. IN fentanyl instead of ketamine", text: "The crew is authorised for IN fentanyl, not ketamine. At 1925: sedation score 0, uncontrolled pain, SBP 152. Consult the EOC Clinician, who may advise IN fentanyl (SAAS Clinical app, adults: up to 180 microg, 0.6 mL of 300 microg/mL, up to 90 microg per nostril, by MAD on a 1 mL luer-lock syringe; total max 400 microg). Vital signs every 5 minutes and the sedation score. Cease all fentanyl and consult if the sedation score reaches 2 or the SBP falls below 100. Practise the MAD steps with water." } },
+      { scope: "ao", box: { title: "2. Bleeding from the fracture", text: "Fifteen minutes into the drive Gary is pale and sweaty, HR 112, BP 96/64, and the leg is more swollen. Discuss occult haemorrhage, clinical support and the EOC Clinician. If he'd had fentanyl: SBP below 100 means cease it and consult (CPP-013-AO)." } },
+      { scope: "ar", box: { title: "1. Bleeding from the fracture", text: "Fifteen minutes into the drive Gary is pale and sweaty, HR 112, BP 96/64, and the leg is more swollen. Discuss occult haemorrhage and an immediate update to the EOC Clinician: does the RV plan still fit?" } },
+      { scope: "ao", box: { title: "3. Panadol an hour ago", text: "Gary took two Panadol an hour before you arrived. No paracetamol (within 4 hours). Penthrox, non-drug measures and an earlier EOC Clinician consult. Hand over the time he took it." } },
+      { scope: "ar", box: { title: "2. Panadol an hour ago", text: "Gary took two Panadol an hour before you arrived. No paracetamol (within 4 hours). Penthrox, non-drug measures and an earlier EOC Clinician consult. Hand over the time he took it." } },
+      { scope: "ao", box: { title: "4. Mental health history", text: "Gary has a history of severe mental health disorder. Ketamine needs a SAAS Medical Officer consult (through the EOC Clinician) first; it is contraindicated in a psychiatric presentation. Discuss the alternatives." } },
+      { scope: "ar", box: { title: "3. A child", text: "A 10 year old off a trampoline with a deformed forearm, pain 7/10. Paracetamol under 16: consult the EOC Clinician for the dose. Penthrox with a parent helping. Request clinical support, and consult the EOC Clinician regarding treatment and transport." } },
+      { scope: "ao", box: { title: "5. A child", text: "A 10 year old off a trampoline with a deformed forearm, pain 7/10. Paracetamol and ibuprofen doses under 16: consult the EOC Clinician. Penthrox with a parent helping. Ketamine under 16: SAAS Medical Officer consult. Fentanyl for children: the EOC Clinician advises the dose." } }
     ] }
-  ]
+  ],
+
+  /* ---------- Ambulance Responder version (CPP-036-AR Pain Management - AR v3.0) ---------- */
+  ar: {
+    replace: [["CPP-013-AO", "CPP-036-AR"], ["Pain Management - AO", "Pain Management - AR"], ["AO1", "AR1"], ["AO2", "AR2"], ["AO crew", "AR crew"],
+      ["AO pain protocol", "AR pain protocol"], ["volunteer AO", "volunteer AR"]],
+    title: "Pain Management - AR",
+    subtitle: "Walk-through scenario: 2-person volunteer AR crew",
+    lead: "A suspected lower leg fracture on a cold farm evening, for a two-person volunteer Ambulance Responder crew, with eight break points for discussion, skills practice and decisions: paracetamol and methoxyflurane, splinting, clinical support, and the EOC Clinician consult about treatment and transport.",
+    protocol: {
+      code: "CPP-036-AR", name: "Pain Management - AR", version: "v3.0 (28 March 2023)", exported: "31 August 2026"
+    },
+    relatedCodes: ["CPP-013-AO"],
+    footerNotes: ["This is DSY's training scenario: the patient, story, observations, timings, the RV and EOC Clinician replies are fictional. Check it with your lead instructor.",
+      "Ibuprofen, IN fentanyl and sublingual ketamine are AO medicines: they are not in the AR protocol."]
+  }
 };

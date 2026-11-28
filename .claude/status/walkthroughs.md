@@ -175,4 +175,12 @@ dose, the third counting his two sprays; GTN 2138 as in the AO story; at 2144 th
 Cleve Hospital with clinical support cancelled (hospital 20 min, paramedic 55; same choice the owner made for Karen,
 owner to confirm). AR pre-brief table and consult box, AR criteria check, decisions, call script, ISBAR and variations
 1 and 4. AO change: variation 3 now says "the adult cardiac arrest protocol for your level (CPP-002-AO for AOs)" (was
-"Cardiac Arrest (Adult) - AO, CPP-002-AO"); the deck's notes show the same wording. Customiser template stays AO. On a branch, not merged.
+"Cardiac Arrest (Adult) - AO, CPP-002-AO"); the deck's notes show the same wording. Customiser template stays AO. Live (PR #396, merged 28 Nov 2026).
+
+## Pain management AR version (Gary, 28 Nov 2026)
+
+`/modules/pain-management/?scope=ar` (CPP-036-AR v3.0): clinical support requested 1858; paracetamol 1905 and Penthrox
+1907 as the AO story; no ibuprofen or ketamine; at 1926 the EOC Clinician (treatment and transport) advises the second
+Penthrox for the carry and transport and RV with the paramedic crew, who can give more pain relief (owner
+confirmed, 28 Nov 2026); second Penthrox 1940, depart 1955, RV 2003 at the highway end of Boundary Road with an ISBAR at the
+RV. AR break point 7 (what an AR has left), AR decisions, obs, take-home lines and variations 1 to 3. Live (PR #397, merged 28 Nov 2026).

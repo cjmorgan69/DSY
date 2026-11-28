@@ -21,7 +21,7 @@
         if (o === M && (k === "ar" || k === "relatedCodes")) return;
         var v = o[k];
         if (typeof v === "string") { arKeys.replace.forEach(function (r) { v = v.split(r[0]).join(r[1]); }); o[k] = v; }
-        else if (v && typeof v === "object") swap(v);
+        else if (v && typeof v === "object" && v.scope !== "ar") swap(v);   // AR-only items are written for ARs already (they may name the AO protocol on purpose)
       });
     })(M);
     if (SCOPE === "ar") Object.keys(arKeys).forEach(function (k) { if (k !== "replace") M[k] = arKeys[k]; });
@@ -526,7 +526,7 @@
   if (rel.length) {
     var rb = el("div", "related");
     rb.appendChild(el("span", "eyebrow", "Built on the same protocol"));
-    rel.forEach(function (r) { var a = el("a", "rel-card"); a.href = SCOPE === "ar" && r.arHref ? r.arHref : withScope(r.href); a.appendChild(el("span", "chip hi", r.kind)); a.appendChild(el("strong", null, r.title)); if (r.text) a.appendChild(el("span", "small muted", r.text)); rb.appendChild(a); });
+    rel.forEach(function (r) { var a = el("a", "rel-card"); a.href = SCOPE === "ar" && r.arHref ? r.arHref : withScope(r.href); a.appendChild(el("span", "chip hi", r.kind)); var ar = SCOPE === "ar"; a.appendChild(el("strong", null, ar && r.arTitle || r.title)); if (r.text) a.appendChild(el("span", "small muted", ar && r.arText || r.text)); rb.appendChild(a); });
     intro.appendChild(rb);
   }
 

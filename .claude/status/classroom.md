@@ -95,4 +95,4 @@ Asthma deck and the AR version (28 Nov 2026): `classroom/asthma/data/build.js` n
 the snake bite deck does. Checked: the deck's slide data is identical to before. Live (PR #394, merged 28 Nov 2026).
 
 Chest pain deck and the AR version (28 Nov 2026): `classroom/chest-pain/data/build.js` drops `scope: "ar"` items.
-Checked: slide data identical apart from the variation 3 wording in the notes. On a branch, not merged.
+Checked: slide data identical apart from the variation 3 wording in the notes. Live (PR #396, merged 28 Nov 2026).

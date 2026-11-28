@@ -301,4 +301,17 @@ previously prescribed" pathway); one set of limits, systolic ABOVE 100 for every
 repeat doses "or as directed by EOC Clinician"; then "consult EOC Clinician for transport options" (the three options;
 no "provide transport and notify"). The GTN checker has its own AR pathway (`evaluateAR` at the top of content.js;
 the "prescribed" question is hidden for ARs); all 11 scenarios checked in both versions. AR key points, limits table,
-three AR quiz questions (four AO ones swapped), video note under Lee's AO video. On a branch, not merged.
+three AR quiz questions (four AO ones swapped), video note under Lee's AO video. Live (PR #396, merged 28 Nov 2026).
+
+## Pain management AR version (28 Nov 2026)
+
+`/microlearning/pain/?scope=ar` follows CPP-036-AR Pain Management - AR v3.0 (28 March 2023, exported 31.08.2026):
+the same assessment, tools and non-drug measures; request clinical support; paracetamol (under 16: consult) and
+methoxyflurane only; then consult the EOC Clinician regarding treatment and transport (three options). The IN
+fentanyl, ketamine and opioid-overdose sections, the ibuprofen box and the MAD practical are AO only; the AR version has
+a short "Not in the AR protocol" section, its own reference table, four AR quiz questions and an AR practical
+(pain scores, splint, an empty training inhaler, the call). Video note under Lee's AO video.
+
+Shared fixes (28 Nov 2026): `ar.replace` word swaps no longer run inside items marked `scope: "ar"` (they had turned
+"the AO protocol (CPP-008-AO)" in the snake bite AR video note into "(CPP-030-AR)"); related cards take `arTitle` /
+`arText`, now set for the hypoglycaemia, envenomation, asthma, chest pain and pain lines. Live (PR #397, merged 28 Nov 2026).

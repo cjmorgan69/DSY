@@ -792,6 +792,65 @@ window.PCR_JOBS = {
     marks: [['front', 60, 195, 'F S', 6], ['front', 86, 128, 'A', 6]]
   },
 
+  garyAR: {
+    label: 'Gary, 58: pain management (AR)',
+    short: 'Gary (AR)',
+    walk: '/modules/pain-management/?scope=ar',
+    walkStudent: '/modules/pain-management/?scope=ar&mode=student',
+    // The Ambulance Responder version of Gary (CPP-036-AR): paracetamol and Penthrox only; clinical support 1858; EOC Clinician
+    // 1926 advises the second Penthrox for the carry and transport and RV with the paramedics; RV 2003. Times from the AR walk-through.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Suspected closed fracture L tibia + fibula (mid-shaft), isolated injury.',
+      recommendation: 'Transport and RV with clinical support (EOC Clinician 1926). Handed over to the paramedic crew at the RV, Boundary Rd, 2003 (ISBAR). Pain 8/10 on movement, 5/10 at rest. Paracetamol 1 g 1905, Penthrox 3 mL 1907 + 2nd 3 mL 1940 (2 doses: nil more in 24 hrs). Splinted, foot CSM intact before + after. Needs further analgesia, imaging, orthopaedics.',
+      ecg: ''
+    },
+    sections: {
+      pc: 'Fall ~2 m from shed roof onto concrete ~1840. Painful, deformed L lower leg.',
+      phx: 'HTN, mild osteoarthritis.',
+      medn: 'Perindopril 4 mg daily. Paracetamol PRN for arthritis, none in last 24 hrs.',
+      hx: 'Working on the shed roof, fell ~2 m onto concrete ~1840. Landed on his feet, then fell onto his L side. Nil head strike, nil LOC. Unable to get up. Last ate 1730. Wife called SAAS.',
+      oa: '58M lying on the concrete apron beside the shed, blanket over his chest, calling out in pain. Ladder against the wall, loose roof iron overhead. Dark, one shed light.',
+      cns: 'A on AVPU, GCS 15, oriented, recalls events. Nil head strike or LOC.',
+      skin: 'Pale, cool.',
+      cvs: 'Pulse 98, radial present. BP 148/92. Nil bleeding. L foot pulse present, warm.',
+      resp: 'RR 20, nil resp distress, talking full sentences. SpO2 98% RA.',
+      pain: 'L lower leg, 8/10 (NRS). 4/10 at rest after Penthrox, 8/10 on movement, 6/10 on movement after 2nd Penthrox, 5/10 at rest en route.',
+      survey: 'Head/neck: nil head strike, nil neck pain. Chest/abdo: NAD. Hips/pelvis: NAD. Limbs: L lower leg swollen + angulated mid-shaft, closed, foot pulse, sensation + movement present. Graze L palm.',
+      care: 'Ladder moved, lighting. Blankets under + over. Leg supported as found. Clinical support requested 1858. Paracetamol 1 g 1905. Penthrox 3 mL 1907, pt holds it. Splinted 1915, foot CSM checked before + after.\n1925 rolled: pain 8/10. EOC Clinician 1926 (treatment + transport): 2nd Penthrox for the carry, transport and RV with clinical support en route, repeated back. 2nd Penthrox 1940, 80 m carry on a carry sheet, foot CSM rechecked. Depart 1955. RV with paramedic crew 2003, handed over.'
+    },
+    tips: {
+      survey: 'A 2 m fall is trauma: the secondary survey goes in, even when the leg is the only injury.',
+      pain: 'Give the score with the time and the context (rest or movement): the hospital plans the next doses from it.',
+      care: 'Record the EOC Clinician\'s advice and the time (treatment and transport), and that 2 doses of methoxyflurane have been given: the paramedic needs both.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie (down 15 to 20 minutes).', falls: 'Not a falls-risk job: a fall from height, not an older person\'s fall. Leave blank.',
+      body: 'Front figure: F (fracture, suspected) and S (swelling) on the left lower leg, A (abrasion) on the left palm.',
+      info: 'Not ticked: transported (handed over to the paramedics at the RV).', consult: 'Ticked: EOC Clinician consulted at 1926 about treatment and transport.'
+    },
+    ticks: ['consult'],
+    obs: [
+      { time: '1900', rr: 20, o2: 'RA', spo2: 98, bp: '148/92', hr: 98, temp: 36.4, gcs: 15, evm: [4, 5, 6], pain: 8, bgl: 6.2 },
+      { time: '1920', rr: 16, o2: 'RA', spo2: 98, bp: '140/88', hr: 88, temp: 36.2, gcs: 15, evm: [4, 5, 6], pain: 4 },
+      { time: '1925', rr: 22, o2: 'RA', spo2: 98, bp: '152/94', hr: 104, temp: 36.2, gcs: 15, evm: [4, 5, 6], pain: 8 },
+      { time: '1950', rr: 18, o2: 'RA', spo2: 98, bp: '146/90', hr: 96, temp: 36.2, gcs: 15, evm: [4, 5, 6], pain: 6 },
+      { time: '2000', rr: 16, o2: 'RA', spo2: 98, bp: '144/88', hr: 92, temp: 36.3, gcs: 15, evm: [4, 5, 6], pain: 5 }
+    ],
+    drugs: [
+      ['1858', 'Clinical support requested'],
+      ['1905', 'Paracetamol', '1000', 'mg', 'Oral'],
+      ['1907', 'Methoxyflurane', '3', 'mL', 'Inhaler'],
+      ['1915', 'Splint L leg, CSM checked'],
+      ['1926', 'EOC Clinician: transport + RV'],
+      ['1940', 'Methoxyflurane (2nd)', '3', 'mL', 'Inhaler'],
+      ['1950', 'Carry sheet, 80 m carry'],
+      ['2003', 'RV: handed to paramedics']
+    ],
+    marks: [['front', 60, 195, 'F S', 6], ['front', 86, 128, 'A', 6]]
+  },
+
   kevin: {
     label: 'Kevin, 72: ACPO (AO)',
     short: 'Kevin',
