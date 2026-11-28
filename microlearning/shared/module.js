@@ -31,7 +31,7 @@
         var v = o[k];
         if (Array.isArray(v)) {
           o[k] = v.filter(function (x) { return !(x && typeof x === "object" && x.scope && x.scope !== SCOPE); })
-            .map(function (x) { return x && typeof x === "object" && !Array.isArray(x) && Object.keys(x).every(function (q) { return q === "text" || q === "scope"; }) ? x.text : x; });
+            .map(function (x) { return x && typeof x === "object" && !Array.isArray(x) && x.scope && Object.keys(x).every(function (q) { return q === "text" || q === "scope"; }) ? x.text : x; });
           o[k].forEach(function (x) { if (x && typeof x === "object") strip(x); });
         } else if (v && typeof v === "object") strip(v);
       });

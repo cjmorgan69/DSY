@@ -217,5 +217,5 @@ Guide section 14 opens with the AR course page. Live (PR #358, merged 24 Nov 202
 booked count from `course_bookings` (facilitator/leader read policies). Purple "AR course · Day n" items, read-only,
 linking to `/ar/course/`; an "AR course" filter chip (shown when there are AR dates); hidden under Leader-led / Team-led
 filters; shown in every cluster (cohorts have no cluster). A failed read never blocks the calendar. Tested with stand-in
-data. On 25 Nov 2026 the 2026 and 2027 groups had no upcoming dates set. On a branch, not merged.
+data. On 25 Nov 2026 the 2026 and 2027 groups had no upcoming dates set. Live (PR #373, merged 25 Nov 2026).
 

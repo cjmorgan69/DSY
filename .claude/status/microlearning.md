@@ -237,7 +237,7 @@ number, so nothing was re-narrated. The Team Leader guide was reordered to the s
 from Training into Grant access, people and passwords; Your team page is its own section `#team-pages`).
 `/userguides/` has a "New Team Leader? Start here" card (leaders only) and a short VTL path (VTLs only), shown through
 `DSY_GATE.ready`. Dashboard footers (both) list leader pages in the same order with Team Leader training first; the
-home page leader links add Team Leader training. On a branch, not merged.
+home page leader links add Team Leader training. Live (PR #339, merged 23 Nov 2026).
 - 25 Nov 2026: People and passwords (`leaders-people`) text updated for the one People page (`/access/`, the training
   app's People tab is gone, take someone off a team with ✕ on the team chip); the `img/person.jpg` block was removed
   from the page. Its video and the other screenshots still show "Grant access" and the old People tab: owner to say
@@ -255,7 +255,7 @@ CTL-126 VIRCA Tool, CTL-067 Consent (adult flowchart, read from the image). Pane
 VIRCA, three pathways (chooser) + one tile row (valid refusal steps), who can consent (CTL-067 steps, Person
 Responsible order, emergency box), "Which pathway?" checker (evaluate tested against its six DSY scenarios), what to
 write (CTL-126 PCR lines), 13-question quiz, optional practical. Three quick checks. Intro video (26 Nov 2026, owner said yes): Lee, two takes, 1:47,
-`video-src/` with overrides for every sentence; poster from 2.2 s. In MODULE_LISTS.ao. On a branch, not merged.
+`video-src/` with overrides for every sentence; poster from 2.2 s. In MODULE_LISTS.ao. Live (PR #377, merged 26 Nov 2026).
 
 ## AR version (AO / AR switch)
 
@@ -267,3 +267,15 @@ transport; video kept with an AR note under it; AR quiz 9 questions; AR checker 
 (`/modules/hypoglycaemia-ao/?scope=ar`) has an AR version too: no glucagon; when oral glucose fails at 1740 the EOC
 Clinician advises transport and RV with clinical support en route (owner's choice, 26 Nov 2026); DSY-written RV with
 the Port Lincoln paramedics at Edillilie at 1805, handover at the RV. `ar.replace` swaps codes and words in the AR view.
+
+## Envenomation AR version (28 Nov 2026)
+
+`/microlearning/envenomation/?scope=ar` follows CPP-030-AR Envenomation - AR v3.0 (17 May 2019, exported 31.08.2026):
+same first aid as CPP-008-AO; the native snake, octopus and big black spider pathways end with the EOC Clinician
+consult (three options) instead of "provide transport and notify"; redback adds "request clinical support" and both
+redback and bee/wasp/ant say transport only if directed; CPP-013-AO and CPP-003-AO read as CPP-036-AR and CPP-022-AR.
+An AR box sits under the (YouTube) intro video; two AR quiz questions. Owner asked for "all the components" (28 Nov 2026).
+
+Shared fix (28 Nov 2026): in a module with an `ar` object, `module.js` turned every `{ text: "..." }` block into a plain
+string, so story paragraphs vanished from both views of the hypoglycaemia walk-through (13 paragraphs, live since PR #378).
+Only items that carry `scope` are unwrapped now. On a branch, not merged.

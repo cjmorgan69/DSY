@@ -33,7 +33,9 @@ window.MODULE = {
         "Immobilise the limb and the whole patient (vacuum mattress, head elevated about 20 to 30 degrees)",
         "Keep patient exertion to a minimum from first contact to the hospital door",
         "Recognise deterioration and be ready for airway and cardiovascular collapse",
-        "Deliver an ISBAR handover for a snake bite patient"
+        { scope: "ar", text: "Consult the EOC Clinician before transport, and manage a transport and RV with clinical support" },
+        { scope: "ao", text: "Deliver an ISBAR handover for a snake bite patient" },
+        { scope: "ar", text: "Deliver an ISBAR handover to the paramedic crew at the RV" }
       ] } },
       { box: { title: "Required equipment", items: [
         "PPE, shears",
@@ -67,7 +69,8 @@ window.MODULE = {
         "Bite on a limb: apply a pressure bandage and immobilise the limb",
         "Bite to the head or torso: cover the bite area with a simple dressing",
         "Immobilise the patient with a vacuum mattress if available, head elevated about 20 to 30 degrees where possible",
-        "Provide transport and notify the receiving facility"
+        { scope: "ao", text: "Provide transport and notify the receiving facility" },
+        { scope: "ar", text: "Consult the EOC Clinician, who may advise: transport and cancel clinical support; transport and RV with clinical support en route; or monitor the patient until clinical support arrives" }
       ] } },
       { box: { title: "Why it matters (protocol principle)", items: [
         "Snakebite is the most common envenoming accident in SA and fatalities can occur",
@@ -211,7 +214,8 @@ window.MODULE = {
         "Minimal exertion: no walking, no standing",
         "Pressure bandage, toes to groin; circle the bite on the bandage",
         "Immobilise: vacuum mattress (whole body), head up about 20 to 30 degrees",
-        "Transport to Port Lincoln and notify the receiving facility"
+        { scope: "ao", text: "Transport to Port Lincoln and notify the receiving facility" },
+        { scope: "ar", text: "Consult the EOC Clinician before transport, and follow the advice" }
       ] } }
     ] },
 
@@ -258,19 +262,26 @@ window.MODULE = {
         ["Symptoms", "Headache, nausea", "Worse headache, vomited once, more sweating"],
         ["Paralysis or bleeding signs", "None", "None"], ["Cuticle beds", "Pink", "Pink"]
       ] } } },
-      { text: "In the scenario, the EOC Clinician is updated at 1524: transport to Port Lincoln now and notify the hospital. The paramedic will meet you on the way if timing allows.", muted: true },
+      { scope: "ao", text: "In the scenario, the EOC Clinician is updated at 1524: transport to Port Lincoln now and notify the hospital. The paramedic will meet you on the way if timing allows.", muted: true },
+      { scope: "ar", text: "In the scenario, the EOC Clinician is consulted at 1524 and advises transport and an RV with clinical support en route: head towards Port Lincoln and meet the paramedic crew on the Flinders Highway. The crew repeats the advice back.", muted: true },
       { breakpoint: { title: "Reassessment and escalation decision", type: "Decision making",
-        prompts: ["Compare the two sets of obs. Which way is he heading?", "What do you tell the EOC Clinician?", "Do you wait for the paramedic or MedSTAR?", "What do you prepare for during transport?"],
+        prompts: ["Compare the two sets of obs. Which way is he heading?", "What do you tell the EOC Clinician?", { scope: "ao", text: "Do you wait for the paramedic or MedSTAR?" }, { scope: "ar", text: "As an AR crew, who decides whether you transport, wait, or meet the paramedic?" }, "What do you prepare for during transport?"],
         expected: [
           "Rising HR, slightly lower BP, new vomiting: he is getting worse",
           "Update: trends, vomiting, bandage and immobilisation done, transport plan and time to hospital",
-          "Port Lincoln by road (30 minutes) is faster than the paramedic (50) or MedSTAR (90): load and go, notify the hospital",
+          { scope: "ao", text: "Port Lincoln by road (30 minutes) is faster than the paramedic (50) or MedSTAR (90): load and go, notify the hospital" },
+          { scope: "ar", text: "The EOC Clinician decides (CPP-030-AR): transport and cancel clinical support, transport and RV with clinical support en route, or monitor until clinical support arrives. Give the trend and the times so they can choose" },
           "Prepare for airway and cardiovascular collapse, hypoventilation and apnoea: suction, BVM, defibrillation ready (CPPRO-022)",
           "Head elevated about 20 to 30 degrees in the vacuum mattress makes vomiting easier to manage (CPPRO-022)"
         ],
         teaching: ["Trending is everything: the direction of change tells you the story", "Vomiting after a snake bite suggests systemic envenoming (general teaching)", "Weigh transport time against backup time"],
         realJob: "You may only get two sets of obs before you move. If they are heading the wrong way, move faster. Don't wait for an arrest to decide this is serious.",
-        decisions: [{ q: "He has vomited and his HR is climbing. The hospital is 30 minutes away, the paramedic 50. What now?", options: [
+        decisions: [{ scope: "ar", q: "He has vomited and his HR is climbing. The hospital is 30 minutes away, the paramedic 50. You're an AR crew. What now?", options: [
+          "Load and go to Port Lincoln, and tell the EOC on the way",
+          "Consult the EOC Clinician now with the trend and the times, and follow the advice (here: transport and RV with the paramedic)",
+          "Loosen the bandage to check the bite" ], answer: 1,
+          why: "CPP-030-AR: consult the EOC Clinician, who may advise transport and cancellation of clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives. Never remove or loosen the bandage (CPPRO-022)." },
+          { scope: "ao", q: "He has vomited and his HR is climbing. The hospital is 30 minutes away, the paramedic 50. What now?", options: [
           "Wait on scene for the paramedic",
           "Transport now, update the EOC Clinician and notify the hospital",
           "Loosen the bandage to check the bite" ], answer: 1,
@@ -284,7 +295,8 @@ window.MODULE = {
         "Longboard or carry chair: either is acceptable. The crew chooses by how many helpers are there to lift and how close the stretcher can get to the verandah (DSY lead instructor)",
         "Whichever you use, move him as little as possible, in a timely way, supporting the bandaged leg",
         "Vacuum mattress on the stretcher with a sheet. Move him onto it keeping him and the limb still; raise the head end to about 20 to 30 degrees so the mattress conforms, then remove the air (CPPRO-022)",
-        "Don't remove his clothing first"
+        "Don't remove his clothing first",
+        "Another option (DSY lead instructor): take the vacuum mattress to Greg, package him where he is, then carry him to the stretcher on a spinal board under the mattress. The board is only for carrying: it is our usual practice from spinal precautions, but here it is for keeping him still, not for a spinal injury"
       ] } },
       { box: { title: "Transport", items: [
         "Clinician in the back: Corpuls3 on, suction, BVM and vomit bags within reach",
@@ -314,7 +326,7 @@ window.MODULE = {
       } }
     ] },
 
-    { title: "Handover", blocks: [
+    { scope: "ao", title: "Handover", blocks: [
       { text: "1605, Port Lincoln Hospital ED. The team has been notified and is waiting." },
       { table: { title: "Observations", table: { head: ["", "1500", "1522", "1600"], rows: [
         ["HR", "92", "104", "108"], ["BP", "138/82", "130/78", "126/76"], ["RR", "18", "20", "20"], ["SpO2", "98% (air)", "97% (air)", "97% (air)"], ["GCS", "15", "15", "15"]
@@ -339,6 +351,30 @@ window.MODULE = {
       } }
     ] },
 
+    { scope: "ar", title: "Handover", blocks: [
+      { text: "1542, the RV on the Flinders Highway. The paramedic crew pulls in behind you and comes to the back of your ambulance." },
+      { table: { title: "Observations", table: { head: ["", "1500", "1522", "1538"], rows: [
+        ["HR", "92", "104", "108"], ["BP", "138/82", "130/78", "126/76"], ["RR", "18", "20", "20"], ["SpO2", "98% (air)", "97% (air)", "97% (air)"], ["GCS", "15", "15", "15"]
+      ] } } },
+      { table: { title: "ISBAR", table: { head: ["", "Example"], rows: [
+        ["I", "\"I'm [name], Ambulance Responder from [station]. This is Greg Thompson, 52.\""],
+        ["S", "\"Suspected brown snake bite to the right lower leg at about 1415. He's symptomatic: vomiting, headache and a rising heart rate.\""],
+        ["B", "\"Bitten clearing scrub at Wangary; snake about 1.5 metres. He walked about 100 metres before we arrived. His wife washed the bite. Hypertension, on perindopril. No allergies.\""],
+        ["A", "\"On arrival HR 92, BP 138/82, headache and nausea. Pressure bandage toes to groin, vacuum mattress with the head up about 20 degrees. Since then HR 104 then 108, BP 126/76, vomited once. RR 20, SpO2 97% on air, GCS 15. No signs of paralysis or bleeding. Cuticle beds pink throughout.\""],
+        ["R", "\"The bite was washed, so swabbing may be affected. The bandage has not been removed; the bite is circled on it. The EOC Clinician advised transport and this RV at 1524.\""]
+      ] } } },
+      { breakpoint: { title: "ISBAR handover at the RV", type: "Practical skill",
+        prompts: ["Deliver your ISBAR to me now as the paramedic.", "What does the paramedic need to know specifically for a snake bite?", "How do you move Greg to the paramedics' stretcher, or does he stay in your ambulance?"],
+        expected: ["Time of bite, snake description, how far he walked, first aid given, symptom timeline, obs trend", "The bite was washed: swabbing for venom may be affected", "The bandage is still on and the bite is circled on it", "The EOC Clinician's advice and its time", "The paramedic decides the move. Whatever the plan, he stays still and the bandage stays on"],
+        teaching: ["A good ISBAR takes 60 to 90 seconds", "Practise it out loud on the way to the RV", "The last point is general teaching: who carries on with the patient is the paramedic's call"],
+        realJob: "An RV on a highway shoulder is a scene of its own: hazard lights, park safely off the road, and hand over at the back of the ambulance, not on the road side.",
+        decisions: [{ q: "The paramedic asks whether the bandage has been off at any point. What do you say?", options: [
+          "\"We loosened it once to check the bite\"",
+          "\"No. It went on at 1512, toes to groin, and the bite is circled on it\"",
+          "\"We'll take it off now so you can see\"" ], answer: 1,
+          why: "CPPRO-022: do not remove pressure bandages already applied. Hand over the time it went on and where the bite is marked." }]
+      } }
+    ] },
     { title: "Debrief", blocks: [
       { box: { title: "Reflective questions", items: [
         "What were your priorities after reading the MDT? Did they change on arrival?",
@@ -355,15 +391,35 @@ window.MODULE = {
         "Minimal exertion: no walking, no standing. Move him as little as possible, in a timely way",
         "Pressure bandage from the toes or fingers to the groin or armpit, firm as for a sprained ankle, bite circled, never removed",
         "Don't wash the bite, don't apply a tourniquet, don't elevate the limb",
-        "Vacuum mattress with the head up about 20 to 30 degrees; monitoring and defibrillation always available"
+        "Vacuum mattress with the head up about 20 to 30 degrees; monitoring and defibrillation always available",
+        { scope: "ar", text: "As an AR: consult the EOC Clinician before transport, and repeat the advice back (CPP-030-AR)" }
       ] } }
     ] },
 
     { title: "Scenario variations", optional: true, collapsed: true, chip: "Optional", blocks: [
       { box: { title: "1. Bite to the torso", text: "Greg is bitten on the left flank. No pressure bandage: cover the bite with a simple dressing (CPP-008-AO). Keep him and the bitten area as still as possible and, with airway access in mind, position him to reduce lymphatic drainage to the central circulation (CPPRO-022). Vacuum mattress, clinical support, transport and notify." } },
       { box: { title: "2. Found in the paddock", text: "Greg is 200 m from the house in long grass and hasn't moved since the bite. The crew goes to him with the kit; bandage and immobilise where he lies, then carry him out. Discuss the extra work for the crew, and why it is better for you to go to him than for him to come to you." } },
-      { box: { title: "3. Cardiovascular collapse", text: "During transport Greg becomes drowsy, HR 130, BP 88/50, then unresponsive with no normal breathing. Open the vacuum mattress valve and undo the straps (CPPRO-022), commence resuscitation (CPP-004-AO) and follow Cardiac Arrest (Adult) - AO, CPP-002-AO. Discuss: was the defibrillator ready, and who does what?" } },
+      { box: { title: "3. Cardiovascular collapse", text: "During transport Greg becomes drowsy, HR 130, BP 88/50, then unresponsive with no normal breathing. Open the vacuum mattress valve and undo the straps (CPPRO-022), commence resuscitation (CPP-004-AO) and follow the adult cardiac arrest protocol for your level (CPP-002-AO for AOs). Discuss: was the defibrillator ready, and who does what?" } },
       { box: { title: "4. Child bitten on the hand", text: "An 8 year old bitten on the right hand near a woodpile; the parents describe a brown snake. The same protocol applies: pressure bandage from the fingers to the armpit, immobilise, clinical support, transport and notify. Reassurance and age-appropriate communication matter. Discuss how you keep a frightened child still." } }
     ] }
-  ]
+  ],
+
+  /* ---------- Ambulance Responder version (CPP-030-AR Envenomation - AR v3.0) ---------- */
+  ar: {
+    replace: [["CPP-008-AO", "CPP-030-AR"], ["Envenomation - AO", "Envenomation - AR"], ["CPP-004-AO", "CPP-025-AR"], ["Ambulance Officer", "Ambulance Responder"],
+      ["AO1", "AR1"], ["AO2", "AR2"], ["AO crew", "AR crew"], ["AO envenomation protocol", "AR envenomation protocol"], [" (CPP-002-AO for AOs)", ""],
+      ["clinical support, transport and notify.", "clinical support, then the EOC Clinician consult about transport."]],
+    title: "Envenomation - AR",
+    subtitle: "Walk-through scenario: 2-person volunteer AR crew",
+    lead: "A suspected brown snake bite for a two-person volunteer Ambulance Responder crew, with eight break points for discussion, skills practice and decisions. The first aid is the same as for AOs; before transport the crew consults the EOC Clinician, who advises transport and an RV with the paramedics.",
+    protocol: {
+      code: "CPP-030-AR", name: "Envenomation - AR", version: "v3.0 (17 May 2019)", exported: "31 August 2026",
+      also: [{ code: "CPPRO-022", name: "Pressure Bandaging and Immobilisation", version: "v1.0 (17 May 2019, review date 30 Nov 2024)" },
+             { code: "CPP-025-AR", name: "Basic Care and Life Support - AR", version: "v2.0 (4 January 2019)" }]
+    },
+    relatedCodes: ["CPP-008-AO"],
+    footerNotes: ["The patient, story, observations, the RV and EOC Clinician replies are a training scenario written by DSY. Check it with your lead instructor.",
+      "CPPRO-022 is past its review date (30 Nov 2024). Check the SAAS Clinical app for any newer version.",
+      "Toxinology Service SA (WCH): 08 8161 7000, contacted through the EOC Clinician."]
+  }
 };

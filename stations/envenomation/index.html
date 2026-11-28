@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<script src="/shared/gate.js?v=20261128f" data-level="stations"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Snake bite skills stations - DSY Training</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../../shared/dsy-favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../../shared/dsy-favicon-192.png">
+<link rel="apple-touch-icon" href="../../shared/dsy-touch-180.png">
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261128f">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Snake bite (envenomation) skills stations (AO). Built 28 Nov 2026 for a group training night without the instructor
+   present, to go with the module /microlearning/envenomation/ and the walk-through /modules/envenomation/ (Greg, 52).
+   Sources: CPP-008-AO Envenomation - AO v5.0 (17 May 2019, exported 31.08.2026); CPP-030-AR Envenomation - AR v3.0 (for
+   the AR box at station 4); CPPRO-022 Pressure Bandaging and Immobilisation v1.0 (effective 17 May 2019, review date
+   30 Nov 2024 passed). Owner's choice (walk-through): longboard or carry chair, chosen by helpers and distance, as long as
+   movement is minimal and timely. Patient cards, the EOC Clinician role-play lines, the call scripts and how-to-run notes
+   are DSY-written. */
+var SRC = {
+  cpp008: "CPP-008-AO Envenomation - AO v5.0",
+  cpp030: "CPP-030-AR Envenomation - AR v3.0",
+  c022: "CPPRO-022 Pressure Bandaging and Immobilisation v1.0",
+  lead: "DSY lead instructor",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "Which bite, which pathway?", mins: 15,
+  goal: "Sort a bite or sting into the right part of CPP-008-AO, and say what you would and wouldn't do.",
+  kit: ["This page on a phone", "The patient cards below (or read them aloud)"],
+  blocks: [
+    { h: "Australian native snakes, blue-ringed octopus and big black spider bites", src: ["cpp008"], tone: "warn", list: [
+      "Basic care. Blue-ringed octopus: focus on airway and ventilation (paralysing venom). Big black spider (> 2 cm body length): if symptomatic or bitten < 4 hrs ago, treat as below; otherwise consult the EOC Clinician",
+      "Request clinical support. Ensure minimal patient exertion",
+      "Do not apply a tourniquet or wash the bite site. Tourniquet already on: consult the EOC Clinician, who may contact Toxinology Service SA",
+      "Bite on a limb: pressure bandage and immobilise the limb. Bite to the head or torso: cover with a simple dressing",
+      "Immobilise the patient with a vacuum mattress if available, head elevated about 20 to 30 degrees where possible",
+      "Provide transport and notify the receiving facility"
+    ] },
+    { h: "The other three pathways", src: ["cpp008"], list: [
+      "Exotic (non-Australian) snakes, and other marine bites and stings: consult the EOC Clinician to contact Toxinology Service SA",
+      "Redback spider (if identified): basic care; ice if available and rest the area; pain management as per CPP-013-AO; consult the EOC Clinician about management and transport",
+      "Bee, wasp or ant: basic care; allergy or anaphylaxis signs, treat as per CPP-003-AO; scrape the sting out sideways, don't squeeze the venom sac; ice if available; consult the EOC Clinician about management and transport"
+    ] },
+    { h: "Funnel Web signs (any of)", src: ["cpp008"], tone: "red", list: [
+      "Tingling around the mouth and tongue", "Increased salivation and sweating", "Nausea, vomiting or headache", "Shortness of breath", "Altered conscious state", "Hypertension"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp008", "c022"], cases: [
+      { who: "A. Greg, 52", text: "Bitten on the right calf by a brown snake clearing scrub. Walked 100 m to the house. His wife washed it. Headache, feels sick.",
+        answer: "Australian native snake, bite on a limb: request clinical support, no more walking, don't wash it further, pressure bandage toes to groin and immobilise, vacuum mattress head up, transport and notify." },
+      { who: "B. Fisher, 30", text: "Picked up a small octopus with blue rings off the rocks at Coffin Bay. Small bite on the back of the hand. Says his lips feel funny.",
+        answer: "Blue-ringed octopus: airway and ventilation first (rapid flaccid paralysis can follow). Request clinical support, pressure bandage the arm (fingers to armpit) and immobilise, BVM ready, transport and notify." },
+      { who: "C. Big black spider, 6 hours", text: "Bitten on the foot by a big black spider (about 3 cm) in the shed 6 hours ago. No symptoms at all.",
+        answer: "Over 4 hours and no symptoms: consult the EOC Clinician for advice. Had the bite been under 4 hours ago, or with any Funnel Web sign, treat as for a snake bite." },
+      { who: "D. Redback, identified", text: "A redback bit him on the forearm putting on a garden glove. The spider is in a jar. Painful arm.",
+        answer: "Redback: basic care, ice if available, rest the arm, pain management as per CPP-013-AO, consult the EOC Clinician about management and transport. No pressure bandage." },
+      { who: "E. Snake, torso", text: "Bitten on the left side of the chest by a snake while lifting a sheet of iron. Feels anxious, nothing else yet.",
+        answer: "Bite to the torso: no pressure bandage. Cover with a simple dressing, keep her and the bitten area as still as possible, request clinical support, vacuum mattress if available, transport and notify." },
+      { who: "F. Tourniquet on", text: "A neighbour tied a belt tightly around the thigh above a snake bite 20 minutes ago.",
+        answer: "Don't remove it. Consult the EOC Clinician, who may contact Toxinology Service SA for specific advice. Request clinical support and keep him still." },
+      { who: "G. Bee sting", text: "Stung on the neck by a bee. Now has hives and a hoarse voice.",
+        answer: "Signs of allergy or anaphylaxis: treat as per CPP-003-AO. Scrape the sting out sideways without squeezing the venom sac." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "One person reads a card aloud. The others say the pathway before anyone opens the answer.",
+      "Name one thing you would NOT do for that patient.",
+      "Take turns reading."
+    ] }
+  ],
+  checks: ["Picked the right pathway for every card", "Said 'request clinical support' for every native snake bite", "Named the 4-hour rule for a big black spider",
+    "Said a torso bite gets a simple dressing, not a bandage", "Left the tourniquet on and named the EOC Clinician call", "Named at least three Funnel Web signs"] },
+
+{ id: "s2", n: 2, title: "The pressure bandage", mins: 20,
+  goal: "Apply a pressure bandage to a whole leg and a whole arm, to the CPPRO-022 standard.",
+  kit: ["Snakebite bandage kit or 4 x 15 cm elasticised roller bandages (training stock)", "Tape", "A pen", "Shears (training only: don't cut real clothing)", "A partner in shorts and a T-shirt"],
+  blocks: [
+    { h: "When", src: ["c022"], list: [
+      "A suspected bite from an Australian native snake or a blue-ringed octopus, whether or not they show signs of envenoming",
+      "A bite < 4 hours ago and/or signs of systemic envenoming from a large (> 2 cm body length) dark or black spider"
+    ] },
+    { h: "Prepare", src: ["c022"], list: [
+      "Expose the whole limb to the armpit or groin. Remove rings, watches, bracelets and footwear",
+      "Cut clothing with shears rather than moving the limb to take it off: moving it may spread the venom",
+      "Don't wash or clean the bite"
+    ] },
+    { h: "Bandage", src: ["c022"], steps: [
+      "Start at the fingers or toes with a locking turn, covering all but the cuticle beds.",
+      "Work up towards the armpit or groin. Each loop covers 2/3 of the one before, pulled moderately tight. Don't over-tighten.",
+      "Next roll: hold the end of the first firmly and start the new roll from that point with another locking turn.",
+      "Stop at the armpit or groin. Don't go back down the limb with spare bandage: cut it and tape it to the previous turn.",
+      "Tape the end so it can't come loose. Circle the bite on the bandage with a pen."
+    ] },
+    { h: "The target", src: ["c022"], tone: "warn", list: [
+      "About as firm as for a sprained ankle: hard to get two fingers easily under it",
+      "The whole limb covered, only the cuticle beds showing to check circulation",
+      "The bite circled with a pen on the bandage"
+    ] },
+    { h: "Don't", src: ["c022", "cpp008"], tone: "red", list: [
+      "Elevate a bitten limb: keep it below the heart where practical",
+      "Remove a pressure bandage or tourniquet that is already on",
+      "Severe limb pain from the bandage, or circulation at the cuticle bed badly impaired: consult the EOC Clinician, who contacts the SA Toxinology Service (WCH, 08 8161 7000). Consider analgesia if pain is an issue"
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Your partner sits with the leg out straight and stays still. Bandage the leg, toes to groin, saying each step.",
+      "Your partner checks: two fingers, cuticle beds, the pen mark, no spare bandage wound back down.",
+      "Swap. Then do an arm, fingers to armpit (card B at station 1). Rewind the bandages for the next pair."
+    ] }
+  ],
+  checks: ["Exposed the whole limb; jewellery and footwear off; no moving the limb to undress", "Started with a locking turn, cuticle beds showing", "Each loop covering 2/3 of the last, moderately tight",
+    "Joined the next roll with a locking turn", "Finished at the groin or armpit, spare cut and taped", "Two-finger check passed; bite circled with a pen", "Limb kept still and not elevated"] },
+
+{ id: "s3", n: 3, title: "Keep them still: splint, mattress and the move", mins: 20,
+  goal: "Immobilise the bitten limb and the whole patient, and move them to the stretcher without them taking a step.",
+  kit: ["A large cardboard splint, padding, triangular or 15 cm roller bandages", "Vacuum mattress, pump and a sheet", "Stretcher", "Longboard and a carry chair", "A partner already bandaged from station 2 (or bandage a leg again)"],
+  blocks: [
+    { h: "The limb", src: ["c022"], list: [
+      "Once bandaged, consider a padded cardboard splint secured with triangular or general purpose roller bandages",
+      "The splint is mandatory if a vacuum mattress is not available",
+      "If a vacuum mattress is readily available, it is the splint for the whole body"
+    ] },
+    { h: "The vacuum mattress", src: ["c022", "cpp008"], steps: [
+      "Mattress on the stretcher in the usual way, with a sheet for comfort.",
+      "Move the patient onto it, ideally by longboard, keeping the patient and the limb still. Don't take their clothing off first.",
+      "Raise the head end of the stretcher slightly, to about 20 to 30 degrees, so the mattress shapes to it. This keeps them settled and still, the bitten limb below the heart, and makes vomiting easier to manage.",
+      "Long transport or uncomfortable: the mattress can be tilted slightly to take pressure off. Hot: use the air conditioning.",
+      "Claustrophobic, upset, or needs respiratory or cardiac support: open the valve to deflate it quickly and undo the straps."
+    ] },
+    { h: "Or take the mattress to the patient", src: ["lead"], list: [
+      "CPPRO-022 describes the mattress on the stretcher and the patient moved to it. Taking the vacuum mattress to the patient can be a good option, for example on a verandah or out in a paddock",
+      "Package them where they are, then carry them to the stretcher on a spinal board placed under the mattress: the mattress is not a lifting device",
+      "The board under the mattress is our usual practice from spinal precautions. Here it is only for carrying the patient without them moving: it is about keeping the venom still, not a spinal injury"
+    ] },
+    { h: "No walking", src: ["c022", "cpp008", "lead"], tone: "warn", list: [
+      "Ensure minimal patient exertion. Don't let the patient walk to the stretcher",
+      "Longboard or carry chair: either is fine. Choose by how many helpers can lift and how close the stretcher can get, as long as movement is minimal and timely (DSY lead instructor)"
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Start with the cardboard splint on the bandaged leg, as if there were no vacuum mattress.",
+      "Then plan the move out loud: 'He's on a verandah, three steps down, two of us and his wife.' Longboard, carry chair, or the mattress to him on a spinal board? Do it.",
+      "Into the vacuum mattress, head end up, then practise the quick release: valve open, straps undone. Swap roles."
+    ] }
+  ],
+  checks: ["Padded splint on, secured, limb still", "Said the splint is mandatory without a vacuum mattress", "Chose longboard, carry chair or mattress to the patient, and said why",
+    "The patient never stood or walked", "Clothing left on; head end up about 20 to 30 degrees", "Showed the quick release: valve open, straps undone"] },
+
+{ id: "s4", n: 4, title: "Watch, call and hand over", mins: 20,
+  goal: "Set up the monitoring, make the clinical support and EOC Clinician calls, and give a snake bite handover.",
+  kit: ["Corpuls3 (or the monitor you use), BVM, suction", "Two phones for the call role-play", "The patient cards below"],
+  blocks: [
+    { h: "What can go wrong", src: ["cpp008", "c022"], tone: "red", list: [
+      "The biggest immediate risk is early cardiovascular collapse leading to cardiac arrest",
+      "Native snake venom can also cause paralysis, muscle breakdown, renal damage and affect clotting",
+      "Ventilation can be compromised: watch for and manage hypoventilation and apnoea"
+    ] },
+    { h: "Be ready", src: ["c022"], list: [
+      "Be continuously alert for airway and cardiovascular collapse, hypoventilation and apnoea",
+      "Be prepared to ventilate with a BVM, or advanced airway management as needed",
+      "Cardiac monitoring for every patient, with defibrillation available",
+      "Nasal capnography as per the Nasal Capnography CPP for your clinical level"
+    ] },
+    { h: "Two different calls", src: ["cpp008", "dsy"], list: [
+      "Request clinical support: a higher clinical level to attend (every native snake bite)",
+      "Consult the EOC Clinician: advice, and the contact with Toxinology Service SA when the protocol says so",
+      "A call script (DSY): who and where; what bit them and when; how far they walked; first aid given; symptoms and obs; what you've done; time to hospital"
+    ] },
+    { h: "Ambulance Responders", src: ["cpp030"], tone: "warn", list: [
+      "The first aid is the same (CPP-030-AR)",
+      "Before transport, consult the EOC Clinician, who may advise: transport and cancel clinical support; transport and RV with clinical support en route; or monitor until clinical support arrives",
+      "Redback: also request clinical support; bee, wasp or ant and redback: transport if the EOC Clinician directs"
+    ] },
+    { h: "Patient cards (the call)", src: ["dsy"], cases: [
+      { who: "A. Greg, 1522", text: "HR 92 to 104, BP 138/82 to 130/78, vomited once, worse headache. Bandaged and in the vacuum mattress. Port Lincoln 30 minutes, paramedic 50.",
+        answer: "Update the EOC Clinician with the trend, what's done and the times. AO: transport and notify the receiving facility; the paramedic can meet you. Get ready for collapse: suction, BVM, defibrillation.",
+        eoc: "\"Thanks. He's getting worse: head for Port Lincoln now and notify the hospital. I'll let the paramedic crew know to meet you on the way.\"" },
+      { who: "B. Getting sleepy", text: "Halfway to hospital Greg becomes drowsy, his breathing slows and his SpO2 falls.",
+        answer: "Support the airway and breathing (BVM if needed), opening the vacuum mattress for access. Consult the EOC Clinician. Never take the bandage off. No normal breathing: commence resuscitation (CPP-004-AO).",
+        eoc: "\"Support his breathing, keep the monitor on and pads ready. Keep going to Port Lincoln; I'll update the hospital.\"" }
+    ] },
+    { h: "ISBAR for a snake bite", src: ["dsy", "c022"], list: [
+      "Time of the bite, what bit them, how far they walked, the first aid given",
+      "The symptom timeline and the obs trend",
+      "Washed bite? Say so: swabbing for venom may be affected",
+      "The bandage is still on and the bite is circled on it"
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Driver: monitor on your partner (stickers or pads, no shocks), suction and BVM laid out.",
+      "Clinician: make the clinical support request, then the EOC Clinician call for card A. The facilitator reads the reply. Repeat it back.",
+      "Card B: show the airway and BVM steps on a manikin or mime them. Then give the ISBAR. Swap."
+    ] }
+  ],
+  checks: ["Monitor on, defibrillation and BVM ready", "Said both calls and what each is for", "Call had bite time, walking, first aid, symptoms, obs and the plan",
+    "Repeated the EOC Clinician's advice back", "Card B: airway and breathing first, bandage left on", "ISBAR mentioned the washed bite and the bandage still on"] }
+];
+
+var END = { title: "Finish together", mins: 25,
+  steps: [
+    "Run the whole job as one crew with the student walk-through: Greg, 52, a brown snake bite near Wangary. Use each station's kit as you reach that part: the bandage, the splint or mattress, the monitor and the calls.",
+    "Then each person does the knowledge check in the microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-envenomation";
+
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/envenomation/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Snake bite skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Student walk-through", "../../modules/envenomation/?mode=student", "btn small"));
+  links.appendChild(a("Knowledge check (microlearning)", "../../microlearning/envenomation/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-through: " + root + "modules/envenomation/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY snake bite skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Snake bite skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Envenomation\" (about 25 min). Send the link a few days ahead."],
+    ["0:00", "Split into pairs or threes. Everyone wears shorts or loose trousers for the bandage at station 2."],
+    ["0:05", "Rotate through stations 1 to 4 (about 15 to 20 min each). Partners tick the checks on the phone."],
+    ["about 1:25", "Finish together: the student walk-through as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Rewind the bandages, pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 2: training bandages only (enough for two limbs per pair), tape, pens. Keep operational snakebite kits sealed.",
+    "Station 3: cardboard splint and padding, triangular bandages, the vacuum mattress and pump on a stretcher, a longboard and a carry chair. A step or two nearby helps.",
+    "Station 4: the monitor with training electrodes, BVM and suction; two phones for the call.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Rewind the training bandages and put them back in their labelled bag, apart from operational stock.",
+    "Vacuum mattress softened (valve open), rolled and back in its bag. Splints and triangulars back in the kit.",
+    "Monitor on charge, electrodes in the bin.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Four stations to practise the hands-on parts of a snake bite job, then one full job together. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Envenomation\" first (about 25 minutes)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/envenomation/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Full job, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cpp008, SRC.c022, SRC.cpp030].join(", ") +
+    ". The review date of CPPRO-022 (30 Nov 2024) has passed: check the SAAS Clinical app for a newer version. The longboard or carry chair choice follows the DSY lead instructor. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>

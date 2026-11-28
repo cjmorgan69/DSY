@@ -61,4 +61,4 @@ Refusal job `refusal` (26 Nov 2026): Sam, 38, Tumby Bay township, 0948, two live
 ambulance). Not transported, so the expected line says clear from scene.
 Clear from scene (owner, 26 Nov 2026, like the real MDT): on scene, press and hold MOBILE for 2 seconds: straight to
 Clear Event Confirm, no hospital list (`act.clearFromScene`, run log "Cleared from scene: not transported"); in the
-MDT user guide's status table. Customiser link via `link('refusal', 'refusal-ao', ...)`. On a branch, not merged.
+MDT user guide's status table. Customiser link via `link('refusal', 'refusal-ao', ...)`. Live (PR #377, merged 26 Nov 2026).

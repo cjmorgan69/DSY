@@ -89,7 +89,7 @@ window.RELATED = {
   "CPP-008-AO": [
     { kind: "Microlearning module", title: "Envenomation", href: "/microlearning/envenomation/", text: "Bites and stings, the pressure bandage and immobilisation, with a quiz." },
     { kind: "Walk-through scenario", title: "Envenomation - AO: Greg, 52", href: "/modules/envenomation/", text: "Two-person AO crew, brown snake bite to the leg at a rural property. Facilitator and student versions." },
-    { kind: "PCR trainer", title: "Write Greg's patient care record", href: "/tools/pcr/#job=greg", text: "After the walk-through: write the PCR on a copy of the card, including the bite time, first aid and the bandage still on. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
+    { kind: "PCR trainer", title: "Write Greg's patient care record", href: "/tools/pcr/#job=greg", arHref: "/tools/pcr/#job=gregAR", text: "After the walk-through: write the PCR on a copy of the card, including the bite time, first aid and the bandage still on. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-007-AO": [
     { kind: "Microlearning module", title: "Chest pain", href: "/microlearning/chest-pain/", text: "Aspirin, the GTN limits and the GTN checker, with a narrated video and quiz." },

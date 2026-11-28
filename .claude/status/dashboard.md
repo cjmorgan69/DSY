@@ -205,7 +205,7 @@ to open it; drag it to a day to COPY it there (owner: a copy, not a move): a box
 (only teams you can change with no session that day; the original team is preselected when free). The copy keeps times,
 lessons, topic, location and who leads; no bookings, attendance or reflection; a team-led copy for another team has no
 facilitator. The session page has a Team field (teams you can change, not courses); bookings
-and attendance stay with the session. Phones keep the list. On a branch, not merged.
+and attendance stay with the session. Phones keep the list. Live (on main by 23 Nov 2026).
 
 ## Team dashboard for Volunteer Team Leaders (owner, 22 Nov 2026)
 
@@ -333,4 +333,4 @@ protocols (the 34 AO protocols, PDF link and DSY topic), People, Training (upcom
 - Other words list (`ALSO` in the script: "can't breathe" finds asthma and ACPO, "sugar" hypoglycaemia...): search words
   only, nothing clinical. Matches words, not meaning.
 - Tested in a headless browser with stand-in sign-in data (phone, wide, team dashboard as a VTL). Leader guide section 2
-  has a "Search box" row. On a branch, not merged.
+  has a "Search box" row. Live (PR #384, merged 27 Nov 2026).
