@@ -65,4 +65,4 @@ tables with a fixed small size now start at 48 and shrink only as needed), and t
 (bullets, tables, plus "compare" slides, which split both panels; when one panel has nothing left for the second
 half, that half becomes a dot-point slide headed by the other panel's heading; long cards and numbered steps split
 as in the case-night decks). Before: 263 slides, 104 under 44px, smallest 22; after: 290 slides, 34 under 44px,
-smallest 34; median 48 -> 56. Text unchanged. On a branch, not merged.
+smallest 34; median 48 -> 56. Text unchanged. Live (PR #389, merged 28 Nov 2026).
