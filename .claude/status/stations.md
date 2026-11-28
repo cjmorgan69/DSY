@@ -138,7 +138,7 @@ same engine as the spinal stations): 1 which bite, which pathway (seven patient 
 Funnel Web signs), 2 the pressure bandage on a leg and an arm (CPPRO-022 steps and target), 3 splint, vacuum mattress
 and the move (longboard or carry chair, owner's rule), 4 monitoring, the clinical support and EOC Clinician calls,
 ISBAR, and an AR box (CPP-030-AR). Sources CPP-008-AO v5.0, CPPRO-022 v1.0 (review date 30 Nov 2024 passed),
-CPP-030-AR v3.0. Patient cards, EOC Clinician lines, the call script and run notes DSY-written (owner to review). On a branch, not merged.
+CPP-030-AR v3.0. Patient cards, EOC Clinician lines, the call script and run notes DSY-written (owner to review). Live (PR #391, merged 28 Nov 2026).
 Owner (28 Nov 2026): the vacuum mattress can also be taken to the patient, who is then carried to the stretcher on a spinal
 board under the mattress (team practice from spinal precautions; here the board is only for carrying, to keep the patient
 still). Added to station 3 and to the extrication box in Greg's walk-through (and so the case-night deck).

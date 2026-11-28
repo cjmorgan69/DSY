@@ -128,6 +128,13 @@
       return false;
     }
     while (over() && fs > 24) { fs -= 2; b.style.setProperty('--fs', fs + 'px'); }
+    // Tile slides with little text: grow the text until a tile is full, then step back a little so the tiles keep
+    // some breathing room (owner, 28 Nov 2026: use the whole tile rather than one small line).
+    if (b.querySelector('.grid .card')) {
+      var start = fs;
+      while (fs < 110) { b.style.setProperty('--fs', (fs + 2) + 'px'); if (over()) break; fs += 2; }
+      fs = Math.max(start, Math.floor(fs * 0.92 / 2) * 2); b.style.setProperty('--fs', fs + 'px');
+    }
   }
   function scaleStage() {
     var v = document.getElementById('viewport');

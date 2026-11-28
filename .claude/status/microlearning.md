@@ -278,4 +278,4 @@ An AR box sits under the (YouTube) intro video; two AR quiz questions. Owner ask
 
 Shared fix (28 Nov 2026): in a module with an `ar` object, `module.js` turned every `{ text: "..." }` block into a plain
 string, so story paragraphs vanished from both views of the hypoglycaemia walk-through (13 paragraphs, live since PR #378).
-Only items that carry `scope` are unwrapped now. On a branch, not merged.
+Only items that carry `scope` are unwrapped now. Live (PR #391, merged 28 Nov 2026).
