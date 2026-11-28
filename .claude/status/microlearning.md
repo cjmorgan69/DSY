@@ -324,4 +324,4 @@ CPPRO-025 NPA (review date 2022 passed), CPPRO-011; midazolam 5 mg/5 mL and the 
 (DMO-022). Documents differ: the app's 65+ formula text says "single max 10 mg", its table and the protocol say 5 mg;
 the module follows the protocol and says so. Seizure checker (consult criteria, dose by weight, two sites over 5 mL;
 AR pathway), NPA tile row (AO), 18 quiz questions across both versions, Resus Room "Seizures; Roadside to Resus"
-(Jan 2020) and the paediatric episode (Jan 2026). Intro video: Lee, two takes (45.1 s + 54.8 s), 1:42. On a branch, not merged.
+(Jan 2020) and the paediatric episode (Jan 2026). Intro video: Lee, two takes (45.1 s + 54.8 s), 1:42. Live (PR #398, merged 28 Nov 2026).

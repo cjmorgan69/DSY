@@ -19,7 +19,7 @@ settings or play files you leave in the container: send files with the file tool
 - `/modules/` - walk-through scenarios. 17 are rebuilt (16 converted plus the new refusal one) on the microlearning template with facilitator and student
   versions (their `index.html` loads `microlearning/shared/module.js`); the rest are the old standalone style.
 - `/scenarios/` - trial scenario customiser: pick a walk-through and change its local details (names, places, times).
-  Templates are in Supabase `public.scenarios`. Read `scenarios/README.md`. 16 templates (every converted walk-through except spinal), all published.
+  Templates are in Supabase `public.scenarios`. Read `scenarios/README.md`. 17 templates (every rebuilt walk-through except spinal), all published.
 - `/training/` - the training-session app (Supabase). `/teams/`, `/region/` - team and region pages. A session can
   have several lessons (`sessions.lesson_ids`, in order; a trigger keeps `lesson_id` = the first one).
 - `/userguides/` - user guides: home, Team Leaders (`leaders/`, source for the dashboard's Ask DSY helper), rosters, MDT.
@@ -179,7 +179,7 @@ Development" cards. Raised with the owner and NOT yet decided or done:
   26 Nov 2026); lessons added for the module, walk-through, stations and deck (not yet the PCR job `sam`).
 - AR version (26 Nov 2026): AO / AR switch on modules (`ar` in content.js, `?scope=ar`); pilot on the hypoglycaemia
   module, Ron's walk-through and an AR PCR job (`ronAR`); gap analysis in `.claude/references/ar-vs-ao-protocols.md`. Live (PR #378, merged
-  26 Nov 2026; the three AR lessons added in Supabase). Snake bite AR version live (PR #391, 28 Nov 2026). Asthma AR version (module, Karen's walk-through, PCR `karenAR`) live (PR #394, 28 Nov 2026; the three AR lessons added in Supabase). Chest pain AR version (module, Graham's walk-through, PCR `grahamAR`) live (PR #396, 28 Nov 2026; three AR lessons added). Pain AR version (module, Gary's walk-through, PCR `garyAR`) live (PR #397, 28 Nov 2026; three AR lessons added). Next: stroke, seizures, ABD, refusal.
+  26 Nov 2026; the three AR lessons added in Supabase). Snake bite AR version live (PR #391, 28 Nov 2026). Asthma AR version (module, Karen's walk-through, PCR `karenAR`) live (PR #394, 28 Nov 2026; the three AR lessons added in Supabase). Chest pain AR version (module, Graham's walk-through, PCR `grahamAR`) live (PR #396, 28 Nov 2026; three AR lessons added). Pain AR version (module, Gary's walk-through, PCR `garyAR`) live (PR #397, 28 Nov 2026; three AR lessons added). Seizures built AO and AR (PR #398). Next: stroke, ABD, refusal.
 - Dashboard search box (27 Nov 2026): one box on `/dashboard/`, `/dashboard/wide/` and `/dashboard/team/` finds topics,
   AO protocols, people, sessions, lessons and pages (see `dashboard.md`). Live (PR #384, merged 27 Nov 2026).
 - Larger case-night slide text (28 Nov 2026): bigger dot points, busy slides split in two (see `classroom.md`).
@@ -193,8 +193,8 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - Stations still to build: pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Seizures topic (28 Nov 2026), the first built AO and AR from the start with every part: module + video, walk-through
-  (Josh, 27), MDT, PCR `josh`/`joshAR`, customiser `seizures-ao` (unpublished until merge), stations, case-night deck.
-  On a branch, not merged. Standard for every new topic from now on: `.claude/references/new-topic-recipe.md`.
+  (Josh, 27), MDT, PCR `josh`/`joshAR`, customiser `seizures-ao` (published), stations, case-night deck.
+  Live (PR #398, merged 28 Nov 2026); eight lessons added in Supabase. Standard for every new topic from now on: `.claude/references/new-topic-recipe.md`.
 - Next modules: amputation and haemorrhage (no walk-through exists). The MVA hypo scenario
   (`/modules/hypo/`) is to be converted when asked.
 - Retire `/course/` (Google Sheet app) once the current AR group finishes; `/ar/course/` replaces it.
