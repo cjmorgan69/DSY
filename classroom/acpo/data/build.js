@@ -19,7 +19,7 @@
   function step(t) { return t.text ? { h: t.t, t: t.text } : t.t; }
   function split(x) { var k = x.indexOf(': '); return k > 0 ? { h: x.slice(0, k), t: x.slice(k + 2) } : { h: x }; }
   function tableSlide(tb, extra) {
-    var t = tb.table, s = { type: 'table', title: tb.title, noStep: true, fs: 44 };
+    var t = tb.table, s = { type: 'table', title: tb.title, noStep: true, fs: 50 };
     if (t.rows.length === 1 && t.head.length > 4) { s.head = ['Observation', 'Value']; s.rows = t.head.map(function (h, i) { return [h, t.rows[0][i]]; }); s.fs = 46; }
     else { s.head = t.head; s.rows = t.rows; }
     for (var k in extra) s[k] = extra[k];
@@ -76,7 +76,7 @@
   var jobPanels = order.slice(order.indexOf('Dispatch and en route'), order.indexOf('Handover') + 1);
   // MDT screenshots (img/mdt-*.png, taken by /classroom/case-night/tools/mdt-shots.js acpo with the walk-through's times).
   function shot(n, title, points, say) {
-    return { type: 'image', kicker: 'The MDT', title: title, img: 'img/mdt-' + n + '.png', alt: 'MDT screen: ' + title, points: points, fs: 38, wide: true,
+    return { type: 'image', kicker: 'The MDT', title: title, img: 'img/mdt-' + n + '.png', alt: 'MDT screen: ' + title, points: points, fs: 48, wide: true,
       notes: { time: 1, say: say ? [say] : [], tip: 'Screenshot of the DSY MDT simulator (fictional data). Students can drill the same job later from Learn on your own.' } };
   }
   var mdtAt = {

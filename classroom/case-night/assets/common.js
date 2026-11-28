@@ -5,10 +5,59 @@
   // Long tile or step slides are split in two so the text in each tile can be larger (owner, 11 Nov 2026):
   // a 'cards' or 'numbered' slide with more than 4 items and more than about 700 characters becomes
   // "Title (1 of 2)" and "Title (2 of 2)". The notes stay with the first half.
+  // Dot-point and table slides that would have to shrink their text a long way to fit are split in two as well
+  // (owner, 28 Nov 2026): the estimate below is the text size at which the slide fits; under MIN it is split.
+  var MIN = { bullets: 44, table: 38 };
+  function txt(p) { return typeof p === 'string' ? p : (p.t || '') + ' ' + (p.sub || []).join(' '); }
+  function lines(s, chars) { return Math.max(1, Math.ceil(String(s).length / chars)); }
+  function fitSize(sl) {
+    for (var f = sl.type === 'table' ? (sl.fs || 48) : 60; f > 24; f -= 2) {
+      var h;
+      if (sl.type === 'bullets') {
+        var w = sl.callout ? 1000 : 1660;
+        h = sl.points.reduce(function (a, p) { return a + lines(txt(p), w / (0.5 * f)) * 1.25 * f + 0.45 * f; }, 0);
+        if (h <= 760) return f;
+      } else {
+        var cols = (sl.head || sl.rows[0]).length, cw = 1700 / cols;
+        h = (sl.head ? 1 : 0) * 1.6 * f + sl.rows.reduce(function (a, r) {
+          return a + Math.max.apply(null, r.map(function (c) { return lines(c, (cw - 0.8 * f) / (0.5 * f)); })) * 1.25 * f + 0.76 * f;
+        }, 0) + (sl.callout ? 3 * f : 0);
+        if (h <= 760) return f;
+      }
+    }
+    return 24;
+  }
+  function busy(sl) {
+    if (sl.type === 'bullets' && sl.points && sl.points.length >= 4) return fitSize(sl) < MIN.bullets;
+    if (sl.type === 'table' && sl.rows && sl.rows.length >= 4) return fitSize(sl) < MIN.table;
+    return false;
+  }
+  // Split a list in two, preferring a break at a heading point ("What to do:") near the middle.
+  function halfAt(list) {
+    var mid = Math.ceil(list.length / 2), best = mid;
+    for (var d = 0; d <= 2; d++) {
+      [mid - d, mid + d].forEach(function (k) {
+        if (best === mid && k > 0 && k < list.length && /:$/.test(txt(list[k]).trim()) && k !== mid) best = k;
+      });
+    }
+    return best;
+  }
+
   D.sections.forEach(function (sec) {
     var out = [];
     sec.slides.forEach(function (sl) {
-      var long = (sl.type === 'cards' || sl.type === 'numbered') && sl.items && sl.items.length > 4 && JSON.stringify(sl.items).length > 700;
+      if (busy(sl)) {
+        var key = sl.type === 'table' ? 'rows' : 'points', h = halfAt(sl[key]);
+        [sl[key].slice(0, h), sl[key].slice(h)].forEach(function (part, i) {
+          var c = {}; for (var k in sl) c[k] = sl[k];
+          c[key] = part; c.title = sl.title + ' (' + (i + 1) + ' of 2)';
+          if (i) c.notes = { time: 1 };
+          if (sl.type === 'table' ? !i : i) delete c.callout;
+          out.push(c);
+        });
+        return;
+      }
+      var long =(sl.type === 'cards' || sl.type === 'numbered') && sl.items && sl.items.length > 4 && JSON.stringify(sl.items).length > 700;
       if (!long) { out.push(sl); return; }
       var half = Math.ceil(sl.items.length / 2);
       [sl.items.slice(0, half), sl.items.slice(half)].forEach(function (part, i) {
