@@ -18,6 +18,10 @@ const SHOTS = {
   // 20 km north of Cummins, 11 Nov 2026). CU181 = Cummins at night (owner).
   'asthma': { job: 'asthma', start: '02:14:50', callsign: 'CU181', hospital: 'CUMMINS HOSPITAL',
     toEnroute: 1, toRemarks: 8, toScene: 3, onScene: 28, transport: 30 },
+  // Greg: page 1432 (day, so CU81, paged from Cummins), Enroute 1433, remarks 1448, scene 1457, Mobile 1530, Port Lincoln
+  // Hospital 1605 (walk-through times).
+  'envenomation': { job: 'envenomation', start: '14:31:50', callsign: 'CU81', hospital: 'PORT LINCOLN HOSPITAL',
+    toEnroute: 1, toRemarks: 15, toScene: 9, onScene: 33, transport: 35 },
   // Sam: page 0948 (day, so TB81), Enroute 0949, scene 0955, cleared from scene 1052 (not transported): press and
   // hold MOBILE for 2 seconds goes straight to Clear (owner, 26 Nov 2026).
   'refusal': { job: 'refusal', start: '09:47:50', callsign: 'TB81', clearFromScene: true,

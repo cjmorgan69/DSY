@@ -18,7 +18,7 @@ window.DSY_TOPICS = [
   { id:'stroke', group:'brain', title:'Stroke', protocol:'CPP-016-AO', patient:'Frank, 78: weakness and slurred speech at morning tea',
     module:'stroke', walk:'/modules/stroke-AO/', mdt:'stroke', custom:'stroke-ao', stations:'/stations/stroke/', pcr:'frank' },
   { id:'envenomation', group:'medical', title:'Snake bite', protocol:'CPP-008-AO', patient:'Greg, 52: brown snake bite to the leg',
-    module:'envenomation', walk:'/modules/envenomation/', mdt:'envenomation', custom:'envenomation-ao', pcr:'greg' },
+    module:'envenomation', walk:'/modules/envenomation/', mdt:'envenomation', custom:'envenomation-ao', stations:'/stations/envenomation/', pcr:'greg', slides:'/classroom/envenomation/' },
   { id:'hypoglycaemia', group:'medical', title:'Hypoglycaemia', protocol:'CPP-009-AO', patient:'Ron, 67: confused and sweaty in the shed',
     module:'hypoglycaemia', walk:'/modules/hypoglycaemia-ao/', mdt:'hypo', custom:'hypoglycaemia-ao', stations:'/stations/hypoglycaemia/', pcr:'ron' },
   { id:'sepsis', group:'medical', title:'Sepsis', protocol:'CPP-062-AO', patient:'Robert, 71: hot, confused and hard to rouse',

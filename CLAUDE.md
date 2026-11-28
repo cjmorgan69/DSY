@@ -178,7 +178,7 @@ Development" cards. Raised with the owner and NOT yet decided or done:
   26 Nov 2026); lessons added for the module, walk-through, stations and deck (not yet the PCR job `sam`).
 - AR version (26 Nov 2026): AO / AR switch on modules (`ar` in content.js, `?scope=ar`); pilot on the hypoglycaemia
   module, Ron's walk-through and an AR PCR job (`ronAR`); gap analysis in `.claude/references/ar-vs-ao-protocols.md`. Live (PR #378, merged
-  26 Nov 2026; the three AR lessons added in Supabase). Next: the other 7 topics with real AR differences (asthma, chest pain, pain, stroke, seizures, ABD, refusal).
+  26 Nov 2026; the three AR lessons added in Supabase). Snake bite AR version on a branch (28 Nov 2026). Next: the other 7 topics with real AR differences (asthma, chest pain, pain, stroke, seizures, ABD, refusal).
 - Dashboard search box (27 Nov 2026): one box on `/dashboard/`, `/dashboard/wide/` and `/dashboard/team/` finds topics,
   AO protocols, people, sessions, lessons and pages (see `dashboard.md`). Live (PR #384, merged 27 Nov 2026).
 - Larger case-night slide text (28 Nov 2026): bigger dot points, busy slides split in two (see `classroom.md`).
@@ -186,7 +186,10 @@ Development" cards. Raised with the owner and NOT yet decided or done:
   live (PR #389, merged 28 Nov 2026).
 - Plan to complete every topic with AO and AR versions (28 Nov 2026): `.claude/references/completion-plan.md`
   (what each topic still needs, the AR work per protocol, order of work, four questions for the owner).
-- Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.
+- Snake bite topic completed (28 Nov 2026): stations `/stations/envenomation/`, case-night deck `/classroom/envenomation/`,
+  AR versions of the module and Greg's walk-through, AR PCR job `gregAR`; shared fix for story text on AR pages.
+  On a branch, not merged. After merge: add the Supabase lessons (stations, deck, AR module, AR walk-through, AR PCR).
+- Stations still to build: pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario
   (`/modules/hypo/`) is to be converted when asked.

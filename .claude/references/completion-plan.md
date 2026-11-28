@@ -39,7 +39,7 @@ Each AR version starts with the AR PDF, read again on the day: AR PDFs were expo
 | Dementia (ABD) | CPP-052-AR, big | lesson for stations, PCR `joanne` lesson, deck? | full: risk assessment, MSE, clinical support, SAPOL, consult |
 | Refusal | CPP-058-AR, big | PCR `sam` lesson | full: seek consent, clinical support or consult; no VIRCA steps |
 | Anaphylaxis | CPP-022-AR, small | deck? | light |
-| Snake bite | small | stations, deck?; lesson link has two blank lines (intro video by Lee is on YouTube, not in the repo) | light |
+| Snake bite | CPP-030-AR, small | **done 28 Nov 2026** (stations, deck); lesson link has two blank lines (intro video by Lee is on YouTube) | **done** (module, walk-through, PCR `gregAR`) |
 | Falls | small (pain part big) | deck? | light, plus the pain-relief changes |
 | Burns | small (pain part big) | MDT job, deck? | light, plus the pain-relief changes |
 | Spinal precautions | small | MDT job, customiser, deck? | light |

@@ -130,3 +130,12 @@ conversation (role cards in threes; example questions DSY-written), 3 who decide
 the three pathways, cards), 4 the EOC Clinician call, the AMA form (team's own form or paper: DSY has no copy of the
 SAAS AMA form) and the VIRCA PCR lines. Finish: Sam walk-through and PCR. No medicines or clinical kit. Cards and
 EOC lines DSY-written (owner to review). Live (PR #377, merged 26 Nov 2026).
+
+## Snake bite
+
+Snake bite skills stations (`/stations/envenomation/`, 28 Nov 2026, owner asked for all the envenomation components;
+same engine as the spinal stations): 1 which bite, which pathway (seven patient cards over every CPP-008-AO pathway,
+Funnel Web signs), 2 the pressure bandage on a leg and an arm (CPPRO-022 steps and target), 3 splint, vacuum mattress
+and the move (longboard or carry chair, owner's rule), 4 monitoring, the clinical support and EOC Clinician calls,
+ISBAR, and an AR box (CPP-030-AR). Sources CPP-008-AO v5.0, CPPRO-022 v1.0 (review date 30 Nov 2024 passed),
+CPP-030-AR v3.0. Patient cards, EOC Clinician lines, the call script and run notes DSY-written (owner to review). On a branch, not merged.

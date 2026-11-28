@@ -400,6 +400,63 @@ window.PCR_JOBS = {
     marks: [['front', 39, 205, 'S bite', -6]]
   },
 
+  gregAR: {
+    label: 'Greg, 52: snake bite (AR)',
+    short: 'Greg (AR)',
+    walk: '/modules/envenomation/?scope=ar',
+    walkStudent: '/modules/envenomation/?scope=ar&mode=student',
+    // The Ambulance Responder version of Greg (CPP-030-AR): the same job up to 1522, then the EOC Clinician consult before
+    // transport advises transport and RV with clinical support en route. Times 1530 (depart), 1538 (obs) and the RV on the
+    // Flinders Highway at 1542 are DSY's, from the AR walk-through.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Suspected brown snake envenoming, R lower leg, symptomatic (headache, vomiting, rising HR).',
+      recommendation: 'Transport and RV with clinical support (EOC Clinician 1524). Handed over to the paramedic crew at the RV, Flinders Hwy, 1542. Bite ~1415, walked ~100 m, bite WASHED (swabbing may be affected). Pressure bandage toes to groin 1512, bite circled, NOT removed. Vacuum mattress. HR 92 to 108, vomited once, nil paralysis or bleeding signs.',
+      ecg: 'Sinus rhythm, then sinus tachycardia.'
+    },
+    sections: {
+      pc: 'Snake bite R lower leg ~1415, brown snake ~1.5 m. Headache + nausea.',
+      phx: 'HTN.',
+      medn: 'Perindopril 5 mg daily.',
+      hx: 'Clearing scrub near the water tank at Wangary, felt a sharp sting R calf, saw a brown snake ~1.5 m. Walked ~100 m back to the house. Wife washed the bite + applied a cold cloth. No bandage. Now headache + feels sick. Last ate ~1 hr ago. Wife called SAAS.',
+      oa: '52M sitting in a deck chair on the back verandah, R leg on a footstool, damp cloth on R calf. Pale, mildly sweaty, talking. Wife beside him, anxious. Dog penned, no snake seen.',
+      cns: 'A on AVPU, GCS 15, oriented. PEARL 3 mm. Nil ptosis, double vision, slurred speech or difficulty swallowing.',
+      skin: 'Pale, mild sweating. Two puncture marks R outer calf, mild local swelling, nil bleeding.',
+      cvs: 'Pulse 92 regular. BP 138/82. Nil bleeding from gums or elsewhere. R foot pulses + sensation normal.',
+      resp: 'RR 18, nil resp distress, normal effort. SpO2 98% RA.',
+      pain: 'Pain at the bite site. Headache developing. Nil generalised muscle pain.',
+      survey: '',
+      care: 'Kept still from arrival, no walking or standing. Clinical support requested, EOC Clinician consulted. Pressure bandage toes to groin 1512, bite circled, cuticle beds pink. Vacuum mattress, head up 20-30 deg, clothing on.\n1522: HR 104, worse headache, vomited once, more sweating. EOC Clinician 1524: transport and RV with clinical support en route, repeated back. Longboard to stretcher, depart 1530. Suction, BVM, defib ready.\n1538: HR 108, BP 126/76, cuticle beds pink. RV with paramedic crew on the Flinders Hwy 1542, handed over.'
+    },
+    tips: {
+      survey: 'A bite on its own isn\'t a trauma secondary survey: the systemic screen goes in CNS, SKIN and CVS.',
+      care: 'Record the EOC Clinician\'s advice and the time (transport and RV), and the RV place and time.',
+      recommendation: 'The washed bite and the bandage still on are the two things the paramedic must hear.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Mark the bite on the right outer calf (front or back figure), for example S for the local swelling, and say "bite" beside it.',
+      info: 'Not ticked: transported (handed over to the paramedics at the RV).', consult: 'Ticked: EOC Clinician consulted, and at 1524 before transport.'
+    },
+    ticks: ['medsHanded', 'consult'],
+    obs: [
+      { time: '1500', rr: 18, o2: 'RA', spo2: 98, bp: '138/82', hr: 92, temp: 36.8, gcs: 15, evm: [4, 5, 6], pupils: ['+', '+'], bgl: 6.2 },
+      { time: '1522', rr: 20, o2: 'RA', spo2: 97, bp: '130/78', hr: 104, gcs: 15, evm: [4, 5, 6] },
+      { time: '1538', rr: 20, o2: 'RA', spo2: 97, bp: '126/76', hr: 108, gcs: 15, evm: [4, 5, 6] }
+    ],
+    drugs: [
+      ['1458', 'Clinical support requested'],
+      ['1500', 'Monitor: sinus rhythm'],
+      ['1505', 'EOC Clinician consult'],
+      ['1512', 'Pressure bandage toes-groin'],
+      ['1515', 'Vacuum mattress, head up'],
+      ['1524', 'EOC Clinician: transport + RV'],
+      ['1530', 'Longboard to stretcher, depart'],
+      ['1542', 'RV Flinders Hwy: handed to paramedics']
+    ],
+    marks: [['front', 39, 205, 'S bite', -6]]
+  },
+
   ron: {
     label: 'Ron, 67: hypoglycaemia (AO)',
     short: 'Ron',

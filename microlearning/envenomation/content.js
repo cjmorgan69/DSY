@@ -19,6 +19,7 @@ window.MODULE = {
   panels: [
     { title: "Introduction to envenomation", open: true, blocks: [
       { video: { src: "https://www.youtube.com/embed/5724zYD14LQ?si=aUyky1CmxHHbV57t", title: "Introduction to envenomation" } },
+      { scope: "ar", box: { title: "Watching as an Ambulance Responder", tone: "warn", text: "The video was made for the AO protocol (CPP-008-AO). The AR protocol (CPP-030-AR) gives the same first aid: request clinical support, minimal exertion, no tourniquet and no washing, a pressure bandage on a bitten limb, and the vacuum mattress. The difference is at the end: an AR consults the EOC Clinician before transport, rather than \"provide transport and notify\"." } },
       { text: "A number of venomous animals can cause envenomation through bites or stings. The aim of prehospital treatment is to reduce the effects of the venom and symptomatically manage the patient until definitive care." },
       { text: "Snakebite is the most common type of envenoming accident in SA and fatalities can occur. The most significant immediate clinical risk is early cardiovascular collapse leading to cardiac arrest. Australian native snake venom can also cause paralysis, muscle breakdown, renal damage and affect the blood's ability to clot." },
       { box: { title: "Why pressure bandaging works", check: { q: "Why keep the patient and the bitten limb still?", a: "Muscle movement pushes lymph, and the venom in it, back towards the central circulation." }, text: "Venom is thought to travel mainly through the lymphatic vessels. A pressure bandage compresses them and delays symptom onset. Muscle movement pushes lymph back towards the central circulation, so keep the bitten limb and the whole patient as still as possible, and keep the bitten area below the level of the heart where practical." } },
@@ -56,7 +57,7 @@ window.MODULE = {
               "Bite on a limb: apply a pressure bandage and immobilise the limb, whether or not there are signs of envenoming",
               "Bite to head or torso: cover the bite area with a simple dressing",
               "Immobilise the patient with a vacuum mattress if available, head elevated about 20-30°",
-              "Provide transport and notify the receiving facility"] }
+              { scope: "ao", text: "Provide transport and notify the receiving facility" }, { scope: "ar", text: "Consult the EOC Clinician, who may advise: transport and cancel clinical support; transport and RV with clinical support en route; or monitor the patient until clinical support arrives" }] }
           ] },
           octopus: { sections: [
             { title: "Blue-ringed octopus: what to expect", items: [
@@ -68,7 +69,8 @@ window.MODULE = {
               "Basic care and request clinical support", "Ensure minimal patient exertion",
               "Bite on a limb: apply a pressure bandage and immobilise the limb",
               "Bite to head or torso: cover the bite area with a simple dressing",
-              "Immobilise with a vacuum mattress if available", "Provide transport and notify the receiving facility"] }
+              "Immobilise with a vacuum mattress if available",
+              { scope: "ao", text: "Provide transport and notify the receiving facility" }, { scope: "ar", text: "Consult the EOC Clinician, who may advise: transport and cancel clinical support; transport and RV with clinical support en route; or monitor the patient until clinical support arrives" }] }
           ] },
           bigblack: { sections: [
             { title: "Big black spider (> 2cm body length): what to expect", items: [
@@ -79,15 +81,15 @@ window.MODULE = {
               "If symptomatic or the bite was less than 4 hours ago, treat as for snakebite: pressure bandage and immobilise",
               "Otherwise, consult the EOC Clinician for advice",
               "Do not apply a tourniquet or wash the bite site",
-              "Provide transport and notify the receiving facility"] }
+              { scope: "ao", text: "Provide transport and notify the receiving facility" }, { scope: "ar", text: "Consult the EOC Clinician, who may advise: transport and cancel clinical support; transport and RV with clinical support en route; or monitor the patient until clinical support arrives" }] }
           ] },
           redback: { sections: [
             { title: "Redback spider (if identified): what to expect", items: ["Unlikely to cause death", "May need management of non-life-threatening symptoms"] },
             { title: "Management", items: [
-              "Basic care", "Apply ice therapy if available to reduce localised discomfort, and rest the area",
+              "Basic care", { scope: "ar", text: "Request clinical support" }, "Apply ice therapy if available to reduce localised discomfort, and rest the area",
               "Do not apply a pressure bandage", "Pain management as per CPP-013-AO",
               "Consult the EOC Clinician for advice regarding management and transport",
-              "If required, provide transport and notify the receiving facility"] }
+              { scope: "ao", text: "If required, provide transport and notify the receiving facility" }, { scope: "ar", text: "If the EOC Clinician directs, provide transport and notify the receiving facility" }] }
           ] },
           bee: { sections: [
             { title: "Bee, wasp or ant sting: what to expect", items: ["Watch for signs and symptoms of allergy or anaphylaxis"] },
@@ -96,7 +98,7 @@ window.MODULE = {
               "Remove any remaining stinging apparatus with a sideways scraping motion, avoiding squeezing the venom sac (bee sting)",
               "Apply ice therapy if available to reduce localised discomfort",
               "Consult the EOC Clinician for advice regarding management and transport",
-              "If required, provide transport and notify the receiving facility"] }
+              { scope: "ao", text: "If required, provide transport and notify the receiving facility" }, { scope: "ar", text: "If the EOC Clinician directs, provide transport and notify the receiving facility" }] }
           ] },
           exotic: { sections: [
             { title: "Exotic snake or other marine bite or sting: what to expect", items: ["Includes all exotic (non-Australian) snake bites and marine bites and stings other than blue-ringed octopus"] },
@@ -169,6 +171,10 @@ window.MODULE = {
           why: "Treat as snakebite if symptomatic or the bite was less than 4 hours ago. Otherwise consult the EOC Clinician." },
         { q: "What is the priority for a blue-ringed octopus envenomation?", options: ["Ice therapy", "Airway and ventilation", "Washing the bite site"], answer: 1,
           why: "Focus on airway and ventilation due to the paralysing effects of the venom." },
+        { scope: "ar", q: "As an AR, your snake bite patient is bandaged and in the vacuum mattress. What does CPP-030-AR say comes next?", options: ["Provide transport and notify the receiving facility", "Consult the EOC Clinician, who may advise transport, an RV with clinical support, or monitoring until clinical support arrives", "Wait for the paramedic before calling anyone"], answer: 1,
+          why: "CPP-030-AR: consult the EOC Clinician, who may advise transport and cancellation of clinical support, transport and RV with clinical support en route, or monitoring the patient until clinical support arrives." },
+        { scope: "ar", q: "An AR crew attends an identified redback spider bite. What does CPP-030-AR add to the AO steps?", options: ["A pressure bandage", "Request clinical support, and transport only if the EOC Clinician directs", "Nothing: the steps are the same"], answer: 1,
+          why: "CPP-030-AR, redback: basic care, request clinical support, ice and rest, pain management as per CPP-036-AR, consult the EOC Clinician and, if directed, provide transport." },
         { q: "A splint is mandatory when:", options: ["A vacuum mattress is not available", "The bite is on the torso", "Always, even inside a vacuum mattress"], answer: 0,
           why: "A padded cardboard splint is mandatory if a vacuum mattress is not available to immobilise the patient." }
       ] } }
@@ -184,7 +190,7 @@ window.MODULE = {
         "Splint the limb, or immobilise the patient in a vacuum mattress if available",
         "Immobilise with the head elevated about 20-30°, keeping the bitten area below the heart",
         "Have cardiac monitoring and defibrillation available, and be ready to ventilate",
-        "Provide transport and notify the receiving facility"] } },
+        { scope: "ao", text: "Provide transport and notify the receiving facility" }, { scope: "ar", text: "Consult the EOC Clinician, who may advise: transport and cancel clinical support; transport and RV with clinical support en route; or monitor the patient until clinical support arrives" }] } },
       { box: { title: "Do not", tone: "no", check: { q: "The patient arrives with a pressure bandage already on. Do you take it off to check the bite?", a: "No. Do not remove pressure bandages or tourniquets already applied. Consult the EOC Clinician instead." }, items: [
         "Apply a tourniquet",
         "Wash or clean the bite site (swabbing for venom identification is highly sensitive to venom on the skin)",
@@ -195,5 +201,17 @@ window.MODULE = {
         "Remove the patient's clothing before placing them in a vacuum mattress",
         "Allow the patient to walk to the stretcher"] } }
     ] }
-  ]
+  ],
+
+  /* ---------- Ambulance Responder version (CPP-030-AR Envenomation - AR v3.0): these keys replace the AO ones ---------- */
+  ar: {
+    replace: [["CPP-008-AO", "CPP-030-AR"], ["Envenomation - AO", "Envenomation - AR"], ["CPP-013-AO", "CPP-036-AR"], ["CPP-003-AO", "CPP-022-AR"]],
+    subtitle: "Eyre Peninsula - Ambulance Responder microlearning",
+    lead: "Work through each section in order. This version follows SA Ambulance Service CPP-030-AR Envenomation - AR and CPPRO-022 Pressure Bandaging and Immobilisation (which applies to Ambulance Responders too). The first aid is the same as for AOs; the EOC Clinician consult before transport is the difference.",
+    protocol: {
+      code: "CPP-030-AR", name: "Envenomation - AR", version: "v3.0 (17 May 2019)", exported: "31 August 2026",
+      also: [{ code: "CPPRO-022", name: "Pressure Bandaging and Immobilisation", version: "v1.0 (effective 17 May 2019, review date 30 Nov 2024)" }]
+    },
+    relatedCodes: ["CPP-008-AO"]
+  }
 };

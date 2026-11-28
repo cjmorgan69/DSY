@@ -267,3 +267,15 @@ transport; video kept with an AR note under it; AR quiz 9 questions; AR checker 
 (`/modules/hypoglycaemia-ao/?scope=ar`) has an AR version too: no glucagon; when oral glucose fails at 1740 the EOC
 Clinician advises transport and RV with clinical support en route (owner's choice, 26 Nov 2026); DSY-written RV with
 the Port Lincoln paramedics at Edillilie at 1805, handover at the RV. `ar.replace` swaps codes and words in the AR view.
+
+## Envenomation AR version (28 Nov 2026)
+
+`/microlearning/envenomation/?scope=ar` follows CPP-030-AR Envenomation - AR v3.0 (17 May 2019, exported 31.08.2026):
+same first aid as CPP-008-AO; the native snake, octopus and big black spider pathways end with the EOC Clinician
+consult (three options) instead of "provide transport and notify"; redback adds "request clinical support" and both
+redback and bee/wasp/ant say transport only if directed; CPP-013-AO and CPP-003-AO read as CPP-036-AR and CPP-022-AR.
+An AR box sits under the (YouTube) intro video; two AR quiz questions. Owner asked for "all the components" (28 Nov 2026).
+
+Shared fix (28 Nov 2026): in a module with an `ar` object, `module.js` turned every `{ text: "..." }` block into a plain
+string, so story paragraphs vanished from both views of the hypoglycaemia walk-through (13 paragraphs, live since PR #378).
+Only items that carry `scope` are unwrapped now. On a branch, not merged.

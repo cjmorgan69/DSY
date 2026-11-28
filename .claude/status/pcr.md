@@ -63,3 +63,7 @@ AR PCR job (26 Nov 2026, owner asked): `ronAR`, "Ron, 67: hypoglycaemia (AR)", f
 (`?scope=ar`): same job to 1740, then no glucagon, EOC Clinician 1741 transport and RV, 1755 obs (BGL 2.5, GCS 11), RV
 with the paramedics at Edillilie 1805. `walkStudent` opens the AR student walk-through. The AR pages link to it through
 `arHref` on the Ron PCR line in `related.js`. Live (merged 26 Nov 2026).
+
+PCR job `gregAR` (28 Nov 2026): Greg's AR version, from the AR walk-through: EOC Clinician 1524 transport and RV,
+depart 1530, obs 1538, RV with the paramedics on the Flinders Highway 1542. `arHref` on Greg's line in `related.js`.
+DSY-written (owner to review). On a branch, not merged.

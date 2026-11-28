@@ -147,3 +147,11 @@ v4.1. Story, obs, EOC Clinician lines and the risk wording ("can come back while
 teaching) are DSY-written (owner to review). `relatedCodes: ["CPP-009-AO"]`. MDT job `refusal`, PCR job `sam` (with a
 case card), stations, case-night deck. Customiser template `refusal-ao` (26 Nov 2026, `scenarios/tools/convert-refusal.js`, page time 07:00 to 11:00
 because of the 1300 cricket final; loaded unpublished, md5 checked). Live (PR #377, merged 26 Nov 2026).
+
+## Envenomation AR version (Greg, 28 Nov 2026)
+
+`/modules/envenomation/?scope=ar` (CPP-030-AR v3.0, CPP-025-AR): the same job to 1522; at 1524 the EOC Clinician is
+consulted before transport and advises transport and RV with clinical support en route (DSY chose this to match Ron's
+AR version: owner to confirm); depart 1530, obs 1538, RV with the paramedic crew on the Flinders Highway at 1542 and
+an ISBAR at the RV (own Handover panel, scope ar). AR decision at break point 6, AR objectives and a take-home line;
+variation 3 names "the adult cardiac arrest protocol for your level". DSY-written (owner to review). On a branch, not merged.
