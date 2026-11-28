@@ -291,4 +291,4 @@ continuous nebs) and the three transport options; no IM adrenaline (removed in v
 resuscitation mask "1 to 4 years" (AO: under 4); nebuliser doses "1 to 6" and "6 or older", so a 6 year old fits
 both: the checker says check the dose and consult (as the AO checker does for the MDI at 6). AR key points, CTL-083
 table, AR doses table, AR link, two AR quiz questions (one AO question swapped), video note under Lee's AO video.
-Checker tested on every scenario and the 6-year and under-1 boundaries in both versions. On a branch, not merged.
+Checker tested on every scenario and the 6-year and under-1 boundaries in both versions. Live (PR #394, merged 28 Nov 2026).

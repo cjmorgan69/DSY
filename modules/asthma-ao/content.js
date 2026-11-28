@@ -29,9 +29,8 @@ window.MODULE = {
         "Request early clinical support and consult the EOC Clinician, repeating the advice back",
         "Set up a nebuliser and use an MDI and spacer as in CPPRO-012",
         "Reassess, recognise deterioration to life-threatening asthma, and plan the escalation",
-        { scope: "ar", text: "Consult the EOC Clinician about treatment and transport, and manage a transport and RV with clinical support" },
-        { scope: "ao", text: "Deliver a concise ISBAR handover" },
-        { scope: "ar", text: "Deliver a concise ISBAR handover to the paramedic crew at the RV" }
+        { scope: "ar", text: "Consult the EOC Clinician about treatment and transport, and follow the transport advice" },
+        "Deliver a concise ISBAR handover"
       ] } },
       { box: { title: "Required equipment", items: [
         "Ambulance response bag, Corpuls3 monitor, stethoscope",
@@ -252,7 +251,7 @@ window.MODULE = {
         ["Speech", "Phrases", "Short sentences"], ["Work of breathing", "Marked accessory muscle use", "Mild accessory muscle use"], ["Wheeze", "Loud, both sides", "Present but reduced"]
       ] } } },
       { scope: "ao", text: "Mild hand tremor and a dry mouth. Karen says she feels \"better but not right yet\". In the scenario, the EOC Clinician advises a repeat dose of salbutamol via MDI and spacer with oxygen at 4 L/min via nasal cannula, to give en route.", muted: true },
-      { scope: "ar", text: "Mild hand tremor and a dry mouth. Karen says she feels \"better but not right yet\". In the scenario, the crew updates the EOC Clinician at 0250, who advises a repeat dose of salbutamol via MDI and spacer with oxygen at 4 L/min, to give en route, and transport now towards Cummins with an RV with the paramedic crew on the way.", muted: true },
+      { scope: "ar", text: "Mild hand tremor and a dry mouth. Karen says she feels \"better but not right yet\". In the scenario, the crew updates the EOC Clinician at 0250, who advises a repeat dose of salbutamol via MDI and spacer with oxygen at 4 L/min via nasal cannula, to give en route, and transport to Cummins Hospital now. She is improving and the hospital is closer than the paramedic, so clinical support is cancelled.", muted: true },
       { breakpoint: { title: "Reassessment and escalation decision", type: "Decision making",
         prompts: ["Compare the numbers. Better, worse or the same?", "Can you give another round on your own?", "Stay and treat, or load and go?", "Would waiting for the paramedic change anything?", "What if she had NOT improved?"],
         expected: [
@@ -261,7 +260,7 @@ window.MODULE = {
           { scope: "ao", text: "Load and go: the hospital is 30 minutes away, the paramedic 50. Treat en route" },
           { scope: "ao", text: "If NOT improving: consult the EOC Clinician immediately (repeat nebs, continuous nebs or IM adrenaline may be advised); keep clinical support coming; transport" },
           { scope: "ao", text: "If she becomes drowsy, cyanosed or her breathing effort drops: life threatening. High flow oxygen, early clinical support, urgent transport" },
-          { scope: "ar", text: "The transport is the EOC Clinician's call (CPP-048-AR): transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives. Give them the trend and the times so they can choose. Here: transport and RV" },
+          { scope: "ar", text: "The transport is the EOC Clinician's call (CPP-048-AR): transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives. Give them the trend and the times so they can choose. Here: transport to Cummins Hospital, and clinical support is cancelled" },
           { scope: "ar", text: "If NOT improving: consult the EOC Clinician immediately (repeat nebs or continuous nebs may be advised; no IM adrenaline at AR level); keep clinical support coming" },
           { scope: "ar", text: "If she becomes drowsy, cyanosed or her breathing effort drops: life threatening. High flow oxygen, early clinical support, consult the EOC Clinician immediately" }
         ],
@@ -281,7 +280,7 @@ window.MODULE = {
           "You do: load and go",
           "The EOC Clinician, who may advise transport and cancel clinical support, transport and RV en route, or monitoring until clinical support arrives",
           "The paramedic, when they arrive" ], answer: 1,
-          why: "CPP-048-AR (and CPP-025-AR): consult the EOC Clinician before transport. In this scenario the advice is transport and RV with the paramedic crew en route." }],
+          why: "CPP-048-AR (and CPP-025-AR): consult the EOC Clinician before transport. In this scenario the advice is transport to Cummins Hospital, 30 minutes, and clinical support is cancelled: she is improving and the hospital is closer than the paramedic, 50 minutes away." }],
         cards: [{ q: "Using an MDI and spacer: how many breaths per puff?", a: "Four (CTL-071 and CPPRO-012): one puff into the spacer, then breathe in deeply and slowly, holding about 10 seconds if able, four times. Wait 30 to 60 seconds before the next." }]
       } }
     ] },
@@ -292,12 +291,9 @@ window.MODULE = {
         "Stretcher sitting fully upright, pillow behind her back, blanket: it's a cool night",
         "Corpuls3 reconnected; nebuliser, MDI and spacer, oxygen, BVM and suction within reach",
         { scope: "ao", text: "Clinician in the back; smooth driving; notify the receiving hospital" },
-        { scope: "ar", text: "Clinician in the back; smooth driving; the driver confirms the RV point with the EOC" }
+        { scope: "ar", text: "Clinician in the back; smooth driving; update the EOC Clinician if anything changes" }
       ] } },
-      { scope: "ar", table: { title: "Observations before the RV", table: { head: ["", "Initial", "20 min", "0300"], rows: [
-        ["HR", "118", "106", "100"], ["RR", "28", "22", "20"], ["SpO2", "91% (air)", "95%", "96% (O2 4 L/min)"], ["BP", "140/88", "132/82", "130/80"], ["Speech", "Phrases", "Short sentences", "Sentences"], ["Wheeze", "Loud", "Moderate", "Mild"]
-      ] } } },
-      { scope: "ao", table: { title: "Pre-arrival observations", table: { head: ["", "Initial", "20 min", "Pre-arrival"], rows: [
+      { table: { title: "Pre-arrival observations", table: { head: ["", "Initial", "20 min", "Pre-arrival"], rows: [
         ["HR", "118", "106", "98"], ["RR", "28", "22", "20"], ["SpO2", "91% (air)", "95%", "96% (O2 4 L/min)"], ["BP", "140/88", "132/82", "128/80"], ["Speech", "Phrases", "Short sentences", "Sentences"], ["Wheeze", "Loud", "Moderate", "Mild"]
       ] } } },
       { breakpoint: { title: "Extrication and transport planning", type: "Discussion",
@@ -327,7 +323,7 @@ window.MODULE = {
       } }
     ] },
 
-    { scope: "ao", title: "Handover", blocks: [
+    { title: "Handover", blocks: [
       { text: "You arrive at Cummins Hospital ED at 0325. One nurse meets you in the ambulance bay. Karen is sitting upright with a mild wheeze, SpO2 96% on oxygen, speaking in full sentences." },
       { table: { title: "ISBAR", table: { head: ["", "Example"], rows: [
         ["I", "\"I'm [name], Ambulance Officer from [station]. This is Karen Mitchell, 45.\""],
@@ -336,7 +332,14 @@ window.MODULE = {
         ["A", "\"On arrival, more severe asthma: phrases, distressed, SpO2 91% on air, RR 28, HR 118, wheeze both sides. After a salbutamol and ipratropium neb and a repeat salbutamol dose by spacer, she's speaking in sentences, SpO2 96% on oxygen, HR 98, RR 20, mild wheeze.\""],
         ["R", "\"Improved but not at baseline. She still needs oxygen and ongoing monitoring, and review of her preventer.\""]
       ] } } },
-      { table: { title: "Treatment for handover (scenario times)", table: { head: ["Time", "Treatment"], rows: [
+      { scope: "ar", table: { title: "Treatment for handover (scenario times)", table: { head: ["Time", "Treatment"], rows: [
+        ["0225", "Clinical support requested"],
+        ["0228", "Nebulised salbutamol 5 mg and ipratropium 500 microg, oxygen at 6 to 8 L/min"],
+        ["0235", "EOC Clinician consulted about treatment and transport"],
+        ["0250", "EOC Clinician updated: repeat salbutamol via MDI and spacer, transport to Cummins Hospital, clinical support cancelled"],
+        ["0300", "Salbutamol via MDI and spacer as advised by the EOC Clinician, oxygen 4 L/min via nasal cannula"]
+      ] } } },
+      { scope: "ao", table: { title: "Treatment for handover (scenario times)", table: { head: ["Time", "Treatment"], rows: [
         ["0225", "Clinical support requested"],
         ["0228", "Nebulised salbutamol 5 mg and ipratropium 500 microg, oxygen at 6 to 8 L/min"],
         ["0235", "EOC Clinician consulted"],
@@ -347,31 +350,6 @@ window.MODULE = {
         expected: ["Structured and concise, covering every element", "Severity on arrival AND now: the trajectory", "Every medication with time and dose, including the EOC Clinician's advice", "Penicillin allergy stated early", "Recommendation: ongoing monitoring and preventer review"],
         teaching: ["A good handover tells a story: how she was, what you did, how she responded, what she still needs", "Give trends, not just the latest number: \"SpO2 was 91, now 96 on oxygen\""],
         realJob: "Practise ISBAR until it flows. At 3 am in a busy ED you want the structure to come automatically.",
-        cards: [{ q: "In ISBAR, what goes under A?", a: "Assessment: what you found (severity on arrival), what you did, and how the patient responded." }]
-      } }
-    ] },
-
-    { scope: "ar", title: "Handover", blocks: [
-      { text: "0305, the RV on the road into Cummins. The paramedic crew pulls up behind you and comes to the back of your ambulance. Karen is sitting upright with a mild wheeze, SpO2 96% on oxygen, speaking in sentences." },
-      { table: { title: "ISBAR", table: { head: ["", "Example"], rows: [
-        ["I", "\"I'm [name], Ambulance Responder from [station]. This is Karen Mitchell, 45.\""],
-        ["S", "\"Called at 0215 with acute asthma, no relief from her own Ventolin at home.\""],
-        ["B", "\"Asthma since 12, two ED presentations this year. Seretide ran out two weeks ago. URTI for three days, cleaning a dusty shed yesterday. Allergic to penicillin: rash.\""],
-        ["A", "\"On arrival, more severe asthma: phrases, distressed, SpO2 91% on air, RR 28, HR 118, wheeze both sides. After a salbutamol and ipratropium neb and a repeat salbutamol dose by spacer on EOC Clinician advice, she's speaking in sentences, SpO2 96% on oxygen, HR 100, RR 20, mild wheeze.\""],
-        ["R", "\"Improved but not at baseline. The EOC Clinician advised transport and this RV at 0250. She still needs oxygen, monitoring and a review of her preventer.\""]
-      ] } } },
-      { table: { title: "Treatment for handover (scenario times)", table: { head: ["Time", "Treatment"], rows: [
-        ["0225", "Clinical support requested"],
-        ["0228", "Nebulised salbutamol 5 mg and ipratropium 500 microg, oxygen at 6 to 8 L/min"],
-        ["0235", "EOC Clinician consulted about treatment and transport"],
-        ["0250", "EOC Clinician updated: salbutamol via MDI and spacer with oxygen at 4 L/min; transport and RV with the paramedics"],
-        ["0255", "Depart scene; salbutamol via MDI and spacer en route"]
-      ] } } },
-      { breakpoint: { title: "ISBAR handover at the RV", type: "Practical skill",
-        prompts: ["Deliver your ISBAR to me now as the paramedic. Go.", "Did you include what you gave, when, and how she responded?", "Did you mention the allergy?", "What did the EOC Clinician advise, and when?"],
-        expected: ["Structured and concise, covering every element", "Severity on arrival AND now: the trajectory", "Every medication with time and dose, including the EOC Clinician's advice", "Penicillin allergy stated early", "The EOC Clinician's transport and RV advice, with the time"],
-        teaching: ["A good handover tells a story: how she was, what you did, how she responded, what she still needs", "An RV on a dark country road is a scene of its own: park safely off the road, hazard lights, hand over at the back of the ambulance (general teaching)"],
-        realJob: "The paramedic has driven 40 minutes in the dark to meet you. Give them the trend and the timeline in 60 seconds, then help with whatever they decide.",
         cards: [{ q: "In ISBAR, what goes under A?", a: "Assessment: what you found (severity on arrival), what you did, and how the patient responded." }]
       } }
     ] },
@@ -414,13 +392,13 @@ window.MODULE = {
       ["AO Asthma Severity & Treatment Table", "AR Asthma Severity and Treatment table"]],
     title: "Asthma - AR",
     subtitle: "Walk-through scenario: 2-person volunteer AR crew",
-    lead: "A realistic acute asthma call for a two-person volunteer Ambulance Responder crew, with eight break points for discussion, skills practice and decisions. The treatment is the same as for AOs up to the EOC Clinician consult; there is no IM adrenaline, and the EOC Clinician advises transport and an RV with the paramedics.",
+    lead: "A realistic acute asthma call for a two-person volunteer Ambulance Responder crew, with eight break points for discussion, skills practice and decisions. The treatment is the same as for AOs up to the EOC Clinician consult; there is no IM adrenaline, and the EOC Clinician decides the transport.",
     protocol: {
       code: "CPP-048-AR", name: "Asthma - AR", version: "v3.2 (16 June 2022)", exported: "31 August 2026",
       also: [{ code: "CTL-083", name: "AR Asthma Severity and Treatment", version: "v1.0 (16 June 2022)" },
              { code: "CPPRO-012", name: "Inhaled Medication Administration", version: "v2.0 (19 April 2018)" }]
     },
     relatedCodes: ["CPP-050-AO"],
-    footerNotes: ["The patient, story, observations, the RV and EOC Clinician replies are a training scenario written by DSY. Check it with your lead instructor."]
+    footerNotes: ["The patient, story, observations and EOC Clinician replies are a training scenario written by DSY. Check it with your lead instructor."]
   }
 };

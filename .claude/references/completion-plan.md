@@ -32,7 +32,7 @@ Each AR version starts with the AR PDF, read again on the day: AR PDFs were expo
 | Topic | AR protocol | AO gaps | AR work |
 |---|---|---|---|
 | Hypoglycaemia | CPP-031-AR, big | none | **done** (module, walk-through, PCR `ronAR`, lessons) |
-| Asthma | CPP-048-AR, big | none | **built 28 Nov 2026** (module, walk-through, PCR `karenAR`): on a branch, owner to review |
+| Asthma | CPP-048-AR, big | none | **done 28 Nov 2026** (module, walk-through, PCR `karenAR`; Karen goes to hospital) |
 | Chest pain | CPP-029-AR, big | none | full: every GTN on EOC advice, even own prescribed GTN |
 | Pain management | CPP-036-AR, big | stations | full: paracetamol + methoxyflurane only (repeat once); no ibuprofen, fentanyl, ketamine |
 | Stroke | CPP-039-AR, big | deck? | full: FAST only, no ROSIER or Code Stroke pathway, consult |

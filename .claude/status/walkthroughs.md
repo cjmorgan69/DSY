@@ -159,10 +159,10 @@ variation 3 names "the adult cardiac arrest protocol for your level". DSY-writte
 ## Asthma AR version (Karen, 28 Nov 2026)
 
 `/modules/asthma-ao/?scope=ar` (CPP-048-AR v3.2, CTL-083): the same job to 0248; first consult at 0235 is about
-treatment and transport; at 0250 the EOC Clinician advises a repeat salbutamol MDI + spacer dose with O2 at 4 L/min and
-transport and RV with the paramedic crew en route (DSY chose this to match Ron and Greg: owner to confirm); depart
-0255, MDI dose 0256, obs 0300, RV on the road into Cummins at 0305 with an ISBAR at the RV (own Handover panel).
+treatment and transport; at 0250 the EOC Clinician advises a repeat salbutamol MDI + spacer dose with O2 at 4 L/min via nasal cannula and
+transport to Cummins Hospital with clinical support cancelled (owner, 28 Nov 2026: "go to hospital"; she is improving
+and the hospital, 30 min, is closer than the paramedic, 50 min); depart 0255, then as the AO job (MDI dose 0300,
+handover at Cummins Hospital ED 0325; AR treatment table adds the 0250 advice).
 AR pre-brief table from CTL-083, AR decisions at break points 4, 6 and 7 (one new: who decides the transport), no IM
-adrenaline anywhere, AR take-home lines and variation 2. The O2 device for the repeat dose is left as "4 L/min"
-(the AO story says nasal cannula; the owner's nasal cannula rule is for AOs): owner to say. The customiser template
-`asthma-ao` stays AO only (the converter `scenarios/tools/convert-asthma.js` was not re-run). On a branch, not merged.
+adrenaline anywhere, AR take-home lines and variation 2. ARs may use nasal cannula (owner, 28 Nov 2026). The customiser template
+`asthma-ao` stays AO only (the converter `scenarios/tools/convert-asthma.js` was not re-run). Live (PR #394, merged 28 Nov 2026).
