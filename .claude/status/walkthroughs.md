@@ -154,4 +154,4 @@ because of the 1300 cricket final; loaded unpublished, md5 checked). Live (PR #3
 consulted before transport and advises transport and RV with clinical support en route (DSY chose this to match Ron's
 AR version: owner to confirm); depart 1530, obs 1538, RV with the paramedic crew on the Flinders Highway at 1542 and
 an ISBAR at the RV (own Handover panel, scope ar). AR decision at break point 6, AR objectives and a take-home line;
-variation 3 names "the adult cardiac arrest protocol for your level". DSY-written (owner to review). On a branch, not merged.
+variation 3 names "the adult cardiac arrest protocol for your level". DSY-written (owner to review). Live (PR #391, merged 28 Nov 2026).

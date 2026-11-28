@@ -73,4 +73,4 @@ smallest 34; median 48 -> 56. Text unchanged. Live (PR #389, merged 28 Nov 2026)
 module (its two YouTube videos, the six bite and sting types, the pressure bandage steps, immobilisation) plus one AR
 slide; part 3 is Greg's eight break points (AO version: `build.js` drops `scope: "ar"` items). MDT screenshots: page
 1432, Enroute 1433, remarks 1448, scene 1457, Mobile 1530, Port Lincoln Hospital 1605, call sign CU81 (Cummins, day).
-PCR `greg`, next week `/stations/envenomation/`, feedback `t=envenomation`. About 110 min. On a branch, not merged.
+PCR `greg`, next week `/stations/envenomation/`, feedback `t=envenomation`. About 110 min. Live (PR #391, merged 28 Nov 2026).
