@@ -99,6 +99,10 @@
     var b = stage.querySelector('.body');
     if (!b) return;
     var fs = parseFloat(getComputedStyle(b).getPropertyValue('--fs')) || 44;
+    // Measure with every step in its final place. A step not shown yet sits 14px lower (.step transform); on a slide
+    // that fills the body (tile slides) that offset looked like an overflow, so the text always shrank to the minimum.
+    var moved = b.querySelectorAll('.step:not(.on)');
+    for (var mi = 0; mi < moved.length; mi++) { moved[mi].style.transition = 'none'; moved[mi].style.transform = 'none'; }
     function over() {
       if (b.scrollHeight > b.clientHeight + 2) return true;
       var bx = b.querySelectorAll('.card, .num, .chip, .pane, .callout');
@@ -113,6 +117,9 @@
       while (fs < 110) { b.style.setProperty('--fs', (fs + 2) + 'px'); if (over()) break; fs += 2; }
       fs = Math.max(start, Math.floor(fs * 0.92 / 2) * 2); b.style.setProperty('--fs', fs + 'px');
     }
+    for (mi = 0; mi < moved.length; mi++) moved[mi].style.transform = '';
+    void b.offsetHeight;   // apply the hidden position again before the slide-up transition comes back
+    for (mi = 0; mi < moved.length; mi++) moved[mi].style.transition = '';
   }
   function scaleStage() {
     var v = document.getElementById('viewport');
