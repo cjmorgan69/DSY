@@ -80,4 +80,4 @@ PCR `greg`, next week `/stations/envenomation/`, feedback `t=envenomation`. Abou
 Owner: tile slides (crew roles and others) left most of each tile empty. `fit()` in all four players (`case-night`,
 `drive-mindset`, `manual-tasks`, `medical-conditions`) now grows the text on a tile slide until a tile is full, then
 steps back to 92% of that size (cap 110px). Checked on all 55 tile slides in the eight decks: none overflow; typical
-size 60 to 96px (was 44 to 60). On a branch, not merged.
+size 60 to 96px (was 44 to 60). Live (PR #392, merged 28 Nov 2026).
