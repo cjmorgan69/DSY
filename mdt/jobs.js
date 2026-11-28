@@ -162,7 +162,15 @@ window.MDT_JOBS = [
     note:'38M ALTERED CONSCIOUS STATE - DIABETIC', patient:'BRENNAN, SAM', age:'38Y', weight:'', caller:'PARTNER (KIRSTY)',
     unitLoc:'TUMBY BAY AMBULANCE STATION',
     remarks:'FOUND IN BATHROOM - SWEATY AND "NOT MAKING SENSE"\nTYPE 1 DIABETIC\nPT TOLD PARTNER TO GET OUT - NO WEAPONS - NO THREATS\nBREATHING - NO FALL REPORTED\n+2 PARTNER: HIS METER SAYS 2.3 - WENT FOR A RUN THIS MORNING\n+4 PARTNER: SAYS HE DOESNT WANT AN AMBULANCE - SHE WILL MEET CREW AT FRONT DOOR',
-    expected:'Not transported: valid refusal against advice after EOC Clinician consult (scenario). Clear from scene (hold MOBILE 2 s); TUMBY BAY HOSPITAL (5 minutes) if he changes his mind' }
+    expected:'Not transported: valid refusal against advice after EOC Clinician consult (scenario). Clear from scene (hold MOBILE 2 s); TUMBY BAY HOSPITAL (5 minutes) if he changes his mind' },
+  // Seizures (28 Nov 2026): Josh, 27, a 21st in a shearing shed about 15 km from Cleve. Remark timing is DSY-written:
+  // the second seizure starts at 2150 (+10), while the crew is en route.
+  { id:'seizures', label:'Seizures: Josh, 27 (near Cleve, 2140)', scenario:'/modules/seizures-ao/',
+    priority:'1', startTime:'21:40', typeName:'Seizure', town:'Cleve', street:'RURAL PROPERTY 15 KM FROM TOWN',
+    note:'27M SEIZURE - KNOWN EPILEPTIC', patient:'MERRICK, JOSH', age:'27Y', weight:'', caller:'FRIEND (ELLIE)',
+    unitLoc:'CLEVE AMBULANCE STATION',
+    remarks:'21ST BIRTHDAY PARTY IN A SHEARING SHED\nSEIZURE ABOUT 2137 - LASTED ABOUT 2 MIN - NOW CONFUSED\nKNOWN EPILEPTIC - HAS BEEN DRINKING\nGRAVEL TRACK TO THE SHED - LIGHTS ON\n+4 FRIEND: HAS NOT TAKEN HIS TABLETS FOR 2 DAYS\n+10 FITTING AGAIN - NOT WOKEN UP PROPERLY SINCE THE FIRST ONE',
+    expected:'CLEVE HOSPITAL, about 20 minutes: the closest ED, early notification (scenario)' }
 ];
 
 /* Links from the scenario customiser (Supabase public.scenarios) for the jobs that have no custom() of their own.
@@ -216,6 +224,8 @@ window.MDT_JOBS = [
     town('hospital_town', 'Cummins'));
   link('dementia', 'dementia-ao', { patient:'Jo-Anne', age:'84', partner:'husband', partner_name:'Ray', town:'Cummins', station:'Cummins', hospital_town:'Cummins', response:'12', transport:'15', dispatch:'18:40' },
     town('hospital_town', 'Cummins'));
+  link('seizures', 'seizures-ao', { patient:'Josh', age:'27', partner_name:'Ellie', town:'Cleve', station:'Cleve', hospital_town:'Cleve', response:'13', transport:'20', dispatch:'21:40' },
+    v => U(v.hospital_town || 'Cleve') + ' HOSPITAL: the closest ED, early notification');
   link('refusal', 'refusal-ao', { patient:'Sam', age:'38', partner_name:'Kirsty', town:'Tumby Bay', station:'Tumby Bay', response:'7', transport:'5', dispatch:'09:48' },
     v => 'Not transported: valid refusal against advice (scenario). Clear from scene (hold MOBILE 2 s); ' + U(v.hospital || 'Tumby Bay Hospital') + ' if he changes his mind');
 })();

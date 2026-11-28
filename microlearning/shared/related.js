@@ -2,6 +2,14 @@
    codes in its relatedCodes). Each page lists the others under "Built on the same protocol" and leaves itself out.
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
+  "CPP-014-AO": [
+    { kind: "Microlearning module", title: "Seizures", href: "/microlearning/seizures/", text: "Basic care, the five-minute line, IM midazolam on EOC Clinician advice, the airway and the seizure checker, with a narrated video and quiz.",
+      arText: "Basic care, protecting the actively seizing patient, the airway, and the EOC Clinician consult about treatment and transport, with a narrated video and quiz." },
+    { kind: "Walk-through scenario", title: "Seizures - AO: Josh, 27", href: "/modules/seizures-ao/", text: "Two-person AO crew, clusters of seizures at a 21st in a shearing shed near Cleve: the consult, IM midazolam in two sites, an NPA and the closest ED. Facilitator and student versions.",
+      arTitle: "Seizures - AR: Josh, 27", arText: "Two-person AR crew, clusters of seizures at a 21st in a shearing shed near Cleve: protect him, the airway, and the EOC Clinician consult about treatment and transport. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Josh's patient care record", href: "/tools/pcr/#job=josh", arHref: "/tools/pcr/#job=joshAR", text: "After the walk-through: write the PCR, including every seizure's start and stop times, the BGL, oxygen, midazolam with dose, sites and time, and the NPA. Tap any heading to see what goes there, then compare with the model card.",
+      arText: "After the AR walk-through: write the PCR, including every seizure's start and stop times, the BGL, oxygen, the airway care and the EOC Clinician's advice. Tap any heading to see what goes there, then compare with the model card." }
+  ],
   "CPP-056-AO": [
     { kind: "Microlearning module", title: "Refusal against advice", href: "/microlearning/refusal/", text: "Is this refusal valid? The VIRCA tool, capacity, the EOC Clinician consult, the three pathways, who can consent for someone else (CTL-067), the AMA form and what to write." },
     { kind: "Walk-through scenario", title: "Refusal against advice - AO: Sam, 38", href: "/modules/refusal-ao/", text: "Two-person AO crew in Tumby Bay: a confused hypo who tells the crew to get out, then recovers and still refuses. Invalid then valid refusal, VIRCA twice, the consult and the AMA form. Facilitator and student versions." },

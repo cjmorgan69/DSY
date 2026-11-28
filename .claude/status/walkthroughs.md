@@ -184,3 +184,13 @@ owner to confirm). AR pre-brief table and consult box, AR criteria check, decisi
 Penthrox for the carry and transport and RV with the paramedic crew, who can give more pain relief (owner
 confirmed, 28 Nov 2026); second Penthrox 1940, depart 1955, RV 2003 at the highway end of Boundary Road with an ISBAR at the
 RV. AR break point 7 (what an AR has left), AR decisions, obs, take-home lines and variations 1 to 3. Live (PR #397, merged 28 Nov 2026).
+
+## Seizures (Josh, 27, 28 Nov 2026)
+
+`/modules/seizures-ao/`: new, AO and AR in one file. A 21st in a shearing shed about 15 km from Cleve, page 2140
+(CL181), first seizure 2137, second from 2150 with no recovery, arrival 2153. AO: consult 2156, midazolam 10 mg IM in
+two thighs 2158, stops 2202, trismus, 7 mm NPA 2206, Cleve Hospital (closest ED) 2230. AR: protect, positioning and
+suction, consults 2156 and 2207, stops 2204 without medicines, transport to Cleve Hospital with clinical support
+cancelled (DSY's choice, following the owner's pattern: hospital 20 min vs paramedic 55; owner to confirm). Story,
+times, EOC Clinician lines all DSY-written (owner to review). MDT job `seizures`, PCR `josh` and `joshAR`, card on
+`/ao/`, customiser `seizures-ao` (row inserted unpublished, md5 checked; publish after merge). On a branch, not merged.

@@ -79,3 +79,6 @@ DSY-written (owner to review). Live (PR #396, merged 28 Nov 2026).
 
 PCR job `garyAR` (28 Nov 2026): Gary's AR version: clinical support 1858, paracetamol 1905, Penthrox 1907 and 1940,
 EOC Clinician 1926 (transport and RV), RV with the paramedics 2003. DSY-written (owner to review). Live (PR #397, merged 28 Nov 2026).
+
+PCR jobs `josh` and `joshAR` (28 Nov 2026): Josh's seizures, AO (midazolam 2158, NPA 2206, Cleve 2230) and AR (no
+medicines, consults 2156 and 2207). DSY-written (owner to review). On a branch, not merged.

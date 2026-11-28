@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<script src="/shared/gate.js?v=20261128r" data-level="stations"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seizures skills stations - DSY Training</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../../shared/dsy-favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../../shared/dsy-favicon-192.png">
+<link rel="apple-touch-icon" href="../../shared/dsy-touch-180.png">
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261128r">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Seizures skills stations (AO, with AR boxes). Built 28 Nov 2026 with the seizures module /microlearning/seizures/ and the
+   walk-through /modules/seizures-ao/ (Josh, 27). Sources: CPP-014-AO Seizures - AO v5.0; CPP-037-AR Seizures - AR v2.1;
+   CPPRO-010 Drawing Up and Labelling Medications, CPPRO-011 Intramuscular Injection (v1.0); CPPRO-025 Nasopharyngeal Airway
+   v1.0 (review date 2022 passed); CPP-025-AR (AR airway adjuncts); midazolam presentation from the SAAS Clinical app.
+   Owner: AOs may use Co-Phenylcaine Forte for an NPA (22 Nov 2026). Patient cards, EOC Clinician lines, the call script
+   and how-to-run notes are DSY-written. */
+var SRC = {
+  cpp014: "CPP-014-AO Seizures - AO v5.0",
+  cpp037: "CPP-037-AR Seizures - AR v2.1",
+  c010: "CPPRO-010 Drawing Up and Labelling Medications",
+  c011: "CPPRO-011 Intramuscular Injection v1.0",
+  c025: "CPPRO-025 Nasopharyngeal Airway v1.0",
+  cpp025: "CPP-025-AR Basic Care and Life Support - AR",
+  app: "SAAS Clinical app (midazolam, DMO-022)",
+  lead: "DSY lead instructor",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "Protect, don't restrain, and time it", mins: 15,
+  goal: "Make a seizure scene safe, protect the patient without restraint, and time every seizure against the five-minute line.",
+  kit: ["A floor mat and a partner as the patient", "A jumper or towel for the head", "A watch, or the monitor clock", "The patient cards below"],
+  blocks: [
+    { h: "Every seizure", src: ["cpp014"], list: [
+      "Basic care and life support",
+      "Do not restrain the patient if possible, other than to ensure safety",
+      "Request clinical support"
+    ] },
+    { h: "Unconscious and actively seizing (the AR protocol spells it out)", src: ["cpp037"], steps: [
+      "Follow their seizure management plan, if available.",
+      "Remove the patient from danger.",
+      "Remove harmful objects that might cause a secondary injury.",
+      "Protect the head.",
+      "Restrain only if essential to avoid injury.",
+      "Lay them on their side when practical, and maintain an open and clear airway."
+    ] },
+    { h: "AO: consult the EOC Clinician if", src: ["cpp014"], tone: "warn", list: [
+      "A generalised seizure is continuous for more than 5 minutes, or",
+      "Clusters of shorter seizures with little or no recovery in between are preventing effective breathing or causing harm (injury or hypoxia)",
+      "AR: consult the EOC Clinician regarding treatment and transport for every seizure (CPP-037-AR)"
+    ] },
+    { h: "Patient cards: consult now?", src: ["dsy", "cpp014"], cases: [
+      { who: "A. Josh, 27", text: "A seizure at 2137 for 2 minutes, never fully woke. A second seizure started at 2150. It's now 2155 and he's still seizing, SpO2 89%.",
+        answer: "Yes, both criteria: continuous for more than 5 minutes (at 2155 it's just reached 5: consult as it passes), and clusters with no recovery causing hypoxia." },
+      { who: "B. At the footy", text: "Generalised seizure, started 3 minutes ago. First one today. Breathing between jerks, SpO2 95%.",
+        answer: "Not yet. Protect, time it, basic care, request clinical support. Consult if it continues past 5 minutes." },
+      { who: "C. Three short ones", text: "Three seizures of about a minute each in 20 minutes, talking and oriented between them, no injury, SpO2 97%.",
+        answer: "Not the cluster criterion: she recovers between them and they aren't preventing effective breathing or causing harm. Basic care, clinical support, transport to the closest ED. Consult if that changes." },
+      { who: "D. Banged his head", text: "Two seizures without waking in between. Fell against a table in the first: bleeding scalp wound.",
+        answer: "Clusters with little or no recovery causing harm (injury): consult the EOC Clinician. Attend to the head trauma as soon as practicable." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Your partner lies on the mat and acts a seizure. One person says the start time out loud and writes it down.",
+      "Clear the space, protect the head, stop a 'bystander' from holding the arms. Nothing in the mouth.",
+      "When the facilitator says it has stopped, roll them on their side. Then read the cards and decide: consult now? Swap."
+    ] }
+  ],
+  checks: ["Said and wrote the start time", "Cleared hazards and protected the head", "Stopped the restraint kindly", "Nothing put in the mouth",
+    "Called the five-minute line and the cluster rule correctly", "On the side once practical, airway open"] },
+
+{ id: "s2", n: 2, title: "Basic care while they seize", mins: 15,
+  goal: "Check the treatable causes and give oxygen to a seizing patient.",
+  kit: ["BGL meter, control solution and lancets (or a consenting partner)", "Oxygen: face mask, nasal cannula, tubing", "Suction unit", "Thermometer", "A manikin or partner"],
+  blocks: [
+    { h: "Basic care and life support", src: ["cpp014"], list: [
+      "BGL: treat hypoglycaemia as per the hypoglycaemia protocol",
+      "Hypoxia (SpO2 below 94%): treat with supplemental oxygen",
+      "Temperature: for febrile children, remove outer clothing",
+      "Other treatable causes: hypoxia, head trauma, hyperthermia"
+    ] },
+    { h: "Febrile convulsions", src: ["cpp014"], list: [
+      "Associated with fever, and usually resolve without treatment",
+      "Mostly in children from six months to six years"
+    ] },
+    { h: "Practical points", src: ["lead"], list: [
+      "Froth and saliva: suction from the side of the mouth, never force anything between clenched teeth",
+      "A finger probe may not read on a moving hand: try an ear or forehead probe, or the other hand",
+      "Nasal cannula is fine up to 4 L/min for AOs and ARs; a face mask is often easier on a seizing patient"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp014"], cases: [
+      { who: "A. BGL 2.1", text: "A type 1 diabetic, seizing for 2 minutes. BGL 2.1.",
+        answer: "A treatable cause: treat the hypoglycaemia as per the hypoglycaemia protocol, along with the seizure care." },
+      { who: "B. Febrile toddler", text: "A 2 year old with a fever of 39.2 had a 1 minute seizure. Now crying and sleepy.",
+        answer: "Likely a febrile convulsion: remove outer clothing, basic care, request clinical support. They usually resolve without treatment." },
+      { who: "C. SpO2 88%", text: "Seizing for 4 minutes, lips dusky, SpO2 88% on air.",
+        answer: "Hypoxia: supplemental oxygen now. Keep timing for the five-minute line." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Do a BGL with the control solution (or on a consenting partner) and read it aloud.",
+      "Put a face mask on the manikin and set the flow; suction the 'froth' from the side of the mouth.",
+      "Read the cards and say the action for each. Swap."
+    ] }
+  ],
+  checks: ["BGL done and read aloud", "Oxygen on for SpO2 below 94%", "Suction from the side, nothing forced between the teeth", "Febrile child: outer clothing off", "Named the treatable causes"] },
+
+{ id: "s3", n: 3, title: "Midazolam: the dose and two sites (AO)", mins: 20,
+  goal: "Work out an IM midazolam dose and volume, draw it up as single doses, and give it safely into two sites on a pad.",
+  kit: ["Training ampoules of water labelled TRAINING (never real midazolam)", "5 mL and 10 mL syringes, blunt fill and IM needles", "Alcohol swabs, a sharps container", "An injection pad or practice thigh", "The SAAS Clinical app"],
+  blocks: [
+    { h: "Safety", src: ["lead"], tone: "red", list: ["Water in training ampoules only. Inject into a pad, never into a person"] },
+    { h: "IM midazolam, only as the EOC Clinician advises", src: ["cpp014", "app"], list: [
+      "0.15 mg/kg to a single maximum of 10 mg",
+      "Half the per kg dose (up to a maximum of 5 mg) if 65 or older, or a frail adult under 40 kg",
+      "SAAS midazolam is 5 mg in 5 mL: 1 mg/mL, given undiluted (app)",
+      "No more than 5 mL per injection site",
+      "Make sure the crew and the patient are safe during the IM injection",
+      "Further doses only as the EOC Clinician advises (app: total maximum 0.3 mg/kg)",
+      "Adverse effects are worse with hypoxia, hypovolaemia, extremes of age and other CNS depressants such as alcohol"
+    ] },
+    { h: "Draw up (CPPRO-010)", src: ["c010"], steps: [
+      "Medication checks before preparing: drug, strength, expiry, dose. Hand hygiene.",
+      "Blunt fill needle on the syringe. Tap the ampoule, dot away, snap it away from you. Top straight into the sharps container.",
+      "Draw up more than the dose, change to the IM needle, and prime to the exact dose.",
+      "One syringe per injection: IM injections are prepared as a single dose only (CPPRO-011)."
+    ] },
+    { h: "Give it (CPPRO-011)", src: ["c011"], steps: [
+      "Mid anterior-lateral thigh (vastus lateralis), up to 5 mL. Swab and let it dry.",
+      "Hold the syringe like a dart, 90 degrees, about two thirds of the needle in. Inject slowly; no need to aspirate.",
+      "Withdraw quickly, straight into the sharps container. Never recap, never pass it.",
+      "Gentle pressure with gauze. Record dose, sites and time; the clinician who advised it signs where required."
+    ] },
+    { h: "Dose cards", src: ["dsy", "cpp014"], cases: [
+      { who: "A. Josh, 80 kg, 27", text: "Work out the dose and volume.", answer: "0.15 x 80 = 12 mg: over the single maximum, so 10 mg = 10 mL. Two sites, 5 mL each." },
+      { who: "B. 55 kg, 30", text: "Work out the dose and volume.", answer: "0.15 x 55 = 8.25 mg, about 8.3 mL: two sites (no more than 5 mL each). Check it against the app." },
+      { who: "C. 70 kg, aged 72", text: "Work out the dose and volume.", answer: "Half the per kg dose: 0.075 x 70 = 5.25 mg, so the 5 mg maximum applies: 5 mL, one site." },
+      { who: "D. Frail, 38 kg, 50", text: "Work out the dose and volume.", answer: "Frail adult under 40 kg: half the per kg dose: 0.075 x 38 = 2.85 mg, about 2.9 mL, one site." }
+    ] },
+    { h: "Ambulance Responders", src: ["cpp037"], tone: "warn", list: ["Midazolam is not in the AR protocol. ARs do the dose cards for understanding only, and practise the EOC Clinician call at station 4"] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Work the dose cards on paper, then check each with the app.",
+      "Card A: draw up 10 mL of water as two 5 mL single doses, with the medication checks said aloud.",
+      "Your partner steadies the pad as if it were a moving leg. Inject both sites, sharps straight in the container. Swap."
+    ] }
+  ],
+  checks: ["Dose and volume right for every card", "Said the 10 mg single maximum and the 5 mg maximum for 65+ or frail", "Two single-dose syringes for 10 mL",
+    "Medication checks said aloud", "90 degrees into the thigh, sharps straight in the container, no recapping", "Recorded dose, sites and time"] },
+
+{ id: "s4", n: 4, title: "The airway afterwards, and the call", mins: 20,
+  goal: "Manage the airway of a post-ictal patient, insert an NPA for trismus (AO), and make the EOC Clinician call.",
+  kit: ["An airway manikin", "NPAs 6, 7 and 8 mm, water-based lubricant, a Co-Phenylcaine Forte trainer (or a card)", "Oropharyngeal airways, suction, BVM", "Two phones for the call"],
+  blocks: [
+    { h: "Be ready (CPP-014-AO)", src: ["cpp014"], tone: "red", list: [
+      "Prepare for respiratory depression and loss of airway control",
+      "Consider a nasopharyngeal airway if there is trismus",
+      "Unresponsive and not breathing normally: start CPR"
+    ] },
+    { h: "Nasopharyngeal airway (AO, CPPRO-025)", src: ["c025", "lead"], steps: [
+      "When: airway compromise in an adult where an oral airway is unsuitable or can't be placed (gag reflex, trismus, oral trauma). Avoid with a suspected base of skull fracture unless essential.",
+      "Size: tip of the nose to the tip of the earlobe; diameter slightly smaller than the nostril.",
+      "Co-Phenylcaine Forte, 3 to 5 sprays per nostril; allow 1 to 2 minutes if you can (AOs may use it: DSY lead instructor).",
+      "Water-based lubricant. Head neutral. Bevel towards the septum, along the floor of the nose. Twist slightly if you meet resistance; never force; try the other nostril.",
+      "Flange against the nostril. Confirm you can oxygenate or ventilate. Record the size and time."
+    ] },
+    { h: "Ambulance Responders (CPP-037-AR, CPP-025-AR)", src: ["cpp037", "cpp025"], tone: "warn", list: [
+      "On the side when practical, open and clear airway: positioning and suction",
+      "AR airway adjuncts are suction and an oropharyngeal airway: only when it can be placed, never forced between clenched teeth",
+      "Consult the EOC Clinician regarding treatment and transport"
+    ] },
+    { h: "The call (patient cards)", src: ["dsy"], cases: [
+      { who: "A. AO crew, 2155", text: "Josh, 27, about 80 kg. Seizures at 2137 and from 2150, no recovery. BGL 6.4, SpO2 89% on air, on oxygen. Alcohol tonight, no tablets for 2 days.",
+        answer: "Ask for advice on IM midazolam. Say the times, the weight and the alcohol.",
+        eoc: "\"Give IM midazolam 0.15 mg per kilo: at 80 kilos that's over the maximum, so 10 mg. Watch his breathing with the alcohol on board. Call me back in 5 minutes or if he seizes again.\"" },
+      { who: "B. AR crew, 2156", text: "The same patient, still seizing. No anticonvulsant at AR level. Clinical support requested.",
+        answer: "Ask about treatment and transport. Say what you're doing: protecting him, oxygen, suction, on his side when practical.",
+        eoc: "\"Keep protecting him, oxygen, on his side when you can. Call me back in 5 minutes or as soon as it stops. Cleve is 20 minutes, the paramedic 55: we'll decide the transport then.\"" }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "The manikin is snoring with a clenched jaw after the seizure. Position, suction, then (AO) size and insert an NPA; (AR) say why no OPA yet.",
+      "Make the call for your card. The facilitator reads the EOC Clinician's reply; repeat it back.",
+      "Swap roles."
+    ] }
+  ],
+  checks: ["Positioned and suctioned first", "AO: NPA sized nose tip to earlobe, numbed, lubricated, bevel to the septum, not forced", "AR: no OPA forced between clenched teeth",
+    "Call had the seizure times, weight, BGL, SpO2 and alcohol", "Repeated the EOC Clinician's advice back"] }
+];
+
+var END = { title: "Finish together", mins: 25,
+  steps: [
+    "Run the whole job as one crew with the student walk-through: Josh, 27, a 21st in a shearing shed near Cleve. Use each station's kit as you reach that part. ARs use the AR version (the AO / AR switch at the top).",
+    "Then each person does the knowledge check in the microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-seizures";
+
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/seizures/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Seizures skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Student walk-through", "../../modules/seizures-ao/?mode=student", "btn small"));
+  links.appendChild(a("Knowledge check (microlearning)", "../../microlearning/seizures/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-through: " + root + "modules/seizures-ao/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY seizures skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Seizures skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Seizures\" (about 20 min). Send the link a few days ahead. ARs use the AR version."],
+    ["0:00", "Read the safety box at station 3 together (water only, inject a pad, never a person). Split into pairs or threes."],
+    ["0:05", "Rotate through stations 1 to 4 (about 15 to 20 min each). Partners tick the checks on the phone."],
+    ["about 1:25", "Finish together: the student walk-through as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 1: a floor mat, a jumper for the head, a couple of chairs as 'hazards'.",
+    "Station 2: BGL meter with control solution, oxygen with a face mask and nasal cannula, suction, thermometer.",
+    "Station 3: training ampoules of water labelled TRAINING, syringes, blunt fill and IM needles, swabs, a sharps container and an injection pad. Keep it apart from operational stock: no real midazolam.",
+    "Station 4: an airway manikin, NPAs and lubricant, a Co-Phenylcaine trainer or a card, OPAs, suction and a BVM; two phones.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Sharps container closed and returned. Used syringes and needles only ever go in the sharps container.",
+    "Training ampoules and NPAs back in their labelled training box.",
+    "Suction cleaned and on charge; oxygen off; BGL meter wiped.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Four stations to practise the hands-on parts of a seizure job, then one full job together. Ambulance Responders do every station: the AR boxes say what changes. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Seizures\" first (about 20 minutes)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/seizures/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Full job, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cpp014, SRC.cpp037, SRC.c010, SRC.c011, SRC.c025, SRC.cpp025, SRC.app].join(", ") +
+    ". The review date of CPPRO-025 (2022) has passed: check the SAAS Clinical app for a newer version. Co-Phenylcaine for the NPA follows the DSY lead instructor. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>
