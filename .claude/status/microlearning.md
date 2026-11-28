@@ -292,3 +292,13 @@ resuscitation mask "1 to 4 years" (AO: under 4); nebuliser doses "1 to 6" and "6
 both: the checker says check the dose and consult (as the AO checker does for the MDI at 6). AR key points, CTL-083
 table, AR doses table, AR link, two AR quiz questions (one AO question swapped), video note under Lee's AO video.
 Checker tested on every scenario and the 6-year and under-1 boundaries in both versions. Live (PR #394, merged 28 Nov 2026).
+
+## Chest pain AR version (28 Nov 2026)
+
+`/microlearning/chest-pain/?scope=ar` follows CPP-029-AR Chest Pain - AR v2.1 (23 April 2020, exported 31.08.2026):
+request clinical support (AO: consider); every GTN dose is on EOC Clinician advice, prescribed or not (no "GTN
+previously prescribed" pathway); one set of limits, systolic ABOVE 100 for everyone (AO prescribed: 100 or more);
+repeat doses "or as directed by EOC Clinician"; then "consult EOC Clinician for transport options" (the three options;
+no "provide transport and notify"). The GTN checker has its own AR pathway (`evaluateAR` at the top of content.js;
+the "prescribed" question is hidden for ARs); all 11 scenarios checked in both versions. AR key points, limits table,
+three AR quiz questions (four AO ones swapped), video note under Lee's AO video. On a branch, not merged.

@@ -72,3 +72,7 @@ PCR job `karenAR` (28 Nov 2026): Karen's AR version, from the AR walk-through: E
 dose, transport to Cummins Hospital, clinical support cancelled), depart 0255, salbutamol MDI with O2 4 L/min nasal
 cannula 0300, handover Cummins Hospital ED 0325. `arHref` on Karen's line in `related.js`.
 DSY-written (owner to review). Live (PR #394, merged 28 Nov 2026).
+
+PCR job `grahamAR` (28 Nov 2026): Graham's AR version: clinical support 2136, EOC Clinician 2137 (one GTN dose),
+GTN 2138, EOC Clinician 2144 (no further GTN, transport to Cleve, clinical support cancelled), handover 2210.
+DSY-written (owner to review). On a branch, not merged.
