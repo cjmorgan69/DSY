@@ -181,6 +181,8 @@ Development" cards. Raised with the owner and NOT yet decided or done:
   26 Nov 2026; the three AR lessons added in Supabase). Next: the other 7 topics with real AR differences (asthma, chest pain, pain, stroke, seizures, ABD, refusal).
 - Dashboard search box (27 Nov 2026): one box on `/dashboard/`, `/dashboard/wide/` and `/dashboard/team/` finds topics,
   AO protocols, people, sessions, lessons and pages (see `dashboard.md`). On a branch, not merged.
+- Weekly sign-in check email (28 Nov 2026): Mondays to Campbell and Dave, listing team members not signed up
+  (edge function `signin-nudge`, cron job `signin-nudge`; see `access.md`). Live in Supabase; code on a branch, not merged.
 - Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario

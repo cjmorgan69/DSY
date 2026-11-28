@@ -239,7 +239,7 @@ off and the risk of an open account (anyone who knows the ID can claim it first)
 table `signin_nudge_log`, leaders read; `signin_nudge_list(cluster)`, service role only). Sends to
 `roster_contacts.area_manager_email`, reply-to the lead instructor; skips a cluster with nobody left; at most one weekly
 email per cluster in 6 days. Preview (mode `preview`, to the lead instructor only) sent 28 Nov 2026: Central Eyre 15,
-West Coast 28. The weekly pg_cron job `signin-nudge` is NOT scheduled until the owner approves the wording.
+West Coast 28. Opening changed (owner): "Hi Dave" / "Hi Campbell", thanks for their enthusiasm in supporting DSY Training, then "There is just a bit of housekeeping to attend to to keep things tidy." Owner approved ("start it", 28 Nov 2026): pg_cron job `signin-nudge` (id 6, `13 22 * * 0` UTC = Monday 8:43 am Adelaide in summer). First send Monday 30 Nov 2026. Stop: `select cron.unschedule('signin-nudge');`
 
 Same day, on the owner's say-so: switched off, taken off the approved list and off their teams: Amanda Kerslake,
 Amber Clarke, Cheryl Jones, Cheyanne Donnelly (Coffin Bay), Andrew Bizewski (Port Neill), Karl Fredrickson, Tayla
