@@ -80,4 +80,13 @@ PCR `greg`, next week `/stations/envenomation/`, feedback `t=envenomation`. Abou
 Owner: tile slides (crew roles and others) left most of each tile empty. `fit()` in all four players (`case-night`,
 `drive-mindset`, `manual-tasks`, `medical-conditions`) now grows the text on a tile slide until a tile is full, then
 steps back to 92% of that size (cap 110px). Checked on all 55 tile slides in the eight decks: none overflow; typical
-size 60 to 96px (was 44 to 60). On a branch, not merged.
+size 60 to 96px (was 44 to 60). Live (PR #392, merged 28 Nov 2026).
+
+## Tile slides stuck at the smallest text (28 Nov 2026)
+
+Owner's phone and PC still showed tiny tile text after PR #392. Cause: a step not shown yet sits 14px lower
+(`.step` transform), so on a slide that fills the body the size check in `fit()` saw an overflow and shrank the text
+to the 24px floor; tests run with `?reveal=1` (every step shown) missed it. `fit()` in all four players now measures
+with every step in its final place. Measured on all 690 slides in the eight decks: the 54 tile slides went from 24px
+to a median of 72px; 7 compare, 8 decision and 7 numbered slides also grew a little; nothing else changed and nothing
+overflows. Live (PR #393, merged 28 Nov 2026).
