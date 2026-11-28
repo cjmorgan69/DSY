@@ -314,4 +314,4 @@ a short "Not in the AR protocol" section, its own reference table, four AR quiz 
 
 Shared fixes (28 Nov 2026): `ar.replace` word swaps no longer run inside items marked `scope: "ar"` (they had turned
 "the AO protocol (CPP-008-AO)" in the snake bite AR video note into "(CPP-030-AR)"); related cards take `arTitle` /
-`arText`, now set for the hypoglycaemia, envenomation, asthma, chest pain and pain lines. On a branch, not merged.
+`arText`, now set for the hypoglycaemia, envenomation, asthma, chest pain and pain lines. Live (PR #397, merged 28 Nov 2026).

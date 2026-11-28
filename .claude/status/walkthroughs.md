@@ -181,6 +181,6 @@ owner to confirm). AR pre-brief table and consult box, AR criteria check, decisi
 
 `/modules/pain-management/?scope=ar` (CPP-036-AR v3.0): clinical support requested 1858; paracetamol 1905 and Penthrox
 1907 as the AO story; no ibuprofen or ketamine; at 1926 the EOC Clinician (treatment and transport) advises the second
-Penthrox for the carry and transport and RV with the paramedic crew, who can give more pain relief (DSY's choice,
-owner to confirm); second Penthrox 1940, depart 1955, RV 2003 at the highway end of Boundary Road with an ISBAR at the
-RV. AR break point 7 (what an AR has left), AR decisions, obs, take-home lines and variations 1 to 3. On a branch, not merged.
+Penthrox for the carry and transport and RV with the paramedic crew, who can give more pain relief (owner
+confirmed, 28 Nov 2026); second Penthrox 1940, depart 1955, RV 2003 at the highway end of Boundary Road with an ISBAR at the
+RV. AR break point 7 (what an AR has left), AR decisions, obs, take-home lines and variations 1 to 3. Live (PR #397, merged 28 Nov 2026).
