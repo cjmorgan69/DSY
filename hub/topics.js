@@ -48,7 +48,9 @@ window.DSY_TOPICS = [
   { id:'refusal', group:'decisions', title:'Refusal against advice', protocol:'CPP-056-AO', patient:'Sam, 38: a hypo who tells the crew to get out, then still refuses',
     module:'refusal', walk:'/modules/refusal-ao/', mdt:'refusal', custom:'refusal-ao', stations:'/stations/refusal/', pcr:'sam', slides:'/classroom/refusal/' },
   { id:'seizures', group:'brain', title:'Seizures', protocol:'CPP-014-AO', patient:'Josh, 27: seizing again at a 21st in a shearing shed near Cleve',
-    module:'seizures', walk:'/modules/seizures-ao/', mdt:'seizures', custom:'seizures-ao', stations:'/stations/seizures/', pcr:'josh', slides:'/classroom/seizures/' }
+    module:'seizures', walk:'/modules/seizures-ao/', mdt:'seizures', custom:'seizures-ao', stations:'/stations/seizures/', pcr:'josh', slides:'/classroom/seizures/' },
+  { id:'amputation', group:'trauma', title:'Amputation and haemorrhage', protocol:'CPP-042-AO', patient:'Tom, 46: hand caught in a grain auger north of Kimba',
+    module:'amputation', walk:'/modules/amputation-ao/', mdt:'amputation', custom:'amputation-ao', stations:'/stations/amputation/', pcr:'tom', slides:'/classroom/amputation/' }
 ];
 
 /* Categories on Run a session (11 Nov 2026, owner). */
@@ -67,7 +69,6 @@ window.DSY_GROUPS = [
    Full list of the 34 AO protocols: .claude/references/ao-protocols.md */
 window.DSY_PLANNED = [
   { group:'heart', title:'Cardiac arrest (adult and children)', protocol:'CPP-002-AO, CPP-043-AO, CPP-020-AO' },
-  { group:'trauma', title:'Amputation and haemorrhage', protocol:'CPP-042-AO' },
   { group:'trauma', title:'Chest trauma', protocol:'CPP-158-AO' },
   { group:'medical', title:'Narcotic overdose', protocol:'CPP-011-AO' },
   { group:'medical', title:'Hypothermia (severe and unresponsive)', protocol:'CPP-019-AO' },

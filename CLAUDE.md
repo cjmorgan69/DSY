@@ -195,7 +195,10 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - Seizures topic (28 Nov 2026), the first built AO and AR from the start with every part: module + video, walk-through
   (Josh, 27), MDT, PCR `josh`/`joshAR`, customiser `seizures-ao` (published), stations, case-night deck.
   Live (PR #398, merged 28 Nov 2026); eight lessons added in Supabase. Standard for every new topic from now on: `.claude/references/new-topic-recipe.md`.
-- Next modules: amputation and haemorrhage (no walk-through exists). The MVA hypo scenario
+- Amputation and haemorrhage topic (28 Nov 2026), AO and AR, every part: module + video, walk-through (Tom, 46, grain
+  auger near Kimba), MDT, PCR `tom`/`tomAR`, customiser `amputation-ao` (unpublished until merged), stations, case-night
+  deck. On a branch, not merged.
+- Next new topic: owner to pick from the completion plan (cardiac arrest, pregnancy and birth, PPH, newborn, overdose ...). The MVA hypo scenario
   (`/modules/hypo/`) is to be converted when asked.
 - Retire `/course/` (Google Sheet app) once the current AR group finishes; `/ar/course/` replaces it.
 - Planned: a request portal (`/request/`) with an inbox panel on the dashboard; the Supabase roster (see `rosters.md`; stages 1 to 6 done by 18 Nov 2026 (database, people, emails, new roster page on the Summer Bay test roster, import rehearsal, dashboards); all 12 teams on the new roster: Lower Eyre and Central Eyre since 18 Nov 2026, West Coast since 19 Nov 2026 (stage 7); stage 8 tidy up done 28 Nov 2026 (Apps Scripts archived, sheets view-only): the move is complete).

@@ -149,3 +149,9 @@ still). Added to station 3 and to the extrication box in Greg's walk-through (an
 seize (BGL, oxygen, suction, febrile child), 3 midazolam dose cards, drawing up two single 5 mL doses of water and IM
 into a pad (AO; CPPRO-010, 011), 4 the airway afterwards (NPA for AOs, OPA/suction for ARs) and the EOC Clinician call
 (AO and AR cards). AR boxes throughout. DSY-written cards and lines (owner to review). Live (PR #398, merged 28 Nov 2026).
+
+## Amputation and haemorrhage
+
+`/stations/amputation/` (28 Nov 2026): 1 direct pressure and elevation (is-pressure-enough cards), 2 the SOF tourniquet
+on a training limb only (placement cards), 3 packaging the amputated part, 4 pain, the EOC Clinician call (AO and AR
+cards) and the handover. AR boxes where the AR protocol differs. DSY-written cards and lines (owner to review). On a branch, not merged.

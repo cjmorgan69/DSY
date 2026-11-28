@@ -325,3 +325,11 @@ CPPRO-025 NPA (review date 2022 passed), CPPRO-011; midazolam 5 mg/5 mL and the 
 the module follows the protocol and says so. Seizure checker (consult criteria, dose by weight, two sites over 5 mL;
 AR pathway), NPA tile row (AO), 18 quiz questions across both versions, Resus Room "Seizures; Roadside to Resus"
 (Jan 2020) and the paediatric episode (Jan 2026). Intro video: Lee, two takes (45.1 s + 54.8 s), 1:42. Live (PR #398, merged 28 Nov 2026).
+
+## Amputation and haemorrhage (AO and AR, 28 Nov 2026)
+
+`/microlearning/amputation/`: built AO and AR together (recipe). Sources CPP-042-AO v4.0 (8 Dec 2016), CPP-024-AR v2.0
+(4 Jan 2019), CPPRO-004 Arterial Tourniquet Application v1.1 (review date Aug 2018 passed): all old, said on the page.
+Key points (every bleeding patient, the tourniquet, the three must-nots, SOF tourniquet tile row, complete amputation),
+bleeding checker (AR pathway adds the consult), 13 quiz questions across both versions. Intro video: Lee, two takes
+(31.9 s + 36.4 s), 1:10. On a branch, not merged.

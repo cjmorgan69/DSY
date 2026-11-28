@@ -194,3 +194,13 @@ suction, consults 2156 and 2207, stops 2204 without medicines, transport to Clev
 cancelled (owner confirmed 28 Nov 2026: hospital 20 min vs paramedic 55). Story,
 times, EOC Clinician lines all DSY-written (owner to review). MDT job `seizures`, PCR `josh` and `joshAR`, card on
 `/ao/`, customiser `seizures-ao` (row inserted unpublished, md5 checked; publish after merge). Live (PR #398, merged 28 Nov 2026).
+
+## Amputation and haemorrhage (Tom, 46, 28 Nov 2026)
+
+`/modules/amputation-ao/`: new, AO and AR in one file. A grain auger at a field bin about 18 km north of Kimba, page 1530
+(KI81), Kimba Hospital 20 min, paramedic 75 min. Machinery made safe, direct pressure and elevation fail, SOF tourniquet
+on the forearm 1551, two fingers bagged in iced water, methoxyflurane, EOC Clinician 1600. AO: advise the EOC Clinician
+(Kimba Hospital, paramedics meet there). AR: consult regarding treatment and transport: Kimba Hospital, clinical support
+cancelled (owner to confirm the option). Story, obs, times, EOC Clinician lines DSY-written (owner to review). MDT job
+`amputation`, PCR `tom` and `tomAR`, card on `/ao/`, customiser `amputation-ao` (row inserted unpublished, md5 checked;
+publish after merge). On a branch, not merged.

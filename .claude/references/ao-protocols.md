@@ -33,7 +33,7 @@ Partly used: CPP-004-AO Basic Care and Life Support (every scenario), CPP-042-AO
 1. Cardiac arrest: CPP-002-AO Adult, CPP-043-AO Paediatric, CPP-020-AO Non-Initiation of CPR (old page `/modules/cardiac-arrest/` to convert; owner said no CPR detail in scenarios, so ask) - Cardiac and respiratory
 2. Birth and newborns: CPP-059-AO Pregnancy and Birth, CPP-053-AO Primary Postpartum Haemorrhage, CPP-012-AO Newborn Care and Resuscitation (old page `/modules/childbirth/`; pairs with `/tools/obstetric/`)
 3. CPP-014-AO Seizures - Brain and behaviour (built 28 Nov 2026, AO and AR: see `hub/topics.js`)
-4. CPP-042-AO Amputation and Haemorrhage (tourniquet and pelvic sling already in the MVA stations) - Trauma and injury
+4. CPP-042-AO Amputation and Haemorrhage - Trauma and injury (built 28 Nov 2026, AO and AR: see `hub/topics.js`)
 5. CPP-011-AO Narcotic Overdose (old page `/modules/narcotic_od/`) - Medical
 6. CPP-158-AO Chest Trauma (vented chest seal CPPRO-037, AO on EOC consult) - Trauma and injury
 7. CPP-055-AO Treat and Refer - Decisions (CPP-056-AO Refusal Against Advice done 26 Nov 2026)

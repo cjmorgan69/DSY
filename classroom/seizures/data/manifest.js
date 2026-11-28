@@ -5,7 +5,7 @@
 // saved under its own name straight after it loads. build.js then turns them into slide sections (AO version).
 window.DRIVE_SECTIONS = [];
 (function () {
-  var v = '?v=20261128r';
+  var v = '?v=20261128u';
   document.write('<script src="/microlearning/seizures/content.js' + v + '" charset="utf-8"><\/script>');
   document.write('<script>window.SZ_ML = window.MODULE;<\/script>');
   document.write('<script src="/modules/seizures-ao/content.js' + v + '" charset="utf-8"><\/script>');

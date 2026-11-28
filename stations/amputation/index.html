@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<script src="/shared/gate.js?v=20261128u" data-level="stations"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Amputation and haemorrhage skills stations - DSY Training</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../../shared/dsy-favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../../shared/dsy-favicon-192.png">
+<link rel="apple-touch-icon" href="../../shared/dsy-touch-180.png">
+<meta name="theme-color" content="#1f5b43">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../training/theme.css?v=20261128u">
+<style>
+/* Skills stations: a self-run practical night. The pages are drawn from STATIONS below.
+   Routes: #s1 to #s4 one station, #end finish together, #setup instructor sheet, #print everything for printing. */
+.wrap { gap: 1.1rem; }
+.top a { color: inherit; text-decoration: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.card h3 { font-size: 1.1rem; }
+.card.warn { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.card.red { background: color-mix(in srgb, var(--danger) 11%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+.card.dsy { border-style: dashed; }
+.src { font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
+.src b { color: var(--brand); font-weight: 700; }
+.door { display: flex; align-items: center; gap: .9rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-left: 8px solid var(--brand); border-radius: var(--radius); padding: .9rem 1rem; }
+.door .n { flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700;
+  background: var(--brand-soft); color: var(--brand); font-size: 1.15rem; }
+.door.done .n { background: var(--ok); color: #fff; }
+.door div { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
+.door small { color: var(--muted); }
+.door.alt { border-left-color: var(--accent); }
+ol.steps { padding-left: 1.4rem; display: flex; flex-direction: column; gap: .45rem; list-style: decimal; }
+ul.dots { display: flex; flex-direction: column; gap: .35rem; }
+ul.dots li { padding-left: 1.1rem; position: relative; }
+ul.dots li::before { content: "›"; position: absolute; left: 0; font-weight: 800; color: var(--brand); }
+.case { border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.case .who { font-weight: 700; }
+.case details summary { cursor: pointer; font-weight: 600; color: var(--brand); }
+.case details[open] summary { margin-bottom: .35rem; }
+.answer { font-size: .95rem; }
+table.t { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.t th, table.t td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.ticks { display: flex; flex-direction: column; gap: .2rem; }
+.ticks label { display: flex; gap: .65rem; align-items: flex-start; padding: .35rem 0; cursor: pointer; }
+.ticks input { width: 1.3rem; height: 1.3rem; flex: none; margin-top: .15rem; accent-color: var(--brand); }
+.field { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.field input, .field textarea { font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.qr { display: flex; align-items: center; gap: 1rem; }
+.qr .code { flex: none; background: #fff; padding: 6px; border-radius: 6px; }
+.qr .code img, .qr .code canvas { display: block; width: 110px; height: 110px; }
+.foot { font-size: .8rem; color: var(--muted); }
+.pagebreak { display: none; }
+.printonly { display: none; }
+[hidden] { display: none !important; }
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root { --bg: #fff; --surface: #fff; --ink: #111; --muted: #444; --line: #bbb; --brand: #1f5b43; --brand-soft: #e7efe9; color-scheme: light; }
+  body { background: #fff; font-size: 11pt; }
+  .wrap, .stack { display: block; width: 100%; padding: 0; }
+  .wrap > * + *, .stack > * + * { margin-top: .6rem; }
+  .card { display: block; } .card > * + * { margin-top: .4rem; }
+  .noprint { display: none !important; }
+  .printonly { display: block; }
+  .pagebreak { display: block; break-after: page; height: 0; }
+  .case, tr, li, .qr, .ticks label { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .card { padding: .6rem .8rem; gap: .4rem; }
+  .case details summary { display: none; }
+  .answer::before { content: "Answer: "; font-weight: 700; }
+  .ticks label { display: block; padding: .15rem 0; }
+  .ticks label::before { content: "☐"; font-size: 1.1rem; margin-right: .5rem; }
+  .ticks input { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* Amputation and haemorrhage skills stations (AO, with AR boxes). Built 28 Nov 2026 with the module
+   /microlearning/amputation/ and the walk-through /modules/amputation-ao/ (Tom, 46). Sources: CPP-042-AO Amputation and
+   Haemorrhage - AO v4.0 (8 Dec 2016); CPP-024-AR Amputation and Haemorrhage - AR v2.0 (4 Jan 2019); CPPRO-004 Arterial
+   Tourniquet Application v1.1 (review date Aug 2018 passed); SAAS Clinical Skills Study Guide v3.2 direct pressure steps
+   (as used in the MVA stations); CPP-013-AO / CPP-036-AR Pain Management (methoxyflurane). Owner's rule (MVA stations,
+   27 Oct 2026): tourniquet on a training limb only. Patient cards, EOC Clinician lines, the call script and how-to-run
+   notes are DSY-written. */
+var SRC = {
+  cpp042: "CPP-042-AO Amputation and Haemorrhage - AO v4.0",
+  cpp024: "CPP-024-AR Amputation and Haemorrhage - AR v2.0",
+  c004: "CPPRO-004 Arterial Tourniquet Application v1.1",
+  cssg: "SAAS Clinical Skills Study Guide v3.2 (Oct 2026)",
+  cpp013: "CPP-013-AO Pain Management - AO",
+  cpp036: "CPP-036-AR Pain Management - AR",
+  lead: "DSY lead instructor",
+  dsy: "DSY-written for practice: check with your instructor"
+};
+
+var STATIONS = [
+{ id: "s1", n: 1, title: "Direct pressure and elevation", mins: 15,
+  goal: "Find the bleeding point, control it with firm direct pressure and elevation, and recognise when that has failed.",
+  kit: ["A moulage wound or a marked sleeve on a partner", "Trauma dressings, combine pads and crepe bandages in several sizes", "Gloves and eye protection", "The patient cards below"],
+  blocks: [
+    { h: "The protocol", src: ["cpp042"], list: [
+      "Basic care including haemorrhage control using direct pressure",
+      "Direct pressure and elevation will achieve external haemorrhage control in most circumstances",
+      "Consider requesting clinical support, the EOC Clinician (AO) and pain management",
+      "Partial amputations may result in significant haemorrhage"
+    ] },
+    { h: "Direct pressure", src: ["cssg", "cpp042"], steps: [
+      "PPE. Expose the wound and judge how bad the bleeding is.",
+      "Pick a dressing that fits the wound: one that's too big hides the bleeding rather than controlling it.",
+      "Press the dressing on the bleeding point, then bandage firmly to keep the pressure on. Elevate the limb.",
+      "Bleeding through: add a second dressing. Still bleeding: take them all off, find the exact bleeding point, and press over a smaller area.",
+      "Check the distal pulse afterwards: too much pressure acts like a tourniquet."
+    ] },
+    { h: "Ambulance Responders", src: ["cpp024"], tone: "warn", list: [
+      "The same bleeding care. Request clinical support, and consult the EOC Clinician regarding treatment and transport"
+    ] },
+    { h: "Patient cards: is pressure enough?", src: ["dsy", "cpp042"], cases: [
+      { who: "A. Kitchen knife", text: "A deep cut on the palm, bleeding steadily. Stops after 2 minutes of firm pressure on a small pad.",
+        answer: "Controlled: dressing and firm bandage, elevate, check the fingers. No tourniquet." },
+      { who: "B. Tom, 46", text: "A forearm wound pumping bright red blood through two pads despite firm pressure and elevation. Pale, HR 128, feeling faint.",
+        answer: "Life-threatening bleeding uncontrolled with direct pressure: arterial tourniquet (station 2)." },
+      { who: "C. Partial amputation", text: "A finger hanging by a strip of skin, oozing steadily.",
+        answer: "Direct pressure and elevation; support the finger in place. Partial amputations may bleed significantly: keep checking." },
+      { who: "D. Scalp", text: "A long scalp wound after a fall, bleeding heavily.",
+        answer: "Firm direct pressure. A tourniquet is for limbs only (CPPRO-004)." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Your partner wears the marked sleeve. Find the 'bleeding point' and press a dressing onto it, arm up.",
+      "The facilitator says 'still bleeding': add a pad, then take them off, find the point and press smaller.",
+      "Bandage it firmly and check the fingers. Read the cards and decide: is pressure enough? Swap."
+    ] }
+  ],
+  checks: ["PPE on, wound exposed", "Dressing that fits the wound, pressed on the bleeding point", "Limb elevated", "Re-found the bleeding point when it bled through",
+    "Checked the distal pulse and the fingers", "Called the failed-pressure card correctly"] },
+
+{ id: "s2", n: 2, title: "The SOF tourniquet", mins: 20,
+  goal: "Apply an arterial tourniquet correctly on a training limb, and say the three things it must never be.",
+  kit: ["A training limb (tourniquet practice on the training limb only)", "SOF tactical tourniquet (training)", "A permanent marker", "The placement cards below"],
+  blocks: [
+    { h: "Safety", src: ["lead"], tone: "red", list: ["The tourniquet goes on the training limb only, never on a person"] },
+    { h: "When (CPP-042-AO, CPPRO-004)", src: ["cpp042", "c004"], list: [
+      "Life-threatening bleeding from a limb that direct pressure and elevation can't control",
+      "An option of last resort, only in extreme circumstances",
+      "Placed on limbs only"
+    ] },
+    { h: "Apply it (CPPRO-004)", src: ["c004"], steps: [
+      "Place the tourniquet proximal to the injury, as close as possible to the bleeding site while still achieving haemorrhage control.",
+      "Click the buckle into place.",
+      "Pull the strap down tight.",
+      "Rotate the windlass until the bleeding is controlled: distal pulses should no longer be palpable.",
+      "Secure the windlass in the locking buckle.",
+      "Record the time of application on the strap label and on the PCR."
+    ] },
+    { h: "A tourniquet must not be", src: ["cpp042"], tone: "warn", list: [
+      "Applied over a joint or a wound",
+      "Covered with bandage or clothing",
+      "Removed pre-hospital",
+      "Advise the EOC Clinician, who may seek specialist advice"
+    ] },
+    { h: "Placement cards: where does it go?", src: ["dsy", "c004"], cases: [
+      { who: "A. Mid-forearm", text: "A deep wound in the middle of the forearm.",
+        answer: "On the forearm, a little above the wound and below the elbow: proximal, as close as possible, not over the joint or the wound." },
+      { who: "B. Above the knee", text: "A deep wound on the lower thigh, just above the knee.",
+        answer: "On the thigh, above the wound: proximal and as close as possible. Never over the knee." },
+      { who: "C. Over the elbow", text: "A wound right over the back of the elbow, bleeding heavily.",
+        answer: "Above the elbow on the upper arm: proximal, not over the joint, not over the wound." },
+      { who: "D. It bleeds again", text: "Twenty minutes later the wound starts bleeding past the tourniquet.",
+        answer: "Check the lock and tighten the windlass until the bleeding is controlled. Never loosen or remove it; tell the EOC Clinician." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Read the placement card and put the tourniquet on the training limb, saying each step aloud.",
+      "Your partner times you, then checks: right place, tight, locked, time on the label.",
+      "Do it again one-handed on your 'own' arm (the training limb), as if you were alone. Swap."
+    ] }
+  ],
+  checks: ["Training limb only", "Proximal and as close as possible, not over a joint or the wound", "Buckle, strap tight, windlass until the bleeding is controlled",
+    "Windlass locked", "Time on the strap label and on the PCR", "Said the three must-nots"] },
+
+{ id: "s3", n: 3, title: "The amputated part", mins: 15,
+  goal: "Package a completely amputated part to give it the best chance of reattachment.",
+  kit: ["Zip-lock bags (two sizes)", "A container, water and ice", "A 'body part': a sausage, or a glove filled with rice", "A marker for the label"],
+  blocks: [
+    { h: "Complete amputation (CPP-042-AO)", src: ["cpp042"], steps: [
+      "Seal the body part in a water-tight bag.",
+      "Place the bag in ice-cooled water, if possible.",
+      "The body part must not be in direct contact with ice."
+    ] },
+    { h: "Why (protocol principle)", src: ["cpp042"], list: [
+      "Complete amputation needs specific care aimed at saving the part for possible reattachment",
+      "Partial amputations may cause significant bleeding: the bleeding comes first"
+    ] },
+    { h: "Practical points", src: ["dsy"], tone: "warn", list: [
+      "Bag, then water, then ice: the ice touches the water, never the part",
+      "Label the bag with the patient's name and the time; it travels with the patient",
+      "Don't go into machinery to find a part: make it safe first, and the bleeding comes first",
+      "No ice? Still seal it in a bag. Ice-cooled water is 'if possible'"
+    ] },
+    { h: "Patient cards", src: ["dsy", "cpp042"], cases: [
+      { who: "A. Two fingers", text: "Two fingers handed to you in a cap, with grain on them.",
+        answer: "Seal them in a water-tight bag, in ice-cooled water, not touching the ice. Don't scrub them. Label and keep with the patient." },
+      { who: "B. A bag of ice", text: "A bystander has put the finger straight onto a bag of frozen peas.",
+        answer: "Take it off: the part must not be in direct contact with ice. Seal it in a bag, then into ice-cooled water." },
+      { who: "C. No ice", text: "A roadside, 40 km from town, no ice.",
+        answer: "Seal it in a water-tight bag anyway. Ice-cooled water is 'if possible'; ask the next town or the hospital." }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Package the 'part' as the protocol says, then label it.",
+      "Your partner checks: sealed, in water, no contact with ice.",
+      "Read the cards and say the action for each. Swap."
+    ] }
+  ],
+  checks: ["Part sealed in a water-tight bag", "Bag in ice-cooled water", "Part not touching the ice", "Labelled and kept with the patient", "Cards answered"] },
+
+{ id: "s4", n: 4, title: "Pain, the call and the handover", mins: 20,
+  goal: "Manage pain without touching the tourniquet, make the EOC Clinician call, and hand over the tourniquet time.",
+  kit: ["A methoxyflurane trainer (or a card)", "Two phones for the call", "A PCR card or the PCR trainer"],
+  blocks: [
+    { h: "Pain management", src: ["cpp013", "cpp036"], list: [
+      "AO: as per CPP-013-AO. AR: as per CPP-036-AR",
+      "Methoxyflurane 3 mL, repeated once if needed; never more than 2 doses in 24 hours, or 15 mL in a week",
+      "Paracetamol if none in the past 4 hours",
+      "AO, authorised crews: IN fentanyl on EOC Clinician consult. Not at AR level"
+    ] },
+    { h: "The tourniquet hurts", src: ["c004", "dsy"], tone: "warn", list: [
+      "CPPRO-004 lists pain as a complication of tourniquet use",
+      "Treat the pain; never loosen the tourniquet (CPP-042-AO: not removed pre-hospital)"
+    ] },
+    { h: "The call", src: ["cpp042", "cpp024"], list: [
+      "AO: consider consulting the EOC Clinician; after a tourniquet, advise the EOC Clinician, who may seek specialist advice",
+      "AR: consult the EOC Clinician regarding treatment and transport. They may advise transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives"
+    ] },
+    { h: "The call (patient cards)", src: ["dsy"], cases: [
+      { who: "A. AO crew, 1600", text: "Tom, 46, hand in a grain auger. Forearm bleeding uncontrolled with pressure: tourniquet at 1551, controlled. Two fingers bagged in iced water. HR 116, BP 102/68. Methoxyflurane started.",
+        answer: "Say the tourniquet time first. Ask about destination and pain relief.",
+        eoc: "\"Transport to Kimba Hospital now and notify them: I'll talk to the retrieval team about the hand. Leave the tourniquet alone. Call me if the pain stays uncontrolled or his blood pressure drops.\"" },
+      { who: "B. AR crew, 1600", text: "The same patient. Clinical support requested, 75 minutes away. Kimba Hospital is 20 minutes.",
+        answer: "Say the tourniquet time first. Ask about treatment and transport.",
+        eoc: "\"The bleeding is controlled and Kimba is much closer: transport to Kimba Hospital now and notify them. I'll cancel the paramedic crew. Leave the tourniquet alone.\"" }
+    ] },
+    { h: "How to run it", src: ["dsy"], steps: [
+      "Coach your partner through the methoxyflurane inhaler (trainer or card).",
+      "Make the call for your card. The facilitator reads the EOC Clinician's reply; repeat it back.",
+      "Give a 60-second ISBAR handover, pointing to the time on the strap. Swap."
+    ] }
+  ],
+  checks: ["Pain treated, tourniquet left alone", "Methoxyflurane limits said correctly", "Tourniquet time first on the call", "AR: asked about treatment and transport",
+    "Repeated the EOC Clinician's advice back", "Handover had the tourniquet time and the amputated part"] }
+];
+
+var END = { title: "Finish together", mins: 25,
+  steps: [
+    "Run the whole job as one crew with the student walk-through: Tom, 46, a hand caught in a grain auger north of Kimba. Use each station's kit as you reach that part. ARs use the AR version (the AO / AR switch at the top).",
+    "Then each person does the knowledge check in the microlearning on their own phone.",
+    "Write any questions for the instructor below, then send your record."
+  ] };
+
+var KEY = "dsy-stations-amputation";
+
+var state = (function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } })();
+state.ticks = state.ticks || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+var app = document.getElementById("app");
+// QR codes and printed links always point at the live site, so a pack printed from a test copy still works.
+var root = "https://dsytraining.com/";
+var here = root + "stations/amputation/";
+function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+function a(text, href, cls) { var x = el("a", cls || "btn small ghost", text); x.href = href; return x; }
+function srcLine(keys) {
+  var p = el("p", "src");
+  keys.forEach(function (k, i) { if (i) p.appendChild(document.createTextNode(" · ")); var b = el(k === "dsy" ? "span" : "b", null, SRC[k]); p.appendChild(b); });
+  return p;
+}
+function header(sub) {
+  var h = el("header", "top"), b = el("a", "brand"); b.href = "#";
+  b.innerHTML = '<div class="brand-icon"><img src="../../microlearning/shared/dsy-logo.png" alt="" width="40" height="40"></div>';
+  var t = el("div"); t.appendChild(el("h1", null, "Amputation and haemorrhage skills stations")); t.appendChild(el("p", null, sub)); b.appendChild(t); h.appendChild(b);
+  return h;
+}
+function qr(box, url) {
+  var c = el("div", "code"); box.appendChild(c);
+  if (window.QRCode) new QRCode(c, { text: url, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+}
+function done(s) { var t = state.ticks[s.id] || {}; return s.checks.every(function (_, i) { return t[i]; }); }
+
+function block(b) {
+  var c = el("section", "card" + (b.tone ? " " + b.tone : "") + (b.src && b.src.indexOf("dsy") >= 0 ? " dsy" : ""));
+  if (b.h) c.appendChild(el("h3", null, b.h));
+  if (b.text) c.appendChild(el("p", null, b.text));
+  if (b.list) { var u = el("ul", "dots"); b.list.forEach(function (x) { u.appendChild(el("li", null, x)); }); c.appendChild(u); }
+  if (b.steps) { var o = el("ol", "steps"); b.steps.forEach(function (x) { o.appendChild(el("li", null, x)); }); c.appendChild(o); }
+  if (b.table) {
+    var t = el("table", "t"), tr = el("tr"); b.table.head.forEach(function (x) { tr.appendChild(el("th", null, x)); }); t.appendChild(tr);
+    b.table.rows.forEach(function (r) { var row = el("tr"); r.forEach(function (x) { row.appendChild(el("td", null, x)); }); t.appendChild(row); });
+    c.appendChild(t);
+  }
+  if (b.cases) b.cases.forEach(function (k) {
+    var d = el("div", "case"); d.appendChild(el("p", "who", k.who)); if (k.text) d.appendChild(el("p", null, k.text));
+    var det = el("details"); det.appendChild(el("summary", null, "Show the answer"));
+    var inner = el("div"); inner.appendChild(el("p", "answer", k.answer));
+    if (k.eoc) { var e = el("p", "answer"); e.innerHTML = "<b>EOC Clinician (role-play):</b> "; e.appendChild(document.createTextNode(k.eoc)); inner.appendChild(e); }
+    det.appendChild(inner); d.appendChild(det); c.appendChild(d);
+  });
+  if (b.choose) {
+    // pick-one toggle (e.g. CT-6 or Slishman): the choice is kept on this phone; printing shows every option
+    var ch = b.choose; c.appendChild(el("h3", null, ch.h));
+    var row = el("div", "btns noprint"), body = el("div", "stack");
+    function show() {
+      body.innerHTML = "";
+      ch.options.forEach(function (o) { if (PRINT || state[ch.key] === o.value) o.blocks.forEach(function (x) { body.appendChild(block(x)); }); });
+      if (!PRINT && !state[ch.key]) body.appendChild(el("p", "src", "Choose one to see its steps."));
+      row.querySelectorAll("button").forEach(function (x) { x.className = "btn small" + (state[ch.key] === x.value ? "" : " ghost"); });
+    }
+    ch.options.forEach(function (o) {
+      var btn = el("button", "btn small ghost", o.label); btn.type = "button"; btn.value = o.value;
+      btn.addEventListener("click", function () { state[ch.key] = o.value; save(); show(); }); row.appendChild(btn);
+    });
+    c.appendChild(row); c.appendChild(body); show();
+  }
+  if (b.src) c.appendChild(srcLine(b.src));
+  return c;
+}
+
+function stationPage(s, print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Station " + s.n + " of " + STATIONS.length));
+  var head = el("section", "stack");
+  var hq = el("div", "qr");
+  if (print) qr(hq, here + "#" + s.id);
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Station " + s.n + " · about " + s.mins + " minutes"));
+  ht.appendChild(el("h2", null, s.title)); ht.appendChild(el("p", null, s.goal));
+  if (print) ht.appendChild(el("p", "src", "Scan for this station on your phone"));
+  hq.appendChild(ht); head.appendChild(hq); f.appendChild(head);
+  f.appendChild(block({ h: "Kit", list: s.kit }));
+  s.blocks.forEach(function (b) { f.appendChild(block(b)); });
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Partner check"));
+  c.appendChild(el("p", "src", "Your partner ticks each one when they see you do it. Swap and go again."));
+  var box = el("div", "ticks"), t = state.ticks[s.id] = state.ticks[s.id] || {};
+  s.checks.forEach(function (x, i) {
+    var l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!t[i];
+    cb.addEventListener("change", function () { t[i] = cb.checked; save(); });
+    l.appendChild(cb); l.appendChild(el("span", null, x)); box.appendChild(l);
+  });
+  c.appendChild(box); f.appendChild(c);
+  if (!print) {
+    var nav = el("div", "btns noprint"), i = STATIONS.indexOf(s);
+    nav.appendChild(a("All stations", "#", "btn small ghost"));
+    nav.appendChild(i < STATIONS.length - 1 ? a("Next: station " + (i + 2), "#" + STATIONS[i + 1].id, "btn small") : a("Finish together", "#end", "btn small"));
+    f.appendChild(nav);
+  }
+  return f;
+}
+
+function endPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Finish together"));
+  var head = el("div", "qr"); if (print) qr(head, here + "#end");
+  var ht = el("div", "stack"); ht.appendChild(el("p", "eyebrow", "Last · about " + END.mins + " minutes")); ht.appendChild(el("h2", null, END.title));
+  head.appendChild(ht); f.appendChild(head);
+  f.appendChild(block({ steps: END.steps }));
+  var links = el("div", "btns noprint");
+  links.appendChild(a("Student walk-through", "../../modules/amputation-ao/?mode=student", "btn small"));
+  links.appendChild(a("Knowledge check (microlearning)", "../../microlearning/amputation/", "btn small ghost"));
+  f.appendChild(links);
+  if (print) { f.appendChild(el("p", "printonly src", "Walk-through: " + root + "modules/amputation-ao/?mode=student")); return f; }
+  var c = el("section", "card"); c.appendChild(el("h3", null, "Send your record to the instructor"));
+  var nm = el("label", "field", "Names of everyone here"), ni = el("input"); ni.value = state.names || ""; ni.placeholder = "First names";
+  ni.addEventListener("input", function () { state.names = ni.value; save(); }); nm.appendChild(ni); c.appendChild(nm);
+  var qq = el("label", "field", "Questions or anything that didn't work"), qt = el("textarea"); qt.rows = 3; qt.value = state.q || "";
+  qt.addEventListener("input", function () { state.q = qt.value; save(); }); qq.appendChild(qt); c.appendChild(qq);
+  var b = el("button", "btn", "Share the record"); b.type = "button"; var msg = el("p", "src");
+  b.addEventListener("click", function () {
+    var lines = ["DSY amputation and haemorrhage skills stations, " + new Date().toLocaleDateString("en-AU"), "Crew: " + (state.names || "(no names)")];
+    STATIONS.forEach(function (s) {
+      var t = state.ticks[s.id] || {}, n = s.checks.filter(function (_, i) { return t[i]; }).length;
+      lines.push("Station " + s.n + " " + s.title + ": " + n + " of " + s.checks.length + " ticked");
+      s.checks.forEach(function (x, i) { if (!t[i]) lines.push("  not ticked: " + x); });
+    });
+    if (state.q) lines.push("Questions: " + state.q);
+    var text = lines.join("\n");
+    if (navigator.share) { navigator.share({ title: "Amputation and haemorrhage skills stations", text: text }).catch(function () {}); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { msg.textContent = "Copied. Paste it into a message to your instructor."; }, function () { msg.textContent = text; });
+  });
+  c.appendChild(b); c.appendChild(msg);
+  var r = el("button", "btn small ghost", "Clear the ticks for the next group"); r.type = "button";
+  r.addEventListener("click", function () { if (confirm("Clear all ticks, names and questions on this phone?")) { state = { ticks: {} }; save(); go(); } });
+  c.appendChild(r);
+  f.appendChild(c);
+  return f;
+}
+
+function setupPage(print) {
+  var f = document.createDocumentFragment();
+  if (!print) f.appendChild(header("Instructor setup"));
+  f.appendChild(el("h2", null, "Instructor setup sheet"));
+  f.appendChild(block({ h: "The night at a glance", table: { head: ["Time", "What"], rows: [
+    ["Before", "Everyone does the microlearning \"Amputation and haemorrhage\" (about 20 min). Send the link a few days ahead. ARs use the AR version."],
+    ["0:00", "Read the safety box at station 2 together (tourniquet on the training limb only). Split into pairs or threes."],
+    ["0:05", "Rotate through stations 1 to 4 (about 15 to 20 min each). Partners tick the checks on the phone."],
+    ["about 1:25", "Finish together: the student walk-through as one crew, then the knowledge check."],
+    ["End", "Share the record with the instructor. Pack up and reset."]
+  ] } }));
+  var kit = el("section", "card"); kit.appendChild(el("h3", null, "Kit by station"));
+  STATIONS.forEach(function (s) { kit.appendChild(el("p", null, s.n + ". " + s.title)); var u = el("ul", "dots"); s.kit.forEach(function (x) { u.appendChild(el("li", null, x)); }); kit.appendChild(u); });
+  f.appendChild(kit);
+  f.appendChild(block({ h: "Set up", src: ["dsy"], steps: [
+    "Tape each station's printed page (with its QR code) at the station, or print one pack per pair.",
+    "Station 1: a moulage wound or a marked sleeve, dressings, pads and crepe bandages, gloves and eye protection.",
+    "Station 2: a training limb and a training SOF tourniquet, a permanent marker. The tourniquet never goes on a person.",
+    "Station 3: zip-lock bags, a container, water and ice, a 'body part' (a sausage or a glove of rice), a marker.",
+    "Station 4: a methoxyflurane trainer or a card, two phones, a PCR card.",
+    "Leave this page open on one phone so the group can find the finish."
+  ] }));
+  f.appendChild(block({ h: "Pack up and reset", src: ["dsy"], list: [
+    "Tourniquet unwound, windlass reset and back in its labelled training pouch.",
+    "Wet bags and the 'body part' in the bin; container dried.",
+    "Unused dressings back in stock; used ones in the bin.",
+    "On the phone used for ticks: Finish together > Clear the ticks for the next group."
+  ] }));
+  var q = el("section", "card"); q.appendChild(el("h3", null, "Station links"));
+  var row = el("div", "stack");
+  STATIONS.concat([{ id: "end", n: "", title: END.title }]).forEach(function (s) {
+    var x = el("div", "qr"); qr(x, here + "#" + s.id); var t = el("div"); t.appendChild(el("b", null, (s.n ? "Station " + s.n + ": " : "") + s.title));
+    t.appendChild(el("p", "src", here + "#" + s.id)); x.appendChild(t); row.appendChild(x);
+  });
+  q.appendChild(row); f.appendChild(q);
+  return f;
+}
+
+function home() {
+  var f = document.createDocumentFragment();
+  f.appendChild(header("A practical night you can run as a team"));
+  var i = el("section", "stack");
+  i.appendChild(el("p", null, "Four stations to practise the hands-on parts of a bleeding and amputation job, then one full job together. Ambulance Responders do every station: the AR boxes say what changes. Work in pairs or threes. At each station, read the page, practise, and have your partner tick the checks."));
+  var pre = el("div", "card warn"); pre.appendChild(el("h3", null, "Before you start"));
+  pre.appendChild(el("p", null, "Everyone does the microlearning \"Amputation and haemorrhage\" first (about 20 minutes)."));
+  var pb = el("div", "btns"); pb.appendChild(a("Open the microlearning", "../../microlearning/amputation/", "btn small")); pre.appendChild(pb);
+  i.appendChild(pre); f.appendChild(i);
+  var list = el("nav", "stack");
+  STATIONS.forEach(function (s) {
+    var d = a("", "#" + s.id, "door" + (done(s) ? " done" : "")); d.appendChild(el("span", "n", done(s) ? "✓" : String(s.n)));
+    var t = el("div"); t.appendChild(el("b", null, s.title)); t.appendChild(el("small", null, "About " + s.mins + " minutes")); d.appendChild(t); list.appendChild(d);
+  });
+  var e = a("", "#end", "door alt"); e.appendChild(el("span", "n", "★")); var et = el("div"); et.appendChild(el("b", null, END.title));
+  et.appendChild(el("small", null, "Full job, knowledge check, send your record")); e.appendChild(et); list.appendChild(e);
+  f.appendChild(list);
+  var ins = el("div", "btns"); ins.appendChild(a("Instructor setup sheet", "#setup")); ins.appendChild(a("Print all pages or save as PDF", "#print"));
+  f.appendChild(ins);
+  f.appendChild(el("p", "foot", "Steps come from " + [SRC.cpp042, SRC.cpp024, SRC.c004, SRC.cssg, SRC.cpp013, SRC.cpp036].join(", ") +
+    ". CPP-042-AO (2016), CPP-024-AR (2019) and CPPRO-004 (review date Aug 2018, passed) are old documents: check the SAAS Clinical app for a newer version. Tourniquet practice on a training limb only follows the DSY lead instructor. Dashed boxes are DSY-written for practice. Training resource only: it does not replace the SAAS protocols or advice from the EOC Clinician."));
+  return f;
+}
+
+function printAll() {
+  var f = document.createDocumentFragment();
+  var bar = el("div", "btns noprint"); var pb = el("button", "btn", "Print or save as PDF"); pb.type = "button"; pb.onclick = function () { window.print(); };
+  bar.appendChild(pb); bar.appendChild(a("Back", "#")); f.appendChild(bar);
+  f.appendChild(header("Instructor setup")); f.appendChild(setupPage(true)); f.appendChild(el("div", "pagebreak"));
+  STATIONS.forEach(function (s) { f.appendChild(header("Station " + s.n)); f.appendChild(stationPage(s, true)); f.appendChild(el("div", "pagebreak")); });
+  f.appendChild(header("Finish together")); f.appendChild(endPage(true));
+  return f;
+}
+
+var PRINT = false;
+function go() {
+  var h = location.hash.slice(1); PRINT = h === "print"; var s = STATIONS.filter(function (x) { return x.id === h; })[0];
+  app.innerHTML = "";
+  app.appendChild(s ? stationPage(s) : h === "end" ? endPage() : h === "setup" ? setupPage() : h === "print" ? printAll() : home());
+  if (h === "print") app.querySelectorAll("details").forEach(function (d) { d.open = true; });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", go);
+go();
+</script>
+</body>
+</html>

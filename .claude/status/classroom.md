@@ -102,3 +102,9 @@ Checked: slide data identical apart from the variation 3 wording in the notes. L
 `/classroom/seizures/` (28 Nov 2026): copy of the asthma deck; video and key points from the module, Josh's eight break
 points (AO version), MDT screenshots page 2140, Enroute 2141, remarks 2150, scene 2153, Mobile 2210, Cleve Hospital 2230
 (CL181), PCR `josh`, next week `/stations/seizures/`, feedback `t=seizures`. Live (PR #398, merged 28 Nov 2026).
+
+## Amputation and haemorrhage case night
+
+`/classroom/amputation/` (28 Nov 2026): copy of the seizures deck; video and key points from the module, Tom's eight
+break points with decision slides, MDT screenshots (KI81, Kimba Hospital), one AR slide, PCR `tom`, next week
+`/stations/amputation/`, feedback `t=amputation`. On a branch, not merged.
