@@ -28,7 +28,10 @@ const SHOTS = {
   // Sam: page 0948 (day, so TB81), Enroute 0949, scene 0955, cleared from scene 1052 (not transported): press and
   // hold MOBILE for 2 seconds goes straight to Clear (owner, 26 Nov 2026).
   'refusal': { job: 'refusal', start: '09:47:50', callsign: 'TB81', clearFromScene: true,
-    toEnroute: 1, toRemarks: 4, toScene: 2, onScene: 57 }
+    toEnroute: 1, toRemarks: 4, toScene: 2, onScene: 57 },
+  // Tom: page 1530 (day, so KI81), Enroute 1531, remark 1538, scene 1545, mobile 1602, Kimba Hospital 1622.
+  'amputation': { job: 'amputation', start: '15:29:50', callsign: 'KI81', hospital: 'KIMBA HOSPITAL',
+    toEnroute: 1, toRemarks: 7, toScene: 7, onScene: 17, transport: 20 }
 };
 const deck = process.argv[2], S = SHOTS[deck];
 if (!S) { console.log('Usage: node mdt-shots.js ' + Object.keys(SHOTS).join('|')); process.exit(1); }

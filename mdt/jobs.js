@@ -170,7 +170,15 @@ window.MDT_JOBS = [
     note:'27M SEIZURE - KNOWN EPILEPTIC', patient:'MERRICK, JOSH', age:'27Y', weight:'', caller:'FRIEND (ELLIE)',
     unitLoc:'CLEVE AMBULANCE STATION',
     remarks:'21ST BIRTHDAY PARTY IN A SHEARING SHED\nSEIZURE ABOUT 2137 - LASTED ABOUT 2 MIN - NOW CONFUSED\nKNOWN EPILEPTIC - HAS BEEN DRINKING\nGRAVEL TRACK TO THE SHED - LIGHTS ON\n+4 FRIEND: HAS NOT TAKEN HIS TABLETS FOR 2 DAYS\n+10 FITTING AGAIN - NOT WOKEN UP PROPERLY SINCE THE FIRST ONE',
-    expected:'CLEVE HOSPITAL, about 20 minutes: the closest ED, early notification (scenario)' }
+    expected:'CLEVE HOSPITAL, about 20 minutes: the closest ED, early notification (scenario)' },
+  // Amputation and haemorrhage (28 Nov 2026): Tom, 46, hand caught in a grain auger at a field bin about 18 km north of
+  // Kimba. Remark timing is DSY-written: the faint feeling at 1538 (+8), while the crew is en route.
+  { id:'amputation', label:'Amputation: Tom, 46 (near Kimba, 1530)', scenario:'/modules/amputation-ao/',
+    priority:'1', startTime:'15:30', typeName:'Traumatic injury', town:'Kimba', street:'RURAL PROPERTY 18 KM N OF TOWN - FIELD BIN SITE',
+    note:'46M HAND CAUGHT IN GRAIN AUGER - HEAVY BLEEDING', patient:'ASHDALE, TOM', age:'46Y', weight:'', caller:'WIFE (KATE)',
+    unitLoc:'KIMBA AMBULANCE STATION',
+    remarks:'RIGHT HAND CAUGHT IN GRAIN AUGER\n"BLEEDING EVERYWHERE - TWO FINGERS ARE OFF"\nAUGER NOW STOPPED - PT CONSCIOUS\nFIELD BIN 2 KM UP FARM TRACK FROM HOUSE - WIFE TO MEET CREW AT GATE\n+8 PATIENT FEELING FAINT - WIFE PRESSING A TOWEL ON IT',
+    expected:'KIMBA HOSPITAL, about 20 minutes, as the EOC Clinician advised (scenario)' }
 ];
 
 /* Links from the scenario customiser (Supabase public.scenarios) for the jobs that have no custom() of their own.
@@ -228,6 +236,8 @@ window.MDT_JOBS = [
     v => U(v.hospital_town || 'Cleve') + ' HOSPITAL: the closest ED, early notification');
   link('refusal', 'refusal-ao', { patient:'Sam', age:'38', partner_name:'Kirsty', town:'Tumby Bay', station:'Tumby Bay', response:'7', transport:'5', dispatch:'09:48' },
     v => 'Not transported: valid refusal against advice (scenario). Clear from scene (hold MOBILE 2 s); ' + U(v.hospital || 'Tumby Bay Hospital') + ' if he changes his mind');
+  link('amputation', 'amputation-ao', { patient:'Tom', age:'46', partner:'wife', partner_name:'Kate', town:'Kimba', station:'Kimba', hospital_town:'Kimba', response:'15', transport:'20', dispatch:'15:30' },
+    v => U(v.hospital_town || 'Kimba') + ' HOSPITAL, as the EOC Clinician advised');
 })();
 
 /* Eyre Peninsula call signs (owner, 11 and 16 Nov 2026): team letters + 81 for jobs between 0800 and 1800, + 181

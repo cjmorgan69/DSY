@@ -2,6 +2,14 @@
    codes in its relatedCodes). Each page lists the others under "Built on the same protocol" and leaves itself out.
    Add a line here whenever a microlearning module or a walk-through scenario is built for a protocol. */
 window.RELATED = {
+  "CPP-042-AO": [
+    { kind: "Microlearning module", title: "Amputation and haemorrhage", href: "/microlearning/amputation/", text: "Direct pressure first, the arterial tourniquet as a last resort (where, how tight, the time, and what it must never be), packaging an amputated part, and the bleeding checker, with a narrated video and quiz.",
+      arText: "Direct pressure first, the arterial tourniquet as a last resort, packaging an amputated part, and the EOC Clinician consult about treatment and transport, with a narrated video and quiz." },
+    { kind: "Walk-through scenario", title: "Amputation and haemorrhage - AO: Tom, 46", href: "/modules/amputation-ao/", text: "Two-person AO crew, a hand caught in a grain auger north of Kimba: a machinery scene, direct pressure that fails, a SOF tourniquet, two fingers in iced water, pain relief and the EOC Clinician. Facilitator and student versions.",
+      arTitle: "Amputation and haemorrhage - AR: Tom, 46", arText: "Two-person AR crew, a hand caught in a grain auger north of Kimba: a machinery scene, direct pressure that fails, a SOF tourniquet, two fingers in iced water, pain relief and the consult about treatment and transport. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Tom's patient care record", href: "/tools/pcr/#job=tom", arHref: "/tools/pcr/#job=tomAR", text: "After the walk-through: write the PCR, including the tourniquet with its site and time, the amputated fingers and how they were packaged, the pain relief and the EOC Clinician call. Tap any heading to see what goes there, then compare with the model card.",
+      arText: "After the AR walk-through: write the PCR, including the tourniquet with its site and time, the amputated fingers, the pain relief and the EOC Clinician's advice on treatment and transport. Tap any heading to see what goes there, then compare with the model card." }
+  ],
   "CPP-014-AO": [
     { kind: "Microlearning module", title: "Seizures", href: "/microlearning/seizures/", text: "Basic care, the five-minute line, IM midazolam on EOC Clinician advice, the airway and the seizure checker, with a narrated video and quiz.",
       arText: "Basic care, protecting the actively seizing patient, the airway, and the EOC Clinician consult about treatment and transport, with a narrated video and quiz." },

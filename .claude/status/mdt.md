@@ -62,3 +62,6 @@ ambulance). Not transported, so the expected line says clear from scene.
 Clear from scene (owner, 26 Nov 2026, like the real MDT): on scene, press and hold MOBILE for 2 seconds: straight to
 Clear Event Confirm, no hospital list (`act.clearFromScene`, run log "Cleared from scene: not transported"); in the
 MDT user guide's status table. Customiser link via `link('refusal', 'refusal-ao', ...)`. Live (PR #377, merged 26 Nov 2026).
+
+Amputation job `amputation` (28 Nov 2026): Tom, 46, field bin 18 km north of Kimba, 1530 (KI81), one live remark
+(+8 feeling faint). Customiser link via `link('amputation', 'amputation-ao', ...)`. On a branch, not merged.

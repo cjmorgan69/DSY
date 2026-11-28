@@ -682,6 +682,111 @@ window.PCR_JOBS = {
     marks: [['front', 50, 18, 'A', 6]]
   },
 
+  tom: {
+    label: 'Tom, 46: amputation and haemorrhage (AO)',
+    short: 'Tom',
+    walk: '/modules/amputation-ao/',
+    // From /modules/amputation-ao/ (28 Nov 2026). All times are the walk-through's; DSY-written.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Traumatic amputation R index + middle fingers (grain auger) with life-threatening arterial haemorrhage R forearm, controlled with arterial tourniquet.',
+      recommendation: 'Transported to Kimba Hospital (EOC Clinician advised 1600, specialist advice sought). SOF tourniquet R forearm 1551: bleeding controlled since, uncovered, not removed. R index + middle fingers in water-tight bag in iced water, handed over. Methoxyflurane 3 mL 1558. HR 128, 116, 108; BP 96/64 to 108/70. Tetanus unknown. Paramedic crew to meet at Kimba. Handed over 1622 (ISBAR).',
+      ecg: 'Sinus tachycardia.'
+    },
+    sections: {
+      pc: 'R hand caught in grain auger ~1525. Arterial bleeding R forearm uncontrolled with direct pressure + elevation: tourniquet 1551. R index + middle fingers completely amputated.',
+      phx: 'Nil.',
+      medn: 'Nil regular. Tetanus status unknown.',
+      hx: 'Clearing a blockage at the auger hopper with the auger running, glove caught, R hand pulled in. Wife (Kate) hit the stop switch, towel pressure ~10 min before arrival. Feeling faint. Field bin site ~18 km N of Kimba.',
+      oa: '46M sitting against the grain truck wheel, pale + sweaty, R arm held up in a blood-soaked towel, blood on clothes + ground. Tractor driving the auger still idling on arrival: turned off, key out (son).',
+      cns: 'GCS 15 throughout. Anxious, nauseated.',
+      skin: 'Pale, cool, sweaty. 6 cm deep laceration across mid R forearm, pulsatile bleeding. R index + middle fingers amputated at the base, stumps oozing.',
+      cvs: 'HR 128, weak radial (L), BP 96/64 at 1549. Nil R radial pulse after tourniquet. 1615 HR 108, BP 108/70.',
+      resp: 'RR 24, SpO2 96% RA. Chest clear.',
+      pain: 'R forearm + hand 8/10; 9/10 after the tourniquet; 6/10 at 1615 after methoxyflurane.',
+      survey: 'Nil other injuries found.',
+      care: 'Scene: tractor off, key out. Gloves + eye protection. 1547 firm direct pressure (trauma pad x2) + elevation, lying down. Clinical support requested. Bleeding uncontrolled ~3 min.\n1551 SOF tourniquet R forearm below elbow (proximal, close to wound, not over joint/wound), windlass to haemorrhage control, nil R radial pulse, locked. Time on strap + PCR. Left uncovered.\n1556 2 fingers sealed in water-tight bag in ice-cooled water, not touching ice, labelled. 1558 methoxyflurane 3 mL. 1600 EOC Clinician advised (tourniquet): transport to Kimba Hospital, specialist advice sought. Stretcher, arm elevated, tourniquet checked en route, Kimba Hospital notified.'
+    },
+    tips: {
+      pc: 'Put the tourniquet time in the first line: it must be noted and handed over (CPPRO-004).',
+      care: 'The tourniquet: device, site, time, that the bleeding was controlled and the distal pulse gone, and that it stayed uncovered. The amputated part: how it was packaged and who it was handed to.',
+      survey: 'Say you looked for other injuries, even when there are none.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Front figure, right forearm: L (laceration) and H (haemorrhage); right hand: the two amputated fingers.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician advised at 1600 about the tourniquet (CPP-042-AO).'
+    },
+    ticks: ['consult'],
+    obs: [
+      { time: '1549', rr: 24, o2: 'RA', spo2: 96, bp: '96/64', hr: 128, gcs: 15, evm: [4, 5, 6], pain: 8, bgl: 6.8 },
+      { time: '1558', rr: 22, o2: 'RA', spo2: 97, bp: '102/68', hr: 116, gcs: 15, evm: [4, 5, 6], pain: 9 },
+      { time: '1615', rr: 20, o2: 'RA', spo2: 98, bp: '108/70', hr: 108, gcs: 15, evm: [4, 5, 6], pain: 6 }
+    ],
+    drugs: [
+      ['1547', 'Direct pressure + elevation'],
+      ['1551', 'Arterial tourniquet (SOF) R forearm'],
+      ['1556', 'Fingers bagged, in iced water'],
+      ['1558', 'Methoxyflurane', '3', 'mL', 'Inhaler'],
+      ['1600', 'EOC Clinician advised: tourniquet'],
+      ['1622', 'Handover Kimba Hospital']
+    ],
+    marks: [['front', 22, 100, 'L H', -6], ['front', 17, 126, 'amp', -6]]
+  },
+
+  tomAR: {
+    label: 'Tom, 46: amputation and haemorrhage (AR)',
+    short: 'Tom (AR)',
+    walk: '/modules/amputation-ao/?scope=ar',
+    walkStudent: '/modules/amputation-ao/?scope=ar&mode=student',
+    // The Ambulance Responder version of Tom (CPP-024-AR): same bleeding care; EOC Clinician 1600 regarding treatment and transport (Kimba Hospital, clinical support cancelled). Times from the AR walk-through; DSY-written.
+    text: {
+      allergies: 'Nil known',
+      communicable: 'Nil known',
+      provisional: 'Traumatic amputation R index + middle fingers (grain auger) with life-threatening arterial haemorrhage R forearm, controlled with arterial tourniquet.',
+      recommendation: 'Transported to Kimba Hospital on EOC Clinician advice (1600, clinical support cancelled), notified. SOF tourniquet R forearm 1551: bleeding controlled since, uncovered, not removed. R index + middle fingers in water-tight bag in iced water, handed over. Methoxyflurane 3 mL 1558. HR 128, 116, 108; BP 96/64 to 108/70. Tetanus unknown. Handed over 1622 (ISBAR).',
+      ecg: 'Sinus tachycardia.'
+    },
+    sections: {
+      pc: 'R hand caught in grain auger ~1525. Arterial bleeding R forearm uncontrolled with direct pressure + elevation: tourniquet 1551. R index + middle fingers completely amputated.',
+      phx: 'Nil.',
+      medn: 'Nil regular. Tetanus status unknown.',
+      hx: 'Clearing a blockage at the auger hopper with the auger running, glove caught, R hand pulled in. Wife (Kate) hit the stop switch, towel pressure ~10 min before arrival. Feeling faint. Field bin site ~18 km N of Kimba.',
+      oa: '46M sitting against the grain truck wheel, pale + sweaty, R arm held up in a blood-soaked towel, blood on clothes + ground. Tractor driving the auger still idling on arrival: turned off, key out (son).',
+      cns: 'GCS 15 throughout. Anxious, nauseated.',
+      skin: 'Pale, cool, sweaty. 6 cm deep laceration across mid R forearm, pulsatile bleeding. R index + middle fingers amputated at the base, stumps oozing.',
+      cvs: 'HR 128, weak radial (L), BP 96/64 at 1549. Nil R radial pulse after tourniquet. 1615 HR 108, BP 108/70.',
+      resp: 'RR 24, SpO2 96% RA. Chest clear.',
+      pain: 'R forearm + hand 8/10; 9/10 after the tourniquet; 6/10 at 1615 after methoxyflurane.',
+      survey: 'Nil other injuries found.',
+      care: 'Scene: tractor off, key out. Gloves + eye protection. 1547 firm direct pressure (trauma pad x2) + elevation, lying down. Clinical support requested. Bleeding uncontrolled ~3 min.\n1551 SOF tourniquet R forearm below elbow (proximal, close to wound, not over joint/wound), windlass to haemorrhage control, nil R radial pulse, locked. Time on strap + PCR. Left uncovered.\n1556 2 fingers sealed in water-tight bag in ice-cooled water, not touching ice, labelled. 1558 methoxyflurane 3 mL. 1600 EOC Clinician consult (treatment + transport): transport to Kimba Hospital, clinical support cancelled, repeated back. Stretcher, arm elevated, tourniquet checked en route, Kimba Hospital notified.'
+    },
+    tips: {
+      pc: 'Put the tourniquet time in the first line: it must be noted and handed over (CPPRO-004).',
+      care: 'The tourniquet: device, site, time, that the bleeding was controlled and the distal pulse gone, and that it stayed uncovered. The amputated part: how it was packaged and who it was handed to.',
+      survey: 'Say you looked for other injuries, even when there are none.'
+    },
+    reveal: {
+      pi: 'Nothing: not a long lie.', falls: 'Nothing: not a fall.', body: 'Front figure, right forearm: L (laceration) and H (haemorrhage); right hand: the two amputated fingers.',
+      info: 'Not ticked: transported.', consult: 'Ticked: EOC Clinician consulted at 1600 regarding treatment and transport (CPP-024-AR).'
+    },
+    ticks: ['consult'],
+    obs: [
+      { time: '1549', rr: 24, o2: 'RA', spo2: 96, bp: '96/64', hr: 128, gcs: 15, evm: [4, 5, 6], pain: 8, bgl: 6.8 },
+      { time: '1558', rr: 22, o2: 'RA', spo2: 97, bp: '102/68', hr: 116, gcs: 15, evm: [4, 5, 6], pain: 9 },
+      { time: '1615', rr: 20, o2: 'RA', spo2: 98, bp: '108/70', hr: 108, gcs: 15, evm: [4, 5, 6], pain: 6 }
+    ],
+    drugs: [
+      ['1547', 'Direct pressure + elevation'],
+      ['1551', 'Arterial tourniquet (SOF) R forearm'],
+      ['1556', 'Fingers bagged, in iced water'],
+      ['1558', 'Methoxyflurane', '3', 'mL', 'Inhaler'],
+      ['1600', 'EOC: transport, clin support cancelled'],
+      ['1622', 'Handover Kimba Hospital']
+    ],
+    marks: [['front', 22, 100, 'L H', -6], ['front', 17, 126, 'amp', -6]]
+  },
+
   ron: {
     label: 'Ron, 67: hypoglycaemia (AO)',
     short: 'Ron',
