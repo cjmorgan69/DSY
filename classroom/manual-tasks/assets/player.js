@@ -12,7 +12,9 @@
     return '<ul class="points">' + (arr || []).map(function (p) {
       var t = typeof p === 'string' ? p : p.t, sub = typeof p === 'string' ? '' : p.sub;
       n++;
-      return '<li' + (stepped ? ' class="step" data-step="' + n + '"' : '') + '>' + E(t) +
+      // A point ending in ':' ("What to do:") is a heading over the points below it, not a dot point.
+      var cls = [stepped ? 'step' : '', /:\s*$/.test(t) ? 'hd' : ''].join(' ').trim();
+      return '<li' + (cls ? ' class="' + cls + '"' : '') + (stepped ? ' data-step="' + n + '"' : '') + '>' + E(t) +
         (sub && sub.length ? '<ul>' + sub.map(function (x) { return '<li>' + E(x) + '</li>'; }).join('') + '</ul>' : '') + '</li>';
     }).join('') + '</ul>';
   }
@@ -49,7 +51,7 @@
       var cols = s.cols || 3, v = s.variant || 'plain';
       return '<div class="slide light"><h1 class="t">' + E(s.title) + '</h1><div class="body' + (s.callout ? ' hc' : '') + '"><div class="grid ' + v + '" style="grid-template-columns:repeat(' + cols + ',1fr)">' +
         s.items.map(function (c, i) {
-          var badge = v === 'number' ? '<div class="bd">' + (i + 1) + '</div>' : v === 'check' ? '<div class="bd">&#10003;</div>' : '';
+          var badge = v === 'number' ? '<div class="bd">' + (i + 1 + (s.start || 0)) + '</div>' : v === 'check' ? '<div class="bd">&#10003;</div>' : '';
           return '<div class="card step" data-step="' + (i + 1) + '">' + badge + '<div>' + E(c.h) + '</div>' + (c.t ? '<div class="tx">' + E(c.t) + '</div>' : '') + '</div>';
         }).join('') + '</div>' + (s.callout ? '<div class="callout-band step" data-step="' + (s.items.length + 1) + '">' + E(s.callout.text) + '</div>' : '') + '</div>' + lab(it) + '</div>';
     },
@@ -103,7 +105,7 @@
       for (var q = 0; q < bx.length; q++) if (bx[q].scrollHeight > bx[q].clientHeight + 2) return true;
       return false;
     }
-    while (over() && fs > 26) { fs -= 2; b.style.setProperty('--fs', fs + 'px'); }
+    while (over() && fs > 24) { fs -= 2; b.style.setProperty('--fs', fs + 'px'); }
   }
   function scaleStage() {
     var v = document.getElementById('viewport');

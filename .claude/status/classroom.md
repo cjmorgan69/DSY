@@ -56,3 +56,13 @@ Busy dot-point slides (estimated to fit only below 44px) and tables (below 38px)
 MDT screenshot slides: points 48px (were 38), screenshot a little narrower. Asthma severity table (CTL-071) shown as
 two slides (severity, signs and one age group each). Before: median dot-point size 52, 65 of 203 slides under 44px;
 after: median 60, 8 under 44px (smallest 38). Text unchanged. Live (PR #388, merged 28 Nov 2026).
+
+## Larger slide text: drive mindset, manual tasks, medical conditions (28 Nov 2026)
+
+Owner asked for the same change on the three decks that run their own copy of the player (`<deck>/assets/`):
+the same style block, heading points, text floor 24, tables and image slides start at 48 (medical conditions'
+tables with a fixed small size now start at 48 and shrink only as needed), and the split rules in `common.js`
+(bullets, tables, plus "compare" slides, which split both panels; when one panel has nothing left for the second
+half, that half becomes a dot-point slide headed by the other panel's heading; long cards and numbered steps split
+as in the case-night decks). Before: 263 slides, 104 under 44px, smallest 22; after: 290 slides, 34 under 44px,
+smallest 34; median 48 -> 56. Text unchanged. On a branch, not merged.

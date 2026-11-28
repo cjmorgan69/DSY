@@ -182,7 +182,8 @@ Development" cards. Raised with the owner and NOT yet decided or done:
 - Dashboard search box (27 Nov 2026): one box on `/dashboard/`, `/dashboard/wide/` and `/dashboard/team/` finds topics,
   AO protocols, people, sessions, lessons and pages (see `dashboard.md`). On a branch, not merged.
 - Larger case-night slide text (28 Nov 2026): bigger dot points, busy slides split in two (see `classroom.md`).
-  Live (PR #388, merged 28 Nov 2026).
+  Live (PR #388, merged 28 Nov 2026). Same for drive mindset, manual tasks and medical conditions:
+  on a branch, not merged.
 - Stations still to build: snake bite, pain. The sepsis stations are not a lesson yet.
 - No MDT job yet: burns, spinal. No customiser yet: spinal.
 - Next modules: seizures, amputation and haemorrhage (no walk-throughs exist for these). The MVA hypo scenario

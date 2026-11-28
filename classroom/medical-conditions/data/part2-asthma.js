@@ -66,7 +66,7 @@
           ['More severe: phrases, words or can’t speak, SpO2 below 95%', 'Neb: salbutamol 2.5 mg + ipratropium 250 microg (half a neb of each) + 3 mL saline. Early consult', 'Neb: salbutamol 5 mg + ipratropium 500 microg (a full neb of each). Early consult'],
           ['Respiratory arrest', 'BVM: slow and gentle, 4 a minute. Consult the EOC Clinician', 'BVM: slow and gentle, 4 a minute. Consult the EOC Clinician']
         ],
-        fs: 34,
+        fs: 48,
         source: 'Chart in Clinical Practice Protocol Asthma - Ambulance Responder CPP-048-AR. Each puff: 4 breaths.',
         callout: { text: 'More severe: the chart also allows MDI doses as for mild, with oxygen by nasal cannula at 4 L/min and early EOC Clinician consult.' },
         notes: {

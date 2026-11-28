@@ -54,7 +54,7 @@
           ['Brought on by', 'Weather extremes, exertion, stress, meals', 'Often nothing'],
           ['Relieved by', 'Rest, less stress, GTN', 'GTN may give incomplete or no relief']
         ],
-        fs: 32,
+        fs: 48,
         callout: { text: 'Both can present with chest pain: treat every chest pain as a true cardiac emergency.' },
         notes: {
           time: 3,
@@ -111,7 +111,7 @@
           ['Pulse', 'Between 60 and 120'],
           ['PDE-5 inhibitors', 'None in the last 24 h: Viagra (sildenafil), Levitra (vardenafil). 48 h for Cialis (tadalafil)']
         ],
-        fs: 38,
+        fs: 48,
         callout: { text: 'PDE-5 inhibitors treat erectile dysfunction and pulmonary hypertension. With GTN: life-threatening hypotension. Ask discreetly but thoroughly.' },
         notes: {
           time: 5,

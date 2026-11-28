@@ -76,7 +76,7 @@
           ['15:25', 'Pregnancy and childbirth', 'Stations 7 and 8: birth, newborn'],
           ['16:55', 'Review and questions', 'Theory and the checklist']
         ],
-        fs: 34,
+        fs: 48,
         notes: {
           time: 1,
           say: ['Times follow the SAAS workshop timetable (9:00 to 17:00). Each skills block uses a Day 6 station page on your phone.'],
