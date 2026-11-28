@@ -39,6 +39,7 @@ var M = window.MODULE = {
   panels: [
     { title: "Introduction", open: true, blocks: [
       { video: { src: "intro.mp4", poster: "intro-poster.jpg", title: "Pain management: what AOs need to know" } },
+      { scope: "ar", box: { title: "Watching as an Ambulance Responder", tone: "warn", text: "The video follows the AO protocol (CPP-013-AO). The AR protocol (CPP-036-AR) has the same assessment, non-drug measures, paracetamol and methoxyflurane. It has no ibuprofen, no IN fentanyl, no ketamine and so no sedation score. ARs request clinical support, and when pain stays uncontrolled they consult the EOC Clinician regarding treatment and transport." } },
       { text: "Pain is an unpleasant and emotional experience, a product of the brain's interpretation of a stimulus. It is shaped by culture, environment, social factors and past experience, so it is unique to each person." },
       { text: "Pain management is a fundamental human right. Start it as soon as it's clinically appropriate, and don't rely only on medicines. Reassurance, distraction, temperature control, splinting and posture all help. So do validation, empathy, active listening and setting expectations: they can reduce the medicine a patient needs." },
       { text: "The aim is to reduce pain to a comfortable or tolerable level, not to take it away completely." }
@@ -50,15 +51,22 @@ var M = window.MODULE = {
         { t: "Pain score before and after", text: "Self-report if they can communicate: Numerical Rating Scale or Faces Pain Scale-Revised. If not, a behavioural tool: FLACC, r-FLACC or PAINAD." },
         { t: "Non-drug measures", text: "Reassurance, distraction, temperature control, splinting and posture." },
         { t: "Reassess regularly", text: "Trends in pain scores show whether treatment is working." },
-        { t: "Opioids given?", text: "Monitor the sedation score, RR, SpO2, HR and BP." }
+        { t: "Opioids given?", text: "Monitor the sedation score, RR, SpO2, HR and BP.", scope: "ao" },
+        { t: "Request clinical support", text: "CPP-036-AR asks for it for every patient in pain.", scope: "ar" }
       ] } },
-      { box: { title: "Ongoing uncontrolled pain: multimodal analgesia", check: { q: "An adult took two paracetamol 3 hours ago and ibuprofen 7 hours ago. What can you give?", a: "Ibuprofen 400 mg (none in the past 6 hours), if there are no contraindications. Not paracetamol: it was given within the past 4 hours. Methoxyflurane is also an option." }, items: [
+      { scope: "ar", box: { title: "Ongoing uncontrolled pain: multimodal analgesia", check: { q: "An adult took two paracetamol 3 hours ago. What can you give?", a: "Not paracetamol: it was given within the past 4 hours. Methoxyflurane 3 mL is an option. Then consult the EOC Clinician regarding treatment and transport." }, items: [
+        "Paracetamol, if none in the past 4 hours: adults 1000 mg oral. Children under 16: consult the EOC Clinician for the oral dose",
+        "Methoxyflurane 3 mL, repeated once if needed. Never more than 2 doses in 24 hours, or 15 mL in a week",
+        "Paracetamol should be considered in all patients",
+        "Consult the EOC Clinician regarding treatment and transport. They may advise: transport and cancel clinical support; transport and RV with clinical support en route; or monitoring until clinical support arrives"
+      ] } },
+      { scope: "ao", box: { title: "Ongoing uncontrolled pain: multimodal analgesia", check: { q: "An adult took two paracetamol 3 hours ago and ibuprofen 7 hours ago. What can you give?", a: "Ibuprofen 400 mg (none in the past 6 hours), if there are no contraindications. Not paracetamol: it was given within the past 4 hours. Methoxyflurane is also an option." }, items: [
         "Paracetamol, if none in the past 4 hours: adults 1000 mg oral. Children under 16: consult the EOC Clinician for the oral dose",
         "Ibuprofen, if no ibuprofen or other NSAIDs in the past 6 hours: adults 400 mg oral. Children under 16: consult the EOC Clinician. Check the contraindications in the drug monograph",
         "Methoxyflurane 3 mL, repeated once if needed. Never more than 2 doses in 24 hours, or 15 mL in a week",
         "Consider paracetamol and/or ibuprofen in all patients. Together they may be as effective as oral opioids for musculoskeletal injuries"
       ] } },
-      { box: { title: "Ibuprofen: take care", tone: "warn", items: [
+      { scope: "ao", box: { title: "Ibuprofen: take care", tone: "warn", items: [
         "It can cause serious harm, especially in pregnancy, chronic kidney disease, heart failure and a history of myocardial infarction",
         "If there is any doubt about its safe use, withhold it",
         "Common NSAIDs include ibuprofen, aspirin, naproxen, diclofenac and celecoxib: check what the patient has already taken",
@@ -67,7 +75,15 @@ var M = window.MODULE = {
       { text: "Methoxyflurane's rapid onset and short duration suit brief painful procedures such as extrication or splinting. Time it deliberately. And check what's already been given, especially on a transfer." }
     ] },
 
-    { title: "IN fentanyl (authorised AOs)", blocks: [
+    { scope: "ar", title: "Not in the AR protocol", blocks: [
+      { box: { title: "AO-only pain relief", tone: "warn", items: [
+        "Ibuprofen, IN fentanyl and sublingual ketamine are in the AO protocol (CPP-013-AO), for AOs with the training or a specific SAAS authority",
+        "They are not in the AR protocol (CPP-036-AR). If paracetamol, methoxyflurane and the non-drug measures are not enough, consult the EOC Clinician regarding treatment and transport",
+        "Clinical support (a paramedic) can bring other options: request it early"
+      ], note: "The last point is general teaching, not protocol text." } }
+    ] },
+
+    { scope: "ao", title: "IN fentanyl (authorised AOs)", blocks: [
       { text: "When oral and inhaled analgesics are, or are likely to be, ineffective, AOs with a specific SAAS authority may use intranasal fentanyl, after consulting the EOC Clinician. Opioid stewardship applies: always use the lowest effective dose. Paracetamol alongside reduces the opioid needed." },
       { table: { title: "Sedation Score (CTL-097)", table: { head: ["Score", "Descriptor", "Stimulus", "Response"], rows: [
         ["0", "Awake, alert when approached", "N/A", "N/A"],
@@ -148,7 +164,7 @@ var M = window.MODULE = {
         note: "Blood or mucus in the nose, or abnormal nasal anatomy, may reduce absorption (CPPRO-013 precautions)." } }
     ] },
 
-    { title: "Sublingual ketamine (authorised AOs)", blocks: [
+    { scope: "ao", title: "Sublingual ketamine (authorised AOs)", blocks: [
       { box: { title: "Ketamine wafer may be considered if", check: { q: "A 70-year-old with severe hip pain, GCS 15. Can you give a ketamine wafer?", a: "Not without advice: over 64 needs a SAAS Medical Officer consult, through the EOC Clinician." }, items: [
         "Pain score 7 to 10, and",
         "GCS 15 or the patient's normal GCS, and",
@@ -164,7 +180,7 @@ var M = window.MODULE = {
       ] } }
     ] },
 
-    { title: "When opioids go wrong", blocks: [
+    { scope: "ao", title: "When opioids go wrong", blocks: [
       { text: "Ventilatory impairment is a common adverse effect of inappropriate opioid dosing. Hypotension after fentanyl is rare, but more likely if the patient is already haemodynamically compromised, so take care with any physiological abnormality (one or two red, or three yellow, RDR criteria, excluding pain)." },
       { box: { title: "Narcotic overdose (CPP-011-AO)", steps: [
         { t: "Effective breathing, airway patent", text: "Gag and cough reflexes intact: basic care, consider clinical support, transport and notify." },
@@ -174,7 +190,12 @@ var M = window.MODULE = {
     ] },
 
     { title: "Reference", collapsed: true, blocks: [
-      { table: { title: "Analgesia at a glance (CPP-013-AO)", table: { head: ["Medicine", "Adult dose", "Limits"], rows: [
+      { scope: "ar", table: { title: "Analgesia at a glance (CPP-036-AR)", table: { head: ["Medicine", "Adult dose", "Limits"], rows: [
+        ["Paracetamol (oral)", "1000 mg", "None in the past 4 hours. Under 16: consult"],
+        ["Methoxyflurane (inhaled)", "3 mL", "Repeat once. Max 2 doses in 24 hours, 15 mL a week"],
+        ["Still uncontrolled", "Consult the EOC Clinician", "Treatment and transport"]
+      ] } } },
+      { scope: "ao", table: { title: "Analgesia at a glance (CPP-013-AO)", table: { head: ["Medicine", "Adult dose", "Limits"], rows: [
         ["Paracetamol (oral)", "1000 mg", "None in the past 4 hours. Under 16: consult"],
         ["Ibuprofen (oral)", "400 mg", "No NSAIDs in the past 6 hours. Under 16: consult. Check contraindications"],
         ["Methoxyflurane (inhaled)", "3 mL", "Repeat once. Max 2 doses in 24 hours, 15 mL a week"],
@@ -190,7 +211,7 @@ var M = window.MODULE = {
       ] } },
       { links: [
         { label: "SAAS Clinical app (dose calculators and tools)", href: "https://clinical.saambulance.sa.gov.au" },
-        { label: "CPPRO-013 Intranasal Medication Administration (PDF)", href: "https://clinical.saambulance.sa.gov.au/assets/files/CPPRO-013%20Intranasal%20Medication%20Administration.pdf" }
+        { scope: "ao", label: "CPPRO-013 Intranasal Medication Administration (PDF)", href: "https://clinical.saambulance.sa.gov.au/assets/files/CPPRO-013%20Intranasal%20Medication%20Administration.pdf" }
       ] }
     ] },
 
@@ -201,29 +222,50 @@ var M = window.MODULE = {
         why: "PAINAD is the behavioural and observational tool for advanced dementia; NRS and FPS-R are self-reporting scales." },
       { q: "An adult had paracetamol 2 hours ago. Can you give paracetamol now?", options: ["Yes, 1000 mg", "No, not if any was given in the past 4 hours", "Yes, 500 mg"], answer: 1,
         why: "Paracetamol: if no doses in past 4 hrs, adults oral 1000 mg." },
-      { q: "When must ibuprofen be withheld?", options: ["Whenever there is any doubt about its safe use", "Only in children", "Never: it is always safe"], answer: 0,
+      { scope: "ar", q: "Which pain medicines are in the AR protocol (CPP-036-AR)?", options: ["Paracetamol and methoxyflurane", "Paracetamol, ibuprofen and methoxyflurane", "Methoxyflurane and IN fentanyl"], answer: 0,
+        why: "CPP-036-AR multimodal analgesia: paracetamol (none in the past 4 hours, adults 1000 mg oral) and methoxyflurane 3 mL, repeated once." },
+      { scope: "ar", q: "A child of 12 needs paracetamol. What does CPP-036-AR say?", options: ["1000 mg oral", "Consult the EOC Clinician for the oral dose", "Paracetamol isn't for children"], answer: 1,
+        why: "Paracetamol: adults oral 1000 mg; paediatrics (under 16 years): consult the EOC Clinician for oral doses." },
+      { scope: "ar", q: "Paracetamol and two doses of methoxyflurane, and the pain is still uncontrolled. What now?", options: ["A third dose of methoxyflurane", "Consult the EOC Clinician regarding treatment and transport", "Nothing more can be done"], answer: 1,
+        why: "Methoxyflurane: no more than 2 doses in 24 hours. CPP-036-AR: consult the EOC Clinician regarding treatment and transport; they may advise transport and cancel clinical support, transport and RV with clinical support en route, or monitoring until clinical support arrives." },
+      { scope: "ar", q: "When does CPP-036-AR ask you to request clinical support?", options: ["Only for children", "For every patient in pain, as part of basic care", "Only after methoxyflurane fails"], answer: 1,
+        why: "CPP-036-AR: basic care and life support, then request clinical support, before the medicines." },
+      { scope: "ao", q: "When must ibuprofen be withheld?", options: ["Whenever there is any doubt about its safe use", "Only in children", "Never: it is always safe"], answer: 0,
         why: "If there is any ambiguity around its safe use the medication must be withheld. Take particular care in pregnancy, CKD, heart failure and a history of MI." },
       { q: "What is the methoxyflurane limit?", options: ["3 mL once only", "3 mL, repeated once; max 2 doses in 24 hours or 15 mL a week", "Unlimited while the patient is in pain"], answer: 1,
         why: "Methoxyflurane 3 mL, repeated once prn; total max doses 2 in 24 hrs, 15 mL per week." },
-      { q: "Before IN fentanyl, the sedation score must be:", options: ["Less than 2", "Less than 3", "Exactly 0"], answer: 0,
+      { scope: "ao", q: "Before IN fentanyl, the sedation score must be:", options: ["Less than 2", "Less than 3", "Exactly 0"], answer: 0,
         why: "Consult the EOC Clinician, who may advise IN fentanyl if the patient has a sedation score less than 2 and uncontrolled or severe pain." },
-      { q: "What adult systolic BP is needed for IN fentanyl?", options: ["90 mmHg or more", "100 mmHg or more", "110 mmHg or more"], answer: 1,
+      { scope: "ao", q: "What adult systolic BP is needed for IN fentanyl?", options: ["90 mmHg or more", "100 mmHg or more", "110 mmHg or more"], answer: 1,
         why: "Adults: systolic BP 100 mmHg or more." },
-      { q: "After giving fentanyl, how often do you reassess vital signs?", options: ["Every 5 minutes", "Every 15 minutes", "Only at handover"], answer: 0,
+      { scope: "ao", q: "After giving fentanyl, how often do you reassess vital signs?", options: ["Every 5 minutes", "Every 15 minutes", "Only at handover"], answer: 0,
         why: "Reassess vital signs every 5 mins and monitor the sedation score." },
-      { q: "A patient given fentanyl now has trouble staying awake (eye contact under 10 seconds). What now?", options: ["Give a smaller dose", "Cease all further fentanyl and consult the EOC Clinician", "Wait 5 minutes and repeat"], answer: 1,
+      { scope: "ao", q: "A patient given fentanyl now has trouble staying awake (eye contact under 10 seconds). What now?", options: ["Give a smaller dose", "Cease all further fentanyl and consult the EOC Clinician", "Wait 5 minutes and repeat"], answer: 1,
         why: "That is sedation score 2. Cease all further fentanyl and consult the EOC Clinician if the sedation score is 2 or more." },
-      { q: "Drawing up IN fentanyl for a MAD, which syringe?", options: ["Any syringe", "A 1 mL luer-lock syringe", "A 5 mL slip-tip syringe"], answer: 1,
+      { scope: "ao", q: "Drawing up IN fentanyl for a MAD, which syringe?", options: ["Any syringe", "A 1 mL luer-lock syringe", "A 5 mL slip-tip syringe"], answer: 1,
         why: "CPPRO-013: ensure a 1 mL luer-lock syringe is used, or the MAD may come off." },
-      { q: "A dose is more than 0.3 mL. How do you give it?", options: ["All in one nostril", "Half into each nostril", "Ask the patient to sniff hard"], answer: 1,
+      { scope: "ao", q: "A dose is more than 0.3 mL. How do you give it?", options: ["All in one nostril", "Half into each nostril", "Ask the patient to sniff hard"], answer: 1,
         why: "For volumes over 0.3 mL, deliver half the dose into each nostril. The patient should not be told to sniff." },
-      { q: "Who can have a sublingual ketamine wafer without a Medical Officer consult?", options: ["Anyone in severe pain", "Pain 7 to 10, GCS 15 or normal, aged 16 to 64", "Only children"], answer: 1,
+      { scope: "ao", q: "Who can have a sublingual ketamine wafer without a Medical Officer consult?", options: ["Anyone in severe pain", "Pain 7 to 10, GCS 15 or normal, aged 16 to 64", "Only children"], answer: 1,
         why: "Ketamine may be considered if pain score 7 - 10, GCS 15 or normal GCS, and aged 16 - 64. Consult a SAAS Medical Officer if under 16 or over 64." },
-      { q: "An opioid-affected patient has ineffective breathing and no gag reflex. What does CPP-011-AO say?", options: ["Wait for clinical support", "Basic care including IPPV, and consult the EOC Clinician, who may advise IM naloxone 400 microg", "Give more fentanyl"], answer: 1,
+      { scope: "ao", q: "An opioid-affected patient has ineffective breathing and no gag reflex. What does CPP-011-AO say?", options: ["Wait for clinical support", "Basic care including IPPV, and consult the EOC Clinician, who may advise IM naloxone 400 microg", "Give more fentanyl"], answer: 1,
         why: "Ineffective breathing, airway compromised: basic care including IPPV; consult EOC Clinician who may advise IM naloxone 400 microg." }
     ] } }] },
 
-    { title: "Practical: MAD and the call", optional: true, collapsed: true, chip: "Optional", blocks: [
+    { scope: "ar", title: "Practical: methoxyflurane and the call", optional: true, collapsed: true, chip: "Optional", blocks: [
+      { text: "Optional. Do this in pairs, at the station, in your own time. The lead instructor can swap in a different activity." },
+      { box: { title: "What you need", items: ["An empty or expired methoxyflurane kit labelled TRAINING (never opened, nobody breathes from it)", "A splint and padding", "A blank PCR or notepad"] } },
+      { steps: [
+        { t: "Score each other", text: "Take turns asking for a pain score with the Numerical Rating Scale, then the Faces Pain Scale-Revised." },
+        { t: "Non-drug measures", text: "Splint and support your partner's forearm in the position found, and talk them through it. Reassurance and explanation count too." },
+        { t: "Coach the inhaler", text: "With the empty training kit only: hand it over, coach breathing in and out through the mouthpiece, and say the limits (repeat once; 2 doses in 24 hours; 15 mL a week)." },
+        { t: "Make the call", text: "Role-play the EOC Clinician call: pain scores and trend, what's been given and when, and that you're asking about treatment and transport." }
+      ] },
+      { box: { title: "What good looks like", items: ["Pain score before and after", "Paracetamol checked against the last dose time", "Methoxyflurane limits stated", "The call asks about treatment and transport"] } },
+      { note: "Suggested activities written for training. Never use real medication or give anything to anyone. Check them with your lead instructor." }
+    ] },
+
+    { scope: "ao", title: "Practical: MAD and the call", optional: true, collapsed: true, chip: "Optional", blocks: [
       { text: "Optional. Do this in pairs, at the station, in your own time. The lead instructor can swap in a different activity." },
       { box: { title: "What you need", items: ["A training MAD and 1 mL luer-lock syringe", "Water (never real fentanyl)", "The SAAS Clinical app", "A blank PCR or notepad"] } },
       { steps: [
@@ -240,5 +282,29 @@ var M = window.MODULE = {
       { text: "The Resus Room is a UK emergency medicine podcast. Its \"Pain; Roadside to Resus\" episode (June 2025, about 66 minutes) covers pain assessment and management from prehospital care to the emergency department. Optional listening. It reflects UK practice, so where it differs from CPP-013-AO, follow the protocol." },
       { links: [{ label: "Open the Resus Room pain episode", href: "https://theresusroom.libsyn.com/pain-roadside-to-resus" }] }
     ] }
-  ]
+  ],
+
+  /* ---------- Ambulance Responder version (CPP-036-AR Pain Management - AR v3.0): these keys replace the AO ones ---------- */
+  ar: {
+    replace: [["CPP-013-AO", "CPP-036-AR"], ["Pain Management - AO", "Pain Management - AR"]],
+    subtitle: "Ambulance Responder microlearning",
+    headline: "Assessing pain, non-drug measures, paracetamol and methoxyflurane",
+    lead: "Pain relief is a fundamental human right. This version covers the Ambulance Responder pain protocol: assessing pain, non-drug measures, clinical support, paracetamol and methoxyflurane, and the EOC Clinician consult about treatment and transport when pain stays uncontrolled.",
+    minutes: 15,
+    protocol: {
+      code: "CPP-036-AR", name: "Pain Management - AR", version: "v3.0 (28 March 2023)", exported: "31 August 2026"
+    },
+    relatedCodes: ["CPP-013-AO"],
+    footerNotes: ["The AR protocol has no ibuprofen, IN fentanyl or ketamine. If pain stays uncontrolled, consult the EOC Clinician regarding treatment and transport."],
+    session: {
+      intro: "For a team-led session with Ambulance Responders. Allow about 20 minutes. Everyone works through the page on their own device, then discusses together.",
+      steps: [
+        { t: "Watch the intro video", time: "3 min", text: "It follows the AO protocol. Read the box under it for what changes for an AR." },
+        { t: "Read the introduction", time: "3 min", text: "Read the non-drug measures aloud and give an example of each from a recent job." },
+        { t: "Assess, then treat", time: "5 min", text: "Take turns reading a box. Check everyone can say the paracetamol gap (4 hours) and the methoxyflurane limits." },
+        { t: "Knowledge check", time: "5 min", text: "Everyone does it alone. Discuss any question people got wrong." },
+        { t: "Optional practical", time: "4 min", text: "Pairs: pain scores, a splint, the training inhaler and the EOC Clinician call." }
+      ]
+    }
+  }
 };

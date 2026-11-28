@@ -75,4 +75,7 @@ DSY-written (owner to review). Live (PR #394, merged 28 Nov 2026).
 
 PCR job `grahamAR` (28 Nov 2026): Graham's AR version: clinical support 2136, EOC Clinician 2137 (one GTN dose),
 GTN 2138, EOC Clinician 2144 (no further GTN, transport to Cleve, clinical support cancelled), handover 2210.
-DSY-written (owner to review). On a branch, not merged.
+DSY-written (owner to review). Live (PR #396, merged 28 Nov 2026).
+
+PCR job `garyAR` (28 Nov 2026): Gary's AR version: clinical support 1858, paracetamol 1905, Penthrox 1907 and 1940,
+EOC Clinician 1926 (transport and RV), RV with the paramedics 2003. DSY-written (owner to review). On a branch, not merged.

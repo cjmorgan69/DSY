@@ -57,9 +57,10 @@ window.RELATED = {
     { kind: "PCR trainer", title: "Write Kevin's patient care record", href: "/tools/pcr/#job=kevin", text: "After the walk-through: write the PCR on a copy of the card, including the PDE-5 check and both GTN doses with times. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-013-AO": [
-    { kind: "Microlearning module", title: "Pain management", href: "/microlearning/pain/", text: "Multimodal analgesia, the sedation score, the IN fentanyl checker and sublingual ketamine for authorised AOs." },
-    { kind: "Walk-through scenario", title: "Pain Management - AO: Gary, 58", href: "/modules/pain-management/", text: "Two-person AO crew, a tib/fib fracture after a fall from a shed roof near Cummins: Penthrox, ibuprofen withheld, and a ketamine wafer. Facilitator and student versions." },
-    { kind: "PCR trainer", title: "Write Gary's patient care record", href: "/tools/pcr/#job=gary", text: "After the walk-through: write the PCR on a copy of the card, including the pain scores, every analgesic with times and why ibuprofen was withheld. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
+    { kind: "Microlearning module", title: "Pain management", href: "/microlearning/pain/", text: "Multimodal analgesia, the sedation score, the IN fentanyl checker and sublingual ketamine for authorised AOs.", arText: "Pain scores, non-drug measures, paracetamol and methoxyflurane, clinical support and the EOC Clinician consult about treatment and transport." },
+    { kind: "Walk-through scenario", title: "Pain Management - AO: Gary, 58", href: "/modules/pain-management/", text: "Two-person AO crew, a tib/fib fracture after a fall from a shed roof near Cummins: Penthrox, ibuprofen withheld, and a ketamine wafer. Facilitator and student versions.",
+      arTitle: "Pain Management - AR: Gary, 58", arText: "Two-person AR crew, a tib/fib fracture after a fall from a shed roof near Cummins: paracetamol, two doses of Penthrox, the splint, and an RV with the paramedics. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Gary's patient care record", href: "/tools/pcr/#job=gary", arHref: "/tools/pcr/#job=garyAR", arText: "After the AR walk-through: write the PCR, including the pain scores, every analgesic with times, the EOC Clinician's advice and the RV. Tap any heading to see what goes there, then compare with the model card.", text: "After the walk-through: write the PCR on a copy of the card, including the pain scores, every analgesic with times and why ibuprofen was withheld. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-045-AO": [
     { kind: "Microlearning module", title: "Falls", href: "/microlearning/falls/", text: "Mobility assessment, transport criteria, the FROP falls screen with Country Referral Unit referral, and the Braden pressure injury screen." },
@@ -72,9 +73,10 @@ window.RELATED = {
     { kind: "PCR trainer", title: "Write Robert's patient care record", href: "/tools/pcr/#job=robert", text: "After the walk-through: write the PCR on a copy of the card, including the deteriorating obs and the ceftriaxone decision. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-009-AO": [
-    { kind: "Microlearning module", title: "Hypoglycaemia", href: "/microlearning/hypoglycaemia/", text: "Oral glucose, glucagon on EOC Clinician advice and the treatment checker, with a narrated video and quiz." },
-    { kind: "Walk-through scenario", title: "Hypoglycaemia - AO: Ron, 67", href: "/modules/hypoglycaemia-ao/", text: "Two-person AO crew, an insulin-treated farmer near Cummins. Facilitator and student versions." },
-    { kind: "PCR trainer", title: "Write Ron's patient care record", href: "/tools/pcr/#job=ron", arHref: "/tools/pcr/#job=ronAR", text: "After the walk-through: write the PCR on a copy of the card, including the BGL trend, oral glucose and glucagon. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
+    { kind: "Microlearning module", title: "Hypoglycaemia", href: "/microlearning/hypoglycaemia/", text: "Oral glucose, glucagon on EOC Clinician advice and the treatment checker, with a narrated video and quiz.", arText: "Oral glucose, the EOC Clinician consult when it can't be given or doesn't work, and the treatment checker, with a narrated video and quiz." },
+    { kind: "Walk-through scenario", title: "Hypoglycaemia - AO: Ron, 67", href: "/modules/hypoglycaemia-ao/", text: "Two-person AO crew, an insulin-treated farmer near Cummins. Facilitator and student versions.",
+      arTitle: "Hypoglycaemia - AR: Ron, 67", arText: "Two-person AR crew, an insulin-treated farmer near Cummins: oral glucose, then the EOC Clinician and an RV with the paramedics. Facilitator and student versions." },
+    { kind: "PCR trainer", title: "Write Ron's patient care record", href: "/tools/pcr/#job=ron", arHref: "/tools/pcr/#job=ronAR", arText: "After the AR walk-through: write the PCR, including the BGL trend, oral glucose, the EOC Clinician's advice and the RV. Tap any heading to see what goes there, then compare with the model card.", text: "After the walk-through: write the PCR on a copy of the card, including the BGL trend, oral glucose and glucagon. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-016-AO": [
     { kind: "Microlearning module", title: "Stroke", href: "/microlearning/stroke/", text: "BGL, ROSIER, the Code Stroke criteria and the eligibility checker, with a narrated video and quiz." },
@@ -88,17 +90,20 @@ window.RELATED = {
   ],
   "CPP-008-AO": [
     { kind: "Microlearning module", title: "Envenomation", href: "/microlearning/envenomation/", text: "Bites and stings, the pressure bandage and immobilisation, with a quiz." },
-    { kind: "Walk-through scenario", title: "Envenomation - AO: Greg, 52", href: "/modules/envenomation/", text: "Two-person AO crew, brown snake bite to the leg at a rural property. Facilitator and student versions." },
+    { kind: "Walk-through scenario", title: "Envenomation - AO: Greg, 52", href: "/modules/envenomation/", text: "Two-person AO crew, brown snake bite to the leg at a rural property. Facilitator and student versions.",
+      arTitle: "Envenomation - AR: Greg, 52", arText: "Two-person AR crew, brown snake bite to the leg at a rural property, with an RV with the paramedics. Facilitator and student versions." },
     { kind: "PCR trainer", title: "Write Greg's patient care record", href: "/tools/pcr/#job=greg", arHref: "/tools/pcr/#job=gregAR", text: "After the walk-through: write the PCR on a copy of the card, including the bite time, first aid and the bandage still on. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-007-AO": [
     { kind: "Microlearning module", title: "Chest pain", href: "/microlearning/chest-pain/", text: "Aspirin, the GTN limits and the GTN checker, with a narrated video and quiz." },
-    { kind: "Walk-through scenario", title: "Chest Pain - AO: Graham, 62", href: "/modules/chest-pain/", text: "Two-person AO crew, chest pain not settling with his own GTN at a rural property. Facilitator and student versions." },
+    { kind: "Walk-through scenario", title: "Chest Pain - AO: Graham, 62", href: "/modules/chest-pain/", text: "Two-person AO crew, chest pain not settling with his own GTN at a rural property. Facilitator and student versions.",
+      arTitle: "Chest Pain - AR: Graham, 62", arText: "Two-person AR crew, chest pain not settling with his own GTN at a rural property: GTN only on EOC Clinician advice. Facilitator and student versions." },
     { kind: "PCR trainer", title: "Write Graham's patient care record", href: "/tools/pcr/#job=graham", arHref: "/tools/pcr/#job=grahamAR", text: "After the walk-through: write the PCR on a copy of the card, including aspirin, GTN with times and the EOC Clinician consult. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ],
   "CPP-050-AO": [
     { kind: "Microlearning module", title: "Asthma", href: "/microlearning/asthma/", text: "Severity, doses and the asthma checker, with a narrated video and quiz." },
-    { kind: "Walk-through scenario", title: "Asthma - AO: Karen, 45", href: "/modules/asthma-ao/", text: "Two-person AO crew, more severe asthma at a rural property. Facilitator and student versions." },
+    { kind: "Walk-through scenario", title: "Asthma - AO: Karen, 45", href: "/modules/asthma-ao/", text: "Two-person AO crew, more severe asthma at a rural property. Facilitator and student versions.",
+      arTitle: "Asthma - AR: Karen, 45", arText: "Two-person AR crew, more severe asthma at a rural property: the nebuliser, then the EOC Clinician consult about treatment and transport. Facilitator and student versions." },
     { kind: "PCR trainer", title: "Write Karen's patient care record", href: "/tools/pcr/#job=karen", arHref: "/tools/pcr/#job=karenAR", text: "After the walk-through: write the PCR on a copy of the card, including her severity, the nebuliser and the EOC Clinician's advice. Tap any heading to see what goes there and a possible entry, then compare with the model card." }
   ]
 };

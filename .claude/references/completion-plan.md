@@ -33,8 +33,8 @@ Each AR version starts with the AR PDF, read again on the day: AR PDFs were expo
 |---|---|---|---|
 | Hypoglycaemia | CPP-031-AR, big | none | **done** (module, walk-through, PCR `ronAR`, lessons) |
 | Asthma | CPP-048-AR, big | none | **done 28 Nov 2026** (module, walk-through, PCR `karenAR`; Karen goes to hospital) |
-| Chest pain | CPP-029-AR, big | none | **built 28 Nov 2026** (module, walk-through, PCR `grahamAR`): on a branch, owner to review |
-| Pain management | CPP-036-AR, big | stations | full: paracetamol + methoxyflurane only (repeat once); no ibuprofen, fentanyl, ketamine |
+| Chest pain | CPP-029-AR, big | none | **done 28 Nov 2026** (module, walk-through, PCR `grahamAR`; Graham goes to Cleve) |
+| Pain management | CPP-036-AR, big | stations | **built 28 Nov 2026** (module, walk-through, PCR `garyAR`): on a branch, owner to review |
 | Stroke | CPP-039-AR, big | deck? | full: FAST only, no ROSIER or Code Stroke pathway, consult |
 | Dementia (ABD) | CPP-052-AR, big | lesson for stations, PCR `joanne` lesson, deck? | full: risk assessment, MSE, clinical support, SAPOL, consult |
 | Refusal | CPP-058-AR, big | PCR `sam` lesson | full: seek consent, clinical support or consult; no VIRCA steps |

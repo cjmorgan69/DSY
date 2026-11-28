@@ -144,6 +144,9 @@ headline (kept in the link as `?scope=ar`; the Facilitator / Student choice is k
 - the "two rules in every protocol" box (request clinical support; consult the EOC Clinician before transport,
   CPP-025-AR) is added to the first section automatically (`arRules: false` turns it off);
 - set `relatedCodes` to the AO code so the "Built on the same protocol" links still show; they carry `?scope=ar`.
-  A related.js line can give `arHref` for the AR page (for example the AR PCR job `#job=ronAR`).
+  A related.js line can give `arHref` for the AR page (for example the AR PCR job `#job=ronAR`), and `arTitle` / `arText`
+  for the card's wording in the AR version.
+- the word swaps in `ar.replace` skip items marked `scope: "ar"`: write those in AR terms (they may name the AO protocol
+  on purpose, e.g. "ibuprofen is in the AO protocol (CPP-013-AO)").
 
 The AR vs AO differences for every protocol are in `.claude/references/ar-vs-ao-protocols.md`. Pilot: hypoglycaemia.
